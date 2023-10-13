@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class LimbCollision : MonoBehaviour
 {
-    public Playercontroller playerController;
+    public PlayerController playerController;
 
     private void Start()
     {
-        playerController = GameObject.FindObjectOfType<Playercontroller>().GetComponent<Playercontroller>();
+        playerController = GameObject.FindObjectOfType<PlayerController>().GetComponent<PlayerController>();
     }
 
     private void OnCollisionEnter(Collision collision)
