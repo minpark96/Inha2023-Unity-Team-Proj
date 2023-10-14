@@ -18,10 +18,9 @@ public class PlayerController : MonoBehaviour
     public Transform cameraArm;
     public Transform forward;
 
-    Vector3 vforward;
     Vector3 moveInput;
     Vector3 moveDir;
-    private float _rotationSpeed = 30.0f;
+    private float _rotationSpeed = 300.0f;
 
 
     void Start()
@@ -32,7 +31,6 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         moveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-        vforward = (forward.position - hips.transform.position).normalized;
 
         if (moveInput.magnitude != 0)
         {
@@ -41,11 +39,19 @@ public class PlayerController : MonoBehaviour
             moveDir = lookForward * moveInput.z + lookRight * moveInput.x;
 
 
-            Vector3 forword = Vector3.Slerp(vforward, moveDir, _rotationSpeed * Time.deltaTime / Vector3.Angle(vforward, moveDir));
+            Vector3 forward = Vector3.Slerp(-hips.transform.up, moveDir, _rotationSpeed * Time.deltaTime / Vector3.Angle(-hips.transform.up, moveDir));
            
-           // Debug.Log(forword);
+            Debug.Log(hips.transform.position + forward);
+            //Debug.Log(hips.transform.position);
+            //Debug.Log(forword);
+
             //hips.transform.LookAt(hips.transform.position + forword);
-            //hips.transform.up = (hips.transform.position + forword).normalized;
+            //hips.transform.up = (hips.transform.position - forword).normalized;
+
+            //AlignToVector(hips, hips.transform.forward, Vector3.up + moveDir, 0.1f, 4f );
+            AlignToVector(hips, -hips.transform.up, Vector3.up + moveDir, 0.1f, 4f * 10f);
+
+
 
             if (Input.GetKey(KeyCode.LeftShift))
             {
@@ -61,36 +67,22 @@ public class PlayerController : MonoBehaviour
 
 
         
-        if(Input.GetAxis("Jump") > 0)
+        if(Input.GetButtonDown("Jump"))
         {
             if(isGrounded)
             {
                 hips.AddForce(new Vector3(0,jumpForce,0));
-                isGrounded = false;
+                //isGrounded = false;
             }
         }
 
 
-        ray = new Ray();
-        ray.origin = hips.position; //레이의 시작점
-        ray.direction = -hips.transform.up;
-
-    }
-
-    private Ray ray; //어느 방향으로 쏠지에 대한 정보를 가짐
-    public float distance = 20f;
-
-    private void OnDrawGizmos()
-    {
-
-        Gizmos.color = Color.yellow;
-
-        Gizmos.DrawLine(ray.origin, ray.direction * distance + ray.origin);
 
     }
 
 
-        private void Update()
+
+    private void Update()
     {
         LookAround();
         CursorControll();
@@ -99,7 +91,24 @@ public class PlayerController : MonoBehaviour
 
 
 
+    public void AlignToVector(Rigidbody part, Vector3 alignmentVector, Vector3 targetVector, float stability, float speed)
+    {
+        if (part == null)
+        {
+            return;
+        }
+        Vector3 vector = Vector3.Cross(Quaternion.AngleAxis(part.angularVelocity.magnitude * 57.29578f * stability / speed, part.angularVelocity) * alignmentVector, targetVector * 10f);
+        if (!float.IsNaN(vector.x) && !float.IsNaN(vector.y) && !float.IsNaN(vector.z))
+        {
+            part.AddTorque(vector * speed * speed);
+            {
+                Debug.DrawRay(part.position, alignmentVector * 0.2f, Color.red, 0f, depthTest: false);
+                Debug.DrawRay(part.position, targetVector * 0.2f, Color.green, 0f, depthTest: false);
+            }
 
+            
+        }
+    }
 
     private void LookAround()
     {
