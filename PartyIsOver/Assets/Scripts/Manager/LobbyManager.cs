@@ -170,7 +170,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     private void Update()
     {
         // 방장 기능 && 최소 입장인원 충족시만 게임 시작 버튼 활성화
-        if (PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.PlayerCount >= 2)
+        if (PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.PlayerCount >= 1)
         {
             PlayButton.SetActive(true);
         }
