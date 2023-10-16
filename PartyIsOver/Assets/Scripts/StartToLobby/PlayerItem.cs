@@ -16,10 +16,6 @@ public class PlayerItem : MonoBehaviour
     public GameObject LeftArrowButton;
     public GameObject RightArrowButton;
 
-
-    ExitGames.Client.Photon.Hashtable PlayerProperties = new ExitGames.Client.Photon.Hashtable();
-    
-
     private void Start()
     {
         //BackgroundImage = GetComponent<Image>();

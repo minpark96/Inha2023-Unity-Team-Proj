@@ -69,12 +69,17 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     // 로비에 방 목록 업데이트
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
-        // UpdateRoomList(roomList); > 2번 이상 불러올 경우가 생김
+        //UpdateRoomList(roomList); // > 2번 이상 불러올 경우가 생김
 
         if (Time.time >= NextUpdateTime)
         {
             UpdateRoomList(roomList);
             NextUpdateTime = Time.time + TimeBetweenUpdate;
+        }
+
+        if (roomList.Count == 0 && PhotonNetwork.InLobby)
+        {
+            RoomItemsList.Clear();
         }
     }
 
@@ -87,10 +92,13 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             Destroy(item.gameObject);
         }
         RoomItemsList.Clear();
-        
+
         // 새롭게 추가
-        foreach(RoomInfo room in list)
+        foreach (RoomInfo room in list)
         {
+            if (room.PlayerCount == 0)
+                continue;
+
             RoomItem newRoom = Instantiate(RoomItemPrefab, ContentObject);
             newRoom.SetRoomName(room.Name);
             RoomItemsList.Add(newRoom);
@@ -170,7 +178,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     private void Update()
     {
         // 방장 기능 && 최소 입장인원 충족시만 게임 시작 버튼 활성화
-        if (PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.PlayerCount >= 1)
+        if (PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.PlayerCount >= 2)
         {
             PlayButton.SetActive(true);
         }
