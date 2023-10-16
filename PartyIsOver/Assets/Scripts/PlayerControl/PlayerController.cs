@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using Photon.Pun;
 
-public class PlayerController : MonoBehaviourPun
+public class PlayerController : MonoBehaviourPunCallbacks
 {
     [Header("앞뒤 속도")]
     public float Speed;
@@ -12,6 +12,9 @@ public class PlayerController : MonoBehaviourPun
     public float StrafeSpeed;
     [Header("점프 힘")]
     public float JumpForce;
+
+    public static int LayerCnt = 7;
+    public string TestTag = "Item";
 
     private GameObject _hipGameObject;
     private Rigidbody _hipRigidbody;
@@ -21,6 +24,8 @@ public class PlayerController : MonoBehaviourPun
     {
         _hipGameObject = GameObject.Find("pelvis");
         _hipRigidbody = _hipGameObject.GetComponent<Rigidbody>();
+        ChangeLayerRecursively(gameObject, LayerCnt++);
+        ChangeTagRecursively(gameObject, TestTag);
     }
 
     private void FixedUpdate()
@@ -28,8 +33,6 @@ public class PlayerController : MonoBehaviourPun
         InputMove();
         InputJump();
     }
-
-    
 
     private void InputMove()
     {
@@ -57,6 +60,7 @@ public class PlayerController : MonoBehaviourPun
             else
                 _hipRigidbody.AddForce(transform.right * StrafeSpeed);
     }
+
     private void InputJump()
     {
         if (Input.GetAxis("Jump") > 0)
@@ -68,6 +72,27 @@ public class PlayerController : MonoBehaviourPun
             }
         }
     }
+
+    private void ChangeLayerRecursively(GameObject obj, int layer)
+    {
+        obj.layer = layer;
+
+        foreach (Transform child in obj.transform)
+        {
+            ChangeLayerRecursively(child.gameObject, layer);
+        }
+    }
+
+    private void ChangeTagRecursively(GameObject obj, string tag)
+    {
+        obj.tag = tag;
+
+        foreach (Transform child in obj.transform)
+        {
+            ChangeTagRecursively(child.gameObject, tag);
+        }
+    }
+
 }
 
 

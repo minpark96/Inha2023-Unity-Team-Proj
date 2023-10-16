@@ -1,14 +1,17 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Grab : MonoBehaviour
+public class Grab : MonoBehaviourPun, IPunObservable
 {
     private GameObject _grabGameObject;
     private Rigidbody _grabRigidbody;
 
     private bool _isGrabbing = false;
     private FixedJoint _joint;
+    public PhotonView PV;
+
     void Start()
     {
         _grabRigidbody = GetComponent<Rigidbody>();
@@ -20,6 +23,12 @@ public class Grab : MonoBehaviour
     }
 
     private void OnTriggerStay(Collider other)
+    {
+        if (PV.IsMine) PV.RPC("Grap", RpcTarget.All, other);
+    }
+
+    [PunRPC]
+    private void Grap(Collider other)
     {
         if (other.gameObject.CompareTag("Item"))
         {
@@ -41,5 +50,10 @@ public class Grab : MonoBehaviour
                 _grabGameObject = null;
             }
         }
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        throw new System.NotImplementedException();
     }
 }
