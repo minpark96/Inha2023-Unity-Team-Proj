@@ -76,11 +76,6 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             UpdateRoomList(roomList);
             NextUpdateTime = Time.time + TimeBetweenUpdate;
         }
-
-        if (roomList.Count == 0 && PhotonNetwork.InLobby)
-        {
-            RoomItemsList.Clear();
-        }
     }
 
     void UpdateRoomList(List<RoomInfo> list)
