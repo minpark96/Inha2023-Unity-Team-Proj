@@ -7,12 +7,13 @@ using UnityEngine.UI;
 
 public class LobbyManager : MonoBehaviourPunCallbacks
 {
-    // Start
+    // : Start
     public InputField RoomInputField;
     public GameObject LobbyPanel;
     public GameObject RoomPanel;
     public Text RoomName;
 
+    // : RoomItem
     // RoomItem(방 제목) 리스트
     List<RoomItem> RoomItemsList = new List<RoomItem>();
     public RoomItem RoomItemPrefab;
@@ -23,11 +24,16 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     float NextUpdateTime;
 
 
-    // PlayerItem 리스트
+    // : PlayerItem
+    // PlayerItem(플레이어 정보) 리스트
     List<PlayerItem> PlayerItemsList = new List<PlayerItem>();
     public PlayerItem PlayerItemPrefab;
     public Transform PlayerItemParent; // Inspector상에 있는 PlayerListing
 
+
+    // : Game Start
+    // 게임 시작 버튼
+    public GameObject PlayButton;
 
 
 
@@ -137,13 +143,13 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         foreach (KeyValuePair<int, Player> player in PhotonNetwork.CurrentRoom.Players)
         {
             PlayerItem newPlayerItem = Instantiate(PlayerItemPrefab, PlayerItemParent);
-            //newPlayerItem.SetPlayerInfo(player.Value);
+            newPlayerItem.SetPlayerInfo(player.Value);
 
             ////현재 방에 있는 player가 서버에 있는 Localplayer면 변화를 불러오기
-            //if (player.Value == PhotonNetwork.LocalPlayer)
-            //{
-            //    newPlayerItem.ApplyLocalChanges();
-            //}
+            if (player.Value == PhotonNetwork.LocalPlayer)
+            {
+                newPlayerItem.ApplyLocalChanges();
+            }
 
             PlayerItemsList.Add(newPlayerItem);
         }
@@ -158,4 +164,27 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     {
         UpdatePlayerList();
     }
+
+
+    // : Game Start
+    private void Update()
+    {
+        // 방장 기능 && 최소 입장인원 충족시만 게임 시작 버튼 활성화
+        if (PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.PlayerCount >= 2)
+        {
+            PlayButton.SetActive(true);
+        }
+        else
+        {
+            PlayButton.SetActive(false);
+        }
+    }
+
+    // 버튼 누를시 인게임 씬으로 이동
+    public void OnClickPlayButton()
+    {
+        PhotonNetwork.LoadLevel("[3] Game");
+    }
+
+
 }

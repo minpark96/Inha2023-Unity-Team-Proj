@@ -20,12 +20,15 @@ public class ConnectToServer : MonoBehaviourPunCallbacks
 
             // 서버 접속
             PhotonNetwork.ConnectUsingSettings();
+
+            // 씬 전환시 필요
+            PhotonNetwork.AutomaticallySyncScene = true;
         }
     }
 
     public override void OnConnectedToMaster()
     {
-        SceneManager.LoadScene("Lobby");
+        SceneManager.LoadScene("[2] Lobby");
     }
 
 
