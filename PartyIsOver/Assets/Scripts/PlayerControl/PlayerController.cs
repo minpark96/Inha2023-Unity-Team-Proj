@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using Photon.Pun;
 
-public class PlayerController : MonoBehaviourPunCallbacks
+public class PlayerController : MonoBehaviourPun
 {
     [Header("앞뒤 속도")]
     public float Speed;
@@ -12,9 +12,6 @@ public class PlayerController : MonoBehaviourPunCallbacks
     public float StrafeSpeed;
     [Header("점프 힘")]
     public float JumpForce;
-
-    public static int LayerCnt = 7;
-    public string TestTag = "Item";
 
     private GameObject _hipGameObject;
     private Rigidbody _hipRigidbody;
@@ -24,17 +21,15 @@ public class PlayerController : MonoBehaviourPunCallbacks
     {
         _hipGameObject = GameObject.Find("pelvis");
         _hipRigidbody = _hipGameObject.GetComponent<Rigidbody>();
-        ChangeLayerRecursively(gameObject, LayerCnt++);
-        ChangeTagRecursively(gameObject, TestTag);
+
+        //실수를 방지하기 위해서 구독이 두번 들어오는걸 방지
+        Managers.Input.KeyAction -= OnKeyboard;
+        //어떤 키가 눌리면 구독신청 해버림
+        Managers.Input.KeyAction += OnKeyboard;
     }
 
-    private void FixedUpdate()
-    {
-        InputMove();
-        InputJump();
-    }
 
-    private void InputMove()
+    private void OnKeyboard()
     {
         if (Input.GetKey(KeyCode.W))
             if (Input.GetKey(KeyCode.LeftShift))
@@ -59,10 +54,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
                 _hipRigidbody.AddForce(transform.right * StrafeSpeed * 2f);
             else
                 _hipRigidbody.AddForce(transform.right * StrafeSpeed);
-    }
 
-    private void InputJump()
-    {
         if (Input.GetAxis("Jump") > 0)
         {
             if (IsGrounded)
@@ -71,26 +63,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
                 IsGrounded = false;
             }
         }
-    }
 
-    private void ChangeLayerRecursively(GameObject obj, int layer)
-    {
-        obj.layer = layer;
-
-        foreach (Transform child in obj.transform)
-        {
-            ChangeLayerRecursively(child.gameObject, layer);
-        }
-    }
-
-    private void ChangeTagRecursively(GameObject obj, string tag)
-    {
-        obj.tag = tag;
-
-        foreach (Transform child in obj.transform)
-        {
-            ChangeTagRecursively(child.gameObject, tag);
-        }
     }
 
 }
