@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<< HEAD:PartyIsOver/Assets/Scripts/Manager/Managers.cs.meta
 guid: 299e6da800c4f59429e7de0bd321bf72
+=======
+guid: 5e7766fb1bdf91a4880c072e77dc5a7a
+>>>>>>> a5c093a73652f0cf6725240cee843f5af5f716fe:PartyIsOver/Assets/Scripts/Managers/Managers.cs.meta
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
