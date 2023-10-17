@@ -10658,6 +10658,7 @@ MonoBehaviour:
   Speed: 150
   StrafeSpeed: 100
   JumpForce: 6000
+  TestTag: Item
   IsGrounded: 0
 --- !u!114 &-3473912344415622528
 MonoBehaviour:

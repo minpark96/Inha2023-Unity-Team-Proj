@@ -13,6 +13,9 @@ public class PlayerController : MonoBehaviourPun
     [Header("점프 힘")]
     public float JumpForce;
 
+    public static int LayerCnt = 7;
+    public string TestTag = "Item";
+
     private GameObject _hipGameObject;
     private Rigidbody _hipRigidbody;
     public bool IsGrounded;
@@ -26,6 +29,8 @@ public class PlayerController : MonoBehaviourPun
         Managers.Input.KeyAction -= OnKeyboard;
         //어떤 키가 눌리면 구독신청 해버림
         Managers.Input.KeyAction += OnKeyboard;
+        ChangeLayerRecursively(gameObject, LayerCnt++);
+        ChangeTagRecursively(gameObject, TestTag);
     }
 
 
@@ -66,6 +71,25 @@ public class PlayerController : MonoBehaviourPun
 
     }
 
+    private void ChangeLayerRecursively(GameObject obj, int layer)
+    {
+        obj.layer = layer;
+
+        foreach (Transform child in obj.transform)
+        {
+            ChangeLayerRecursively(child.gameObject, layer);
+        }
+    }
+
+    private void ChangeTagRecursively(GameObject obj, string tag)
+    {
+        obj.tag = tag;
+
+        foreach (Transform child in obj.transform)
+        {
+            ChangeTagRecursively(child.gameObject, tag);
+        }
+    }
 }
 
 

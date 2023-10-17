@@ -9,8 +9,11 @@ public class Managers : MonoBehaviourPun
     private static Managers _instance;
     public static Managers Instance { get { return _instance; } }
 
-    private InputManager _input = new InputManager();
+    InputManager _input = new InputManager();
+    ResourceManager _resource = new ResourceManager();
+
     public static InputManager Input { get { return Instance._input; } }
+    public static ResourceManager Resrouce { get { return Instance._resource; } }
 
     void Start()
     {
