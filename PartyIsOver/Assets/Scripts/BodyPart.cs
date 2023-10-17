@@ -8,7 +8,10 @@ public class BodyPart : MonoBehaviour
     public Rigidbody PartRigidbody;
 
 
-    private void Start()
+
+
+
+    private void Awake()
     {
         PartRigidbody = GetComponent<Rigidbody>();
 

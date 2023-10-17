@@ -6,6 +6,9 @@ using UnityEngine;
 public class BodyHandeler : MonoBehaviour
 {
     public Transform Root;
+    private List<BodyPart> _bodyParts = new List<BodyPart>();
+
+
 
     public BodyPart Head;
 
@@ -13,7 +16,8 @@ public class BodyHandeler : MonoBehaviour
 
     public BodyPart Waist;
 
-    public BodyPart Hips;
+    public BodyPart Hip;
+
 
 
     public BodyPart LeftArm;
@@ -28,6 +32,8 @@ public class BodyHandeler : MonoBehaviour
 
     public BodyPart LeftFoot;
 
+
+
     public BodyPart RightArm;
 
     public BodyPart RightForarm;
@@ -40,7 +46,7 @@ public class BodyHandeler : MonoBehaviour
 
     public BodyPart RightFoot;
 
-    //public Transform Ball;
+    public BodyPart Ball;
 
     //public Transform Spring;
 
@@ -49,7 +55,8 @@ public class BodyHandeler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
+        BodySetup();
     }
 
     // Update is called once per frame
@@ -58,8 +65,32 @@ public class BodyHandeler : MonoBehaviour
         
     }
 
-    void PartSetup()
+    void BodySetup()
     {
 
+        _bodyParts.Add(Head);
+        _bodyParts.Add(Chest);
+        _bodyParts.Add(Waist);
+        _bodyParts.Add(Hip);
+        _bodyParts.Add(LeftArm);
+        _bodyParts.Add(LeftForarm);
+        _bodyParts.Add(LeftThigh);
+        _bodyParts.Add(LeftLeg);
+        _bodyParts.Add(LeftFoot);
+        _bodyParts.Add(RightArm);
+        _bodyParts.Add(RightForarm);
+        _bodyParts.Add(RightThigh);
+        _bodyParts.Add(RightLeg);
+        _bodyParts.Add(RightFoot);
+        _bodyParts.Add(Ball);
+
+
+        foreach (BodyPart part in _bodyParts)
+        {
+            part.PartRigidbody.maxAngularVelocity = 15f;
+            part.PartRigidbody.solverIterations = 12;
+            part.PartRigidbody.solverVelocityIterations = 12;
+
+        }
     }
 }
