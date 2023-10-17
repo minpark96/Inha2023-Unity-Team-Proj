@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
 
 public class ResourceManager
@@ -12,7 +13,6 @@ public class ResourceManager
         
     public GameObject Instantiate(string path, Transform parent = null)
     {
-        Debug.Log("1");
         GameObject prefab = Load<GameObject>($"Prefabs/{path}");
 
         if( prefab == null )
@@ -22,6 +22,20 @@ public class ResourceManager
         }
 
         return Object.Instantiate(prefab, parent);
+    }
+
+    public GameObject PhotonNetworkItemInstantiate(string path, Transform parent = null)
+    {
+        GameObject prefab = Load<GameObject>($"Item/{path}");
+
+        if (prefab == null)
+        {
+            Debug.Log($"Failed to load prefab : {path}");
+            return null;
+        }
+        
+        return PhotonNetwork.Instantiate($"Item/{path}", Vector3.zero, Quaternion.identity);
+        
     }
 
     public void Destory(GameObject go)
