@@ -27,11 +27,14 @@ public class RagdollOnOff : MonoBehaviour
         {
             RagdollModeOn();
         }
+        Debug.Log("Enter");
     }
 
     private void OnCollisionExit(Collision collision)
     {
-        
+        RagdollModeOff();
+        Debug.Log("Exit");
+
     }
 
     IEnumerator GetReady()
