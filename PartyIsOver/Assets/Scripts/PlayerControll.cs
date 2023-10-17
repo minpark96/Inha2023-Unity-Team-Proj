@@ -4,7 +4,7 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerControll : MonoBehaviour
 {
     [Header("앞뒤 속도")]
     public float RunSpeed;
