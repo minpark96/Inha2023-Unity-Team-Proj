@@ -6,6 +6,18 @@ TagManager:
   tags:
   - Bullet
   - Item
+  - CharacterHip
+  - CharacterFoot
+  - Lhand
+  - CharacterFist
+  - Rhand
+  - CharacterHead
+  - CharacterChest
+  - Body (Medium Priority)
+  - Body (Low Priority)
+  - Body (High Priority)
+  - Prop (Medium Priority)
+  - Camera Target (Track)
   layers:
   - Default
   - TransparentFX
@@ -14,7 +26,7 @@ TagManager:
   - Water
   - UI
   - noselfcondition
-  - 
+  - Ground
   - 
   - 
   - 

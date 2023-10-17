@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -24,6 +25,7 @@ public class PlayerControll : MonoBehaviour
     public bool isRun;
     public bool isMove;
     public bool isDuck;
+    public bool isKickDuck;
 
     private Vector3 _moveInput;
     private Vector3 _moveDir;
@@ -81,7 +83,7 @@ public class PlayerControll : MonoBehaviour
             if(!isMove)
             {
                 isMove = true;
-                if (Random.Range(0, 2) == 1)
+                if (UnityEngine.Random.Range(0, 2) == 1)
                 {
                     leftLegPose = Pose.Bent;
                     rightLegPose = Pose.Straight;
@@ -104,16 +106,16 @@ public class PlayerControll : MonoBehaviour
         }
 
 
-        
-        if(Input.GetButtonDown("Jump"))
+
+
+        if (Input.GetButtonDown("Jump"))
         {
-            if(isGrounded)
+            if (isGrounded)
             {
-                _hips.AddForce(new Vector3(0,JumpForce,0));
+                Jump();
                 isGrounded = false;
             }
         }
-
 
 
     }
@@ -147,6 +149,56 @@ public class PlayerControll : MonoBehaviour
     //    ray.direction = -_hips.transform.right;
     //}
     #endregion
+
+
+    private void OnCollisionEnter(Collision collision)
+    {
+
+    }
+
+
+    private void Jump()
+    {
+        float jumpMoveForce = 1f;
+
+        //움직이는 입력이 있을때
+        if (_moveDir != Vector3.zero)
+        {
+            bodyHandeler.Chest.PartRigidbody.AddForce(_moveDir * jumpMoveForce, ForceMode.VelocityChange);
+            bodyHandeler.Waist.PartRigidbody.AddForce(_moveDir * jumpMoveForce, ForceMode.VelocityChange);
+            bodyHandeler.Hip.PartRigidbody.AddForce(_moveDir * jumpMoveForce, ForceMode.VelocityChange);
+        }
+        AlignToVector(bodyHandeler.Head.PartRigidbody, -bodyHandeler.Head.transform.up, _moveDir + new Vector3(0,0.2f,0f), 0.1f, 4f);
+        AlignToVector(bodyHandeler.Head.PartRigidbody, bodyHandeler.Head.transform.forward, Vector3.up, 0.1f, 4f);
+
+
+        //일반점프
+        if (!isDuck && !isKickDuck)
+        {
+            bodyHandeler.Chest.PartRigidbody.AddForce(Vector3.up * 2f * JumpForce, ForceMode.VelocityChange);
+            bodyHandeler.Hip.PartRigidbody.AddForce(Vector3.down * 2f * JumpForce, ForceMode.VelocityChange);
+            AlignToVector(bodyHandeler.Chest.PartRigidbody, -bodyHandeler.Chest.transform.up,_moveDir+ new Vector3(0f, -1f, 0f), 0.1f, 10f);
+            AlignToVector(bodyHandeler.Waist.PartRigidbody, -bodyHandeler.Waist.transform.up, _moveDir + new Vector3(0f, -0f, 0f), 0.1f, 10f);
+            AlignToVector(bodyHandeler.Hip.PartRigidbody, -bodyHandeler.Hip.transform.up, _moveDir + new Vector3(0f, 1f, 0f), 0.1f, 10f);
+            
+            //왼팔이 사용중이 아닐때
+            if (true)
+            {
+                AlignToVector(bodyHandeler.LeftArm.PartRigidbody,bodyHandeler.LeftArm.transform.forward, (bodyHandeler.Chest.transform.right + -bodyHandeler.Chest.transform.up) / 4f, 0.1f, 4f);
+                AlignToVector(bodyHandeler.LeftForarm.PartRigidbody, bodyHandeler.LeftForarm.transform.forward, (bodyHandeler.Chest.transform.right + bodyHandeler.Chest.transform.up) / 4f, 0.1f, 4f);
+            }
+            //오른팔이 사용중이 아닐때
+            if (true)
+            {
+                AlignToVector(bodyHandeler.RightArm.PartRigidbody, bodyHandeler.RightArm.transform.forward, (-bodyHandeler.Chest.transform.right + -bodyHandeler.Chest.transform.up) / 4f, 0.1f, 4f);
+                AlignToVector(bodyHandeler.RightForarm.PartRigidbody,bodyHandeler.RightForarm.transform.forward, (-bodyHandeler.Chest.transform.right + bodyHandeler.Chest.transform.up) / 4f, 0.1f, 4f);
+            }
+            AlignToVector(bodyHandeler.LeftThigh.PartRigidbody, bodyHandeler.LeftThigh.transform.forward, bodyHandeler.Hip.transform.forward + bodyHandeler.Hip.transform.up, 0.1f, 4f);
+            AlignToVector(bodyHandeler.LeftLeg.PartRigidbody,bodyHandeler.LeftLeg.transform.forward,bodyHandeler.Hip.transform.forward + -bodyHandeler.Hip.transform.up, 0.1f, 4f);
+            AlignToVector(bodyHandeler.RightThigh.PartRigidbody, bodyHandeler.RightThigh.transform.forward, bodyHandeler.Hip.transform.forward + bodyHandeler.Hip.transform.up, 0.1f, 4f);
+            AlignToVector(bodyHandeler.RightLeg.PartRigidbody, bodyHandeler.RightLeg.transform.forward, bodyHandeler.Hip.transform.forward + -bodyHandeler.Hip.transform.up, 0.1f, 4f);
+        }
+    }
 
 
     private void RunCycleUpdate()
@@ -249,7 +301,90 @@ public class PlayerControll : MonoBehaviour
     }
 
 
+    private void RunCyclePoseArm(Side side, Pose pose)
+    {
+        Vector3 vector = Vector3.zero;
+        Transform partTransform = bodyHandeler.Chest.transform;
+        Transform transform = null;
+        Transform transform2 = null;
+        Rigidbody rigidbody = null;
+        Rigidbody rigidbody2 = null;
+        Rigidbody rigidbody3 = null;
 
+        float armForceCoef = 0.3f;
+        float armForceRunCoef = 0.6f;
+
+
+        switch (side)
+        {
+            case Side.Left:
+                transform = bodyHandeler.LeftArm.transform;
+                transform2 = bodyHandeler.LeftForarm.transform;
+                rigidbody = bodyHandeler.LeftArm.PartRigidbody;
+                rigidbody2 = bodyHandeler.LeftForarm.PartRigidbody;
+                rigidbody3 = bodyHandeler.LeftHand.PartRigidbody;
+                vector = bodyHandeler.Chest.transform.right;
+                break;
+            case Side.Right:
+                transform = bodyHandeler.RightArm.transform;
+                transform2 = bodyHandeler.RightForarm.transform;
+                rigidbody = bodyHandeler.RightArm.PartRigidbody;
+                rigidbody2 = bodyHandeler.RightForarm.PartRigidbody;
+                rigidbody3 = bodyHandeler.RightHand.PartRigidbody;
+                vector = -bodyHandeler.Chest.transform.right;
+                break;
+        }
+        if (!isDuck && !isKickDuck && !isRun)
+        {
+            switch (pose)
+            {
+                case Pose.Bent:
+                    AlignToVector(rigidbody, transform.forward, partTransform.forward + vector, 0.1f, 4f * _applyedForce * armForceCoef);
+                    AlignToVector(rigidbody2, transform2.forward, -_moveDir / 4f, 0.1f, 4f * _applyedForce * armForceCoef);
+                    break;
+                case Pose.Forward:
+                    AlignToVector(rigidbody, transform.forward, _moveDir + -vector, 0.1f, 4f * _applyedForce * armForceCoef);
+                    AlignToVector(rigidbody2, transform2.forward, _moveDir / 4f + -partTransform.forward + -vector, 0.1f, 4f * _applyedForce * armForceCoef);
+                    break;
+                case Pose.Straight:
+                    AlignToVector(rigidbody, transform.forward, partTransform.forward + vector, 0.1f, 4f * _applyedForce * armForceCoef);
+                    AlignToVector(rigidbody2, transform2.forward, partTransform.forward, 0.1f, 4f * _applyedForce * armForceCoef);
+                    break;
+                case Pose.Behind:
+                    AlignToVector(rigidbody, transform.forward, _moveDir, 0.1f, 4f * _applyedForce * armForceCoef);
+                    AlignToVector(rigidbody2, transform2.forward, partTransform.forward, 0.1f, 4f * _applyedForce * armForceCoef);
+                    break;
+            }
+            return;
+        }
+        switch (pose)
+        {
+            case Pose.Bent:
+                AlignToVector(rigidbody, transform.forward, partTransform.forward + vector, 0.1f, 4f * _applyedForce * armForceCoef);
+                AlignToVector(rigidbody2, transform2.forward, -_moveDir, 0.1f, 4f * _applyedForce * armForceCoef);
+                rigidbody.AddForce(-_moveDir * armForceRunCoef, ForceMode.VelocityChange);
+                rigidbody3.AddForce(_moveDir * armForceRunCoef, ForceMode.VelocityChange);
+                break;
+            case Pose.Forward:
+                AlignToVector(rigidbody, transform.forward, _moveDir + -vector, 0.1f, 4f * _applyedForce);
+                AlignToVector(rigidbody2, transform2.forward, _moveDir + -partTransform.forward + -vector, 0.1f, 4f * _applyedForce * armForceCoef);
+                rigidbody.AddForce(-Vector3.up * armForceRunCoef, ForceMode.VelocityChange);
+                rigidbody3.AddForce(Vector3.up * armForceRunCoef, ForceMode.VelocityChange);
+                break;
+            case Pose.Straight:
+                AlignToVector(rigidbody, transform.forward, partTransform.forward + vector, 0.1f, 4f * _applyedForce * armForceCoef);
+                AlignToVector(rigidbody2, transform2.forward, partTransform.forward, 0.1f, 4f * _applyedForce * armForceCoef);
+                rigidbody.AddForce(Vector3.up * armForceRunCoef, ForceMode.VelocityChange);
+                rigidbody2.AddForce(-Vector3.up * armForceRunCoef, ForceMode.VelocityChange);
+                break;
+            case Pose.Behind:
+                AlignToVector(rigidbody, transform.forward, _moveDir, 0.1f, 4f * _applyedForce * armForceCoef);
+                AlignToVector(rigidbody2, transform2.forward, partTransform.forward, 0.1f, 4f * _applyedForce * armForceCoef);
+                rigidbody.AddForce(-Vector3.up * armForceRunCoef, ForceMode.VelocityChange);
+                rigidbody3.AddForce(Vector3.up * armForceRunCoef, ForceMode.VelocityChange);
+                break;
+        }
+    }
 
     private void Move()
     {
@@ -267,6 +402,9 @@ public class PlayerControll : MonoBehaviour
         RunCycleUpdate();
 
         RunCyclePoseBody();
+        RunCyclePoseArm(Side.Left, leftArmPose);
+        RunCyclePoseArm(Side.Right, rightArmPose);
+
         RunCyclePoseLeg(Side.Left, leftLegPose);
         RunCyclePoseLeg(Side.Right, rightLegPose);
 
