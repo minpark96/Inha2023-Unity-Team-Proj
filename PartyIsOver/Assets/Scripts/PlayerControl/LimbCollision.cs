@@ -1,19 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class LimbCollision : MonoBehaviour
-{
-    public PlayerController playerController;
-
-    private void Start()
-    {
-        playerController = GameObject.FindObjectOfType<PlayerController>().GetComponent<PlayerController>();
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        playerController.IsGrounded = true;
-    }
-
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:c6474287dcd1ca8ec68c7ab2b6b11fe4865edb12c5484455f71a514890503db7
+size 433

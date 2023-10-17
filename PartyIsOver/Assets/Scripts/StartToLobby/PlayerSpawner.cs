@@ -1,19 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Photon.Pun;
-
-public class PlayerSpawner : MonoBehaviour
-{
-    public GameObject PlayerPrefabs;
-    public Transform[] SpawnPoints;
-
-    private void Start()
-    {
-        SpawnPoints = GameObject.Find("SpawnPoints").GetComponentsInChildren<Transform>();
-        int randomNumber = Random.Range(0, SpawnPoints.Length);
-
-        PhotonNetwork.Instantiate(PlayerPrefabs.name, SpawnPoints[randomNumber].position, Quaternion.identity);
-    }
-
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:85450a1d77eba07d80b99ec923775341089021dcbe3febf878e90fa6234434b1
+size 525
