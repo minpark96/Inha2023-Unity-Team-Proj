@@ -4456,15 +4456,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb1e2b83e95804b4d9c83e06c51623ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RunSpeed: 0
+  Speed: 0
+  StrafeSpeed: 0
   JumpForce: 0
-  _hips: {fileID: 0}
-  _cameraArm: {fileID: 0}
-  bodyHandeler: {fileID: 0}
-  isGrounded: 0
-  isRun: 0
-  isMove: 0
-  isDuck: 0
+  IsGrounded: 0
 --- !u!1 &529914565
 GameObject:
   m_ObjectHideFlags: 0
@@ -5609,6 +5604,50 @@ SkinnedMeshRenderer:
     m_Center: {x: 0, y: -0.20128758, z: 1.4020786}
     m_Extent: {x: 0.1463609, y: 0.04808168, z: 0.05670786}
   m_DirtyAABB: 0
+--- !u!1 &699283013
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 699283014}
+  - component: {fileID: 699283015}
+  m_Layer: 0
+  m_Name: '@Managers'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &699283014
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 699283013}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.59367806, y: 2.1118765, z: -0.05560701}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &699283015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 699283013}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e7766fb1bdf91a4880c072e77dc5a7a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -25501,15 +25540,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb1e2b83e95804b4d9c83e06c51623ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RunSpeed: 35000
+  Speed: 0
+  StrafeSpeed: 0
   JumpForce: 35000
-  _hips: {fileID: 2594666722529992205}
-  _cameraArm: {fileID: 6804104365043234108}
-  bodyHandeler: {fileID: 0}
-  isGrounded: 0
-  isRun: 0
-  isMove: 0
-  isDuck: 0
+  IsGrounded: 0
 --- !u!114 &2653568215181255327
 MonoBehaviour:
   m_ObjectHideFlags: 0
