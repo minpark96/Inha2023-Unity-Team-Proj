@@ -21,17 +21,15 @@ public class PlayerController : MonoBehaviourPun
     {
         _hipGameObject = GameObject.Find("pelvis");
         _hipRigidbody = _hipGameObject.GetComponent<Rigidbody>();
+
+        //실수를 방지하기 위해서 구독이 두번 들어오는걸 방지
+        Managers.Input.KeyAction -= OnKeyboard;
+        //어떤 키가 눌리면 구독신청 해버림
+        Managers.Input.KeyAction += OnKeyboard;
     }
 
-    private void FixedUpdate()
-    {
-        InputMove();
-        InputJump();
-    }
 
-    
-
-    private void InputMove()
+    private void OnKeyboard()
     {
         if (Input.GetKey(KeyCode.W))
             if (Input.GetKey(KeyCode.LeftShift))
@@ -56,9 +54,7 @@ public class PlayerController : MonoBehaviourPun
                 _hipRigidbody.AddForce(transform.right * StrafeSpeed * 2f);
             else
                 _hipRigidbody.AddForce(transform.right * StrafeSpeed);
-    }
-    private void InputJump()
-    {
+
         if (Input.GetAxis("Jump") > 0)
         {
             if (IsGrounded)
@@ -67,7 +63,9 @@ public class PlayerController : MonoBehaviourPun
                 IsGrounded = false;
             }
         }
+
     }
+
 }
 
 
