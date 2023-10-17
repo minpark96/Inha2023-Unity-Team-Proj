@@ -26,8 +26,12 @@ public class RagdollOnOff : MonoBehaviour
         if(collision.gameObject.tag == "Bullet")
         {
             RagdollModeOn();
-            
         }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        
     }
 
     IEnumerator GetReady()
