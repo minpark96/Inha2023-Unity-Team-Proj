@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Grab : MonoBehaviourPun, IPunObservable
+public class Grab : MonoBehaviourPun
 {
     private GameObject _grabGameObject;
     private Rigidbody _grabRigidbody;
@@ -24,7 +24,7 @@ public class Grab : MonoBehaviourPun, IPunObservable
 
     private void OnTriggerStay(Collider other)
     {
-        if (PV.IsMine) PV.RPC("Grap", RpcTarget.All, other);
+        photonView.RPC("Grap", RpcTarget.All, other);
     }
 
     [PunRPC]
@@ -50,10 +50,5 @@ public class Grab : MonoBehaviourPun, IPunObservable
                 _grabGameObject = null;
             }
         }
-    }
-
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        throw new System.NotImplementedException();
     }
 }

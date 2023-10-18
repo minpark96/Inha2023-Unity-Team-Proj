@@ -54,7 +54,12 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         base.OnCreateRoomFailed(returnCode, message);
         _logText = "Failed to Create room... try again";
         Debug.Log(_logText);
-        CreateRoom();
+        JoinRoom();
+    }
+
+    public void JoinRoom()
+    {
+        PhotonNetwork.JoinRoom("TT_Test Room");
     }
 
     public override void OnJoinedRoom()
