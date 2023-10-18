@@ -17,6 +17,14 @@ namespace Photon.Tutorial
         [SerializeField]
         private byte _maxPlayersPerRoom = 4;
 
+        [Tooltip("The Ui Panel to let the user enter name, connect and play")]
+        [SerializeField]
+        private GameObject _controlPanel;
+
+        [Tooltip("The UI Label to inform the user that the connection is in progress")]
+        [SerializeField]
+        private GameObject _progressLabel;
+
         #endregion
 
         #region Private Fields
@@ -45,7 +53,8 @@ namespace Photon.Tutorial
         /// </summary>
         void Start()
         {
-
+            _progressLabel.SetActive(false);
+            _controlPanel.SetActive(true);
         }
 
         #endregion
@@ -59,6 +68,9 @@ namespace Photon.Tutorial
         /// </summary>
         public void Connect()
         {
+            _progressLabel.SetActive(true);
+            _controlPanel.SetActive(false);
+
             // we check if we are connected or not, we join if we are , else we initiate the connection to the server.
             if (PhotonNetwork.IsConnected)
             {
@@ -87,6 +99,9 @@ namespace Photon.Tutorial
 
         public override void OnDisconnected(DisconnectCause cause)
         {
+            _progressLabel.SetActive(false);
+            _controlPanel.SetActive(true);
+
             Debug.LogWarningFormat("PUN Basics Tutorial/Launcher: OnDisconnected() was called by PUN with reason {0}", cause);
         }
 
