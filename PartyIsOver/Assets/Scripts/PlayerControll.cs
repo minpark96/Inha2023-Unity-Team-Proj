@@ -81,11 +81,24 @@ public class PlayerControll : MonoBehaviour
         Managers.Input.MouseAction -= OnMouseEvent;
         Managers.Input.MouseAction += OnMouseEvent;
 
-        Managers.Input.KeyAction -= Jump;
-        Managers.Input.KeyAction += Jump;
+        Managers.Input.KeyAction -= OnKeyBoardEvent;
+        Managers.Input.KeyAction += OnKeyBoardEvent;
 
     }
 
+
+    void OnKeyBoardEvent()
+    {
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            if (isGrounded)
+            {
+                Jump();
+            }
+        }
+       
+    }
 
 
     void OnMouseEvent(Define.MouseEvent evt)
@@ -168,21 +181,6 @@ public class PlayerControll : MonoBehaviour
         {
             isMove = false;
         }
-
-
-
-
-        if (Input.GetButtonDown("Jump"))
-        {
-            if (isGrounded)
-            {
-                Jump();
-            }
-        }
-
-
-
-
 
     }
 
@@ -383,7 +381,7 @@ public class PlayerControll : MonoBehaviour
         isGrounded = false;
 
 
-        float jumpMoveForce = 1f;
+        float jumpMoveForce = 0.05f;
 
         //움직이는 입력이 있을때
         if (_moveDir != Vector3.zero)
@@ -399,8 +397,8 @@ public class PlayerControll : MonoBehaviour
         //일반점프
         if (!isDuck && !isKickDuck)
         {
-            bodyHandeler.Chest.PartRigidbody.AddForce(Vector3.up * 2f * JumpForce, ForceMode.VelocityChange);
-            bodyHandeler.Hip.PartRigidbody.AddForce(Vector3.down * 2f * JumpForce, ForceMode.VelocityChange);
+            bodyHandeler.Chest.PartRigidbody.AddForce(Vector3.up * 1.7f * JumpForce, ForceMode.VelocityChange);
+            bodyHandeler.Hip.PartRigidbody.AddForce(Vector3.down * 1.7f * JumpForce, ForceMode.VelocityChange);
             AlignToVector(bodyHandeler.Chest.PartRigidbody, -bodyHandeler.Chest.transform.up,_moveDir+ new Vector3(0f, -1f, 0f), 0.1f, 10f);
             AlignToVector(bodyHandeler.Waist.PartRigidbody, -bodyHandeler.Waist.transform.up, _moveDir + new Vector3(0f, -0f, 0f), 0.1f, 10f);
             AlignToVector(bodyHandeler.Hip.PartRigidbody, -bodyHandeler.Hip.transform.up, _moveDir + new Vector3(0f, 1f, 0f), 0.1f, 10f);
