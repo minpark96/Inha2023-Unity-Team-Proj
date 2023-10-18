@@ -8,7 +8,7 @@ public class LimbCollision : MonoBehaviour
 
     private void Start()
     {
-        playerControll = GameObject.FindObjectOfType<PlayerControll>().GetComponent<PlayerControll>();
+         playerControll = GetComponentInParent<PlayerControll>();
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -18,7 +18,7 @@ public class LimbCollision : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("a");
+        Debug.Log("onGround");
         if(!playerControll.isGrounded)
             playerControll.isGrounded = true;
     }

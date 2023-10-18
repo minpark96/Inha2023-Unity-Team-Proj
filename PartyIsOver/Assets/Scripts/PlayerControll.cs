@@ -19,7 +19,9 @@ public class PlayerControll : MonoBehaviour
 
     [SerializeField]
     private BodyHandeler bodyHandeler;
-    
+
+    [SerializeField]
+    private TargetingHandeler targetingHandeler;
 
     public bool isGrounded;
     public bool isRun;
@@ -47,7 +49,9 @@ public class PlayerControll : MonoBehaviour
     Pose leftLegPose;
     Pose rightLegPose;
 
+    Side _readySide = Side.Left;
 
+    InteractableObject target;
     
     
 
@@ -72,6 +76,7 @@ public class PlayerControll : MonoBehaviour
     void Start()
     {
         bodyHandeler = GetComponent<BodyHandeler>();
+        targetingHandeler = GetComponent<TargetingHandeler>();
     }
 
     private void FixedUpdate()
@@ -118,6 +123,14 @@ public class PlayerControll : MonoBehaviour
         }
 
 
+        if(Input.GetMouseButtonDown(0))
+        {
+            Debug.Log("p");
+
+            Punch();
+        }
+
+
     }
 
 
@@ -154,6 +167,161 @@ public class PlayerControll : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
 
+    }
+
+    private void Punch()
+    {
+        //마우스를 클릭한 순간 앞에 오브젝트를 탐색하고
+        targetingHandeler.SearchTarget();
+
+        //일정 시간내에 뗄 경우 펀치를 발사 이때 탐색한 오브젝트가 있을 경우 그 방향으로 펀치 발사
+        if(_readySide == Side.Left)
+        {
+            ArmActionReadying(Side.Left);
+            ArmActionPunching(Side.Left);
+            ArmActionPunchResetting(Side.Left);
+            _readySide = Side.Right;
+        }
+        else
+        {
+            ArmActionReadying(Side.Right);
+            ArmActionPunching(Side.Right);
+            ArmActionPunchResetting(Side.Right);
+
+            _readySide = Side.Left;
+        }
+
+
+        //일정 시간내에 마우스를 떼지 않을 경우 두가지로 분기를 나눔
+        //1.발견한 오브젝트가 있으면 그 방향으로 그랩
+        //2.발견한 오브젝트가 없으면 아무것도 하지 않음
+    }
+
+
+
+    public void ArmActionReadying(Side side)
+    {
+        Transform partTransform = bodyHandeler.Chest.transform;
+        Transform transform = null;
+        Transform transform2 = null;
+        Rigidbody part = null;
+        Rigidbody part2 = null;
+        Vector3 targetVector = Vector3.zero;
+        switch (side)
+        {
+            case Side.Left:
+                transform = bodyHandeler.LeftArm.transform;
+                transform2 = bodyHandeler.LeftForarm.transform;
+                part =bodyHandeler.LeftArm.PartRigidbody;
+                part2 = bodyHandeler.LeftForarm.PartRigidbody;
+                targetVector = bodyHandeler.Chest.transform.right;
+                break;
+            case Side.Right:
+                transform = bodyHandeler.RightArm.transform;
+                transform2 = bodyHandeler.RightForarm.transform;
+                part = bodyHandeler.RightArm.PartRigidbody;
+                part2 = bodyHandeler.RightForarm.PartRigidbody;
+                targetVector = -bodyHandeler.Chest.transform.right;
+                break;
+        }
+        AlignToVector(part, transform.up, targetVector, 0.01f, 20f);
+        AlignToVector(part2, transform2.up, -partTransform.forward, 0.01f, 20f);
+
+    }
+
+    public void ArmActionPunching(Side side)
+    {
+        Transform partTransform = bodyHandeler.Chest.transform;
+        Transform transform = null;
+        Transform transform2 = null;
+        Rigidbody rigidbody = null;
+        Rigidbody rigidbody2 = null;
+        switch (side)
+        {
+            case Side.Left:
+                transform = bodyHandeler.LeftArm.transform;
+                
+                transform2 = bodyHandeler.LeftHand.transform;
+                rigidbody = bodyHandeler.LeftArm.PartRigidbody;
+                rigidbody2 = bodyHandeler.LeftHand.PartRigidbody;
+                //bodyHandeler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+                bodyHandeler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+                bodyHandeler.LeftForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+                break;
+            case Side.Right:
+                transform = bodyHandeler.RightArm.transform;
+              
+                transform2 = bodyHandeler.RightHand.transform;
+                rigidbody = bodyHandeler.RightArm.PartRigidbody;
+                rigidbody2 = bodyHandeler.RightHand.PartRigidbody;
+                //bodyHandeler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+                bodyHandeler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+                bodyHandeler.RightForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+                break;
+        }
+
+        Vector3 zero = Vector3.zero;
+        if (target == null)
+        {
+            zero = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
+            rigidbody.AddForce(-(zero * 20f), ForceMode.VelocityChange);
+            rigidbody2.AddForce(zero * 30f, ForceMode.VelocityChange);
+            return;
+        }
+
+        //타겟있을때
+
+        //zero = Vector3.Normalize(target.cachedCollider.ClosestPoint(transform2.position) - transform2.position);
+        //if (Vector3.Distance(targetingHandeler.upperIntrest.cachedCollider.bounds.center, transform.position) > 1.2f)
+        //{
+
+        //    rigidbody.AddForce(-(zero * 20f), ForceMode.VelocityChange);
+        //    rigidbody2.AddForce(zero * 40f, ForceMode.VelocityChange);
+        //}
+        //else
+        //{
+        //    rigidbody.AddForce(-(zero * 20f), ForceMode.VelocityChange);
+        //    rigidbody2.AddForce(zero * 50f, ForceMode.VelocityChange);
+        //}
+    }
+
+    public void ArmActionPunchResetting(Side side)
+    {
+        Transform partTransform = bodyHandeler.Chest.transform;
+        Transform transform = null;
+        Transform transform2 = null;
+        Rigidbody part = null;
+        Rigidbody part2 = null;
+        Vector3 vector = Vector3.zero;
+        switch (side)
+        {
+            case Side.Left:
+                transform = bodyHandeler.LeftArm.transform;
+                transform2 = bodyHandeler.LeftForarm.transform;
+                part = bodyHandeler.LeftArm.PartRigidbody;
+                part2 = bodyHandeler.LeftForarm.PartRigidbody;
+                vector = bodyHandeler.Chest.transform.right / 2f;
+                //bodyHandeler.LeftArm.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+                //bodyHandeler.LeftForarm.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+                //bodyHandeler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+                bodyHandeler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+                bodyHandeler.LeftForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+                break;
+            case Side.Right:
+                transform = bodyHandeler.RightArm.transform;
+                transform2 = bodyHandeler.RightForarm.transform;
+                part = bodyHandeler.RightArm.PartRigidbody;
+                part2 = bodyHandeler.RightForarm.PartRigidbody;
+                vector = -bodyHandeler.Chest.transform.right / 2f;
+                //bodyHandeler.RightArm.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+                //bodyHandeler.RightForarm.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+                //bodyHandeler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+                bodyHandeler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+                bodyHandeler.RightForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+                break;
+        }
+        AlignToVector(part, transform.forward, vector + -partTransform.up, 0.01f, 2f);
+        AlignToVector(part2, transform2.forward, vector + partTransform.up, 0.01f, 2f);
     }
 
 
@@ -413,6 +581,7 @@ public class PlayerControll : MonoBehaviour
 
     private void RunCyclePoseBody()
     {
+        
         //if (isRun)
         //{
         //    RunSpeed = Mathf.Clamp(RunSpeed += Time.deltaTime, 0f, 1f);

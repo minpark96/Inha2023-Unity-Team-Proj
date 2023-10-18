@@ -14,7 +14,7 @@ public class BodyPart : MonoBehaviour
     private void Awake()
     {
         PartRigidbody = GetComponent<Rigidbody>();
-
+        gameObject.AddComponent<InteractableObject>();
     }
 
 
