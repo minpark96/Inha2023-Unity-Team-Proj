@@ -4,7 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 
-namespace Photon.Test
+namespace Photon.Tutorial
 {
     public class Launcher : MonoBehaviourPunCallbacks
     {
@@ -15,7 +15,7 @@ namespace Photon.Test
         /// </summary>
         [Tooltip("The maximum number of players per room. When a room is full, it can't be joined by new players, and so new room will be created")]
         [SerializeField]
-        private byte maxPlayersPerRoom = 4;
+        private byte _maxPlayersPerRoom = 4;
 
         #endregion
 
@@ -24,7 +24,7 @@ namespace Photon.Test
         /// <summary>
         /// This client's version number. Users are separated from each other by gameVersion (which allows you to make breaking changes).
         /// </summary>
-        string gameVersion = "1";
+        string _gameVersion = "1";
 
         #endregion
 
@@ -69,7 +69,7 @@ namespace Photon.Test
             {
                 // #Critical, we must first and foremost connect to Photon Online Server.
                 PhotonNetwork.ConnectUsingSettings();
-                PhotonNetwork.GameVersion = gameVersion;
+                PhotonNetwork.GameVersion = _gameVersion;
             }
         }
 
@@ -95,7 +95,7 @@ namespace Photon.Test
             Debug.Log("PUN Basics Tutorial/Launcher:OnJoinRandomFailed() was called by PUN. No random room available, so we create one.\nCalling: PhotonNetwork.CreateRoom");
 
             // #Critical: we failed to join a random room, maybe none exists or they are all full. No worries, we create a new room.
-            PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = maxPlayersPerRoom });
+            PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = _maxPlayersPerRoom });
         }
 
         public override void OnJoinedRoom()
