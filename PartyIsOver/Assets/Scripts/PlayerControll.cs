@@ -77,7 +77,66 @@ public class PlayerControll : MonoBehaviour
     {
         bodyHandeler = GetComponent<BodyHandeler>();
         targetingHandeler = GetComponent<TargetingHandeler>();
+
+        Managers.Input.MouseAction -= OnMouseEvent;
+        Managers.Input.MouseAction += OnMouseEvent;
+
+        Managers.Input.KeyAction -= Jump;
+        Managers.Input.KeyAction += Jump;
+
     }
+
+
+
+    void OnMouseEvent(Define.MouseEvent evt)
+    {
+        OnMouseEvent_Idle(evt);
+
+
+        //상태별 마우스 이벤트 추가 예정
+        //switch (State)
+        //{
+        //    case Define.State.Idle:
+        //        OnMouseEvent_Idle(evt);
+        //        break;
+        //    case Define.State.Moving:
+        //        OnMouseEvent_Idle(evt);
+        //        break;
+           
+        //}
+    }
+
+
+    void OnMouseEvent_Idle(Define.MouseEvent evt)
+    {
+
+        switch (evt)
+        {
+            case Define.MouseEvent.PointerDown:
+                {
+
+                }
+                break;
+            case Define.MouseEvent.Press:
+                {
+
+                }
+                break;
+            case Define.MouseEvent.PointerUp:
+                {
+
+                }
+                break;
+            case Define.MouseEvent.Click:
+                {
+                    Punch();
+                }
+                break;
+        }
+    }
+
+
+
 
     private void FixedUpdate()
     {
@@ -118,17 +177,11 @@ public class PlayerControll : MonoBehaviour
             if (isGrounded)
             {
                 Jump();
-                isGrounded = false;
             }
         }
 
 
-        if(Input.GetMouseButtonDown(0))
-        {
-            Debug.Log("p");
 
-            Punch();
-        }
 
 
     }
@@ -327,6 +380,9 @@ public class PlayerControll : MonoBehaviour
 
     private void Jump()
     {
+        isGrounded = false;
+
+
         float jumpMoveForce = 1f;
 
         //움직이는 입력이 있을때
@@ -368,6 +424,30 @@ public class PlayerControll : MonoBehaviour
         }
     }
 
+    private void Move()
+    {
+        if (isRun)
+        {
+            _cycleSpeed = 0.1f;
+        }
+        else
+        {
+            _cycleSpeed = 0.15f;
+        }
+
+
+
+        RunCycleUpdate();
+
+        RunCyclePoseBody();
+        RunCyclePoseArm(Side.Left, leftArmPose);
+        RunCyclePoseArm(Side.Right, rightArmPose);
+
+        RunCyclePoseLeg(Side.Left, leftLegPose);
+        RunCyclePoseLeg(Side.Right, rightLegPose);
+
+
+    }
 
     private void RunCycleUpdate()
     {
@@ -554,30 +634,6 @@ public class PlayerControll : MonoBehaviour
         }
     }
 
-    private void Move()
-    {
-        if (isRun)
-        {
-            _cycleSpeed = 0.1f;
-        }
-        else
-        {
-            _cycleSpeed = 0.15f;
-        }
-
-
-
-        RunCycleUpdate();
-
-        RunCyclePoseBody();
-        RunCyclePoseArm(Side.Left, leftArmPose);
-        RunCyclePoseArm(Side.Right, rightArmPose);
-
-        RunCyclePoseLeg(Side.Left, leftLegPose);
-        RunCyclePoseLeg(Side.Right, rightLegPose);
-
- 
-    }
 
     private void RunCyclePoseBody()
     {
