@@ -45,7 +45,7 @@ namespace Photon.Test
         /// </summary>
         void Start()
         {
-            Connect();
+
         }
 
         #endregion
