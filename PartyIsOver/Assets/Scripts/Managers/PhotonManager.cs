@@ -10,7 +10,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 {
     private readonly string _version = "1.0";
     private string _userID = "Inha";
-    private string _logText;
+    public string _logText;
 
     //네트워크는 언제 실행될지 모르니까 awake에서 실행
     private void Awake()
@@ -62,7 +62,9 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         base.OnJoinedRoom();
         _logText = "OnJoinedRoom";
         Debug.Log(_logText);
-        PhotonNetwork.Instantiate("Ragdoll", Vector3.zero, Quaternion.identity);
+        PhotonNetwork.Instantiate("Player/Ragdoll", Vector3.zero, Quaternion.identity);
+        //Managers.Resource.PhotonNetworkItemInstantiate("Cube");
+
     }
 
     private void OnGUI()

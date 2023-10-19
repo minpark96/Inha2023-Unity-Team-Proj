@@ -1,18 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using Photon.Pun;
-using UnityEngine.UI;
+using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
-public class ConnectToServer : MonoBehaviourPunCallbacks
+public class LoginScene : BaseScene
 {
     public InputField UsernameInput;
     public Text ButtonText;
 
+    // @Scene을 생성하고 LoingScene을 붙혀 사하면 됨
+    protected override void Init()
+    {
+        base.Init();
+
+        SceneType = Define.Scene.Login;
+    }
+
     public void OnClickConnect()
     {
-        if(UsernameInput.text.Length >= 1)
+        if (UsernameInput.text.Length >= 1)
         {
             // 사용자 이름 입력 및 연결중 표시
             PhotonNetwork.NickName = UsernameInput.text; // 사용자 닉네임 노출
@@ -23,13 +31,17 @@ public class ConnectToServer : MonoBehaviourPunCallbacks
 
             // 씬 전환시 필요
             PhotonNetwork.AutomaticallySyncScene = true;
+            
         }
     }
 
+    public override void Clear()
+    {
+        Debug.Log("LoginScene Clear!");
+    }
     public override void OnConnectedToMaster()
     {
-        SceneManager.LoadScene("Lobby");
+        //마스터가 로비 연결
+        Managers.Scene.LoadScene(Define.Scene.Lobby);
     }
-
-
 }
