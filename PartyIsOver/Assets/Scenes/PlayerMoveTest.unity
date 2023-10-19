@@ -4459,6 +4459,7 @@ MonoBehaviour:
   Speed: 0
   StrafeSpeed: 0
   JumpForce: 0
+  TestTag: Item
   IsGrounded: 0
 --- !u!1 &529914565
 GameObject:
@@ -25544,6 +25545,7 @@ MonoBehaviour:
   Speed: 0
   StrafeSpeed: 0
   JumpForce: 35000
+  TestTag: Item
   IsGrounded: 0
 --- !u!114 &2653568215181255327
 MonoBehaviour:

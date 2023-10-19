@@ -39,9 +39,16 @@ MonoBehaviour:
   - DestroySpaceship
   - Fire
   - RespawnSpaceship
+<<<<<<< HEAD
   - UpdateOwner
   - OnTriggerStay
   - OnKeyboard
   DisableAutoOpenWizard: 1
   ShowSettings: 1
+=======
+  - P1GrP2
+  - SyncPosition
+  DisableAutoOpenWizard: 1
+  ShowSettings: 0
+>>>>>>> dbd2cd87ab7f2060627078f41bb9be52f824a119
   DevRegionSetOnce: 1

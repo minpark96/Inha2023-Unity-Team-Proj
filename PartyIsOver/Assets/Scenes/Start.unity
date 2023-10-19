@@ -283,6 +283,53 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 548033817}
   m_CullTransparentMesh: 1
+<<<<<<< HEAD:PartyIsOver/Assets/Scenes/[1] Start.unity
+=======
+--- !u!1 &676439445
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 676439446}
+  - component: {fileID: 676439447}
+  m_Layer: 0
+  m_Name: '@Managers'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &676439446
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 676439445}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 367.37955, y: 192.56567, z: 2.3934412}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &676439447
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 676439445}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e7766fb1bdf91a4880c072e77dc5a7a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+>>>>>>> dbd2cd87ab7f2060627078f41bb9be52f824a119:PartyIsOver/Assets/Scenes/Start.unity
 --- !u!1 &680889736
 GameObject:
   m_ObjectHideFlags: 0
@@ -609,8 +656,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2073681575}
-        m_TargetAssemblyTypeName: ConnectToServer, Assembly-CSharp
+      - m_Target: {fileID: 1853975545}
+        m_TargetAssemblyTypeName: LoginScene, Assembly-CSharp
         m_MethodName: OnClickConnect
         m_Mode: 1
         m_Arguments:
@@ -992,7 +1039,11 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+<<<<<<< HEAD:PartyIsOver/Assets/Scenes/[1] Start.unity
 --- !u!1 &2073681573
+=======
+--- !u!1 &1853975543
+>>>>>>> dbd2cd87ab7f2060627078f41bb9be52f824a119:PartyIsOver/Assets/Scenes/Start.unity
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1000,22 +1051,37 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+<<<<<<< HEAD:PartyIsOver/Assets/Scenes/[1] Start.unity
   - component: {fileID: 2073681574}
   - component: {fileID: 2073681575}
   m_Layer: 0
   m_Name: ConnectToServer
+=======
+  - component: {fileID: 1853975544}
+  - component: {fileID: 1853975545}
+  m_Layer: 0
+  m_Name: '@Scene'
+>>>>>>> dbd2cd87ab7f2060627078f41bb9be52f824a119:PartyIsOver/Assets/Scenes/Start.unity
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+<<<<<<< HEAD:PartyIsOver/Assets/Scenes/[1] Start.unity
 --- !u!4 &2073681574
+=======
+--- !u!4 &1853975544
+>>>>>>> dbd2cd87ab7f2060627078f41bb9be52f824a119:PartyIsOver/Assets/Scenes/Start.unity
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
+<<<<<<< HEAD:PartyIsOver/Assets/Scenes/[1] Start.unity
   m_GameObject: {fileID: 2073681573}
+=======
+  m_GameObject: {fileID: 1853975543}
+>>>>>>> dbd2cd87ab7f2060627078f41bb9be52f824a119:PartyIsOver/Assets/Scenes/Start.unity
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 367.37955, y: 192.56567, z: 2.3934412}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -1024,16 +1090,16 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2073681575
+--- !u!114 &1853975545
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2073681573}
+  m_GameObject: {fileID: 1853975543}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 54bf39d8bd02ae0439d1068c9781eb93, type: 3}
+  m_Script: {fileID: 11500000, guid: edeefd7c36a72c2419cf73ddcf27e297, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   UsernameInput: {fileID: 1423353523}
