@@ -11,6 +11,12 @@ namespace Photon.Tutorial
 {
     public class GameManager : MonoBehaviourPunCallbacks
     {
+        #region Public Fields
+
+        public static GameManager Instance;
+
+        #endregion
+
         #region Photon Callbacks
 
         /// <summary>
@@ -57,6 +63,11 @@ namespace Photon.Tutorial
         #endregion
 
         #region Private Methods
+
+        void Start()
+        {
+            Instance = this;
+        }
 
         void LoadArena()
         {
