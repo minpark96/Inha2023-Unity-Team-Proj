@@ -5645,7 +5645,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 699283013}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5e7766fb1bdf91a4880c072e77dc5a7a, type: 3}
+  m_Script: {fileID: 11500000, guid: 299e6da800c4f59429e7de0bd321bf72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &705507993
@@ -25103,6 +25103,7 @@ GameObject:
   - component: {fileID: 2653568215181255325}
   - component: {fileID: 2653568215181255326}
   - component: {fileID: 2653568215181255327}
+  - component: {fileID: 2653568215181255328}
   m_Layer: 6
   m_Name: Ragdoll2
   m_TagString: Untagged
@@ -25535,7 +25536,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2649834542870219044}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eb1e2b83e95804b4d9c83e06c51623ee, type: 3}
   m_Name: 
@@ -25572,6 +25573,27 @@ MonoBehaviour:
   RightLeg: {fileID: 2800224987189693597}
   RightFoot: {fileID: 5606036378121964917}
   Ball: {fileID: 2801627655295430722}
+--- !u!114 &2653568215181255328
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2649834542870219044}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 163aac5c61a559942a4c0ff8013e0a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RunSpeed: 100
+  JumpForce: 0
+  _hips: {fileID: 2594666722529992205}
+  _cameraArm: {fileID: 6804104365043234108}
+  bodyHandeler: {fileID: 2653568215181255327}
+  isGrounded: 0
+  isRun: 0
+  isMove: 0
+  isDuck: 0
 --- !u!4 &2653577453574409601
 Transform:
   m_ObjectHideFlags: 0
