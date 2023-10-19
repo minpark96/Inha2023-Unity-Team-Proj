@@ -9,6 +9,9 @@ public class Grab : MonoBehaviourPun
     private GameObject _grabGameObject;
     private Rigidbody _grabRigidbody;
 
+    private Vector3 _hipPosition;
+    private Quaternion _hipRotation;
+
     PhotonManager _pm;
 
     private bool _isGrabbing = false;
@@ -51,7 +54,6 @@ public class Grab : MonoBehaviourPun
         {
             if (Input.GetMouseButton(0))
             {
-                Debug.Log("Player 1 has grabbed Player 2!");
                 if (_grabGameObject == null)
                 {
                     _grabGameObject = other.gameObject;

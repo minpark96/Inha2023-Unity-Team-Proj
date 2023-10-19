@@ -38,6 +38,18 @@ public class ResourceManager
         
     }
 
+    public GameObject PhotonNetworkPlayerInstantiate(string path, Transform parent = null)
+    {
+        GameObject prefab = Load<GameObject>($"Player/{path}");
+
+        if (prefab == null)
+        {
+            Debug.Log($"Failed to load prefab : {path}");
+            return null;
+        }
+        return PhotonNetwork.Instantiate($"Player/{path}",Vector3.zero, Quaternion.identity);
+    }
+
     public void Destory(GameObject go)
     {
         if (go == null)

@@ -52,6 +52,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         if(RoomInputField.text.Length >= 1)
         {
             PhotonNetwork.CreateRoom(RoomInputField.text, new RoomOptions() { MaxPlayers = 3 });
+            
         }
     }
 
@@ -125,6 +126,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     public override void OnConnectedToMaster()
     {
+        Debug.Log("1");
         PhotonNetwork.JoinLobby();
     }
 
@@ -187,12 +189,5 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             PlayButton.SetActive(false);
         }
     }
-
-    // 버튼 누를시 인게임 씬으로 이동
-    public void OnClickPlayButton()
-    {
-        PhotonNetwork.LoadLevel("[3] Game");
-    }
-
-
+    
 }

@@ -4,13 +4,13 @@ using UnityEditor;
 using UnityEngine;
 using Photon.Pun;
 
-public class PlayerController : MonoBehaviourPun
+public class PlayerController : MonoBehaviourPunCallbacks, IPunObservable
 {
-    [Header("¾ÕµÚ ¼Óµµ")]
+    [Header("ì•ë’¤ ì†ë„")]
     public float Speed;
-    [Header("ÁÂ¿ì ¼Óµµ")]
+    [Header("ì¢Œìš° ì†ë„")]
     public float StrafeSpeed;
-    [Header("Á¡ÇÁ Èû")]
+    [Header("ì í”„ í˜")]
     public float JumpForce;
 
     public static int LayerCnt = 7;
@@ -18,21 +18,75 @@ public class PlayerController : MonoBehaviourPun
 
     private GameObject _hipGameObject;
     private Rigidbody _hipRigidbody;
+
+    private Vector3 _networkPosition;
+    private Quaternion _networkRotation;
+
     public bool IsGrounded;
+
 
     void Start()
     {
         _hipGameObject = GameObject.Find("pelvis");
         _hipRigidbody = _hipGameObject.GetComponent<Rigidbody>();
 
-        //½Ç¼ö¸¦ ¹æÁöÇÏ±â À§ÇØ¼­ ±¸µ¶ÀÌ µÎ¹ø µé¾î¿À´Â°É ¹æÁö
+        if(!photonView.IsMine)
+            enabled = false;
+
+        //ì‹¤ìˆ˜ë¥¼ ë°©ì§€í•˜ê¸° ìœ„í•´ì„œ êµ¬ë…ì´ ë‘ë²ˆ ë“¤ì–´ì˜¤ëŠ”ê±¸ ë°©ì§€
         Managers.Input.KeyAction -= OnKeyboard;
-        //¾î¶² Å°°¡ ´­¸®¸é ±¸µ¶½ÅÃ» ÇØ¹ö¸²
+        //ì–´ë–¤ í‚¤ê°€ ëˆŒë¦¬ë©´ êµ¬ë…ì‹ ì²­ í•´ë²„ë¦¼
         Managers.Input.KeyAction += OnKeyboard;
         ChangeLayerRecursively(gameObject, LayerCnt++);
         ChangeTagRecursively(gameObject, TestTag);
     }
 
+    void Update()
+    {
+        if(photonView.IsMine)
+        {
+            photonView.RPC("SyncPosition",RpcTarget.Others,transform.position,transform.rotation);
+        }
+        else
+        {
+            transform.position = Vector3.Lerp(transform.position, _networkPosition, Time.deltaTime * 10);
+            transform.rotation = Quaternion.Lerp(transform.rotation, _networkRotation, Time.deltaTime * 10);
+        }
+    }
+
+    [PunRPC]
+    private void SyncPosition(Vector3 position, Quaternion rotation)
+    {
+        _networkPosition = position;
+        _networkRotation = rotation;
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            //ë³´ë‚´ê¸°
+            Debug.Log("ë³´ë‚´ê¸°");
+            stream.SendNext(_hipRigidbody.position);
+            stream.SendNext(_hipRigidbody.rotation);
+        }
+        else
+        {
+            //ë°›ê¸°
+            Debug.Log("ë°›ê¸°");
+            _networkPosition = (Vector3)stream.ReceiveNext();
+            _networkRotation = (Quaternion)stream.ReceiveNext();
+        }
+    }
+
+    public void FiexdUpdate()
+    {
+        if(!photonView.IsMine)
+        {
+            _hipRigidbody.position = Vector3.MoveTowards(_hipRigidbody.position, _networkPosition, Time.fixedDeltaTime);
+            _hipRigidbody.rotation = Quaternion.RotateTowards(_hipRigidbody.rotation, _networkRotation, Time.fixedDeltaTime * 100.0f);
+        }
+    }
 
     private void OnKeyboard()
     {
@@ -93,16 +147,16 @@ public class PlayerController : MonoBehaviourPun
 }
 
 
-#region Ã¢°í
+#region ì°½ê³ 
 /*
  
-Æ÷Åæ ºä¿¡¼­ ½ÌÅ© ÇÑ¹ø Ã£¾Æº¸±â
-ÄÚµå·Î player1¿¡¼­ ¼­¹ö·Î
-¼­¹ö¿¡¼­ player1 player2·Î ¼­·Î °ªÀ» º¸³»ÁÖ´Â ¹æ¹ıÀÌ ÀÖ´Ù
+í¬í†¤ ë·°ì—ì„œ ì‹±í¬ í•œë²ˆ ì°¾ì•„ë³´ê¸°
+ì½”ë“œë¡œ player1ì—ì„œ ì„œë²„ë¡œ
+ì„œë²„ì—ì„œ player1 player2ë¡œ ì„œë¡œ ê°’ì„ ë³´ë‚´ì£¼ëŠ” ë°©ë²•ì´ ìˆë‹¤
 
 
 ------------------------------------------------------------------------------------------------------------------
-ÄÚµå·Î Ãß°¡ ÇØº¼·ÁÇß´Âµ¥ ¿¡·¯°¨
+ì½”ë“œë¡œ ì¶”ê°€ í•´ë³¼ë ¤í–ˆëŠ”ë° ì—ëŸ¬ê°
     private Vector3 _networkPosition;
     private Quaternion _networkRotation;
 

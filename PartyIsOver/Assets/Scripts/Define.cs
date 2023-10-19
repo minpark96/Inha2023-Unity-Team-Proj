@@ -8,8 +8,10 @@ public class Define
     {
         Unknown,
         Login,
+        Start,
         Lobby,
-        Game
+        Game,
     }
 
 }
+

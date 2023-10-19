@@ -63,7 +63,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         _logText = "OnJoinedRoom";
         Debug.Log(_logText);
         PhotonNetwork.Instantiate("Player/Ragdoll", Vector3.zero, Quaternion.identity);
-        Managers.Resource.PhotonNetworkItemInstantiate("Cube");
+        //Managers.Resource.PhotonNetworkItemInstantiate("Cube");
 
     }
 

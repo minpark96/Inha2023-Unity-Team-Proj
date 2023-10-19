@@ -508,6 +508,7 @@ namespace Photon.Pun
         /// </remarks>
         public static bool AutomaticallySyncScene
         {
+            
             get
             {
                 return automaticallySyncScene;
