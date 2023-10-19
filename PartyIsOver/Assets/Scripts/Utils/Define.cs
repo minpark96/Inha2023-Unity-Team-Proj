@@ -5,6 +5,14 @@ using UnityEngine;
 
 public class Define
 {
+    public enum Scene
+    {
+        Unknown,
+        Login,
+        Start,
+        Lobby,
+        Game,
+    }
     public enum WorldObject
     {
         Unknown,
@@ -22,11 +30,6 @@ public class Define
     }
 
     public enum Layer
-    {
-
-    }
-
-    public enum Scene
     {
 
     }

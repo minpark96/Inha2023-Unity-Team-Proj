@@ -325,7 +325,7 @@ public class PlayerControll : MonoBehaviour
         }
         else
         {
-            AlignToVector(bodyHandeler.Head.PartRigidbody, -bodyHandeler.Head.transform.up, _moveDir + new Vector3(0f,0.2f,0f), 0.1f, 2.5f * _applyedForce);
+            /*AlignToVector(bodyHandeler.Head.PartRigidbody, -bodyHandeler.Head.transform.up, _moveDir + new Vector3(0f,0.2f,0f), 0.1f, 2.5f * _applyedForce);
             AlignToVector(bodyHandeler.Head.PartRigidbody, bodyHandeler.Head.transform.forward, Vector3.up, 0.1f, 2.5f * _applyedForce);
             AlignToVector(bodyHandeler.Chest.PartRigidbody, -bodyHandeler.Chest.transform.up, _moveDir, 0.1f, 4f * _applyedForce);
             AlignToVector(bodyHandeler.Chest.PartRigidbody, bodyHandeler.Chest.transform.forward, Vector3.up, 0.1f, 4f * _applyedForce);
@@ -344,7 +344,7 @@ public class PlayerControll : MonoBehaviour
                 AlignToVector(bodyHandeler.RightLeg.PartRigidbody, bodyHandeler.RightLeg.transform.forward, Vector3.up, 0.1f, 3f * _applyedForce);
                 bodyHandeler.RightFoot.PartRigidbody.AddForce(-_counterForce * _applyedForce, ForceMode.VelocityChange);
             }
-            bodyHandeler.Chest.PartRigidbody.AddForce(_counterForce * _applyedForce, ForceMode.VelocityChange);
+            bodyHandeler.Chest.PartRigidbody.AddForce(_counterForce * _applyedForce, ForceMode.VelocityChange);*/
         }
         //bodyHandeler.Ball.PartRigidbody.angularVelocity = Vector3.zero;
     }
