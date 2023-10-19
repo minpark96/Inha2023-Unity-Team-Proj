@@ -181,12 +181,21 @@ public class PlayerControll : MonoBehaviour
                 }
             }
             Move();
+            _idleTimer = 1f + Random.Range(0f, 3f);
         }
         else
         {
             Stand();
+            if (_idleTimer < 30f)
+            {
+                _idleTimer = Mathf.Clamp(_idleTimer + Time.deltaTime, -60f, 30f);
+            }
+
             isMove = false;
         }
+
+        
+ 
 
     }
 
@@ -325,26 +334,26 @@ public class PlayerControll : MonoBehaviour
         }
         else
         {
-            /*AlignToVector(bodyHandeler.Head.PartRigidbody, -bodyHandeler.Head.transform.up, _moveDir + new Vector3(0f,0.2f,0f), 0.1f, 2.5f * _applyedForce);
-            AlignToVector(bodyHandeler.Head.PartRigidbody, bodyHandeler.Head.transform.forward, Vector3.up, 0.1f, 2.5f * _applyedForce);
-            AlignToVector(bodyHandeler.Chest.PartRigidbody, -bodyHandeler.Chest.transform.up, _moveDir, 0.1f, 4f * _applyedForce);
-            AlignToVector(bodyHandeler.Chest.PartRigidbody, bodyHandeler.Chest.transform.forward, Vector3.up, 0.1f, 4f * _applyedForce);
-            AlignToVector(bodyHandeler.Waist.PartRigidbody, -bodyHandeler.Waist.transform.up, _moveDir, 0.1f, 4f * _applyedForce);
-            AlignToVector(bodyHandeler.Waist.PartRigidbody, bodyHandeler.Waist.transform.forward, Vector3.up, 0.1f, 4f * _applyedForce);
-            AlignToVector(bodyHandeler.Hip.PartRigidbody, bodyHandeler.Hip.transform.forward, Vector3.up, 0.1f, 3f * _applyedForce);
-            if (!leftKick)
-            {
-                AlignToVector(bodyHandeler.LeftThigh.PartRigidbody, bodyHandeler.LeftThigh.transform.forward, Vector3.up, 0.1f, 3f * _applyedForce);
-                AlignToVector(bodyHandeler.LeftLeg.PartRigidbody, bodyHandeler.LeftLeg.transform.forward, Vector3.up, 0.1f, 3f * _applyedForce);
-                bodyHandeler.LeftFoot.PartRigidbody.AddForce(-_counterForce * _applyedForce, ForceMode.VelocityChange);
-            }
-            if (!rightKick)
-            {
-                AlignToVector(bodyHandeler.RightThigh.PartRigidbody, bodyHandeler.RightThigh.transform.forward, Vector3.up, 0.1f, 3f * _applyedForce);
-                AlignToVector(bodyHandeler.RightLeg.PartRigidbody, bodyHandeler.RightLeg.transform.forward, Vector3.up, 0.1f, 3f * _applyedForce);
-                bodyHandeler.RightFoot.PartRigidbody.AddForce(-_counterForce * _applyedForce, ForceMode.VelocityChange);
-            }
-            bodyHandeler.Chest.PartRigidbody.AddForce(_counterForce * _applyedForce, ForceMode.VelocityChange);*/
+            AlignToVector(bodyHandeler.Head.PartRigidbody, -bodyHandeler.Head.transform.up, _moveDir + new Vector3(0f, 0.2f, 0f), 0.1f, 2.5f * 1);
+            AlignToVector(bodyHandeler.Head.PartRigidbody, bodyHandeler.Head.transform.forward, Vector3.up, 0.1f, 2.5f * 1);
+            AlignToVector(bodyHandeler.Chest.PartRigidbody, -bodyHandeler.Chest.transform.up, _moveDir, 0.1f, 4f * 1);
+            AlignToVector(bodyHandeler.Chest.PartRigidbody, bodyHandeler.Chest.transform.forward, Vector3.up, 0.1f, 4f * 1);
+            AlignToVector(bodyHandeler.Waist.PartRigidbody, -bodyHandeler.Waist.transform.up, _moveDir, 0.1f, 4f * 1);
+            AlignToVector(bodyHandeler.Waist.PartRigidbody, bodyHandeler.Waist.transform.forward, Vector3.up, 0.1f, 4f * 1);
+            AlignToVector(bodyHandeler.Hip.PartRigidbody, bodyHandeler.Hip.transform.forward, Vector3.up, 0.1f, 3f * 1);
+            //if (!leftKick)
+            //{
+            //    AlignToVector(bodyHandeler.LeftThigh.PartRigidbody, bodyHandeler.LeftThigh.transform.forward, Vector3.up, 0.1f, 3f * _applyedForce);
+            //    AlignToVector(bodyHandeler.LeftLeg.PartRigidbody, bodyHandeler.LeftLeg.transform.forward, Vector3.up, 0.1f, 3f * _applyedForce);
+            //    bodyHandeler.LeftFoot.PartRigidbody.AddForce(-_counterForce * _applyedForce, ForceMode.VelocityChange);
+            //}
+            //if (!rightKick)
+            //{
+            //    AlignToVector(bodyHandeler.RightThigh.PartRigidbody, bodyHandeler.RightThigh.transform.forward, Vector3.up, 0.1f, 3f * _applyedForce);
+            //    AlignToVector(bodyHandeler.RightLeg.PartRigidbody, bodyHandeler.RightLeg.transform.forward, Vector3.up, 0.1f, 3f * _applyedForce);
+            //    bodyHandeler.RightFoot.PartRigidbody.AddForce(-_counterForce * _applyedForce, ForceMode.VelocityChange);
+            //}
+            //bodyHandeler.Chest.PartRigidbody.AddForce(_counterForce * _applyedForce, ForceMode.VelocityChange);
         }
         //bodyHandeler.Ball.PartRigidbody.angularVelocity = Vector3.zero;
     }
