@@ -1,9 +1,7 @@
-using System;
+
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
+
 
 public class PlayerControll : MonoBehaviour
 {
@@ -29,12 +27,19 @@ public class PlayerControll : MonoBehaviour
     public bool isDuck;
     public bool isKickDuck;
 
+    public bool leftGrab;
+    public bool rightGrab;
+    public bool leftKick;
+    public bool rightKick;
+
+
     private Vector3 _moveInput;
     private Vector3 _moveDir;
     private float _rotationSpeed = 10f;
 
 
-
+    private float _idleTimer = 0;
+    private float _punchTimer = 0;
     private float _cycleTimer = 0;
     private float _cycleSpeed;
     private float _applyedForce = 800f;
@@ -42,7 +47,7 @@ public class PlayerControll : MonoBehaviour
     private Vector3 _runVectorForce5 = new Vector3(0f, 0f, 0.4f);
     private Vector3 _runVectorForce10 = new Vector3(0f, 0f, 0.8f);
     private Vector3 _counterForce = new Vector3(0f, 0f, 0.4f);
-    
+    private float _inputSpamForceModifier;
 
     Pose leftArmPose;
     Pose rightArmPose;
@@ -142,7 +147,7 @@ public class PlayerControll : MonoBehaviour
                 break;
             case Define.MouseEvent.Click:
                 {
-                    Punch();
+                    PunchAndGrab();
                 }
                 break;
         }
@@ -160,7 +165,7 @@ public class PlayerControll : MonoBehaviour
             if(!isMove)
             {
                 isMove = true;
-                if (UnityEngine.Random.Range(0, 2) == 1)
+                if (Random.Range(0, 2) == 1)
                 {
                     leftLegPose = Pose.Bent;
                     rightLegPose = Pose.Straight;
@@ -179,6 +184,7 @@ public class PlayerControll : MonoBehaviour
         }
         else
         {
+            Stand();
             isMove = false;
         }
 
@@ -195,6 +201,10 @@ public class PlayerControll : MonoBehaviour
             isRun = true;
         else
             isRun = false;
+
+
+        //_applyedForce = Mathf.Clamp(_applyedForce + Time.deltaTime / 2f, 0.01f, 1f);
+        //_inputSpamForceModifier = Mathf.Clamp(_inputSpamForceModifier + Time.deltaTime / 2f, 0.01f, 1f);
 
         //Ray_1();
     }
@@ -220,7 +230,7 @@ public class PlayerControll : MonoBehaviour
 
     }
 
-    private void Punch()
+    private void PunchAndGrab()
     {
         //마우스를 클릭한 순간 앞에 오브젝트를 탐색하고
         targetingHandeler.SearchTarget();
@@ -228,16 +238,14 @@ public class PlayerControll : MonoBehaviour
         //일정 시간내에 뗄 경우 펀치를 발사 이때 탐색한 오브젝트가 있을 경우 그 방향으로 펀치 발사
         if(_readySide == Side.Left)
         {
-            ArmActionReadying(Side.Left);
-            ArmActionPunching(Side.Left);
-            ArmActionPunchResetting(Side.Left);
+            //Punch2(Side.Left);
+            StartCoroutine("Punch",Side.Left);
             _readySide = Side.Right;
         }
         else
         {
-            ArmActionReadying(Side.Right);
-            ArmActionPunching(Side.Right);
-            ArmActionPunchResetting(Side.Right);
+            StartCoroutine("Punch", Side.Right);
+            //Punch2(Side.Right);
 
             _readySide = Side.Left;
         }
@@ -248,7 +256,98 @@ public class PlayerControll : MonoBehaviour
         //2.발견한 오브젝트가 없으면 아무것도 하지 않음
     }
 
+    IEnumerator Punch(Side side)
+    {
+        while(_punchTimer <= 0.5f)
+        {
+            _punchTimer += Time.deltaTime;
+            if (_punchTimer < 0.1f)
+            {
+                ArmActionReadying(side);
+            }
+            if (_punchTimer >= 0.2f && _punchTimer < 0.3f)
+            {
+                ArmActionPunching(side);
+            }
+            if (_punchTimer >= 0.3f && _punchTimer < 0.5f)
+            {
+                ArmActionPunchResetting(side);
+            }
 
+
+        }
+        _punchTimer = 0f;
+
+        yield return null;
+   
+
+    }
+
+
+    public void Stand()
+    {
+        
+        if (isRun && !leftGrab && !rightGrab)
+        {
+            if (_idleTimer <= 25f)
+            {
+                AlignToVector(bodyHandeler.Head.PartRigidbody, -bodyHandeler.Head.transform.up, _moveDir + new Vector3(0,0.2f,0f), 0.1f, 2.5f * _applyedForce);
+                AlignToVector(bodyHandeler.Head.PartRigidbody, bodyHandeler.Head.transform.forward, Vector3.up, 0.1f, 2.5f * _applyedForce);
+            }
+            if (_idleTimer < 30f)
+            {
+                AlignToVector(bodyHandeler.Chest.PartRigidbody, -bodyHandeler.Chest.transform.up, _moveDir+ Vector3.down, 0.1f, 5f);
+                AlignToVector(bodyHandeler.Waist.PartRigidbody, -bodyHandeler.Waist.transform.up, _moveDir, 0.1f, 5f);
+                AlignToVector(bodyHandeler.Hip.PartRigidbody, -bodyHandeler.Hip.transform.up, Vector3.up +_moveDir, 0.1f, 5f);
+                if (!leftKick)
+                {
+                    AlignToVector(bodyHandeler.LeftThigh.PartRigidbody, bodyHandeler.LeftThigh.transform.forward, bodyHandeler.Hip.transform.forward + bodyHandeler.Hip.transform.up, 0.1f, 8f);
+                    AlignToVector(bodyHandeler.LeftLeg.PartRigidbody, bodyHandeler.LeftLeg.transform.forward, bodyHandeler.Hip.transform.forward + bodyHandeler.Hip.transform.up, 0.1f, 8f);
+                }
+                if (!rightKick)
+                {
+                    AlignToVector(bodyHandeler.RightThigh.PartRigidbody, bodyHandeler.RightThigh.transform.forward, bodyHandeler.Hip.transform.forward + bodyHandeler.Hip.transform.up, 0.1f, 8f);
+                    AlignToVector(bodyHandeler.RightLeg.PartRigidbody, bodyHandeler.RightLeg.transform.forward, bodyHandeler.Hip.transform.forward + bodyHandeler.Hip.transform.up, 0.1f, 8f);
+                }
+                bodyHandeler.Chest.PartRigidbody.AddForce(Vector3.up * 2f, ForceMode.VelocityChange);
+                bodyHandeler.Hip.PartRigidbody.AddForce(Vector3.down * 2f, ForceMode.VelocityChange);
+            }
+            else
+            {
+                if (Random.Range(1, 1000) == 1)
+                {
+                    bodyHandeler.Chest.PartRigidbody.AddForce(new Vector3(Random.Range(-4, 4), Random.Range(-4, 4), Random.Range(-4, 4)), ForceMode.VelocityChange);
+                }
+                AlignToVector(bodyHandeler.Chest.PartRigidbody, bodyHandeler.Chest.transform.forward, bodyHandeler.Waist.transform.forward, 0.1f, 4f);
+                AlignToVector(bodyHandeler.Hip.PartRigidbody, bodyHandeler.Waist.transform.forward, bodyHandeler.Hip.transform.forward, 0.1f, 4f);
+                AlignToVector(bodyHandeler.Hip.PartRigidbody, bodyHandeler.Hip.transform.forward, bodyHandeler.Waist.transform.forward, 0.1f, 4f);
+            }
+        }
+        else
+        {
+            AlignToVector(bodyHandeler.Head.PartRigidbody, -bodyHandeler.Head.transform.up, _moveDir + new Vector3(0f,0.2f,0f), 0.1f, 2.5f * _applyedForce);
+            AlignToVector(bodyHandeler.Head.PartRigidbody, bodyHandeler.Head.transform.forward, Vector3.up, 0.1f, 2.5f * _applyedForce);
+            AlignToVector(bodyHandeler.Chest.PartRigidbody, -bodyHandeler.Chest.transform.up, _moveDir, 0.1f, 4f * _applyedForce);
+            AlignToVector(bodyHandeler.Chest.PartRigidbody, bodyHandeler.Chest.transform.forward, Vector3.up, 0.1f, 4f * _applyedForce);
+            AlignToVector(bodyHandeler.Waist.PartRigidbody, -bodyHandeler.Waist.transform.up, _moveDir, 0.1f, 4f * _applyedForce);
+            AlignToVector(bodyHandeler.Waist.PartRigidbody, bodyHandeler.Waist.transform.forward, Vector3.up, 0.1f, 4f * _applyedForce);
+            AlignToVector(bodyHandeler.Hip.PartRigidbody, bodyHandeler.Hip.transform.forward, Vector3.up, 0.1f, 3f * _applyedForce);
+            if (!leftKick)
+            {
+                AlignToVector(bodyHandeler.LeftThigh.PartRigidbody, bodyHandeler.LeftThigh.transform.forward, Vector3.up, 0.1f, 3f * _applyedForce);
+                AlignToVector(bodyHandeler.LeftLeg.PartRigidbody, bodyHandeler.LeftLeg.transform.forward, Vector3.up, 0.1f, 3f * _applyedForce);
+                bodyHandeler.LeftFoot.PartRigidbody.AddForce(-_counterForce * _applyedForce, ForceMode.VelocityChange);
+            }
+            if (!rightKick)
+            {
+                AlignToVector(bodyHandeler.RightThigh.PartRigidbody, bodyHandeler.RightThigh.transform.forward, Vector3.up, 0.1f, 3f * _applyedForce);
+                AlignToVector(bodyHandeler.RightLeg.PartRigidbody, bodyHandeler.RightLeg.transform.forward, Vector3.up, 0.1f, 3f * _applyedForce);
+                bodyHandeler.RightFoot.PartRigidbody.AddForce(-_counterForce * _applyedForce, ForceMode.VelocityChange);
+            }
+            bodyHandeler.Chest.PartRigidbody.AddForce(_counterForce * _applyedForce, ForceMode.VelocityChange);
+        }
+        //bodyHandeler.Ball.PartRigidbody.angularVelocity = Vector3.zero;
+    }
 
     public void ArmActionReadying(Side side)
     {
@@ -275,8 +374,8 @@ public class PlayerControll : MonoBehaviour
                 targetVector = -bodyHandeler.Chest.transform.right;
                 break;
         }
-        AlignToVector(part, transform.up, targetVector, 0.01f, 20f);
-        AlignToVector(part2, transform2.up, -partTransform.forward, 0.01f, 20f);
+        AlignToVector(part, transform.up, targetVector, 0.01f, 2f);
+        AlignToVector(part2, transform2.up, -partTransform.forward, 0.01f, 2f);
 
     }
 
@@ -315,8 +414,8 @@ public class PlayerControll : MonoBehaviour
         if (target == null)
         {
             zero = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
-            rigidbody.AddForce(-(zero * 20f), ForceMode.VelocityChange);
-            rigidbody2.AddForce(zero * 30f, ForceMode.VelocityChange);
+            rigidbody.AddForce(-(zero * 2f), ForceMode.VelocityChange);
+            rigidbody2.AddForce(zero * 3f, ForceMode.VelocityChange);
             return;
         }
 
@@ -371,8 +470,8 @@ public class PlayerControll : MonoBehaviour
                 bodyHandeler.RightForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
                 break;
         }
-        AlignToVector(part, transform.forward, vector + -partTransform.up, 0.01f, 2f);
-        AlignToVector(part2, transform2.forward, vector + partTransform.up, 0.01f, 2f);
+        AlignToVector(part, transform.forward, vector + -partTransform.up, 0.01f, 0.2f);
+        AlignToVector(part2, transform2.forward, vector + partTransform.up, 0.01f, 0.2f);
     }
 
 
@@ -380,8 +479,8 @@ public class PlayerControll : MonoBehaviour
     {
         isGrounded = false;
 
-
-        float jumpMoveForce = 0.05f;
+        //_applyedForce = 0.2f;
+        float jumpMoveForce = 0.6f * _inputSpamForceModifier    * 10;
 
         //움직이는 입력이 있을때
         if (_moveDir != Vector3.zero)
