@@ -8740,6 +8740,7 @@ MonoBehaviour:
   Speed: 0
   StrafeSpeed: 0
   JumpForce: 0
+  TestTag: Item
   IsGrounded: 0
 --- !u!1 &523823240
 GameObject:
@@ -15358,6 +15359,10 @@ MonoBehaviour:
   isMove: 0
   isDuck: 0
   isKickDuck: 0
+  leftGrab: 0
+  rightGrab: 0
+  leftKick: 0
+  rightKick: 0
 --- !u!114 &985856467
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15417,7 +15422,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 985856465}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.64900017, y: -0.000000029802322, z: 1.474}
+  m_LocalPosition: {x: -4.92, y: -0.000000029802322, z: 1.474}
   m_LocalScale: {x: 1, y: 1.0000002, z: 1.0000002}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -22812,7 +22817,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1401007986}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.59, y: 1.08, z: 3.97}
+  m_LocalPosition: {x: -5.3, y: 1.08, z: 3.97}
   m_LocalScale: {x: 3, y: 2, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -41223,7 +41228,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2649976933566476892}
   m_LocalRotation: {x: -0.5, y: 0.5, z: -0.5, w: 0.5}
-  m_LocalPosition: {x: -1.1249999, y: 0.9888619, z: -0.0008251463}
+  m_LocalPosition: {x: -0.95, y: 0.9888619, z: -0.0008251463}
   m_LocalScale: {x: 1.2999998, y: 1.3, z: 1.2999998}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -41360,7 +41365,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2648250188410213268}
   m_LocalRotation: {x: -0.50000006, y: -0.5, z: 0.49999997, w: 0.5}
-  m_LocalPosition: {x: 1.1249999, y: 0.9888619, z: -0.00082514615}
+  m_LocalPosition: {x: 0.95, y: 0.9888619, z: -0.00082514615}
   m_LocalScale: {x: 1.3, y: 1.3, z: 1.3}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -41375,7 +41380,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2649834542870219044}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.64900017, y: -0.000000029802322, z: -0.000000059604645}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1.0000002, z: 1.0000002}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -41473,6 +41478,10 @@ MonoBehaviour:
   isMove: 0
   isDuck: 0
   isKickDuck: 0
+  leftGrab: 0
+  rightGrab: 0
+  leftKick: 0
+  rightKick: 0
 --- !u!114 &2653568215181255329
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -41630,7 +41639,7 @@ SphereCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.09
-  m_Center: {x: 0, y: 0, z: -0.1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &2675482982836170737
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -41768,7 +41777,7 @@ SphereCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.09
-  m_Center: {x: 0, y: 0, z: 0.1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &2675591024976243570
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -41886,14 +41895,14 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2648250188410213268}
   serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
+  m_Mass: 1.5
+  m_Drag: 0.03
   m_AngularDrag: 0.05
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 3
 --- !u!135 &2675785402846248957
 SphereCollider:
   m_ObjectHideFlags: 0
