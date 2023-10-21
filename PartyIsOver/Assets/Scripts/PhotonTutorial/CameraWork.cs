@@ -17,7 +17,7 @@ namespace Photon.Pun.Demo.PunBasics
     /// </summary>
     public class CameraWork : MonoBehaviour
     {
-        #region Private Fields
+        #region Private Serializable Fields
 
         [Tooltip("The distance in the local x-z plane to the target")]
         [SerializeField]
@@ -38,6 +38,10 @@ namespace Photon.Pun.Demo.PunBasics
         [Tooltip("The Smoothing for the camera to follow the target")]
         [SerializeField]
         private float _smoothSpeed = 0.125f;
+
+        #endregion
+
+        #region Private Fields
 
         // cached transform of the target
         Transform _cameraTransform;

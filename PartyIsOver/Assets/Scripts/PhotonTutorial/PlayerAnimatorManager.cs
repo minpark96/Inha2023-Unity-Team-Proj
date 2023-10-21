@@ -7,10 +7,15 @@ namespace Photon.Tutorial
 {
     public class PlayerAnimatorManager : MonoBehaviourPun
     {
-        #region Private Fields
+        #region Private Serializable Fields
 
         [SerializeField]
         private float _directionDampTime = 0.25f;
+
+        #endregion
+
+        #region Private Fields
+
         private Animator _animator;
 
         #endregion

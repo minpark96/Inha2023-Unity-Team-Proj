@@ -60,8 +60,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 780959176}
   m_LocalRotation: {x: -0.5511754, y: 0.44295105, z: 0.5511754, w: 0.44295105}
-  m_LocalPosition: {x: -0.7182, y: 3.0753, z: 0.059999943}
-  m_LocalScale: {x: 0.01, y: 0.01, z: 5.7556725}
+  m_LocalPosition: {x: -0.7544, y: 3.2395, z: 0.059999943}
+  m_LocalScale: {x: 0.01, y: 0.01, z: 5.4195414}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 107915599}
@@ -156,8 +156,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1595610690}
   m_LocalRotation: {x: -0.5511754, y: 0.44295105, z: 0.5511754, w: 0.44295105}
-  m_LocalPosition: {x: -0.7182, y: 3.0753, z: -0.056}
-  m_LocalScale: {x: 0.01, y: 0.01, z: 5.7556725}
+  m_LocalPosition: {x: -0.7544, y: 3.2395, z: -0.056}
+  m_LocalScale: {x: 0.01, y: 0.01, z: 5.4195414}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 107915599}
@@ -1444,7 +1444,7 @@ GameObject:
   - component: {fileID: 2823610109840534103}
   - component: {fileID: 1909964284708687843}
   - component: {fileID: 1909964284708687845}
-  - component: {fileID: 7732931016434265561}
+  - component: {fileID: -2998316850430851201}
   - component: {fileID: 5424892828822405317}
   m_Layer: 0
   m_Name: My Robot Kyle
@@ -1535,6 +1535,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _beams: {fileID: 107915598}
+  _playerUiPrefab: {fileID: 4146325848199996264, guid: 2ec4fc246d6e9814aae1a939a614ddf2, type: 3}
   Health: 1
 --- !u!114 &1909964284708687843
 MonoBehaviour:
@@ -1552,7 +1553,7 @@ MonoBehaviour:
   _height: 3
   _centerOffset: {x: 0, y: 3, z: 0}
   _followOnStart: 0
-  _smoothSpeed: 0.125
+  _smoothSpeed: 0.3
 --- !u!114 &1909964284708687845
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1573,12 +1574,12 @@ MonoBehaviour:
   observableSearch: 2
   ObservedComponents:
   - {fileID: 2823610109840534103}
-  - {fileID: 7732931016434265561}
+  - {fileID: -2998316850430851201}
   - {fileID: 5424892828822405317}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &7732931016434265561
+--- !u!114 &-2998316850430851201
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1587,13 +1588,30 @@ MonoBehaviour:
   m_GameObject: {fileID: 8321906827011407980}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Script: {fileID: 11500000, guid: 8efc6b1d64977384eb3405357896c656, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SynchronizePosition: 1
-  m_SynchronizeRotation: 1
-  m_SynchronizeScale: 0
-  m_UseLocal: 1
+  m_PositionModel:
+    SynchronizeEnabled: 1
+    TeleportEnabled: 1
+    TeleportIfDistanceGreaterThan: 3
+    InterpolateOption: 4
+    InterpolateMoveTowardsSpeed: 1
+    InterpolateLerpSpeed: 10
+    ExtrapolateOption: 0
+    ExtrapolateSpeed: 1
+    ExtrapolateIncludingRoundTripTime: 1
+    ExtrapolateNumberOfStoredPositions: 1
+  m_RotationModel:
+    SynchronizeEnabled: 1
+    InterpolateOption: 1
+    InterpolateRotateTowardsSpeed: 180
+    InterpolateLerpSpeed: 5
+  m_ScaleModel:
+    SynchronizeEnabled: 0
+    InterpolateOption: 0
+    InterpolateMoveTowardsSpeed: 1
+    InterpolateLerpSpeed: 0
 --- !u!114 &5424892828822405317
 MonoBehaviour:
   m_ObjectHideFlags: 0

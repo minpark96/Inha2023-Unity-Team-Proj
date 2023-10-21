@@ -13,11 +13,20 @@ namespace Photon.Tutorial
     /// </summary>
     public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable
     {
-        #region Private Fields
+        #region Private Serializable Fields
 
         [Tooltip("The Beams GameObject to control")]
         [SerializeField]
         private GameObject _beams;
+
+        [Tooltip("The Player's UI GameObject Prefab")]
+        [SerializeField]
+        private GameObject _playerUiPrefab;
+
+        #endregion
+
+        #region Private Fields
+
         //True, when the user is firing
         bool _isFiring;
 
@@ -77,6 +86,16 @@ namespace Photon.Tutorial
                 Debug.LogError("<Color=Red><a>Missing</a></Color> CameraWork Component on playerPrefab.", this);
             }
 
+            if (_playerUiPrefab != null)
+            {
+                GameObject uiGo = Instantiate(_playerUiPrefab);
+                uiGo.SendMessage("SetTarget", this, SendMessageOptions.RequireReceiver);
+            }
+            else
+            {
+                Debug.LogWarning("<Color=Red><a>Missing</a></Color> PlayerUiPrefab reference on player Prefab.", this);
+            }
+
 #if UNITY_5_4_OR_NEWER
             // Unity 5.4 has a new scene management. register a method to call CalledOnLevelWasLoaded.
             UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
@@ -88,11 +107,6 @@ namespace Photon.Tutorial
         /// </summary>
         void Update()
         {
-            if (photonView.IsMine)
-            {
-                ProcessInputs();
-            }
-
             if (photonView.IsMine)
             {
                 ProcessInputs();
@@ -166,6 +180,9 @@ void OnLevelWasLoaded(int level)
             {
                 transform.position = new Vector3(0f, 5f, 0f);
             }
+
+            GameObject uiGo = Instantiate(this._playerUiPrefab);
+            uiGo.SendMessage("SetTarget", this, SendMessageOptions.RequireReceiver);
         }
 
 #if UNITY_5_4_OR_NEWER
