@@ -49,6 +49,8 @@ public class UI_Base : MonoBehaviour
     protected Image GetImage(int idx) { return Get<Image>(idx); }
 
 
+    //// 버튼과 이벤트 연결시키는 과정 자동화
+    // : AdddUIEvent(건드릴 object, 발생시킬 action, UIEvent 타입)
     public static void AddUIEvent(GameObject go, Action<PointerEventData> action, Define.UIEvent type = Define.UIEvent.Click)
     {
         UI_EventHandler evt = Util.GetOrAddComponent<UI_EventHandler>(go);
