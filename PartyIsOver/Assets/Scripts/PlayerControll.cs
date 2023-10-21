@@ -1,6 +1,7 @@
 
 using System.Collections;
 using UnityEngine;
+using static PlayerControll;
 
 
 public class PlayerControll : MonoBehaviour
@@ -94,6 +95,11 @@ public class PlayerControll : MonoBehaviour
 
     void OnKeyBoardEvent()
     {
+
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            MeowNyangPunch();
+        }
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -239,6 +245,32 @@ public class PlayerControll : MonoBehaviour
 
     }
 
+    private void MeowNyangPunch()
+    {
+        //냥냥 펀치 R키를 누르면 작동
+        StartCoroutine(MeowNyangPunchDelay());
+
+    }
+    IEnumerator MeowNyangPunchDelay()
+    {
+        int _punchcount = 0;
+        while (_punchcount < 5)
+        {
+            if (_readySide == Side.Left)
+            {
+                StartCoroutine(Punch(Side.Left));
+                _readySide = Side.Right;
+            }
+            else
+            {
+                 StartCoroutine(Punch(Side.Right));
+                _readySide = Side.Left;
+            }
+            yield return new WaitForSeconds(0.5f);
+            _punchcount++;
+        }
+    }
+
     private void PunchAndGrab()
     {
         //마우스를 클릭한 순간 앞에 오브젝트를 탐색하고
@@ -282,14 +314,10 @@ public class PlayerControll : MonoBehaviour
             {
                 ArmActionPunchResetting(side);
             }
-
-
         }
         _punchTimer = 0f;
 
         yield return null;
-   
-
     }
 
 
@@ -368,16 +396,17 @@ public class PlayerControll : MonoBehaviour
         Vector3 targetVector = Vector3.zero;
         switch (side)
         {
+            //90도 면 체스트
             case Side.Left:
-                transform = bodyHandeler.LeftArm.transform;
-                transform2 = bodyHandeler.LeftForarm.transform;
+                transform = bodyHandeler.Chest.transform;
+                transform2 = bodyHandeler.Chest.transform;
                 part =bodyHandeler.LeftArm.PartRigidbody;
                 part2 = bodyHandeler.LeftForarm.PartRigidbody;
                 targetVector = bodyHandeler.Chest.transform.right;
                 break;
             case Side.Right:
-                transform = bodyHandeler.RightArm.transform;
-                transform2 = bodyHandeler.RightForarm.transform;
+                transform = bodyHandeler.Chest.transform;
+                transform2 = bodyHandeler.Chest.transform;
                 part = bodyHandeler.RightArm.PartRigidbody;
                 part2 = bodyHandeler.RightForarm.PartRigidbody;
                 targetVector = -bodyHandeler.Chest.transform.right;
@@ -479,8 +508,9 @@ public class PlayerControll : MonoBehaviour
                 bodyHandeler.RightForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
                 break;
         }
-        AlignToVector(part, transform.forward, vector + -partTransform.up, 0.01f, 0.2f);
-        AlignToVector(part2, transform2.forward, vector + partTransform.up, 0.01f, 0.2f);
+        //(부위 이름 팟츠, 방향, 날라갈 방향,안정성?,속도)
+        AlignToVector(part, transform.forward, vector + -partTransform.up, 10f, 100f);
+        AlignToVector(part2, transform2.forward, vector + partTransform.up, 10f, 100f);
     }
 
 

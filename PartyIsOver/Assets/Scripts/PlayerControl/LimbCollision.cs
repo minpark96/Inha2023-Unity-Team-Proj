@@ -18,7 +18,6 @@ public class LimbCollision : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("onGround");
         if(!playerControll.isGrounded)
             playerControll.isGrounded = true;
     }
