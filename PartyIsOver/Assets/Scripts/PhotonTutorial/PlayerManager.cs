@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Photon.Pun;
+using Photon.Pun.Demo.PunBasics;
 
 namespace Photon.Tutorial
 {
@@ -10,8 +11,10 @@ namespace Photon.Tutorial
     /// Player manager.
     /// Handles fire Input and Beams.
     /// </summary>
-    public class PlayerManager : MonoBehaviourPunCallbacks
+    public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable
     {
+        
+
         #region Private Fields
 
         [Tooltip("The Beams GameObject to control")]
@@ -47,11 +50,33 @@ namespace Photon.Tutorial
         }
 
         /// <summary>
+        /// MonoBehaviour method called on GameObject by Unity during initialization phase.
+        /// </summary>
+        void Start()
+        {
+            CameraWork cameraWork = this.gameObject.GetComponent<CameraWork>();
+            if (cameraWork != null)
+            {
+                if (photonView.IsMine)
+                {
+                    cameraWork.OnStartFollowing();
+                }
+            }
+            else
+            {
+                Debug.LogError("<Color=Red><a>Missing</a></Color> CameraWork Component on playerPrefab.", this);
+            }
+        }
+
+        /// <summary>
         /// MonoBehaviour method called on GameObject by Unity on every frame.
         /// </summary>
         void Update()
         {
-            ProcessInputs();
+            if (photonView.IsMine)
+            {
+                ProcessInputs();
+            }
 
             if (photonView.IsMine)
             {
@@ -133,6 +158,26 @@ namespace Photon.Tutorial
                 {
                     _isFiring = false;
                 }
+            }
+        }
+
+        #endregion
+
+        #region IPunObservable implementation
+
+        public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+        {
+            if (stream.IsWriting)
+            {
+                // We own this player: send the others our data
+                stream.SendNext(_isFiring);
+                stream.SendNext(Health);
+            }
+            else
+            {
+                // Network player, receive data
+                this._isFiring = (bool)stream.ReceiveNext();
+                this.Health = (float)stream.ReceiveNext();
             }
         }
 
