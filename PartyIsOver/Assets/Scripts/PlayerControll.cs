@@ -266,7 +266,7 @@ public class PlayerControll : MonoBehaviour
                  StartCoroutine(Punch(Side.Right));
                 _readySide = Side.Left;
             }
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(1f);
             _punchcount++;
         }
     }
@@ -396,7 +396,7 @@ public class PlayerControll : MonoBehaviour
         Vector3 targetVector = Vector3.zero;
         switch (side)
         {
-            //90도 면 체스트
+            //90도 면 체스트 남주 왈 뒤로 가야함 근데 앞으로감 forward 위
             case Side.Left:
                 transform = bodyHandeler.Chest.transform;
                 transform2 = bodyHandeler.Chest.transform;
@@ -412,9 +412,8 @@ public class PlayerControll : MonoBehaviour
                 targetVector = -bodyHandeler.Chest.transform.right;
                 break;
         }
-        AlignToVector(part, transform.up, targetVector, 0.01f, 2f);
-        AlignToVector(part2, transform2.up, -partTransform.forward, 0.01f, 2f);
-
+        AlignToVector(part, -transform.up, targetVector, 0.01f, 2f);
+        AlignToVector(part2, -transform2.up, -partTransform.forward, 0.01f, 2f);
     }
 
     public void ArmActionPunching(Side side)
@@ -484,8 +483,8 @@ public class PlayerControll : MonoBehaviour
         switch (side)
         {
             case Side.Left:
-                transform = bodyHandeler.LeftArm.transform;
-                transform2 = bodyHandeler.LeftForarm.transform;
+                transform = bodyHandeler.Chest.transform;
+                transform2 = bodyHandeler.Chest.transform;
                 part = bodyHandeler.LeftArm.PartRigidbody;
                 part2 = bodyHandeler.LeftForarm.PartRigidbody;
                 vector = bodyHandeler.Chest.transform.right / 2f;
@@ -496,8 +495,8 @@ public class PlayerControll : MonoBehaviour
                 bodyHandeler.LeftForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
                 break;
             case Side.Right:
-                transform = bodyHandeler.RightArm.transform;
-                transform2 = bodyHandeler.RightForarm.transform;
+                transform = bodyHandeler.Chest.transform;
+                transform2 = bodyHandeler.Chest.transform;
                 part = bodyHandeler.RightArm.PartRigidbody;
                 part2 = bodyHandeler.RightForarm.PartRigidbody;
                 vector = -bodyHandeler.Chest.transform.right / 2f;
@@ -513,6 +512,31 @@ public class PlayerControll : MonoBehaviour
         AlignToVector(part2, transform2.forward, vector + partTransform.up, 10f, 100f);
     }
 
+    /*
+    
+    upperArm
+    1.
+    -71/ 13/ -57 L
+    -71 13 -57 R
+    2.
+    -71 15 -57
+    -72 16 64
+
+    Fore
+    1.
+    -110 -87 61
+    -67 -60 -207
+    2.
+    -110 -85 38
+    -67 -59 -207
+    
+    Chest
+    1. 
+    -92 18 -1
+    2. 
+    -92 14 4
+
+     */
 
     private void Jump()
     {
@@ -835,8 +859,6 @@ public class PlayerControll : MonoBehaviour
                 Debug.DrawRay(part.position, alignmentVector * 0.2f, Color.red, 0f, depthTest: false);
                 Debug.DrawRay(part.position, targetVector * 0.2f, Color.green, 0f, depthTest: false);
             }
-
-            
         }
     }
 
