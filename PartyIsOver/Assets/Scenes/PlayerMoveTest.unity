@@ -1461,14 +1461,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 83486392}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 163aac5c61a559942a4c0ff8013e0a41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   RunSpeed: 35000
   JumpForce: 500
-  isPlayer: 0
   _hips: {fileID: 591689919}
   _cameraArm: {fileID: 1035871480}
   bodyHandeler: {fileID: 0}
@@ -41709,7 +41708,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RunSpeed: 35000
   JumpForce: 500
-  isPlayer: 1
   _hips: {fileID: 2594666722529992205}
   _cameraArm: {fileID: 6804104365043234108}
   bodyHandeler: {fileID: 0}
