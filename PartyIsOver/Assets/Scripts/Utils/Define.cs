@@ -13,7 +13,6 @@ public class Define
         Lobby,
         Game,
     }
-
     public enum WorldObject
     {
         Unknown,
@@ -34,8 +33,6 @@ public class Define
     {
 
     }
-
-
 
     public enum Sound
     {
