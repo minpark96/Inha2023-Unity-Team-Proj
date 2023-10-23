@@ -45,6 +45,9 @@ namespace Photon.Tutorial
 
         #region Public Fields
 
+        [Tooltip("The prefab to use for representing the player")]
+        public GameObject PlayerPrefab;
+
         #endregion
 
         #region MonoBehaviour CallBacks
@@ -88,12 +91,14 @@ namespace Photon.Tutorial
             if (PhotonNetwork.IsConnected)
             {
                 // #Critical we need at this point to attempt joining a Random Room. If it fails, we'll get notified in OnJoinRandomFailed() and we'll create one.
+                Debug.Log("PUN Basics Tutorial/Launcher: JoinRandomRoom() was called by PUN");
                 PhotonNetwork.JoinRandomRoom();
             }
             else
             {
                 // #Critical, we must first and foremost connect to Photon Online Server.
                 // keep track of the will to join a room, because when we come back from the game we will get a callback that we are connected, so we need to know what to do then
+                Debug.Log("PUN Basics Tutorial/Launcher: ConnectUsingSettings() was called by PUN");
                 _isConnecting = PhotonNetwork.ConnectUsingSettings();
                 PhotonNetwork.GameVersion = _gameVersion;
             }
@@ -113,6 +118,7 @@ namespace Photon.Tutorial
             if (_isConnecting)
             {
                 // #Critical: The first we try to do is to join a potential existing room. If there is, good, else, we'll be called back with OnJoinRandomFailed()
+                Debug.Log("PUN Basics Tutorial/Launcher: JoinRandomRoom() was called by PUN");
                 PhotonNetwork.JoinRandomRoom();
                 _isConnecting = false;
             }
@@ -139,15 +145,24 @@ namespace Photon.Tutorial
         {
             Debug.Log("PUN Basics Tutorial/Launcher: OnJoinedRoom() called by PUN. Now this client is in a room.");
 
-            if (PhotonNetwork.IsMasterClient)
+            if (PlayerPrefab == null)
             {
-                if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
+                Debug.LogError("<Color=Red><a>Missing</a></Color> playerPrefab Reference. Please set it up in GameObject 'Game Manager'", this);
+            }
+            else
+            {
+                if (!PhotonNetwork.IsMasterClient)
                 {
-                    Debug.Log("We load the 'Game Room' ");
-
-                    // #Critical
-                    // Load the Room Level.
-                    PhotonNetwork.LoadLevel("Game Room");
+                    if (PlayerManager.LocalPlayerInstance == null)
+                    {
+                        Debug.LogFormat("We are Instantiating LocalPlayer from {0}", SceneManagerHelper.ActiveSceneName);
+                        // we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
+                        PhotonNetwork.Instantiate(this.PlayerPrefab.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
+                    }
+                    else
+                    {
+                        Debug.Log("OnJoinedRoom() else" + PlayerManager.LocalPlayerInstance);
+                    }
                 }
             }
         }
