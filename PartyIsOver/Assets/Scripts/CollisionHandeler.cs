@@ -76,7 +76,7 @@ public class CollisionHandeler : MonoBehaviour
                 case InteractableObject.Damage.Punch:
                     {
                         Actor componentInParent = collisionInteractable.GetComponentInParent<Actor>();
-                        contact.thisCollider.attachedRigidbody.AddForce(contact.normal * 25f + Vector3.up * 10f, ForceMode.VelocityChange);
+                        contact.thisCollider.attachedRigidbody.AddForce(contact.normal * 3f + Vector3.up * 2f, ForceMode.VelocityChange);
                         //actor.inputHandler.SetVibration(0.5f, 0f, 0.1f);
                         Debug.Log("damage");
                         break;

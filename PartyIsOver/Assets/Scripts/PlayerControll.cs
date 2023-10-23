@@ -320,14 +320,19 @@ public class PlayerControll : MonoBehaviour
             if (_punchTimer < 0.1f)
             {
                 ArmActionReadying(side);
+
             }
             if (_punchTimer >= 0.2f && _punchTimer < 0.3f)
             {
                 ArmActionPunching(side);
+                yield return null;
+
             }
             if (_punchTimer >= 0.3f && _punchTimer < 0.5f)
             {
                 ArmActionPunchResetting(side);
+
+
             }
         }
         _punchTimer = 0f;
@@ -446,7 +451,7 @@ public class PlayerControll : MonoBehaviour
                 transform2 = bodyHandeler.LeftHand.transform;
                 rigidbody = bodyHandeler.LeftArm.PartRigidbody;
                 rigidbody2 = bodyHandeler.LeftHand.PartRigidbody;
-                //bodyHandeler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+                bodyHandeler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
                 bodyHandeler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
                 bodyHandeler.LeftForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
                 break;
@@ -456,7 +461,7 @@ public class PlayerControll : MonoBehaviour
                 transform2 = bodyHandeler.RightHand.transform;
                 rigidbody = bodyHandeler.RightArm.PartRigidbody;
                 rigidbody2 = bodyHandeler.RightHand.PartRigidbody;
-                //bodyHandeler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+                bodyHandeler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
                 bodyHandeler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
                 bodyHandeler.RightForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
                 break;
@@ -466,8 +471,8 @@ public class PlayerControll : MonoBehaviour
         if (target == null)
         {
             zero = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
-            rigidbody.AddForce(-(zero * 2f), ForceMode.VelocityChange);
-            rigidbody2.AddForce(zero * 3f, ForceMode.VelocityChange);
+            rigidbody.AddForce(-(zero * 4f), ForceMode.VelocityChange);
+            rigidbody2.AddForce(zero * 6f, ForceMode.VelocityChange);
             return;
         }
 
@@ -505,7 +510,7 @@ public class PlayerControll : MonoBehaviour
                 vector = bodyHandeler.Chest.transform.right / 2f;
                 //bodyHandeler.LeftArm.PartInteractable.damageModifier = InteractableObject.Damage.Default;
                 //bodyHandeler.LeftForarm.PartInteractable.damageModifier = InteractableObject.Damage.Default;
-                //bodyHandeler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+                bodyHandeler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
                 bodyHandeler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
                 bodyHandeler.LeftForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
                 break;
@@ -517,7 +522,7 @@ public class PlayerControll : MonoBehaviour
                 vector = -bodyHandeler.Chest.transform.right / 2f;
                 //bodyHandeler.RightArm.PartInteractable.damageModifier = InteractableObject.Damage.Default;
                 //bodyHandeler.RightForarm.PartInteractable.damageModifier = InteractableObject.Damage.Default;
-                //bodyHandeler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+                bodyHandeler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
                 bodyHandeler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
                 bodyHandeler.RightForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
                 break;
