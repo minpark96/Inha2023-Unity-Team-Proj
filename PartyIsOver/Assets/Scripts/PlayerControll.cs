@@ -11,6 +11,8 @@ public class PlayerControll : MonoBehaviour
     public float RunSpeed;
     [Header("¡°«¡ »˚")]
     public float JumpForce;
+    [Header("«Ïµ˘ »˚")]
+    public float headingForce;
 
     [SerializeField]
     private Rigidbody _hips;
@@ -104,7 +106,12 @@ public class PlayerControll : MonoBehaviour
                 Jump();
             }
         }
-       
+
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            Heading();
+        }
+
     }
 
     void OnMouseEvent(Define.MouseEvent evt)
@@ -571,6 +578,7 @@ public class PlayerControll : MonoBehaviour
             bodyHandeler.Chest.PartRigidbody.AddForce(_moveDir * jumpMoveForce, ForceMode.VelocityChange);
             bodyHandeler.Waist.PartRigidbody.AddForce(_moveDir * jumpMoveForce, ForceMode.VelocityChange);
             bodyHandeler.Hip.PartRigidbody.AddForce(_moveDir * jumpMoveForce, ForceMode.VelocityChange);
+            bodyHandeler.Head.PartRigidbody.AddForce(_moveDir * jumpMoveForce, ForceMode.VelocityChange); // √ﬂ∞°
         }
         AlignToVector(bodyHandeler.Head.PartRigidbody, -bodyHandeler.Head.transform.up, _moveDir + new Vector3(0,0.2f,0f), 0.1f, 4f);
         AlignToVector(bodyHandeler.Head.PartRigidbody, bodyHandeler.Head.transform.forward, Vector3.up, 0.1f, 4f);
@@ -581,10 +589,13 @@ public class PlayerControll : MonoBehaviour
         {
             bodyHandeler.Chest.PartRigidbody.AddForce(Vector3.up * 1.7f * JumpForce, ForceMode.VelocityChange);
             bodyHandeler.Hip.PartRigidbody.AddForce(Vector3.down * 1.7f * JumpForce, ForceMode.VelocityChange);
+            bodyHandeler.Waist.PartRigidbody.AddForce(Vector3.up * 1.7f * JumpForce, ForceMode.VelocityChange); // √ﬂ∞°
+
             AlignToVector(bodyHandeler.Chest.PartRigidbody, -bodyHandeler.Chest.transform.up,_moveDir+ new Vector3(0f, -1f, 0f), 0.1f, 10f);
             AlignToVector(bodyHandeler.Waist.PartRigidbody, -bodyHandeler.Waist.transform.up, _moveDir + new Vector3(0f, -0f, 0f), 0.1f, 10f);
             AlignToVector(bodyHandeler.Hip.PartRigidbody, -bodyHandeler.Hip.transform.up, _moveDir + new Vector3(0f, 1f, 0f), 0.1f, 10f);
-            
+            AlignToVector(bodyHandeler.Head.PartRigidbody, -bodyHandeler.Head.transform.up, _moveDir + new Vector3(0, 0.2f, 0f), 0.1f, 4f); // √ﬂ∞°
+
             //øﬁ∆»¿Ã ªÁøÎ¡ﬂ¿Ã æ∆¥“∂ß
             if (true)
             {
@@ -603,6 +614,38 @@ public class PlayerControll : MonoBehaviour
             AlignToVector(bodyHandeler.RightLeg.PartRigidbody, bodyHandeler.RightLeg.transform.forward, bodyHandeler.Hip.transform.forward + -bodyHandeler.Hip.transform.up, 0.1f, 4f);
         }
     }
+
+    private void Heading()
+    {
+        //¿œπ›«Ïµ˘
+        if (!isDuck && !isKickDuck)
+        {
+            bodyHandeler.Head.PartRigidbody.AddForce(-bodyHandeler.Head.transform.up * headingForce, ForceMode.VelocityChange);
+            bodyHandeler.Chest.PartRigidbody.AddForce(-bodyHandeler.Chest.transform.up * headingForce, ForceMode.VelocityChange);
+
+            AlignToVector(bodyHandeler.Head.PartRigidbody, -bodyHandeler.Head.transform.up, _moveDir + new Vector3(0f, 0.2f, 0f), 0.1f, 2.5f * 1);
+            AlignToVector(bodyHandeler.Head.PartRigidbody, bodyHandeler.Head.transform.forward, Vector3.up, 0.1f, 2.5f * 1);
+
+
+            //øﬁ∆»¿Ã ªÁøÎ¡ﬂ¿Ã æ∆¥“∂ß
+            if (true)
+            {
+                AlignToVector(bodyHandeler.LeftArm.PartRigidbody, bodyHandeler.LeftArm.transform.forward, (bodyHandeler.Chest.transform.right + -bodyHandeler.Chest.transform.up) / 4f, 0.1f, 4f);
+                AlignToVector(bodyHandeler.LeftForarm.PartRigidbody, bodyHandeler.LeftForarm.transform.forward, (bodyHandeler.Chest.transform.right + bodyHandeler.Chest.transform.up) / 4f, 0.1f, 4f);
+            }
+            //ø¿∏•∆»¿Ã ªÁøÎ¡ﬂ¿Ã æ∆¥“∂ß
+            if (true)
+            {
+                AlignToVector(bodyHandeler.RightArm.PartRigidbody, bodyHandeler.RightArm.transform.forward, (-bodyHandeler.Chest.transform.right + -bodyHandeler.Chest.transform.up) / 4f, 0.1f, 4f);
+                AlignToVector(bodyHandeler.RightForarm.PartRigidbody, bodyHandeler.RightForarm.transform.forward, (-bodyHandeler.Chest.transform.right + bodyHandeler.Chest.transform.up) / 4f, 0.1f, 4f);
+            }
+            AlignToVector(bodyHandeler.LeftThigh.PartRigidbody, bodyHandeler.LeftThigh.transform.forward, bodyHandeler.Hip.transform.forward + bodyHandeler.Hip.transform.up, 0.1f, 4f);
+            AlignToVector(bodyHandeler.LeftLeg.PartRigidbody, bodyHandeler.LeftLeg.transform.forward, bodyHandeler.Hip.transform.forward + -bodyHandeler.Hip.transform.up, 0.1f, 4f);
+            AlignToVector(bodyHandeler.RightThigh.PartRigidbody, bodyHandeler.RightThigh.transform.forward, bodyHandeler.Hip.transform.forward + bodyHandeler.Hip.transform.up, 0.1f, 4f);
+            AlignToVector(bodyHandeler.RightLeg.PartRigidbody, bodyHandeler.RightLeg.transform.forward, bodyHandeler.Hip.transform.forward + -bodyHandeler.Hip.transform.up, 0.1f, 4f);
+        }
+    }
+
 
     private void Move()
     {
