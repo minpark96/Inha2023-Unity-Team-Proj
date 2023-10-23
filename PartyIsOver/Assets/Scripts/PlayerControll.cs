@@ -210,7 +210,7 @@ public class PlayerControll : MonoBehaviour
 
     private void Update()
     {
-        CursorControll();
+        //CursorControll();
         LookAround();
 
         if (Input.GetKey(KeyCode.LeftShift))
@@ -240,10 +240,14 @@ public class PlayerControll : MonoBehaviour
     //}
     #endregion
 
-
-    private void OnCollisionEnter(Collision collision)
+    private void OnCollisionStay(Collision collision)
     {
+       
+    }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        
     }
 
     private void PunchAndGrab()
@@ -845,22 +849,20 @@ public class PlayerControll : MonoBehaviour
 
 
     // 마우스 컨트롤 온오프
-    private void CursorControll()
-    {
-        if (Input.anyKeyDown)
-        {
-            Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.Locked;
-        }
+    //private void CursorControll()
+    //{
+    //    if (Input.anyKeyDown)
+    //    {
+    //        Cursor.visible = false;
+    //        Cursor.lockState = CursorLockMode.Locked;
+    //    }
 
-        if (!Cursor.visible && Input.GetKeyDown(KeyCode.Escape))
-        {
-            Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.None;
-        }
-
-
-    }
+    //    if (!Cursor.visible && Input.GetKeyDown(KeyCode.Escape))
+    //    {
+    //        Cursor.visible = true;
+    //        Cursor.lockState = CursorLockMode.None;
+    //    }
+    //}
 
 
     private void Heading()
@@ -893,5 +895,7 @@ public class PlayerControll : MonoBehaviour
             AlignToVector(bodyHandeler.RightLeg.PartRigidbody, bodyHandeler.RightLeg.transform.forward, bodyHandeler.Hip.transform.forward + -bodyHandeler.Hip.transform.up, 0.1f, 4f);
         }
     }
+
+
 
 }
