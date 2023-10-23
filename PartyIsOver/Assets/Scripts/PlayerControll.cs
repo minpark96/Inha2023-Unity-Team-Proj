@@ -25,6 +25,8 @@ public class PlayerControll : MonoBehaviour
     [SerializeField]
     private TargetingHandeler targetingHandeler;
 
+    private Actor _actor;
+
     public bool isGrounded;
     public bool isRun;
     public bool isMove;
@@ -82,6 +84,8 @@ public class PlayerControll : MonoBehaviour
     {
         bodyHandeler = GetComponent<BodyHandeler>();
         targetingHandeler = GetComponent<TargetingHandeler>();
+        _actor = GetComponent<Actor>();
+
 
         Managers.Input.MouseAction -= OnMouseEvent;
         Managers.Input.MouseAction += OnMouseEvent;
@@ -164,6 +168,9 @@ public class PlayerControll : MonoBehaviour
     private void FixedUpdate()
     {
         _moveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+
+        if (_actor.actorState == Actor.ActorState.Unconscious)
+            return;
 
         if (_moveInput.magnitude != 0)
         {
@@ -617,6 +624,8 @@ public class PlayerControll : MonoBehaviour
 
     private void Heading()
     {
+        Debug.Log("d");
+
         //일반헤딩
         if (!isDuck && !isKickDuck)
         {

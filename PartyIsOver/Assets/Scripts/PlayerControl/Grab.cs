@@ -67,6 +67,8 @@ public class Grab : MonoBehaviourPun
 
     private void OnTriggerStay(Collider other)
     {
+        Debug.Log("a");
+
         //if (other.gameObject.layer == LayerMask.NameToLayer("Player2"))
         //{
         //    Debug.Log("player2 grab");

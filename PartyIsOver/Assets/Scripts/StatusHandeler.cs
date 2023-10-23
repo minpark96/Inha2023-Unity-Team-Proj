@@ -12,6 +12,9 @@ public class StatusHandeler : MonoBehaviour
 
     public bool invulnerable = false;
 
+    private float _health;
+    public float Health { get { return _health; } set { _health = value; } }
+
     // Start is called before the first frame update
     void Start()
     {
