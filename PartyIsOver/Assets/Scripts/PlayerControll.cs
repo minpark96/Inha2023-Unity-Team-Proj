@@ -154,7 +154,7 @@ public class PlayerControll : MonoBehaviour
                 break;
             case Define.MouseEvent.Click:
                 {
-                    PunchAndGrab();
+                    //PunchAndGrab();
                 }
                 break;
         }

@@ -23,11 +23,14 @@ public class Grab : MonoBehaviourPun
     private ConfigurableJoint _jointRightArm;
     Vector3 targetPosition;
 
+    // 아이템 종류
+    private int _itemType;
+    public float _turnSpeed;
+
     void Start()
     {
-        _grabRigidbody = GetComponent<Rigidbody>();
-
         // 양손 추가
+        _grabRigidbody = Util.FindChild(gameObject, "GreenFistL", true).GetComponent<Rigidbody>();
         _grabRigidbody2 = GameObject.Find("GreenFistR").GetComponent<Rigidbody>();
 
         _jointLeft = GetComponent<ConfigurableJoint>();
@@ -35,50 +38,56 @@ public class Grab : MonoBehaviourPun
 
         _jointLeftArm = GameObject.Find("GreenForeArmL").GetComponent<ConfigurableJoint>();
         _jointRightArm = GameObject.Find("GreenForeArmR").GetComponent<ConfigurableJoint>();
-
-
     }
 
     void Update()
     {
         if(_grabGameObject != null)
         {
+            if (Input.GetMouseButton(0))
+            {
+                if (_itemType == 1)
+                    Item1(_grabGameObject);
+            }
+
+            // 기본 잡기 자세
             targetPosition = _grabGameObject.transform.position;
             _jointLeft.targetPosition = targetPosition + new Vector3(10, -10, 0);
             _jointRight.targetPosition = targetPosition + new Vector3(10, -10, 10);
 
             _jointLeftArm.targetPosition = targetPosition;
             _jointRightArm.targetPosition = targetPosition;
-
             
             _jointLeftArm.GetComponent<Rigidbody>().AddForce(new Vector3(0, 2.5f, 0));
             _jointRightArm.GetComponent<Rigidbody>().AddForce(new Vector3(0, 2.5f, 0));
+
+           
         }
     }
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Player2"))
-        {
-            Debug.Log("player2 grab");
-            if (Input.GetMouseButton(0))
-            {
-                if (_grabGameObject == null)
-                {
-                    _grabGameObject = other.gameObject;
+        //if (other.gameObject.layer == LayerMask.NameToLayer("Player2"))
+        //{
+        //    Debug.Log("player2 grab");
+        //    if (Input.GetMouseButton(0))
+        //    {
+        //        if (_grabGameObject == null)
+        //        {
+        //            _grabGameObject = other.gameObject;
 
-                    _gameObjectJoint = _grabGameObject.AddComponent<FixedJoint>();
-                    _gameObjectJoint.connectedBody = _grabRigidbody;
-                    _gameObjectJoint.breakForce = 9001;
-                }
-            }
-            else if (_grabGameObject != null)
-            {
-                Destroy(_grabGameObject.GetComponent<FixedJoint>());
-                _gameObjectJoint = null;
-                _grabGameObject = null;
-            }
-        }
+        //            _gameObjectJoint = _grabGameObject.AddComponent<FixedJoint>();
+        //            _gameObjectJoint.connectedBody = _grabRigidbody;
+        //            _gameObjectJoint.breakForce = 9001;
+        //        }
+        //    }
+        //    else if (_grabGameObject != null)
+        //    {
+        //        Destroy(_grabGameObject.GetComponent<FixedJoint>());
+        //        _gameObjectJoint = null;
+        //        _grabGameObject = null;
+        //    }
+        //}
 
 
         // 양손 추가
@@ -116,7 +125,7 @@ public class Grab : MonoBehaviourPun
                     _gameObjectJointRight.breakForce = 9001;
                 }
             }
-            //놓기
+            // 놓기
             else if (Input.GetKey(KeyCode.R))
             {
                 Debug.Log("놨다");
@@ -127,6 +136,29 @@ public class Grab : MonoBehaviourPun
 
                 _grabGameObject = null;
             }
+
+            // 아이템 종류 식별
+            if(other.name == "Item1")
+            {
+                _itemType = 1;
+            }
+
         }
+    }
+
+
+    private void Item1(GameObject grabGameObj)
+    {
+        Debug.Log("CLicked");
+
+        //_jointLeftArm.GetComponent<Rigidbody>().AddForce(new Vector3(0, 2.5f, 0));
+        //_jointRightArm.GetComponent<Rigidbody>().AddForce(new Vector3(0, 2.5f, 0));
+
+        Vector3 center = GameObject.Find("GreenHip").GetComponent<Transform>().position;
+
+        grabGameObj.transform.RotateAround(center, Vector3.up, _turnSpeed);
+
+        GameObject hip = Util.FindChild(gameObject, "pelvis", true);
+        hip.GetComponent<ConfigurableJoint>().targetPosition = grabGameObj.transform.position;
     }
 }
