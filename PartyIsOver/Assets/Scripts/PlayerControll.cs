@@ -1,6 +1,8 @@
 
 using System.Collections;
 using UnityEngine;
+using static PlayerControll;
+using static UnityEngine.UI.Image;
 
 
 public class PlayerControll : MonoBehaviour
@@ -36,6 +38,7 @@ public class PlayerControll : MonoBehaviour
     private Vector3 _moveInput;
     private Vector3 _moveDir;
     private float _rotationSpeed = 10f;
+    private bool _isCoroutineRunning = false;
 
 
     private float _idleTimer = 0;
@@ -49,6 +52,7 @@ public class PlayerControll : MonoBehaviour
     private Vector3 _counterForce = new Vector3(0f, 0f, 0.4f);
     private float _inputSpamForceModifier;
 
+
     Pose leftArmPose;
     Pose rightArmPose;
     Pose leftLegPose;
@@ -57,9 +61,6 @@ public class PlayerControll : MonoBehaviour
     Side _readySide = Side.Left;
 
     InteractableObject target;
-    
-    
-
 
     public enum Side
     {
@@ -75,9 +76,6 @@ public class PlayerControll : MonoBehaviour
         Behind = 3
     }
 
-
-
-
     void Start()
     {
         bodyHandeler = GetComponent<BodyHandeler>();
@@ -91,9 +89,13 @@ public class PlayerControll : MonoBehaviour
 
     }
 
-
     void OnKeyBoardEvent()
     {
+
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            MeowNyangPunch();
+        }
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -104,7 +106,6 @@ public class PlayerControll : MonoBehaviour
         }
        
     }
-
 
     void OnMouseEvent(Define.MouseEvent evt)
     {
@@ -124,10 +125,8 @@ public class PlayerControll : MonoBehaviour
         //}
     }
 
-
     void OnMouseEvent_Idle(Define.MouseEvent evt)
     {
-
         switch (evt)
         {
             case Define.MouseEvent.PointerDown:
@@ -150,11 +149,10 @@ public class PlayerControll : MonoBehaviour
                     PunchAndGrab();
                 }
                 break;
+
         }
+
     }
-
-
-
 
     private void FixedUpdate()
     {
@@ -220,17 +218,21 @@ public class PlayerControll : MonoBehaviour
 
 
     #region 기즈모
-    //private Ray ray;
+    private Rigidbody ray;
 
-    //private void OnDrawGizmos()
-    //{
-    //    Debug.DrawRay(ray.origin, ray.direction * 10f, Color.red);
-    //}
-    //void Ray_1()
-    //{
-    //    ray.origin = _hips.transform.position;
-    //    ray.direction = -_hips.transform.right;
-    //}
+    //Vector3 direction = Vector3.forward;
+
+    private void OnDrawGizmos()
+    {
+        //Debug.DrawRay(bodyHandeler.LeftArm.PartRigidbody.position, -bodyHandeler.Chest.transform.up * 10f, Color.red);
+        //Debug.DrawRay(bodyHandeler.RightArm.PartRigidbody.position, -bodyHandeler.Chest.transform.up * 10f, Color.red);
+    }
+    /*void Ray_1()
+    {
+        
+        ray.origin = _hips.transform.position;
+        ray.direction = -_hips.transform.right;
+    }*/
     #endregion
 
 
@@ -239,27 +241,72 @@ public class PlayerControll : MonoBehaviour
 
     }
 
+    private void MeowNyangPunch()
+    {
+        //냥냥 펀치 R키를 누르면 작동
+        StartCoroutine(MeowNyangPunchDelay());
+
+    }
+    IEnumerator MeowNyangPunchDelay()
+    {
+        int _punchcount = 0;
+        while (_punchcount < 5)
+        {
+            if (_readySide == Side.Left)
+            {
+                StartCoroutine(Punch(Side.Left));
+                _readySide = Side.Right;
+            }
+            else
+            {
+                 StartCoroutine(Punch(Side.Right));
+                _readySide = Side.Left;
+            }
+            yield return new WaitForSeconds(1f);
+            _punchcount++;
+        }
+    }
+
+
+    IEnumerator PunchWithDelay(Side side, float delay)
+    {
+        //광클 막기
+        _isCoroutineRunning = true;
+
+        // 펀치 시작
+        StartCoroutine(Punch(side));
+
+        // 딜레이 시간만큼 대기
+        yield return new WaitForSeconds(delay);
+
+        _isCoroutineRunning = false;
+
+        
+    }
+
     private void PunchAndGrab()
     {
         //마우스를 클릭한 순간 앞에 오브젝트를 탐색하고
         targetingHandeler.SearchTarget();
 
-        //일정 시간내에 뗄 경우 펀치를 발사 이때 탐색한 오브젝트가 있을 경우 그 방향으로 펀치 발사
-        if(_readySide == Side.Left)
+        if(!_isCoroutineRunning)
         {
-            //Punch2(Side.Left);
-            StartCoroutine("Punch",Side.Left);
-            _readySide = Side.Right;
+            //일정 시간내에 뗄 경우 펀치를 발사 이때 탐색한 오브젝트가 있을 경우 그 방향으로 펀치 발사
+            if (_readySide == Side.Left)
+            {
+                //Punch2(Side.Left);
+                StartCoroutine(PunchWithDelay(Side.Left, 0.5f));
+                _readySide = Side.Right;
+            }
+            else
+            {
+                StartCoroutine(PunchWithDelay(Side.Right, 0.5f));
+                //Punch2(Side.Right);
+
+                _readySide = Side.Left;
+            }
         }
-        else
-        {
-            StartCoroutine("Punch", Side.Right);
-            //Punch2(Side.Right);
-
-            _readySide = Side.Left;
-        }
-
-
+        
         //일정 시간내에 마우스를 떼지 않을 경우 두가지로 분기를 나눔
         //1.발견한 오브젝트가 있으면 그 방향으로 그랩
         //2.발견한 오브젝트가 없으면 아무것도 하지 않음
@@ -282,14 +329,9 @@ public class PlayerControll : MonoBehaviour
             {
                 ArmActionPunchResetting(side);
             }
-
-
         }
         _punchTimer = 0f;
-
         yield return null;
-   
-
     }
 
 
@@ -368,23 +410,24 @@ public class PlayerControll : MonoBehaviour
         Vector3 targetVector = Vector3.zero;
         switch (side)
         {
+            //90도 면 체스트 남주 왈 뒤로 가야함 근데 앞으로감 forward 위
             case Side.Left:
-                transform = bodyHandeler.LeftArm.transform;
-                transform2 = bodyHandeler.LeftForarm.transform;
-                part =bodyHandeler.LeftArm.PartRigidbody;
+                transform = bodyHandeler.Chest.transform;
+                transform2 = bodyHandeler.Chest.transform;
+                part = bodyHandeler.LeftArm.PartRigidbody;
                 part2 = bodyHandeler.LeftForarm.PartRigidbody;
                 targetVector = bodyHandeler.Chest.transform.right;
                 break;
             case Side.Right:
-                transform = bodyHandeler.RightArm.transform;
-                transform2 = bodyHandeler.RightForarm.transform;
+                transform = bodyHandeler.Chest.transform;
+                transform2 = bodyHandeler.Chest.transform;
                 part = bodyHandeler.RightArm.PartRigidbody;
                 part2 = bodyHandeler.RightForarm.PartRigidbody;
                 targetVector = -bodyHandeler.Chest.transform.right;
                 break;
         }
-        AlignToVector(part, transform.up, targetVector, 0.01f, 2f);
-        AlignToVector(part2, transform2.up, -partTransform.forward, 0.01f, 2f);
+        AlignToVector(part, -transform.up, targetVector, 0.01f, 20f);
+        AlignToVector(part2, -transform2.up, -partTransform.forward, 0.01f, 20f);
 
     }
 
@@ -455,8 +498,8 @@ public class PlayerControll : MonoBehaviour
         switch (side)
         {
             case Side.Left:
-                transform = bodyHandeler.LeftArm.transform;
-                transform2 = bodyHandeler.LeftForarm.transform;
+                transform = bodyHandeler.Chest.transform;
+                transform2 = bodyHandeler.Chest.transform;
                 part = bodyHandeler.LeftArm.PartRigidbody;
                 part2 = bodyHandeler.LeftForarm.PartRigidbody;
                 vector = bodyHandeler.Chest.transform.right / 2f;
@@ -467,8 +510,8 @@ public class PlayerControll : MonoBehaviour
                 bodyHandeler.LeftForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
                 break;
             case Side.Right:
-                transform = bodyHandeler.RightArm.transform;
-                transform2 = bodyHandeler.RightForarm.transform;
+                transform = bodyHandeler.Chest.transform;
+                transform2 = bodyHandeler.Chest.transform;
                 part = bodyHandeler.RightArm.PartRigidbody;
                 part2 = bodyHandeler.RightForarm.PartRigidbody;
                 vector = -bodyHandeler.Chest.transform.right / 2f;
@@ -479,10 +522,36 @@ public class PlayerControll : MonoBehaviour
                 bodyHandeler.RightForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
                 break;
         }
-        AlignToVector(part, transform.forward, vector + -partTransform.up, 0.01f, 0.2f);
-        AlignToVector(part2, transform2.forward, vector + partTransform.up, 0.01f, 0.2f);
+        //(부위 이름 팟츠, 방향, 날라갈 방향,안정성?,속도)
+        AlignToVector(part, transform.forward, vector + -partTransform.up, 0.01f, 2f);
+        AlignToVector(part2, transform2.forward, vector + partTransform.up, 0.01f, 2f);
     }
 
+    /*
+    
+    upperArm
+    1.
+    -71/ 13/ -57 L
+    -71 13 -57 R
+    2.
+    -71 15 -57
+    -72 16 64
+
+    Fore
+    1.
+    -110 -87 61
+    -67 -60 -207
+    2.
+    -110 -85 38
+    -67 -59 -207
+    
+    Chest
+    1. 
+    -92 18 -1
+    2. 
+    -92 14 4
+
+     */
 
     private void Jump()
     {
@@ -654,7 +723,6 @@ public class PlayerControll : MonoBehaviour
         }
     }
 
-
     private void RunCyclePoseArm(Side side, Pose pose)
     {
         Vector3 vector = Vector3.zero;
@@ -667,7 +735,6 @@ public class PlayerControll : MonoBehaviour
 
         float armForceCoef = 0.3f;
         float armForceRunCoef = 0.6f;
-
 
         switch (side)
         {
@@ -805,8 +872,6 @@ public class PlayerControll : MonoBehaviour
                 Debug.DrawRay(part.position, alignmentVector * 0.2f, Color.red, 0f, depthTest: false);
                 Debug.DrawRay(part.position, targetVector * 0.2f, Color.green, 0f, depthTest: false);
             }
-
-            
         }
     }
 
