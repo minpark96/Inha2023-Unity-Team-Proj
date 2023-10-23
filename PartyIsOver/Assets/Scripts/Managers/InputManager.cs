@@ -15,6 +15,9 @@ public class InputManager
 
     public void OnUpdate()
     {
+        // UI를 클릭할 때는 캐릭터가 움직이지 않게 함
+        if (EventSystem.current.IsPointerOverGameObject()) 
+            return; 
 
         if (Input.anyKey && KeyAction != null)
             KeyAction.Invoke();
