@@ -30,7 +30,7 @@ public class Grab : MonoBehaviourPun
     void Start()
     {
         // 양손 추가
-        _grabRigidbody = Util.FindChild(gameObject, "GreenFistL", true).GetComponent<Rigidbody>();
+        _grabRigidbody = GetComponent<Rigidbody>();
         _grabRigidbody2 = GameObject.Find("GreenFistR").GetComponent<Rigidbody>();
 
         _jointLeft = GetComponent<ConfigurableJoint>();
@@ -44,7 +44,7 @@ public class Grab : MonoBehaviourPun
     {
         if(_grabGameObject != null)
         {
-            if (Input.GetMouseButton(0))
+            if (Input.GetMouseButton(1))
             {
                 if (_itemType == 1)
                     Item1(_grabGameObject);
@@ -151,14 +151,14 @@ public class Grab : MonoBehaviourPun
     {
         Debug.Log("CLicked");
 
-        //_jointLeftArm.GetComponent<Rigidbody>().AddForce(new Vector3(0, 2.5f, 0));
-        //_jointRightArm.GetComponent<Rigidbody>().AddForce(new Vector3(0, 2.5f, 0));
+        _jointLeftArm.GetComponent<Rigidbody>().AddForce(new Vector3(0, 2.5f, 0));
+        _jointRightArm.GetComponent<Rigidbody>().AddForce(new Vector3(0, 2.5f, 0));
 
         Vector3 center = GameObject.Find("GreenHip").GetComponent<Transform>().position;
 
         grabGameObj.transform.RotateAround(center, Vector3.up, _turnSpeed);
 
-        GameObject hip = Util.FindChild(gameObject, "pelvis", true);
-        hip.GetComponent<ConfigurableJoint>().targetPosition = grabGameObj.transform.position;
+        //GameObject hip = Util.FindChild(gameObject, "pelvis", true);
+        //hip.GetComponent<ConfigurableJoint>().targetPosition = grabGameObj.transform.position;
     }
 }

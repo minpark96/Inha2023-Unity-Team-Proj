@@ -453,7 +453,7 @@ public class PlayerControll : MonoBehaviour
                 transform2 = bodyHandeler.LeftHand.transform;
                 rigidbody = bodyHandeler.LeftArm.PartRigidbody;
                 rigidbody2 = bodyHandeler.LeftHand.PartRigidbody;
-                //bodyHandeler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+                bodyHandeler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
                 bodyHandeler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
                 bodyHandeler.LeftForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
                 break;
@@ -463,7 +463,7 @@ public class PlayerControll : MonoBehaviour
                 transform2 = bodyHandeler.RightHand.transform;
                 rigidbody = bodyHandeler.RightArm.PartRigidbody;
                 rigidbody2 = bodyHandeler.RightHand.PartRigidbody;
-                //bodyHandeler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+                bodyHandeler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
                 bodyHandeler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
                 bodyHandeler.RightForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
                 break;
