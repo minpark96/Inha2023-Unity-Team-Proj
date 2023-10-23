@@ -224,8 +224,8 @@ public class PlayerControll : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        Debug.DrawRay(bodyHandeler.LeftArm.PartRigidbody.position, -bodyHandeler.Chest.transform.up * 10f, Color.red);
-        Debug.DrawRay(bodyHandeler.RightArm.PartRigidbody.position, -bodyHandeler.Chest.transform.up * 10f, Color.red);
+        //Debug.DrawRay(bodyHandeler.LeftArm.PartRigidbody.position, -bodyHandeler.Chest.transform.up * 10f, Color.red);
+        //Debug.DrawRay(bodyHandeler.RightArm.PartRigidbody.position, -bodyHandeler.Chest.transform.up * 10f, Color.red);
     }
     /*void Ray_1()
     {
