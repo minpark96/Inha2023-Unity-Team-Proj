@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class TargetingHandeler : MonoBehaviour
+public class TargetingHandler : MonoBehaviour
 {
     public float detectionRadius = 3f;
     public LayerMask layerMask;
