@@ -1715,6 +1715,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
+  PartInteractable: {fileID: 0}
 --- !u!153 &132784220
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -3870,6 +3871,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
+  PartInteractable: {fileID: 0}
 --- !u!153 &219440398
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -5808,6 +5810,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
+  PartInteractable: {fileID: 0}
 --- !u!136 &303983203
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -6075,6 +6078,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
+  PartInteractable: {fileID: 0}
 --- !u!153 &333311539
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -6909,6 +6913,74 @@ SkinnedMeshRenderer:
     m_Center: {x: 0, y: -0.12658188, z: 1.4247853}
     m_Extent: {x: 0.22844185, y: 0.12243526, z: 0.13484311}
   m_DirtyAABB: 0
+--- !u!1 &394292647
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 394292650}
+  - component: {fileID: 394292649}
+  - component: {fileID: 394292648}
+  m_Layer: 0
+  m_Name: EventSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &394292648
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 394292647}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SendPointerHoverToParent: 1
+  m_HorizontalAxis: Horizontal
+  m_VerticalAxis: Vertical
+  m_SubmitButton: Submit
+  m_CancelButton: Cancel
+  m_InputActionsPerSecond: 10
+  m_RepeatDelay: 0.5
+  m_ForceModuleActive: 0
+--- !u!114 &394292649
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 394292647}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_FirstSelected: {fileID: 0}
+  m_sendNavigationEvents: 1
+  m_DragThreshold: 10
+--- !u!4 &394292650
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 394292647}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &410222202
 GameObject:
   m_ObjectHideFlags: 0
@@ -7901,6 +7973,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
+  PartInteractable: {fileID: 0}
 --- !u!153 &463397674
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -8356,6 +8429,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
+  PartInteractable: {fileID: 0}
 --- !u!153 &481943322
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -13120,6 +13194,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
+  PartInteractable: {fileID: 0}
 --- !u!153 &832090403
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -15350,6 +15425,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RunSpeed: 35000
   JumpForce: 500
+  headingForce: 0
   _hips: {fileID: 303983201}
   _cameraArm: {fileID: 0}
   bodyHandeler: {fileID: 0}
@@ -15986,6 +16062,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
+  PartInteractable: {fileID: 0}
 --- !u!153 &1030433080
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -18474,6 +18551,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
+  PartInteractable: {fileID: 0}
 --- !u!135 &1137762411
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -22383,6 +22461,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
+  PartInteractable: {fileID: 0}
 --- !u!153 &1384021363
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -23330,6 +23409,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
+  PartInteractable: {fileID: 0}
 --- !u!153 &1438545481
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -29128,6 +29208,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
+  PartInteractable: {fileID: 0}
 --- !u!153 &1841355207
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -30026,6 +30107,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
+  PartInteractable: {fileID: 0}
 --- !u!153 &1896669111
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -30254,6 +30336,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
+  PartInteractable: {fileID: 0}
 --- !u!153 &1911757836
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -31472,6 +31555,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
+  PartInteractable: {fileID: 0}
 --- !u!153 &2006671363
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -31772,6 +31856,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
+  PartInteractable: {fileID: 0}
 --- !u!153 &2021874546
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -32450,6 +32535,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
+  PartInteractable: {fileID: 0}
 --- !u!153 &2079741056
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -41468,7 +41554,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   RunSpeed: 35000
-  JumpForce: 500
+  JumpForce: 100
+  headingForce: 0
   _hips: {fileID: 2594666722529992205}
   _cameraArm: {fileID: 6804104365043234108}
   bodyHandeler: {fileID: 0}
@@ -41653,6 +41740,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
+  PartInteractable: {fileID: 0}
 --- !u!153 &2675482982836170738
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -41791,6 +41879,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
+  PartInteractable: {fileID: 0}
 --- !u!153 &2675591024976243571
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -42083,6 +42172,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
+  PartInteractable: {fileID: 0}
 --- !u!4 &2681629805768795788
 Transform:
   m_ObjectHideFlags: 0
@@ -42942,6 +43032,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
+  PartInteractable: {fileID: 0}
 --- !u!153 &2800224987189693596
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -43051,6 +43142,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
+  PartInteractable: {fileID: 0}
 --- !u!153 &2800232216506460855
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -43160,6 +43252,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
+  PartInteractable: {fileID: 0}
 --- !u!153 &2800253075633493637
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -43269,6 +43362,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
+  PartInteractable: {fileID: 0}
 --- !u!153 &2801588848915514784
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -43378,6 +43472,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
+  PartInteractable: {fileID: 0}
 --- !u!153 &2801600473431487729
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -43487,6 +43582,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
+  PartInteractable: {fileID: 0}
 --- !u!153 &2801627655295430721
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -43596,6 +43692,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
+  PartInteractable: {fileID: 0}
 --- !u!153 &2801778079153613754
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -43705,6 +43802,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
+  PartInteractable: {fileID: 0}
 --- !u!153 &2801847783180245431
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -43814,6 +43912,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
+  PartInteractable: {fileID: 0}
 --- !u!153 &2802024866263701199
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -43923,6 +44022,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
+  PartInteractable: {fileID: 0}
 --- !u!153 &2802135203211806480
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -44032,6 +44132,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
+  PartInteractable: {fileID: 0}
 --- !u!153 &2802159958102799115
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -44141,6 +44242,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
+  PartInteractable: {fileID: 0}
 --- !u!4 &2807067577576858425
 Transform:
   m_ObjectHideFlags: 0
@@ -46169,6 +46271,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
+  PartInteractable: {fileID: 0}
 --- !u!4 &3848525377488734462
 Transform:
   m_ObjectHideFlags: 0
@@ -51851,6 +51954,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
+  PartInteractable: {fileID: 0}
 --- !u!1 &5609826549913831562
 GameObject:
   m_ObjectHideFlags: 0

@@ -91,10 +91,10 @@ public class PlayerControll : MonoBehaviour
 
     }
 
-    void OnKeyBoardEvent()
+    void OnKeyboardEvent(Define.KeyboardEvent evt)
     {
-
-        if(Input.GetKeyDown(KeyCode.R))
+        OnKeyboardEvent_Idle(evt);
+        if (Input.GetKeyDown(KeyCode.R))
         {
             MeowNyangPunch();
         }
@@ -111,8 +111,26 @@ public class PlayerControll : MonoBehaviour
         {
             Heading();
         }
+    }
+
+    void OnKeyboardEvent_Idle(Define.KeyboardEvent evt)
+    {
+        switch (evt)
+        {
+            case Define.KeyboardEvent.Hold:
+                { 
+            
+                }
+                break;
+            case Define.KeyboardEvent.Click:
+                {
+
+                }
+                break;
+        }
 
     }
+
 
     void OnMouseEvent(Define.MouseEvent evt)
     {
@@ -608,6 +626,12 @@ public class PlayerControll : MonoBehaviour
             AlignToVector(bodyHandeler.RightThigh.PartRigidbody, bodyHandeler.RightThigh.transform.forward, bodyHandeler.Hip.transform.forward + bodyHandeler.Hip.transform.up, 0.1f, 4f);
             AlignToVector(bodyHandeler.RightLeg.PartRigidbody, bodyHandeler.RightLeg.transform.forward, bodyHandeler.Hip.transform.forward + -bodyHandeler.Hip.transform.up, 0.1f, 4f);
         }
+
+        if(Input.GetMouseButton(1))
+        {
+            Debug.Log("1");
+        }
+
     }
 
     private void Heading()

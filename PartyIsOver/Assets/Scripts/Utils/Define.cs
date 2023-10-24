@@ -55,6 +55,13 @@ public class Define
         Click,
     }
 
+    public enum KeyboardEvent
+    {
+        Hold,
+        Click,
+    }
+
+
     public enum CameraMode
     {
 
