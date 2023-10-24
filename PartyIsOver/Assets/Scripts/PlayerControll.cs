@@ -1,5 +1,6 @@
 
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using static PlayerControll;
 using static UnityEngine.UI.Image;
@@ -56,6 +57,9 @@ public class PlayerControll : MonoBehaviour
     private Vector3 _counterForce = new Vector3(0f, 0f, 0.4f);
     private float _inputSpamForceModifier;
 
+    private List<float> _xPosSpringAry = new List<float>();
+    private List<float> _yzPosSpringAry = new List<float>();
+
 
     Pose leftArmPose;
     Pose rightArmPose;
@@ -82,9 +86,21 @@ public class PlayerControll : MonoBehaviour
 
     void Start()
     {
+        Init();
+    }
+
+    void Init()
+    {
         bodyHandler = GetComponent<BodyHandler>();
         targetingHandler = GetComponent<TargetingHandler>();
         _actor = GetComponent<Actor>();
+
+        for (int i = 0; i < bodyHandler.BodyParts.Count; i++)
+        {
+            _xPosSpringAry.Add(bodyHandler.BodyParts[i].PartJoint.angularXDrive.positionSpring);
+            _yzPosSpringAry.Add(bodyHandler.BodyParts[i].PartJoint.angularYZDrive.positionSpring);
+
+        }
 
 
         Managers.Input.MouseAction -= OnMouseEvent;
@@ -195,7 +211,7 @@ public class PlayerControll : MonoBehaviour
             Move();
             _idleTimer = 1f + Random.Range(0f, 3f);
         }
-        else
+        else if(_actor.actorState != Actor.ActorState.Unconscious)
         {
             Stand();
             if (_idleTimer < 30f)
@@ -254,6 +270,8 @@ public class PlayerControll : MonoBehaviour
     {
 
     }
+
+
 
     private void MeowNyangPunch()
     {

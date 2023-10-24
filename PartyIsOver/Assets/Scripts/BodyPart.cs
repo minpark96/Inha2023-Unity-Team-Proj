@@ -8,7 +8,7 @@ public class BodyPart : MonoBehaviour
     public Rigidbody PartRigidbody;
     private CollisionHandler _partCollisionHandler;
     public InteractableObject PartInteractable;
-
+    public ConfigurableJoint PartJoint;
 
 
 
@@ -17,6 +17,7 @@ public class BodyPart : MonoBehaviour
         PartRigidbody = GetComponent<Rigidbody>();
         PartInteractable = gameObject.AddComponent<InteractableObject>();
         _partCollisionHandler = gameObject.AddComponent<CollisionHandler>();
+        PartJoint = gameObject.GetComponent<ConfigurableJoint>();
     }
 
 

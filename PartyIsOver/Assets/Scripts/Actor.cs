@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class Actor : MonoBehaviour
 {
-    public StatusHandler statusHandler;
-    private Actor _actor;
+    public StatusHandler StatusHandler;
+    public BodyHandler BodyHandler;
+
 
     public enum ActorState
     {
@@ -24,7 +25,8 @@ public class Actor : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-       statusHandler = GetComponent<StatusHandler>();
+        BodyHandler = GetComponent<BodyHandler>();  
+       StatusHandler = GetComponent<StatusHandler>();
     }
 
     // Update is called once per frame
