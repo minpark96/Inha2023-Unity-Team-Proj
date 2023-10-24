@@ -126,7 +126,7 @@ public class Grab : MonoBehaviourPun
                 }
             }
             // ³õ±â
-            else if (Input.GetKey(KeyCode.R))
+            else if (Input.GetKey(KeyCode.E))
             {
                 Debug.Log("³ù´Ù");
                

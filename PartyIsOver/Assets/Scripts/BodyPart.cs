@@ -6,7 +6,7 @@ public class BodyPart : MonoBehaviour
 {
 
     public Rigidbody PartRigidbody;
-    private CollisionHandeler _partCollisionHandler;
+    private CollisionHandler _partCollisionHandler;
     public InteractableObject PartInteractable;
 
 
@@ -16,7 +16,7 @@ public class BodyPart : MonoBehaviour
     {
         PartRigidbody = GetComponent<Rigidbody>();
         PartInteractable = gameObject.AddComponent<InteractableObject>();
-        _partCollisionHandler = gameObject.AddComponent<CollisionHandeler>();
+        _partCollisionHandler = gameObject.AddComponent<CollisionHandler>();
     }
 
 
