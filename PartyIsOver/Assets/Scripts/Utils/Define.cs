@@ -57,8 +57,13 @@ public class Define
 
     public enum KeyboardEvent
     {
-        Hold,
+        Press,
+        PointerDown,
+        PointerUp,
         Click,
+        Hold,
+        Charge,
+
     }
 
 

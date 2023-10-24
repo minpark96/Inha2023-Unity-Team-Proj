@@ -40,10 +40,9 @@ public class CollisionHandler : MonoBehaviour
         Vector3 relativeVelocity = collision.relativeVelocity;
         float velocityMagnitude = relativeVelocity.magnitude;
 
-
-
         float num = 0f;
         float num2 = 0f;
+
         for (int i = 0; i < collision.contactCount; i++)
         {
             ContactPoint contact = collision.GetContact(i);
