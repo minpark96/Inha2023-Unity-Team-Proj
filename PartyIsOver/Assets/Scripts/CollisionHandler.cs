@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using UnityEngine;
 
-public class CollisionHandeler : MonoBehaviour
+public class CollisionHandler : MonoBehaviour
 {
     public float damageMinimumVelocity = 0.25f;
 
@@ -115,11 +115,11 @@ public class CollisionHandeler : MonoBehaviour
             {
                 if (collisionInteractable != null)
                 {
-                    actor.statusHandeler.AddDamage(collisionInteractable.damageModifier, num2, collisionCollider.gameObject);
+                    actor.statusHandler.AddDamage(collisionInteractable.damageModifier, num2, collisionCollider.gameObject);
                 }
                 else
                 {
-                    actor.statusHandeler.AddDamage(InteractableObject.Damage.Default, num2, collisionCollider.gameObject);
+                    actor.statusHandler.AddDamage(InteractableObject.Damage.Default, num2, collisionCollider.gameObject);
                 }
             }
 

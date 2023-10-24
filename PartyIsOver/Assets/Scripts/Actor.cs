@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Actor : MonoBehaviour
 {
-    public StatusHandeler statusHandeler;
+    public StatusHandler statusHandler;
     private Actor _actor;
 
     public enum ActorState
@@ -24,7 +24,7 @@ public class Actor : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-       statusHandeler = GetComponent<StatusHandeler>();
+       statusHandler = GetComponent<StatusHandler>();
     }
 
     // Update is called once per frame

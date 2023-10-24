@@ -4,7 +4,7 @@ using System.Numerics;
 using UnityEngine;
 using static InteractableObject;
 
-public class StatusHandeler : MonoBehaviour
+public class StatusHandler : MonoBehaviour
 {
     private float _damageModifer = 1f;
 
