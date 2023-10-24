@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Scenes/PhotonTutorial/Launcher.unity
     guid: 2d11e2786f78c004f80fb3f7653f4863
   - enabled: 1
+    path: Assets/Scenes/PhotonTutorial/Lobby.unity
+    guid: d56efc2e339197e498476a4a5fb0919a
+  - enabled: 1
     path: Assets/Scenes/PhotonTutorial/Game Room.unity
     guid: 42c4ab69114fefd48a0920c83c392541
   m_configObjects: {}

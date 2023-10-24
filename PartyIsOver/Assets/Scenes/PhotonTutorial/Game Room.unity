@@ -509,14 +509,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Leave Button
       objectReference: {fileID: 0}
-    - target: {fileID: 5372640577898384927, guid: 938c441b35fb460469fb06fcd02fb3d6, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 3014485806886614030, guid: c0992e37e6b822d4283ca6b369e5b388, type: 3}
-    - target: {fileID: 5372640577898384927, guid: 938c441b35fb460469fb06fcd02fb3d6, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: LeaveRoom
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 938c441b35fb460469fb06fcd02fb3d6, type: 3}
 --- !u!224 &376470753 stripped

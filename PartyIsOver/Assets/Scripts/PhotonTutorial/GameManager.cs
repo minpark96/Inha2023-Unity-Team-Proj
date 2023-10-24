@@ -34,7 +34,7 @@ namespace Photon.Tutorial
         /// </summary>
         public override void OnLeftRoom()
         {
-            SceneManager.LoadScene(0);
+            SceneManager.LoadScene(1);
         }
 
         public override void OnPlayerEnteredRoom(Player other)
@@ -75,6 +75,17 @@ namespace Photon.Tutorial
         #endregion
 
         #region Public Methods
+
+        public void JoinRoom()
+        {
+            PhotonNetwork.JoinRandomRoom();
+        }
+
+
+        public void JoinLobby()
+        {
+            SceneManager.LoadScene(1);
+        }
 
         public void LeaveRoom()
         {

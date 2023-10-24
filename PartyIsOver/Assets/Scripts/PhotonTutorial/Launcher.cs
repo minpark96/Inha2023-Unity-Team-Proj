@@ -92,7 +92,8 @@ namespace Photon.Tutorial
             {
                 // #Critical we need at this point to attempt joining a Random Room. If it fails, we'll get notified in OnJoinRandomFailed() and we'll create one.
                 Debug.Log("PUN Basics Tutorial/Launcher: JoinRandomRoom() was called by PUN");
-                PhotonNetwork.JoinRandomRoom();
+                //PhotonNetwork.JoinRandomRoom();
+                GameManager.Instance.JoinLobby();
             }
             else
             {
@@ -119,7 +120,8 @@ namespace Photon.Tutorial
             {
                 // #Critical: The first we try to do is to join a potential existing room. If there is, good, else, we'll be called back with OnJoinRandomFailed()
                 Debug.Log("PUN Basics Tutorial/Launcher: JoinRandomRoom() was called by PUN");
-                PhotonNetwork.JoinRandomRoom();
+                //PhotonNetwork.JoinRandomRoom();
+                GameManager.Instance.JoinLobby();
                 _isConnecting = false;
             }
         }
