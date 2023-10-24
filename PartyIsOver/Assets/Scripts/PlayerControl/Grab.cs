@@ -67,8 +67,6 @@ public class Grab : MonoBehaviourPun
 
     private void OnTriggerStay(Collider other)
     {
-        Debug.Log("a");
-
         //if (other.gameObject.layer == LayerMask.NameToLayer("Player2"))
         //{
         //    Debug.Log("player2 grab");
@@ -128,7 +126,7 @@ public class Grab : MonoBehaviourPun
                 }
             }
             // ³õ±â
-            else if (Input.GetKey(KeyCode.R))
+            else if (Input.GetKey(KeyCode.E))
             {
                 Debug.Log("³ù´Ù");
                

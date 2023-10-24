@@ -303,9 +303,10 @@ public class PlayerControll : MonoBehaviour
         //마우스를 클릭한 순간 앞에 오브젝트를 탐색하고
         targetingHandeler.SearchTarget();
 
-        if(!_isCoroutineRunning)
+
+        //일정 시간내에 뗄 경우 펀치를 발사 이때 탐색한 오브젝트가 있을 경우 그 방향으로 펀치 발사
+        if (!_isCoroutineRunning)
         {
-            //일정 시간내에 뗄 경우 펀치를 발사 이때 탐색한 오브젝트가 있을 경우 그 방향으로 펀치 발사
             if (_readySide == Side.Left)
             {
                 //Punch2(Side.Left);
@@ -485,8 +486,8 @@ public class PlayerControll : MonoBehaviour
         if (target == null)
         {
             zero = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
-            rigidbody.AddForce(-(zero * 4f), ForceMode.VelocityChange);
-            rigidbody2.AddForce(zero * 6f, ForceMode.VelocityChange);
+            rigidbody.AddForce(-(zero * 2f), ForceMode.VelocityChange);
+            rigidbody2.AddForce(zero * 3f, ForceMode.VelocityChange);
             return;
         }
 
@@ -624,7 +625,6 @@ public class PlayerControll : MonoBehaviour
 
     private void Heading()
     {
-        Debug.Log("d");
 
         //일반헤딩
         if (!isDuck && !isKickDuck)
@@ -724,17 +724,11 @@ public class PlayerControll : MonoBehaviour
                 thighRigid = bodyHandeler.LeftThigh.GetComponent<Rigidbody>();
                 legRigid = bodyHandeler.LeftLeg.PartRigidbody;
                 footRigid = bodyHandeler.LeftFoot.PartRigidbody;
-
-                //_ = actor.bodyHandeler.RightFoot.PartTransform;
-                //_ = actor.bodyHandeler.RightThigh.PartRigidbody;
-
                 break;
             case Side.Right:
                 thighTrans = bodyHandeler.RightThigh.transform;
                 legTrans = bodyHandeler.RightLeg.transform;
-                //_ = actor.bodyHandeler.RightFoot.PartTransform;
                 thighRigid = bodyHandeler.RightThigh.PartRigidbody;
-                //_ = actor.bodyHandeler.LeftThigh.PartRigidbody;
                 legRigid = bodyHandeler.RightLeg.PartRigidbody;
                 footRigid = bodyHandeler.RightFoot.PartRigidbody;
                 break;

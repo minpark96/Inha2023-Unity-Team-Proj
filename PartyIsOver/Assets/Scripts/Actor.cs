@@ -16,7 +16,6 @@ public class Actor : MonoBehaviour
         Jump = 0x10,
         Fall = 0x20,
         Climb = 0x40,
-        Swim = 0x80
     }
 
     public ActorState actorState = ActorState.Stand;
