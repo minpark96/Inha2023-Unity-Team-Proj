@@ -30,7 +30,6 @@ public class PlayerControll : MonoBehaviour
 
     public bool isGrounded;
     public bool isRun;
-    public bool isMove;
     public bool isDuck;
     public bool isKickDuck;
 
@@ -39,6 +38,8 @@ public class PlayerControll : MonoBehaviour
     public bool leftKick;
     public bool rightKick;
 
+
+    public bool isStateChange;
 
     private Vector3 _moveInput;
     private Vector3 _moveDir;
@@ -97,8 +98,8 @@ public class PlayerControll : MonoBehaviour
 
         for (int i = 0; i < bodyHandler.BodyParts.Count; i++)
         {
-            _xPosSpringAry.Add(bodyHandler.BodyParts[i].PartJoint.angularXDrive.positionSpring);
-            _yzPosSpringAry.Add(bodyHandler.BodyParts[i].PartJoint.angularYZDrive.positionSpring);
+            //_xPosSpringAry.Add(bodyHandler.BodyParts[i].PartJoint.angularXDrive.positionSpring);
+            //_yzPosSpringAry.Add(bodyHandler.BodyParts[i].PartJoint.angularYZDrive.positionSpring);
 
         }
 
@@ -185,42 +186,8 @@ public class PlayerControll : MonoBehaviour
     {
         _moveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
 
-        if (_actor.actorState == Actor.ActorState.Unconscious)
-            return;
 
-        if (_moveInput.magnitude != 0)
-        {
-            if(!isMove)
-            {
-                isMove = true;
-                if (Random.Range(0, 2) == 1)
-                {
-                    leftLegPose = Pose.Bent;
-                    rightLegPose = Pose.Straight;
-                    leftArmPose = Pose.Straight;
-                    rightArmPose = Pose.Bent;
-                }
-                else
-                {
-                    leftLegPose = Pose.Straight;
-                    rightLegPose = Pose.Bent;
-                    leftArmPose = Pose.Bent;
-                    rightArmPose = Pose.Straight;
-                }
-            }
-            Move();
-            _idleTimer = 1f + Random.Range(0f, 3f);
-        }
-        else if(_actor.actorState != Actor.ActorState.Unconscious)
-        {
-            Stand();
-            if (_idleTimer < 30f)
-            {
-                _idleTimer = Mathf.Clamp(_idleTimer + Time.deltaTime, -60f, 30f);
-            }
-
-            isMove = false;
-        }
+        
 
         
  
@@ -314,6 +281,18 @@ public class PlayerControll : MonoBehaviour
         _isCoroutineRunning = false;
 
         
+    }
+
+
+    public void Unconscious()
+    {
+        if(isStateChange)
+        {
+
+        }
+
+
+
     }
 
     private void PunchAndGrab()
@@ -438,7 +417,7 @@ public class PlayerControll : MonoBehaviour
         //bodyHandeler.Ball.PartRigidbody.angularVelocity = Vector3.zero;
     }
 
-    public void ArmActionReadying(Side side)
+    private void ArmActionReadying(Side side)
     {
         Transform partTransform = bodyHandler.Chest.transform;
         Transform transform = null;
@@ -469,7 +448,7 @@ public class PlayerControll : MonoBehaviour
 
     }
 
-    public void ArmActionPunching(Side side)
+    private void ArmActionPunching(Side side)
     {
         Transform partTransform = bodyHandler.Chest.transform;
         Transform transform = null;
@@ -591,54 +570,65 @@ public class PlayerControll : MonoBehaviour
 
      */
 
-    private void Jump()
+    public void Jump()
     {
-        isGrounded = false;
 
-        //_applyedForce = 0.2f;
-        float jumpMoveForce = 0.6f * _inputSpamForceModifier    * 10;
-
-        //움직이는 입력이 있을때
-        if (_moveDir != Vector3.zero)
+        if(isStateChange)
         {
-            bodyHandler.Chest.PartRigidbody.AddForce(_moveDir * jumpMoveForce, ForceMode.VelocityChange);
-            bodyHandler.Waist.PartRigidbody.AddForce(_moveDir * jumpMoveForce, ForceMode.VelocityChange);
-            bodyHandler.Hip.PartRigidbody.AddForce(_moveDir * jumpMoveForce, ForceMode.VelocityChange);
-            bodyHandler.Head.PartRigidbody.AddForce(_moveDir * jumpMoveForce, ForceMode.VelocityChange); // 추가
+            isGrounded = false;
+            isStateChange = false;
+
+            //_applyedForce = 0.2f;
+            float jumpMoveForce = 0.6f * _inputSpamForceModifier * 10;
+
+            //움직이는 입력이 있을때
+            if (_moveDir != Vector3.zero)
+            {
+                bodyHandler.Chest.PartRigidbody.AddForce(_moveDir * jumpMoveForce, ForceMode.VelocityChange);
+                bodyHandler.Waist.PartRigidbody.AddForce(_moveDir * jumpMoveForce, ForceMode.VelocityChange);
+                bodyHandler.Hip.PartRigidbody.AddForce(_moveDir * jumpMoveForce, ForceMode.VelocityChange);
+                bodyHandler.Head.PartRigidbody.AddForce(_moveDir * jumpMoveForce, ForceMode.VelocityChange); // 추가
+            }
+            AlignToVector(bodyHandler.Head.PartRigidbody, -bodyHandler.Head.transform.up, _moveDir + new Vector3(0, 0.2f, 0f), 0.1f, 4f);
+            AlignToVector(bodyHandler.Head.PartRigidbody, bodyHandler.Head.transform.forward, Vector3.up, 0.1f, 4f);
+
+
+            //일반점프
+            if (!isDuck && !isKickDuck)
+            {
+                bodyHandler.Chest.PartRigidbody.AddForce(Vector3.up * 1.7f * JumpForce, ForceMode.VelocityChange);
+                bodyHandler.Hip.PartRigidbody.AddForce(Vector3.down * 1.7f * JumpForce, ForceMode.VelocityChange);
+                bodyHandler.Waist.PartRigidbody.AddForce(Vector3.up * 1.7f * JumpForce, ForceMode.VelocityChange); // 추가
+
+                AlignToVector(bodyHandler.Chest.PartRigidbody, -bodyHandler.Chest.transform.up, _moveDir + new Vector3(0f, -1f, 0f), 0.1f, 10f);
+                AlignToVector(bodyHandler.Waist.PartRigidbody, -bodyHandler.Waist.transform.up, _moveDir + new Vector3(0f, -0f, 0f), 0.1f, 10f);
+                AlignToVector(bodyHandler.Hip.PartRigidbody, -bodyHandler.Hip.transform.up, _moveDir + new Vector3(0f, 1f, 0f), 0.1f, 10f);
+                AlignToVector(bodyHandler.Head.PartRigidbody, -bodyHandler.Head.transform.up, _moveDir + new Vector3(0, 0.2f, 0f), 0.1f, 4f); // 추가
+
+                //왼팔이 사용중이 아닐때
+                if (true)
+                {
+                    AlignToVector(bodyHandler.LeftArm.PartRigidbody, bodyHandler.LeftArm.transform.forward, (bodyHandler.Chest.transform.right + -bodyHandler.Chest.transform.up) / 4f, 0.1f, 4f);
+                    AlignToVector(bodyHandler.LeftForarm.PartRigidbody, bodyHandler.LeftForarm.transform.forward, (bodyHandler.Chest.transform.right + bodyHandler.Chest.transform.up) / 4f, 0.1f, 4f);
+                }
+                //오른팔이 사용중이 아닐때
+                if (true)
+                {
+                    AlignToVector(bodyHandler.RightArm.PartRigidbody, bodyHandler.RightArm.transform.forward, (-bodyHandler.Chest.transform.right + -bodyHandler.Chest.transform.up) / 4f, 0.1f, 4f);
+                    AlignToVector(bodyHandler.RightForarm.PartRigidbody, bodyHandler.RightForarm.transform.forward, (-bodyHandler.Chest.transform.right + bodyHandler.Chest.transform.up) / 4f, 0.1f, 4f);
+                }
+                AlignToVector(bodyHandler.LeftThigh.PartRigidbody, bodyHandler.LeftThigh.transform.forward, bodyHandler.Hip.transform.forward + bodyHandler.Hip.transform.up, 0.1f, 4f);
+                AlignToVector(bodyHandler.LeftLeg.PartRigidbody, bodyHandler.LeftLeg.transform.forward, bodyHandler.Hip.transform.forward + -bodyHandler.Hip.transform.up, 0.1f, 4f);
+                AlignToVector(bodyHandler.RightThigh.PartRigidbody, bodyHandler.RightThigh.transform.forward, bodyHandler.Hip.transform.forward + bodyHandler.Hip.transform.up, 0.1f, 4f);
+                AlignToVector(bodyHandler.RightLeg.PartRigidbody, bodyHandler.RightLeg.transform.forward, bodyHandler.Hip.transform.forward + -bodyHandler.Hip.transform.up, 0.1f, 4f);
+            }
         }
-        AlignToVector(bodyHandler.Head.PartRigidbody, -bodyHandler.Head.transform.up, _moveDir + new Vector3(0,0.2f,0f), 0.1f, 4f);
-        AlignToVector(bodyHandler.Head.PartRigidbody, bodyHandler.Head.transform.forward, Vector3.up, 0.1f, 4f);
-
-
-        //일반점프
-        if (!isDuck && !isKickDuck)
+        
+        if(!isGrounded)
         {
-            bodyHandler.Chest.PartRigidbody.AddForce(Vector3.up * 1.7f * JumpForce, ForceMode.VelocityChange);
-            bodyHandler.Hip.PartRigidbody.AddForce(Vector3.down * 1.7f * JumpForce, ForceMode.VelocityChange);
-            bodyHandler.Waist.PartRigidbody.AddForce(Vector3.up * 1.7f * JumpForce, ForceMode.VelocityChange); // 추가
-
-            AlignToVector(bodyHandler.Chest.PartRigidbody, -bodyHandler.Chest.transform.up,_moveDir+ new Vector3(0f, -1f, 0f), 0.1f, 10f);
-            AlignToVector(bodyHandler.Waist.PartRigidbody, -bodyHandler.Waist.transform.up, _moveDir + new Vector3(0f, -0f, 0f), 0.1f, 10f);
-            AlignToVector(bodyHandler.Hip.PartRigidbody, -bodyHandler.Hip.transform.up, _moveDir + new Vector3(0f, 1f, 0f), 0.1f, 10f);
-            AlignToVector(bodyHandler.Head.PartRigidbody, -bodyHandler.Head.transform.up, _moveDir + new Vector3(0, 0.2f, 0f), 0.1f, 4f); // 추가
-
-            //왼팔이 사용중이 아닐때
-            if (true)
-            {
-                AlignToVector(bodyHandler.LeftArm.PartRigidbody,bodyHandler.LeftArm.transform.forward, (bodyHandler.Chest.transform.right + -bodyHandler.Chest.transform.up) / 4f, 0.1f, 4f);
-                AlignToVector(bodyHandler.LeftForarm.PartRigidbody, bodyHandler.LeftForarm.transform.forward, (bodyHandler.Chest.transform.right + bodyHandler.Chest.transform.up) / 4f, 0.1f, 4f);
-            }
-            //오른팔이 사용중이 아닐때
-            if (true)
-            {
-                AlignToVector(bodyHandler.RightArm.PartRigidbody, bodyHandler.RightArm.transform.forward, (-bodyHandler.Chest.transform.right + -bodyHandler.Chest.transform.up) / 4f, 0.1f, 4f);
-                AlignToVector(bodyHandler.RightForarm.PartRigidbody,bodyHandler.RightForarm.transform.forward, (-bodyHandler.Chest.transform.right + bodyHandler.Chest.transform.up) / 4f, 0.1f, 4f);
-            }
-            AlignToVector(bodyHandler.LeftThigh.PartRigidbody, bodyHandler.LeftThigh.transform.forward, bodyHandler.Hip.transform.forward + bodyHandler.Hip.transform.up, 0.1f, 4f);
-            AlignToVector(bodyHandler.LeftLeg.PartRigidbody,bodyHandler.LeftLeg.transform.forward,bodyHandler.Hip.transform.forward + -bodyHandler.Hip.transform.up, 0.1f, 4f);
-            AlignToVector(bodyHandler.RightThigh.PartRigidbody, bodyHandler.RightThigh.transform.forward, bodyHandler.Hip.transform.forward + bodyHandler.Hip.transform.up, 0.1f, 4f);
-            AlignToVector(bodyHandler.RightLeg.PartRigidbody, bodyHandler.RightLeg.transform.forward, bodyHandler.Hip.transform.forward + -bodyHandler.Hip.transform.up, 0.1f, 4f);
+            _actor.actorState = Actor.ActorState.Stand;
         }
+
     }
 
     private void Heading()
@@ -674,8 +664,48 @@ public class PlayerControll : MonoBehaviour
     }
 
 
-    private void Move()
+    public void Move()
     {
+        if (_moveInput.magnitude != 0)
+        {
+
+            if (isStateChange)
+            {
+                isStateChange = false;
+
+
+                if (Random.Range(0, 2) == 1)
+                {
+                    leftLegPose = Pose.Bent;
+                    rightLegPose = Pose.Straight;
+                    leftArmPose = Pose.Straight;
+                    rightArmPose = Pose.Bent;
+                }
+                else
+                {
+                    leftLegPose = Pose.Straight;
+                    rightLegPose = Pose.Bent;
+                    leftArmPose = Pose.Bent;
+                    rightArmPose = Pose.Straight;
+                }
+            }
+
+            _idleTimer = 1f + Random.Range(0f, 3f);
+        }
+        else if (_actor.actorState != Actor.ActorState.Unconscious)
+        {
+            Stand();
+            if (_idleTimer < 30f)
+            {
+                _idleTimer = Mathf.Clamp(_idleTimer + Time.deltaTime, -60f, 30f);
+            }
+
+
+        }
+
+
+        
+
         if (isRun)
         {
             _cycleSpeed = 0.1f;
