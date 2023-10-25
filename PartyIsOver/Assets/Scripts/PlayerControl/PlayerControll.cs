@@ -111,7 +111,7 @@ public class PlayerControll : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.H))
+        if (Input.GetMouseButtonDown(2))
         {
             Heading();
         }
@@ -122,6 +122,7 @@ public class PlayerControll : MonoBehaviour
     {
         OnMouseEvent_Idle(evt);
 
+       
 
         //상태별 마우스 이벤트 추가 예정
         //switch (State)
@@ -132,7 +133,7 @@ public class PlayerControll : MonoBehaviour
         //    case Define.State.Moving:
         //        OnMouseEvent_Idle(evt);
         //        break;
-           
+
         //}
     }
 
@@ -215,7 +216,7 @@ public class PlayerControll : MonoBehaviour
 
     private void Update()
     {
-        CursorControll();
+        //CursorControll();
         LookAround();
 
         if (Input.GetKey(KeyCode.LeftShift))
@@ -949,20 +950,19 @@ public class PlayerControll : MonoBehaviour
 
 
     // 마우스 컨트롤 온오프
-    private void CursorControll()
-    {
-        if (Input.anyKeyDown)
-        {
-            Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.Locked;
-        }
+    //private void CursorControll()
+    //{
+    //    if (Input.anyKeyDown)
+    //    {
+    //        Cursor.visible = false;
+    //        Cursor.lockState = CursorLockMode.Locked;
+    //    }
 
-        if (!Cursor.visible && Input.GetKeyDown(KeyCode.Escape))
-        {
-            Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.None;
-        }
+    //    if (!Cursor.visible && Input.GetKeyDown(KeyCode.Escape))
+    //    {
+    //        Cursor.visible = true;
+    //        Cursor.lockState = CursorLockMode.None;
+    //    }
 
-
-    }
+    //}
 }

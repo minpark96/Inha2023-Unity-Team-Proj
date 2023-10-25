@@ -4995,9 +4995,9 @@ GameObject:
   m_Component:
   - component: {fileID: 2653333906631292594}
   - component: {fileID: 2675591024976243569}
-  - component: {fileID: 2675591024976243570}
   - component: {fileID: 2675591024976243572}
   - component: {fileID: 2675591024976243571}
+  - component: {fileID: 2675591024976243570}
   m_Layer: 7
   m_Name: GreenFistR
   m_TagString: CharacterFist
@@ -5136,8 +5136,8 @@ GameObject:
   - component: {fileID: 2675482982836170736}
   - component: {fileID: 2675482982836170739}
   - component: {fileID: 2675482982836170738}
-  - component: {fileID: 2675482982836170737}
   - component: {fileID: 2675482982836170740}
+  - component: {fileID: 2675482982836170737}
   m_Layer: 7
   m_Name: GreenFistL
   m_TagString: CharacterFist
@@ -5547,11 +5547,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RunSpeed: 35000
   JumpForce: 500
-  headingForce: 0
+  headingForce: 30
   _hips: {fileID: 2594666722529992205}
   _cameraArm: {fileID: 6804104365043234108}
-  bodyHandeler: {fileID: 0}
-  targetingHandeler: {fileID: 0}
+  bodyHandler: {fileID: 0}
+  targetingHandler: {fileID: 0}
   isGrounded: 0
   isRun: 0
   isMove: 0
@@ -5604,7 +5604,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0444d9ac95de644cb7ff3b6d6c356fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  statusHandeler: {fileID: 0}
+  statusHandler: {fileID: 0}
   actorState: 4
 --- !u!4 &2653577453574409601
 Transform:
@@ -5870,7 +5870,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8d2732e4766ccf4fba1c58f524e0dae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _turnSpeed: 3
+  _turnForce: 1000
 --- !u!135 &2675591024976243569
 SphereCollider:
   m_ObjectHideFlags: 0
