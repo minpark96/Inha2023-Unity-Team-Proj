@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
@@ -50,13 +51,16 @@ public class BodyHandler : MonoBehaviour
 
     //public Transform Spring;
 
+    private void Awake()
+    {
 
+    }
 
     // Start is called before the first frame update
     void Start()
     {
-
         BodySetup();
+
     }
 
     // Update is called once per frame
