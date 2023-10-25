@@ -6,7 +6,7 @@ public class Actor : MonoBehaviour
 {
     public StatusHandler StatusHandler;
     public BodyHandler BodyHandler;
-    private PlayerController _playerControll;
+    public PlayerController PlayerControll;
 
     public enum ActorState
     {
@@ -25,11 +25,18 @@ public class Actor : MonoBehaviour
 
 
     // Start is called before the first frame update
+
+    private void Awake()
+    {
+        BodyHandler = GetComponent<BodyHandler>();
+        StatusHandler = GetComponent<StatusHandler>();
+        PlayerControll = GetComponent<PlayerController>();
+    }
     void Start()
     {
-        BodyHandler = GetComponent<BodyHandler>();  
-       StatusHandler = GetComponent<StatusHandler>();
-        _playerControll = GetComponent<PlayerController>();
+
+
+
     }
 
     // Update is called once per frame
@@ -45,12 +52,12 @@ public class Actor : MonoBehaviour
 
         if (actorState != lastActorState)
         {
-            _playerControll.isStateChange = true;
+            PlayerControll.isStateChange = true;
             Debug.Log("stateChange");
         }
         else
         {
-            _playerControll.isStateChange = false;
+            PlayerControll.isStateChange = false;
         }
 
 
@@ -61,16 +68,16 @@ public class Actor : MonoBehaviour
                 //_playerControll.Dead();
                 break;
             case ActorState.Unconscious:
-                _playerControll.Unconscious();
+                PlayerControll.Unconscious();
                 break;
             case ActorState.Stand:
-                _playerControll.Stand();
+                PlayerControll.Stand();
                 break;
             case ActorState.Run:
-                _playerControll.Move();
+                PlayerControll.Move();
                 break;
             case ActorState.Jump:
-                _playerControll.Jump();
+                PlayerControll.Jump();
                 break;
             case ActorState.Fall:
                 //_playerControll.Fall();
