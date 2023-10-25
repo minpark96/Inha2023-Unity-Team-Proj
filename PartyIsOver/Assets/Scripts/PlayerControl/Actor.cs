@@ -6,7 +6,7 @@ public class Actor : MonoBehaviour
 {
     public StatusHandler StatusHandler;
     public BodyHandler BodyHandler;
-    private PlayerControll _playerControll;
+    private PlayerController _playerControll;
 
     public enum ActorState
     {
@@ -29,7 +29,7 @@ public class Actor : MonoBehaviour
     {
         BodyHandler = GetComponent<BodyHandler>();  
        StatusHandler = GetComponent<StatusHandler>();
-        _playerControll = GetComponent<PlayerControll>();
+        _playerControll = GetComponent<PlayerController>();
     }
 
     // Update is called once per frame
@@ -64,7 +64,7 @@ public class Actor : MonoBehaviour
                 _playerControll.Unconscious();
                 break;
             case ActorState.Stand:
-                //_playerControll.Stand();
+                _playerControll.Stand();
                 break;
             case ActorState.Run:
                 _playerControll.Move();
