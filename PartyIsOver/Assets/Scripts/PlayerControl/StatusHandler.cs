@@ -23,9 +23,9 @@ public class StatusHandler : MonoBehaviour
     private float _healthDamage;
     private bool _isDead;
 
-    private float _maxUnconsciousTime;
-    private float _minUnconsciousTime;
-    private float _unconsciousTime;
+    private float _maxUnconsciousTime=5f;
+    private float _minUnconsciousTime=3f;
+    private float _unconsciousTime = 0f;
 
     private float _knockoutThreshold=20f;
     
@@ -41,6 +41,8 @@ public class StatusHandler : MonoBehaviour
     {
         if (_healthDamage != 0f)
             UpdateHealth();
+
+        CheckConscious();
     }
 
     public void AddDamage(InteractableObject.Damage type, float damage, GameObject causer)
@@ -113,6 +115,26 @@ public class StatusHandler : MonoBehaviour
     void KillPlayer()
     {
 
+    }
+
+
+
+    public void CheckConscious()
+    {
+        if (actor.actorState != Actor.ActorState.Unconscious && _unconsciousTime > 0f)
+        {
+            _unconsciousTime = Mathf.Clamp(_unconsciousTime - Time.deltaTime, 0f, _maxUnconsciousTime);
+        }
+        if (actor.actorState == Actor.ActorState.Unconscious)
+        {
+            _unconsciousTime = Mathf.Clamp(_unconsciousTime - Time.deltaTime, 0f, _maxUnconsciousTime);
+            if (_unconsciousTime <= 0f)
+            {
+                actor.actorState = Actor.ActorState.Stand;
+                actor.PlayerControll.RestoreSpringTrigger();
+                _unconsciousTime = 0f;
+            }
+        }
     }
 
 
