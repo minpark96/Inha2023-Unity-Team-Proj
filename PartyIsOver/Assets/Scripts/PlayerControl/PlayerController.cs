@@ -1,8 +1,9 @@
 using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
+using Photon.Pun;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviourPunCallbacks
 {
     [Header("앞뒤 속도")]
     public float RunSpeed;
@@ -122,7 +123,7 @@ public class PlayerController : MonoBehaviour
 
     void OnKeyboardEvent_Idle(Define.KeyboardEvent evt)
     {
-       switch (evt)
+        switch (evt)
         {
             case Define.KeyboardEvent.Press:
                 {
@@ -162,6 +163,11 @@ public class PlayerController : MonoBehaviour
 
     void OnMouseEvent(Define.MouseEvent evt)
     {
+        if (photonView.IsMine == false && PhotonNetwork.IsConnected == true)
+        {
+            return;
+        }
+
         OnMouseEvent_Idle(evt);
 
         //상태별 마우스 이벤트 추가 예정
@@ -211,6 +217,12 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        Debug.Log(photonView.IsMine);
+        Debug.Log(photonView.ViewID);
+        if (photonView.IsMine == false && PhotonNetwork.IsConnected == true)
+        {
+            return;
+        }
 
         _moveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
 

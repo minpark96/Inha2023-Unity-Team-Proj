@@ -133,9 +133,9 @@ public class CollisionHandler : MonoBehaviour
 
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        if(collision.collider.gameObject.layer != LayerMask.NameToLayer("Ground"))
-            DamageCheck(collision);
-    }
+    //private void OnCollisionEnter(Collision collision)
+    //{
+    //    if(collision.collider.gameObject.layer != LayerMask.NameToLayer("Ground"))
+    //        DamageCheck(collision);
+    //}
 }

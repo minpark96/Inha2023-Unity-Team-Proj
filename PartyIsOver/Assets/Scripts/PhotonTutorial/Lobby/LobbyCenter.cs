@@ -64,7 +64,7 @@ public class LobbyCenter : MonoBehaviourPunCallbacks
         }
 
         _buttonPlay = transform.GetComponent<Button>();
-        _buttonPlay.onClick.AddListener(PhotonManager.Instance.StartGame);
+        _buttonPlay.onClick.AddListener(PhotonManager.Instance.LoadArena);
 
         ShowPlayerName();
         TogglePlayerStatus();

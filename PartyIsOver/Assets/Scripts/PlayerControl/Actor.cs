@@ -1,8 +1,9 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Actor : MonoBehaviour
+public class Actor : MonoBehaviourPunCallbacks
 {
     public StatusHandler StatusHandler;
     public BodyHandler BodyHandler;
@@ -22,7 +23,16 @@ public class Actor : MonoBehaviour
     public ActorState actorState = ActorState.Stand;
     public ActorState lastActorState = ActorState.Run;
 
+    public static GameObject LocalPlayerInstance;
 
+    private void Awake()
+    {
+        if (photonView.IsMine)
+        {
+            LocalPlayerInstance = this.gameObject;
+        }
+        DontDestroyOnLoad(this.gameObject);
+    }
 
     // Start is called before the first frame update
     void Start()

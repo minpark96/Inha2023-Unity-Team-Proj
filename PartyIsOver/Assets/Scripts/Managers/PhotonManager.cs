@@ -30,7 +30,9 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     
     GameObject _controlPanel;
     GameObject _progressLabel;
-    string _playerPrefab = "My Robot Kyle";
+    //string _playerPrefab = "My Robot Kyle";
+    string _playerPrefab = "Ragdoll2";
+    //string _playerPrefab = "Cube";
     const byte MAX_PLAYERS_PER_ROOM = 4;
 
     static PhotonManager p_instance;
@@ -89,8 +91,6 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         {
             Destroy(gameObject);
         }
-
-        
     }
 
     #endregion
@@ -112,10 +112,10 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         {
             // #Critical we need at this point to attempt joining a Random Room. If it fails, we'll get notified in OnJoinRandomFailed() and we'll create one.
             Debug.Log("PUN Basics Tutorial/Launcher: JoinRandomRoom() was called by PUN");
-            
+
             // 일단 Room, Join Lobby가 맞는듯
 
-            JoinRoom();
+            PhotonNetwork.JoinRandomRoom();
         }
         else
         {
@@ -127,34 +127,13 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         }
     }
 
-    public void JoinRoom()
-    {
-        Debug.Log("JoinRoom(): Try to Join Random Room");
-        PhotonNetwork.JoinRandomRoom();
-    }
-
-    public void StartGame()
-    {
-        LoadArena();
-    }
-
     public void LeaveRoom()
     {
         Debug.Log("LeaveRoom(): Call PhotonNetwork.LeaveRoom()");
         bool log = PhotonNetwork.LeaveRoom();
     }
 
-    #endregion
-
-    #region Private Methods
-
-    void JoinLobby()
-    {
-        Debug.Log("JoinLobby(): Load Lobby Scene");
-        SceneManager.LoadScene(1);
-    }
-
-    void LoadArena()
+    public void LoadArena()
     {
         if (!PhotonNetwork.IsMasterClient)
         {
@@ -165,15 +144,14 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         PhotonNetwork.LoadLevel("Game Room");
     }
 
-    void LoadRoom()
-    {
-        if (!PhotonNetwork.IsMasterClient)
-        {
-            Debug.LogError("PhotonNetwork : Trying to Load a level but we are not the master Client");
-            return;
-        }
+    #endregion
 
-        PhotonNetwork.LoadLevel("Lobby");
+    #region Private Methods
+
+    void JoinLobby()
+    {
+        Debug.Log("JoinLobby(): Load Lobby Scene");
+        SceneManager.LoadScene(1);
     }
 
     #endregion
@@ -191,7 +169,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         {
             // #Critical: The first we try to do is to join a potential existing room. If there is, good, else, we'll be called back with OnJoinRandomFailed()
             Debug.Log("PUN Basics Tutorial/Launcher: JoinRandomRoom() was called by PUN");
-            JoinRoom();
+            PhotonNetwork.JoinRandomRoom();
             _isConnecting = false;
         }
     }
@@ -217,17 +195,10 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("PUN Basics Tutorial/Launcher: OnJoinedRoom() called by PUN. Now this client is in a room.");
 
-        if (PhotonNetwork.IsMasterClient)
-        {
-            LoadRoom();
-        }
-        else
-        {
-            Debug.Log("OnJoinedRoom(): Load Lobby Scene");
-            SceneManager.LoadScene(1);
-        }
+        Debug.Log("OnJoinedRoom(): Load Lobby Scene");
+        SceneManager.LoadScene(1);
 
-        if (PlayerManager.LocalPlayerInstance == null)
+        if (Actor.LocalPlayerInstance == null)
         {
             Debug.LogFormat("We are Instantiating LocalPlayer from {0}", SceneManagerHelper.ActiveSceneName);
             // we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
@@ -235,7 +206,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         }
         else
         {
-            Debug.Log("OnJoinedRoom()=>else=>" + PlayerManager.LocalPlayerInstance);
+            Debug.Log("OnJoinedRoom()=>else=>" + Actor.LocalPlayerInstance);
         }
     }
 
@@ -255,33 +226,13 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     public override void OnPlayerEnteredRoom(Player other)
     {
         Debug.LogFormat("OnPlayerEnteredRoom() {0}", other.NickName); // not seen if you're the player connecting
-        
-        //if (PhotonNetwork.IsMasterClient)
-        //{
-        //    Debug.LogFormat("OnPlayerEnteredRoom IsMasterClient {0}", PhotonNetwork.IsMasterClient); // called before OnPlayerLeftRoom
 
-        //    //if (PhotonNetwork.CurrentRoom.PlayerCount == 2)
-        //    //{
-        //        Debug.Log("We load the 'Game Room' ");
-
-        //        // #Critical
-        //        // Load the Room Level.
-        //        LoadArena();
-        //    //}
-        //}
     }
 
     public override void OnPlayerLeftRoom(Player other)
     {
         Debug.LogFormat("OnPlayerLeftRoom() {0}", other.NickName); // seen when other disconnects
 
-        //LobbyUI.UpdatePlayerReadyCount();
-        //if (PhotonNetwork.IsMasterClient)
-        //{
-        //    Debug.LogFormat("OnPlayerLeftRoom IsMasterClient {0}", PhotonNetwork.IsMasterClient); // called before OnPlayerLeftRoom
-
-        //    //LoadArena();
-        //}
     }
 
     #endregion

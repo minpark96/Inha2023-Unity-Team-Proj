@@ -7,7 +7,7 @@ using Photon.Pun;
 public class Managers : MonoBehaviourPunCallbacks
 {
      static Managers _instance;
-     static Managers Instance { get { _instance.Init(); return _instance; } }
+     static Managers Instance { get { return _instance; } }
 
     DataManager _data = new DataManager();
     InputManager _input = new InputManager();
