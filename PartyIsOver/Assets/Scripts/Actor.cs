@@ -46,11 +46,15 @@ public class Actor : MonoBehaviour
         if (actorState != lastActorState)
         {
             _playerControll.isStateChange = true;
+            Debug.Log("stateChange");
         }
         else
         {
             _playerControll.isStateChange = false;
         }
+
+
+
         switch (actorState)
         {
             case ActorState.Dead:
@@ -60,7 +64,7 @@ public class Actor : MonoBehaviour
                 _playerControll.Unconscious();
                 break;
             case ActorState.Stand:
-                _playerControll.Stand();
+                //_playerControll.Stand();
                 break;
             case ActorState.Run:
                 _playerControll.Move();
@@ -76,6 +80,7 @@ public class Actor : MonoBehaviour
                 break;
 
         }
+
         lastActorState = actorState;
     }
 }

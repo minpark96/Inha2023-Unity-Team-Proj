@@ -1,6 +1,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using static PlayerControll;
 using static UnityEngine.UI.Image;
@@ -124,7 +125,7 @@ public class PlayerControll : MonoBehaviour
         {
             if (isGrounded)
             {
-                Jump();
+                _actor.actorState = Actor.ActorState.Jump;
             }
         }
 
@@ -188,7 +189,17 @@ public class PlayerControll : MonoBehaviour
 
 
         
-
+        if(_actor.actorState != Actor.ActorState.Jump)
+        {
+            if (_moveInput.magnitude == 0f)
+            {
+                _actor.actorState = Actor.ActorState.Stand;
+            }
+            else
+            {
+                _actor.actorState = Actor.ActorState.Run;
+            }
+        }
         
  
 
@@ -355,6 +366,7 @@ public class PlayerControll : MonoBehaviour
     public void Stand()
     {
         
+        
         if (isRun && !leftGrab && !rightGrab)
         {
             if (_idleTimer <= 25f)
@@ -415,6 +427,13 @@ public class PlayerControll : MonoBehaviour
             //bodyHandeler.Chest.PartRigidbody.AddForce(_counterForce * _applyedForce, ForceMode.VelocityChange);
         }
         //bodyHandeler.Ball.PartRigidbody.angularVelocity = Vector3.zero;
+
+
+        if (_moveInput.magnitude != 0 && _actor.actorState == Actor.ActorState.Stand)
+        {
+            _actor.actorState = Actor.ActorState.Run;
+            _idleTimer = 1f + Random.Range(0f, 3f);
+        }
     }
 
     private void ArmActionReadying(Side side)
@@ -576,7 +595,6 @@ public class PlayerControll : MonoBehaviour
         if(isStateChange)
         {
             isGrounded = false;
-            isStateChange = false;
 
             //_applyedForce = 0.2f;
             float jumpMoveForce = 0.6f * _inputSpamForceModifier * 10;
@@ -624,7 +642,7 @@ public class PlayerControll : MonoBehaviour
             }
         }
         
-        if(!isGrounded)
+        if(isGrounded)
         {
             _actor.actorState = Actor.ActorState.Stand;
         }
@@ -666,45 +684,6 @@ public class PlayerControll : MonoBehaviour
 
     public void Move()
     {
-        if (_moveInput.magnitude != 0)
-        {
-
-            if (isStateChange)
-            {
-                isStateChange = false;
-
-
-                if (Random.Range(0, 2) == 1)
-                {
-                    leftLegPose = Pose.Bent;
-                    rightLegPose = Pose.Straight;
-                    leftArmPose = Pose.Straight;
-                    rightArmPose = Pose.Bent;
-                }
-                else
-                {
-                    leftLegPose = Pose.Straight;
-                    rightLegPose = Pose.Bent;
-                    leftArmPose = Pose.Bent;
-                    rightArmPose = Pose.Straight;
-                }
-            }
-
-            _idleTimer = 1f + Random.Range(0f, 3f);
-        }
-        else if (_actor.actorState != Actor.ActorState.Unconscious)
-        {
-            Stand();
-            if (_idleTimer < 30f)
-            {
-                _idleTimer = Mathf.Clamp(_idleTimer + Time.deltaTime, -60f, 30f);
-            }
-
-
-        }
-
-
-        
 
         if (isRun)
         {
@@ -716,6 +695,32 @@ public class PlayerControll : MonoBehaviour
         }
 
 
+        if (isStateChange)
+        {
+
+            if (Random.Range(0, 2) == 1)
+            {
+                leftLegPose = Pose.Bent;
+                rightLegPose = Pose.Straight;
+                leftArmPose = Pose.Straight;
+                rightArmPose = Pose.Bent;
+            }
+            else
+            {
+                leftLegPose = Pose.Straight;
+                rightLegPose = Pose.Bent;
+                leftArmPose = Pose.Bent;
+                rightArmPose = Pose.Straight;
+            }
+        }
+
+        Stand();
+        if (_idleTimer < 30f)
+        {
+            _idleTimer = Mathf.Clamp(_idleTimer + Time.deltaTime, -60f, 30f);
+        }
+     
+
 
         RunCycleUpdate();
 
@@ -726,6 +731,8 @@ public class PlayerControll : MonoBehaviour
         RunCyclePoseLeg(Side.Left, leftLegPose);
         RunCyclePoseLeg(Side.Right, rightLegPose);
 
+
+    
 
     }
 
