@@ -609,7 +609,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 852865533}
   m_LocalRotation: {x: -0, y: -0.03779596, z: -0, w: 0.99928546}
-  m_LocalPosition: {x: 3.07, y: 1.303, z: 1.72}
+  m_LocalPosition: {x: 3.051, y: 1.303, z: 1.719}
   m_LocalScale: {x: 0.87262017, y: 0.854527, z: 1.10435}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5870,7 +5870,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8d2732e4766ccf4fba1c58f524e0dae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _turnForce: 1000
+  _turnForce: 3000
 --- !u!135 &2675591024976243569
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -10757,7 +10757,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e539510f87df7a04c943a34884b79797, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerControll: {fileID: 2653568215181255328}
+  playerController: {fileID: 0}
 --- !u!135 &4692822624975563012
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -16193,7 +16193,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e539510f87df7a04c943a34884b79797, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerControll: {fileID: 2653568215181255328}
+  playerController: {fileID: 0}
 --- !u!135 &8752035097607941883
 SphereCollider:
   m_ObjectHideFlags: 0

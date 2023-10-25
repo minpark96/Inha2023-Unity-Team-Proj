@@ -6,6 +6,9 @@ using UnityEngine;
 
 public class Grab : MonoBehaviourPun
 {
+    private TargetingHandler targetingHandler;
+
+
     private GameObject _grabGameObject;
     private Rigidbody _grabRigidbody;
 
@@ -19,8 +22,8 @@ public class Grab : MonoBehaviourPun
     // 양손 자세 추가
     private ConfigurableJoint _jointLeft;
     private ConfigurableJoint _jointRight;
-    private ConfigurableJoint _jointLeftArm;
-    private ConfigurableJoint _jointRightArm;
+    private ConfigurableJoint _jointLeftForeArm;
+    private ConfigurableJoint _jointRightForeArm;
     Vector3 targetPosition;
 
     // 아이템 종류
@@ -29,21 +32,34 @@ public class Grab : MonoBehaviourPun
 
     void Start()
     {
-        // 양손 추가
         _grabRigidbody = GetComponent<Rigidbody>();
         _grabRigidbody2 = GameObject.Find("GreenFistR").GetComponent<Rigidbody>();
 
         _jointLeft = GetComponent<ConfigurableJoint>();
         _jointRight = GameObject.Find("GreenFistR").GetComponent<ConfigurableJoint>();
 
-        _jointLeftArm = GameObject.Find("GreenForeArmL").GetComponent<ConfigurableJoint>();
-        _jointRightArm = GameObject.Find("GreenForeArmR").GetComponent<ConfigurableJoint>();
+        _jointLeftForeArm = GameObject.Find("GreenForeArmL").GetComponent<ConfigurableJoint>();
+        _jointRightForeArm = GameObject.Find("GreenForeArmR").GetComponent<ConfigurableJoint>();
+
+        targetingHandler = GetComponent<TargetingHandler>();
     }
 
     void Update()
     {
-        if(_grabGameObject != null)
+        if (_grabGameObject != null)
         {
+            // 놓기
+            if (Input.GetMouseButtonDown(1))
+            {
+                Debug.Log("놨다");
+
+                Destroy(_gameObjectJoint);
+                Destroy(_gameObjectJointLeft);
+                Destroy(_gameObjectJointRight);
+
+                _grabGameObject = null;
+            }
+
             // 임시 코드
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
@@ -83,13 +99,11 @@ public class Grab : MonoBehaviourPun
             _jointLeft.targetPosition = targetPosition + new Vector3(10, -10, 0);
             _jointRight.targetPosition = _jointLeft.targetPosition;
 
-            _jointLeftArm.targetPosition = targetPosition;
-            _jointRightArm.targetPosition = _jointLeftArm.targetPosition;
+            _jointLeftForeArm.targetPosition = targetPosition;
+            _jointRightForeArm.targetPosition = _jointLeftForeArm.targetPosition;
 
-            _jointLeftArm.GetComponent<Rigidbody>().AddForce(new Vector3(0, 2.5f, 0));
-            _jointRightArm.GetComponent<Rigidbody>().AddForce(new Vector3(0, 2.5f, 0));
-
-           
+            _jointLeftForeArm.GetComponent<Rigidbody>().AddForce(new Vector3(0, 3f, 0));
+            _jointRightForeArm.GetComponent<Rigidbody>().AddForce(new Vector3(3f, 3f, 0));
         }
     }
 
@@ -122,6 +136,9 @@ public class Grab : MonoBehaviourPun
         // 아이템 잡기
         if (other.gameObject.CompareTag("Item"))
         {
+            //마우스를 클릭한 순간 앞에 오브젝트를 탐색하고
+            //targetingHandler.SearchTarget();
+
             // 한손
             if (Input.GetKey(KeyCode.F))
             {
@@ -154,18 +171,6 @@ public class Grab : MonoBehaviourPun
                     _gameObjectJointRight.breakForce = 9001;
                 }
             }
-            // 놓기
-            else if (Input.GetMouseButtonDown(1))
-            {
-                Debug.Log("놨다");
-               
-                Destroy(_gameObjectJoint);
-                Destroy(_gameObjectJointLeft);
-                Destroy(_gameObjectJointRight);
-
-                _grabGameObject = null;
-            }
-
         }
     }
 
@@ -194,8 +199,8 @@ public class Grab : MonoBehaviourPun
 
         while (forcingCount > 0)
         {
-            AlignToVector(_jointLeft.GetComponent<Rigidbody>(), _jointLeft.transform.position, new Vector3(0f, 0.2f, 0f), 0.1f, 4f);
-            AlignToVector(_jointRight.GetComponent<Rigidbody>(), _jointRight.transform.position, new Vector3(0f, 0.2f, 0f), 0.1f, 4f);
+            AlignToVector(_jointLeft.GetComponent<Rigidbody>(), _jointLeft.transform.position, new Vector3(0f, 0.2f, 0f), 0.1f, 6f);
+            AlignToVector(_jointRight.GetComponent<Rigidbody>(), _jointRight.transform.position, new Vector3(0f, 0.2f, 0f), 0.1f, 6f);
             forcingCount--;
         }
         Debug.Log("코루틴 끝");
@@ -208,7 +213,7 @@ public class Grab : MonoBehaviourPun
 
         _jointLeft.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 2.5f, 0, 0));
         //_jointRight.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 5, 0, 0));
-        _jointLeftArm.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 2.5f, 0, 0));
+        _jointLeftForeArm.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 2.5f, 0, 0));
         //_jointRightArm.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 50, 0, 0));
 
         while (forcingCount > 0)
