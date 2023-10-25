@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.Experimental.GlobalIllumination;
 
 public class PlayerController : MonoBehaviour
 {
@@ -24,6 +25,13 @@ public class PlayerController : MonoBehaviour
 
     private Actor _actor;
 
+    private ConfigurableJoint[] _childJoints;
+    private JointDrive[] originalAngularXDrives;
+    private JointDrive[] originalAngularYZDrives;
+    private SoftJointLimitSpring[] originalAngularXSpring;
+    private SoftJointLimitSpring[] originalAngularYZSpring;
+
+
     public bool isGrounded;
     public bool isRun;
     public bool isMove;
@@ -41,6 +49,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 _moveDir;
     private float _rotationSpeed = 10f;
     private bool _isCoroutineRunning = false;
+    private bool _isCoroutineDrop = false;
 
 
     private float _idleTimer = 0;
@@ -104,7 +113,21 @@ public class PlayerController : MonoBehaviour
         targetingHandler = GetComponent<TargetingHandler>();
         _actor = GetComponent<Actor>();
 
-     
+        _childJoints = GetComponentsInChildren<ConfigurableJoint>();
+
+        originalAngularXDrives = new JointDrive[_childJoints.Length];
+        originalAngularYZDrives = new JointDrive[_childJoints.Length];
+        originalAngularXSpring = new SoftJointLimitSpring[_childJoints.Length];
+        originalAngularYZSpring = new SoftJointLimitSpring[_childJoints.Length];
+
+        for (int i = 0; i < _childJoints.Length; i++)
+        {
+            originalAngularXDrives[i] = _childJoints[i].angularXDrive;
+            originalAngularYZDrives[i] = _childJoints[i].angularYZDrive;
+            originalAngularXSpring[i] = _childJoints[i].angularXLimitSpring;
+            originalAngularYZSpring[i] = _childJoints[i].angularYZLimitSpring;
+        }
+
         for (int i = 0; i < bodyHandler.BodyParts.Count; i++)
         {
             //_xPosSpringAry.Add(bodyHandler.BodyParts[i].PartJoint.angularXDrive.positionSpring);
@@ -201,7 +224,11 @@ public class PlayerController : MonoBehaviour
                     if(Input.GetMouseButtonUp(0))
                         PunchAndGrab();
                     if(!isGrounded && Input.GetMouseButtonUp(1))
+                    {
                         DropKickTrigger();
+
+                        
+                    }
                 }
                 break;
         }
@@ -213,8 +240,6 @@ public class PlayerController : MonoBehaviour
     {
 
         _moveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-
-
 
         if (_actor.actorState != Actor.ActorState.Jump)
         {
@@ -273,20 +298,25 @@ public class PlayerController : MonoBehaviour
 
     private void DropKickTrigger()
     {
-
-        StartCoroutine(DropKickDelay());
+        if(!_isCoroutineDrop)
+            StartCoroutine(DropKickDelay(5f));
     }
 
-    IEnumerator DropKickDelay()
+    IEnumerator DropKickDelay(float delay)
     {
+        _isCoroutineDrop = true;
         //만약 점프 상태이면은
         if (!isGrounded)
         {
             StartCoroutine(DropKick());
         }
-        
-        yield return new WaitForSeconds(2f);
+
+        yield return new WaitForSeconds(delay);
+        RestoreOriginalJointSprings();
+        _isCoroutineDrop = false;
+
     }
+
 
     IEnumerator DropKick()
     {
@@ -327,17 +357,53 @@ public class PlayerController : MonoBehaviour
                 rigidbody.AddForce(zero * 20f, ForceMode.VelocityChange);
                 rigidbody2.AddForce(zero * 30f, ForceMode.VelocityChange);
             }
-        }
 
+
+
+            for (int i = 0; i < _childJoints.Length; i++)
+            {
+                ConfigurableJoint joint = _childJoints[i];
+
+                JointDrive angularXDrive = joint.angularXDrive;
+                angularXDrive.positionSpring = 0f;  // 적절한 값을 사용하세요
+                joint.angularXDrive = angularXDrive;
+
+                JointDrive angularYZDrive = joint.angularYZDrive;
+                angularXDrive.positionSpring = 0f;  // 적절한 값을 사용하세요
+                joint.angularYZDrive = angularXDrive;
+
+                SoftJointLimitSpring angularXSpring = joint.angularXLimitSpring;
+                angularXSpring.spring = 0f;
+                joint.angularXLimitSpring = angularXSpring;
+
+                // angularYZLimitSpring를 비활성화
+                SoftJointLimitSpring angularYZSpring = joint.angularYZLimitSpring;
+                angularYZSpring.spring = 0f;
+                joint.angularYZLimitSpring = angularYZSpring;
+            }
+
+        }
         yield return null;
     }
 
+    void RestoreOriginalJointSprings()
+    {
+        for (int i = 0; i < _childJoints.Length; i++)
+        {
+            _childJoints[i].angularXDrive = originalAngularXDrives[i];
+            _childJoints[i].angularYZDrive = originalAngularYZDrives[i];
+            _childJoints[i].angularXLimitSpring = originalAngularXSpring[i];
+            _childJoints[i].angularYZLimitSpring = originalAngularYZSpring[i];
+        }
+
+
+    }
     private void MeowNyangPunch()
     {
         //냥냥 펀치 R키를 누르면 작동
         StartCoroutine(MeowNyangPunchDelay());
 
-    }
+    } 
     IEnumerator MeowNyangPunchDelay()
     {
         int _punchcount = 0;
@@ -358,7 +424,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-
     IEnumerator PunchWithDelay(Side side, float delay)
     {
         //광클 막기
@@ -371,8 +436,6 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(delay);
 
         _isCoroutineRunning = false;
-
-        
     }
 
     private void PunchAndGrab()
@@ -636,32 +699,6 @@ public class PlayerController : MonoBehaviour
         AlignToVector(part2, transform2.forward, vector + partTransform.up, 0.01f, 2f);
     }
 
-    /*
-    
-    upperArm
-    1.
-    -71/ 13/ -57 L
-    -71 13 -57 R
-    2.
-    -71 15 -57
-    -72 16 64
-
-    Fore
-    1.
-    -110 -87 61
-    -67 -60 -207
-    2.
-    -110 -85 38
-    -67 -59 -207
-    
-    Chest
-    1. 
-    -92 18 -1
-    2. 
-    -92 14 4
-
-     */
-
     public void Jump()
     {
         isGrounded = false;
@@ -679,7 +716,6 @@ public class PlayerController : MonoBehaviour
         }
         AlignToVector(bodyHandler.Head.PartRigidbody, -bodyHandler.Head.transform.up, _moveDir + new Vector3(0,0.2f,0f), 0.1f, 4f);
         AlignToVector(bodyHandler.Head.PartRigidbody, bodyHandler.Head.transform.forward, Vector3.up, 0.1f, 4f);
-
 
         //일반점프
         if (!isDuck && !isKickDuck)
