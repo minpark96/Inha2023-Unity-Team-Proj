@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class LimbCollision : MonoBehaviour
 {
-    public PlayerControll playerControll;
+    public PlayerController playerController;
 
     private void Start()
     {
-         playerControll = GetComponentInParent<PlayerControll>();
+         playerController = GetComponentInParent<PlayerController>();
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -18,8 +18,8 @@ public class LimbCollision : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(!playerControll.isGrounded)
-            playerControll.isGrounded = true;
+        if(!playerController.isGrounded)
+            playerController.isGrounded = true;
     }
 
 }
