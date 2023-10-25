@@ -24,6 +24,10 @@ public class Grab : MonoBehaviourPun
     private ConfigurableJoint _jointRight;
     private ConfigurableJoint _jointLeftForeArm;
     private ConfigurableJoint _jointRightForeArm;
+    private ConfigurableJoint _jointLeftUpperArm;
+    private ConfigurableJoint _jointRightUpperArm;
+    private ConfigurableJoint _jointChest;
+
     Vector3 targetPosition;
 
     // 아이템 종류
@@ -40,6 +44,12 @@ public class Grab : MonoBehaviourPun
 
         _jointLeftForeArm = GameObject.Find("GreenForeArmL").GetComponent<ConfigurableJoint>();
         _jointRightForeArm = GameObject.Find("GreenForeArmR").GetComponent<ConfigurableJoint>();
+
+        _jointLeftUpperArm = GameObject.Find("GreenUpperArmL").GetComponent<ConfigurableJoint>();
+        _jointRightUpperArm = GameObject.Find("GreenUpperArmR").GetComponent<ConfigurableJoint>();
+
+        _jointChest = GameObject.Find("GreenChest").GetComponent<ConfigurableJoint>();
+
 
         targetingHandler = GetComponent<TargetingHandler>();
     }
@@ -58,6 +68,22 @@ public class Grab : MonoBehaviourPun
                 Destroy(_gameObjectJointRight);
 
                 _grabGameObject = null;
+
+                // 관절 복구
+                _jointLeft.angularYMotion = ConfigurableJointMotion.Limited;
+                _jointLeftForeArm.angularYMotion = ConfigurableJointMotion.Limited;
+                _jointLeftUpperArm.angularYMotion = ConfigurableJointMotion.Limited;
+                _jointLeft.angularZMotion = ConfigurableJointMotion.Limited;
+                _jointLeftForeArm.angularZMotion = ConfigurableJointMotion.Limited;
+                _jointLeftUpperArm.angularZMotion = ConfigurableJointMotion.Limited;
+
+                _jointRight.angularYMotion = ConfigurableJointMotion.Limited;
+                _jointRightForeArm.angularYMotion = ConfigurableJointMotion.Limited;
+                _jointRightUpperArm.angularYMotion = ConfigurableJointMotion.Limited;
+                _jointRight.angularZMotion = ConfigurableJointMotion.Limited;
+                _jointRightForeArm.angularZMotion = ConfigurableJointMotion.Limited;
+                _jointRightUpperArm.angularZMotion = ConfigurableJointMotion.Limited;
+                return;
             }
 
             // 임시 코드
@@ -96,14 +122,11 @@ public class Grab : MonoBehaviourPun
 
             // 기본 잡기 자세
             targetPosition = _grabGameObject.transform.position;
-            _jointLeft.targetPosition = targetPosition + new Vector3(10, -10, 0);
+            _jointLeft.targetPosition = targetPosition + new Vector3(0, 0, 20);
             _jointRight.targetPosition = _jointLeft.targetPosition;
 
             _jointLeftForeArm.targetPosition = targetPosition;
             _jointRightForeArm.targetPosition = _jointLeftForeArm.targetPosition;
-
-            _jointLeftForeArm.GetComponent<Rigidbody>().AddForce(new Vector3(0, 3f, 0));
-            _jointRightForeArm.GetComponent<Rigidbody>().AddForce(new Vector3(3f, 3f, 0));
         }
     }
 
@@ -139,6 +162,7 @@ public class Grab : MonoBehaviourPun
             //마우스를 클릭한 순간 앞에 오브젝트를 탐색하고
             //targetingHandler.SearchTarget();
 
+
             // 한손
             if (Input.GetKey(KeyCode.F))
             {
@@ -169,6 +193,21 @@ public class Grab : MonoBehaviourPun
                     _gameObjectJointRight = _grabGameObject.AddComponent<FixedJoint>();
                     _gameObjectJointRight.connectedBody = _grabRigidbody2;
                     _gameObjectJointRight.breakForce = 9001;
+
+                    // 양손 휘두르기 모션을 위해 관절 부분잠금
+                    _jointLeft.angularYMotion = ConfigurableJointMotion.Locked;
+                    _jointLeftForeArm.angularYMotion = ConfigurableJointMotion.Locked;
+                    _jointLeftUpperArm.angularYMotion = ConfigurableJointMotion.Locked;
+                    _jointLeft.angularZMotion = ConfigurableJointMotion.Locked;
+                    _jointLeftForeArm.angularZMotion = ConfigurableJointMotion.Locked;
+                    _jointLeftUpperArm.angularZMotion = ConfigurableJointMotion.Locked;
+
+                    _jointRight.angularYMotion = ConfigurableJointMotion.Locked;
+                    _jointRightForeArm.angularYMotion = ConfigurableJointMotion.Locked;
+                    _jointRightUpperArm.angularYMotion = ConfigurableJointMotion.Locked;
+                    _jointRight.angularZMotion = ConfigurableJointMotion.Locked;
+                    _jointRightForeArm.angularZMotion = ConfigurableJointMotion.Locked;
+                    _jointRightUpperArm.angularZMotion = ConfigurableJointMotion.Locked;
                 }
             }
         }
@@ -209,19 +248,28 @@ public class Grab : MonoBehaviourPun
     }
     IEnumerator Item2Action(GameObject grabGameObj)
     {
-        int forcingCount = 10000;
+        int forcingCount = 5000;
 
-        _jointLeft.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 2.5f, 0, 0));
-        //_jointRight.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 5, 0, 0));
-        _jointLeftForeArm.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 2.5f, 0, 0));
-        //_jointRightArm.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 50, 0, 0));
+        _jointLeft.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce*3, 0, 0));
+        _jointRight.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce*3, 0, 0));
+
 
         while (forcingCount > 0)
         {
-            AlignToVector(_jointLeft.GetComponent<Rigidbody>(), _jointLeft.transform.position, new Vector3(1f, 0f, 0f), 0.1f, 2f);
-            AlignToVector(_jointRight.GetComponent<Rigidbody>(), _jointRight.transform.position, new Vector3(1f, 0f, 0f), 0.1f, 2f);
-            AlignToVector(_jointLeftForeArm.GetComponent<Rigidbody>(), _jointLeftForeArm.transform.position, new Vector3(1f, 0f, 0f), 0.1f, 2f);
-            AlignToVector(_jointRightForeArm.GetComponent<Rigidbody>(), _jointRightForeArm.transform.position, new Vector3(1f, 0f, 0f), 0.1f, 2f);
+            AlignToVector(_jointLeft.GetComponent<Rigidbody>(), _jointLeft.transform.position, new Vector3(0.2f, 0f, 0f), 0.1f, 2f);
+            AlignToVector(_jointLeftForeArm.GetComponent<Rigidbody>(), _jointLeftForeArm.transform.position, new Vector3(0.2f, 0f, 0f), 0.1f, 2f);
+            AlignToVector(_jointLeftUpperArm.GetComponent<Rigidbody>(), _jointLeftUpperArm.transform.position, new Vector3(0.2f, 0f, 0f), 0.1f, 2f);
+
+            AlignToVector(_jointRight.GetComponent<Rigidbody>(), _jointRight.transform.position, _jointLeft.transform.position, 0.1f, 2f);
+            AlignToVector(_jointRightForeArm.GetComponent<Rigidbody>(), _jointRightForeArm.transform.position, _jointLeftForeArm.transform.position, 0.1f, 2f);
+            AlignToVector(_jointRightUpperArm.GetComponent<Rigidbody>(), _jointRightUpperArm.transform.position, _jointLeftUpperArm.transform.position, 0.1f, 2f);
+
+            AlignToVector(_jointChest.GetComponent<Rigidbody>(), _jointChest.transform.position, _jointLeft.transform.position, 0.1f, 2f);
+
+            //AlignToVector(_jointRight.GetComponent<Rigidbody>(), _jointRight.transform.position, new Vector3(0.2f, 0f, 0f), 0.1f, 0.1f);
+            //AlignToVector(_jointRightForeArm.GetComponent<Rigidbody>(), _jointRightForeArm.transform.position, new Vector3(0.2f, 0f, 0f), 0.1f, 0.1f);
+            //AlignToVector(_jointRightUpperArm.GetComponent<Rigidbody>(), _jointRightUpperArm.transform.position, new Vector3(0.2f, 0f, 0f), 0.1f, 0.1f);
+
             forcingCount--;
         }
         Debug.Log("코루틴 끝");
