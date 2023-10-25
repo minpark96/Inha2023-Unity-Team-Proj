@@ -85,7 +85,7 @@ public class CollisionHandler : MonoBehaviour
                     num2 *= 140f;
                     contact.thisCollider.attachedRigidbody.AddForce(contact.normal * 25f, ForceMode.VelocityChange);
                     contact.thisCollider.attachedRigidbody.AddForce(Vector3.up * 10f, ForceMode.VelocityChange);
-                   // actor.inputHandler.SetVibration(0.7f, 0f, 0.1f);
+                    // actor.inputHandler.SetVibration(0.7f, 0f, 0.1f);
                     break;
                 case InteractableObject.Damage.Headbutt:
                     //actor.applyedForce = 0.5f;
@@ -93,7 +93,7 @@ public class CollisionHandler : MonoBehaviour
                     contact.thisCollider.attachedRigidbody.AddForce(contact.normal * 20f, ForceMode.VelocityChange);
                     contact.thisCollider.attachedRigidbody.AddForce(Vector3.up * 10f, ForceMode.VelocityChange);
                     //actor.inputHandler.SetVibration(0.6f, 0f, 0.1f);
-                    break;    
+                    break;
                 case InteractableObject.Damage.Knockout:
                     num2 = 1000000f;
                     contact.thisCollider.attachedRigidbody.AddForce(contact.normal * 10f, ForceMode.VelocityChange);
