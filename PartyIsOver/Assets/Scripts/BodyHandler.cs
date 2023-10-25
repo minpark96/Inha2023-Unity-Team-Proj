@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public class BodyHandeler : MonoBehaviour
+public class BodyHandler : MonoBehaviour
 {
     public Transform Root;
     private List<BodyPart> _bodyParts = new List<BodyPart>();

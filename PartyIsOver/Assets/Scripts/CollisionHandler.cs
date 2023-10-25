@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using UnityEngine;
 
-public class CollisionHandeler : MonoBehaviour
+public class CollisionHandler : MonoBehaviour
 {
     public float damageMinimumVelocity = 0.25f;
 
@@ -76,7 +76,7 @@ public class CollisionHandeler : MonoBehaviour
                 case InteractableObject.Damage.Punch:
                     {
                         Actor componentInParent = collisionInteractable.GetComponentInParent<Actor>();
-                        contact.thisCollider.attachedRigidbody.AddForce(contact.normal * 25f + Vector3.up * 10f, ForceMode.VelocityChange);
+                        contact.thisCollider.attachedRigidbody.AddForce(contact.normal * 3f + Vector3.up * 2f, ForceMode.VelocityChange);
                         //actor.inputHandler.SetVibration(0.5f, 0f, 0.1f);
                         Debug.Log("damage");
                         break;
@@ -115,11 +115,11 @@ public class CollisionHandeler : MonoBehaviour
             {
                 if (collisionInteractable != null)
                 {
-                    actor.statusHandeler.AddDamage(collisionInteractable.damageModifier, num2, collisionCollider.gameObject);
+                    actor.statusHandler.AddDamage(collisionInteractable.damageModifier, num2, collisionCollider.gameObject);
                 }
                 else
                 {
-                    actor.statusHandeler.AddDamage(InteractableObject.Damage.Default, num2, collisionCollider.gameObject);
+                    actor.statusHandler.AddDamage(InteractableObject.Damage.Default, num2, collisionCollider.gameObject);
                 }
             }
 

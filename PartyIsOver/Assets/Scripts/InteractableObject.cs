@@ -34,4 +34,6 @@ public class InteractableObject : MonoBehaviour
             Debug.Log("punch");
         }
     }
+
+
 }

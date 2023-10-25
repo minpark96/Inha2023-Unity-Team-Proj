@@ -4,13 +4,16 @@ using System.Numerics;
 using UnityEngine;
 using static InteractableObject;
 
-public class StatusHandeler : MonoBehaviour
+public class StatusHandler : MonoBehaviour
 {
     private float _damageModifer = 1f;
 
     public Actor actor;
 
     public bool invulnerable = false;
+
+    private float _health;
+    public float Health { get { return _health; } set { _health = value; } }
 
     // Start is called before the first frame update
     void Start()
