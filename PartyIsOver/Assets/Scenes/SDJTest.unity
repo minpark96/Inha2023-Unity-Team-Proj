@@ -1435,7 +1435,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0444d9ac95de644cb7ff3b6d6c356fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  statusHandeler: {fileID: 0}
+  statusHandler: {fileID: 0}
   actorState: 4
 --- !u!114 &83486395
 MonoBehaviour:
@@ -1471,8 +1471,8 @@ MonoBehaviour:
   headingForce: 500
   _hips: {fileID: 591689919}
   _cameraArm: {fileID: 1035871480}
-  bodyHandeler: {fileID: 0}
-  targetingHandeler: {fileID: 0}
+  bodyHandler: {fileID: 0}
+  targetingHandler: {fileID: 0}
   isGrounded: 0
   isRun: 0
   isMove: 0
@@ -4468,7 +4468,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e539510f87df7a04c943a34884b79797, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerControll: {fileID: 0}
+  playerController: {fileID: 0}
 --- !u!135 &250882589
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -8306,11 +8306,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb1e2b83e95804b4d9c83e06c51623ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Speed: 0
-  StrafeSpeed: 0
-  JumpForce: 0
-  TestTag: Item
-  IsGrounded: 0
 --- !u!1 &529914565
 GameObject:
   m_ObjectHideFlags: 0
@@ -28851,7 +28846,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e539510f87df7a04c943a34884b79797, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerControll: {fileID: 0}
+  playerController: {fileID: 0}
 --- !u!135 &1755297764
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -42033,8 +42028,8 @@ MonoBehaviour:
   headingForce: 50
   _hips: {fileID: 2594666722529992205}
   _cameraArm: {fileID: 6804104365043234108}
-  bodyHandeler: {fileID: 0}
-  targetingHandeler: {fileID: 0}
+  bodyHandler: {fileID: 0}
+  targetingHandler: {fileID: 0}
   isGrounded: 0
   isRun: 0
   isMove: 0
@@ -42087,7 +42082,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0444d9ac95de644cb7ff3b6d6c356fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  statusHandeler: {fileID: 0}
+  statusHandler: {fileID: 0}
   actorState: 4
 --- !u!4 &2653577453574409601
 Transform:
@@ -49952,7 +49947,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e539510f87df7a04c943a34884b79797, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerControll: {fileID: 2653568215181255328}
+  playerController: {fileID: 0}
 --- !u!135 &4692822624975563012
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -60551,7 +60546,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e539510f87df7a04c943a34884b79797, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerControll: {fileID: 2653568215181255328}
+  playerController: {fileID: 0}
 --- !u!135 &8752035097607941883
 SphereCollider:
   m_ObjectHideFlags: 0

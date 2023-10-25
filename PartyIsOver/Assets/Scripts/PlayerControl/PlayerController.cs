@@ -1,9 +1,6 @@
-
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEngine.UI.Image;
-
+using System.Collections.Generic;
 
 public class PlayerController : MonoBehaviour
 {
@@ -120,7 +117,10 @@ public class PlayerController : MonoBehaviour
                 break;
             case Define.KeyboardEvent.Click:
                 {
-                    Heading();
+                    if (Input.GetKeyUp(KeyCode.H)) 
+                        Heading();
+                    if (Input.GetKeyUp(KeyCode.Space))
+                        Jump();
                 }
                 break;
             case Define.KeyboardEvent.Charge:
@@ -139,7 +139,6 @@ public class PlayerController : MonoBehaviour
     void OnMouseEvent(Define.MouseEvent evt)
     {
         OnMouseEvent_Idle(evt);
-
 
         //상태별 마우스 이벤트 추가 예정
         //switch (State)
@@ -175,14 +174,21 @@ public class PlayerController : MonoBehaviour
                 break;
             case Define.MouseEvent.Click:
                 {
-                    PunchAndGrab();
+                    if(Input.GetMouseButtonUp(0))
+                        PunchAndGrab();
+                    if(!isGrounded && Input.GetMouseButtonUp(1))
+                        Jogbardangsu();
                 }
                 break;
         }
     }
 
+    
+
     private void FixedUpdate()
     {
+        
+
         _moveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
 
         if (_actor.actorState == Actor.ActorState.Unconscious)
@@ -218,20 +224,9 @@ public class PlayerController : MonoBehaviour
             {
                 _idleTimer = Mathf.Clamp(_idleTimer + Time.deltaTime, -60f, 30f);
             }
-             
             isMove = false;
         }
-
-        if (Input.GetKey(KeyCode.Space))
-        {
-            if (isGrounded)
-            {
-                Jump();
-            }
-        }
     }
-
-
 
     private void Update()
     {
@@ -258,8 +253,8 @@ public class PlayerController : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        //Debug.DrawRay(bodyHandeler.LeftArm.PartRigidbody.position, -bodyHandeler.Chest.transform.up * 10f, Color.red);
-        //Debug.DrawRay(bodyHandeler.RightArm.PartRigidbody.position, -bodyHandeler.Chest.transform.up * 10f, Color.red);
+        //Debug.DrawRay(bodyHandler.LeftFoot.PartRigidbody.position, -bodyHandler.LeftFoot.transform.up * 10f, Color.red);
+        //Debug.DrawRay(bodyHandler.RightFoot.PartRigidbody.position, -bodyHandler.RightFoot.transform.up * 10f, Color.red);
     }
     /*void Ray_1()
     {
@@ -273,6 +268,67 @@ public class PlayerController : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
 
+    }
+
+    private void Jogbardangsu()
+    {
+
+        StartCoroutine(DropKickDelay());
+    }
+
+    IEnumerator DropKickDelay()
+    {
+        //만약 점프 상태이면은
+        if (!isGrounded)
+        {
+            StartCoroutine(DropKick());
+        }
+        
+        yield return new WaitForSeconds(2f);
+    }
+
+    IEnumerator DropKick()
+    {
+        Vector3 zero = Vector3.zero;
+
+        Transform partTransform = bodyHandler.Hip.transform;
+        Transform transform2 = null;
+        Rigidbody rigidbody = null;
+        Rigidbody rigidbody2 = null;
+
+        if (!isGrounded)
+        {
+            //에드포스를 플레이어가 바라보는 방향으로 발에 힘을 준다.
+            //스프링일때는 내비두고 
+            {
+                //오른쪽
+                transform2 = bodyHandler.RightFoot.transform;
+                rigidbody = bodyHandler.RightThigh.PartRigidbody;
+                rigidbody2 = bodyHandler.RightFoot.PartRigidbody;
+                //bodyHandler.RightFoot.PartInteractable.damageModifier = InteractableObject.Damage.Punch; 데미지
+                bodyHandler.RightFoot.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+                bodyHandler.RightThigh.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+
+                zero = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
+                rigidbody.AddForce(zero * 20f, ForceMode.VelocityChange);
+                rigidbody2.AddForce(zero * 30f, ForceMode.VelocityChange);
+            }
+
+            {
+                //왼쪽
+                transform2 = bodyHandler.LeftFoot.transform;
+                rigidbody = bodyHandler.LeftThigh.PartRigidbody;
+                rigidbody2 = bodyHandler.LeftFoot.PartRigidbody;
+                //bodyHandler.RightFoot.PartInteractable.damageModifier = InteractableObject.Damage.Punch; 데미지
+                bodyHandler.LeftFoot.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+                bodyHandler.LeftThigh.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+                zero = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
+                rigidbody.AddForce(zero * 20f, ForceMode.VelocityChange);
+                rigidbody2.AddForce(zero * 30f, ForceMode.VelocityChange);
+            }
+        }
+
+        yield return null;
     }
 
     private void MeowNyangPunch()
@@ -377,7 +433,6 @@ public class PlayerController : MonoBehaviour
 
     public void Stand()
     {
-        
         if (isRun && !leftGrab && !rightGrab)
         {
             if (_idleTimer <= 25f)
@@ -596,7 +651,7 @@ public class PlayerController : MonoBehaviour
     private void Jump()
     {
         isGrounded = false;
-
+        
         //_applyedForce = 0.2f;
         float jumpMoveForce = 0.6f * _inputSpamForceModifier    * 10;
 
@@ -640,11 +695,6 @@ public class PlayerController : MonoBehaviour
             AlignToVector(bodyHandler.LeftLeg.PartRigidbody,bodyHandler.LeftLeg.transform.forward,bodyHandler.Hip.transform.forward + -bodyHandler.Hip.transform.up, 0.1f, 4f);
             AlignToVector(bodyHandler.RightThigh.PartRigidbody, bodyHandler.RightThigh.transform.forward, bodyHandler.Hip.transform.forward + bodyHandler.Hip.transform.up, 0.1f, 4f);
             AlignToVector(bodyHandler.RightLeg.PartRigidbody, bodyHandler.RightLeg.transform.forward, bodyHandler.Hip.transform.forward + -bodyHandler.Hip.transform.up, 0.1f, 4f);
-        }
-
-        if(Input.GetMouseButton(1))
-        {
-            Debug.Log("1");
         }
 
     }
@@ -984,7 +1034,5 @@ public class PlayerController : MonoBehaviour
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
         }
-
-
     }
 }

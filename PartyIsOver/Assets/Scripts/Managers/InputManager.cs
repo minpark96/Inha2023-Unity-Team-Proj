@@ -13,11 +13,17 @@ public class InputManager
     bool _pressed = false;
     float _pressedTime = 0;
 
+    bool _mpressed = false;
+    float _mpressedTime = 0;
+
     bool _keyPressed = false;
     float _keyPressedTime = 0;
 
     bool _rkeyPressed = false;
     float _rkeyPressedTime = 0;
+
+    bool _speyPressed = false;
+    float _spkeyPressedTime = 0;
 
     float _chargeTime = 0;
     bool _isCharge = false;
@@ -56,7 +62,31 @@ public class InputManager
                 _keyPressed = false;
                 _keyPressedTime = 0;
             }
-            
+        }
+
+        if (KeyboardAction != null)
+        {
+            if (Input.GetKey(KeyCode.Space))
+            {
+                if (!_speyPressed)
+                {
+                    KeyboardAction.Invoke(Define.KeyboardEvent.PointerDown);
+                    _spkeyPressedTime = Time.time;
+                }
+                KeyboardAction.Invoke(Define.KeyboardEvent.Press);
+                _speyPressed = true;
+            }
+            else
+            {
+                if ((_speyPressed))
+                {
+                    if (Time.time < _spkeyPressedTime + 0.2f)
+                        KeyboardAction.Invoke(Define.KeyboardEvent.Click);
+                    KeyboardAction.Invoke(Define.KeyboardEvent.PointerUp);
+                }
+                _speyPressed = false;
+                _spkeyPressedTime = 0;
+            }
         }
 
         if (KeyboardAction != null)
@@ -101,7 +131,7 @@ public class InputManager
                 if (!_pressed)
                 {
                     MouseAction.Invoke(Define.MouseEvent.PointerDown);
-                    _rkeyPressedTime = Time.time;
+                    _pressedTime = Time.time;
                 }
                 MouseAction.Invoke(Define.MouseEvent.Press);
                 _pressed = true;
@@ -110,12 +140,38 @@ public class InputManager
             {
                 if (_pressed)
                 {
-                    if (Time.time < _rkeyPressedTime + 0.2f)
+                    if (Time.time < _pressedTime + 0.2f)
                         MouseAction.Invoke(Define.MouseEvent.Click);
                     MouseAction.Invoke(Define.MouseEvent.PointerUp);
                 }
                 _pressed = false;
-                _rkeyPressedTime = 0;
+                _pressedTime = 0;
+            }
+        }
+
+        if (MouseAction != null)
+        {
+
+            if (Input.GetMouseButton(1))
+            {
+                if (!_mpressed)
+                {
+                    MouseAction.Invoke(Define.MouseEvent.PointerDown);
+                    _mpressedTime = Time.time;
+                }
+                MouseAction.Invoke(Define.MouseEvent.Press);
+                _mpressed = true;
+            }
+            else
+            {
+                if (_mpressed)
+                {
+                    if (Time.time < _mpressedTime + 0.2f)
+                        MouseAction.Invoke(Define.MouseEvent.Click);
+                    MouseAction.Invoke(Define.MouseEvent.PointerUp);
+                }
+                _mpressed = false;
+                _mpressedTime = 0;
             }
         }
     }
