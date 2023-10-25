@@ -89,9 +89,7 @@ public class StatusHandler : MonoBehaviour
             {
                 Debug.Log("기절");
 
-                _maxUnconsciousTime = Mathf.Clamp(_maxUnconsciousTime + 1.5f, _minUnconsciousTime, 20f);
-                _unconsciousTime = _maxUnconsciousTime;
-                actor.actorState = Actor.ActorState.Unconscious;
+                
                 //CheckForDamageAchievements();
                 EnterUnconsciousState();
             }
@@ -138,9 +136,13 @@ public class StatusHandler : MonoBehaviour
     }
 
 
-    void EnterUnconsciousState()
+    public void EnterUnconsciousState()
     {
         //데미지 이펙트나 사운드 추후 추가
+
+        _maxUnconsciousTime = Mathf.Clamp(_maxUnconsciousTime + 1.5f, _minUnconsciousTime, 20f);
+        _unconsciousTime = _maxUnconsciousTime;
+        actor.actorState = Actor.ActorState.Unconscious;
 
 
         //actor.BodyHandler.ResetLeftGrab();

@@ -1,11 +1,8 @@
 using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
-<<<<<<< HEAD
 using UnityEngine.Experimental.GlobalIllumination;
-=======
 using System.Runtime.CompilerServices;
->>>>>>> b22c404a8842d07e294b073bc54c4721610ea1e9
 
 public class PlayerController : MonoBehaviour
 {
@@ -29,12 +26,7 @@ public class PlayerController : MonoBehaviour
 
     private Actor _actor;
 
-    private ConfigurableJoint[] _childJoints;
-    private JointDrive[] originalAngularXDrives;
-    private JointDrive[] originalAngularYZDrives;
-    private SoftJointLimitSpring[] originalAngularXSpring;
-    private SoftJointLimitSpring[] originalAngularYZSpring;
-
+    StatusHandler _statusHandler;
 
     public bool isGrounded;
     public bool isRun;
@@ -141,32 +133,12 @@ public class PlayerController : MonoBehaviour
         targetingHandler = GetComponent<TargetingHandler>();
         _actor = GetComponent<Actor>();
 
-<<<<<<< HEAD
-        _childJoints = GetComponentsInChildren<ConfigurableJoint>();
-
-        originalAngularXDrives = new JointDrive[_childJoints.Length];
-        originalAngularYZDrives = new JointDrive[_childJoints.Length];
-        originalAngularXSpring = new SoftJointLimitSpring[_childJoints.Length];
-        originalAngularYZSpring = new SoftJointLimitSpring[_childJoints.Length];
-
-        for (int i = 0; i < _childJoints.Length; i++)
-        {
-            originalAngularXDrives[i] = _childJoints[i].angularXDrive;
-            originalAngularYZDrives[i] = _childJoints[i].angularYZDrive;
-            originalAngularXSpring[i] = _childJoints[i].angularXLimitSpring;
-            originalAngularYZSpring[i] = _childJoints[i].angularYZLimitSpring;
-        }
-
         for (int i = 0; i < bodyHandler.BodyParts.Count; i++)
         {
             //_xPosSpringAry.Add(bodyHandler.BodyParts[i].PartJoint.angularXDrive.positionSpring);
             //_yzPosSpringAry.Add(bodyHandler.BodyParts[i].PartJoint.angularYZDrive.positionSpring);
 
         }
-
-
-=======
->>>>>>> b22c404a8842d07e294b073bc54c4721610ea1e9
     }
 
     void OnKeyboardEvent(Define.KeyboardEvent evt)
@@ -198,7 +170,9 @@ public class PlayerController : MonoBehaviour
                     if (Input.GetKeyUp(KeyCode.H)) 
                         Heading();
                     if (Input.GetKeyUp(KeyCode.Space))
-                        Jump();
+                    {
+                        _actor.actorState = Actor.ActorState.Jump;
+                    }
                 }
                 break;
             case Define.KeyboardEvent.Charge:
@@ -274,14 +248,7 @@ public class PlayerController : MonoBehaviour
 
         _moveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
 
-<<<<<<< HEAD
-=======
 
-
-
-
-
->>>>>>> b22c404a8842d07e294b073bc54c4721610ea1e9
         if (_actor.actorState != Actor.ActorState.Jump)
         {
             if (_moveInput.magnitude == 0f)
@@ -341,7 +308,7 @@ public class PlayerController : MonoBehaviour
     private void DropKickTrigger()
     {
         if(!_isCoroutineDrop)
-            StartCoroutine(DropKickDelay(5f));
+            StartCoroutine(DropKickDelay(2f));
     }
 
     IEnumerator DropKickDelay(float delay)
@@ -354,7 +321,9 @@ public class PlayerController : MonoBehaviour
         }
 
         yield return new WaitForSeconds(delay);
-        RestoreOriginalJointSprings();
+
+        RestoreSpringTrigger();
+
         _isCoroutineDrop = false;
 
     }
@@ -399,47 +368,14 @@ public class PlayerController : MonoBehaviour
                 rigidbody.AddForce(zero * 20f, ForceMode.VelocityChange);
                 rigidbody2.AddForce(zero * 30f, ForceMode.VelocityChange);
             }
+            //_statusHandler.EnterUnconsciousState();
 
-
-
-            for (int i = 0; i < _childJoints.Length; i++)
-            {
-                ConfigurableJoint joint = _childJoints[i];
-
-                JointDrive angularXDrive = joint.angularXDrive;
-                angularXDrive.positionSpring = 0f;  // 적절한 값을 사용하세요
-                joint.angularXDrive = angularXDrive;
-
-                JointDrive angularYZDrive = joint.angularYZDrive;
-                angularXDrive.positionSpring = 0f;  // 적절한 값을 사용하세요
-                joint.angularYZDrive = angularXDrive;
-
-                SoftJointLimitSpring angularXSpring = joint.angularXLimitSpring;
-                angularXSpring.spring = 0f;
-                joint.angularXLimitSpring = angularXSpring;
-
-                // angularYZLimitSpring를 비활성화
-                SoftJointLimitSpring angularYZSpring = joint.angularYZLimitSpring;
-                angularYZSpring.spring = 0f;
-                joint.angularYZLimitSpring = angularYZSpring;
-            }
+            ResetBodySpring();
 
         }
         yield return null;
     }
 
-    void RestoreOriginalJointSprings()
-    {
-        for (int i = 0; i < _childJoints.Length; i++)
-        {
-            _childJoints[i].angularXDrive = originalAngularXDrives[i];
-            _childJoints[i].angularYZDrive = originalAngularYZDrives[i];
-            _childJoints[i].angularXLimitSpring = originalAngularXSpring[i];
-            _childJoints[i].angularYZLimitSpring = originalAngularYZSpring[i];
-        }
-
-
-    }
     private void MeowNyangPunch()
     {
         //냥냥 펀치 R키를 누르면 작동
@@ -546,7 +482,6 @@ public class PlayerController : MonoBehaviour
 
 
     }
-
 
     private void ResetBodySpring()
     {
@@ -819,51 +754,59 @@ public class PlayerController : MonoBehaviour
 
     public void Jump()
     {
-        isGrounded = false;
+
+        if (isStateChange)
+        {
+            isGrounded = false;
+
+
+            //_applyedForce = 0.2f;
+            float jumpMoveForce = 0.6f * _inputSpamForceModifier * 10;
+
+            //움직이는 입력이 있을때
+            if (_moveDir != Vector3.zero)
+            {
+                bodyHandler.Chest.PartRigidbody.AddForce(_moveDir * jumpMoveForce, ForceMode.VelocityChange);
+                bodyHandler.Waist.PartRigidbody.AddForce(_moveDir * jumpMoveForce, ForceMode.VelocityChange);
+                bodyHandler.Hip.PartRigidbody.AddForce(_moveDir * jumpMoveForce, ForceMode.VelocityChange);
+                bodyHandler.Head.PartRigidbody.AddForce(_moveDir * jumpMoveForce, ForceMode.VelocityChange); // 추가
+            }
+            AlignToVector(bodyHandler.Head.PartRigidbody, -bodyHandler.Head.transform.up, _moveDir + new Vector3(0, 0.2f, 0f), 0.1f, 4f);
+            AlignToVector(bodyHandler.Head.PartRigidbody, bodyHandler.Head.transform.forward, Vector3.up, 0.1f, 4f);
+
+            //일반점프
+            if (!isDuck && !isKickDuck)
+            {
+                bodyHandler.Chest.PartRigidbody.AddForce(Vector3.up * 1.7f * JumpForce, ForceMode.VelocityChange);
+                bodyHandler.Hip.PartRigidbody.AddForce(Vector3.down * 1.7f * JumpForce, ForceMode.VelocityChange);
+                bodyHandler.Waist.PartRigidbody.AddForce(Vector3.up * 1.7f * JumpForce, ForceMode.VelocityChange); // 추가
+
+                AlignToVector(bodyHandler.Chest.PartRigidbody, -bodyHandler.Chest.transform.up, _moveDir + new Vector3(0f, -1f, 0f), 0.1f, 10f);
+                AlignToVector(bodyHandler.Waist.PartRigidbody, -bodyHandler.Waist.transform.up, _moveDir + new Vector3(0f, -0f, 0f), 0.1f, 10f);
+                AlignToVector(bodyHandler.Hip.PartRigidbody, -bodyHandler.Hip.transform.up, _moveDir + new Vector3(0f, 1f, 0f), 0.1f, 10f);
+                AlignToVector(bodyHandler.Head.PartRigidbody, -bodyHandler.Head.transform.up, _moveDir + new Vector3(0, 0.2f, 0f), 0.1f, 4f); // 추가
+
+                //왼팔이 사용중이 아닐때
+                if (true)
+                {
+                    AlignToVector(bodyHandler.LeftArm.PartRigidbody, bodyHandler.LeftArm.transform.forward, (bodyHandler.Chest.transform.right + -bodyHandler.Chest.transform.up) / 4f, 0.1f, 4f);
+                    AlignToVector(bodyHandler.LeftForarm.PartRigidbody, bodyHandler.LeftForarm.transform.forward, (bodyHandler.Chest.transform.right + bodyHandler.Chest.transform.up) / 4f, 0.1f, 4f);
+                }
+                //오른팔이 사용중이 아닐때
+                if (true)
+                {
+                    AlignToVector(bodyHandler.RightArm.PartRigidbody, bodyHandler.RightArm.transform.forward, (-bodyHandler.Chest.transform.right + -bodyHandler.Chest.transform.up) / 4f, 0.1f, 4f);
+                    AlignToVector(bodyHandler.RightForarm.PartRigidbody, bodyHandler.RightForarm.transform.forward, (-bodyHandler.Chest.transform.right + bodyHandler.Chest.transform.up) / 4f, 0.1f, 4f);
+                }
+                AlignToVector(bodyHandler.LeftThigh.PartRigidbody, bodyHandler.LeftThigh.transform.forward, bodyHandler.Hip.transform.forward + bodyHandler.Hip.transform.up, 0.1f, 4f);
+                AlignToVector(bodyHandler.LeftLeg.PartRigidbody, bodyHandler.LeftLeg.transform.forward, bodyHandler.Hip.transform.forward + -bodyHandler.Hip.transform.up, 0.1f, 4f);
+                AlignToVector(bodyHandler.RightThigh.PartRigidbody, bodyHandler.RightThigh.transform.forward, bodyHandler.Hip.transform.forward + bodyHandler.Hip.transform.up, 0.1f, 4f);
+                AlignToVector(bodyHandler.RightLeg.PartRigidbody, bodyHandler.RightLeg.transform.forward, bodyHandler.Hip.transform.forward + -bodyHandler.Hip.transform.up, 0.1f, 4f);
+            }
+
+        }
+
         
-        //_applyedForce = 0.2f;
-        float jumpMoveForce = 0.6f * _inputSpamForceModifier    * 10;
-
-        //움직이는 입력이 있을때
-        if (_moveDir != Vector3.zero)
-        {
-            bodyHandler.Chest.PartRigidbody.AddForce(_moveDir * jumpMoveForce, ForceMode.VelocityChange);
-            bodyHandler.Waist.PartRigidbody.AddForce(_moveDir * jumpMoveForce, ForceMode.VelocityChange);
-            bodyHandler.Hip.PartRigidbody.AddForce(_moveDir * jumpMoveForce, ForceMode.VelocityChange);
-            bodyHandler.Head.PartRigidbody.AddForce(_moveDir * jumpMoveForce, ForceMode.VelocityChange); // 추가
-        }
-        AlignToVector(bodyHandler.Head.PartRigidbody, -bodyHandler.Head.transform.up, _moveDir + new Vector3(0,0.2f,0f), 0.1f, 4f);
-        AlignToVector(bodyHandler.Head.PartRigidbody, bodyHandler.Head.transform.forward, Vector3.up, 0.1f, 4f);
-
-        //일반점프
-        if (!isDuck && !isKickDuck)
-        {
-            bodyHandler.Chest.PartRigidbody.AddForce(Vector3.up * 1.7f * JumpForce, ForceMode.VelocityChange);
-            bodyHandler.Hip.PartRigidbody.AddForce(Vector3.down * 1.7f * JumpForce, ForceMode.VelocityChange);
-            bodyHandler.Waist.PartRigidbody.AddForce(Vector3.up * 1.7f * JumpForce, ForceMode.VelocityChange); // 추가
-
-            AlignToVector(bodyHandler.Chest.PartRigidbody, -bodyHandler.Chest.transform.up,_moveDir+ new Vector3(0f, -1f, 0f), 0.1f, 10f);
-            AlignToVector(bodyHandler.Waist.PartRigidbody, -bodyHandler.Waist.transform.up, _moveDir + new Vector3(0f, -0f, 0f), 0.1f, 10f);
-            AlignToVector(bodyHandler.Hip.PartRigidbody, -bodyHandler.Hip.transform.up, _moveDir + new Vector3(0f, 1f, 0f), 0.1f, 10f);
-            AlignToVector(bodyHandler.Head.PartRigidbody, -bodyHandler.Head.transform.up, _moveDir + new Vector3(0, 0.2f, 0f), 0.1f, 4f); // 추가
-
-            //왼팔이 사용중이 아닐때
-            if (true)
-            {
-                AlignToVector(bodyHandler.LeftArm.PartRigidbody,bodyHandler.LeftArm.transform.forward, (bodyHandler.Chest.transform.right + -bodyHandler.Chest.transform.up) / 4f, 0.1f, 4f);
-                AlignToVector(bodyHandler.LeftForarm.PartRigidbody, bodyHandler.LeftForarm.transform.forward, (bodyHandler.Chest.transform.right + bodyHandler.Chest.transform.up) / 4f, 0.1f, 4f);
-            }
-            //오른팔이 사용중이 아닐때
-            if (true)
-            {
-                AlignToVector(bodyHandler.RightArm.PartRigidbody, bodyHandler.RightArm.transform.forward, (-bodyHandler.Chest.transform.right + -bodyHandler.Chest.transform.up) / 4f, 0.1f, 4f);
-                AlignToVector(bodyHandler.RightForarm.PartRigidbody,bodyHandler.RightForarm.transform.forward, (-bodyHandler.Chest.transform.right + bodyHandler.Chest.transform.up) / 4f, 0.1f, 4f);
-            }
-            AlignToVector(bodyHandler.LeftThigh.PartRigidbody, bodyHandler.LeftThigh.transform.forward, bodyHandler.Hip.transform.forward + bodyHandler.Hip.transform.up, 0.1f, 4f);
-            AlignToVector(bodyHandler.LeftLeg.PartRigidbody,bodyHandler.LeftLeg.transform.forward,bodyHandler.Hip.transform.forward + -bodyHandler.Hip.transform.up, 0.1f, 4f);
-            AlignToVector(bodyHandler.RightThigh.PartRigidbody, bodyHandler.RightThigh.transform.forward, bodyHandler.Hip.transform.forward + bodyHandler.Hip.transform.up, 0.1f, 4f);
-            AlignToVector(bodyHandler.RightLeg.PartRigidbody, bodyHandler.RightLeg.transform.forward, bodyHandler.Hip.transform.forward + -bodyHandler.Hip.transform.up, 0.1f, 4f);
-        }
         if (isGrounded)
         {
             _actor.actorState = Actor.ActorState.Stand;
