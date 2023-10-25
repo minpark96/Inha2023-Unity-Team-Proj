@@ -781,7 +781,6 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        Stand();
         if (_idleTimer < 30f)
         {
             _idleTimer = Mathf.Clamp(_idleTimer + Time.deltaTime, -60f, 30f);
