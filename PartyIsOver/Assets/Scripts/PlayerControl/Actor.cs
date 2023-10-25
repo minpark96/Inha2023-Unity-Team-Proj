@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class Actor : MonoBehaviour
 {
-    public StatusHandler statusHandler;
-    private Actor _actor;
+    public StatusHandler StatusHandler;
+    public BodyHandler BodyHandler;
+    private PlayerController _playerControll;
 
     public enum ActorState
     {
@@ -19,17 +20,67 @@ public class Actor : MonoBehaviour
     }
 
     public ActorState actorState = ActorState.Stand;
+    public ActorState lastActorState = ActorState.Run;
+
 
 
     // Start is called before the first frame update
     void Start()
     {
-       statusHandler = GetComponent<StatusHandler>();
+        BodyHandler = GetComponent<BodyHandler>();  
+       StatusHandler = GetComponent<StatusHandler>();
+        _playerControll = GetComponent<PlayerController>();
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    private void FixedUpdate()
+    {
+
+
+
+        if (actorState != lastActorState)
+        {
+            _playerControll.isStateChange = true;
+            Debug.Log("stateChange");
+        }
+        else
+        {
+            _playerControll.isStateChange = false;
+        }
+
+
+
+        switch (actorState)
+        {
+            case ActorState.Dead:
+                //_playerControll.Dead();
+                break;
+            case ActorState.Unconscious:
+                _playerControll.Unconscious();
+                break;
+            case ActorState.Stand:
+                _playerControll.Stand();
+                break;
+            case ActorState.Run:
+                _playerControll.Move();
+                break;
+            case ActorState.Jump:
+                _playerControll.Jump();
+                break;
+            case ActorState.Fall:
+                //_playerControll.Fall();
+                break;
+            case ActorState.Climb:
+                //_playerControll.Climb();
+                break;
+
+        }
+
+        lastActorState = actorState;
     }
 }

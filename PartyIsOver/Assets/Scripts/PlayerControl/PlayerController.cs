@@ -35,6 +35,7 @@ public class PlayerController : MonoBehaviour
     public bool leftKick;
     public bool rightKick;
 
+    public bool isStateChange;
 
     private Vector3 _moveInput;
     private Vector3 _moveDir;
@@ -52,6 +53,9 @@ public class PlayerController : MonoBehaviour
     private Vector3 _runVectorForce10 = new Vector3(0f, 0f, 0.8f);
     private Vector3 _counterForce = new Vector3(0f, 0f, 0.4f);
     private float _inputSpamForceModifier;
+
+    private List<float> _xPosSpringAry = new List<float>();
+    private List<float> _yzPosSpringAry = new List<float>();
 
 
     Pose leftArmPose;
@@ -77,17 +81,37 @@ public class PlayerController : MonoBehaviour
         Behind = 3
     }
 
+    private void Awake()
+    {
+        Init();
+    }
+
     void Start()
     {
-        bodyHandler = GetComponent<BodyHandler>();
-        targetingHandler = GetComponent<TargetingHandler>();
-        _actor = GetComponent<Actor>();
 
         Managers.Input.MouseAction -= OnMouseEvent;
         Managers.Input.MouseAction += OnMouseEvent;
 
         Managers.Input.KeyboardAction -= OnKeyboardEvent;
         Managers.Input.KeyboardAction += OnKeyboardEvent;
+
+
+    }
+
+    void Init()
+    {
+        bodyHandler = GetComponent<BodyHandler>();
+        targetingHandler = GetComponent<TargetingHandler>();
+        _actor = GetComponent<Actor>();
+
+     
+        for (int i = 0; i < bodyHandler.BodyParts.Count; i++)
+        {
+            //_xPosSpringAry.Add(bodyHandler.BodyParts[i].PartJoint.angularXDrive.positionSpring);
+            //_yzPosSpringAry.Add(bodyHandler.BodyParts[i].PartJoint.angularYZDrive.positionSpring);
+
+        }
+
 
     }
 
@@ -177,9 +201,7 @@ public class PlayerController : MonoBehaviour
                     if(Input.GetMouseButtonUp(0))
                         PunchAndGrab();
                     if(!isGrounded && Input.GetMouseButtonUp(1))
-                        Jogbardangsu();
-                    if (Input.GetMouseButtonUp(2))
-                        Heading();
+                        DropKickTrigger();
                 }
                 break;
         }
@@ -189,42 +211,21 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+
         _moveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
 
-        if (_actor.actorState == Actor.ActorState.Unconscious)
-            return;
 
-        if (_moveInput.magnitude != 0)
+
+        if (_actor.actorState != Actor.ActorState.Jump)
         {
-            if(!isMove)
+            if (_moveInput.magnitude == 0f)
             {
-                isMove = true;
-                if (Random.Range(0, 2) == 1)
-                {
-                    leftLegPose = Pose.Bent;
-                    rightLegPose = Pose.Straight;
-                    leftArmPose = Pose.Straight;
-                    rightArmPose = Pose.Bent;
-                }
-                else
-                {
-                    leftLegPose = Pose.Straight;
-                    rightLegPose = Pose.Bent;
-                    leftArmPose = Pose.Bent;
-                    rightArmPose = Pose.Straight;
-                }
+                _actor.actorState = Actor.ActorState.Stand;
             }
-            Move();
-            _idleTimer = 1f + Random.Range(0f, 3f);
-        }
-        else
-        {
-            Stand();
-            if (_idleTimer < 30f)
+            else
             {
-                _idleTimer = Mathf.Clamp(_idleTimer + Time.deltaTime, -60f, 30f);
+                _actor.actorState = Actor.ActorState.Run;
             }
-            isMove = false;
         }
     }
 
@@ -270,7 +271,7 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    private void Jogbardangsu()
+    private void DropKickTrigger()
     {
 
         StartCoroutine(DropKickDelay());
@@ -430,21 +431,31 @@ public class PlayerController : MonoBehaviour
         yield return null;
     }
 
+    public void Unconscious()
+    {
+        if (isStateChange)
+        {
 
+        }
+
+
+
+    }
     public void Stand()
     {
-        if (isRun && !leftGrab && !rightGrab)
+
+        if (_actor.actorState == Actor.ActorState.Run && !leftGrab && !rightGrab)
         {
             if (_idleTimer <= 25f)
             {
-                AlignToVector(bodyHandler.Head.PartRigidbody, -bodyHandler.Head.transform.up, _moveDir + new Vector3(0,0.2f,0f), 0.1f, 2.5f * _applyedForce);
+                AlignToVector(bodyHandler.Head.PartRigidbody, -bodyHandler.Head.transform.up, _moveDir + new Vector3(0, 0.2f, 0f), 0.1f, 2.5f * _applyedForce);
                 AlignToVector(bodyHandler.Head.PartRigidbody, bodyHandler.Head.transform.forward, Vector3.up, 0.1f, 2.5f * _applyedForce);
             }
             if (_idleTimer < 30f)
             {
-                AlignToVector(bodyHandler.Chest.PartRigidbody, -bodyHandler.Chest.transform.up, _moveDir+ Vector3.down, 0.1f, 5f);
+                AlignToVector(bodyHandler.Chest.PartRigidbody, -bodyHandler.Chest.transform.up, _moveDir + Vector3.down, 0.1f, 5f);
                 AlignToVector(bodyHandler.Waist.PartRigidbody, -bodyHandler.Waist.transform.up, _moveDir, 0.1f, 5f);
-                AlignToVector(bodyHandler.Hip.PartRigidbody, -bodyHandler.Hip.transform.up, Vector3.up +_moveDir, 0.1f, 5f);
+                AlignToVector(bodyHandler.Hip.PartRigidbody, -bodyHandler.Hip.transform.up, Vector3.up + _moveDir, 0.1f, 5f);
                 if (!leftKick)
                 {
                     AlignToVector(bodyHandler.LeftThigh.PartRigidbody, bodyHandler.LeftThigh.transform.forward, bodyHandler.Hip.transform.forward + bodyHandler.Hip.transform.up, 0.1f, 8f);
@@ -493,6 +504,9 @@ public class PlayerController : MonoBehaviour
             //bodyHandeler.Chest.PartRigidbody.AddForce(_counterForce * _applyedForce, ForceMode.VelocityChange);
         }
         //bodyHandeler.Ball.PartRigidbody.angularVelocity = Vector3.zero;
+
+
+
     }
 
     public void ArmActionReadying(Side side)
@@ -648,7 +662,7 @@ public class PlayerController : MonoBehaviour
 
      */
 
-    private void Jump()
+    public void Jump()
     {
         isGrounded = false;
         
@@ -696,7 +710,10 @@ public class PlayerController : MonoBehaviour
             AlignToVector(bodyHandler.RightThigh.PartRigidbody, bodyHandler.RightThigh.transform.forward, bodyHandler.Hip.transform.forward + bodyHandler.Hip.transform.up, 0.1f, 4f);
             AlignToVector(bodyHandler.RightLeg.PartRigidbody, bodyHandler.RightLeg.transform.forward, bodyHandler.Hip.transform.forward + -bodyHandler.Hip.transform.up, 0.1f, 4f);
         }
-
+        if (isGrounded)
+        {
+            _actor.actorState = Actor.ActorState.Stand;
+        }
     }
 
     private void Heading()
@@ -732,8 +749,9 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    private void Move()
+    public void Move()
     {
+
         if (isRun)
         {
             _cycleSpeed = 0.1f;
@@ -743,6 +761,33 @@ public class PlayerController : MonoBehaviour
             _cycleSpeed = 0.15f;
         }
 
+
+        if (isStateChange)
+        {
+
+            if (Random.Range(0, 2) == 1)
+            {
+                leftLegPose = Pose.Bent;
+                rightLegPose = Pose.Straight;
+                leftArmPose = Pose.Straight;
+                rightArmPose = Pose.Bent;
+            }
+            else
+            {
+                leftLegPose = Pose.Straight;
+                rightLegPose = Pose.Bent;
+                leftArmPose = Pose.Bent;
+                rightArmPose = Pose.Straight;
+            }
+        }
+
+        if (_idleTimer < 30f)
+        {
+            _idleTimer = Mathf.Clamp(_idleTimer + Time.deltaTime, -60f, 30f);
+        }
+
+
+
         RunCycleUpdate();
 
         RunCyclePoseBody();
@@ -751,6 +796,8 @@ public class PlayerController : MonoBehaviour
 
         RunCyclePoseLeg(Side.Left, leftLegPose);
         RunCyclePoseLeg(Side.Right, rightLegPose);
+
+
     }
 
     private void RunCycleUpdate()

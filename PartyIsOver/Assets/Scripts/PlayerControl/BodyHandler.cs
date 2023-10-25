@@ -6,7 +6,7 @@ using UnityEngine;
 public class BodyHandler : MonoBehaviour
 {
     public Transform Root;
-    private List<BodyPart> _bodyParts = new List<BodyPart>();
+    public List<BodyPart> BodyParts = new List<BodyPart>();
 
 
 
@@ -68,28 +68,28 @@ public class BodyHandler : MonoBehaviour
     void BodySetup()
     {
 
-        _bodyParts.Add(Head);
-        _bodyParts.Add(Chest);
-        _bodyParts.Add(Waist);
-        _bodyParts.Add(Hip);
-        _bodyParts.Add(LeftArm);
-        _bodyParts.Add(LeftForarm);
-        _bodyParts.Add(LeftHand);
+        BodyParts.Add(Head);
+        BodyParts.Add(Chest);
+        BodyParts.Add(Waist);
+        BodyParts.Add(Hip);
+        BodyParts.Add(LeftArm);
+        BodyParts.Add(LeftForarm);
+        BodyParts.Add(LeftHand);
 
-        _bodyParts.Add(LeftThigh);
-        _bodyParts.Add(LeftLeg);
-        _bodyParts.Add(LeftFoot);
-        _bodyParts.Add(RightArm);
-        _bodyParts.Add(RightForarm);
-        _bodyParts.Add(RightHand);
+        BodyParts.Add(LeftThigh);
+        BodyParts.Add(LeftLeg);
+        BodyParts.Add(LeftFoot);
+        BodyParts.Add(RightArm);
+        BodyParts.Add(RightForarm);
+        BodyParts.Add(RightHand);
 
-        _bodyParts.Add(RightThigh);
-        _bodyParts.Add(RightLeg);
-        _bodyParts.Add(RightFoot);
-        _bodyParts.Add(Ball);
+        BodyParts.Add(RightThigh);
+        BodyParts.Add(RightLeg);
+        BodyParts.Add(RightFoot);
+        BodyParts.Add(Ball);
 
 
-        foreach (BodyPart part in _bodyParts)
+        foreach (BodyPart part in BodyParts)
         {
             part.PartRigidbody.maxAngularVelocity = 15f;
             part.PartRigidbody.solverIterations = 12;
