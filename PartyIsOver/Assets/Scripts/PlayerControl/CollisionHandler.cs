@@ -77,7 +77,7 @@ public class CollisionHandler : MonoBehaviour
                         Actor componentInParent = collisionInteractable.GetComponentInParent<Actor>();
                         contact.thisCollider.attachedRigidbody.AddForce(contact.normal * 3f + Vector3.up * 2f, ForceMode.VelocityChange);
                         //actor.inputHandler.SetVibration(0.5f, 0f, 0.1f);
-                        Debug.Log("damage");
+                        num2 *= 700f;
                         break;
                     }
                 case InteractableObject.Damage.DivingKick:
@@ -107,18 +107,21 @@ public class CollisionHandler : MonoBehaviour
             }
 
 
-
             //데미지 적용
             num2 = Mathf.RoundToInt(num2);
+
+
+            //Debug.Log(velocityMagnitude);
+
             if (num2 > 0f && velocityMagnitude > damageMinimumVelocity)
             {
                 if (collisionInteractable != null)
                 {
-                    actor.statusHandler.AddDamage(collisionInteractable.damageModifier, num2, collisionCollider.gameObject);
+                    actor.StatusHandler.AddDamage(collisionInteractable.damageModifier, num2, collisionCollider.gameObject);
                 }
                 else
                 {
-                    actor.statusHandler.AddDamage(InteractableObject.Damage.Default, num2, collisionCollider.gameObject);
+                    actor.StatusHandler.AddDamage(InteractableObject.Damage.Default, num2, collisionCollider.gameObject);
                 }
             }
 
