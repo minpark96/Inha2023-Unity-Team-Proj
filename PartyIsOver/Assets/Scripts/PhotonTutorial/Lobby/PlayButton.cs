@@ -9,7 +9,6 @@ public class PlayButton : MonoBehaviour
 
     void Start()
     {
-        ButtonPlay = transform.GetComponent<Button>();
-        ButtonPlay.onClick.AddListener(PhotonManager.Instance.JoinRoom);
+        
     }
 }
