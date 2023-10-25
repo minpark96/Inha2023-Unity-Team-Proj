@@ -220,8 +220,8 @@ public class Grab : MonoBehaviourPun
         {
             AlignToVector(_jointLeft.GetComponent<Rigidbody>(), _jointLeft.transform.position, new Vector3(1f, 0f, 0f), 0.1f, 2f);
             AlignToVector(_jointRight.GetComponent<Rigidbody>(), _jointRight.transform.position, new Vector3(1f, 0f, 0f), 0.1f, 2f);
-            AlignToVector(_jointLeftArm.GetComponent<Rigidbody>(), _jointLeftArm.transform.position, new Vector3(1f, 0f, 0f), 0.1f, 2f);
-            AlignToVector(_jointRightArm.GetComponent<Rigidbody>(), _jointRightArm.transform.position, new Vector3(1f, 0f, 0f), 0.1f, 2f);
+            AlignToVector(_jointLeftForeArm.GetComponent<Rigidbody>(), _jointLeftForeArm.transform.position, new Vector3(1f, 0f, 0f), 0.1f, 2f);
+            AlignToVector(_jointRightForeArm.GetComponent<Rigidbody>(), _jointRightForeArm.transform.position, new Vector3(1f, 0f, 0f), 0.1f, 2f);
             forcingCount--;
         }
         Debug.Log("코루틴 끝");
@@ -244,10 +244,6 @@ public class Grab : MonoBehaviourPun
         if (!float.IsNaN(vector.x) && !float.IsNaN(vector.y) && !float.IsNaN(vector.z))
         {
             part.AddTorque(vector * speed * speed);
-            {
-                Debug.DrawRay(part.position, alignmentVector * 0.2f, Color.red, 0f, depthTest: false);
-                Debug.DrawRay(part.position, targetVector * 0.2f, Color.green, 0f, depthTest: false);
-            }
         }
     }
 }
