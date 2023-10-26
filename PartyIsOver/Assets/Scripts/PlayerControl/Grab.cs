@@ -6,67 +6,36 @@ using UnityEngine;
 
 public class Grab : MonoBehaviourPun
 {
-   
-
-
+    // 잡기시 Item에 붙여지는 component
     private GameObject _grabGameObject;
-    //private Rigidbody _grabRigidbody;
-
-    private FixedJoint _gameObjectJoint;
-
-    // 양손 추가
-    private FixedJoint _gameObjectJointLeft;
+    private FixedJoint _gameObjectJoint; // 한손일때
+    private FixedJoint _gameObjectJointLeft; // 양손일때
     private FixedJoint _gameObjectJointRight;
-    //private Rigidbody _grabRigidbody2;
-
-    // 양손 자세 추가
-    private ConfigurableJoint _jointLeft;
-    private ConfigurableJoint _jointRight;
-    private ConfigurableJoint _jointLeftForeArm;
-    private ConfigurableJoint _jointRightForeArm;
-    private ConfigurableJoint _jointLeftUpperArm;
-    private ConfigurableJoint _jointRightUpperArm;
-    private ConfigurableJoint _jointChest;
-
-    Vector3 targetPosition;
+    Vector3 targetPosition; // 아이템 위치
 
     // 아이템 종류
     private int _itemType;
-    public float _turnForce;
 
-    // dummy 추가를 위한 작업
-    private TargetingHandler targetingHandler;
     [SerializeField]
     private BodyHandler bodyHandler;
 
+    [Header("잡기 모션 힘")]
+    [SerializeField]
+    private float _turnForce; 
 
-    void Start()
+
+
+    void Init()
     {
-        targetingHandler = GetComponent<TargetingHandler>();
         bodyHandler = GetComponent<BodyHandler>();
-
-
-
-
-        _jointRight = GameObject.Find("GreenFistR").GetComponent<ConfigurableJoint>();
-
-        _jointLeftForeArm = GameObject.Find("GreenForeArmL").GetComponent<ConfigurableJoint>();
-        _jointRightForeArm = GameObject.Find("GreenForeArmR").GetComponent<ConfigurableJoint>();
-
-        _jointLeftUpperArm = GameObject.Find("GreenUpperArmL").GetComponent<ConfigurableJoint>();
-        _jointRightUpperArm = GameObject.Find("GreenUpperArmR").GetComponent<ConfigurableJoint>();
-
-        _jointChest = GameObject.Find("GreenChest").GetComponent<ConfigurableJoint>();
-
-
-       
-
     }
 
     void Update()
     {
         if (_grabGameObject != null)
         {
+            targetPosition = _grabGameObject.transform.position;
+
             // 놓기
             if (Input.GetMouseButtonDown(1))
             {
@@ -80,22 +49,22 @@ public class Grab : MonoBehaviourPun
 
                 // 관절 복구
                 bodyHandler.LeftHand.PartJoint.angularYMotion = ConfigurableJointMotion.Limited;
-                _jointLeftForeArm.angularYMotion = ConfigurableJointMotion.Limited;
-                _jointLeftUpperArm.angularYMotion = ConfigurableJointMotion.Limited;
+                bodyHandler.LeftForarm.PartJoint.angularYMotion = ConfigurableJointMotion.Limited;
+                bodyHandler.LeftArm.PartJoint.angularYMotion = ConfigurableJointMotion.Limited;
                 bodyHandler.LeftHand.PartJoint.angularZMotion = ConfigurableJointMotion.Limited;
-                _jointLeftForeArm.angularZMotion = ConfigurableJointMotion.Limited;
-                _jointLeftUpperArm.angularZMotion = ConfigurableJointMotion.Limited;
+                bodyHandler.LeftForarm.PartJoint.angularZMotion = ConfigurableJointMotion.Limited;
+                bodyHandler.LeftArm.PartJoint.angularZMotion = ConfigurableJointMotion.Limited;
 
-                _jointRight.angularYMotion = ConfigurableJointMotion.Limited;
-                _jointRightForeArm.angularYMotion = ConfigurableJointMotion.Limited;
-                _jointRightUpperArm.angularYMotion = ConfigurableJointMotion.Limited;
-                _jointRight.angularZMotion = ConfigurableJointMotion.Limited;
-                _jointRightForeArm.angularZMotion = ConfigurableJointMotion.Limited;
-                _jointRightUpperArm.angularZMotion = ConfigurableJointMotion.Limited;
+                bodyHandler.RightHand.PartJoint.angularYMotion = ConfigurableJointMotion.Limited;
+                bodyHandler.RightForarm.PartJoint.angularYMotion = ConfigurableJointMotion.Limited;
+                bodyHandler.RightArm.PartJoint.angularYMotion = ConfigurableJointMotion.Limited;
+                bodyHandler.RightHand.PartJoint.angularZMotion = ConfigurableJointMotion.Limited;
+                bodyHandler.RightForarm.PartJoint.angularZMotion = ConfigurableJointMotion.Limited;
+                bodyHandler.RightArm.PartJoint.angularZMotion = ConfigurableJointMotion.Limited;
                 return;
             }
-
-            // 임시 코드
+            
+            // 아이템 종류 변경 임시 코드
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
                 Debug.Log("아이템 타입1");
@@ -129,13 +98,12 @@ public class Grab : MonoBehaviourPun
                 }
             }
 
-            // 기본 잡기 자세
-            targetPosition = _grabGameObject.transform.position;
-            bodyHandler.LeftHand.PartJoint.targetPosition = targetPosition + new Vector3(0, 0, 20);
-            _jointRight.targetPosition = bodyHandler.LeftHand.PartJoint.targetPosition;
 
-            _jointLeftForeArm.targetPosition = targetPosition;
-            _jointRightForeArm.targetPosition = _jointLeftForeArm.targetPosition;
+            // 기본 잡기 자세
+            bodyHandler.LeftHand.PartJoint.targetPosition = targetPosition + new Vector3(0, 0, 20);
+            bodyHandler.RightHand.PartJoint.targetPosition = bodyHandler.LeftHand.PartJoint.targetPosition;
+            bodyHandler.LeftForarm.PartJoint.targetPosition = targetPosition;
+            bodyHandler.RightForarm.PartJoint.targetPosition = bodyHandler.LeftForarm.PartJoint.targetPosition;
         }
     }
 
@@ -168,7 +136,7 @@ public class Grab : MonoBehaviourPun
         // 아이템 잡기
         if (other.gameObject.CompareTag("Item"))
         {
-            //마우스를 클릭한 순간 앞에 오브젝트를 탐색하고
+            //마우스를 클릭한 순간 앞에 오브젝트를 탐색하고 << 추가 필요
             //targetingHandler.SearchTarget();
 
 
@@ -187,11 +155,11 @@ public class Grab : MonoBehaviourPun
 
                     // 한손 휘두르기 모션을 위해 관절 부분잠금
                     bodyHandler.LeftHand.PartJoint.angularYMotion = ConfigurableJointMotion.Locked;
-                    _jointLeftForeArm.angularYMotion = ConfigurableJointMotion.Locked;
-                    _jointLeftUpperArm.angularYMotion = ConfigurableJointMotion.Locked;
+                    bodyHandler.LeftForarm.PartJoint.angularYMotion = ConfigurableJointMotion.Locked;
+                    bodyHandler.LeftArm.PartJoint.angularYMotion = ConfigurableJointMotion.Locked;
                     bodyHandler.LeftHand.PartJoint.angularZMotion = ConfigurableJointMotion.Locked;
-                    _jointLeftForeArm.angularZMotion = ConfigurableJointMotion.Locked;
-                    _jointLeftUpperArm.angularZMotion = ConfigurableJointMotion.Locked;
+                    bodyHandler.LeftForarm.PartJoint.angularZMotion = ConfigurableJointMotion.Locked;
+                    bodyHandler.LeftArm.PartJoint.angularZMotion = ConfigurableJointMotion.Locked;
                 }
             }
             // 양손
@@ -213,18 +181,18 @@ public class Grab : MonoBehaviourPun
 
                     // 양손 휘두르기 모션을 위해 관절 부분잠금
                     bodyHandler.LeftHand.PartJoint.angularYMotion = ConfigurableJointMotion.Locked;
-                    _jointLeftForeArm.angularYMotion = ConfigurableJointMotion.Locked;
-                    _jointLeftUpperArm.angularYMotion = ConfigurableJointMotion.Locked;
+                    bodyHandler.LeftForarm.PartJoint.angularYMotion = ConfigurableJointMotion.Locked;
+                    bodyHandler.LeftArm.PartJoint.angularYMotion = ConfigurableJointMotion.Locked;
                     bodyHandler.LeftHand.PartJoint.angularZMotion = ConfigurableJointMotion.Locked;
-                    _jointLeftForeArm.angularZMotion = ConfigurableJointMotion.Locked;
-                    _jointLeftUpperArm.angularZMotion = ConfigurableJointMotion.Locked;
+                    bodyHandler.LeftForarm.PartJoint.angularZMotion = ConfigurableJointMotion.Locked;
+                    bodyHandler.LeftArm.PartJoint.angularZMotion = ConfigurableJointMotion.Locked;
 
                     bodyHandler.RightHand.PartJoint.angularYMotion = ConfigurableJointMotion.Locked;
-                    _jointRightForeArm.angularYMotion = ConfigurableJointMotion.Locked;
-                    _jointRightUpperArm.angularYMotion = ConfigurableJointMotion.Locked;
+                    bodyHandler.RightForarm.PartJoint.angularYMotion = ConfigurableJointMotion.Locked;
+                    bodyHandler.RightArm.PartJoint.angularYMotion = ConfigurableJointMotion.Locked;
                     bodyHandler.RightHand.PartJoint.angularZMotion = ConfigurableJointMotion.Locked;
-                    _jointRightForeArm.angularZMotion = ConfigurableJointMotion.Locked;
-                    _jointRightUpperArm.angularZMotion = ConfigurableJointMotion.Locked;
+                    bodyHandler.RightForarm.PartJoint.angularZMotion = ConfigurableJointMotion.Locked;
+                    bodyHandler.RightArm.PartJoint.angularZMotion = ConfigurableJointMotion.Locked;
                 }
             }
         }
@@ -258,8 +226,8 @@ public class Grab : MonoBehaviourPun
 
         while (forcingCount > 0)
         {
-            AlignToVector(bodyHandler.LeftHand.PartRigidbody, _jointLeft.transform.position, new Vector3(0f, 0.2f, 0f), 0.1f, 6f);
-            AlignToVector(bodyHandler.RightHand.PartRigidbody, _jointRight.transform.position, new Vector3(0f, 0.2f, 0f), 0.1f, 6f);
+            AlignToVector(bodyHandler.LeftHand.PartRigidbody, bodyHandler.LeftHand.transform.position, new Vector3(0f, 0.2f, 0f), 0.1f, 6f);
+            AlignToVector(bodyHandler.RightHand.PartRigidbody, bodyHandler.RightHand.transform.position, new Vector3(0f, 0.2f, 0f), 0.1f, 6f);
             forcingCount--;
         }
         Debug.Log("아래위로 휘두르기");
@@ -289,7 +257,6 @@ public class Grab : MonoBehaviourPun
 
         yield return 0;
     }
-
 
 
     //리지드바디 part의 alignmentVector방향을 targetVector방향으로 회전
