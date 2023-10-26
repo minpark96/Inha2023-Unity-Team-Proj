@@ -1302,8 +1302,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44989b6f400b3574c922765cb8f2a46a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetLimb: {fileID: 6326508433674479885}
-  mirror: 0
 --- !u!1 &78420020
 GameObject:
   m_ObjectHideFlags: 0
@@ -1423,6 +1421,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   actor: {fileID: 0}
   invulnerable: 0
+  _health: 0
 --- !u!114 &83486394
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1435,8 +1434,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0444d9ac95de644cb7ff3b6d6c356fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  statusHandler: {fileID: 0}
+  StatusHandler: {fileID: 0}
+  BodyHandler: {fileID: 0}
+  PlayerControll: {fileID: 0}
   actorState: 4
+  lastActorState: 8
 --- !u!114 &83486395
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1461,7 +1463,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 83486392}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 163aac5c61a559942a4c0ff8013e0a41, type: 3}
   m_Name: 
@@ -1482,6 +1484,9 @@ MonoBehaviour:
   rightGrab: 0
   leftKick: 0
   rightKick: 0
+  isStateChange: 0
+  _idleTimer: 0
+  isAI: 1
 --- !u!114 &83486397
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1495,6 +1500,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Root: {fileID: 83486399}
+  BodyParts: []
   Head: {fileID: 1159502198}
   Chest: {fileID: 537815023}
   Waist: {fileID: 1223179819}
@@ -2040,8 +2046,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44989b6f400b3574c922765cb8f2a46a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetLimb: {fileID: 8603926451244886235}
-  mirror: 1
 --- !u!1 &141423571
 GameObject:
   m_ObjectHideFlags: 0
@@ -2525,8 +2529,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44989b6f400b3574c922765cb8f2a46a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetLimb: {fileID: 5783979081772658471}
-  mirror: 0
 --- !u!1 &151806535
 GameObject:
   m_ObjectHideFlags: 0
@@ -3150,8 +3152,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44989b6f400b3574c922765cb8f2a46a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetLimb: {fileID: 7970047322375205921}
-  mirror: 1
 --- !u!1 &183365524
 GameObject:
   m_ObjectHideFlags: 0
@@ -3803,6 +3803,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
+  PartJoint: {fileID: 0}
 --- !u!153 &240328774
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -3979,6 +3980,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
+  PartJoint: {fileID: 0}
 --- !u!153 &242557669
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -4421,8 +4423,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44989b6f400b3574c922765cb8f2a46a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetLimb: {fileID: 6206444949789746206}
-  mirror: 0
 --- !u!1 &250882586
 GameObject:
   m_ObjectHideFlags: 0
@@ -6232,8 +6232,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44989b6f400b3574c922765cb8f2a46a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetLimb: {fileID: 4886105844622377480}
-  mirror: 1
 --- !u!1 &370867405
 GameObject:
   m_ObjectHideFlags: 0
@@ -7008,8 +7006,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44989b6f400b3574c922765cb8f2a46a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetLimb: {fileID: 7036925613170865606}
-  mirror: 1
 --- !u!1 &424922935
 GameObject:
   m_ObjectHideFlags: 0
@@ -7734,6 +7730,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
+  PartJoint: {fileID: 0}
 --- !u!153 &501211368
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -8558,6 +8555,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
+  PartJoint: {fileID: 0}
 --- !u!153 &537815024
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -9091,6 +9089,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
+  PartJoint: {fileID: 0}
 --- !u!153 &573083521
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -9340,6 +9339,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
+  PartJoint: {fileID: 0}
 --- !u!136 &591689921
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -10356,8 +10356,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44989b6f400b3574c922765cb8f2a46a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetLimb: {fileID: 5921550252627617830}
-  mirror: 1
 --- !u!1 &652158569
 GameObject:
   m_ObjectHideFlags: 0
@@ -10475,6 +10473,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
+  PartJoint: {fileID: 0}
 --- !u!153 &668244678
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -11597,6 +11596,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
+  PartJoint: {fileID: 0}
 --- !u!153 &713996577
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -11995,6 +11995,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
+  PartJoint: {fileID: 0}
 --- !u!153 &723357615
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -14513,8 +14514,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44989b6f400b3574c922765cb8f2a46a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetLimb: {fileID: 2160484128520882666}
-  mirror: 1
 --- !u!1 &900532490
 GameObject:
   m_ObjectHideFlags: 0
@@ -15649,8 +15648,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44989b6f400b3574c922765cb8f2a46a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetLimb: {fileID: 1012699663598540797}
-  mirror: 1
 --- !u!1 &974957452
 GameObject:
   m_ObjectHideFlags: 0
@@ -17080,8 +17077,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44989b6f400b3574c922765cb8f2a46a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetLimb: {fileID: 8280427176600323107}
-  mirror: 1
 --- !u!1 &1057401265
 GameObject:
   m_ObjectHideFlags: 0
@@ -17254,8 +17249,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44989b6f400b3574c922765cb8f2a46a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetLimb: {fileID: 8492912637819073802}
-  mirror: 1
 --- !u!1 &1077651954
 GameObject:
   m_ObjectHideFlags: 0
@@ -17866,6 +17859,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
+  PartJoint: {fileID: 0}
 --- !u!153 &1109409744
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -18851,6 +18845,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
+  PartJoint: {fileID: 0}
 --- !u!153 &1143729351
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -19375,6 +19370,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
+  PartJoint: {fileID: 0}
 --- !u!135 &1159502199
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -20071,6 +20067,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
+  PartJoint: {fileID: 0}
 --- !u!153 &1195674184
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -20335,6 +20332,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
+  PartJoint: {fileID: 0}
 --- !u!153 &1223179820
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -21075,8 +21073,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44989b6f400b3574c922765cb8f2a46a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetLimb: {fileID: 1866962570371226189}
-  mirror: 1
 --- !u!136 &1272087608
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -21671,8 +21667,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44989b6f400b3574c922765cb8f2a46a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetLimb: {fileID: 1655398290385996982}
-  mirror: 1
 --- !u!1 &1310643412
 GameObject:
   m_ObjectHideFlags: 0
@@ -22156,8 +22150,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44989b6f400b3574c922765cb8f2a46a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetLimb: {fileID: 1420171998504744850}
-  mirror: 1
 --- !u!1 &1336733359
 GameObject:
   m_ObjectHideFlags: 0
@@ -23310,6 +23302,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
+  PartJoint: {fileID: 0}
 --- !u!153 &1432834842
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -23625,6 +23618,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
+  PartJoint: {fileID: 0}
 --- !u!153 &1441491802
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -24157,6 +24151,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
+  PartJoint: {fileID: 0}
 --- !u!153 &1483005025
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -26538,8 +26533,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44989b6f400b3574c922765cb8f2a46a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetLimb: {fileID: 3228029483959753567}
-  mirror: 1
 --- !u!1 &1646694350
 GameObject:
   m_ObjectHideFlags: 0
@@ -28317,8 +28310,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44989b6f400b3574c922765cb8f2a46a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetLimb: {fileID: 8932615431758121424}
-  mirror: 1
 --- !u!1 &1732010501
 GameObject:
   m_ObjectHideFlags: 0
@@ -30946,8 +30937,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44989b6f400b3574c922765cb8f2a46a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetLimb: {fileID: 6418485893361275901}
-  mirror: 0
 --- !u!1 &1888315961
 GameObject:
   m_ObjectHideFlags: 0
@@ -41994,6 +41983,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Root: {fileID: 2653568215181255324}
+  BodyParts: []
   Head: {fileID: 2802024866263701200}
   Chest: {fileID: 2801588848915514785}
   Waist: {fileID: 2801600473431487730}
@@ -42039,6 +42029,9 @@ MonoBehaviour:
   rightGrab: 0
   leftKick: 0
   rightKick: 0
+  isStateChange: 0
+  _idleTimer: 0
+  isAI: 0
 --- !u!114 &2653568215181255329
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -42070,6 +42063,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   actor: {fileID: 0}
   invulnerable: 0
+  _health: 0
 --- !u!114 &2653568215181255331
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -42082,8 +42076,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0444d9ac95de644cb7ff3b6d6c356fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  statusHandler: {fileID: 0}
+  StatusHandler: {fileID: 0}
+  BodyHandler: {fileID: 0}
+  PlayerControll: {fileID: 0}
   actorState: 4
+  lastActorState: 8
 --- !u!4 &2653577453574409601
 Transform:
   m_ObjectHideFlags: 0
@@ -42239,6 +42236,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
+  PartJoint: {fileID: 0}
 --- !u!153 &2675482982836170738
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -42363,7 +42361,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8d2732e4766ccf4fba1c58f524e0dae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _turnSpeed: 3
+  _turnForce: 0
 --- !u!135 &2675591024976243569
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -42391,6 +42389,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
+  PartJoint: {fileID: 0}
 --- !u!153 &2675591024976243571
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -42684,6 +42683,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
+  PartJoint: {fileID: 0}
 --- !u!4 &2681629805768795788
 Transform:
   m_ObjectHideFlags: 0
@@ -43544,6 +43544,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
+  PartJoint: {fileID: 0}
 --- !u!153 &2800224987189693596
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -43654,6 +43655,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
+  PartJoint: {fileID: 0}
 --- !u!153 &2800232216506460855
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -43764,6 +43766,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
+  PartJoint: {fileID: 0}
 --- !u!153 &2800253075633493637
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -43874,6 +43877,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
+  PartJoint: {fileID: 0}
 --- !u!153 &2801588848915514784
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -43984,6 +43988,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
+  PartJoint: {fileID: 0}
 --- !u!153 &2801600473431487729
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -44094,6 +44099,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
+  PartJoint: {fileID: 0}
 --- !u!153 &2801627655295430721
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -44204,6 +44210,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
+  PartJoint: {fileID: 0}
 --- !u!153 &2801778079153613754
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -44314,6 +44321,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
+  PartJoint: {fileID: 0}
 --- !u!153 &2801847783180245431
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -44424,6 +44432,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
+  PartJoint: {fileID: 0}
 --- !u!153 &2802024866263701199
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -44534,6 +44543,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
+  PartJoint: {fileID: 0}
 --- !u!153 &2802135203211806480
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -44644,6 +44654,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
+  PartJoint: {fileID: 0}
 --- !u!153 &2802159958102799115
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -44754,6 +44765,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
+  PartJoint: {fileID: 0}
 --- !u!4 &2807067577576858425
 Transform:
   m_ObjectHideFlags: 0
@@ -46783,6 +46795,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
+  PartJoint: {fileID: 0}
 --- !u!4 &3848525377488734462
 Transform:
   m_ObjectHideFlags: 0
@@ -52466,6 +52479,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
+  PartJoint: {fileID: 0}
 --- !u!1 &5609826549913831562
 GameObject:
   m_ObjectHideFlags: 0

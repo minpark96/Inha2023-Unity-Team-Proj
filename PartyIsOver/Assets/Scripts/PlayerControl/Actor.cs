@@ -53,7 +53,6 @@ public class Actor : MonoBehaviour
         if (actorState != lastActorState)
         {
             PlayerControll.isStateChange = true;
-            Debug.Log("stateChange");
         }
         else
         {

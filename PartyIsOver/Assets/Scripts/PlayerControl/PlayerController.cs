@@ -352,8 +352,8 @@ public class PlayerController : MonoBehaviour
                 bodyHandler.RightThigh.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
 
                 zero = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
-                rigidbody.AddForce(zero * 20f, ForceMode.VelocityChange);
-                rigidbody2.AddForce(zero * 30f, ForceMode.VelocityChange);
+                rigidbody.AddForce(zero * 10f, ForceMode.VelocityChange);
+                rigidbody2.AddForce(zero * 50f, ForceMode.VelocityChange);
             }
 
             {
@@ -365,10 +365,15 @@ public class PlayerController : MonoBehaviour
                 bodyHandler.LeftFoot.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
                 bodyHandler.LeftThigh.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
                 zero = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
-                rigidbody.AddForce(zero * 20f, ForceMode.VelocityChange);
-                rigidbody2.AddForce(zero * 30f, ForceMode.VelocityChange);
+                rigidbody.AddForce(zero * 10f, ForceMode.VelocityChange);
+                rigidbody2.AddForce(zero * 50f, ForceMode.VelocityChange);
             }
-            //_statusHandler.EnterUnconsciousState();
+
+            {
+                //머리 뒤로 눕게 하기
+                bodyHandler.Head.PartRigidbody.AddForce(bodyHandler.Head.transform.up * headingForce, ForceMode.VelocityChange);
+                bodyHandler.Chest.PartRigidbody.AddForce(-bodyHandler.Chest.transform.up * headingForce, ForceMode.VelocityChange);
+            }
 
             ResetBodySpring();
 
@@ -530,7 +535,6 @@ public class PlayerController : MonoBehaviour
                     continue;
                 }
                 angularXDrive = bodyHandler.BodyParts[i].PartJoint.angularXDrive;
-                Debug.Log(_xPosSpringAry.Count);
                 angularXDrive.positionSpring = _xPosSpringAry[j] * percentage;
 
                 bodyHandler.BodyParts[i].PartJoint.angularXDrive = angularXDrive;
@@ -754,11 +758,9 @@ public class PlayerController : MonoBehaviour
 
     public void Jump()
     {
-
         if (isStateChange)
         {
             isGrounded = false;
-
 
             //_applyedForce = 0.2f;
             float jumpMoveForce = 0.6f * _inputSpamForceModifier * 10;
