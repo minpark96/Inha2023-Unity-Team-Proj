@@ -2,9 +2,10 @@ using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Photon.Pun;
 
-public class PlayerController : MonoBehaviour
-{
+public class PlayerController : MonoBehaviourPun
+{ 
     [Header("앞뒤 속도")]
     public float RunSpeed;
     [Header("점프 힘")]
@@ -227,15 +228,15 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!photonView.IsMine)
+        {
+            return;
+        }
+
         if (isAI)
             return;
 
         _moveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-
-
-
-
-
 
         if (_actor.actorState != Actor.ActorState.Jump)
         {

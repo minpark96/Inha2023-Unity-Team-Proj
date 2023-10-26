@@ -32,22 +32,18 @@ public class Actor : MonoBehaviourPunCallbacks
             LocalPlayerInstance = this.gameObject;
         }
         DontDestroyOnLoad(this.gameObject);
-    }
 
-    // Start is called before the first frame update
-
-    private void Awake()
-    {
         BodyHandler = GetComponent<BodyHandler>();
         StatusHandler = GetComponent<StatusHandler>();
         PlayerControll = GetComponent<PlayerController>();
     }
+
     void Start()
     {
 
-
-
     }
+
+    
 
     // Update is called once per frame
     void Update()
@@ -100,4 +96,6 @@ public class Actor : MonoBehaviourPunCallbacks
 
         lastActorState = actorState;
     }
+
+    
 }
