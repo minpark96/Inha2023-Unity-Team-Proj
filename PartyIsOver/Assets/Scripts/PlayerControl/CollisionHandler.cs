@@ -99,6 +99,10 @@ public class CollisionHandler : MonoBehaviour
                     contact.thisCollider.attachedRigidbody.AddForce(contact.normal * 10f, ForceMode.VelocityChange);
                     //actor.inputHandler.SetVibration(1f, 0f, 0.2f);
                     break;
+                case InteractableObject.Damage.StatusAbnormality:
+                    num2 = 10f;
+                    Debug.Log("¾ßÈ£");
+                    break;
                 default:
                     contact.thisCollider.attachedRigidbody.AddForce(contact.normal * 10f, ForceMode.VelocityChange);
                     break;

@@ -28,15 +28,20 @@ public class StatusHandler : MonoBehaviour
     private float _unconsciousTime = 0f;
 
     private float _knockoutThreshold=20f;
-    
-    // Start is called before the first frame update
+
+    private BodyHandler bodyHandler;
+
+    void Init()
+    {
+        bodyHandler = GetComponent<BodyHandler>();
+    }
+
     void Start()
     {
         actor = transform.GetComponent<Actor>();
         _health = _maxHealth;
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (_healthDamage != 0f)
@@ -49,6 +54,9 @@ public class StatusHandler : MonoBehaviour
     {
         Debug.Log("AddDamage");
 
+        Debug.Log($"데미지 타입: {type}");
+        DebuffCheck(type);
+
         damage *= _damageModifer;
         if (!invulnerable && actor.actorState != Actor.ActorState.Dead && actor.actorState != Actor.ActorState.Unconscious)
         {
@@ -60,6 +68,66 @@ public class StatusHandler : MonoBehaviour
             //}
             _healthDamage += damage;
         }
+    }
+
+    // 상태이상 체크
+    bool DebuffCheck(InteractableObject.Damage type)
+    {
+        switch (type)
+        {
+            case Damage.StatusAbnormality:
+            {
+                StartCoroutine("Ice"); // 빙결
+            }
+            break;
+        }
+
+
+        return true;
+    }
+
+    IEnumerator Ice()
+    {
+        bodyHandler.LeftHand.PartRigidbody.isKinematic = true;
+        bodyHandler.LeftForarm.PartRigidbody.isKinematic = true;
+        bodyHandler.LeftArm.PartRigidbody.isKinematic = true;
+        bodyHandler.LeftFoot.PartRigidbody.isKinematic = true;
+        bodyHandler.LeftLeg.PartRigidbody.isKinematic = true;
+        bodyHandler.LeftArm.PartRigidbody.isKinematic = true;
+
+        bodyHandler.RightHand.PartRigidbody.isKinematic = true;
+        bodyHandler.RightForarm.PartRigidbody.isKinematic = true;
+        bodyHandler.RightArm.PartRigidbody.isKinematic = true;
+        bodyHandler.RightFoot.PartRigidbody.isKinematic = true;
+        bodyHandler.RightLeg.PartRigidbody.isKinematic = true;
+        bodyHandler.RightArm.PartRigidbody.isKinematic = true;
+
+        bodyHandler.Head.PartRigidbody.isKinematic = true;
+        bodyHandler.Chest.PartRigidbody.isKinematic = true;
+        bodyHandler.Waist.PartRigidbody.isKinematic = true;
+        bodyHandler.Hip.PartRigidbody.isKinematic = true;
+
+        yield return new WaitForSeconds(3.0f);
+
+        bodyHandler.LeftHand.PartRigidbody.isKinematic = false;
+        bodyHandler.LeftForarm.PartRigidbody.isKinematic = false;
+        bodyHandler.LeftArm.PartRigidbody.isKinematic = false;
+        bodyHandler.LeftFoot.PartRigidbody.isKinematic = false;
+        bodyHandler.LeftLeg.PartRigidbody.isKinematic = false;
+        bodyHandler.LeftArm.PartRigidbody.isKinematic = false;
+
+        bodyHandler.RightHand.PartRigidbody.isKinematic = false;
+        bodyHandler.RightForarm.PartRigidbody.isKinematic = false;
+        bodyHandler.RightArm.PartRigidbody.isKinematic = false;
+        bodyHandler.RightFoot.PartRigidbody.isKinematic = false;
+        bodyHandler.RightLeg.PartRigidbody.isKinematic = false;
+        bodyHandler.RightArm.PartRigidbody.isKinematic = false;
+
+        bodyHandler.Head.PartRigidbody.isKinematic = false;
+        bodyHandler.Chest.PartRigidbody.isKinematic = false;
+        bodyHandler.Waist.PartRigidbody.isKinematic = false;
+        bodyHandler.Hip.PartRigidbody.isKinematic = false;
+
     }
 
     public void UpdateHealth()

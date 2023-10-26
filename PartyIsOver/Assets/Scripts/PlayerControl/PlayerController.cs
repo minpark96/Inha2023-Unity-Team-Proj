@@ -5,6 +5,8 @@ using System.Runtime.CompilerServices;
 
 public class PlayerController : MonoBehaviour
 {
+    public int timeScale { get; internal set; }
+
     [Header("앞뒤 속도")]
     public float RunSpeed;
     [Header("점프 힘")]
@@ -653,7 +655,10 @@ public class PlayerController : MonoBehaviour
                 transform2 = bodyHandler.LeftHand.transform;
                 rigidbody = bodyHandler.LeftArm.PartRigidbody;
                 rigidbody2 = bodyHandler.LeftHand.PartRigidbody;
-                bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+                
+                //bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+                bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.StatusAbnormality; // 실험중
+                
                 bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
                 bodyHandler.LeftForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
                 break;
@@ -663,7 +668,10 @@ public class PlayerController : MonoBehaviour
                 transform2 = bodyHandler.RightHand.transform;
                 rigidbody = bodyHandler.RightArm.PartRigidbody;
                 rigidbody2 = bodyHandler.RightHand.PartRigidbody;
-                bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+                
+                //bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+                bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.StatusAbnormality; // 실험중
+                
                 bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
                 bodyHandler.RightForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
                 break;
@@ -712,7 +720,7 @@ public class PlayerController : MonoBehaviour
                 vector = bodyHandler.Chest.transform.right / 2f;
                 //bodyHandeler.LeftArm.PartInteractable.damageModifier = InteractableObject.Damage.Default;
                 //bodyHandeler.LeftForarm.PartInteractable.damageModifier = InteractableObject.Damage.Default;
-                bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+                //bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Default; // 주석처리
                 bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
                 bodyHandler.LeftForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
                 break;
@@ -724,7 +732,7 @@ public class PlayerController : MonoBehaviour
                 vector = -bodyHandler.Chest.transform.right / 2f;
                 //bodyHandeler.RightArm.PartInteractable.damageModifier = InteractableObject.Damage.Default;
                 //bodyHandeler.RightForarm.PartInteractable.damageModifier = InteractableObject.Damage.Default;
-                bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+                //bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Default; // 주석처리
                 bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
                 bodyHandler.RightForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
                 break;

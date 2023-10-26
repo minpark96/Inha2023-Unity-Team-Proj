@@ -120,19 +120,23 @@ public class Grab : MonoBehaviourPun
         //            _grabGameObject = other.gameObject;
 
         //            _gameObjectJoint = _grabGameObject.AddComponent<FixedJoint>();
-        //            _gameObjectJoint.connectedBody = _grabRigidbody;
+        //            _gameObjectJoint.connectedBody = bodyHandler.LeftHand.PartRigidbody;
         //            _gameObjectJoint.breakForce = 9001;
         //        }
         //    }
-        //    else if (_grabGameObject != null)
+
+        //    //놓기
+        //    if (_grabGameObject != null)
         //    {
-        //        Destroy(_grabGameObject.GetComponent<FixedJoint>());
-        //        _gameObjectJoint = null;
-        //        _grabGameObject = null;
+        //        if (Input.GetMouseButtonDown(1))
+        //        {
+        //            Destroy(_gameObjectJoint);
+        //            _grabGameObject = null;
+        //        }
         //    }
         //}
 
-        
+
         // 아이템 잡기
         if (other.gameObject.CompareTag("Item"))
         {

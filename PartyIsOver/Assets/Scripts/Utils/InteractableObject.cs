@@ -14,7 +14,8 @@ public class InteractableObject : MonoBehaviour
         Headbutt = 5,
         Knockout = 6,
         Special= 7,
-        DamageVolume = 8
+        StatusAbnormality = 8,
+
     }
 
     public Damage damageModifier = Damage.Default;
