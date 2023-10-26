@@ -91,10 +91,7 @@ public class PlayerController : MonoBehaviourPun
 
     void Start()
     {
-
         StartCoroutine("InitDelay");
-
-
 
         if (isAI)
             return;
@@ -118,10 +115,7 @@ public class PlayerController : MonoBehaviourPun
             }
             _xPosSpringAry.Add(bodyHandler.BodyParts[i].PartJoint.angularXDrive.positionSpring);
             _yzPosSpringAry.Add(bodyHandler.BodyParts[i].PartJoint.angularYZDrive.positionSpring);
-
-            
         }
-
     }
 
     void Init()
@@ -359,8 +353,8 @@ public class PlayerController : MonoBehaviourPun
     {
         //냥냥 펀치 R키를 누르면 작동
         StartCoroutine(MeowNyangPunchDelay());
-
     }
+
     IEnumerator MeowNyangPunchDelay()
     {
         int _punchcount = 0;
@@ -381,7 +375,6 @@ public class PlayerController : MonoBehaviourPun
         }
     }
 
-
     IEnumerator PunchWithDelay(Side side, float delay)
     {
         //광클 막기
@@ -394,15 +387,12 @@ public class PlayerController : MonoBehaviourPun
         yield return new WaitForSeconds(delay);
 
         _isCoroutineRunning = false;
-
-        
     }
 
     private void PunchAndGrab()
     {
         //마우스를 클릭한 순간 앞에 오브젝트를 탐색하고
         targetingHandler.SearchTarget();
-
 
         //일정 시간내에 뗄 경우 펀치를 발사 이때 탐색한 오브젝트가 있을 경우 그 방향으로 펀치 발사
         if (!_isCoroutineRunning)
@@ -435,19 +425,15 @@ public class PlayerController : MonoBehaviourPun
             if (_punchTimer < 0.1f)
             {
                 ArmActionReadying(side);
-
             }
             if (_punchTimer >= 0.2f && _punchTimer < 0.3f)
             {
                 ArmActionPunching(side);
                 yield return null;
-
             }
             if (_punchTimer >= 0.3f && _punchTimer < 0.5f)
             {
                 ArmActionPunchResetting(side);
-
-
             }
         }
         _punchTimer = 0f;
@@ -460,9 +446,6 @@ public class PlayerController : MonoBehaviourPun
         {
             ResetBodySpring();
         }
-
-
-
     }
 
 
@@ -498,7 +481,6 @@ public class PlayerController : MonoBehaviourPun
         JointDrive angularYZDrive;
         float startTime = Time.time;
 
-
         while (Time.time < startTime + springLerpDuration)
         {
             float elapsed = Time.time - startTime;
@@ -525,10 +507,7 @@ public class PlayerController : MonoBehaviourPun
 
                 yield return null;
             }
-
         }
-
-
     }
 
     public void Stand()
@@ -541,7 +520,6 @@ public class PlayerController : MonoBehaviourPun
         {
             _idleTimer = Mathf.Clamp(_idleTimer + Time.deltaTime, -60f, 30f);
         }
-
 
         if (_actor.actorState == Actor.ActorState.Run && !leftGrab && !rightGrab)
         {

@@ -86,6 +86,9 @@ public class PhotonManager : MonoBehaviourPunCallbacks
             Debug.Log("Progress Label " + _progressLabel);
             _progressLabel.SetActive(false);
             _controlPanel.SetActive(true);
+
+            PhotonNetwork.SerializationRate = 20;
+            PhotonNetwork.SendRate = 20;
         }
         else
         {
@@ -202,7 +205,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         {
             Debug.LogFormat("We are Instantiating LocalPlayer from {0}", SceneManagerHelper.ActiveSceneName);
             // we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
-            PhotonNetwork.Instantiate(_playerPrefab, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
+            PhotonNetwork.Instantiate(_playerPrefab, new Vector3(0f, -5f, 0f), Quaternion.identity, 0);
         }
         else
         {
