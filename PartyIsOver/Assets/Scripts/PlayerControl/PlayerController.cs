@@ -73,6 +73,10 @@ public class PlayerController : MonoBehaviour
 
     InteractableObject target;
 
+    private ConfigurableJoint[] childJoints;
+    private SoftJointLimitSpring originalAngularXSpring;
+    private SoftJointLimitSpring originalAngularYZSpring;
+
     public enum Side
     {
         Left = 0,
@@ -132,6 +136,10 @@ public class PlayerController : MonoBehaviour
         bodyHandler = GetComponent<BodyHandler>();
         targetingHandler = GetComponent<TargetingHandler>();
         _actor = GetComponent<Actor>();
+        childJoints = GetComponentsInChildren<ConfigurableJoint>();
+
+        originalAngularXSpring = childJoints[0].angularXLimitSpring;
+        originalAngularYZSpring = childJoints[0].angularYZLimitSpring;
 
         for (int i = 0; i < bodyHandler.BodyParts.Count; i++)
         {
@@ -261,6 +269,9 @@ public class PlayerController : MonoBehaviour
                 _actor.actorState = Actor.ActorState.Run;
             }
         }
+
+        if (Input.GetMouseButton(2))
+            ForwardRollTrigger();
     }
 
     private void Update()
@@ -288,8 +299,9 @@ public class PlayerController : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        //Debug.DrawRay(bodyHandler.LeftFoot.PartRigidbody.position, -bodyHandler.LeftFoot.transform.up * 10f, Color.red);
-        //Debug.DrawRay(bodyHandler.RightFoot.PartRigidbody.position, -bodyHandler.RightFoot.transform.up * 10f, Color.red);
+        Debug.DrawRay(bodyHandler.Head.PartRigidbody.position, -bodyHandler.Head.transform.up * 10f, Color.red);
+        Debug.DrawRay(bodyHandler.Waist.PartRigidbody.position, bodyHandler.Waist.transform.up * 10f, Color.red);
+        Debug.DrawRay(bodyHandler.Waist.PartRigidbody.position, bodyHandler.Waist.transform.forward * 10f, Color.green);
     }
     /*void Ray_1()
     {
@@ -303,6 +315,90 @@ public class PlayerController : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
 
+    }
+    private void ForwardRollTrigger()
+    {
+        StartCoroutine(ForwardRollDelay(2f));
+    }
+    
+    IEnumerator ForwardRollDelay(float delay)
+    {
+        StartCoroutine(ForwardRoll());
+
+        yield return new WaitForSeconds(delay);
+
+
+        //다시 회복
+        RestoreSpringTrigger();
+        foreach (ConfigurableJoint joint in childJoints)
+        {
+            joint.angularXLimitSpring = originalAngularXSpring;
+            joint.angularYZLimitSpring = originalAngularYZSpring;
+        }
+
+    }
+
+    IEnumerator ForwardRoll()
+    {
+        //구르기 할 때 몸에 스턴을 걸어 spring을 풀고 회전을 준 다음  삼분할일단 ㄱㄱ
+        ResetBodySpring();
+
+        foreach (ConfigurableJoint joint in childJoints)
+        {
+            // angularXLimitSpring를 비활성화
+            SoftJointLimitSpring angularXSpring = joint.angularXLimitSpring;
+            angularXSpring.spring = 1000f;
+            joint.angularXLimitSpring = angularXSpring;
+
+            // angularYZLimitSpring를 비활성화
+            SoftJointLimitSpring angularYZSpring = joint.angularYZLimitSpring;
+            angularYZSpring.spring = 1000f;
+            joint.angularYZLimitSpring = angularYZSpring;
+        }
+
+        {
+            //Time.timeScale = 0.1f;
+            //머리 앞으로 
+            bodyHandler.Head.PartRigidbody.AddForce(-bodyHandler.Head.transform.up * headingForce, ForceMode.VelocityChange);
+            bodyHandler.Chest.PartRigidbody.AddForce(-bodyHandler.Chest.transform.up * headingForce, ForceMode.VelocityChange);
+            bodyHandler.Waist.PartRigidbody.AddForce(bodyHandler.Waist.transform.up * headingForce, ForceMode.VelocityChange);
+            yield return StartCoroutine(TurnDelay(0.2f));
+
+        }
+        {
+
+            bodyHandler.Head.PartRigidbody.AddForce(-bodyHandler.Head.transform.up * headingForce * 4, ForceMode.VelocityChange);
+            bodyHandler.Waist.PartRigidbody.AddForce(bodyHandler.Waist.transform.forward * headingForce * 4, ForceMode.VelocityChange);
+            /*bodyHandler.RightFoot.PartRigidbody.AddForce(bodyHandler.RightFoot.transform.up * headingForce , ForceMode.VelocityChange);
+            bodyHandler.LeftFoot.PartRigidbody.AddForce(bodyHandler.LeftFoot.transform.up * headingForce , ForceMode.VelocityChange);*/
+
+            //bodyHandler.Chest.PartRigidbody.AddForce(-bodyHandler.Chest.transform.forward * headingForce * 2, ForceMode.VelocityChange);
+
+            yield return StartCoroutine(TurnDelay(0.2f));
+
+        }
+        {
+            //이 단계에서 꼬임
+            bodyHandler.Head.PartRigidbody.AddForce(-bodyHandler.Head.transform.up * headingForce , ForceMode.VelocityChange);
+            bodyHandler.Waist.PartRigidbody.AddForce(-bodyHandler.Waist.transform.up * headingForce * 4, ForceMode.VelocityChange);
+            bodyHandler.Waist.PartRigidbody.AddForce(bodyHandler.Waist.transform.forward * headingForce * 4, ForceMode.VelocityChange);
+            yield return StartCoroutine(TurnDelay(0.2f));
+
+            //bodyHandler.Chest.PartRigidbody.AddForce(bodyHandler.Chest.transform.up * headingForce * 2, ForceMode.VelocityChange);
+        }
+
+        {
+            bodyHandler.Head.PartRigidbody.AddForce(-bodyHandler.Head.transform.up * headingForce, ForceMode.VelocityChange);
+            bodyHandler.Waist.PartRigidbody.AddForce(-bodyHandler.Waist.transform.up * headingForce * 4, ForceMode.VelocityChange);
+            bodyHandler.Waist.PartRigidbody.AddForce(bodyHandler.Waist.transform.forward * headingForce * 4, ForceMode.VelocityChange);
+        }
+
+        yield return null;
+    }
+
+    IEnumerator TurnDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
     }
 
     private void DropKickTrigger()
