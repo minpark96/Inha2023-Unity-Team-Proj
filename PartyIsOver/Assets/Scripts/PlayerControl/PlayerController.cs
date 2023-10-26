@@ -43,6 +43,7 @@ public class PlayerController : MonoBehaviour
     private float _rotationSpeed = 10f;
     private bool _isCoroutineRunning = false;
 
+
     [SerializeField]
     private float _idleTimer = 0;
     private float _punchTimer = 0;
@@ -67,7 +68,7 @@ public class PlayerController : MonoBehaviour
 
     Side _readySide = Side.Left;
 
-    InteractableObject target;
+    InteractableObject _target;
 
     public enum Side
     {
@@ -204,7 +205,10 @@ public class PlayerController : MonoBehaviour
                 break;
             case Define.MouseEvent.Press:
                 {
+                    if(Input.GetMouseButton(0))
+                    {
 
+                    }
                 }
                 break;
             case Define.MouseEvent.PointerUp:
@@ -215,7 +219,7 @@ public class PlayerController : MonoBehaviour
             case Define.MouseEvent.Click:
                 {
                     if(Input.GetMouseButtonUp(0))
-                        PunchAndGrab();
+                        PunchTrigger();
                     if(!isGrounded && Input.GetMouseButtonUp(1))
                         DropKickTrigger();
                 }
@@ -397,10 +401,26 @@ public class PlayerController : MonoBehaviour
         
     }
 
-    private void PunchAndGrab()
+
+    private void Grab()
     {
+        //1.발견한 오브젝트가 있으면 그 방향으로 그랩
+        _target = targetingHandler.SearchTarget();
+
+
+        //이 때 타겟이 아이템인지, 0.5거리 이내인지 확인
+
+
+        //true면 양손형인지 한손형인지, 아이템 종류가 뭔지 확인해서 해당 애니메이션으로 들어감
+        //false면 해당 타겟의 가장 가까운 지점으로 손을 뻗어서 접촉시 그랩상태로 들어감
+        //2.발견한 오브젝트가 없으면 아무것도 하지 않음
+    }
+
+    private void PunchTrigger()
+    {
+
         //마우스를 클릭한 순간 앞에 오브젝트를 탐색하고
-        targetingHandler.SearchTarget();
+        _target = targetingHandler.SearchTarget();
 
 
         //일정 시간내에 뗄 경우 펀치를 발사 이때 탐색한 오브젝트가 있을 경우 그 방향으로 펀치 발사
@@ -411,6 +431,7 @@ public class PlayerController : MonoBehaviour
                 //Punch2(Side.Left);
                 StartCoroutine(PunchWithDelay(Side.Left, 0.5f));
                 _readySide = Side.Right;
+                _target = null;
             }
             else
             {
@@ -418,12 +439,13 @@ public class PlayerController : MonoBehaviour
                 //Punch2(Side.Right);
 
                 _readySide = Side.Left;
+                _target = null;
+
             }
         }
         
-        //일정 시간내에 마우스를 떼지 않을 경우 두가지로 분기를 나눔
-        //1.발견한 오브젝트가 있으면 그 방향으로 그랩
-        //2.발견한 오브젝트가 없으면 아무것도 하지 않음
+        
+        
     }
 
     IEnumerator Punch(Side side)
@@ -459,9 +481,6 @@ public class PlayerController : MonoBehaviour
         {
             ResetBodySpring();
         }
-
-
-
     }
 
 
@@ -512,7 +531,6 @@ public class PlayerController : MonoBehaviour
                     continue;
                 }
                 angularXDrive = bodyHandler.BodyParts[i].PartJoint.angularXDrive;
-                Debug.Log(_xPosSpringAry.Count);
                 angularXDrive.positionSpring = _xPosSpringAry[j] * percentage;
 
                 bodyHandler.BodyParts[i].PartJoint.angularXDrive = angularXDrive;
@@ -670,28 +688,27 @@ public class PlayerController : MonoBehaviour
         }
 
         Vector3 zero = Vector3.zero;
-        if (target == null)
+        if (_target == null)
         {
             zero = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
-            rigidbody.AddForce(-(zero * 8f), ForceMode.VelocityChange); // 수정 before 2
-            rigidbody2.AddForce(zero * 12f, ForceMode.VelocityChange); // 수정  before 3
+            rigidbody.AddForce(-(zero * 4f), ForceMode.VelocityChange); // 수정 before 2
+            rigidbody2.AddForce(zero * 6f, ForceMode.VelocityChange); // 수정  before 3
             return;
         }
 
         //타겟있을때
-
-        //zero = Vector3.Normalize(target.cachedCollider.ClosestPoint(transform2.position) - transform2.position);
-        //if (Vector3.Distance(targetingHandeler.upperIntrest.cachedCollider.bounds.center, transform.position) > 1.2f)
-        //{
-
-        //    rigidbody.AddForce(-(zero * 20f), ForceMode.VelocityChange);
-        //    rigidbody2.AddForce(zero * 40f, ForceMode.VelocityChange);
-        //}
-        //else
-        //{
-        //    rigidbody.AddForce(-(zero * 20f), ForceMode.VelocityChange);
-        //    rigidbody2.AddForce(zero * 50f, ForceMode.VelocityChange);
-        //}
+        Debug.Log("targetPunch");
+        zero = Vector3.Normalize(_target.Collider.ClosestPoint(transform2.position) - transform2.position);
+        if (Vector3.Distance(_target.Collider.bounds.center, transform.position) > 1.2f)
+        {
+            rigidbody.AddForce(-(zero * 20f), ForceMode.VelocityChange);
+            rigidbody2.AddForce(zero * 40f, ForceMode.VelocityChange);
+        }
+        else
+        {
+            rigidbody.AddForce(-(zero * 20f), ForceMode.VelocityChange);
+            rigidbody2.AddForce(zero * 50f, ForceMode.VelocityChange);
+        }
     }
 
     public void ArmActionPunchResetting(Side side)

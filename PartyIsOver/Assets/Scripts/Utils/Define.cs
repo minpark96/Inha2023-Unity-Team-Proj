@@ -20,6 +20,20 @@ public class Define
         Item,
     }
 
+    public enum ItemNumber
+    {
+        Hammer,
+        Portion,
+    }
+
+    public enum ItemType
+    {
+        OneHanded,
+        TwoHanded,
+        Ranged,
+        Potion,
+    }
+
     public enum State
     {
         Idle,

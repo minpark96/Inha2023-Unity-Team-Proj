@@ -932,8 +932,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44989b6f400b3574c922765cb8f2a46a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetLimb: {fileID: 6326508433674479885}
-  mirror: 0
 --- !u!1 &85431527
 GameObject:
   m_ObjectHideFlags: 0
@@ -1936,8 +1934,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44989b6f400b3574c922765cb8f2a46a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetLimb: {fileID: 8603926451244886235}
-  mirror: 1
 --- !u!1 &150544332
 GameObject:
   m_ObjectHideFlags: 0
@@ -2110,8 +2106,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44989b6f400b3574c922765cb8f2a46a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetLimb: {fileID: 5783979081772658471}
-  mirror: 0
 --- !u!1 &151806535
 GameObject:
   m_ObjectHideFlags: 0
@@ -2884,8 +2878,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44989b6f400b3574c922765cb8f2a46a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetLimb: {fileID: 7970047322375205921}
-  mirror: 1
 --- !u!1 &183365524
 GameObject:
   m_ObjectHideFlags: 0
@@ -4262,8 +4254,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44989b6f400b3574c922765cb8f2a46a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetLimb: {fileID: 6206444949789746206}
-  mirror: 0
 --- !u!1 &261949719
 GameObject:
   m_ObjectHideFlags: 0
@@ -5806,8 +5796,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44989b6f400b3574c922765cb8f2a46a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetLimb: {fileID: 4886105844622377480}
-  mirror: 1
 --- !u!1 &382536823
 GameObject:
   m_ObjectHideFlags: 0
@@ -6629,8 +6617,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44989b6f400b3574c922765cb8f2a46a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetLimb: {fileID: 7036925613170865606}
-  mirror: 1
 --- !u!1 &432707688
 GameObject:
   m_ObjectHideFlags: 0
@@ -9812,8 +9798,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44989b6f400b3574c922765cb8f2a46a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetLimb: {fileID: 5921550252627617830}
-  mirror: 1
 --- !u!1 &652158569
 GameObject:
   m_ObjectHideFlags: 0
@@ -13730,6 +13714,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damageModifier: 1
+  Collider: {fileID: 0}
 --- !u!65 &858248849
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -14324,8 +14309,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44989b6f400b3574c922765cb8f2a46a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetLimb: {fileID: 2160484128520882666}
-  mirror: 1
 --- !u!1 &901605480
 GameObject:
   m_ObjectHideFlags: 0
@@ -15474,8 +15457,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44989b6f400b3574c922765cb8f2a46a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetLimb: {fileID: 1012699663598540797}
-  mirror: 1
 --- !u!1 &974957452
 GameObject:
   m_ObjectHideFlags: 0
@@ -16825,8 +16806,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44989b6f400b3574c922765cb8f2a46a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetLimb: {fileID: 8280427176600323107}
-  mirror: 1
 --- !u!1 &1057401265
 GameObject:
   m_ObjectHideFlags: 0
@@ -16999,8 +16978,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44989b6f400b3574c922765cb8f2a46a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetLimb: {fileID: 8492912637819073802}
-  mirror: 1
 --- !u!1 &1058804087
 GameObject:
   m_ObjectHideFlags: 0
@@ -18587,6 +18564,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damageModifier: 1
+  Collider: {fileID: 0}
 --- !u!65 &1172446141
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -20318,8 +20296,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44989b6f400b3574c922765cb8f2a46a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetLimb: {fileID: 1866962570371226189}
-  mirror: 1
 --- !u!136 &1272087608
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -20849,8 +20825,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44989b6f400b3574c922765cb8f2a46a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetLimb: {fileID: 1655398290385996982}
-  mirror: 1
 --- !u!1 &1310643412
 GameObject:
   m_ObjectHideFlags: 0
@@ -21373,8 +21347,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44989b6f400b3574c922765cb8f2a46a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetLimb: {fileID: 1420171998504744850}
-  mirror: 1
 --- !u!1 &1336733359
 GameObject:
   m_ObjectHideFlags: 0
@@ -22291,6 +22263,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damageModifier: 1
+  Collider: {fileID: 0}
 --- !u!1 &1403130775
 GameObject:
   m_ObjectHideFlags: 0
@@ -22711,7 +22684,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8d2732e4766ccf4fba1c58f524e0dae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _turnSpeed: 3
+  _turnForce: 0
 --- !u!153 &1439840516
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -23648,6 +23621,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damageModifier: 1
+  Collider: {fileID: 0}
 --- !u!65 &1460758823
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -26303,8 +26277,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44989b6f400b3574c922765cb8f2a46a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetLimb: {fileID: 3228029483959753567}
-  mirror: 1
 --- !u!1 &1629877598
 GameObject:
   m_ObjectHideFlags: 0
@@ -27669,8 +27641,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44989b6f400b3574c922765cb8f2a46a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetLimb: {fileID: 8932615431758121424}
-  mirror: 1
 --- !u!1 &1726570808
 GameObject:
   m_ObjectHideFlags: 0
@@ -29997,8 +29967,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44989b6f400b3574c922765cb8f2a46a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetLimb: {fileID: 6418485893361275901}
-  mirror: 0
 --- !u!1 &1888315961
 GameObject:
   m_ObjectHideFlags: 0
@@ -42103,10 +42071,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50d5428a52f424042a9db0e6cb88f27b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  detectionRadius: 3
+  detectionRadius: 1.5
   layerMask:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 256
   maxAngle: 90
 --- !u!114 &2653568215181255330
 MonoBehaviour:
@@ -42420,7 +42388,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8d2732e4766ccf4fba1c58f524e0dae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _turnSpeed: 3
+  _turnForce: 0
 --- !u!135 &2675591024976243569
 SphereCollider:
   m_ObjectHideFlags: 0

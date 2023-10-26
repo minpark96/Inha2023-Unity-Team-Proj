@@ -18,13 +18,13 @@ public class InteractableObject : MonoBehaviour
     }
 
     public Damage damageModifier = Damage.Default;
-
+    public Collider Collider;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        Collider = GetComponent<Collider>();
     }
 
     // Update is called once per frame
@@ -33,5 +33,5 @@ public class InteractableObject : MonoBehaviour
 
     }
 
-
+    
 }
