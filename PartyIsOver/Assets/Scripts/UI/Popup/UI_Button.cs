@@ -6,9 +6,8 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 
-public class UI_Button : UI_Base
+public class UI_Button : UI_Popup
 {
-
     enum Buttons
     {
         PointButton
@@ -32,6 +31,13 @@ public class UI_Button : UI_Base
 
     private void Start()
     {
+        Init();
+    }
+
+    public override void Init()
+    {
+        base.Init(); // UI_Popup의 Init 실행
+
         // 자동 바인딩 형식
         Bind<Button>(typeof(Buttons));
         Bind<Text>(typeof(Texts));
@@ -48,12 +54,12 @@ public class UI_Button : UI_Base
         GetButton((int)Buttons.PointButton).gameObject.AddUIEvent(OnButtonClicked); // extension을 추가해서 사용된 방식
     }
 
+
     int _score = 0;
     public void OnButtonClicked(PointerEventData data)
     {
         _score++;
         GetText((int)Texts.ScoreText).text = $"점수 : {_score}"; // 간략화시켜서 쓰는법
     }
-
 
 }
