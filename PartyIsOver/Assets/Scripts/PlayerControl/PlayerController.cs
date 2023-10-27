@@ -388,6 +388,8 @@ public class PlayerController : MonoBehaviour
             }
             if (_rollTime >= 0.8f && _rollTime < 1.0f)
             {
+                RestoreSpringTrigger();
+
                 bodyHandler.Head.PartRigidbody.AddForce(-bodyHandler.Head.transform.up, ForceMode.VelocityChange);
                 bodyHandler.Waist.PartRigidbody.AddForce(-bodyHandler.Waist.transform.up * 10, ForceMode.VelocityChange);
                 bodyHandler.Waist.PartRigidbody.AddForce(bodyHandler.Waist.transform.forward * 10, ForceMode.VelocityChange);
@@ -396,7 +398,6 @@ public class PlayerController : MonoBehaviour
             if (_rollTime >= 1.0f && _rollTime < 1.2f)
             {
                 //자세를 다시 잡게 하기 위해서 spring 값을 올려줌 - 힘이 쌔서 앞으로 계속 팅겨나가니까 마찰력을 좀 높여야 할 듯
-                RestoreSpringTrigger();
 
                 bodyHandler.Head.PartRigidbody.AddForce(-bodyHandler.Head.transform.up, ForceMode.VelocityChange);
                 bodyHandler.Waist.PartRigidbody.AddForce(-bodyHandler.Waist.transform.up, ForceMode.VelocityChange);
