@@ -56,6 +56,11 @@ public class Grab : MonoBehaviourPun
 
     void Update()
     {
+        if (!photonView.IsMine)
+        {
+            return;
+        }
+
         if (_grabGameObject != null)
         {
             // ³õ±â

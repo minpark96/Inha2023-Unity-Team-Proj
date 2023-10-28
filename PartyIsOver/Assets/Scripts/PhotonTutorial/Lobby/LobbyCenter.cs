@@ -48,6 +48,7 @@ public class LobbyCenter : MonoBehaviourPunCallbacks
     private void Start()
     {
         Init();
+        photonView.RPC("Enter", RpcTarget.All);
     }
 
     private void Init()
@@ -57,17 +58,26 @@ public class LobbyCenter : MonoBehaviourPunCallbacks
         {
             _buttonReady.gameObject.SetActive(false);
             _isReady = true;
+
+            _buttonPlay = transform.GetComponent<Button>();
+            _buttonPlay.onClick.AddListener(PhotonManager.Instance.LoadArena);
         }
         else
         {
             _buttonPlay.gameObject.SetActive(false);
-        }
 
-        _buttonPlay = transform.GetComponent<Button>();
-        _buttonPlay.onClick.AddListener(PhotonManager.Instance.LoadArena);
+            _buttonReady = transform.GetComponent<Button>();
+            _buttonReady.onClick.AddListener(Ready);
+        }
 
         ShowPlayerName();
         TogglePlayerStatus();
+    }
+
+    [PunRPC]
+    private void Enter(Collision collision)
+    {
+        _playerReadyCountText.text = _playerReadyCount.ToString() + "/" + PhotonNetwork.CurrentRoom.PlayerCount.ToString();
     }
 
     void ShowPlayerName()
@@ -94,7 +104,7 @@ public class LobbyCenter : MonoBehaviourPunCallbacks
 
     public void UpdatePlayerReadyCount()
     {
-        _playerReadyCountText.text = _playerReadyCount.ToString() + " / " + PhotonNetwork.CurrentRoom.PlayerCount.ToString();
+
     }
 
     public void Ready()

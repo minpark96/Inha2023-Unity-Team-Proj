@@ -70,6 +70,8 @@ public class PlayerController : MonoBehaviourPun
 
     InteractableObject target;
 
+    public static int LayerCnt = 7;
+
     public enum Side
     {
         Left = 0,
@@ -104,6 +106,16 @@ public class PlayerController : MonoBehaviourPun
 
     }
 
+    private void ChangeLayerRecursively(GameObject obj, int layer)
+    {
+        obj.layer = layer;
+
+        foreach (Transform child in obj.transform)
+        {
+            ChangeLayerRecursively(child.gameObject, layer);
+        }
+    }
+
     IEnumerator InitDelay()
     {
         yield return new WaitForSeconds(1);
@@ -123,11 +135,16 @@ public class PlayerController : MonoBehaviourPun
         bodyHandler = GetComponent<BodyHandler>();
         targetingHandler = GetComponent<TargetingHandler>();
         _actor = GetComponent<Actor>();
-
+        ChangeLayerRecursively(gameObject, LayerCnt++);
     }
 
     void OnKeyboardEvent(Define.KeyboardEvent evt)
     {
+        if (!photonView.IsMine)
+        {
+            return;
+        }
+
         OnKeyboardEvent_Idle(evt);
     }
 
@@ -173,6 +190,11 @@ public class PlayerController : MonoBehaviourPun
 
     void OnMouseEvent(Define.MouseEvent evt)
     {
+        if (!photonView.IsMine)
+        {
+            return;
+        }
+
         OnMouseEvent_Idle(evt);
 
         //상태별 마우스 이벤트 추가 예정
