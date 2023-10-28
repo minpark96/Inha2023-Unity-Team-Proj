@@ -14,25 +14,11 @@ public class InteractableObject : MonoBehaviour
         Headbutt = 5,
         Knockout = 6,
         Special= 7,
-        StatusAbnormality = 8,
+        Ice = 8,
+        ElectricShock = 9,
 
     }
 
     public Damage damageModifier = Damage.Default;
-
-
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
 
 }

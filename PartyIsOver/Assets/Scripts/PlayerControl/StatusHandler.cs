@@ -50,9 +50,6 @@ public class StatusHandler : MonoBehaviour
     {
         Debug.Log("AddDamage");
 
-        Debug.Log($"데미지 타입: {type}");
-        DebuffCheck(type);
-
         damage *= _damageModifer;
         if (!invulnerable && actor.actorState != Actor.ActorState.Dead && actor.actorState != Actor.ActorState.Unconscious)
         {
@@ -64,22 +61,23 @@ public class StatusHandler : MonoBehaviour
             //}
             _healthDamage += damage;
         }
+
+        Debug.Log($"데미지 타입: {type}");
+        DebuffCheck(type);
     }
 
     // 상태이상 체크
-    public bool DebuffCheck(InteractableObject.Damage type)
+    public void DebuffCheck(InteractableObject.Damage type)
     {
         switch (type)
         {
-            case Damage.StatusAbnormality:
-            {
+            case Damage.Ice:
                 StartCoroutine("Ice"); // 빙결
-            }
-            break;
+                break;
+            case Damage.ElectricShock:
+                StartCoroutine("ElectricShock"); // 감전
+                break;
         }
-
-
-        return true;
     }
 
     IEnumerator Ice()
@@ -102,7 +100,8 @@ public class StatusHandler : MonoBehaviour
         bodyHandler.Chest.PartRigidbody.isKinematic = true;
         bodyHandler.Waist.PartRigidbody.isKinematic = true;
         bodyHandler.Hip.PartRigidbody.isKinematic = true;
-        Debug.Log("얼었다!");
+        
+        Debug.Log("빙결!");
         yield return new WaitForSeconds(2.0f);
 
         bodyHandler.LeftHand.PartRigidbody.isKinematic = false;
@@ -110,20 +109,27 @@ public class StatusHandler : MonoBehaviour
         bodyHandler.LeftArm.PartRigidbody.isKinematic = false;
         bodyHandler.LeftFoot.PartRigidbody.isKinematic = false;
         bodyHandler.LeftLeg.PartRigidbody.isKinematic = false;
-        bodyHandler.LeftArm.PartRigidbody.isKinematic = false;
+        bodyHandler.LeftThigh.PartRigidbody.isKinematic = false;
 
         bodyHandler.RightHand.PartRigidbody.isKinematic = false;
         bodyHandler.RightForarm.PartRigidbody.isKinematic = false;
         bodyHandler.RightArm.PartRigidbody.isKinematic = false;
         bodyHandler.RightFoot.PartRigidbody.isKinematic = false;
         bodyHandler.RightLeg.PartRigidbody.isKinematic = false;
-        bodyHandler.RightArm.PartRigidbody.isKinematic = false;
+        bodyHandler.RightThigh.PartRigidbody.isKinematic = false;
 
         bodyHandler.Head.PartRigidbody.isKinematic = false;
         bodyHandler.Chest.PartRigidbody.isKinematic = false;
         bodyHandler.Waist.PartRigidbody.isKinematic = false;
         bodyHandler.Hip.PartRigidbody.isKinematic = false;
     }
+
+    IEnumerator ElectricShock()
+    {
+        Debug.Log("감전!");
+        yield return 0;
+    }
+
 
     public void UpdateHealth()
     {
