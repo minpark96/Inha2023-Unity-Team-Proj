@@ -47,6 +47,7 @@ public class PlayerController : MonoBehaviour
     private float _rotationSpeed = 10f;
     private bool _isCoroutineRunning = false;
     private bool _isCoroutineDrop = false;
+    private float _rollTime = 0;
 
     [SerializeField]
     private float _idleTimer = 0;
@@ -300,9 +301,9 @@ public class PlayerController : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        Debug.DrawRay(bodyHandler.Head.PartRigidbody.position, -bodyHandler.Head.transform.up * 10f, Color.red);
-        Debug.DrawRay(bodyHandler.Waist.PartRigidbody.position, bodyHandler.Waist.transform.up * 10f, Color.red);
-        Debug.DrawRay(bodyHandler.Waist.PartRigidbody.position, bodyHandler.Waist.transform.forward * 10f, Color.green);
+        //Debug.DrawRay(bodyHandler.Head.PartRigidbody.position, -bodyHandler.Head.transform.up * 10f, Color.red);
+        //Debug.DrawRay(bodyHandler.Waist.PartRigidbody.position, bodyHandler.Waist.transform.up * 10f, Color.red);
+        //Debug.DrawRay(bodyHandler.Waist.PartRigidbody.position, bodyHandler.Waist.transform.forward * 10f, Color.green);
     }
     /*void Ray_1()
     {
@@ -339,7 +340,6 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    private float _rollTime = 0;
     IEnumerator ForwardRoll()
     {
         //구르기 할 때 몸에 스턴을 걸어 spring을 풀고 회전을 준 다음  삼분할일단 ㄱㄱ
