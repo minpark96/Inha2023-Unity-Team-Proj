@@ -1,0 +1,9 @@
+diff a/PartyIsOver/Assets/Scripts/PlayerControl/PlayerController.cs b/PartyIsOver/Assets/Scripts/PlayerControl/PlayerController.cs	(rejected hunks)
+@@ -398,7 +398,6 @@
+             if (_rollTime >= 1.0f && _rollTime < 1.2f)
+             {
+                 //�ڼ��� �ٽ� ��� �ϱ� ���ؼ� spring ���� �÷��� - ���� �ؼ� ������ ��� �ðܳ����ϱ� �������� �� ����� �� ��
+-                RestoreSpringTrigger();
+ 
+                 bodyHandler.Head.PartRigidbody.AddForce(-bodyHandler.Head.transform.up, ForceMode.VelocityChange);
+                 bodyHandler.Waist.PartRigidbody.AddForce(-bodyHandler.Waist.transform.up, ForceMode.VelocityChange);

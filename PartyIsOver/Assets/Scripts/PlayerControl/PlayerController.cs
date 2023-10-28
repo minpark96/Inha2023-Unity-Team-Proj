@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.Experimental.GlobalIllumination;
 using System.Runtime.CompilerServices;
+using static PlayerController;
 
 public class PlayerController : MonoBehaviour
 {
@@ -338,6 +339,7 @@ public class PlayerController : MonoBehaviour
 
     }
 
+    private float _rollTime = 0;
     IEnumerator ForwardRoll()
     {
         //구르기 할 때 몸에 스턴을 걸어 spring을 풀고 회전을 준 다음  삼분할일단 ㄱㄱ
@@ -356,44 +358,55 @@ public class PlayerController : MonoBehaviour
             joint.angularYZLimitSpring = angularYZSpring;
         }
 
+        while (_rollTime <= 1.2f)
         {
-            Time.timeScale = 0.1f;
-            //머리 앞으로 
-            bodyHandler.Head.PartRigidbody.AddForce(-bodyHandler.Head.transform.up * headingForce, ForceMode.VelocityChange);
-            bodyHandler.Chest.PartRigidbody.AddForce(-bodyHandler.Chest.transform.up * headingForce, ForceMode.VelocityChange);
-            bodyHandler.Waist.PartRigidbody.AddForce(bodyHandler.Waist.transform.up * headingForce, ForceMode.VelocityChange);
-            yield return StartCoroutine(TurnDelay(0.5f));
+            _rollTime += Time.deltaTime;
+            if (_rollTime < 0.1f)
+            {
+                //Time.timeScale = 0.2f;
+                //머리 앞으로 
+                bodyHandler.Head.PartRigidbody.AddForce(-bodyHandler.Head.transform.up , ForceMode.VelocityChange);
+                bodyHandler.Chest.PartRigidbody.AddForce(-bodyHandler.Chest.transform.up , ForceMode.VelocityChange);
+                bodyHandler.Waist.PartRigidbody.AddForce(bodyHandler.Waist.transform.up , ForceMode.VelocityChange);
+                //yield return StartCoroutine(TurnDelay(0.2f));
+            }
+            if (_rollTime >= 0.2f && _rollTime < 0.5f)
+            {
+                bodyHandler.Head.PartRigidbody.AddForce(-bodyHandler.Head.transform.up, ForceMode.VelocityChange);
+                bodyHandler.Waist.PartRigidbody.AddForce(bodyHandler.Waist.transform.up *10, ForceMode.VelocityChange);
+                bodyHandler.Waist.PartRigidbody.AddForce(bodyHandler.Waist.transform.forward *10, ForceMode.VelocityChange);
 
+                //yield return StartCoroutine(TurnDelay(0.2f));
+            }
+            if (_rollTime >= 0.5f && _rollTime < 0.8f)
+            {
+                //이 단계에서 꼬임
+                bodyHandler.Head.PartRigidbody.AddForce(-bodyHandler.Head.transform.up, ForceMode.VelocityChange);
+                bodyHandler.Waist.PartRigidbody.AddForce(-bodyHandler.Waist.transform.up * 10, ForceMode.VelocityChange);
+                bodyHandler.Waist.PartRigidbody.AddForce(bodyHandler.Waist.transform.forward * 10, ForceMode.VelocityChange);
+                //yield return StartCoroutine(TurnDelay(0.2f));
+            }
+            if (_rollTime >= 0.8f && _rollTime < 1.0f)
+            {
+                RestoreSpringTrigger();
+
+                bodyHandler.Head.PartRigidbody.AddForce(-bodyHandler.Head.transform.up, ForceMode.VelocityChange);
+                bodyHandler.Waist.PartRigidbody.AddForce(-bodyHandler.Waist.transform.up * 10, ForceMode.VelocityChange);
+                bodyHandler.Waist.PartRigidbody.AddForce(bodyHandler.Waist.transform.forward * 10, ForceMode.VelocityChange);
+                //yield return StartCoroutine(TurnDelay(0.2f));
+            }
+            if (_rollTime >= 1.0f && _rollTime < 1.2f)
+            {
+                //자세를 다시 잡게 하기 위해서 spring 값을 올려줌 - 힘이 쌔서 앞으로 계속 팅겨나가니까 마찰력을 좀 높여야 할 듯
+
+                bodyHandler.Head.PartRigidbody.AddForce(-bodyHandler.Head.transform.up, ForceMode.VelocityChange);
+                bodyHandler.Waist.PartRigidbody.AddForce(-bodyHandler.Waist.transform.up, ForceMode.VelocityChange);
+                bodyHandler.Waist.PartRigidbody.AddForce(bodyHandler.Waist.transform.forward, ForceMode.VelocityChange);
+            }
         }
-        {
-
-            bodyHandler.Head.PartRigidbody.AddForce(-bodyHandler.Head.transform.up * headingForce , ForceMode.VelocityChange);
-            bodyHandler.Waist.PartRigidbody.AddForce(bodyHandler.Waist.transform.forward * headingForce , ForceMode.VelocityChange);
-            bodyHandler.RightFoot.PartRigidbody.AddForce(bodyHandler.RightFoot.transform.up * headingForce, ForceMode.VelocityChange);
-            bodyHandler.LeftFoot.PartRigidbody.AddForce(bodyHandler.LeftFoot.transform.up * headingForce, ForceMode.VelocityChange);
-
-            //bodyHandler.Chest.PartRigidbody.AddForce(-bodyHandler.Chest.transform.forward * headingForce * 2, ForceMode.VelocityChange);
-
-            yield return StartCoroutine(TurnDelay(0.5f));
-
-        }
-        {
-            //이 단계에서 꼬임
-            bodyHandler.Head.PartRigidbody.AddForce(-bodyHandler.Head.transform.up * headingForce , ForceMode.VelocityChange);
-            bodyHandler.Waist.PartRigidbody.AddForce(-bodyHandler.Waist.transform.up * headingForce , ForceMode.VelocityChange);
-            bodyHandler.Waist.PartRigidbody.AddForce(bodyHandler.Waist.transform.forward * headingForce , ForceMode.VelocityChange);
-            yield return StartCoroutine(TurnDelay(0.5f));
-
-            //bodyHandler.Chest.PartRigidbody.AddForce(bodyHandler.Chest.transform.up * headingForce * 2, ForceMode.VelocityChange);
-        }
-
-        {
-            bodyHandler.Head.PartRigidbody.AddForce(-bodyHandler.Head.transform.up * headingForce, ForceMode.VelocityChange);
-            bodyHandler.Waist.PartRigidbody.AddForce(-bodyHandler.Waist.transform.up * headingForce , ForceMode.VelocityChange);
-            bodyHandler.Waist.PartRigidbody.AddForce(bodyHandler.Waist.transform.forward * headingForce , ForceMode.VelocityChange);
-        }
-
+        _rollTime = 0f;
         yield return null;
+
     }
 
     IEnumerator TurnDelay(float delay)
@@ -418,7 +431,6 @@ public class PlayerController : MonoBehaviour
 
         yield return new WaitForSeconds(delay);
 
-        RestoreSpringTrigger();
 
         _isCoroutineDrop = false;
 
