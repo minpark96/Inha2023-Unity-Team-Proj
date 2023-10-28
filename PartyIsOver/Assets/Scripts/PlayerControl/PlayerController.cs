@@ -357,40 +357,40 @@ public class PlayerController : MonoBehaviour
         }
 
         {
-            //Time.timeScale = 0.1f;
+            Time.timeScale = 0.1f;
             //머리 앞으로 
             bodyHandler.Head.PartRigidbody.AddForce(-bodyHandler.Head.transform.up * headingForce, ForceMode.VelocityChange);
             bodyHandler.Chest.PartRigidbody.AddForce(-bodyHandler.Chest.transform.up * headingForce, ForceMode.VelocityChange);
             bodyHandler.Waist.PartRigidbody.AddForce(bodyHandler.Waist.transform.up * headingForce, ForceMode.VelocityChange);
-            yield return StartCoroutine(TurnDelay(0.2f));
+            yield return StartCoroutine(TurnDelay(0.5f));
 
         }
         {
 
-            bodyHandler.Head.PartRigidbody.AddForce(-bodyHandler.Head.transform.up * headingForce * 4, ForceMode.VelocityChange);
-            bodyHandler.Waist.PartRigidbody.AddForce(bodyHandler.Waist.transform.forward * headingForce * 4, ForceMode.VelocityChange);
-            /*bodyHandler.RightFoot.PartRigidbody.AddForce(bodyHandler.RightFoot.transform.up * headingForce , ForceMode.VelocityChange);
-            bodyHandler.LeftFoot.PartRigidbody.AddForce(bodyHandler.LeftFoot.transform.up * headingForce , ForceMode.VelocityChange);*/
+            bodyHandler.Head.PartRigidbody.AddForce(-bodyHandler.Head.transform.up * headingForce , ForceMode.VelocityChange);
+            bodyHandler.Waist.PartRigidbody.AddForce(bodyHandler.Waist.transform.forward * headingForce , ForceMode.VelocityChange);
+            bodyHandler.RightFoot.PartRigidbody.AddForce(bodyHandler.RightFoot.transform.up * headingForce, ForceMode.VelocityChange);
+            bodyHandler.LeftFoot.PartRigidbody.AddForce(bodyHandler.LeftFoot.transform.up * headingForce, ForceMode.VelocityChange);
 
             //bodyHandler.Chest.PartRigidbody.AddForce(-bodyHandler.Chest.transform.forward * headingForce * 2, ForceMode.VelocityChange);
 
-            yield return StartCoroutine(TurnDelay(0.2f));
+            yield return StartCoroutine(TurnDelay(0.5f));
 
         }
         {
             //이 단계에서 꼬임
             bodyHandler.Head.PartRigidbody.AddForce(-bodyHandler.Head.transform.up * headingForce , ForceMode.VelocityChange);
-            bodyHandler.Waist.PartRigidbody.AddForce(-bodyHandler.Waist.transform.up * headingForce * 4, ForceMode.VelocityChange);
-            bodyHandler.Waist.PartRigidbody.AddForce(bodyHandler.Waist.transform.forward * headingForce * 4, ForceMode.VelocityChange);
-            yield return StartCoroutine(TurnDelay(0.2f));
+            bodyHandler.Waist.PartRigidbody.AddForce(-bodyHandler.Waist.transform.up * headingForce , ForceMode.VelocityChange);
+            bodyHandler.Waist.PartRigidbody.AddForce(bodyHandler.Waist.transform.forward * headingForce , ForceMode.VelocityChange);
+            yield return StartCoroutine(TurnDelay(0.5f));
 
             //bodyHandler.Chest.PartRigidbody.AddForce(bodyHandler.Chest.transform.up * headingForce * 2, ForceMode.VelocityChange);
         }
 
         {
             bodyHandler.Head.PartRigidbody.AddForce(-bodyHandler.Head.transform.up * headingForce, ForceMode.VelocityChange);
-            bodyHandler.Waist.PartRigidbody.AddForce(-bodyHandler.Waist.transform.up * headingForce * 4, ForceMode.VelocityChange);
-            bodyHandler.Waist.PartRigidbody.AddForce(bodyHandler.Waist.transform.forward * headingForce * 4, ForceMode.VelocityChange);
+            bodyHandler.Waist.PartRigidbody.AddForce(-bodyHandler.Waist.transform.up * headingForce , ForceMode.VelocityChange);
+            bodyHandler.Waist.PartRigidbody.AddForce(bodyHandler.Waist.transform.forward * headingForce , ForceMode.VelocityChange);
         }
 
         yield return null;
