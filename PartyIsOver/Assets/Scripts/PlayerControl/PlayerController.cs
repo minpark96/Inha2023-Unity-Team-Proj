@@ -318,6 +318,7 @@ public class PlayerController : MonoBehaviour
     {
 
     }
+
     private void ForwardRollTrigger()
     {
         StartCoroutine(ForwardRollDelay(2f));
@@ -339,7 +340,11 @@ public class PlayerController : MonoBehaviour
         }
 
     }
+    
 
+    public float ForceStrength = 10.0f;
+
+    //기획반에게 넘겨줘야 할 것이 방향이랑 힘 
     IEnumerator ForwardRoll()
     {
         //구르기 할 때 몸에 스턴을 걸어 spring을 풀고 회전을 준 다음  삼분할일단 ㄱㄱ
@@ -365,13 +370,12 @@ public class PlayerController : MonoBehaviour
             {
                 //Time.timeScale = 0.2f;
                 //머리 앞으로 
-                bodyHandler.Head.PartRigidbody.AddForce(-bodyHandler.Head.transform.up , ForceMode.VelocityChange);
-                bodyHandler.Chest.PartRigidbody.AddForce(-bodyHandler.Chest.transform.up , ForceMode.VelocityChange);
-                bodyHandler.Waist.PartRigidbody.AddForce(bodyHandler.Waist.transform.up , ForceMode.VelocityChange);
+                FirstRoll();
                 //yield return StartCoroutine(TurnDelay(0.2f));
             }
             if (_rollTime >= 0.2f && _rollTime < 0.5f)
             {
+
                 bodyHandler.Head.PartRigidbody.AddForce(-bodyHandler.Head.transform.up, ForceMode.VelocityChange);
                 bodyHandler.Waist.PartRigidbody.AddForce(bodyHandler.Waist.transform.up *10, ForceMode.VelocityChange);
                 bodyHandler.Waist.PartRigidbody.AddForce(bodyHandler.Waist.transform.forward *10, ForceMode.VelocityChange);
@@ -380,6 +384,8 @@ public class PlayerController : MonoBehaviour
             }
             if (_rollTime >= 0.5f && _rollTime < 0.8f)
             {
+
+
                 //이 단계에서 꼬임
                 bodyHandler.Head.PartRigidbody.AddForce(-bodyHandler.Head.transform.up, ForceMode.VelocityChange);
                 bodyHandler.Waist.PartRigidbody.AddForce(-bodyHandler.Waist.transform.up * 10, ForceMode.VelocityChange);
@@ -406,7 +412,13 @@ public class PlayerController : MonoBehaviour
         }
         _rollTime = 0f;
         yield return null;
+    }
 
+    void FirstRoll()
+    {
+        bodyHandler.Head.PartRigidbody.AddForce(-bodyHandler.Head.transform.up, ForceMode.VelocityChange);
+        bodyHandler.Chest.PartRigidbody.AddForce(-bodyHandler.Chest.transform.up, ForceMode.VelocityChange);
+        bodyHandler.Waist.PartRigidbody.AddForce(bodyHandler.Waist.transform.up, ForceMode.VelocityChange);
     }
 
     IEnumerator TurnDelay(float delay)
