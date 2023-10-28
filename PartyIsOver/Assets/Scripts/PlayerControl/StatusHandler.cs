@@ -31,13 +31,9 @@ public class StatusHandler : MonoBehaviour
 
     private BodyHandler bodyHandler;
 
-    void Init()
-    {
-        bodyHandler = GetComponent<BodyHandler>();
-    }
-
     void Start()
     {
+        bodyHandler = GetComponent<BodyHandler>();
         actor = transform.GetComponent<Actor>();
         _health = _maxHealth;
     }
@@ -71,7 +67,7 @@ public class StatusHandler : MonoBehaviour
     }
 
     // 상태이상 체크
-    bool DebuffCheck(InteractableObject.Damage type)
+    public bool DebuffCheck(InteractableObject.Damage type)
     {
         switch (type)
         {
@@ -93,21 +89,21 @@ public class StatusHandler : MonoBehaviour
         bodyHandler.LeftArm.PartRigidbody.isKinematic = true;
         bodyHandler.LeftFoot.PartRigidbody.isKinematic = true;
         bodyHandler.LeftLeg.PartRigidbody.isKinematic = true;
-        bodyHandler.LeftArm.PartRigidbody.isKinematic = true;
+        bodyHandler.LeftThigh.PartRigidbody.isKinematic = true;
 
         bodyHandler.RightHand.PartRigidbody.isKinematic = true;
         bodyHandler.RightForarm.PartRigidbody.isKinematic = true;
         bodyHandler.RightArm.PartRigidbody.isKinematic = true;
         bodyHandler.RightFoot.PartRigidbody.isKinematic = true;
         bodyHandler.RightLeg.PartRigidbody.isKinematic = true;
-        bodyHandler.RightArm.PartRigidbody.isKinematic = true;
+        bodyHandler.RightThigh.PartRigidbody.isKinematic = true;
 
         bodyHandler.Head.PartRigidbody.isKinematic = true;
         bodyHandler.Chest.PartRigidbody.isKinematic = true;
         bodyHandler.Waist.PartRigidbody.isKinematic = true;
         bodyHandler.Hip.PartRigidbody.isKinematic = true;
-
-        yield return new WaitForSeconds(3.0f);
+        Debug.Log("얼었다!");
+        yield return new WaitForSeconds(2.0f);
 
         bodyHandler.LeftHand.PartRigidbody.isKinematic = false;
         bodyHandler.LeftForarm.PartRigidbody.isKinematic = false;
@@ -127,7 +123,6 @@ public class StatusHandler : MonoBehaviour
         bodyHandler.Chest.PartRigidbody.isKinematic = false;
         bodyHandler.Waist.PartRigidbody.isKinematic = false;
         bodyHandler.Hip.PartRigidbody.isKinematic = false;
-
     }
 
     public void UpdateHealth()
@@ -164,7 +159,6 @@ public class StatusHandler : MonoBehaviour
                 EnterUnconsciousState();
             }
         }
-
 
         //계산한 체력이 0보다 작으면 Death로
         if (tempHealth <= 0f)

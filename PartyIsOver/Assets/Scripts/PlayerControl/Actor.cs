@@ -23,9 +23,6 @@ public class Actor : MonoBehaviour
     public ActorState lastActorState = ActorState.Run;
 
 
-
-    // Start is called before the first frame update
-
     private void Awake()
     {
         BodyHandler = GetComponent<BodyHandler>();
@@ -39,7 +36,6 @@ public class Actor : MonoBehaviour
 
     }
 
-    // Update is called once per frame
     void Update()
     {
         
@@ -85,7 +81,6 @@ public class Actor : MonoBehaviour
             case ActorState.Climb:
                 //_playerControll.Climb();
                 break;
-
         }
 
         lastActorState = actorState;
