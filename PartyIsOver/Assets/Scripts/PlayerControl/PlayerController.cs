@@ -4,9 +4,39 @@ using System.Collections.Generic;
 using UnityEngine.Experimental.GlobalIllumination;
 using System.Runtime.CompilerServices;
 using static PlayerController;
+using static RollFrame;
+
+[SerializeField]
+struct RollFrame
+{
+    public enum RollFrameType
+    {
+        Frame1,
+        Frame2,
+        Frame3,
+        Frame4,
+    }
+
+    [SerializeField] 
+    RollFrameType _rollFrameType;
+
+    [SerializeField]
+    public float value;
+}
 
 public class PlayerController : MonoBehaviour
 {
+
+    //[RollFrame("_rollFrameType")]
+    [SerializeField]
+    RollFrameType[] _rollFrame;
+
+    [SerializeField]
+    RollFrame[,] _rollFrameTest = new RollFrame[4, 4];
+
+    //[SerializeField]
+    //float myValue = _myFrame._type;
+
     [Header("앞뒤 속도")]
     public float RunSpeed;
     [Header("점프 힘")]
@@ -24,6 +54,9 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField]
     private TargetingHandler targetingHandler;
+
+    
+
 
     private Actor _actor;
 
@@ -63,6 +96,7 @@ public class PlayerController : MonoBehaviour
 
     private List<float> _xPosSpringAry = new List<float>();
     private List<float> _yzPosSpringAry = new List<float>();
+
 
     public bool isAI = false;
 
@@ -363,16 +397,21 @@ public class PlayerController : MonoBehaviour
             joint.angularYZLimitSpring = angularYZSpring;
         }
 
-        while (_rollTime <= 1.2f)
+        int _frameCount = 0;
+        for(int i =0; i<_rollFrame.Length; i++)
         {
             _rollTime += Time.deltaTime;
-            if (_rollTime < 0.1f)
+            if (_rollTime < 0.1f && i == (int)_rollFrame[_frameCount])
             {
                 //Time.timeScale = 0.2f;
                 //머리 앞으로 
-                FirstRoll();
+                FirstRoll(_rollFrameTest, (int)_rollFrame[_frameCount],i);
                 //yield return StartCoroutine(TurnDelay(0.2f));
             }
+        }
+       /* while (_rollTime <= 1.2f)
+        {
+           
             if (_rollTime >= 0.2f && _rollTime < 0.5f)
             {
 
@@ -384,8 +423,6 @@ public class PlayerController : MonoBehaviour
             }
             if (_rollTime >= 0.5f && _rollTime < 0.8f)
             {
-
-
                 //이 단계에서 꼬임
                 bodyHandler.Head.PartRigidbody.AddForce(-bodyHandler.Head.transform.up, ForceMode.VelocityChange);
                 bodyHandler.Waist.PartRigidbody.AddForce(-bodyHandler.Waist.transform.up * 10, ForceMode.VelocityChange);
@@ -409,16 +446,16 @@ public class PlayerController : MonoBehaviour
                 bodyHandler.Waist.PartRigidbody.AddForce(-bodyHandler.Waist.transform.up, ForceMode.VelocityChange);
                 bodyHandler.Waist.PartRigidbody.AddForce(bodyHandler.Waist.transform.forward, ForceMode.VelocityChange);
             }
-        }
+        }*/
         _rollTime = 0f;
         yield return null;
     }
 
-    void FirstRoll()
+    void FirstRoll(float[,] _forceSpeed,int a,int b)
     {
-        bodyHandler.Head.PartRigidbody.AddForce(-bodyHandler.Head.transform.up, ForceMode.VelocityChange);
-        bodyHandler.Chest.PartRigidbody.AddForce(-bodyHandler.Chest.transform.up, ForceMode.VelocityChange);
-        bodyHandler.Waist.PartRigidbody.AddForce(bodyHandler.Waist.transform.up, ForceMode.VelocityChange);
+        bodyHandler.Head.PartRigidbody.AddForce(-bodyHandler.Head.transform.up * _forceSpeed[a,b++], ForceMode.VelocityChange);
+        bodyHandler.Chest.PartRigidbody.AddForce(-bodyHandler.Chest.transform.up * _forceSpeed[a, b++], ForceMode.VelocityChange);
+        bodyHandler.Waist.PartRigidbody.AddForce(bodyHandler.Waist.transform.up * _forceSpeed[a, b], ForceMode.VelocityChange);
     }
 
     IEnumerator TurnDelay(float delay)
