@@ -10,7 +10,7 @@ public class BodyPart : MonoBehaviour
     public InteractableObject PartInteractable;
     public ConfigurableJoint PartJoint;
 
-
+    public Transform PartTransform;
 
     private void Awake()
     {
@@ -18,6 +18,8 @@ public class BodyPart : MonoBehaviour
         PartInteractable = gameObject.AddComponent<InteractableObject>();
         _partCollisionHandler = gameObject.AddComponent<CollisionHandler>();
         PartJoint = gameObject.GetComponent<ConfigurableJoint>();
+
+        PartTransform = gameObject.GetComponent<Transform>();
     }
 
 

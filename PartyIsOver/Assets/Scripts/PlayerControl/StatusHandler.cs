@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Net.NetworkInformation;
-using System.Numerics;
+//using System.Numerics;
 using UnityEngine;
 using static InteractableObject;
 using static UnityEngine.Rendering.VirtualTexturing.Debugging;
@@ -30,6 +30,8 @@ public class StatusHandler : MonoBehaviour
 
     private float _knockoutThreshold=20f;
 
+    Quaternion beforeRotation;
+    Vector3 beforePosition;
 
     void Start()
     {
@@ -48,6 +50,7 @@ public class StatusHandler : MonoBehaviour
     public void AddDamage(InteractableObject.Damage type, float damage, GameObject causer)
     {
         Debug.Log("AddDamage");
+        
 
         damage *= _damageModifer;
         if (!invulnerable && actor.actorState != Actor.ActorState.Dead && actor.actorState != Actor.ActorState.Unconscious)
@@ -82,6 +85,8 @@ public class StatusHandler : MonoBehaviour
 
     IEnumerator Ice()
     {
+        yield return new WaitForSeconds(0.2f);
+
         actor.BodyHandler.LeftHand.PartRigidbody.isKinematic = true;
         actor.BodyHandler.LeftForarm.PartRigidbody.isKinematic = true;
         actor.BodyHandler.LeftArm.PartRigidbody.isKinematic = true;
@@ -129,6 +134,12 @@ public class StatusHandler : MonoBehaviour
     {
         Debug.Log("감전!");
 
+        //beforeRotation = actor.BodyHandler.Hip.transform.rotation;
+        //Debug.Log(beforeRotation.eulerAngles.x);
+        //beforePosition = actor.BodyHandler.Hip.transform.position;
+
+        yield return new WaitForSeconds(0.5f);
+
         float startTime = Time.realtimeSinceStartup;
         float shockDuration = 3f;
 
@@ -156,14 +167,20 @@ public class StatusHandler : MonoBehaviour
                 actor.BodyHandler.LeftForarm.transform.rotation = UnityEngine.Quaternion.Euler(-30, 0, 0);
                 actor.BodyHandler.RightForarm.transform.rotation = UnityEngine.Quaternion.Euler(-30, 0, 0);
             }
-
             yield return null;
         }
 
+        
         // 감전 해제
         yield return new WaitForSeconds(1.0f);
-        UnityEngine.Quaternion originalHip = UnityEngine.Quaternion.Euler(-90,0,0);
-        actor.BodyHandler.Hip.transform.rotation = originalHip;
+
+        actor.BodyHandler.Hip.transform.rotation = Quaternion.identity;
+        actor.BodyHandler.Hip.transform.Rotate(-90, 0, 0, Space.Self);
+        //actor.BodyHandler.Hip.transform.rotation = Quaternion.Euler(-150,0,0);
+        //actor.BodyHandler.Hip.transform.rotation = beforeRotation;
+        //actor.BodyHandler.Hip.transform.position = beforePosition;
+
+        Debug.Log(actor.BodyHandler.Hip.transform.rotation.eulerAngles.x);
     }
 
 
