@@ -4,12 +4,15 @@ using System.Collections.Generic;
 using UnityEngine.Experimental.GlobalIllumination;
 using System.Runtime.CompilerServices;
 using static PlayerController;
+using static Actor;
+using static RollFrameData;
 
 [System.Serializable]
 public class RollFrameData
 {
     public enum RollForce
     {
+        zero,
         Forward,
         Backward,
         Up,
@@ -94,6 +97,7 @@ public class PlayerController : MonoBehaviour
     Side _readySide = Side.Left;
 
     InteractableObject target;
+    Vector3 _direction;
 
     private ConfigurableJoint[] childJoints;
     private SoftJointLimitSpring originalAngularXSpring;
@@ -120,20 +124,13 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-
         StartCoroutine("InitDelay");
-
-
-
         if (isAI)
             return;
-
         Managers.Input.MouseAction -= OnMouseEvent;
         Managers.Input.MouseAction += OnMouseEvent;
-
         Managers.Input.KeyboardAction -= OnKeyboardEvent;
         Managers.Input.KeyboardAction += OnKeyboardEvent;
-
     }
 
     IEnumerator InitDelay()
@@ -147,10 +144,7 @@ public class PlayerController : MonoBehaviour
             }
             _xPosSpringAry.Add(bodyHandler.BodyParts[i].PartJoint.angularXDrive.positionSpring);
             _yzPosSpringAry.Add(bodyHandler.BodyParts[i].PartJoint.angularYZDrive.positionSpring);
-
-            
         }
-
     }
 
     void Init()
@@ -162,13 +156,6 @@ public class PlayerController : MonoBehaviour
 
         originalAngularXSpring = childJoints[0].angularXLimitSpring;
         originalAngularYZSpring = childJoints[0].angularYZLimitSpring;
-
-        for (int i = 0; i < bodyHandler.BodyParts.Count; i++)
-        {
-            //_xPosSpringAry.Add(bodyHandler.BodyParts[i].PartJoint.angularXDrive.positionSpring);
-            //_yzPosSpringAry.Add(bodyHandler.BodyParts[i].PartJoint.angularYZDrive.positionSpring);
-
-        }
     }
 
     void OnKeyboardEvent(Define.KeyboardEvent evt)
@@ -444,12 +431,36 @@ public class PlayerController : MonoBehaviour
         //3차원에 대한 이해도가 있으면 그냥 수치로만 해줘도 된다.
         //선택한 리지드 바디의.AddForce(선택한 FSM상태에 맞는 방향 * 힘 , ?);
 
+        for(num = 0;num< 3; num++)
+        {
+            RollForce rollState = _forceSpeed[_elementCount]._rollForce[num];
 
+            switch (rollState)
+            {
+                case RollForce.zero:
+                    _direction = new Vector3(0, 0, 0);
+                    break;
+                case RollForce.Forward:
+                    _direction = -_forceSpeed[_elementCount].Rb[num].transform.up;
+                    break;
+                case RollForce.Backward:
+                    _direction = _forceSpeed[_elementCount].Rb[num].transform.up;
+                    break;
+                case RollForce.Up:
+                    _direction = _forceSpeed[_elementCount].Rb[num].transform.forward;
+                    break;
+                case RollForce.Down:
+                    _direction = -_forceSpeed[_elementCount].Rb[num].transform.forward;
+                    break;
+            }
 
-        _forceSpeed[_elementCount].Rb[num].AddForce(-_forceSpeed[_elementCount].Rb[num].transform.up * _forceSpeed[_elementCount].Data[num], ForceMode.VelocityChange);
-        bodyHandler.Head.PartRigidbody.AddForce(-bodyHandler.Head.transform.up * _forceSpeed[_elementCount].Data[num], ForceMode.VelocityChange);
-        bodyHandler.Chest.PartRigidbody.AddForce(-bodyHandler.Chest.transform.up * _forceSpeed[_elementCount].Data[num], ForceMode.VelocityChange);
-        bodyHandler.Waist.PartRigidbody.AddForce(bodyHandler.Waist.transform.up * _forceSpeed[_elementCount].Data[num], ForceMode.VelocityChange);
+            _forceSpeed[_elementCount].Rb[num].AddForce(_direction * _forceSpeed[_elementCount].Data[num], ForceMode.VelocityChange);
+        }
+
+        
+        //bodyHandler.Head.PartRigidbody.AddForce(-bodyHandler.Head.transform.up * _forceSpeed[_elementCount].Data[num], ForceMode.VelocityChange);
+        //bodyHandler.Chest.PartRigidbody.AddForce(-bodyHandler.Chest.transform.up * _forceSpeed[_elementCount].Data[num], ForceMode.VelocityChange);
+        //bodyHandler.Waist.PartRigidbody.AddForce(bodyHandler.Waist.transform.up * _forceSpeed[_elementCount].Data[num], ForceMode.VelocityChange);
     
 
     }
@@ -536,9 +547,7 @@ public class PlayerController : MonoBehaviour
 
     private void MeowNyangPunch()
     {
-        //냥냥 펀치 R키를 누르면 작동
         StartCoroutine(MeowNyangPunchDelay());
-
     } 
     IEnumerator MeowNyangPunchDelay()
     {
@@ -715,43 +724,8 @@ public class PlayerController : MonoBehaviour
         {
             _idleTimer = Mathf.Clamp(_idleTimer + Time.deltaTime, -60f, 30f);
         }
-
-
         if (_actor.actorState == Actor.ActorState.Run && !leftGrab && !rightGrab)
         {
-            //if (_idleTimer <= 25f)
-            //{
-            //    AlignToVector(bodyHandler.Head.PartRigidbody, -bodyHandler.Head.transform.up, _moveDir + new Vector3(0, 0.2f, 0f), 0.1f, 2.5f * _applyedForce);
-            //    AlignToVector(bodyHandler.Head.PartRigidbody, bodyHandler.Head.transform.forward, Vector3.up, 0.1f, 2.5f * _applyedForce);
-            //}
-            if (_idleTimer < 30f)
-            {
-                //AlignToVector(bodyHandler.Chest.PartRigidbody, -bodyHandler.Chest.transform.up, _moveDir + Vector3.down, 0.1f, 5f);
-                //AlignToVector(bodyHandler.Waist.PartRigidbody, -bodyHandler.Waist.transform.up, _moveDir, 0.1f, 5f);
-                //AlignToVector(bodyHandler.Hip.PartRigidbody, -bodyHandler.Hip.transform.up, Vector3.up + _moveDir, 0.1f, 5f);
-                //if (!leftKick)
-                //{
-                //    AlignToVector(bodyHandler.LeftThigh.PartRigidbody, bodyHandler.LeftThigh.transform.forward, bodyHandler.Hip.transform.forward + bodyHandler.Hip.transform.up, 0.1f, 8f);
-                //    AlignToVector(bodyHandler.LeftLeg.PartRigidbody, bodyHandler.LeftLeg.transform.forward, bodyHandler.Hip.transform.forward + bodyHandler.Hip.transform.up, 0.1f, 8f);
-                //}
-                //if (!rightKick)
-                //{
-                //    AlignToVector(bodyHandler.RightThigh.PartRigidbody, bodyHandler.RightThigh.transform.forward, bodyHandler.Hip.transform.forward + bodyHandler.Hip.transform.up, 0.1f, 8f);
-                //    AlignToVector(bodyHandler.RightLeg.PartRigidbody, bodyHandler.RightLeg.transform.forward, bodyHandler.Hip.transform.forward + bodyHandler.Hip.transform.up, 0.1f, 8f);
-                //}
-                //bodyHandler.Chest.PartRigidbody.AddForce(Vector3.up * 2f, ForceMode.VelocityChange);
-                //bodyHandler.Hip.PartRigidbody.AddForce(Vector3.down * 2f, ForceMode.VelocityChange);
-            }
-            else
-            {
-                //if (Random.Range(1, 1000) == 1)
-                //{
-                //    bodyHandler.Chest.PartRigidbody.AddForce(new Vector3(Random.Range(-4, 4), Random.Range(-4, 4), Random.Range(-4, 4)), ForceMode.VelocityChange);
-                //}
-                //AlignToVector(bodyHandler.Chest.PartRigidbody, bodyHandler.Chest.transform.forward, bodyHandler.Waist.transform.forward, 0.1f, 4f);
-                //AlignToVector(bodyHandler.Hip.PartRigidbody, bodyHandler.Waist.transform.forward, bodyHandler.Hip.transform.forward, 0.1f, 4f);
-                //AlignToVector(bodyHandler.Hip.PartRigidbody, bodyHandler.Hip.transform.forward, bodyHandler.Waist.transform.forward, 0.1f, 4f);
-            }
         }
         else
         {
@@ -762,24 +736,7 @@ public class PlayerController : MonoBehaviour
             AlignToVector(bodyHandler.Waist.PartRigidbody, -bodyHandler.Waist.transform.up, _moveDir, 0.1f, 4f * 1);
             AlignToVector(bodyHandler.Waist.PartRigidbody, bodyHandler.Waist.transform.forward, Vector3.up, 0.1f, 4f * 1);
             AlignToVector(bodyHandler.Hip.PartRigidbody, bodyHandler.Hip.transform.forward, Vector3.up, 0.1f, 3f * 1);
-            //if (!leftKick)
-            //{
-            //    AlignToVector(bodyHandler.LeftThigh.PartRigidbody, bodyHandler.LeftThigh.transform.forward, Vector3.up, 0.1f, 3f * _applyedForce);
-            //    AlignToVector(bodyHandler.LeftLeg.PartRigidbody, bodyHandler.LeftLeg.transform.forward, Vector3.up, 0.1f, 3f * _applyedForce);
-            //    bodyHandler.LeftFoot.PartRigidbody.AddForce(-_counterForce * _applyedForce, ForceMode.VelocityChange);
-            //}
-            //if (!rightKick)
-            //{
-            //    AlignToVector(bodyHandler.RightThigh.PartRigidbody, bodyHandler.RightThigh.transform.forward, Vector3.up, 0.1f, 3f * _applyedForce);
-            //    AlignToVector(bodyHandler.RightLeg.PartRigidbody, bodyHandler.RightLeg.transform.forward, Vector3.up, 0.1f, 3f * _applyedForce);
-            //    bodyHandler.RightFoot.PartRigidbody.AddForce(-_counterForce * _applyedForce, ForceMode.VelocityChange);
-            //}
-            //bodyHandeler.Chest.PartRigidbody.AddForce(_counterForce * _applyedForce, ForceMode.VelocityChange);
         }
-        //bodyHandeler.Ball.PartRigidbody.angularVelocity = Vector3.zero;
-
-
-
     }
 
     public void ArmActionReadying(Side side)
