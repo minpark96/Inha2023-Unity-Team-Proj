@@ -302,8 +302,8 @@ MonoBehaviour:
   _playerNameText: {fileID: 1119515587}
   _playerStatusText: {fileID: 1431506517}
   _playerReadyCountText: {fileID: 1746727176}
-  _buttonReady: {fileID: 87679078}
-  _buttonPlay: {fileID: 1110673248}
+  _buttonReady: {fileID: 0}
+  _buttonPlay: {fileID: 0}
 --- !u!1001 &544822926
 PrefabInstance:
   m_ObjectHideFlags: 0

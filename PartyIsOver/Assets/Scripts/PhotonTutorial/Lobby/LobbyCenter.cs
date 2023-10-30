@@ -24,10 +24,14 @@ public class LobbyCenter : MonoBehaviourPunCallbacks
 
     [Tooltip("준비/해제 버튼, 클라이언트 전용")]
     [SerializeField]
+    //GameObject _buttonReady;
     Button _buttonReady;
     [Tooltip("시작 버튼, 방장 전용")]
     [SerializeField]
+    //GameObject _buttonPlay;
     Button _buttonPlay;
+
+    PhotonView _pv;
 
     #endregion
 
@@ -48,35 +52,52 @@ public class LobbyCenter : MonoBehaviourPunCallbacks
     private void Start()
     {
         Init();
-        photonView.RPC("Enter", RpcTarget.All);
+        Enter();
     }
 
     private void Init()
     {
+        if (_buttonPlay == null)
+        {
+            _buttonPlay = transform.GetChild(1).GetComponent<Button>();
+        }
+
+        if (_buttonReady == null)
+        {
+            _buttonReady = transform.GetChild(0).GetComponent<Button>();
+        }
+
         // 방장은 Play 버튼만 표시, 이외는 Ready 버튼만 표시
         if (PhotonNetwork.IsMasterClient)
         {
             _buttonReady.gameObject.SetActive(false);
             _isReady = true;
 
-            _buttonPlay = transform.GetComponent<Button>();
             _buttonPlay.onClick.AddListener(PhotonManager.Instance.LoadArena);
+            Debug.Log("1");
         }
         else
         {
             _buttonPlay.gameObject.SetActive(false);
 
-            _buttonReady = transform.GetComponent<Button>();
             _buttonReady.onClick.AddListener(Ready);
+            Debug.Log("2");
         }
 
+        Debug.Log("3");
         ShowPlayerName();
         TogglePlayerStatus();
     }
 
-    [PunRPC]
-    private void Enter(Collision collision)
+    public void Announce(PhotonView pv)
     {
+        pv.RPC("Enter", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void Enter()
+    {
+        Debug.Log("Enter");
         _playerReadyCountText.text = _playerReadyCount.ToString() + "/" + PhotonNetwork.CurrentRoom.PlayerCount.ToString();
     }
 
@@ -114,13 +135,11 @@ public class LobbyCenter : MonoBehaviourPunCallbacks
             _isReady = true;
             _playerReadyCount++;
             TogglePlayerStatus();
-            UpdatePlayerReadyCount();
         }
         else
         {
             _isReady = false;
             TogglePlayerStatus();
-            UpdatePlayerReadyCount();
         }
     }
 

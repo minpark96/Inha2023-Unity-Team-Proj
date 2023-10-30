@@ -30,9 +30,6 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     
     GameObject _controlPanel;
     GameObject _progressLabel;
-    //string _playerPrefab = "My Robot Kyle";
-    string _playerPrefab = "Ragdoll2";
-    //string _playerPrefab = "Cube";
     const byte MAX_PLAYERS_PER_ROOM = 4;
 
     static PhotonManager p_instance;
@@ -42,6 +39,9 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     #region Public Fields
 
     public static PhotonManager Instance { get { return p_instance; } }
+    //public string _playerPrefab = "My Robot Kyle";
+    public string _playerPrefab = "Ragdoll2";
+    //public string _playerPrefab = "Cube";
 
     #endregion
 
@@ -138,6 +138,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     public void LoadArena()
     {
+        Debug.Log("¿Ü¾ÊµÇ;");
         if (!PhotonNetwork.IsMasterClient)
         {
             Debug.LogError("PhotonNetwork : Trying to Load a level but we are not the master Client");
@@ -198,14 +199,21 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("PUN Basics Tutorial/Launcher: OnJoinedRoom() called by PUN. Now this client is in a room.");
 
-        Debug.Log("OnJoinedRoom(): Load Lobby Scene");
-        SceneManager.LoadScene(1);
+        if (PhotonNetwork.IsMasterClient)
+        {
+            Debug.Log("OnJoinedRoom(): Load Lobby Scene");
+            SceneManager.LoadScene(1);
+        }
 
         if (Actor.LocalPlayerInstance == null)
         {
-            Debug.LogFormat("We are Instantiating LocalPlayer from {0}", SceneManagerHelper.ActiveSceneName);
+            Debug.Log("in room?: " + PhotonNetwork.InRoom);
+            Debug.LogFormat("PhotonManager=>We are Instantiating LocalPlayer from {0}", SceneManagerHelper.ActiveSceneName);
             // we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
-            PhotonNetwork.Instantiate(_playerPrefab, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
+            GameObject go = PhotonNetwork.Instantiate(_playerPrefab, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
+            PhotonView pv = go.GetComponent<PhotonView>();
+            LobbyCenter lc = GameObject.Find("Control Panel").GetComponent<LobbyCenter>();
+            lc.Announce(pv);
         }
         else
         {
