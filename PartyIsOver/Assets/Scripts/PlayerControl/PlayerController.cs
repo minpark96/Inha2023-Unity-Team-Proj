@@ -4,38 +4,27 @@ using System.Collections.Generic;
 using UnityEngine.Experimental.GlobalIllumination;
 using System.Runtime.CompilerServices;
 using static PlayerController;
-using static RollFrame;
 
-[SerializeField]
-struct RollFrame
+[System.Serializable]
+public class RollFrameData
 {
-    public enum RollFrameType
+    public enum RollForce
     {
-        Frame1,
-        Frame2,
-        Frame3,
-        Frame4,
+        Forward,
+        Backward,
+        Up,
+        Down,
     }
-
-    [SerializeField] 
-    RollFrameType _rollFrameType;
-
-    [SerializeField]
-    public float value;
+    public RollForce[] _rollForce;
+    public Rigidbody[] Rb;
+    public float[] Data;
 }
 
 public class PlayerController : MonoBehaviour
 {
-
-    //[RollFrame("_rollFrameType")]
+    //ForceData[] 1차 이차 float[] Data를 2차로 사용가능
     [SerializeField]
-    RollFrameType[] _rollFrame;
-
-    [SerializeField]
-    RollFrame[,] _rollFrameTest = new RollFrame[4, 4];
-
-    //[SerializeField]
-    //float myValue = _myFrame._type;
+    RollFrameData[] ForceData;
 
     [Header("앞뒤 속도")]
     public float RunSpeed;
@@ -54,9 +43,6 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField]
     private TargetingHandler targetingHandler;
-
-    
-
 
     private Actor _actor;
 
@@ -398,14 +384,14 @@ public class PlayerController : MonoBehaviour
         }
 
         int _frameCount = 0;
-        for(int i =0; i<_rollFrame.Length; i++)
+        for(int i =0; i< ForceData.Length; i++)
         {
             _rollTime += Time.deltaTime;
-            if (_rollTime < 0.1f && i == (int)_rollFrame[_frameCount])
+            if (_rollTime < 0.1f)
             {
                 //Time.timeScale = 0.2f;
                 //머리 앞으로 
-                FirstRoll(_rollFrameTest, (int)_rollFrame[_frameCount],i);
+                FirstRoll(ForceData, _frameCount, i);
                 //yield return StartCoroutine(TurnDelay(0.2f));
             }
         }
@@ -451,11 +437,21 @@ public class PlayerController : MonoBehaviour
         yield return null;
     }
 
-    void FirstRoll(float[,] _forceSpeed,int a,int b)
+    void FirstRoll(RollFrameData[] _forceSpeed,int _elementCount,int num)
     {
-        bodyHandler.Head.PartRigidbody.AddForce(-bodyHandler.Head.transform.up * _forceSpeed[a,b++], ForceMode.VelocityChange);
-        bodyHandler.Chest.PartRigidbody.AddForce(-bodyHandler.Chest.transform.up * _forceSpeed[a, b++], ForceMode.VelocityChange);
-        bodyHandler.Waist.PartRigidbody.AddForce(bodyHandler.Waist.transform.up * _forceSpeed[a, b], ForceMode.VelocityChange);
+        //_elementCount는 값 변화는 함수가 끝나고 다른 함수를 부를 때 변화가 있다
+        //FSM으로 상태를 받아와서 사용해라 그거를 인스펙터에서 보여주고 선택한것을 읽어와서 실행 하도록 한다. 그리고 데이터를 엑셀에서 읽어와서 힘을 받게 하라
+        //3차원에 대한 이해도가 있으면 그냥 수치로만 해줘도 된다.
+        //선택한 리지드 바디의.AddForce(선택한 FSM상태에 맞는 방향 * 힘 , ?);
+
+
+
+        _forceSpeed[_elementCount].Rb[num].AddForce(-_forceSpeed[_elementCount].Rb[num].transform.up * _forceSpeed[_elementCount].Data[num], ForceMode.VelocityChange);
+        bodyHandler.Head.PartRigidbody.AddForce(-bodyHandler.Head.transform.up * _forceSpeed[_elementCount].Data[num], ForceMode.VelocityChange);
+        bodyHandler.Chest.PartRigidbody.AddForce(-bodyHandler.Chest.transform.up * _forceSpeed[_elementCount].Data[num], ForceMode.VelocityChange);
+        bodyHandler.Waist.PartRigidbody.AddForce(bodyHandler.Waist.transform.up * _forceSpeed[_elementCount].Data[num], ForceMode.VelocityChange);
+    
+
     }
 
     IEnumerator TurnDelay(float delay)

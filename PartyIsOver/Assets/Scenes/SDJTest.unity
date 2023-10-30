@@ -1072,8 +1072,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 163aac5c61a559942a4c0ff8013e0a41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rollFrame: 00000000
-  _framesValue: []
+  ForceData:
+  - Rb: []
+    Data:
+    - 10
+    - 11
+    - 12
+  - Rb: []
+    Data: []
   RunSpeed: 35000
   JumpForce: 500
   headingForce: 500
@@ -21389,8 +21395,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 163aac5c61a559942a4c0ff8013e0a41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rollFrame: 00000000
-  _framesValue: []
+  ForceData: []
   RunSpeed: 35000
   JumpForce: 100
   headingForce: 50
