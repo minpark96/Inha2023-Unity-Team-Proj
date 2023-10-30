@@ -51,6 +51,8 @@ public class BodyHandler : MonoBehaviour
 
     //public Transform Spring;
 
+    private bool _isSetting = false;
+
     private void Awake()
     {
 
@@ -59,7 +61,6 @@ public class BodyHandler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        BodySetup();
 
     }
 
@@ -69,8 +70,12 @@ public class BodyHandler : MonoBehaviour
         
     }
 
-    void BodySetup()
+    public void BodySetup()
     {
+        if (_isSetting)
+            return;
+
+        _isSetting = true;
 
         BodyParts.Add(Head);
         BodyParts.Add(Chest);

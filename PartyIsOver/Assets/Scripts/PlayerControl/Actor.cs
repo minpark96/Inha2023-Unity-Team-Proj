@@ -7,6 +7,7 @@ public class Actor : MonoBehaviour
     public StatusHandler StatusHandler;
     public BodyHandler BodyHandler;
     public PlayerController PlayerControll;
+    
 
     public enum ActorState
     {

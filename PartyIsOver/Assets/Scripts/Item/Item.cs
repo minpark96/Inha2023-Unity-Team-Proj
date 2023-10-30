@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
 using static Define;
@@ -7,24 +8,36 @@ using static Define;
 public class Item : MonoBehaviour
 {
     public ItemType ItemType;
-    public ItemNumber ItemNumber;
 
+    private Actor _owner;
+    
+    public InteractableObject InteractableObject;
+    public InteractableObject.Damage damageType;
+    public float mass;
+
+    public Transform OneHandedPos;
+    public Transform TwoHandedPos; 
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        InteractableObject = GetComponent<InteractableObject>();
+        OneHandedPos = transform.GetChild(0).transform;
+        if(transform.GetChild(1) != null )
+        {
+            TwoHandedPos = transform.GetChild(1).transform;
+        }
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
 
     public virtual void Use()
     {
-        Debug.Log(name + "아이템을 사용하였습니다");
 
-        switch (ItemNumber)
-        {
-            case ItemNumber.Hammer:
-
-                break;
-
-            case ItemNumber.Portion:
-                Debug.Log("포션사용");
-                //PlayerStats.instance.HealHealth(PlayerStats.instance.maxHealth);
-                break;
-        }
     }
 
 
@@ -34,15 +47,6 @@ public class Item : MonoBehaviour
         
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

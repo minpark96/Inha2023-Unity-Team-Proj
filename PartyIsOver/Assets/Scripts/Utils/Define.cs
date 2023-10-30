@@ -20,11 +20,7 @@ public class Define
         Item,
     }
 
-    public enum ItemNumber
-    {
-        Hammer,
-        Portion,
-    }
+
 
     public enum ItemType
     {

@@ -23,6 +23,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private TargetingHandler targetingHandler;
 
+    private Grab _grab;
+
     private Actor _actor;
 
     public bool isGrounded;
@@ -129,7 +131,7 @@ public class PlayerController : MonoBehaviour
         bodyHandler = GetComponent<BodyHandler>();
         targetingHandler = GetComponent<TargetingHandler>();
         _actor = GetComponent<Actor>();
-
+        _grab = GetComponent<Grab>();
     }
 
     void OnKeyboardEvent(Define.KeyboardEvent evt)
@@ -207,7 +209,7 @@ public class PlayerController : MonoBehaviour
                 {
                     if(Input.GetMouseButton(0))
                     {
-
+                        _grab.Grabbing();
                     }
                 }
                 break;
@@ -402,19 +404,6 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    private void Grab()
-    {
-        //1.발견한 오브젝트가 있으면 그 방향으로 그랩
-        _target = targetingHandler.SearchTarget();
-
-
-        //이 때 타겟이 아이템인지, 0.5거리 이내인지 확인
-
-
-        //true면 양손형인지 한손형인지, 아이템 종류가 뭔지 확인해서 해당 애니메이션으로 들어감
-        //false면 해당 타겟의 가장 가까운 지점으로 손을 뻗어서 접촉시 그랩상태로 들어감
-        //2.발견한 오브젝트가 없으면 아무것도 하지 않음
-    }
 
     private void PunchTrigger()
     {
