@@ -5,29 +5,63 @@ using UnityEngine.Experimental.GlobalIllumination;
 using System.Runtime.CompilerServices;
 using static PlayerController;
 using static Actor;
-using static RollFrameData;
+using static AniFrameData;
+using UnityEditor.Experimental.GraphView;
+using static AniAngleData;
 
 [System.Serializable]
-public class RollFrameData
+public class AniFrameData
 {
     public enum RollForce
     {
-        zero,
+        Zero,
         Forward,
         Backward,
         Up,
         Down,
     }
-    public RollForce[] _rollForce;
-    public Rigidbody[] Rb;
-    public float[] Data;
+    public Rigidbody[] StandardRigidbodies;
+    public Rigidbody[] ActionRigidbodies;
+    public RollForce[] ForceDirections;
+    public float[] ForcePowerValues;
+}
+
+[System.Serializable]
+public class AniAngleData
+{
+    public enum AniAngle
+    {
+        Zero,
+        Forward,
+        Backward,
+        Up,
+        Down,
+        Right,
+        Left,
+    }
+    public Rigidbody[] StandardRigidbodies;
+    public Transform[] ActionDirection;
+    public Transform[] TargetDirection;
+    public AniAngle[] ActionAngleDirections;
+    public AniAngle[] TargetAngleDirections;
+    public float[] AnglePowerValues;
+    public float[] AngleStability;
+
 }
 
 public class PlayerController : MonoBehaviour
 {
-    //ForceData[] 1차 이차 float[] Data를 2차로 사용가능
     [SerializeField]
-    RollFrameData[] ForceData;
+    public AniFrameData[] RollAniData;
+
+    [SerializeField]
+    public AniFrameData[] DropAniData;
+
+    [SerializeField]
+    public AniAngleData[] RightPunchAniData;
+
+    [SerializeField]
+    public AniAngleData[] LeftPunchAniData;
 
     [Header("앞뒤 속도")]
     public float RunSpeed;
@@ -86,7 +120,6 @@ public class PlayerController : MonoBehaviour
     private List<float> _xPosSpringAry = new List<float>();
     private List<float> _yzPosSpringAry = new List<float>();
 
-
     public bool isAI = false;
 
     Pose leftArmPose;
@@ -98,10 +131,8 @@ public class PlayerController : MonoBehaviour
 
     InteractableObject target;
     Vector3 _direction;
-
-    private ConfigurableJoint[] childJoints;
-    private SoftJointLimitSpring originalAngularXSpring;
-    private SoftJointLimitSpring originalAngularYZSpring;
+    Vector3 _angleDirection;
+    Vector3 _targetDirection;
 
     public enum Side
     {
@@ -152,10 +183,6 @@ public class PlayerController : MonoBehaviour
         bodyHandler = GetComponent<BodyHandler>();
         targetingHandler = GetComponent<TargetingHandler>();
         _actor = GetComponent<Actor>();
-        childJoints = GetComponentsInChildren<ConfigurableJoint>();
-
-        originalAngularXSpring = childJoints[0].angularXLimitSpring;
-        originalAngularYZSpring = childJoints[0].angularYZLimitSpring;
     }
 
     void OnKeyboardEvent(Define.KeyboardEvent evt)
@@ -208,18 +235,6 @@ public class PlayerController : MonoBehaviour
     void OnMouseEvent(Define.MouseEvent evt)
     {
         OnMouseEvent_Idle(evt);
-
-        //상태별 마우스 이벤트 추가 예정
-        //switch (State)
-        //{
-        //    case Define.State.Idle:
-        //        OnMouseEvent_Idle(evt);
-        //        break;
-        //    case Define.State.Moving:
-        //        OnMouseEvent_Idle(evt);
-        //        break;
-           
-        //}
     }
 
     void OnMouseEvent_Idle(Define.MouseEvent evt)
@@ -248,8 +263,6 @@ public class PlayerController : MonoBehaviour
                     if(!isGrounded && Input.GetMouseButtonUp(1))
                     {
                         DropKickTrigger();
-
-                        
                     }
                 }
                 break;
@@ -265,7 +278,6 @@ public class PlayerController : MonoBehaviour
 
         _moveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
 
-
         if (_actor.actorState != Actor.ActorState.Jump)
         {
             if (_moveInput.magnitude == 0f)
@@ -278,7 +290,6 @@ public class PlayerController : MonoBehaviour
                 _actor.actorState = Actor.ActorState.Run;
             }
         }
-
         if (Input.GetMouseButton(2))
             ForwardRollTrigger();
     }
@@ -292,14 +303,7 @@ public class PlayerController : MonoBehaviour
             isRun = true;
         else
             isRun = false;
-
-
-        //_applyedForce = Mathf.Clamp(_applyedForce + Time.deltaTime / 2f, 0.01f, 1f);
-        //_inputSpamForceModifier = Mathf.Clamp(_inputSpamForceModifier + Time.deltaTime / 2f, 0.01f, 1f);
-
-        //Ray_1();
     }
-
 
     #region 기즈모
     private Rigidbody ray;
@@ -320,12 +324,6 @@ public class PlayerController : MonoBehaviour
     }*/
     #endregion
 
-
-    private void OnCollisionEnter(Collision collision)
-    {
-
-    }
-
     private void ForwardRollTrigger()
     {
         StartCoroutine(ForwardRollDelay(2f));
@@ -337,132 +335,139 @@ public class PlayerController : MonoBehaviour
 
         yield return new WaitForSeconds(delay);
 
-
         //다시 회복
         RestoreSpringTrigger();
-        foreach (ConfigurableJoint joint in childJoints)
-        {
-            joint.angularXLimitSpring = originalAngularXSpring;
-            joint.angularYZLimitSpring = originalAngularYZSpring;
-        }
-
     }
-    
 
     public float ForceStrength = 10.0f;
 
-    //기획반에게 넘겨줘야 할 것이 방향이랑 힘 
     IEnumerator ForwardRoll()
     {
-        //구르기 할 때 몸에 스턴을 걸어 spring을 풀고 회전을 준 다음  삼분할일단 ㄱㄱ
         ResetBodySpring();
 
-        foreach (ConfigurableJoint joint in childJoints)
-        {
-            // angularXLimitSpring를 비활성화
-            SoftJointLimitSpring angularXSpring = joint.angularXLimitSpring;
-            angularXSpring.spring = 1000f;
-            joint.angularXLimitSpring = angularXSpring;
-
-            // angularYZLimitSpring를 비활성화
-            SoftJointLimitSpring angularYZSpring = joint.angularYZLimitSpring;
-            angularYZSpring.spring = 1000f;
-            joint.angularYZLimitSpring = angularYZSpring;
-        }
-
         int _frameCount = 0;
-        for(int i =0; i< ForceData.Length; i++)
+        for(int i =0; i< RollAniData.Length; i++)
         {
-            _rollTime += Time.deltaTime;
-            if (_rollTime < 0.1f)
-            {
-                //Time.timeScale = 0.2f;
-                //머리 앞으로 
-                FirstRoll(ForceData, _frameCount, i);
-                //yield return StartCoroutine(TurnDelay(0.2f));
-            }
-        }
-       /* while (_rollTime <= 1.2f)
-        {
-           
-            if (_rollTime >= 0.2f && _rollTime < 0.5f)
-            {
+            _frameCount = i;
+            AniForce(RollAniData, _frameCount);
 
-                bodyHandler.Head.PartRigidbody.AddForce(-bodyHandler.Head.transform.up, ForceMode.VelocityChange);
-                bodyHandler.Waist.PartRigidbody.AddForce(bodyHandler.Waist.transform.up *10, ForceMode.VelocityChange);
-                bodyHandler.Waist.PartRigidbody.AddForce(bodyHandler.Waist.transform.forward *10, ForceMode.VelocityChange);
-
-                //yield return StartCoroutine(TurnDelay(0.2f));
-            }
-            if (_rollTime >= 0.5f && _rollTime < 0.8f)
-            {
-                //이 단계에서 꼬임
-                bodyHandler.Head.PartRigidbody.AddForce(-bodyHandler.Head.transform.up, ForceMode.VelocityChange);
-                bodyHandler.Waist.PartRigidbody.AddForce(-bodyHandler.Waist.transform.up * 10, ForceMode.VelocityChange);
-                bodyHandler.Waist.PartRigidbody.AddForce(bodyHandler.Waist.transform.forward * 10, ForceMode.VelocityChange);
-                //yield return StartCoroutine(TurnDelay(0.2f));
-            }
-            if (_rollTime >= 0.8f && _rollTime < 1.0f)
-            {
+            if(i == 3)
                 RestoreSpringTrigger();
+        }
 
-                bodyHandler.Head.PartRigidbody.AddForce(-bodyHandler.Head.transform.up, ForceMode.VelocityChange);
-                bodyHandler.Waist.PartRigidbody.AddForce(-bodyHandler.Waist.transform.up * 10, ForceMode.VelocityChange);
-                bodyHandler.Waist.PartRigidbody.AddForce(bodyHandler.Waist.transform.forward * 10, ForceMode.VelocityChange);
-                //yield return StartCoroutine(TurnDelay(0.2f));
-            }
-            if (_rollTime >= 1.0f && _rollTime < 1.2f)
-            {
-                //자세를 다시 잡게 하기 위해서 spring 값을 올려줌 - 힘이 쌔서 앞으로 계속 팅겨나가니까 마찰력을 좀 높여야 할 듯
-
-                bodyHandler.Head.PartRigidbody.AddForce(-bodyHandler.Head.transform.up, ForceMode.VelocityChange);
-                bodyHandler.Waist.PartRigidbody.AddForce(-bodyHandler.Waist.transform.up, ForceMode.VelocityChange);
-                bodyHandler.Waist.PartRigidbody.AddForce(bodyHandler.Waist.transform.forward, ForceMode.VelocityChange);
-            }
-        }*/
-        _rollTime = 0f;
         yield return null;
     }
 
-    void FirstRoll(RollFrameData[] _forceSpeed,int _elementCount,int num)
+    void AniForce(AniFrameData[] _forceSpeed,int _elementCount)
     {
-        //_elementCount는 값 변화는 함수가 끝나고 다른 함수를 부를 때 변화가 있다
-        //FSM으로 상태를 받아와서 사용해라 그거를 인스펙터에서 보여주고 선택한것을 읽어와서 실행 하도록 한다. 그리고 데이터를 엑셀에서 읽어와서 힘을 받게 하라
-        //3차원에 대한 이해도가 있으면 그냥 수치로만 해줘도 된다.
-        //선택한 리지드 바디의.AddForce(선택한 FSM상태에 맞는 방향 * 힘 , ?);
-
-        for(num = 0;num< 3; num++)
+        if (_forceSpeed[_elementCount].StandardRigidbodies[0] == null)
         {
-            RollForce rollState = _forceSpeed[_elementCount]._rollForce[num];
-
-            switch (rollState)
+            for (int i = 0; i < _forceSpeed[_elementCount].ActionRigidbodies.Length; i++)
             {
-                case RollForce.zero:
-                    _direction = new Vector3(0, 0, 0);
+                RollForce _rollState = _forceSpeed[_elementCount].ForceDirections[i];
+
+                switch (_rollState)
+                {
+                    case RollForce.Zero:
+                        _direction = new Vector3(0, 0, 0);
+                        break;
+                    case RollForce.Forward:
+                        _direction = -_forceSpeed[_elementCount].ActionRigidbodies[i].transform.up;
+                        break;
+                    case RollForce.Backward:
+                        _direction = _forceSpeed[_elementCount].ActionRigidbodies[i].transform.up;
+                        break;
+                    case RollForce.Up:
+                        _direction = _forceSpeed[_elementCount].ActionRigidbodies[i].transform.forward;
+                        break;
+                    case RollForce.Down:
+                        _direction = -_forceSpeed[_elementCount].ActionRigidbodies[i].transform.forward;
+                        break;
+                }
+                _forceSpeed[_elementCount].ActionRigidbodies[i].AddForce(_direction * _forceSpeed[_elementCount].ForcePowerValues[i], ForceMode.Impulse);
+            }
+        }
+        else
+            Debug.Log("StandardRigidbodies가 None이어야 합니다.");
+    }
+
+    void AniForce(AniFrameData[] _forceSpeed, int _elementCount,Vector3 _dir)
+    {
+        if (_forceSpeed[_elementCount].StandardRigidbodies[0] == null)
+        {
+            if(_forceSpeed[_elementCount].ForceDirections[0] == 0)
+            {
+                _direction = _dir;
+
+                for (int i = 0; i < _forceSpeed[_elementCount].ActionRigidbodies.Length; i++)
+                {
+                    _forceSpeed[_elementCount].ActionRigidbodies[i].AddForce(_direction * _forceSpeed[_elementCount].ForcePowerValues[i], ForceMode.Impulse);
+                }
+            }
+            
+        }
+        else
+            Debug.Log("StandardRigidbodies가 None이어야 합니다.");
+    }
+
+    void AniAngleForce(AniAngleData[] _aniAngleData,int _elementCount)
+    {
+        for (int i = 0; i < _aniAngleData[_elementCount].ActionDirection.Length; i++)
+        {
+            AniAngle _angleState = _aniAngleData[_elementCount].ActionAngleDirections[i];
+            AniAngle _targetangleState = _aniAngleData[_elementCount].TargetAngleDirections[i];
+
+            switch (_angleState)
+            {
+                case AniAngle.Zero:
+                    _angleDirection = new Vector3(0, 0, 0);
                     break;
-                case RollForce.Forward:
-                    _direction = -_forceSpeed[_elementCount].Rb[num].transform.up;
+                case AniAngle.Forward:
+                    _angleDirection = -_aniAngleData[_elementCount].ActionDirection[i].transform.up;
                     break;
-                case RollForce.Backward:
-                    _direction = _forceSpeed[_elementCount].Rb[num].transform.up;
+                case AniAngle.Backward:
+                    _angleDirection = _aniAngleData[_elementCount].ActionDirection[i].transform.up;
                     break;
-                case RollForce.Up:
-                    _direction = _forceSpeed[_elementCount].Rb[num].transform.forward;
+                case AniAngle.Up:
+                    _angleDirection = _aniAngleData[_elementCount].ActionDirection[i].transform.forward;
                     break;
-                case RollForce.Down:
-                    _direction = -_forceSpeed[_elementCount].Rb[num].transform.forward;
+                case AniAngle.Down:
+                    _angleDirection = -_aniAngleData[_elementCount].ActionDirection[i].transform.forward;
+                    break;
+                case AniAngle.Left:
+                    _angleDirection = -_aniAngleData[_elementCount].ActionDirection[i].transform.right;
+                    break;
+                case AniAngle.Right:
+                    _angleDirection = _aniAngleData[_elementCount].ActionDirection[i].transform.right;
                     break;
             }
-
-            _forceSpeed[_elementCount].Rb[num].AddForce(_direction * _forceSpeed[_elementCount].Data[num], ForceMode.VelocityChange);
+            switch (_targetangleState)
+            {
+                case AniAngle.Zero:
+                    _targetDirection = new Vector3(0, 0, 0);
+                    break;
+                case AniAngle.Forward:
+                    _targetDirection = -_aniAngleData[_elementCount].TargetDirection[i].transform.up;
+                    break;
+                case AniAngle.Backward:
+                    _targetDirection = _aniAngleData[_elementCount].TargetDirection[i].transform.up;
+                    break;
+                case AniAngle.Up:
+                    _targetDirection = _aniAngleData[_elementCount].TargetDirection[i].transform.forward;
+                    break;
+                case AniAngle.Down:
+                    _targetDirection = -_aniAngleData[_elementCount].TargetDirection[i].transform.forward;
+                    break;
+                case AniAngle.Left:
+                    _targetDirection = -_aniAngleData[_elementCount].TargetDirection[i].transform.right;
+                    break;
+                case AniAngle.Right:
+                    _targetDirection = _aniAngleData[_elementCount].TargetDirection[i].transform.right;
+                    break;
+            }
+            AlignToVector(_aniAngleData[_elementCount].StandardRigidbodies[i], _angleDirection, _targetDirection,
+                _aniAngleData[_elementCount].AngleStability[i], _aniAngleData[_elementCount].AnglePowerValues[i]);
         }
-
-        
-        //bodyHandler.Head.PartRigidbody.AddForce(-bodyHandler.Head.transform.up * _forceSpeed[_elementCount].Data[num], ForceMode.VelocityChange);
-        //bodyHandler.Chest.PartRigidbody.AddForce(-bodyHandler.Chest.transform.up * _forceSpeed[_elementCount].Data[num], ForceMode.VelocityChange);
-        //bodyHandler.Waist.PartRigidbody.AddForce(bodyHandler.Waist.transform.up * _forceSpeed[_elementCount].Data[num], ForceMode.VelocityChange);
-    
-
     }
 
     IEnumerator TurnDelay(float delay)
@@ -479,68 +484,51 @@ public class PlayerController : MonoBehaviour
     IEnumerator DropKickDelay(float delay)
     {
         _isCoroutineDrop = true;
-        //만약 점프 상태이면은
         if (!isGrounded)
         {
             StartCoroutine(DropKick());
         }
-
         yield return new WaitForSeconds(delay);
-
-
         _isCoroutineDrop = false;
-
     }
-
 
     IEnumerator DropKick()
     {
         Vector3 zero = Vector3.zero;
-
         Transform partTransform = bodyHandler.Hip.transform;
         Transform transform2 = null;
-        Rigidbody rigidbody = null;
-        Rigidbody rigidbody2 = null;
+        int _frameCount = 0;
 
         if (!isGrounded)
         {
-            //에드포스를 플레이어가 바라보는 방향으로 발에 힘을 준다.
-            //스프링일때는 내비두고 
+            for(int i =0; i < DropAniData.Length; i++)
             {
-                //오른쪽
-                transform2 = bodyHandler.RightFoot.transform;
-                rigidbody = bodyHandler.RightThigh.PartRigidbody;
-                rigidbody2 = bodyHandler.RightFoot.PartRigidbody;
-                //bodyHandler.RightFoot.PartInteractable.damageModifier = InteractableObject.Damage.Punch; 데미지
-                bodyHandler.RightFoot.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-                bodyHandler.RightThigh.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-
-                zero = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
-                rigidbody.AddForce(zero * 10f, ForceMode.VelocityChange);
-                rigidbody2.AddForce(zero * 50f, ForceMode.VelocityChange);
+                ResetBodySpring();
+                _frameCount = i;
+                if( i== 0 )
+                {
+                    transform2 = bodyHandler.RightFoot.transform;
+                    bodyHandler.RightFoot.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+                    bodyHandler.RightThigh.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+                    zero = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
+                    AniForce(DropAniData, _frameCount, zero);
+                }
+                else if( i== 1 )
+                {
+                    transform2 = bodyHandler.LeftFoot.transform;
+                    bodyHandler.LeftFoot.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+                    bodyHandler.LeftThigh.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+                    //bodyHandler.RightFoot.PartInteractable.damageModifier = InteractableObject.Damage.Punch; 데미지
+                    zero = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
+                    AniForce(DropAniData, _frameCount, zero);
+                }
+                else
+                {
+                    AniForce(DropAniData, _frameCount);
+                }
             }
-
-            {
-                //왼쪽
-                transform2 = bodyHandler.LeftFoot.transform;
-                rigidbody = bodyHandler.LeftThigh.PartRigidbody;
-                rigidbody2 = bodyHandler.LeftFoot.PartRigidbody;
-                //bodyHandler.RightFoot.PartInteractable.damageModifier = InteractableObject.Damage.Punch; 데미지
-                bodyHandler.LeftFoot.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-                bodyHandler.LeftThigh.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-                zero = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
-                rigidbody.AddForce(zero * 10f, ForceMode.VelocityChange);
-                rigidbody2.AddForce(zero * 50f, ForceMode.VelocityChange);
-            }
-
-            {
-                //머리 뒤로 눕게 하기
-                bodyHandler.Head.PartRigidbody.AddForce(bodyHandler.Head.transform.up * headingForce, ForceMode.VelocityChange);
-                bodyHandler.Chest.PartRigidbody.AddForce(-bodyHandler.Chest.transform.up * headingForce, ForceMode.VelocityChange);
-            }
-
-            ResetBodySpring();
-
+            yield return new WaitForSeconds(2);
+            RestoreSpringTrigger();
         }
         yield return null;
     }
@@ -571,45 +559,28 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator PunchWithDelay(Side side, float delay)
     {
-        //광클 막기
         _isCoroutineRunning = true;
-
-        // 펀치 시작
         StartCoroutine(Punch(side));
-
-        // 딜레이 시간만큼 대기
         yield return new WaitForSeconds(delay);
-
         _isCoroutineRunning = false;
     }
 
     private void PunchAndGrab()
     {
-        //마우스를 클릭한 순간 앞에 오브젝트를 탐색하고
         targetingHandler.SearchTarget();
-
-
-        //일정 시간내에 뗄 경우 펀치를 발사 이때 탐색한 오브젝트가 있을 경우 그 방향으로 펀치 발사
         if (!_isCoroutineRunning)
         {
             if (_readySide == Side.Left)
             {
-                //Punch2(Side.Left);
                 StartCoroutine(PunchWithDelay(Side.Left, 0.5f));
                 _readySide = Side.Right;
             }
             else
             {
                 StartCoroutine(PunchWithDelay(Side.Right, 0.5f));
-                //Punch2(Side.Right);
-
                 _readySide = Side.Left;
             }
         }
-        
-        //일정 시간내에 마우스를 떼지 않을 경우 두가지로 분기를 나눔
-        //1.발견한 오브젝트가 있으면 그 방향으로 그랩
-        //2.발견한 오브젝트가 없으면 아무것도 하지 않음
     }
 
     IEnumerator Punch(Side side)
@@ -620,19 +591,15 @@ public class PlayerController : MonoBehaviour
             if (_punchTimer < 0.1f)
             {
                 ArmActionReadying(side);
-
             }
             if (_punchTimer >= 0.2f && _punchTimer < 0.3f)
             {
                 ArmActionPunching(side);
                 yield return null;
-
             }
             if (_punchTimer >= 0.3f && _punchTimer < 0.5f)
             {
                 ArmActionPunchResetting(side);
-
-
             }
         }
         _punchTimer = 0f;
@@ -645,9 +612,6 @@ public class PlayerController : MonoBehaviour
         {
             ResetBodySpring();
         }
-
-
-
     }
 
     private void ResetBodySpring()
@@ -676,42 +640,32 @@ public class PlayerController : MonoBehaviour
     }
     public IEnumerator RestoreBodySpring()
     {
-        float springLerpDuration = 2f;
-
         JointDrive angularXDrive;
         JointDrive angularYZDrive;
         float startTime = Time.time;
-
+        float springLerpDuration = 2f;
 
         while (Time.time < startTime + springLerpDuration)
         {
             float elapsed = Time.time - startTime;
             float percentage = elapsed / springLerpDuration;
             int j = 0;
-
             for (int i = 0; i < bodyHandler.BodyParts.Count; i++)
             {
-
                 if (i == 3)
                 {
                     continue;
                 }
                 angularXDrive = bodyHandler.BodyParts[i].PartJoint.angularXDrive;
                 angularXDrive.positionSpring = _xPosSpringAry[j] * percentage;
-
                 bodyHandler.BodyParts[i].PartJoint.angularXDrive = angularXDrive;
-
                 angularYZDrive = bodyHandler.BodyParts[i].PartJoint.angularYZDrive;
                 angularYZDrive.positionSpring = _yzPosSpringAry[j] * percentage;
                 bodyHandler.BodyParts[i].PartJoint.angularYZDrive = angularYZDrive;
                 j++;
-
                 yield return null;
             }
-
         }
-
-
     }
 
     public void Stand()
@@ -741,35 +695,26 @@ public class PlayerController : MonoBehaviour
 
     public void ArmActionReadying(Side side)
     {
-        Transform partTransform = bodyHandler.Chest.transform;
-        Transform transform = null;
-        Transform transform2 = null;
-        Rigidbody part = null;
-        Rigidbody part2 = null;
-        Vector3 targetVector = Vector3.zero;
+        int _frameCount = 0;
         switch (side)
         {
-            //90도 면 체스트 남주 왈 뒤로 가야함 근데 앞으로감 forward 위
             case Side.Left:
-                transform = bodyHandler.Chest.transform;
-                transform2 = bodyHandler.Chest.transform;
-                part = bodyHandler.LeftArm.PartRigidbody;
-                part2 = bodyHandler.LeftForarm.PartRigidbody;
-                targetVector = bodyHandler.Chest.transform.right;
+                for (int i = 0; i < RightPunchAniData.Length; i++)
+                {
+                    _frameCount = i;
+                    AniAngleForce(RightPunchAniData, _frameCount);
+                }
                 break;
             case Side.Right:
-                transform = bodyHandler.Chest.transform;
-                transform2 = bodyHandler.Chest.transform;
-                part = bodyHandler.RightArm.PartRigidbody;
-                part2 = bodyHandler.RightForarm.PartRigidbody;
-                targetVector = -bodyHandler.Chest.transform.right;
+                for (int i = 0; i < LeftPunchAniData.Length; i++)
+                {
+                    _frameCount = i;
+                    AniAngleForce(LeftPunchAniData, _frameCount);
+                }
                 break;
         }
-        AlignToVector(part, -transform.up, targetVector, 0.01f, 20f);
-        AlignToVector(part2, -transform2.up, -partTransform.forward, 0.01f, 20f);
-
     }
-
+    
     public void ArmActionPunching(Side side)
     {
         Transform partTransform = bodyHandler.Chest.transform;
@@ -800,7 +745,6 @@ public class PlayerController : MonoBehaviour
                 bodyHandler.RightForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
                 break;
         }
-
         Vector3 zero = Vector3.zero;
         if (target == null)
         {
@@ -809,21 +753,6 @@ public class PlayerController : MonoBehaviour
             rigidbody2.AddForce(zero * 12f, ForceMode.VelocityChange); // 수정  before 3
             return;
         }
-
-        //타겟있을때
-
-        //zero = Vector3.Normalize(target.cachedCollider.ClosestPoint(transform2.position) - transform2.position);
-        //if (Vector3.Distance(targetingHandeler.upperIntrest.cachedCollider.bounds.center, transform.position) > 1.2f)
-        //{
-
-        //    rigidbody.AddForce(-(zero * 20f), ForceMode.VelocityChange);
-        //    rigidbody2.AddForce(zero * 40f, ForceMode.VelocityChange);
-        //}
-        //else
-        //{
-        //    rigidbody.AddForce(-(zero * 20f), ForceMode.VelocityChange);
-        //    rigidbody2.AddForce(zero * 50f, ForceMode.VelocityChange);
-        //}
     }
 
     public void ArmActionPunchResetting(Side side)
@@ -865,17 +794,13 @@ public class PlayerController : MonoBehaviour
         AlignToVector(part, transform.forward, vector + -partTransform.up, 0.01f, 2f);
         AlignToVector(part2, transform2.forward, vector + partTransform.up, 0.01f, 2f);
     }
-
+    
     public void Jump()
     {
         if (isStateChange)
         {
             isGrounded = false;
-
-            //_applyedForce = 0.2f;
             float jumpMoveForce = 0.6f * _inputSpamForceModifier * 10;
-
-            //움직이는 입력이 있을때
             if (_moveDir != Vector3.zero)
             {
                 bodyHandler.Chest.PartRigidbody.AddForce(_moveDir * jumpMoveForce, ForceMode.VelocityChange);
@@ -886,7 +811,6 @@ public class PlayerController : MonoBehaviour
             AlignToVector(bodyHandler.Head.PartRigidbody, -bodyHandler.Head.transform.up, _moveDir + new Vector3(0, 0.2f, 0f), 0.1f, 4f);
             AlignToVector(bodyHandler.Head.PartRigidbody, bodyHandler.Head.transform.forward, Vector3.up, 0.1f, 4f);
 
-            //일반점프
             if (!isDuck && !isKickDuck)
             {
                 bodyHandler.Chest.PartRigidbody.AddForce(Vector3.up * 1.7f * JumpForce, ForceMode.VelocityChange);
@@ -898,13 +822,11 @@ public class PlayerController : MonoBehaviour
                 AlignToVector(bodyHandler.Hip.PartRigidbody, -bodyHandler.Hip.transform.up, _moveDir + new Vector3(0f, 1f, 0f), 0.1f, 10f);
                 AlignToVector(bodyHandler.Head.PartRigidbody, -bodyHandler.Head.transform.up, _moveDir + new Vector3(0, 0.2f, 0f), 0.1f, 4f); // 추가
 
-                //왼팔이 사용중이 아닐때
                 if (true)
                 {
                     AlignToVector(bodyHandler.LeftArm.PartRigidbody, bodyHandler.LeftArm.transform.forward, (bodyHandler.Chest.transform.right + -bodyHandler.Chest.transform.up) / 4f, 0.1f, 4f);
                     AlignToVector(bodyHandler.LeftForarm.PartRigidbody, bodyHandler.LeftForarm.transform.forward, (bodyHandler.Chest.transform.right + bodyHandler.Chest.transform.up) / 4f, 0.1f, 4f);
                 }
-                //오른팔이 사용중이 아닐때
                 if (true)
                 {
                     AlignToVector(bodyHandler.RightArm.PartRigidbody, bodyHandler.RightArm.transform.forward, (-bodyHandler.Chest.transform.right + -bodyHandler.Chest.transform.up) / 4f, 0.1f, 4f);
@@ -915,10 +837,7 @@ public class PlayerController : MonoBehaviour
                 AlignToVector(bodyHandler.RightThigh.PartRigidbody, bodyHandler.RightThigh.transform.forward, bodyHandler.Hip.transform.forward + bodyHandler.Hip.transform.up, 0.1f, 4f);
                 AlignToVector(bodyHandler.RightLeg.PartRigidbody, bodyHandler.RightLeg.transform.forward, bodyHandler.Hip.transform.forward + -bodyHandler.Hip.transform.up, 0.1f, 4f);
             }
-
         }
-
-        
         if (isGrounded)
         {
             _actor.actorState = Actor.ActorState.Stand;
@@ -928,23 +847,17 @@ public class PlayerController : MonoBehaviour
     private void Heading()
     {
 
-        //일반헤딩
         if (!isDuck && !isKickDuck)
         {
             bodyHandler.Head.PartRigidbody.AddForce(-bodyHandler.Head.transform.up * headingForce, ForceMode.VelocityChange);
             bodyHandler.Chest.PartRigidbody.AddForce(-bodyHandler.Chest.transform.up * headingForce, ForceMode.VelocityChange);
-
             AlignToVector(bodyHandler.Head.PartRigidbody, -bodyHandler.Head.transform.up, _moveDir + new Vector3(0f, 0.2f, 0f), 0.1f, 2.5f * 1);
             AlignToVector(bodyHandler.Head.PartRigidbody, bodyHandler.Head.transform.forward, Vector3.up, 0.1f, 2.5f * 1);
-
-
-            //왼팔이 사용중이 아닐때
             if (true)
             {
                 AlignToVector(bodyHandler.LeftArm.PartRigidbody, bodyHandler.LeftArm.transform.forward, (bodyHandler.Chest.transform.right + -bodyHandler.Chest.transform.up) / 4f, 0.1f, 4f);
                 AlignToVector(bodyHandler.LeftForarm.PartRigidbody, bodyHandler.LeftForarm.transform.forward, (bodyHandler.Chest.transform.right + bodyHandler.Chest.transform.up) / 4f, 0.1f, 4f);
             }
-            //오른팔이 사용중이 아닐때
             if (true)
             {
                 AlignToVector(bodyHandler.RightArm.PartRigidbody, bodyHandler.RightArm.transform.forward, (-bodyHandler.Chest.transform.right + -bodyHandler.Chest.transform.up) / 4f, 0.1f, 4f);
@@ -960,7 +873,6 @@ public class PlayerController : MonoBehaviour
 
     public void Move()
     {
-
         if (isRun)
         {
             _cycleSpeed = 0.1f;
@@ -969,11 +881,8 @@ public class PlayerController : MonoBehaviour
         {
             _cycleSpeed = 0.15f;
         }
-
-
         if (isStateChange)
         {
-
             if (Random.Range(0, 2) == 1)
             {
                 leftLegPose = Pose.Bent;
@@ -989,21 +898,13 @@ public class PlayerController : MonoBehaviour
                 rightArmPose = Pose.Straight;
             }
         }
-
         Stand();
-
-
-
         RunCycleUpdate();
-
         RunCyclePoseBody();
         RunCyclePoseArm(Side.Left, leftArmPose);
         RunCyclePoseArm(Side.Right, rightArmPose);
-
         RunCyclePoseLeg(Side.Left, leftLegPose);
         RunCyclePoseLeg(Side.Right, rightLegPose);
-
-
     }
 
     private void RunCycleUpdate()
@@ -1094,8 +995,6 @@ public class PlayerController : MonoBehaviour
                     footRigid.AddForce(-_runVectorForce2 , ForceMode.VelocityChange);
                 }
                 break;
-
-
         }
     }
 
@@ -1111,7 +1010,6 @@ public class PlayerController : MonoBehaviour
 
         float armForceCoef = 0.3f;
         float armForceRunCoef = 0.6f;
-
         switch (side)
         {
             case Side.Left:
@@ -1186,41 +1084,19 @@ public class PlayerController : MonoBehaviour
 
     private void RunCyclePoseBody()
     {
-        
-        //if (isRun)
-        //{
-        //    RunSpeed = Mathf.Clamp(RunSpeed += Time.deltaTime, 0f, 1f);
-        //}
-        //else
-        //{
-        //    RunSpeed = Mathf.Clamp(RunSpeed -= Time.deltaTime, 0f, 1f);
-        //}
-
-
         Vector3 lookForward = new Vector3(_cameraArm.forward.x, 0f, _cameraArm.forward.z).normalized;
         Vector3 lookRight = new Vector3(_cameraArm.right.x, 0f, _cameraArm.right.z).normalized;
         _moveDir = lookForward * _moveInput.z + lookRight * _moveInput.x;
 
-
-        //AlignToVector(_hips, -_hips.transform.up, _moveDir, 0.1f, 4f * _rotationSpeed);
-
         bodyHandler.Chest.PartRigidbody.AddForce((_runVectorForce10 + _moveDir) , ForceMode.VelocityChange);
         bodyHandler.Hip.PartRigidbody.AddForce((-_runVectorForce5 + -_moveDir), ForceMode.VelocityChange);
-        //bodyHandeler.Ball.PartRigidbody.AddForce(-_runVectorForce5 * _applyedForce, ForceMode.VelocityChange);
 
-        //AlignToVector(bodyHandeler.Head.PartRigidbody, -bodyHandeler.Head.transform.up, _moveDir, 0.1f, 2.5f * _applyedForce);
-        //AlignToVector(bodyHandeler.Head.PartRigidbody, bodyHandeler.Head.transform.forward, _moveDir + new Vector3(0,0.2f,0f), 0.1f, 2.5f * _applyedForce);
-
-       //AlignToVector(bodyHandeler.Head.PartRigidbody, bodyHandeler.Head.transform.forward, Vector3.up, 0.1f, 2.5f * _applyedForce);
         AlignToVector(bodyHandler.Chest.PartRigidbody, -bodyHandler.Chest.transform.up, _moveDir / 4f + -Vector3.up, 0.1f, 4f * _applyedForce);
         AlignToVector(bodyHandler.Chest.PartRigidbody, bodyHandler.Chest.transform.forward, Vector3.up, 0.1f, 8f * _applyedForce);
         AlignToVector(bodyHandler.Waist.PartRigidbody, -bodyHandler.Waist.transform.up, _moveDir / 4f + -Vector3.up, 0.1f, 4f * _applyedForce);
         AlignToVector(bodyHandler.Waist.PartRigidbody, bodyHandler.Chest.transform.forward, Vector3.up, 0.1f, 8f * _applyedForce);
         AlignToVector(bodyHandler.Hip.PartRigidbody, -bodyHandler.Hip.transform.up, _moveDir, 0.1f, 8f * _applyedForce);
         AlignToVector(bodyHandler.Hip.PartRigidbody, bodyHandler.Hip.transform.forward, Vector3.up, 0.1f, 8f * _applyedForce);
-
-
-
 
         if (isRun)
         {
@@ -1232,8 +1108,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-
-    //리지드바디 part의 alignmentVector방향을 targetVector방향으로 회전
     public void AlignToVector(Rigidbody part, Vector3 alignmentVector, Vector3 targetVector, float stability, float speed)
     {
         if (part == null)
@@ -1272,8 +1146,6 @@ public class PlayerController : MonoBehaviour
 
     }
 
-
-    // 마우스 컨트롤 온오프
     private void CursorControll()
     {
         if (Input.anyKeyDown)
