@@ -674,8 +674,8 @@ public class PlayerController : MonoBehaviour
         if (target == null)
         {
             zero = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
-            rigidbody.AddForce(-(zero * 8f), ForceMode.VelocityChange); // 수정 before 2
-            rigidbody2.AddForce(zero * 12f, ForceMode.VelocityChange); // 수정  before 3
+            rigidbody.AddForce(-(zero * 8f), ForceMode.VelocityChange); // 수정 before 2 after 8
+            rigidbody2.AddForce(zero * 12f, ForceMode.VelocityChange); // 수정  before 3 after 12
             return;
         }
 

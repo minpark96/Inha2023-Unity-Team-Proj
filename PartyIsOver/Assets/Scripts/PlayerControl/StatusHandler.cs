@@ -8,6 +8,7 @@ using static UnityEngine.Rendering.VirtualTexturing.Debugging;
 
 public class StatusHandler : MonoBehaviour
 {
+
     private float _damageModifer = 1f;
 
     public Actor actor;
@@ -29,11 +30,9 @@ public class StatusHandler : MonoBehaviour
 
     private float _knockoutThreshold=20f;
 
-    private BodyHandler bodyHandler;
 
     void Start()
     {
-        bodyHandler = GetComponent<BodyHandler>();
         actor = transform.GetComponent<Actor>();
         _health = _maxHealth;
     }
@@ -62,7 +61,6 @@ public class StatusHandler : MonoBehaviour
             _healthDamage += damage;
         }
 
-        Debug.Log($"데미지 타입: {type}");
         DebuffCheck(type);
     }
 
@@ -77,63 +75,100 @@ public class StatusHandler : MonoBehaviour
             case Damage.ElectricShock:
                 StartCoroutine("ElectricShock"); // 감전
                 break;
+            default:
+                break;
         }
     }
 
     IEnumerator Ice()
     {
-        bodyHandler.LeftHand.PartRigidbody.isKinematic = true;
-        bodyHandler.LeftForarm.PartRigidbody.isKinematic = true;
-        bodyHandler.LeftArm.PartRigidbody.isKinematic = true;
-        bodyHandler.LeftFoot.PartRigidbody.isKinematic = true;
-        bodyHandler.LeftLeg.PartRigidbody.isKinematic = true;
-        bodyHandler.LeftThigh.PartRigidbody.isKinematic = true;
+        actor.BodyHandler.LeftHand.PartRigidbody.isKinematic = true;
+        actor.BodyHandler.LeftForarm.PartRigidbody.isKinematic = true;
+        actor.BodyHandler.LeftArm.PartRigidbody.isKinematic = true;
+        actor.BodyHandler.LeftFoot.PartRigidbody.isKinematic = true;
+        actor.BodyHandler.LeftLeg.PartRigidbody.isKinematic = true;
+        actor.BodyHandler.LeftThigh.PartRigidbody.isKinematic = true;
 
-        bodyHandler.RightHand.PartRigidbody.isKinematic = true;
-        bodyHandler.RightForarm.PartRigidbody.isKinematic = true;
-        bodyHandler.RightArm.PartRigidbody.isKinematic = true;
-        bodyHandler.RightFoot.PartRigidbody.isKinematic = true;
-        bodyHandler.RightLeg.PartRigidbody.isKinematic = true;
-        bodyHandler.RightThigh.PartRigidbody.isKinematic = true;
+        actor.BodyHandler.RightHand.PartRigidbody.isKinematic = true;
+        actor.BodyHandler.RightForarm.PartRigidbody.isKinematic = true;
+        actor.BodyHandler.RightArm.PartRigidbody.isKinematic = true;
+        actor.BodyHandler.RightFoot.PartRigidbody.isKinematic = true;
+        actor.BodyHandler.RightLeg.PartRigidbody.isKinematic = true;
+        actor.BodyHandler.RightThigh.PartRigidbody.isKinematic = true;
 
-        bodyHandler.Head.PartRigidbody.isKinematic = true;
-        bodyHandler.Chest.PartRigidbody.isKinematic = true;
-        bodyHandler.Waist.PartRigidbody.isKinematic = true;
-        bodyHandler.Hip.PartRigidbody.isKinematic = true;
+        actor.BodyHandler.Head.PartRigidbody.isKinematic = true;
+        actor.BodyHandler.Chest.PartRigidbody.isKinematic = true;
+        actor.BodyHandler.Waist.PartRigidbody.isKinematic = true;
+        actor.BodyHandler.Hip.PartRigidbody.isKinematic = true;
         
         Debug.Log("빙결!");
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(1.5f);
 
-        bodyHandler.LeftHand.PartRigidbody.isKinematic = false;
-        bodyHandler.LeftForarm.PartRigidbody.isKinematic = false;
-        bodyHandler.LeftArm.PartRigidbody.isKinematic = false;
-        bodyHandler.LeftFoot.PartRigidbody.isKinematic = false;
-        bodyHandler.LeftLeg.PartRigidbody.isKinematic = false;
-        bodyHandler.LeftThigh.PartRigidbody.isKinematic = false;
+        actor.BodyHandler.LeftHand.PartRigidbody.isKinematic = false;
+        actor.BodyHandler.LeftForarm.PartRigidbody.isKinematic = false;
+        actor.BodyHandler.LeftArm.PartRigidbody.isKinematic = false;
+        actor.BodyHandler.LeftFoot.PartRigidbody.isKinematic = false;
+        actor.BodyHandler.LeftLeg.PartRigidbody.isKinematic = false;
+        actor.BodyHandler.LeftThigh.PartRigidbody.isKinematic = false;
 
-        bodyHandler.RightHand.PartRigidbody.isKinematic = false;
-        bodyHandler.RightForarm.PartRigidbody.isKinematic = false;
-        bodyHandler.RightArm.PartRigidbody.isKinematic = false;
-        bodyHandler.RightFoot.PartRigidbody.isKinematic = false;
-        bodyHandler.RightLeg.PartRigidbody.isKinematic = false;
-        bodyHandler.RightThigh.PartRigidbody.isKinematic = false;
+        actor.BodyHandler.RightHand.PartRigidbody.isKinematic = false;
+        actor.BodyHandler.RightForarm.PartRigidbody.isKinematic = false;
+        actor.BodyHandler.RightArm.PartRigidbody.isKinematic = false;
+        actor.BodyHandler.RightFoot.PartRigidbody.isKinematic = false;
+        actor.BodyHandler.RightLeg.PartRigidbody.isKinematic = false;
+        actor.BodyHandler.RightThigh.PartRigidbody.isKinematic = false;
 
-        bodyHandler.Head.PartRigidbody.isKinematic = false;
-        bodyHandler.Chest.PartRigidbody.isKinematic = false;
-        bodyHandler.Waist.PartRigidbody.isKinematic = false;
-        bodyHandler.Hip.PartRigidbody.isKinematic = false;
+        actor.BodyHandler.Head.PartRigidbody.isKinematic = false;
+        actor.BodyHandler.Chest.PartRigidbody.isKinematic = false;
+        actor.BodyHandler.Waist.PartRigidbody.isKinematic = false;
+        actor.BodyHandler.Hip.PartRigidbody.isKinematic = false;
     }
+
 
     IEnumerator ElectricShock()
     {
         Debug.Log("감전!");
-        yield return 0;
+
+        float startTime = Time.realtimeSinceStartup;
+        float shockDuration = 3f;
+
+        while (Time.realtimeSinceStartup - startTime < shockDuration)
+        {
+            int number = Random.Range(0, 10);
+
+            if (number > 7)
+            {
+                actor.BodyHandler.Hip.transform.rotation = UnityEngine.Quaternion.Euler(30, 0, 0);
+                actor.BodyHandler.Chest.transform.rotation = UnityEngine.Quaternion.Euler(30, 0, 0);
+                actor.BodyHandler.Waist.transform.rotation = UnityEngine.Quaternion.Euler(30, 0, 0);
+                actor.BodyHandler.LeftArm.transform.rotation = UnityEngine.Quaternion.Euler(30, 0, 0);
+                actor.BodyHandler.RightArm.transform.rotation = UnityEngine.Quaternion.Euler(30, 0, 0);
+                actor.BodyHandler.LeftForarm.transform.rotation = UnityEngine.Quaternion.Euler(30, 0, 0);
+                actor.BodyHandler.RightForarm.transform.rotation = UnityEngine.Quaternion.Euler(30, 0, 0);
+            }
+            else
+            {
+                actor.BodyHandler.Hip.transform.rotation = UnityEngine.Quaternion.Euler(-30, 0, 0);
+                actor.BodyHandler.Chest.transform.rotation = UnityEngine.Quaternion.Euler(-30, 0, 0);
+                actor.BodyHandler.Waist.transform.rotation = UnityEngine.Quaternion.Euler(-30, 0, 0);
+                actor.BodyHandler.LeftArm.transform.rotation = UnityEngine.Quaternion.Euler(-30, 0, 0);
+                actor.BodyHandler.RightArm.transform.rotation = UnityEngine.Quaternion.Euler(-30, 0, 0);
+                actor.BodyHandler.LeftForarm.transform.rotation = UnityEngine.Quaternion.Euler(-30, 0, 0);
+                actor.BodyHandler.RightForarm.transform.rotation = UnityEngine.Quaternion.Euler(-30, 0, 0);
+            }
+
+            yield return null;
+        }
+
+        // 감전 해제
+        yield return new WaitForSeconds(1.0f);
+        UnityEngine.Quaternion originalHip = UnityEngine.Quaternion.Euler(-90,0,0);
+        actor.BodyHandler.Hip.transform.rotation = originalHip;
     }
 
 
     public void UpdateHealth()
     {
-
         if (_isDead)
             return;
 
@@ -144,8 +179,6 @@ public class StatusHandler : MonoBehaviour
         //무적상태가 아닐때만 데미지 적용
         if (tempHealth > 0f && !invulnerable)
             tempHealth -= _healthDamage;
-
-
 
 
         float realDamage = _health - tempHealth;

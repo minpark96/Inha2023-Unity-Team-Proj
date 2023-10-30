@@ -29,23 +29,9 @@ public class Actor : MonoBehaviour
         StatusHandler = GetComponent<StatusHandler>();
         PlayerControll = GetComponent<PlayerController>();
     }
-    void Start()
-    {
-
-
-
-    }
-
-    void Update()
-    {
-        
-    }
-
+   
     private void FixedUpdate()
     {
-
-
-
         if (actorState != lastActorState)
         {
             PlayerControll.isStateChange = true;
