@@ -129,7 +129,7 @@ public class StatusHandler : MonoBehaviour
             if (_unconsciousTime <= 0f)
             {
                 actor.actorState = Actor.ActorState.Stand;
-                actor.PlayerControll.RestoreSpringTrigger();
+                //actor.PlayerControll.RestoreSpringTrigger();
                 _unconsciousTime = 0f;
             }
         }

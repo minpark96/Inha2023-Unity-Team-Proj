@@ -67,7 +67,7 @@ public class Actor : MonoBehaviour
                 //_playerControll.Dead();
                 break;
             case ActorState.Unconscious:
-                PlayerControll.Unconscious();
+                //PlayerControll.Unconscious();
                 break;
             case ActorState.Stand:
                 PlayerControll.Stand();
