@@ -16,16 +16,18 @@ public class Item : MonoBehaviour
     public float mass;
 
     public Transform OneHandedPos;
-    public Transform TwoHandedPos; 
+    public Transform TwoHandedPos;
+    public Transform Head;
 
     // Start is called before the first frame update
     void Start()
     {
         InteractableObject = GetComponent<InteractableObject>();
-        OneHandedPos = transform.GetChild(0).transform;
-        if(transform.GetChild(1) != null )
+        Head = transform.GetChild(1);
+        OneHandedPos = transform.GetChild(2);
+        if(transform.GetChild(3) != null && (ItemType == ItemType.TwoHanded || ItemType == ItemType.Ranged))
         {
-            TwoHandedPos = transform.GetChild(1).transform;
+            TwoHandedPos = transform.GetChild(3);
         }
     }
 

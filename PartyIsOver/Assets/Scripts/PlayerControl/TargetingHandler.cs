@@ -44,7 +44,6 @@ public class TargetingHandler : MonoBehaviour
 
         if (colliderCount <= 0 )
         {
-            Debug.Log("target null");
             return null;
         }
 
