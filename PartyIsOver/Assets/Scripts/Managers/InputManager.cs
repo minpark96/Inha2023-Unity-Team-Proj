@@ -151,6 +151,14 @@ public class InputManager
 
         if (MouseAction != null)
         {
+            if (Input.GetMouseButton(2))
+            {
+
+            }
+        }
+
+        if (MouseAction != null)
+        {
 
             if (Input.GetMouseButton(1))
             {

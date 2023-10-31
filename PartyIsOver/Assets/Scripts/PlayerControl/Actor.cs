@@ -53,7 +53,6 @@ public class Actor : MonoBehaviour
         if (actorState != lastActorState)
         {
             PlayerControll.isStateChange = true;
-            Debug.Log("stateChange");
         }
         else
         {
@@ -68,7 +67,7 @@ public class Actor : MonoBehaviour
                 //_playerControll.Dead();
                 break;
             case ActorState.Unconscious:
-                PlayerControll.Unconscious();
+                //PlayerControll.Unconscious();
                 break;
             case ActorState.Stand:
                 PlayerControll.Stand();
