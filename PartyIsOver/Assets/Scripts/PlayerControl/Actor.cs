@@ -84,7 +84,7 @@ public class Actor : MonoBehaviour
 
         lastActorState = actorState;
 
-        DebuffState debuffState = 
+        //DebuffState debuffState = 
 
     }
 }

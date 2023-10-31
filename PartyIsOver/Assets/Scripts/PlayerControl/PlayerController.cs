@@ -169,27 +169,12 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        StartCoroutine("InitDelay");
         if (isAI)
             return;
         Managers.Input.MouseAction -= OnMouseEvent;
         Managers.Input.MouseAction += OnMouseEvent;
         Managers.Input.KeyboardAction -= OnKeyboardEvent;
         Managers.Input.KeyboardAction += OnKeyboardEvent;
-    }
-
-    IEnumerator InitDelay()
-    {
-        yield return new WaitForSeconds(1);
-        for (int i = 0; i < bodyHandler.BodyParts.Count; i++)
-        {
-            if (i == 3)
-            {
-                continue;
-            }
-            _xPosSpringAry.Add(bodyHandler.BodyParts[i].PartJoint.angularXDrive.positionSpring);
-            _yzPosSpringAry.Add(bodyHandler.BodyParts[i].PartJoint.angularYZDrive.positionSpring);
-        }
     }
 
     void Init()
@@ -349,6 +334,7 @@ public class PlayerController : MonoBehaviour
 
         //다시 회복
         //RestoreSpringTrigger();
+        _actor.StatusHandler.StartCoroutine("RestoreFromFaint");
     }
 
     public float ForceStrength = 10.0f;
@@ -357,6 +343,8 @@ public class PlayerController : MonoBehaviour
     {
         //스프링 풀기
         //ResetBodySpring();
+        _actor.StatusHandler.StartCoroutine("Faint");
+
 
         int _frameCount = 0;
         for(int i =0; i< RollAniData.Length; i++)
@@ -368,6 +356,7 @@ public class PlayerController : MonoBehaviour
             {
                 //스프링 복구
                 //RestoreSpringTrigger();
+                _actor.StatusHandler.StartCoroutine("RestoreFromFaint");
             }
 
         }
@@ -416,6 +405,10 @@ public class PlayerController : MonoBehaviour
             {
                 for (int i = 0; i < _forceSpeed[_elementCount].ActionRigidbodies.Length; i++)
                 {
+                    Debug.Log(_dir);
+                    Debug.Log(_forceSpeed[_elementCount].ForcePowerValues[i]);
+                    Debug.Log(ForceMode.Impulse);
+
                     _forceSpeed[_elementCount].ActionRigidbodies[i].AddForce(_dir * _forceSpeed[_elementCount].ForcePowerValues[i], ForceMode.Impulse);
                 }
             }
@@ -580,6 +573,9 @@ public class PlayerController : MonoBehaviour
             {
                 //스프링 풀기
                 //ResetBodySpring();
+                _actor.StatusHandler.StartCoroutine("Faint");
+
+
                 _frameCount = i;
                 if( i== 0 )
                 {
@@ -606,6 +602,8 @@ public class PlayerController : MonoBehaviour
             yield return new WaitForSeconds(2);
             //스프링 복구
             //RestoreSpringTrigger();
+            _actor.StatusHandler.StartCoroutine("RestoreFromFaint");
+
         }
         yield return null;
     }
@@ -810,7 +808,7 @@ public class PlayerController : MonoBehaviour
             int _frameCount;
             if (_moveDir != Vector3.zero)
             {
-                for (int i =0;i< MoveForceJumpAniData.Length;i++)
+                for (int i = 0;i< MoveForceJumpAniData.Length;i++)
                 {
                     _frameCount = i;
                     //AniForce(MoveForceJumpAniData, _frameCount, _moveDir); 헤드 추가 해주면 됨 values = 6
