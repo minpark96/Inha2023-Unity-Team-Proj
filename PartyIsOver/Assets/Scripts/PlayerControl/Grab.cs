@@ -179,43 +179,53 @@ public class Grab : MonoBehaviourPun
                     Vector3 dir = item.OneHandedPos.position - _rightHandRigid.transform.position;
                     _rightHandRigid.AddForce(dir * 80f);
 
+                    Vector3 dir2 = item.TwoHandedPos.position - _leftHandRigid.transform.position;
+                    _leftHandRigid.AddForce(dir2 * 80f);
+
                     //일정 거리내로 들어오면 잡기판정
                     if (ItemGrabCheck(item.OneHandedPos))
                     {
                         //왼손에 닿게끔 아이템 로테이션 수정
+                        ItemRotate(item.transform, true, true);
 
-
+                        //왼쪽에 있는 손잡이를 찾아서 매개변수를 넣고 이를 왼손에 고정
+                        //StartCoroutine(TwoHandedGrabbing(item.TwoHandedPos));
 
                         //관절생성
                         JointFix(Side.Right);
+                        JointFix(Side.Left);
+
                     }
                 }
                 else
                 {
+                    Debug.Log("d");
                     Vector3 dir = item.TwoHandedPos.position - _rightHandRigid.transform.position;
                     _rightHandRigid.AddForce(dir * 80f);
 
+                    Vector3 dir2 = item.OneHandedPos.position - _leftHandRigid.transform.position;
+                    _leftHandRigid.AddForce(dir2 * 80f);
 
                     //일정 거리내로 들어오면 잡기판정
-                    if (ItemGrabCheck(item.OneHandedPos))
+                    if (ItemGrabCheck(item.TwoHandedPos))
                     {
                         //왼손에 닿게끔 아이템 로테이션 수정
+                        ItemRotate(item.transform, true, false);
 
-
+                        //왼쪽에 있는 손잡이를 찾아서 매개변수를 넣고 이를 왼손에 고정
+                        //StartCoroutine(TwoHandedGrabbing(item.TwoHandedPos));
 
                         //관절생성
                         JointFix(Side.Right);
+                        JointFix(Side.Left);
                     }
                 }
 
-                //왼쪽에 있는 손잡이를 찾아서 매개변수를 넣고 이를 왼손에 고정
-                StartCoroutine(TwoHandedGrabbing(item.TwoHandedPos));
+
 
             }
             else
             {
-                Debug.Log("OneHanded");
-
                 Vector3 dir = item.OneHandedPos.position - _rightHandRigid.transform.position;
                 _rightHandRigid.AddForce(dir * 80f);
 
@@ -224,7 +234,7 @@ public class Grab : MonoBehaviourPun
                 {
                     //아이템 로테이션 수정
                     ItemRotate(item.transform, false, false);
-                    //JointFix(Side.Right);
+                    JointFix(Side.Right);
                 }
             }
         }
@@ -265,14 +275,16 @@ public class Grab : MonoBehaviourPun
 
         Vector3 crossProduct = Vector3.Cross(toItem, toOneHandedHandle);
 
-        if (crossProduct.y < 0)
+        if (crossProduct.y > 0)
         {
             // 원핸드 손잡이가 오른쪽
+            Debug.Log("손잡이 오른쪽");
             return true;
         }
         else
         {
             // 원핸드 손잡이가 왼쪽
+            Debug.Log("손잡이 왼쪽");
             return false;
         }
     }
@@ -288,10 +300,10 @@ public class Grab : MonoBehaviourPun
 
     void ItemRotate(Transform item, bool isTwoHanded,bool isHeadLeft)
     {
-        item.GetComponent<Rigidbody>().isKinematic = true;
+        //item.GetComponent<Rigidbody>().isKinematic = true;
         item.GetComponent<Rigidbody>().useGravity = false;
 
-        item.GetComponent<Collider>().enabled = false;
+        //item.GetComponent<Collider>().enabled = false;
 
         Vector3 targetPosition;
 
@@ -300,20 +312,19 @@ public class Grab : MonoBehaviourPun
             if(isHeadLeft)
             {
                 //아이템의 헤드부분이 해당 방향벡터를 바라보게
-                targetPosition = item.transform.position + -_jointChest.transform.right*5;
+                targetPosition = -_jointChest.transform.right;
             }
             else
             {
-                 targetPosition = item.transform.position + _jointChest.transform.right * 5;
+                targetPosition = _jointChest.transform.right;
             }
         }
         else
         {
-            targetPosition = item.transform.position + Vector3.forward*10;
+            targetPosition = _jointChest.transform.forward;
         }
 
-        item.transform.LookAt(targetPosition,Vector3.right);
-
+        item.transform.right = -targetPosition.normalized;
     }
 
 
