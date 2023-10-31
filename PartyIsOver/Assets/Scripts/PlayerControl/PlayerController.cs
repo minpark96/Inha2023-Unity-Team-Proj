@@ -92,10 +92,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-
-        StartCoroutine("InitDelay");
-
-
+        bodyHandler.BodySetup();
 
         if (isAI)
             return;
@@ -108,29 +105,11 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    IEnumerator InitDelay()
-    {
-        yield return new WaitForSeconds(1);
-        for (int i = 0; i < bodyHandler.BodyParts.Count; i++)
-        {
-            if (i == 3)
-            {
-                continue;
-            }
-            _xPosSpringAry.Add(bodyHandler.BodyParts[i].PartJoint.angularXDrive.positionSpring);
-            _yzPosSpringAry.Add(bodyHandler.BodyParts[i].PartJoint.angularYZDrive.positionSpring);
-
-            
-        }
-
-    }
-
     void Init()
     {
         bodyHandler = GetComponent<BodyHandler>();
         targetingHandler = GetComponent<TargetingHandler>();
         _actor = GetComponent<Actor>();
-
     }
 
     void OnKeyboardEvent(Define.KeyboardEvent evt)
@@ -453,82 +432,6 @@ public class PlayerController : MonoBehaviour
         }
         _punchTimer = 0f;
         yield return null;
-    }
-
-    public void Unconscious()
-    {
-        if (isStateChange)
-        {
-            ResetBodySpring();
-        }
-
-
-
-    }
-
-    private void ResetBodySpring()
-    {
-        JointDrive angularXDrive;
-        JointDrive angularYZDrive;
-        for (int i = 0; i < bodyHandler.BodyParts.Count; i++)
-        {
-            if (i == 3)
-            {
-                continue;
-            }
-            angularXDrive = bodyHandler.BodyParts[i].PartJoint.angularXDrive;
-            angularXDrive.positionSpring = 0f;
-            bodyHandler.BodyParts[i].PartJoint.angularXDrive = angularXDrive;
-
-            angularYZDrive = bodyHandler.BodyParts[i].PartJoint.angularYZDrive;
-            angularYZDrive.positionSpring = 0f;
-            bodyHandler.BodyParts[i].PartJoint.angularYZDrive = angularYZDrive;
-        }
-    }
-
-    public void RestoreSpringTrigger()
-    {
-        StartCoroutine("RestoreBodySpring");
-    }
-    public IEnumerator RestoreBodySpring()
-    {
-        float springLerpDuration = 2f;
-
-        JointDrive angularXDrive;
-        JointDrive angularYZDrive;
-        float startTime = Time.time;
-
-
-        while (Time.time < startTime + springLerpDuration)
-        {
-            float elapsed = Time.time - startTime;
-            float percentage = elapsed / springLerpDuration;
-            int j = 0;
-
-            for (int i = 0; i < bodyHandler.BodyParts.Count; i++)
-            {
-
-                if (i == 3)
-                {
-                    continue;
-                }
-                angularXDrive = bodyHandler.BodyParts[i].PartJoint.angularXDrive;
-                Debug.Log(_xPosSpringAry.Count);
-                angularXDrive.positionSpring = _xPosSpringAry[j] * percentage;
-
-                bodyHandler.BodyParts[i].PartJoint.angularXDrive = angularXDrive;
-
-                angularYZDrive = bodyHandler.BodyParts[i].PartJoint.angularYZDrive;
-                angularYZDrive.positionSpring = _yzPosSpringAry[j] * percentage;
-                bodyHandler.BodyParts[i].PartJoint.angularYZDrive = angularYZDrive;
-                j++;
-
-                yield return null;
-            }
-
-        }
-
-
     }
 
     public void Stand()
@@ -1121,7 +1024,6 @@ public class PlayerController : MonoBehaviour
             _hips.AddForce(_moveDir.normalized * RunSpeed * Time.deltaTime);
         }
     }
-
 
     //리지드바디 part의 alignmentVector방향을 targetVector방향으로 회전
     public void AlignToVector(Rigidbody part, Vector3 alignmentVector, Vector3 targetVector, float stability, float speed)
