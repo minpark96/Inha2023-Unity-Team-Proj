@@ -145,7 +145,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
             return;
         }
 
-        PhotonNetwork.LoadLevel("Game Room");
+        PhotonNetwork.LoadLevel("Arena");
     }
 
     #endregion
@@ -201,24 +201,51 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
         if (PhotonNetwork.IsMasterClient)
         {
-            Debug.Log("OnJoinedRoom(): Load Lobby Scene");
-            SceneManager.LoadScene(1);
+            Debug.Log("OnJoinedRoom(): Load Room Scene");
+            //SceneManager.LoadScene(1);
+            StartCoroutine(LoadAsyncScene("Room"));
         }
+        else
+        {
+            InstantiateGameCenter();
+            //InstantiatePlayer();
+        }
+    }
 
+    void InstantiateGameCenter()
+    {
+        if (GameCenter.LocalGameCenterInstance == null)
+        {
+            Debug.Log("in room?: " + PhotonNetwork.InRoom);
+            Debug.LogFormat("PhotonManager=>We are Instantiating LocalGameCenter from {0}", SceneManagerHelper.ActiveSceneName);
+            PhotonNetwork.Instantiate("GameCenter", new Vector3(0f, 0f, 0f), Quaternion.identity, 0);
+        }
+    }
+
+    void InstantiatePlayer()
+    {
         if (Actor.LocalPlayerInstance == null)
         {
             Debug.Log("in room?: " + PhotonNetwork.InRoom);
             Debug.LogFormat("PhotonManager=>We are Instantiating LocalPlayer from {0}", SceneManagerHelper.ActiveSceneName);
             // we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
-            GameObject go = PhotonNetwork.Instantiate(_playerPrefab, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
-            PhotonView pv = go.GetComponent<PhotonView>();
-            LobbyCenter lc = GameObject.Find("Control Panel").GetComponent<LobbyCenter>();
-            lc.Announce(pv);
+            PhotonNetwork.Instantiate(_playerPrefab, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
         }
-        else
+    }
+
+    IEnumerator LoadAsyncScene(string sceneName)
+    {
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
+
+        while (!asyncLoad.isDone)
         {
-            Debug.Log("OnJoinedRoom()=>else=>" + Actor.LocalPlayerInstance);
+            yield return null;
         }
+
+        Debug.LogFormat("Scene {0} Loaded", SceneManagerHelper.ActiveSceneName);
+
+        InstantiateGameCenter();
+        //InstantiatePlayer();
     }
 
     #endregion

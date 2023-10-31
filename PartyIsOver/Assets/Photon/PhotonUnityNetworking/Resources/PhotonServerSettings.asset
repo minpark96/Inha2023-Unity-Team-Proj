@@ -43,6 +43,10 @@ MonoBehaviour:
   - Grap
   - SyncPosition
   - Enter
+  - UpdatePlayerReadyCount
+  - PlayerEntered
+  - PlayerReady
+  - UpdateReady
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
