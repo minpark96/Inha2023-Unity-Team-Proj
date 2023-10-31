@@ -169,7 +169,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        StartCoroutine("InitDelay");
+        //StartCoroutine("InitDelay");
         if (isAI)
             return;
         Managers.Input.MouseAction -= OnMouseEvent;
