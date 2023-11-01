@@ -131,9 +131,6 @@ public class PlayerController : MonoBehaviour
     private Vector3 _runVectorForce5 = new Vector3(0f, 0f, 0.4f);
     private Vector3 _runVectorForce10 = new Vector3(0f, 0f, 0.8f);
 
-    private List<float> _xPosSpringAry = new List<float>();
-    private List<float> _yzPosSpringAry = new List<float>();
-
     public bool isAI = false;
 
     Pose leftArmPose;
@@ -186,6 +183,8 @@ public class PlayerController : MonoBehaviour
 
     void OnKeyboardEvent(Define.KeyboardEvent evt)
     {
+        if (_actor.actorState == ActorState.Debuff)
+            return;
         OnKeyboardEvent_Idle(evt);
     }
 
@@ -334,7 +333,7 @@ public class PlayerController : MonoBehaviour
 
         //다시 회복
         //RestoreSpringTrigger();
-        _actor.StatusHandler.StartCoroutine("RestoreFromFaint");
+        _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
     }
 
     public float ForceStrength = 10.0f;
@@ -343,7 +342,7 @@ public class PlayerController : MonoBehaviour
     {
         //스프링 풀기
         //ResetBodySpring();
-        _actor.StatusHandler.StartCoroutine("Faint");
+        _actor.StatusHandler.StartCoroutine("ResetBodySpring");
 
 
         int _frameCount = 0;
@@ -356,7 +355,7 @@ public class PlayerController : MonoBehaviour
             {
                 //스프링 복구
                 //RestoreSpringTrigger();
-                _actor.StatusHandler.StartCoroutine("RestoreFromFaint");
+                _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
             }
 
         }
@@ -405,10 +404,6 @@ public class PlayerController : MonoBehaviour
             {
                 for (int i = 0; i < _forceSpeed[_elementCount].ActionRigidbodies.Length; i++)
                 {
-                    Debug.Log(_dir);
-                    Debug.Log(_forceSpeed[_elementCount].ForcePowerValues[i]);
-                    Debug.Log(ForceMode.Impulse);
-
                     _forceSpeed[_elementCount].ActionRigidbodies[i].AddForce(_dir * _forceSpeed[_elementCount].ForcePowerValues[i], ForceMode.Impulse);
                 }
             }
@@ -573,7 +568,7 @@ public class PlayerController : MonoBehaviour
             {
                 //스프링 풀기
                 //ResetBodySpring();
-                _actor.StatusHandler.StartCoroutine("Faint");
+                _actor.StatusHandler.StartCoroutine("ResetBodySpring");
 
 
                 _frameCount = i;
@@ -602,7 +597,7 @@ public class PlayerController : MonoBehaviour
             yield return new WaitForSeconds(2);
             //스프링 복구
             //RestoreSpringTrigger();
-            _actor.StatusHandler.StartCoroutine("RestoreFromFaint");
+            _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
 
         }
         yield return null;
