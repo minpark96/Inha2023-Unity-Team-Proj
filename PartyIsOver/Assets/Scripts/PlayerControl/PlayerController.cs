@@ -371,7 +371,7 @@ public class PlayerController : MonoBehaviour
             }
             if(_rollTime >=0.8f && _rollTime < 1f)
             {
-                _actor.StatusHandler.StartCoroutine("RestoreFromFaint");
+                _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
                 _frameCount = 3;
                 AniForce(RollAniData, _frameCount);
             }
