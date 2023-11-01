@@ -309,7 +309,6 @@ public class StatusHandler : MonoBehaviour
                     continue;
                 }
                 angularXDrive = actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive;
-                Debug.Log(_xPosSpringAry.Count);
                 angularXDrive.positionSpring = _xPosSpringAry[j] * percentage;
 
                 actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive = angularXDrive;
