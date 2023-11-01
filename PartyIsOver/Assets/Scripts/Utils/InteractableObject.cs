@@ -14,24 +14,11 @@ public class InteractableObject : MonoBehaviour
         Headbutt = 5,
         Knockout = 6,
         Special= 7,
-        DamageVolume = 8
+        Ice = 8,
+        ElectricShock = 9,
+
     }
 
     public Damage damageModifier = Damage.Default;
-    public Collider Collider;
 
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        Collider = GetComponent<Collider>();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
-    
 }

@@ -50,7 +50,7 @@ public class ResourceManager
         return PhotonNetwork.Instantiate($"Player/{path}",Vector3.zero, Quaternion.identity);
     }
 
-    public void Destory(GameObject go)
+    public void Destroy(GameObject go)
     {
         if (go == null)
             return;

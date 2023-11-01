@@ -53,23 +53,6 @@ public class BodyHandler : MonoBehaviour
 
     private bool _isSetting = false;
 
-    private void Awake()
-    {
-
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void BodySetup()
     {
         if (_isSetting)
@@ -81,6 +64,7 @@ public class BodyHandler : MonoBehaviour
         BodyParts.Add(Chest);
         BodyParts.Add(Waist);
         BodyParts.Add(Hip);
+
         BodyParts.Add(LeftArm);
         BodyParts.Add(LeftForarm);
         BodyParts.Add(LeftHand);
@@ -88,6 +72,7 @@ public class BodyHandler : MonoBehaviour
         BodyParts.Add(LeftThigh);
         BodyParts.Add(LeftLeg);
         BodyParts.Add(LeftFoot);
+
         BodyParts.Add(RightArm);
         BodyParts.Add(RightForarm);
         BodyParts.Add(RightHand);
@@ -97,13 +82,11 @@ public class BodyHandler : MonoBehaviour
         BodyParts.Add(RightFoot);
         BodyParts.Add(Ball);
 
-
         foreach (BodyPart part in BodyParts)
         {
             part.PartRigidbody.maxAngularVelocity = 15f;
             part.PartRigidbody.solverIterations = 12;
             part.PartRigidbody.solverVelocityIterations = 12;
-
         }
     }
 }
