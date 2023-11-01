@@ -117,7 +117,8 @@ public class InputManager
                 {
                     if (Time.time < _rkeyPressedTime + 0.2f)
                         KeyboardAction.Invoke(Define.KeyboardEvent.Click);
-                    KeyboardAction.Invoke(Define.KeyboardEvent.Charge);
+                    else
+                        KeyboardAction.Invoke(Define.KeyboardEvent.Charge);
                 }
                 _rkeyPressed = false;
                 _isCharge = false;
@@ -159,7 +160,6 @@ public class InputManager
 
         if (MouseAction != null)
         {
-
             if (Input.GetMouseButton(1))
             {
                 if (!_mpressed)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.NetworkInformation;
 //using System.Numerics;
 using UnityEngine;
+using UnityEngine.UI;
 using static InteractableObject;
 using static UnityEngine.Rendering.VirtualTexturing.Debugging;
 
@@ -20,7 +21,6 @@ public class StatusHandler : MonoBehaviour
     public float Health { get { return _health; } set { _health = value; } }
 
     private float _maxHealth = 200f;
-    private float _healthRegeneration;
     private float _healthDamage;
     private bool _isDead;
 
@@ -30,10 +30,12 @@ public class StatusHandler : MonoBehaviour
 
     private float _knockoutThreshold=20f;
 
-
     private List<float> _xPosSpringAry = new List<float>();
     private List<float> _yzPosSpringAry = new List<float>();
 
+
+    // 이펙트 생성
+    private bool hasObject = false;
 
     void Start()
     {
@@ -58,9 +60,21 @@ public class StatusHandler : MonoBehaviour
         if (_healthDamage != 0f)
             UpdateHealth();
 
-        CheckConscious();
+        //CheckConscious();
+        DebuffAction();
     }
 
+    private void OnGUI()
+    {
+        if(this.name == "Ragdoll2")
+        {
+            GUI.contentColor = Color.red;
+            GUI.Label(new Rect(0, 0, 200, 200), "버프상태:" + actor.debuffState.ToString());
+            GUI.Label(new Rect(0, 30, 200, 200), "액션상태:" + actor.actorState.ToString());
+        }
+    }
+
+    // 충격이 가해지면(trigger)
     public void AddDamage(InteractableObject.Damage type, float damage, GameObject causer)
     {
         Debug.Log("AddDamage");
@@ -78,27 +92,66 @@ public class StatusHandler : MonoBehaviour
 
     public void DebuffCheck(InteractableObject.Damage type)
     {
-        if(type == Damage.Ice)
+        // 빙결
+        if (type == Damage.Ice)
         {
-            StartCoroutine("Ice"); // 빙결 행동
             actor.debuffState |= Actor.DebuffState.Ice; // 빙결 디버프 활성화
 
             // 다른 디버프 체크
-            foreach (Actor.DebuffState state in Actor.DebuffState.GetValues(typeof(Actor.DebuffState)))
+            foreach (Actor.DebuffState state in System.Enum.GetValues(typeof(Actor.DebuffState)))
             {
-                if((actor.debuffState & state) != 0)
+                // 빙결 이외의 상태가 켜지면 끄기
+                if(state != Actor.DebuffState.Ice && (actor.debuffState & state) != 0)
                 {
-                    //state &= ~state;
+                    actor.debuffState &= ~state;
                 }
             }
         }
-        else if(type == Damage.ElectricShock)
+        
+        if (actor.debuffState == Actor.DebuffState.Ice) return;
+
+        // 감전
+        if(type == Damage.ElectricShock)
         {
-            StartCoroutine("ElectricShock");
+            actor.debuffState |= Actor.DebuffState.ElectricShock; // 감전 디버프 활성화
         }
 
+        // 기절
+        if(actor.actorState == Actor.ActorState.Unconscious || type == Damage.Knockout) // 실험용 데미지 녹아웃 씀
+        {
+            actor.debuffState |= Actor.DebuffState.Unconscious; // 기절 디버프 활성화
+        }
 
-        
+    }
+
+
+    public void DebuffAction()
+    {
+        switch (actor.debuffState)
+        {
+            case Actor.DebuffState.Default:
+                break;
+            case Actor.DebuffState.Balloon:
+                break;
+            case Actor.DebuffState.Unconscious:
+                StartCoroutine("ResetBodySpring");
+                StartCoroutine("RestoreBodySpring");
+                break;
+            case Actor.DebuffState.Drunk:
+                break;
+            case Actor.DebuffState.ElectricShock:
+                StartCoroutine("ElectricShock");
+                break;
+            case Actor.DebuffState.Ice:
+                StartCoroutine("Ice");
+                break;
+            case Actor.DebuffState.Fire:
+                break;
+            case Actor.DebuffState.Invisible:
+                break;
+            case Actor.DebuffState.Strong:
+                break;
+        }
     }
 
     IEnumerator Ice()
@@ -106,20 +159,31 @@ public class StatusHandler : MonoBehaviour
         Debug.Log("빙결!");
         yield return new WaitForSeconds(0.2f);
 
-        // 빙결
+        // [빙결]
         actor.actorState = Actor.ActorState.Debuff;
-        actor.debuffState = Actor.DebuffState.Ice;
 
+        // 이펙트 생성
+        if (!hasObject)
+        {
+            hasObject = true;
+        }
+        
         for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
         {
             actor.BodyHandler.BodyParts[i].PartRigidbody.isKinematic = true;
         }
 
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(3f);
 
-        // 빙결 해제
+        // [빙결 해제]
         actor.actorState = Actor.ActorState.Stand;
-        actor.debuffState = Actor.DebuffState.Default;
+        actor.debuffState &= ~Actor.DebuffState.Ice;
+
+        // 이펙트 삭제
+        if (hasObject)
+        {
+            hasObject = false;
+        }
 
         for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
         {
@@ -131,50 +195,50 @@ public class StatusHandler : MonoBehaviour
     IEnumerator ElectricShock()
     {
         Debug.Log("감전!");
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.2f);
 
         // 감전
-        actor.actorState = Actor.ActorState.Debuff;
-        actor.debuffState = Actor.DebuffState.ElectricShock;
+        StartCoroutine("ResetBodySpring");
 
 
-        float startTime = Time.realtimeSinceStartup;
+        float startTime = Time.time;
         float shockDuration = 3f; // 감전시간
-
-        while (Time.realtimeSinceStartup - startTime < shockDuration)
+        while (Time.time - startTime < shockDuration)
         {
-            int number = Random.Range(0, 11);
+            if (actor.debuffState == Actor.DebuffState.Ice)
+            {
+                actor.actorState = Actor.ActorState.Stand;
+                StartCoroutine("RestoreBodySpring");
+                StopCoroutine("ElectricShock");
+            }
 
-            if (number > 8)
+            int number = Random.Range(0, 10);
+            
+            if (number > 7)
             {
                 for (int i = 1; i < 15; i++)
                 {
-                    actor.BodyHandler.BodyParts[i].transform.rotation = Quaternion.Euler(30, 0, 0);
+                    if (i == 3) continue;
+                    actor.BodyHandler.BodyParts[i].transform.rotation = Quaternion.Euler(20, 0, 0);
                 }
             }
             else
             {
                 for (int i = 1; i < 15; i++)
                 {
-                    actor.BodyHandler.BodyParts[i].transform.rotation = Quaternion.Euler(-30, 0, 0);
+                    if (i == 3) continue;
+                    actor.BodyHandler.BodyParts[i].transform.rotation = Quaternion.Euler(-20, 0, 0);
                 }
             }
             yield return null;
         }
 
+        yield return new WaitForSeconds(2.0f);
+
         // 감전 해제
-        yield return new WaitForSeconds(1.0f);
-
         actor.actorState = Actor.ActorState.Stand;
-        actor.debuffState = Actor.DebuffState.Default;
-
-        actor.BodyHandler.Hip.transform.rotation = Quaternion.identity;
-        actor.BodyHandler.Hip.transform.Rotate(-90, 0, 0, Space.Self);
-        StartCoroutine(RestoreFromFaint());
-
-        //actor.BodyHandler.Hip.transform.rotation = Quaternion.Euler(-90, 0, 0);
-
-        Debug.Log(actor.BodyHandler.Hip.transform.rotation.eulerAngles.x);
+        actor.debuffState &= ~Actor.DebuffState.ElectricShock;
+        StartCoroutine("RestoreBodySpring");
     }
 
 
@@ -200,11 +264,14 @@ public class StatusHandler : MonoBehaviour
         {
             if (realDamage >= _knockoutThreshold)
             {
-                Debug.Log("기절");
+                if (actor.debuffState == Actor.DebuffState.Ice)
+                    return;
 
+                Debug.Log("데미지가 많아서 기절");
                 _maxUnconsciousTime = Mathf.Clamp(_maxUnconsciousTime + 1.5f, _minUnconsciousTime, 20f);
                 _unconsciousTime = _maxUnconsciousTime;
                 actor.actorState = Actor.ActorState.Unconscious;
+                actor.debuffState = Actor.DebuffState.Unconscious;
                 EnterUnconsciousState();
             }
         }
@@ -216,7 +283,6 @@ public class StatusHandler : MonoBehaviour
             EnterUnconsciousState();
         }
 
-
         _health = Mathf.Clamp(tempHealth, 0f, _maxHealth);
         _healthDamage = 0f;
     }
@@ -226,34 +292,10 @@ public class StatusHandler : MonoBehaviour
 
     }
 
-    public void CheckConscious()
-    {
-        if (actor.actorState != Actor.ActorState.Unconscious && _unconsciousTime > 0f)
-        {
-            _unconsciousTime = Mathf.Clamp(_unconsciousTime - Time.deltaTime, 0f, _maxUnconsciousTime);
-        }
-
-        // 기절일때
-        if (actor.actorState == Actor.ActorState.Unconscious)
-        {
-            _unconsciousTime = Mathf.Clamp(_unconsciousTime - Time.deltaTime, 0f, _maxUnconsciousTime);
-
-            StartCoroutine(Faint());
-
-            // 기절 해제
-            if (_unconsciousTime <= 0f)
-            {
-                actor.actorState = Actor.ActorState.Stand;
-                StartCoroutine(RestoreFromFaint());
-                _unconsciousTime = 0f;
-            }
-        }
-    }
 
     void EnterUnconsciousState()
     {
         //데미지 이펙트나 사운드 추후 추가
-
 
         //actor.BodyHandler.ResetLeftGrab();
         //actor.BodyHandler.ResetRightGrab();
@@ -263,7 +305,7 @@ public class StatusHandler : MonoBehaviour
         actor.BodyHandler.RightForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
     }
 
-    IEnumerator Faint()
+    IEnumerator ResetBodySpring()
     {
         JointDrive angularXDrive;
         JointDrive angularYZDrive;
@@ -271,9 +313,7 @@ public class StatusHandler : MonoBehaviour
         for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
         {
             if (i == 3)
-            {
                 continue;
-            }
 
             angularXDrive = actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive;
             angularXDrive.positionSpring = 0f;
@@ -287,14 +327,15 @@ public class StatusHandler : MonoBehaviour
         yield return null;
     }
 
-    IEnumerator RestoreFromFaint()
+    IEnumerator RestoreBodySpring()
     {
-        float springLerpDuration = 2f;
+        yield return new WaitForSeconds(2.0f);
 
         JointDrive angularXDrive;
         JointDrive angularYZDrive;
-        float startTime = Time.time;
 
+        float startTime = Time.time;
+        float springLerpDuration = 2f;
 
         while (Time.time < startTime + springLerpDuration)
         {
@@ -309,7 +350,6 @@ public class StatusHandler : MonoBehaviour
                     continue;
                 }
                 angularXDrive = actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive;
-                Debug.Log(_xPosSpringAry.Count);
                 angularXDrive.positionSpring = _xPosSpringAry[j] * percentage;
 
                 actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive = angularXDrive;
@@ -322,11 +362,35 @@ public class StatusHandler : MonoBehaviour
                 yield return null;
             }
         }
-    }
-    
 
-   
-    
+        actor.debuffState &= ~Actor.DebuffState.Unconscious;
+    }
 
 
 }
+
+// 안쓰는 함수 빼놓음
+
+//public void CheckConscious()
+//{
+//    if (actor.actorState != Actor.ActorState.Unconscious && _unconsciousTime > 0f)
+//    {
+//        _unconsciousTime = Mathf.Clamp(_unconsciousTime - Time.deltaTime, 0f, _maxUnconsciousTime);
+//    }
+
+//    // 기절일때
+//    if (actor.actorState == Actor.ActorState.Unconscious)
+//    {
+//        _unconsciousTime = Mathf.Clamp(_unconsciousTime - Time.deltaTime, 0f, _maxUnconsciousTime);
+
+//        StartCoroutine("ResetBodySpring");
+
+//        // 기절 해제
+//        if (_unconsciousTime <= 0f)
+//        {
+//            actor.actorState = Actor.ActorState.Stand;
+//            StartCoroutine("RestoreBodySpring");
+//            _unconsciousTime = 0f;
+//        }
+//    }
+//}
