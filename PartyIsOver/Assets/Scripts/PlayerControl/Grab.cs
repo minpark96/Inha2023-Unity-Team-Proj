@@ -69,8 +69,6 @@ public class Grab : MonoBehaviourPun
         _jointRightUpperArm = _bodyHandler.RightArm.PartJoint;
 
         _jointChest = _bodyHandler.Chest.PartJoint;
-
-
     }
 
     void Update()
@@ -82,28 +80,12 @@ public class Grab : MonoBehaviourPun
             {
                 Debug.Log("놨다");
 
-                Destroy(_grabJointLeft);
-                Destroy(_grabJointRight);
 
                 _grabItem = null;
                 _isRightGrab = false;
                 _isLeftGrab = false;
 
-
-                // 관절 복구
-                _jointLeft.angularYMotion = ConfigurableJointMotion.Limited;
-                _jointLeftForeArm.angularYMotion = ConfigurableJointMotion.Limited;
-                _jointLeftUpperArm.angularYMotion = ConfigurableJointMotion.Limited;
-                _jointLeft.angularZMotion = ConfigurableJointMotion.Limited;
-                _jointLeftForeArm.angularZMotion = ConfigurableJointMotion.Limited;
-                _jointLeftUpperArm.angularZMotion = ConfigurableJointMotion.Limited;
-
-                _jointRight.angularYMotion = ConfigurableJointMotion.Limited;
-                _jointRightForeArm.angularYMotion = ConfigurableJointMotion.Limited;
-                _jointRightUpperArm.angularYMotion = ConfigurableJointMotion.Limited;
-                _jointRight.angularZMotion = ConfigurableJointMotion.Limited;
-                _jointRightForeArm.angularZMotion = ConfigurableJointMotion.Limited;
-                _jointRightUpperArm.angularZMotion = ConfigurableJointMotion.Limited;
+                DestroyJoint();
                 return;
             }
 
@@ -118,11 +100,7 @@ public class Grab : MonoBehaviourPun
                 Debug.Log("아이템 타입2");
                 _itemType = 2;
             }
-            if (Input.GetKeyDown(KeyCode.Alpha3))
-            {
-                Debug.Log("아이템 타입3");
-                _itemType = 3;
-            }
+
 
             // 펀치와 합칠 필요 있음 > Input.GetMouseButtonDown(0)
             if (Input.GetKeyDown(KeyCode.L))
@@ -134,9 +112,6 @@ public class Grab : MonoBehaviourPun
                         break;
                     case 2:
                         Item2(_grabItem);
-                        break;
-                    case 3:
-                        Item3(_grabItem);
                         break;
                 }
             }
@@ -160,7 +135,6 @@ public class Grab : MonoBehaviourPun
         //발견한 오브젝트가 없으면 리턴
         if (_searchTarget == null)
             return;
-
 
  
         //서치타겟이 아이템이고, 일정 거리 이내에 있을때
@@ -188,13 +162,11 @@ public class Grab : MonoBehaviourPun
                         //왼손에 닿게끔 아이템 로테이션 수정
                         ItemRotate(item.transform, true, true);
 
-                        //왼쪽에 있는 손잡이를 찾아서 매개변수를 넣고 이를 왼손에 고정
-                        //StartCoroutine(TwoHandedGrabbing(item.TwoHandedPos));
+                        //아이템에 맞게 관절조정 함수 추가
 
                         //관절생성
                         JointFix(Side.Right);
                         JointFix(Side.Left);
-
                     }
                 }
                 else
@@ -212,17 +184,13 @@ public class Grab : MonoBehaviourPun
                         //왼손에 닿게끔 아이템 로테이션 수정
                         ItemRotate(item.transform, true, false);
 
-                        //왼쪽에 있는 손잡이를 찾아서 매개변수를 넣고 이를 왼손에 고정
-                        //StartCoroutine(TwoHandedGrabbing(item.TwoHandedPos));
+                        //아이템에 맞게 관절조정 함수 추가
 
                         //관절생성
                         JointFix(Side.Right);
                         JointFix(Side.Left);
                     }
                 }
-
-
-
             }
             else
             {
@@ -240,7 +208,6 @@ public class Grab : MonoBehaviourPun
         }
         else
         {
-
             //서치타겟이 아이템이 아닐 때
             //타겟의 가장 가까운 지점으로 손을 뻗어서 접촉시 그랩상태로 들어감
             //타겟의 위치와 거리에 따라 양손그랩, 한손그랩이 들어감
@@ -251,7 +218,6 @@ public class Grab : MonoBehaviourPun
     {
         if (_isRightGrab)
             return false;
-
 
         if (Vector3.Distance(_rightHandRigid.position, target.position) <= 0.3f)
         {
@@ -272,37 +238,25 @@ public class Grab : MonoBehaviourPun
         //오른손과 손잡이 위치 체크해서 아이템 방향 리턴
         Vector3 toItem = (item.TwoHandedPos.position - _jointChest.transform.position).normalized; // 플레이어가 아이템을 바라보는 벡터
         Vector3 toOneHandedHandle = (item.OneHandedPos.position - _jointChest.transform.position).normalized; // 오른손이 잡아야할 oneHanded 손잡이 벡터
-
         Vector3 crossProduct = Vector3.Cross(toItem, toOneHandedHandle);
 
         if (crossProduct.y > 0)
         {
             // 원핸드 손잡이가 오른쪽
-            Debug.Log("손잡이 오른쪽");
             return true;
         }
         else
         {
             // 원핸드 손잡이가 왼쪽
-            Debug.Log("손잡이 왼쪽");
             return false;
         }
-    }
-
-    IEnumerator TwoHandedGrabbing(Transform target)
-    {
-        JointFix(Side.Left);
-
-        yield return null;
-
     }
 
 
     void ItemRotate(Transform item, bool isTwoHanded,bool isHeadLeft)
     {
         //item.GetComponent<Rigidbody>().isKinematic = true;
-        item.GetComponent<Rigidbody>().useGravity = false;
-
+        //item.GetComponent<Rigidbody>().useGravity = false;
         //item.GetComponent<Collider>().enabled = false;
 
         Vector3 targetPosition;
@@ -310,14 +264,10 @@ public class Grab : MonoBehaviourPun
         if (isTwoHanded)
         {
             if(isHeadLeft)
-            {
                 //아이템의 헤드부분이 해당 방향벡터를 바라보게
                 targetPosition = -_jointChest.transform.right;
-            }
             else
-            {
                 targetPosition = _jointChest.transform.right;
-            }
         }
         else
         {
@@ -359,7 +309,27 @@ public class Grab : MonoBehaviourPun
         }
             
     }
+    void DestroyJoint()
+    {
+        Destroy(_grabJointLeft);
+        Destroy(_grabJointRight);
 
+
+        // 관절 복구
+        _jointLeft.angularYMotion = ConfigurableJointMotion.Limited;
+        _jointLeftForeArm.angularYMotion = ConfigurableJointMotion.Limited;
+        _jointLeftUpperArm.angularYMotion = ConfigurableJointMotion.Limited;
+        _jointLeft.angularZMotion = ConfigurableJointMotion.Limited;
+        _jointLeftForeArm.angularZMotion = ConfigurableJointMotion.Limited;
+        _jointLeftUpperArm.angularZMotion = ConfigurableJointMotion.Limited;
+
+        _jointRight.angularYMotion = ConfigurableJointMotion.Limited;
+        _jointRightForeArm.angularYMotion = ConfigurableJointMotion.Limited;
+        _jointRightUpperArm.angularYMotion = ConfigurableJointMotion.Limited;
+        _jointRight.angularZMotion = ConfigurableJointMotion.Limited;
+        _jointRightForeArm.angularZMotion = ConfigurableJointMotion.Limited;
+        _jointRightUpperArm.angularZMotion = ConfigurableJointMotion.Limited;
+    }
 
 
     private void OnTriggerStay(Collider other)
@@ -457,11 +427,6 @@ public class Grab : MonoBehaviourPun
     private void Item2(GameObject grabGameObj)
     {
         StartCoroutine("Item2Action", grabGameObj);
-    }
-    // 접이식 의자: 찌르고 위에서 아래로 휘두르기
-    private void Item3(GameObject grabGameObj)
-    {
-        StartCoroutine("Item3Action", grabGameObj);
     }
 
     IEnumerator Item1Action(GameObject grabGameObj)
