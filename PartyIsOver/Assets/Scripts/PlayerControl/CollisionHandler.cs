@@ -11,8 +11,6 @@ public class CollisionHandler : MonoBehaviour
 
     private Transform rootTransform;
 
-
-    // Start is called before the first frame update
     void Start()
     {
         if (actor == null)
@@ -26,7 +24,6 @@ public class CollisionHandler : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
 
@@ -98,6 +95,12 @@ public class CollisionHandler : MonoBehaviour
                     num2 = 1000000f;
                     contact.thisCollider.attachedRigidbody.AddForce(contact.normal * 10f, ForceMode.VelocityChange);
                     //actor.inputHandler.SetVibration(1f, 0f, 0.2f);
+                    break;
+                case InteractableObject.Damage.Ice:
+                    num2 = 10f;
+                    break;
+                case InteractableObject.Damage.ElectricShock:
+                    num2 = 10f;
                     break;
                 default:
                     contact.thisCollider.attachedRigidbody.AddForce(contact.normal * 10f, ForceMode.VelocityChange);

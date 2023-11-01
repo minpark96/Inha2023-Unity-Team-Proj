@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Actor : MonoBehaviourPunCallbacks
+public class Actor : MonoBehaviourPun
 {
     public StatusHandler StatusHandler;
     public BodyHandler BodyHandler;
@@ -11,17 +11,34 @@ public class Actor : MonoBehaviourPunCallbacks
 
     public enum ActorState
     {
-        Dead = 1,
-        Unconscious = 2,
-        Stand = 4,
-        Run = 8,
+        Dead = 0x1,
+        Unconscious = 0x2,
+        Stand = 0x4,
+        Run = 0x8,
         Jump = 0x10,
         Fall = 0x20,
         Climb = 0x40,
+        Debuff = 0x80,
     }
+
+    public enum DebuffState
+    {
+        Default =       0x00000000,  // X
+        Balloon =       0x00000001,  // 풍선
+        Unconscious =   0x00000010,  // 기절
+        Drunk =         0x00000100,  // 취함
+        ElectricShock = 0x00001000,  // 감전
+        Ice =           0x00010000,  // 빙결
+        Fire =          0x00100000,  // 화상
+        Invisible =     0x01000000,  // 투명
+        Strong =        0x10000000,  // 불끈
+    }
+
 
     public ActorState actorState = ActorState.Stand;
     public ActorState lastActorState = ActorState.Run;
+
+    public DebuffState debuffState = DebuffState.Default;
 
     public static GameObject LocalPlayerInstance;
 
@@ -32,33 +49,18 @@ public class Actor : MonoBehaviourPunCallbacks
             LocalPlayerInstance = this.gameObject;
         }
         DontDestroyOnLoad(this.gameObject);
-
         BodyHandler = GetComponent<BodyHandler>();
         StatusHandler = GetComponent<StatusHandler>();
         PlayerControll = GetComponent<PlayerController>();
     }
-
-    void Start()
-    {
-
-    }
-
-    
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+   
 
     private void FixedUpdate()
     {
-
-
-
         if (actorState != lastActorState)
         {
             PlayerControll.isStateChange = true;
+            Debug.Log("stateChange");
         }
         else
         {
@@ -70,10 +72,8 @@ public class Actor : MonoBehaviourPunCallbacks
         switch (actorState)
         {
             case ActorState.Dead:
-                //_playerControll.Dead();
                 break;
             case ActorState.Unconscious:
-                //PlayerControll.Unconscious();
                 break;
             case ActorState.Stand:
                 PlayerControll.Stand();
@@ -85,16 +85,14 @@ public class Actor : MonoBehaviourPunCallbacks
                 PlayerControll.Jump();
                 break;
             case ActorState.Fall:
-                //_playerControll.Fall();
                 break;
             case ActorState.Climb:
-                //_playerControll.Climb();
                 break;
-
         }
 
         lastActorState = actorState;
-    }
 
-    
+        //DebuffState debuffState = 
+
+    }
 }
