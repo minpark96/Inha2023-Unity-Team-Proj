@@ -184,13 +184,10 @@ public class PlayerController : MonoBehaviour
 
     void OnKeyboardEvent(Define.KeyboardEvent evt)
     {
-<<<<<<< HEAD
         if (_actor.actorState == ActorState.Debuff)
             return;
         OnKeyboardEvent_Idle(evt);
-=======
         OnKeyboardEvent_Idle(evt); 
->>>>>>> 78244096d3ab842e3728c6dd8748cb7e5c31b19d
     }
 
     void OnKeyboardEvent_Idle(Define.KeyboardEvent evt)
@@ -351,14 +348,11 @@ public class PlayerController : MonoBehaviour
 
         //스프링 풀기
         //ResetBodySpring();
-<<<<<<< HEAD
         _actor.StatusHandler.StartCoroutine("ResetBodySpring");
-=======
-        _actor.StatusHandler.StartCoroutine("Faint");
+
         while(_rollTime < 1.2f)
         {
             _rollTime += Time.deltaTime;
->>>>>>> 78244096d3ab842e3728c6dd8748cb7e5c31b19d
 
             if(_rollTime <= 0.1f)
             {
