@@ -51,31 +51,20 @@ public class BodyHandler : MonoBehaviour
 
     //public Transform Spring;
 
-    private void Awake()
+    private bool _isSetting = false;
+
+    public void BodySetup()
     {
+        if (_isSetting)
+            return;
 
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        BodySetup();
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    void BodySetup()
-    {
+        _isSetting = true;
 
         BodyParts.Add(Head);
         BodyParts.Add(Chest);
         BodyParts.Add(Waist);
         BodyParts.Add(Hip);
+
         BodyParts.Add(LeftArm);
         BodyParts.Add(LeftForarm);
         BodyParts.Add(LeftHand);
@@ -83,6 +72,7 @@ public class BodyHandler : MonoBehaviour
         BodyParts.Add(LeftThigh);
         BodyParts.Add(LeftLeg);
         BodyParts.Add(LeftFoot);
+
         BodyParts.Add(RightArm);
         BodyParts.Add(RightForarm);
         BodyParts.Add(RightHand);
@@ -92,13 +82,11 @@ public class BodyHandler : MonoBehaviour
         BodyParts.Add(RightFoot);
         BodyParts.Add(Ball);
 
-
         foreach (BodyPart part in BodyParts)
         {
             part.PartRigidbody.maxAngularVelocity = 15f;
             part.PartRigidbody.solverIterations = 12;
             part.PartRigidbody.solverVelocityIterations = 12;
-
         }
     }
 }
