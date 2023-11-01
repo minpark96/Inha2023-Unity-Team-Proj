@@ -108,7 +108,10 @@ public class InputManager
                 {
                     _chargeTime += Time.deltaTime;
                     if (_chargeTime > _chargeThreshold)
+                    {
+                        Debug.Log("Hold1");
                         KeyboardAction.Invoke(Define.KeyboardEvent.Hold);
+                    }
                 }
             }
             else if (Input.GetKeyUp(KeyCode.R))
