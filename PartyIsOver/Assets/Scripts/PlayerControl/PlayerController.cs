@@ -44,8 +44,8 @@ public class AniAngleData
     public Transform[] TargetDirection;
     public AniAngle[] ActionAngleDirections;
     public AniAngle[] TargetAngleDirections;
-    public float[] AnglePowerValues;
     public float[] AngleStability;
+    public float[] AnglePowerValues;
 
 }
 
@@ -86,6 +86,12 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField]
     public AniAngleData[] HeadingAngleAniData;
+
+    [SerializeField]
+    public AniFrameData[] TestRready1;
+
+    [SerializeField]
+    public AniAngleData[] TestRready2;
 
     [Header("앞뒤 속도")]
     public float RunSpeed;
@@ -178,11 +184,26 @@ public class PlayerController : MonoBehaviour
         Managers.Input.KeyboardAction += OnKeyboardEvent;
     }
 
+    private ConfigurableJoint[] childJoints;
+    private ConfigurableJointMotion[] originalYMotions;
+    private ConfigurableJointMotion[] originalZMotions;
+
     void Init()
     {
         bodyHandler = GetComponent<BodyHandler>();
         targetingHandler = GetComponent<TargetingHandler>();
         _actor = GetComponent<Actor>();
+
+        childJoints = GetComponentsInChildren<ConfigurableJoint>();
+        originalYMotions = new ConfigurableJointMotion[childJoints.Length];
+        originalZMotions = new ConfigurableJointMotion[childJoints.Length];
+
+        // 원래의 angularXMotion 값을 저장
+        for (int i = 0; i < childJoints.Length; i++)
+        {
+            originalYMotions[i] = childJoints[i].angularYMotion;
+            originalZMotions[i] = childJoints[i].angularZMotion;
+        }
     }
 
     void OnKeyboardEvent(Define.KeyboardEvent evt)
@@ -202,7 +223,9 @@ public class PlayerController : MonoBehaviour
                 break;
             case Define.KeyboardEvent.PointerDown:
                 {
-                    
+                    Debug.Log("1");
+                    if (Input.GetKeyUp(KeyCode.R))
+                        ForceRready();
                 }
                 break;
             case Define.KeyboardEvent.PointerUp:
@@ -222,16 +245,58 @@ public class PlayerController : MonoBehaviour
                 break;
             case Define.KeyboardEvent.Charge:
                 {
-                    if(Input.GetKeyUp(KeyCode.R))
+                    RestoreOriginalMotions();
+                    if (Input.GetKeyUp(KeyCode.R))
                         MeowNyangPunch();
                 }
                 break;
             case Define.KeyboardEvent.Hold:
                 {
                     //중일때 확인 ex 이펙트 출현하는 코드를 넣어주면 기모아지는 것 첨 될듯
+                    Debug.Log("2");
+                    StartCoroutine(Rready());
                 }
                 break;
         }
+    }
+    private bool _isAngularLocked = false;
+    void RestoreOriginalMotions()
+    {
+        for (int i = 0; i < childJoints.Length; i++)
+        {
+            childJoints[i].angularYMotion = originalYMotions[i];
+            childJoints[i].angularZMotion = originalZMotions[i];
+        }
+    }
+
+    void ForceRready()
+    {
+        int _frameCount;
+
+        for (int i = 0; i < TestRready1.Length; i++)
+        {
+            _frameCount = i;
+            AniForce(TestRready1, _frameCount);
+        }
+    }
+
+    IEnumerator Rready()
+    {
+        for (int i = 0; i < childJoints.Length; i++)
+        {
+            childJoints[i].angularYMotion = ConfigurableJointMotion.Locked;
+            childJoints[i].angularZMotion = ConfigurableJointMotion.Locked;
+        }
+        int _frameCount;
+        
+
+        for (int i = 0; i < TestRready2.Length; i++)
+        {
+            _frameCount = i;
+            AniAngleForce(TestRready2, _frameCount);
+        }
+        
+        yield return new WaitForSeconds(1f);
     }
 
     void OnMouseEvent(Define.MouseEvent evt)
@@ -370,12 +435,12 @@ public class PlayerController : MonoBehaviour
             }
             if(_rollTime >=0.8f && _rollTime < 1f)
             {
-                _actor.StatusHandler.StartCoroutine("RestoreFromFaint");
                 _frameCount = 3;
                 AniForce(RollAniData, _frameCount);
             }
             if(_rollTime>=1f &&  _rollTime <1.2f)
             {
+                //_actor.StatusHandler.StartCoroutine("RestoreFromFaint");
                 _frameCount = 4;
                 AniForce(RollAniData, _frameCount);
             }
@@ -398,110 +463,102 @@ public class PlayerController : MonoBehaviour
         yield return null;
     }
 
+    Vector3 GetForceDirection(AniFrameData data, int index)
+    {
+        RollForce _rollState = data.ForceDirections[index];
+        Vector3 _direction;
+
+        switch (_rollState)
+        {
+            case RollForce.Zero:
+                _direction = new Vector3(0, 0, 0);
+                break;
+            case RollForce.Forward:
+                _direction = -data.StandardRigidbodies[index].transform.up;
+                break;
+            case RollForce.Backward:
+                _direction = data.StandardRigidbodies[index].transform.up;
+                break;
+            case RollForce.Up:
+                _direction = data.StandardRigidbodies[index].transform.forward;
+                break;
+            case RollForce.Down:
+                _direction = -data.StandardRigidbodies[index].transform.forward;
+                break;
+            default:
+                _direction = Vector3.zero;
+                break;
+        }
+        return _direction;
+    }
+
     void AniForce(AniFrameData[] _forceSpeed,int _elementCount)
     {
-        if (_forceSpeed[_elementCount].StandardRigidbodies[0] == null)
+        for (int i = 0; i < _forceSpeed[_elementCount].StandardRigidbodies.Length; i++)
         {
-            for (int i = 0; i < _forceSpeed[_elementCount].ActionRigidbodies.Length; i++)
-            {
-                RollForce _rollState = _forceSpeed[_elementCount].ForceDirections[i];
-
-                switch (_rollState)
-                {
-                    case RollForce.Zero:
-                        _direction = new Vector3(0, 0, 0);
-                        break;
-                    case RollForce.Forward:
-                        _direction = -_forceSpeed[_elementCount].ActionRigidbodies[i].transform.up;
-                        break;
-                    case RollForce.Backward:
-                        _direction = _forceSpeed[_elementCount].ActionRigidbodies[i].transform.up;
-                        break;
-                    case RollForce.Up:
-                        _direction = _forceSpeed[_elementCount].ActionRigidbodies[i].transform.forward;
-                        break;
-                    case RollForce.Down:
-                        _direction = -_forceSpeed[_elementCount].ActionRigidbodies[i].transform.forward;
-                        break;
-                }
-                _forceSpeed[_elementCount].ActionRigidbodies[i].AddForce(_direction * _forceSpeed[_elementCount].ForcePowerValues[i], ForceMode.Impulse);
-            }
+            Vector3 _direction = GetForceDirection(_forceSpeed[_elementCount], i);
+            _forceSpeed[_elementCount].ActionRigidbodies[i].AddForce(_direction * _forceSpeed[_elementCount].ForcePowerValues[i], ForceMode.Impulse);
         }
-        else
-            Debug.Log("StandardRigidbodies가 None이어야 합니다.");
     }
 
     void AniForce(AniFrameData[] _forceSpeed, int _elementCount,Vector3 _dir)
     {
-        if (_forceSpeed[_elementCount].StandardRigidbodies[0] == null)
+        for (int i = 0; i < _forceSpeed[_elementCount].StandardRigidbodies.Length; i++)
         {
-            if(_forceSpeed[_elementCount].ForceDirections[0] == 0)
+            if (_forceSpeed[_elementCount].ForceDirections[i] == 0)
+                _forceSpeed[_elementCount].ActionRigidbodies[i].AddForce(_dir * _forceSpeed[_elementCount].ForcePowerValues[i], ForceMode.Impulse);
+            else
             {
-                for (int i = 0; i < _forceSpeed[_elementCount].ActionRigidbodies.Length; i++)
-                {
-                    _forceSpeed[_elementCount].ActionRigidbodies[i].AddForce(_dir * _forceSpeed[_elementCount].ForcePowerValues[i], ForceMode.Impulse);
-                }
+                Vector3 _direction = GetForceDirection(_forceSpeed[_elementCount], i);
+                _forceSpeed[_elementCount].ActionRigidbodies[i].AddForce(_direction * _forceSpeed[_elementCount].ForcePowerValues[i], ForceMode.Impulse);
             }
         }
-        else
-            Debug.Log("StandardRigidbodies가 None이어야 합니다.");
+    }
+
+    Vector3 GetAngleDirection(AniAngle _angleState, Transform _Transformdirection)
+    {
+        Vector3 _direction;
+
+        switch (_angleState)
+        {
+            case AniAngle.Zero:
+                _direction = Vector3.zero;
+                break;
+            case AniAngle.Forward:
+                _direction = -_Transformdirection.transform.up;
+                break;
+            case AniAngle.Backward:
+                _direction = _Transformdirection.transform.up;
+                break;
+            case AniAngle.Up:
+                _direction = _Transformdirection.transform.forward;
+                break;
+            case AniAngle.Down:
+                _direction = -_Transformdirection.transform.forward;
+                break;
+            case AniAngle.Left:
+                _direction = -_Transformdirection.transform.right;
+                break;
+            case AniAngle.Right:
+                _direction = _Transformdirection.transform.right;
+                break;
+            default:
+                _direction = Vector3.zero;
+                break;
+        }
+
+        return _direction;
     }
 
     void AniAngleForce(AniAngleData[] _aniAngleData,int _elementCount)
     {
-        for (int i = 0; i < _aniAngleData[_elementCount].ActionDirection.Length; i++)
+        for (int i = 0; i < _aniAngleData[_elementCount].StandardRigidbodies.Length; i++)
         {
-            AniAngle _angleState = _aniAngleData[_elementCount].ActionAngleDirections[i];
-            AniAngle _targetangleState = _aniAngleData[_elementCount].TargetAngleDirections[i];
+            Vector3 _angleDirection = GetAngleDirection(_aniAngleData[_elementCount].ActionAngleDirections[i],
+                _aniAngleData[_elementCount].ActionDirection[i]);
+            Vector3 _targetDirection = GetAngleDirection(_aniAngleData[_elementCount].TargetAngleDirections[i],
+                _aniAngleData[_elementCount].TargetDirection[i]);
 
-            switch (_angleState)
-            {
-                case AniAngle.Zero:
-                    _angleDirection = new Vector3(0, 0, 0);
-                    break;
-                case AniAngle.Forward:
-                    _angleDirection = -_aniAngleData[_elementCount].ActionDirection[i].transform.up;
-                    break;
-                case AniAngle.Backward:
-                    _angleDirection = _aniAngleData[_elementCount].ActionDirection[i].transform.up;
-                    break;
-                case AniAngle.Up:
-                    _angleDirection = _aniAngleData[_elementCount].ActionDirection[i].transform.forward;
-                    break;
-                case AniAngle.Down:
-                    _angleDirection = -_aniAngleData[_elementCount].ActionDirection[i].transform.forward;
-                    break;
-                case AniAngle.Left:
-                    _angleDirection = -_aniAngleData[_elementCount].ActionDirection[i].transform.right;
-                    break;
-                case AniAngle.Right:
-                    _angleDirection = _aniAngleData[_elementCount].ActionDirection[i].transform.right;
-                    break;
-            }
-            switch (_targetangleState)
-            {
-                case AniAngle.Zero:
-                    _targetDirection = new Vector3(0, 0, 0);
-                    break;
-                case AniAngle.Forward:
-                    _targetDirection = -_aniAngleData[_elementCount].TargetDirection[i].transform.up;
-                    break;
-                case AniAngle.Backward:
-                    _targetDirection = _aniAngleData[_elementCount].TargetDirection[i].transform.up;
-                    break;
-                case AniAngle.Up:
-                    _targetDirection = _aniAngleData[_elementCount].TargetDirection[i].transform.forward;
-                    break;
-                case AniAngle.Down:
-                    _targetDirection = -_aniAngleData[_elementCount].TargetDirection[i].transform.forward;
-                    break;
-                case AniAngle.Left:
-                    _targetDirection = -_aniAngleData[_elementCount].TargetDirection[i].transform.right;
-                    break;
-                case AniAngle.Right:
-                    _targetDirection = _aniAngleData[_elementCount].TargetDirection[i].transform.right;
-                    break;
-            }
             AlignToVector(_aniAngleData[_elementCount].StandardRigidbodies[i], _angleDirection, _targetDirection,
                 _aniAngleData[_elementCount].AngleStability[i], _aniAngleData[_elementCount].AnglePowerValues[i]);
         }
@@ -509,59 +566,13 @@ public class PlayerController : MonoBehaviour
 
     void AniAngleForce(AniAngleData[] _aniAngleData, int _elementCount, Vector3 _vector)
     {
-        for (int i = 0; i < _aniAngleData[_elementCount].ActionDirection.Length; i++)
+        for (int i = 0; i < _aniAngleData[_elementCount].StandardRigidbodies.Length; i++)
         {
-            AniAngle _angleState = _aniAngleData[_elementCount].ActionAngleDirections[i];
-            AniAngle _targetangleState = _aniAngleData[_elementCount].TargetAngleDirections[i];
+            Vector3 _angleDirection = GetAngleDirection(_aniAngleData[_elementCount].ActionAngleDirections[i],
+                _aniAngleData[_elementCount].ActionDirection[i]);
+            Vector3 _targetDirection = GetAngleDirection(_aniAngleData[_elementCount].TargetAngleDirections[i],
+                _aniAngleData[_elementCount].TargetDirection[i]);
 
-            switch (_angleState)
-            {
-                case AniAngle.Zero:
-                    _angleDirection = new Vector3(0, 0, 0);
-                    break;
-                case AniAngle.Forward:
-                    _angleDirection = -_aniAngleData[_elementCount].ActionDirection[i].transform.up;
-                    break;
-                case AniAngle.Backward:
-                    _angleDirection = _aniAngleData[_elementCount].ActionDirection[i].transform.up;
-                    break;
-                case AniAngle.Up:
-                    _angleDirection = _aniAngleData[_elementCount].ActionDirection[i].transform.forward;
-                    break;
-                case AniAngle.Down:
-                    _angleDirection = -_aniAngleData[_elementCount].ActionDirection[i].transform.forward;
-                    break;
-                case AniAngle.Left:
-                    _angleDirection = -_aniAngleData[_elementCount].ActionDirection[i].transform.right;
-                    break;
-                case AniAngle.Right:
-                    _angleDirection = _aniAngleData[_elementCount].ActionDirection[i].transform.right;
-                    break;
-            }
-            switch (_targetangleState)
-            {
-                case AniAngle.Zero:
-                    _targetDirection = new Vector3(0, 0, 0);
-                    break;
-                case AniAngle.Forward:
-                    _targetDirection = -_aniAngleData[_elementCount].TargetDirection[i].transform.up;
-                    break;
-                case AniAngle.Backward:
-                    _targetDirection = _aniAngleData[_elementCount].TargetDirection[i].transform.up;
-                    break;
-                case AniAngle.Up:
-                    _targetDirection = _aniAngleData[_elementCount].TargetDirection[i].transform.forward;
-                    break;
-                case AniAngle.Down:
-                    _targetDirection = -_aniAngleData[_elementCount].TargetDirection[i].transform.forward;
-                    break;
-                case AniAngle.Left:
-                    _targetDirection = -_aniAngleData[_elementCount].TargetDirection[i].transform.right;
-                    break;
-                case AniAngle.Right:
-                    _targetDirection = _aniAngleData[_elementCount].TargetDirection[i].transform.right;
-                    break;
-            }
             AlignToVector(_aniAngleData[_elementCount].StandardRigidbodies[i], _angleDirection, _vector + _targetDirection,
                 _aniAngleData[_elementCount].AngleStability[i], _aniAngleData[_elementCount].AnglePowerValues[i]);
         }
