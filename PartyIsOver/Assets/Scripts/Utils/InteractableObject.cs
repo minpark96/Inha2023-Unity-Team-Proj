@@ -16,7 +16,6 @@ public class InteractableObject : MonoBehaviour
         Special= 7,
         Ice = 8,
         ElectricShock = 9,
-
     }
 
     public Damage damageModifier = Damage.Default;
