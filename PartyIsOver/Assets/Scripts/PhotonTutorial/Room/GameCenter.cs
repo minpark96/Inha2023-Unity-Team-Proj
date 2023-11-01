@@ -64,7 +64,6 @@ public class GameCenter : MonoBehaviourPunCallbacks
     private void Start()
     {
         Init();
-     
     }
 
     private void Init()
@@ -94,18 +93,20 @@ public class GameCenter : MonoBehaviourPunCallbacks
             _isReady = true;
 
             _buttonPlay.onClick.AddListener(PhotonManager.Instance.LoadArena);
-            Debug.Log("4");
+            Debug.Log("방장 전용 플레이 버튼 이벤트 등록");
         }
         else
         {
             _buttonPlay.gameObject.SetActive(false);
 
             _buttonReady.onClick.AddListener(Ready);
-            Debug.Log("3");
+            Debug.Log("클라이언트 전용 준비 버튼 이벤트 등록");
         }
 
-        photonView.RPC("PlayerEntered", RpcTarget.MasterClient);
-        Debug.Log("5");
+        
+            Debug.Log("Init(): 방장한테 나 들어왔다고 알려라");
+            photonView.RPC("PlayerEntered", RpcTarget.MasterClient);
+        
         ShowPlayerName();
         TogglePlayerStatus();
     }
@@ -151,7 +152,7 @@ public class GameCenter : MonoBehaviourPunCallbacks
     [PunRPC]
     public void PlayerEntered()
     {
-        Debug.Log("name: " + gameObject.name + ", IsMine?: " + photonView.IsMine);
+        Debug.Log("name: " + gameObject.name + ", ViewId: " + photonView.ViewID + ", IsMine?: " + photonView.IsMine);
 
         Debug.Log("[only master] PlayerEntered");
 
@@ -170,7 +171,7 @@ public class GameCenter : MonoBehaviourPunCallbacks
     [PunRPC]
     public void PlayerReady(bool isReady)
     {
-        Debug.Log("name: " + gameObject.name + ", IsMine?: " + photonView.IsMine);
+        Debug.Log("name: " + gameObject.name + ", ViewId: " + photonView.ViewID + ", IsMine?: " + photonView.IsMine);
 
         Debug.Log("[only master] PlayerReady");
 
@@ -198,7 +199,7 @@ public class GameCenter : MonoBehaviourPunCallbacks
     [PunRPC]
     public void UpdateReady(int playerReadyCount)
     {
-        Debug.Log("name: " + gameObject.name + ", IsMine?: " + photonView.IsMine);
+        Debug.Log("name: " + gameObject.name + ", ViewId: " + photonView.ViewID + ", IsMine?: " + photonView.IsMine);
 
         Debug.Log("[except master] PlayerReady");
 

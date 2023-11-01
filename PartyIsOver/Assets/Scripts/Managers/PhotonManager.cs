@@ -89,9 +89,12 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
             PhotonNetwork.SerializationRate = 20;
             PhotonNetwork.SendRate = 20;
+
+            SceneManager.sceneLoaded += OnSceneLoaded;
         }
         else
         {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
             Destroy(gameObject);
         }
     }
@@ -202,13 +205,21 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient)
         {
             Debug.Log("OnJoinedRoom(): Load Room Scene");
-            //SceneManager.LoadScene(1);
-            StartCoroutine(LoadAsyncScene("Room"));
+            SceneManager.LoadScene(1);
+            //StartCoroutine(LoadAsyncScene("Room"));
         }
         else
         {
             InstantiateGameCenter();
-            //InstantiatePlayer();
+        }
+    }
+
+    public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == "Room")
+        {
+            Debug.Log("Room Scene 로드 완료");
+            InstantiateGameCenter();
         }
     }
 
