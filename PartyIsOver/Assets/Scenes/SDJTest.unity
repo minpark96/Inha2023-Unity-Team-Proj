@@ -1043,6 +1043,7 @@ MonoBehaviour:
   PlayerControll: {fileID: 0}
   actorState: 4
   lastActorState: 8
+  debuffState: 0
 --- !u!114 &83486395
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1099,6 +1100,7 @@ MonoBehaviour:
   leftKick: 0
   rightKick: 0
   isStateChange: 0
+  MeowNyangPunchDelayTime: 0
   _idleTimer: 0
   isAI: 1
   ForceStrength: 10
@@ -2056,6 +2058,7 @@ MonoBehaviour:
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
+  PartTransform: {fileID: 0}
 --- !u!153 &240328774
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -2233,6 +2236,7 @@ MonoBehaviour:
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
+  PartTransform: {fileID: 0}
 --- !u!153 &242557669
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -3700,6 +3704,7 @@ MonoBehaviour:
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
+  PartTransform: {fileID: 0}
 --- !u!153 &501211368
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -4162,6 +4167,7 @@ MonoBehaviour:
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
+  PartTransform: {fileID: 0}
 --- !u!153 &537815024
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -4696,6 +4702,7 @@ MonoBehaviour:
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
+  PartTransform: {fileID: 0}
 --- !u!153 &573083521
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -4886,6 +4893,7 @@ MonoBehaviour:
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
+  PartTransform: {fileID: 0}
 --- !u!136 &591689921
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -5280,6 +5288,7 @@ MonoBehaviour:
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
+  PartTransform: {fileID: 0}
 --- !u!153 &668244678
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -5864,6 +5873,7 @@ MonoBehaviour:
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
+  PartTransform: {fileID: 0}
 --- !u!153 &713996577
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -6040,6 +6050,7 @@ MonoBehaviour:
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
+  PartTransform: {fileID: 0}
 --- !u!153 &723357615
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -8894,6 +8905,7 @@ MonoBehaviour:
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
+  PartTransform: {fileID: 0}
 --- !u!153 &1109409744
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -9294,6 +9306,7 @@ MonoBehaviour:
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
+  PartTransform: {fileID: 0}
 --- !u!153 &1143729351
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -9539,6 +9552,7 @@ MonoBehaviour:
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
+  PartTransform: {fileID: 0}
 --- !u!135 &1159502199
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -9956,6 +9970,7 @@ MonoBehaviour:
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
+  PartTransform: {fileID: 0}
 --- !u!153 &1195674184
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -10221,6 +10236,7 @@ MonoBehaviour:
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
+  PartTransform: {fileID: 0}
 --- !u!153 &1223179820
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -11576,6 +11592,7 @@ MonoBehaviour:
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
+  PartTransform: {fileID: 0}
 --- !u!153 &1432834842
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -11892,6 +11909,7 @@ MonoBehaviour:
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
+  PartTransform: {fileID: 0}
 --- !u!153 &1441491802
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -12361,6 +12379,7 @@ MonoBehaviour:
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
+  PartTransform: {fileID: 0}
 --- !u!153 &1483005025
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -21417,8 +21436,19 @@ MonoBehaviour:
     ForceDirections: 010000000200000003000000
     ForcePowerValues:
     - 1
-    - 50
-    - 50
+    - 1
+    - 1
+  - StandardRigidbodies:
+    - {fileID: 0}
+    ActionRigidbodies:
+    - {fileID: 2594633235711231716}
+    - {fileID: 2595093891940388792}
+    - {fileID: 2595093891940388792}
+    ForceDirections: 010000000100000002000000
+    ForcePowerValues:
+    - 1
+    - 1
+    - 30
   - StandardRigidbodies:
     - {fileID: 0}
     ActionRigidbodies:
@@ -21428,19 +21458,8 @@ MonoBehaviour:
     ForceDirections: 010000000100000003000000
     ForcePowerValues:
     - 1
-    - 50
-    - 50
-  - StandardRigidbodies:
-    - {fileID: 0}
-    ActionRigidbodies:
-    - {fileID: 2594633235711231716}
-    - {fileID: 2595093891940388792}
-    - {fileID: 2595093891940388792}
-    ForceDirections: 010000000100000003000000
-    ForcePowerValues:
-    - 1
-    - 50
-    - 50
+    - 10
+    - 10
   - StandardRigidbodies:
     - {fileID: 0}
     ActionRigidbodies:
@@ -21460,8 +21479,8 @@ MonoBehaviour:
     - {fileID: 5606036378121964916}
     ForceDirections: 0000000000000000
     ForcePowerValues:
-    - 50
-    - 50
+    - 100
+    - 100
   - StandardRigidbodies:
     - {fileID: 0}
     ActionRigidbodies:
@@ -21469,8 +21488,8 @@ MonoBehaviour:
     - {fileID: 3843378844782920912}
     ForceDirections: 0000000000000000
     ForcePowerValues:
-    - 50
-    - 50
+    - 100
+    - 100
   - StandardRigidbodies:
     - {fileID: 0}
     ActionRigidbodies:
@@ -21702,6 +21721,7 @@ MonoBehaviour:
   leftKick: 0
   rightKick: 0
   isStateChange: 0
+  MeowNyangPunchDelayTime: 5
   _idleTimer: 0
   isAI: 0
   ForceStrength: 100
@@ -21754,6 +21774,7 @@ MonoBehaviour:
   PlayerControll: {fileID: 0}
   actorState: 4
   lastActorState: 8
+  debuffState: 0
 --- !u!4 &2653577453574409601
 Transform:
   m_ObjectHideFlags: 0
@@ -21895,6 +21916,7 @@ MonoBehaviour:
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
+  PartTransform: {fileID: 0}
 --- !u!153 &2675482982836170738
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -22019,6 +22041,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8d2732e4766ccf4fba1c58f524e0dae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bodyHandler: {fileID: 0}
   _turnForce: 0
 --- !u!135 &2675591024976243569
 SphereCollider:
@@ -22048,6 +22071,7 @@ MonoBehaviour:
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
+  PartTransform: {fileID: 0}
 --- !u!153 &2675591024976243571
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -22342,6 +22366,7 @@ MonoBehaviour:
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
+  PartTransform: {fileID: 0}
 --- !u!4 &2681629805768795788
 Transform:
   m_ObjectHideFlags: 0
@@ -22835,6 +22860,7 @@ MonoBehaviour:
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
+  PartTransform: {fileID: 0}
 --- !u!153 &2800224987189693596
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -22946,6 +22972,7 @@ MonoBehaviour:
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
+  PartTransform: {fileID: 0}
 --- !u!153 &2800232216506460855
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -23057,6 +23084,7 @@ MonoBehaviour:
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
+  PartTransform: {fileID: 0}
 --- !u!153 &2800253075633493637
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -23168,6 +23196,7 @@ MonoBehaviour:
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
+  PartTransform: {fileID: 0}
 --- !u!153 &2801588848915514784
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -23279,6 +23308,7 @@ MonoBehaviour:
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
+  PartTransform: {fileID: 0}
 --- !u!153 &2801600473431487729
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -23390,6 +23420,7 @@ MonoBehaviour:
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
+  PartTransform: {fileID: 0}
 --- !u!153 &2801627655295430721
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -23501,6 +23532,7 @@ MonoBehaviour:
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
+  PartTransform: {fileID: 0}
 --- !u!153 &2801778079153613754
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -23612,6 +23644,7 @@ MonoBehaviour:
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
+  PartTransform: {fileID: 0}
 --- !u!153 &2801847783180245431
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -23723,6 +23756,7 @@ MonoBehaviour:
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
+  PartTransform: {fileID: 0}
 --- !u!153 &2802024866263701199
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -23834,6 +23868,7 @@ MonoBehaviour:
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
+  PartTransform: {fileID: 0}
 --- !u!153 &2802135203211806480
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -23945,6 +23980,7 @@ MonoBehaviour:
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
+  PartTransform: {fileID: 0}
 --- !u!153 &2802159958102799115
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -24056,6 +24092,7 @@ MonoBehaviour:
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
+  PartTransform: {fileID: 0}
 --- !u!4 &2824878900375170281
 Transform:
   m_ObjectHideFlags: 0
@@ -25305,6 +25342,7 @@ MonoBehaviour:
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
+  PartTransform: {fileID: 0}
 --- !u!1 &3864635179464535030
 GameObject:
   m_ObjectHideFlags: 0
@@ -28384,6 +28422,7 @@ MonoBehaviour:
   PartRigidbody: {fileID: 0}
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
+  PartTransform: {fileID: 0}
 --- !u!1 &5609826549913831562
 GameObject:
   m_ObjectHideFlags: 0
