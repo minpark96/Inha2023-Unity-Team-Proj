@@ -113,8 +113,8 @@ public class PlayerController : MonoBehaviour
     public bool rightGrab;
     public bool leftKick;
     public bool rightKick;
-
     public bool isStateChange;
+    public float RSkillDelayTime = 5;
 
     private Vector3 _moveInput;
     private Vector3 _moveDir;
@@ -127,6 +127,7 @@ public class PlayerController : MonoBehaviour
     private float _cycleTimer = 0;
     private float _cycleSpeed;
     private float _applyedForce = 800f;
+    private float _rollTime = 0;
     private Vector3 _runVectorForce2 = new Vector3(0f,0f,0.2f);
     private Vector3 _runVectorForce5 = new Vector3(0f, 0f, 0.4f);
     private Vector3 _runVectorForce10 = new Vector3(0f, 0f, 0.8f);
@@ -183,13 +184,18 @@ public class PlayerController : MonoBehaviour
 
     void OnKeyboardEvent(Define.KeyboardEvent evt)
     {
+<<<<<<< HEAD
         if (_actor.actorState == ActorState.Debuff)
             return;
         OnKeyboardEvent_Idle(evt);
+=======
+        OnKeyboardEvent_Idle(evt); 
+>>>>>>> 78244096d3ab842e3728c6dd8748cb7e5c31b19d
     }
 
     void OnKeyboardEvent_Idle(Define.KeyboardEvent evt)
     {
+        
        switch (evt)
         {
             case Define.KeyboardEvent.Press:
@@ -219,12 +225,13 @@ public class PlayerController : MonoBehaviour
                 break;
             case Define.KeyboardEvent.Charge:
                 {
-                    MeowNyangPunch();
+                    if(Input.GetKeyUp(KeyCode.R))
+                        MeowNyangPunch();
                 }
                 break;
             case Define.KeyboardEvent.Hold:
                 {
-                    //중일때 확인
+                    //중일때 확인 ex 이펙트 출현하는 코드를 넣어주면 기모아지는 것 첨 될듯
                 }
                 break;
         }
@@ -340,13 +347,48 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator ForwardRoll()
     {
+        int _frameCount = 0;
+
         //스프링 풀기
         //ResetBodySpring();
+<<<<<<< HEAD
         _actor.StatusHandler.StartCoroutine("ResetBodySpring");
+=======
+        _actor.StatusHandler.StartCoroutine("Faint");
+        while(_rollTime < 1.2f)
+        {
+            _rollTime += Time.deltaTime;
+>>>>>>> 78244096d3ab842e3728c6dd8748cb7e5c31b19d
 
-
-        int _frameCount = 0;
-        for(int i =0; i< RollAniData.Length; i++)
+            if(_rollTime <= 0.1f)
+            {
+                _frameCount = 0;
+                AniForce(RollAniData, _frameCount);
+            }
+            if (_rollTime >= 0.2f && _rollTime < 0.5f)
+            {
+                _frameCount = 1;
+                AniForce(RollAniData, _frameCount);
+            }
+            if( _rollTime >= 0.5f && _rollTime < 0.8f)
+            {
+                _frameCount = 2;
+                AniForce(RollAniData, _frameCount);
+            }
+            if(_rollTime >=0.8f && _rollTime < 1f)
+            {
+                _actor.StatusHandler.StartCoroutine("RestoreFromFaint");
+                _frameCount = 3;
+                AniForce(RollAniData, _frameCount);
+            }
+            if(_rollTime>=1f &&  _rollTime <1.2f)
+            {
+                _frameCount = 4;
+                AniForce(RollAniData, _frameCount);
+            }
+        }
+        
+       /* for(int i =0; i< RollAniData.Length; i++)
         {
             _frameCount = i;
             AniForce(RollAniData, _frameCount);
@@ -358,8 +400,8 @@ public class PlayerController : MonoBehaviour
                 _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
             }
 
-        }
-
+        }*/
+        _rollTime = 0;
         yield return null;
     }
 
@@ -407,7 +449,6 @@ public class PlayerController : MonoBehaviour
                     _forceSpeed[_elementCount].ActionRigidbodies[i].AddForce(_dir * _forceSpeed[_elementCount].ForcePowerValues[i], ForceMode.Impulse);
                 }
             }
-            
         }
         else
             Debug.Log("StandardRigidbodies가 None이어야 합니다.");
@@ -606,6 +647,7 @@ public class PlayerController : MonoBehaviour
     private void MeowNyangPunch()
     {
         StartCoroutine(MeowNyangPunchDelay());
+        StartCoroutine(RDelay());
     } 
     IEnumerator MeowNyangPunchDelay()
     {
@@ -622,9 +664,14 @@ public class PlayerController : MonoBehaviour
                  StartCoroutine(Punch(Side.Right));
                 _readySide = Side.Left;
             }
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(0.2f);
             _punchcount++;
         }
+    }
+    IEnumerator RDelay()
+    {
+        yield return new WaitForSeconds(RSkillDelayTime);
+
     }
 
     IEnumerator PunchWithDelay(Side side, float delay)
