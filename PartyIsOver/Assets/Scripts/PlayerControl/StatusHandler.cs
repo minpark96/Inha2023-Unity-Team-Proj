@@ -11,7 +11,7 @@ public class StatusHandler : MonoBehaviour
 
     private float _damageModifer = 1f;
 
-    public Actor actor;
+    private Actor _actor;
 
     public bool invulnerable = false;
 
@@ -37,19 +37,19 @@ public class StatusHandler : MonoBehaviour
 
     void Start()
     {
-        actor = transform.GetComponent<Actor>();
+        _actor = transform.GetComponent<Actor>();
         _health = _maxHealth;
 
-        actor.BodyHandler.BodySetup();
+        _actor.BodyHandler.BodySetup();
 
-        for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
+        for (int i = 0; i < _actor.BodyHandler.BodyParts.Count; i++)
         {
             if (i == 3)
             {
                 continue;
             }
-            _xPosSpringAry.Add(actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive.positionSpring);
-            _yzPosSpringAry.Add(actor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive.positionSpring);
+            _xPosSpringAry.Add(_actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive.positionSpring);
+            _yzPosSpringAry.Add(_actor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive.positionSpring);
         }
     }
 
@@ -67,7 +67,7 @@ public class StatusHandler : MonoBehaviour
 
         // 데미지 체크
         damage *= _damageModifer;
-        if (!invulnerable && actor.actorState != Actor.ActorState.Dead && actor.actorState != Actor.ActorState.Unconscious)
+        if (!invulnerable && _actor.actorState != Actor.ActorState.Dead && _actor.actorState != Actor.ActorState.Unconscious)
         {
             _healthDamage += damage;
         }
@@ -81,12 +81,12 @@ public class StatusHandler : MonoBehaviour
         if(type == Damage.Ice)
         {
             StartCoroutine("Ice"); // 빙결 행동
-            actor.debuffState |= Actor.DebuffState.Ice; // 빙결 디버프 활성화
+            _actor.debuffState |= Actor.DebuffState.Ice; // 빙결 디버프 활성화
 
             // 다른 디버프 체크
             foreach (Actor.DebuffState state in Actor.DebuffState.GetValues(typeof(Actor.DebuffState)))
             {
-                if((actor.debuffState & state) != 0)
+                if((_actor.debuffState & state) != 0)
                 {
                     //state &= ~state;
                 }
@@ -107,23 +107,23 @@ public class StatusHandler : MonoBehaviour
         yield return new WaitForSeconds(0.2f);
 
         // 빙결
-        actor.actorState = Actor.ActorState.Debuff;
-        actor.debuffState = Actor.DebuffState.Ice;
+        _actor.actorState = Actor.ActorState.Debuff;
+        _actor.debuffState = Actor.DebuffState.Ice;
 
-        for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
+        for (int i = 0; i < _actor.BodyHandler.BodyParts.Count; i++)
         {
-            actor.BodyHandler.BodyParts[i].PartRigidbody.isKinematic = true;
+            _actor.BodyHandler.BodyParts[i].PartRigidbody.isKinematic = true;
         }
 
         yield return new WaitForSeconds(1.5f);
 
         // 빙결 해제
-        actor.actorState = Actor.ActorState.Stand;
-        actor.debuffState = Actor.DebuffState.Default;
+        _actor.actorState = Actor.ActorState.Stand;
+        _actor.debuffState = Actor.DebuffState.Default;
 
-        for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
+        for (int i = 0; i < _actor.BodyHandler.BodyParts.Count; i++)
         {
-            actor.BodyHandler.BodyParts[i].PartRigidbody.isKinematic = false;
+            _actor.BodyHandler.BodyParts[i].PartRigidbody.isKinematic = false;
         }
     }
 
@@ -134,8 +134,8 @@ public class StatusHandler : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
 
         // 감전
-        actor.actorState = Actor.ActorState.Debuff;
-        actor.debuffState = Actor.DebuffState.ElectricShock;
+        _actor.actorState = Actor.ActorState.Debuff;
+        _actor.debuffState = Actor.DebuffState.ElectricShock;
 
 
         float startTime = Time.realtimeSinceStartup;
@@ -149,14 +149,14 @@ public class StatusHandler : MonoBehaviour
             {
                 for (int i = 1; i < 15; i++)
                 {
-                    actor.BodyHandler.BodyParts[i].transform.rotation = Quaternion.Euler(30, 0, 0);
+                    _actor.BodyHandler.BodyParts[i].transform.rotation = Quaternion.Euler(30, 0, 0);
                 }
             }
             else
             {
                 for (int i = 1; i < 15; i++)
                 {
-                    actor.BodyHandler.BodyParts[i].transform.rotation = Quaternion.Euler(-30, 0, 0);
+                    _actor.BodyHandler.BodyParts[i].transform.rotation = Quaternion.Euler(-30, 0, 0);
                 }
             }
             yield return null;
@@ -165,16 +165,16 @@ public class StatusHandler : MonoBehaviour
         // 감전 해제
         yield return new WaitForSeconds(1.0f);
 
-        actor.actorState = Actor.ActorState.Stand;
-        actor.debuffState = Actor.DebuffState.Default;
+        _actor.actorState = Actor.ActorState.Stand;
+        _actor.debuffState = Actor.DebuffState.Default;
 
-        actor.BodyHandler.Hip.transform.rotation = Quaternion.identity;
-        actor.BodyHandler.Hip.transform.Rotate(-90, 0, 0, Space.Self);
+        _actor.BodyHandler.Hip.transform.rotation = Quaternion.identity;
+        _actor.BodyHandler.Hip.transform.Rotate(-90, 0, 0, Space.Self);
         StartCoroutine(RestoreFromFaint());
 
         //actor.BodyHandler.Hip.transform.rotation = Quaternion.Euler(-90, 0, 0);
 
-        Debug.Log(actor.BodyHandler.Hip.transform.rotation.eulerAngles.x);
+        Debug.Log(_actor.BodyHandler.Hip.transform.rotation.eulerAngles.x);
     }
 
 
@@ -196,7 +196,7 @@ public class StatusHandler : MonoBehaviour
 
 
         //기절상태가 아닐때 일정 이상의 데미지를 받으면 기절
-        if (actor.actorState != Actor.ActorState.Unconscious)
+        if (_actor.actorState != Actor.ActorState.Unconscious)
         {
             if (realDamage >= _knockoutThreshold)
             {
@@ -204,7 +204,7 @@ public class StatusHandler : MonoBehaviour
 
                 _maxUnconsciousTime = Mathf.Clamp(_maxUnconsciousTime + 1.5f, _minUnconsciousTime, 20f);
                 _unconsciousTime = _maxUnconsciousTime;
-                actor.actorState = Actor.ActorState.Unconscious;
+                _actor.actorState = Actor.ActorState.Unconscious;
                 EnterUnconsciousState();
             }
         }
@@ -228,22 +228,22 @@ public class StatusHandler : MonoBehaviour
 
     public void CheckConscious()
     {
-        if (actor.actorState != Actor.ActorState.Unconscious && _unconsciousTime > 0f)
+        if (_actor.actorState != Actor.ActorState.Unconscious && _unconsciousTime > 0f)
         {
             _unconsciousTime = Mathf.Clamp(_unconsciousTime - Time.deltaTime, 0f, _maxUnconsciousTime);
         }
 
         // 기절일때
-        if (actor.actorState == Actor.ActorState.Unconscious)
+        if (_actor.actorState == Actor.ActorState.Unconscious)
         {
             _unconsciousTime = Mathf.Clamp(_unconsciousTime - Time.deltaTime, 0f, _maxUnconsciousTime);
 
             StartCoroutine(Faint());
 
             // 기절 해제
-            if (_unconsciousTime <= 0f)
+            if (_unconsciousTime <= 0f && _actor.PlayerController.MoveInputCheck())
             {
-                actor.actorState = Actor.ActorState.Stand;
+                _actor.actorState = Actor.ActorState.Stand;
                 StartCoroutine(RestoreFromFaint());
                 _unconsciousTime = 0f;
             }
@@ -257,10 +257,10 @@ public class StatusHandler : MonoBehaviour
 
         //actor.BodyHandler.ResetLeftGrab();
         //actor.BodyHandler.ResetRightGrab();
-        actor.BodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
-        actor.BodyHandler.LeftForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
-        actor.BodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
-        actor.BodyHandler.RightForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+        _actor.BodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+        _actor.BodyHandler.LeftForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+        _actor.BodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+        _actor.BodyHandler.RightForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
     }
 
     IEnumerator Faint()
@@ -268,20 +268,20 @@ public class StatusHandler : MonoBehaviour
         JointDrive angularXDrive;
         JointDrive angularYZDrive;
 
-        for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
+        for (int i = 0; i < _actor.BodyHandler.BodyParts.Count; i++)
         {
             if (i == 3)
             {
                 continue;
             }
 
-            angularXDrive = actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive;
+            angularXDrive = _actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive;
             angularXDrive.positionSpring = 0f;
-            actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive = angularXDrive;
+            _actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive = angularXDrive;
 
-            angularYZDrive = actor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive;
+            angularYZDrive = _actor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive;
             angularYZDrive.positionSpring = 0f;
-            actor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive = angularYZDrive;
+            _actor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive = angularYZDrive;
         }
 
         yield return null;
@@ -302,20 +302,20 @@ public class StatusHandler : MonoBehaviour
             float percentage = elapsed / springLerpDuration;
             int j = 0;
 
-            for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
+            for (int i = 0; i < _actor.BodyHandler.BodyParts.Count; i++)
             {
                 if (i == 3)
                 {
                     continue;
                 }
-                angularXDrive = actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive;
+                angularXDrive = _actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive;
                 angularXDrive.positionSpring = _xPosSpringAry[j] * percentage;
 
-                actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive = angularXDrive;
+                _actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive = angularXDrive;
 
-                angularYZDrive = actor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive;
+                angularYZDrive = _actor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive;
                 angularYZDrive.positionSpring = _yzPosSpringAry[j] * percentage;
-                actor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive = angularYZDrive;
+                _actor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive = angularYZDrive;
                 j++;
 
                 yield return null;

@@ -20,6 +20,14 @@ public class Define
         Item,
     }
 
+    public enum GrabObjectType
+    {
+        None,
+        Player,
+        Item,
+        Object,
+    }
+
 
 
     public enum ItemType
