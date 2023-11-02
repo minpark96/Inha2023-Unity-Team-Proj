@@ -16,6 +16,9 @@ public class InputManager
     bool _mpressed = false;
     float _mpressedTime = 0;
 
+    bool _hpressed = false;
+    float _hpressedTime = 0;
+
     bool _keyPressed = false;
     float _keyPressedTime = 0;
 
@@ -109,7 +112,6 @@ public class InputManager
                     _chargeTime += Time.deltaTime;
                     if (_chargeTime > _chargeThreshold)
                     {
-                        Debug.Log("Hold1");
                         KeyboardAction.Invoke(Define.KeyboardEvent.Hold);
                     }
                 }
@@ -155,14 +157,6 @@ public class InputManager
 
         if (MouseAction != null)
         {
-            if (Input.GetMouseButton(2))
-            {
-
-            }
-        }
-
-        if (MouseAction != null)
-        {
             if (Input.GetMouseButton(1))
             {
                 if (!_mpressed)
@@ -183,6 +177,31 @@ public class InputManager
                 }
                 _mpressed = false;
                 _mpressedTime = 0;
+            }
+        }
+
+        if (MouseAction != null)
+        {
+            if (Input.GetMouseButton(2))
+            {
+                if (!_hpressed)
+                {
+                    MouseAction.Invoke(Define.MouseEvent.PointerDown);
+                    _hpressedTime = Time.time;
+                }
+                MouseAction.Invoke(Define.MouseEvent.Press);
+                _hpressed = true;
+            }
+            else
+            {
+                if (_hpressed)
+                {
+                    if (Time.time < _hpressedTime + 0.2f)
+                        MouseAction.Invoke(Define.MouseEvent.Click);
+                    MouseAction.Invoke(Define.MouseEvent.PointerUp);
+                }
+                _hpressed = false;
+                _hpressedTime = 0;
             }
         }
     }

@@ -21426,23 +21426,27 @@ MonoBehaviour:
     - {fileID: 2594633235711231716}
     - {fileID: 2595146148450866934}
     - {fileID: 2595146148450866934}
-    ForceDirections: 010000000100000002000000
+    ForceDirections: 020000000200000002000000
     ForcePowerValues:
     - 1
     - 1
     - 1
   - StandardRigidbodies:
-    - {fileID: 0}
+    - {fileID: 2595146148450866934}
+    - {fileID: 2595146148450866934}
+    - {fileID: 2594666722529992205}
     ActionRigidbodies:
     - {fileID: 2594633235711231716}
     - {fileID: 2595093891940388792}
     - {fileID: 2594666722529992205}
-    ForceDirections: 010000000200000003000000
+    ForceDirections: 020000000200000004000000
     ForcePowerValues:
+    - 6
     - 1
-    - 1
-    - 3
+    - 6
   - StandardRigidbodies:
+    - {fileID: 0}
+    - {fileID: 0}
     - {fileID: 0}
     ActionRigidbodies:
     - {fileID: 2594633235711231716}
@@ -21454,6 +21458,8 @@ MonoBehaviour:
     - 1
     - 3
   - StandardRigidbodies:
+    - {fileID: 0}
+    - {fileID: 0}
     - {fileID: 0}
     ActionRigidbodies:
     - {fileID: 2594633235711231716}
@@ -21465,6 +21471,8 @@ MonoBehaviour:
     - 10
     - 10
   - StandardRigidbodies:
+    - {fileID: 0}
+    - {fileID: 0}
     - {fileID: 0}
     ActionRigidbodies:
     - {fileID: 2594633235711231716}
@@ -21497,13 +21505,16 @@ MonoBehaviour:
     - 100
     - 100
   - StandardRigidbodies:
-    - {fileID: 2594666722529992205}
-    - {fileID: 2594666722529992205}
+    - {fileID: 2594633235711231716}
+    - {fileID: 2594633235711231716}
+    - {fileID: 2594633235711231716}
     ActionRigidbodies:
     - {fileID: 2594633235711231716}
     - {fileID: 2595146148450866934}
-    ForceDirections: 0200000001000000
+    - {fileID: 2595093891940388792}
+    ForceDirections: 030000000300000003000000
     ForcePowerValues:
+    - 50
     - 50
     - 50
   RightPunchAniData:
@@ -21518,7 +21529,7 @@ MonoBehaviour:
     AngleStability:
     - 0.01
     AnglePowerValues:
-    - 20
+    - 20000
   - StandardRigidbodies:
     - {fileID: 2594991716837427516}
     ActionDirection:
@@ -21530,7 +21541,7 @@ MonoBehaviour:
     AngleStability:
     - 0.01
     AnglePowerValues:
-    - 20
+    - 20000
   LeftPunchAniData:
   - StandardRigidbodies:
     - {fileID: 2594584007050088136}
@@ -21543,7 +21554,7 @@ MonoBehaviour:
     AngleStability:
     - 0.01
     AnglePowerValues:
-    - 20
+    - 20000
   - StandardRigidbodies:
     - {fileID: 2594440936434609163}
     ActionDirection:
@@ -21555,7 +21566,7 @@ MonoBehaviour:
     AngleStability:
     - 0.01
     AnglePowerValues:
-    - 20
+    - 20000
   RightPunchingAniData:
   - StandardRigidbodies:
     - {fileID: 2594283914657201982}
@@ -21563,10 +21574,10 @@ MonoBehaviour:
     ActionRigidbodies:
     - {fileID: 2594283914657201982}
     - {fileID: 2675591024976243572}
-    ForceDirections: 0100000000000000
+    ForceDirections: 0000000000000000
     ForcePowerValues:
-    - 1
-    - 6
+    - 2
+    - 3
   LeftPunchingAniData:
   - StandardRigidbodies:
     - {fileID: 2594584007050088136}
@@ -21574,10 +21585,10 @@ MonoBehaviour:
     ActionRigidbodies:
     - {fileID: 2594584007050088136}
     - {fileID: 2675482982836170739}
-    ForceDirections: 0100000000000000
+    ForceDirections: 0000000000000000
     ForcePowerValues:
-    - 1
-    - 6
+    - 2
+    - 3
   RightPunchResettingAniData:
   - StandardRigidbodies:
     - {fileID: 2594283914657201982}
@@ -21715,7 +21726,11 @@ MonoBehaviour:
     - 2.5
     AnglePowerValues:
     - 0.1
-  TestRready1: []
+  TestRready1:
+  - StandardRigidbodies: []
+    ActionRigidbodies: []
+    ForceDirections: 
+    ForcePowerValues: []
   TestRready2:
   - StandardRigidbodies:
     - {fileID: 2675591024976243572}

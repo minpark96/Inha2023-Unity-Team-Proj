@@ -224,7 +224,6 @@ public class PlayerController : MonoBehaviour
                 break;
             case Define.KeyboardEvent.PointerDown:
                 {
-                    Debug.Log("1");
                     if (Input.GetKeyUp(KeyCode.R))
                         ForceRready();
                 }
@@ -254,7 +253,6 @@ public class PlayerController : MonoBehaviour
             case Define.KeyboardEvent.Hold:
                 {
                     //중일때 확인 ex 이펙트 출현하는 코드를 넣어주면 기모아지는 것 첨 될듯
-                    Debug.Log("2");
                     StartCoroutine(Rready());
                 }
                 break;
@@ -329,9 +327,9 @@ public class PlayerController : MonoBehaviour
                     if(Input.GetMouseButtonUp(0))
                         PunchAndGrab();
                     if(!isGrounded && Input.GetMouseButtonUp(1))
-                    {
                         DropKickTrigger();
-                    }
+                    if (Input.GetMouseButtonUp(2))
+                        ForwardRollTrigger();
                 }
                 break;
         }
@@ -356,8 +354,34 @@ public class PlayerController : MonoBehaviour
                 _actor.actorState = Actor.ActorState.Run;
             }
         }
-        if (Input.GetMouseButton(2))
-            ForwardRollTrigger();
+            
+
+        
+
+
+    }
+
+    void Punch(Side side)
+    {
+        _punchTimer = 0;
+        while(_punchTimer < 10)
+        {
+            Debug.Log(_punchTimer);
+            _punchTimer += Time.deltaTime;
+            if (_punchTimer < 0.1f)
+            {
+                ArmActionReadying(side);
+            }
+            if (_punchTimer >= 0.2f && _punchTimer < 0.3f)
+            {
+                ArmActionPunching(side);
+            }
+            if (_punchTimer >= 0.3f && _punchTimer < 0.5f)
+            {
+                ArmActionPunchResetting(side);
+            }
+        }
+        
     }
 
     private void Update()
@@ -390,6 +414,24 @@ public class PlayerController : MonoBehaviour
     }*/
     #endregion
 
+    private void TestCase()
+    {
+        StartCoroutine(testcase());
+    }
+
+    IEnumerator testcase()
+    {
+        int _frameCount;
+
+        for(int i =0; i < TestRready2.Length; i++)
+        {
+            _frameCount = i;
+            AniAngleForce(TestRready2, _frameCount);
+        }
+
+        yield return null;
+    }
+
     private void ForwardRollTrigger()
     {
         StartCoroutine(ForwardRollDelay(2f));
@@ -403,10 +445,8 @@ public class PlayerController : MonoBehaviour
 
         //다시 회복
         //RestoreSpringTrigger();
-        _actor.StatusHandler.StartCoroutine("RestoreFromFaint");
+        //_actor.StatusHandler.StartCoroutine("RestoreBodySpring");
     }
-
-    public float ForceStrength = 10.0f;
 
     IEnumerator ForwardRoll()
     {
@@ -414,10 +454,10 @@ public class PlayerController : MonoBehaviour
 
         //스프링 풀기
         //ResetBodySpring();
-        _actor.StatusHandler.StartCoroutine("Faint");
-        while(_rollTime < 1.2f)
+        _actor.StatusHandler.StartCoroutine("ResetBodySpring");
+        while(_rollTime < 10.2f)
         {
-            _rollTime += Time.deltaTime;
+            _rollTime += Time.fixedDeltaTime;
 
             if(_rollTime <= 0.1f)
             {
@@ -439,27 +479,13 @@ public class PlayerController : MonoBehaviour
                 _frameCount = 3;
                 AniForce(RollAniData, _frameCount);
             }
-            if(_rollTime>=1f &&  _rollTime <1.2f)
+            if(_rollTime>=1f &&  _rollTime <10.2f)
             {
-                //_actor.StatusHandler.StartCoroutine("RestoreFromFaint");
+                _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
                 _frameCount = 4;
                 AniForce(RollAniData, _frameCount);
             }
         }
-        
-       /* for(int i =0; i< RollAniData.Length; i++)
-        {
-            _frameCount = i;
-            AniForce(RollAniData, _frameCount);
-
-            if(i == 3)
-            {
-                //스프링 복구
-                //RestoreSpringTrigger();
-                _actor.StatusHandler.StartCoroutine("RestoreFromFaint");
-            }
-
-        }*/
         _rollTime = 0;
         yield return null;
     }
@@ -509,7 +535,7 @@ public class PlayerController : MonoBehaviour
     {
         for (int i = 0; i < _forceSpeed[_elementCount].StandardRigidbodies.Length; i++)
         {
-            if (_forceSpeed[_elementCount].ForceDirections[i] == 0)
+            if (_forceSpeed[_elementCount].ForceDirections[i] == RollForce.Zero || _forceSpeed[_elementCount].ForceDirections[i] == RollForce.ZeroReverse)
                 _forceSpeed[_elementCount].ActionRigidbodies[i].AddForce(_dir * _forceSpeed[_elementCount].ForcePowerValues[i], ForceMode.Impulse);
             else
             {
@@ -617,8 +643,7 @@ public class PlayerController : MonoBehaviour
             {
                 //스프링 풀기
                 //ResetBodySpring();
-                _actor.StatusHandler.StartCoroutine("Faint");
-
+                _actor.StatusHandler.StartCoroutine("ResetBodySpring");
 
                 _frameCount = i;
                 if( i== 0 )
@@ -646,7 +671,7 @@ public class PlayerController : MonoBehaviour
             yield return new WaitForSeconds(2);
             //스프링 복구
             //RestoreSpringTrigger();
-            _actor.StatusHandler.StartCoroutine("RestoreFromFaint");
+            _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
 
         }
         yield return null;
@@ -664,12 +689,12 @@ public class PlayerController : MonoBehaviour
         {
             if (_readySide == Side.Left)
             {
-                StartCoroutine(Punch(Side.Left));
+                Punch(Side.Left);
                 _readySide = Side.Right;
             }
             else
             {
-                 StartCoroutine(Punch(Side.Right));
+                 Punch(Side.Right);
                 _readySide = Side.Left;
             }
             yield return new WaitForSeconds(0.2f);
@@ -682,14 +707,21 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    IEnumerator PunchWithDelay(Side side, float delay)
+/*    IEnumerator PunchWithDelay(Side side, float delay)
     {
         _isCoroutineRunning = true;
-        StartCoroutine(Punch(side));
+        Punch(side);
         yield return new WaitForSeconds(delay);
         _isCoroutineRunning = false;
-    }
+    }*/
 
+    void PunchWithDelay(Side side, float delay)
+    {
+        _isCoroutineRunning = true;
+        Punch(side);
+        //yield return new WaitForSeconds(delay);
+        _isCoroutineRunning = false;
+    }
     private void PunchAndGrab()
     {
         targetingHandler.SearchTarget();
@@ -697,20 +729,30 @@ public class PlayerController : MonoBehaviour
         {
             if (_readySide == Side.Left)
             {
-                StartCoroutine(PunchWithDelay(Side.Left, 0.5f));
+                PunchWithDelay(Side.Left, 0.5f);
                 _readySide = Side.Right;
             }
             else
             {
-                StartCoroutine(PunchWithDelay(Side.Right, 0.5f));
+                PunchWithDelay(Side.Right, 0.5f);
                 _readySide = Side.Left;
             }
         }
     }
 
-    IEnumerator Punch(Side side)
+    /*
+    
+    요구 사항 
+    HP 잔량 체크 스테미너
+    키 입력시 스킬 동작 시간 빼기
+
+    주먹 펀치 차징 멈추기
+     */
+
+ /*   IEnumerator Punch(Side side)
     {
-        while(_punchTimer <= 0.5f)
+        _punchTimer = 0;
+        while(_punchTimer <10.0f)
         {
             _punchTimer += Time.deltaTime;
             if (_punchTimer < 0.1f)
@@ -727,9 +769,9 @@ public class PlayerController : MonoBehaviour
                 ArmActionPunchResetting(side);
             }
         }
-        _punchTimer = 0f;
+        _punchTimer = 0;
         yield return null;
-    }
+    }*/
 
     public void Stand()
     {

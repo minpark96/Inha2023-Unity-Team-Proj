@@ -21,9 +21,13 @@ public class Managers : MonoBehaviourPun
     public static SceneManagerEx Scene { get { return Instance._scene; } }
     public static UIManager UI { get { return Instance._ui; } }
 
-    void Start()
+    private void Awake()
     {
         Init();
+    }
+
+    void Start()
+    {
     }
 
     void Update()
