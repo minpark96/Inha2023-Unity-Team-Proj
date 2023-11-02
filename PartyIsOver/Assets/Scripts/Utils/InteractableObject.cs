@@ -14,8 +14,12 @@ public class InteractableObject : MonoBehaviour
         Headbutt = 5,
         Knockout = 6,
         Special= 7,
-        Ice = 8,
-        ElectricShock = 9,
+
+        Freeze = 8,
+        Shock = 9,
+        PowerUp = 10,
+        Slow = 11,
+
     }
 
     public Damage damageModifier = Damage.Default;

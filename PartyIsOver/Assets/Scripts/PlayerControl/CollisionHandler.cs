@@ -96,10 +96,16 @@ public class CollisionHandler : MonoBehaviour
                     contact.thisCollider.attachedRigidbody.AddForce(contact.normal * 10f, ForceMode.VelocityChange);
                     //actor.inputHandler.SetVibration(1f, 0f, 0.2f);
                     break;
-                case InteractableObject.Damage.Ice:
+                case InteractableObject.Damage.Freeze:
                     num2 = 1f;
                     break;
-                case InteractableObject.Damage.ElectricShock:
+                case InteractableObject.Damage.Shock:
+                    num2 = 1f;
+                    break;
+                case InteractableObject.Damage.PowerUp:
+                    num2 = 1f;
+                    break;
+                case InteractableObject.Damage.Slow:
                     num2 = 1f;
                     break;
                 default:

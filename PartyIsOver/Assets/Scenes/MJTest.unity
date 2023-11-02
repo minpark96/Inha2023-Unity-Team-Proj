@@ -1026,6 +1026,11 @@ MonoBehaviour:
   actor: {fileID: 0}
   invulnerable: 0
   _health: 0
+  _freezeTime: 3
+  _shockTime: 3
+  _stunTime: 3
+  _powerUpTime: 3
+  _slowTime: 3
 --- !u!114 &83486394
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1100,6 +1105,7 @@ MonoBehaviour:
   leftKick: 0
   rightKick: 0
   isStateChange: 0
+  RSkillDelayTime: 5
   _idleTimer: 0
   isAI: 1
   ForceStrength: 10
@@ -7293,13 +7299,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 858248852}
+  - component: {fileID: 858248848}
   - component: {fileID: 858248851}
   - component: {fileID: 858248850}
   - component: {fileID: 858248849}
-  - component: {fileID: 858248848}
   - component: {fileID: 858248847}
   m_Layer: 10
-  m_Name: Faint
+  m_Name: Etc
   m_TagString: Item
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7405,7 +7411,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 858248846}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.544, y: 0.82, z: 2.14}
+  m_LocalPosition: {x: 6.8, y: 0.5, z: 1.99}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -11101,7 +11107,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1401007986}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.3, y: 1.08, z: 4.78}
+  m_LocalPosition: {x: -5.3, y: 1, z: 4.78}
   m_LocalScale: {x: 3, y: 2, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -11946,7 +11952,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1442177670}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.1, y: 0.8206711, z: 2.22}
+  m_LocalPosition: {x: 1.1, y: 0.5, z: 2.22}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -12169,7 +12175,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1460758820}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.39, y: 0.8206711, z: 2.22}
+  m_LocalPosition: {x: 3.39, y: 0.5, z: 2.22}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -21660,6 +21666,7 @@ MonoBehaviour:
   leftKick: 0
   rightKick: 0
   isStateChange: 0
+  RSkillDelayTime: 5
   _idleTimer: 0
   isAI: 0
   ForceStrength: 100
@@ -21695,6 +21702,11 @@ MonoBehaviour:
   actor: {fileID: 0}
   invulnerable: 0
   _health: 0
+  _freezeTime: 3
+  _shockTime: 3
+  _stunTime: 3
+  _powerUpTime: 3
+  _slowTime: 3
 --- !u!114 &2653568215181255331
 MonoBehaviour:
   m_ObjectHideFlags: 0
