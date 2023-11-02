@@ -128,12 +128,8 @@ public class CollisionHandler : MonoBehaviour
                 }
             }
 
-
-
             //Debug.Log(collision.gameObject.name);
-
         }
-
     }
 
     private void OnCollisionEnter(Collision collision)

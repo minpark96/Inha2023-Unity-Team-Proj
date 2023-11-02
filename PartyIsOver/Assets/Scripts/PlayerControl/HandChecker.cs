@@ -37,6 +37,7 @@ public class HandChecker : MonoBehaviour
         {
             _grab.GrabObjectType = Define.GrabObjectType.None;
             isCheck = false;
+            other.transform.root.gameObject.layer = LayerMask.NameToLayer("Item");
             Debug.Log("DropItem");
         }
     }
