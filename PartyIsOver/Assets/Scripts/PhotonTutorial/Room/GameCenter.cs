@@ -68,6 +68,8 @@ public class GameCenter : MonoBehaviourPunCallbacks
 
     private void Init()
     {
+        Debug.Log("name: " + gameObject.name + ", ViewId: " + photonView.ViewID + ", IsMine?: " + photonView.IsMine);
+
         if (_controlPanel == null)
             _controlPanel = GameObject.Find("Control Panel");
 
@@ -77,42 +79,58 @@ public class GameCenter : MonoBehaviourPunCallbacks
         if (_buttonPlay == null)
             _buttonPlay = _controlPanel.transform.GetChild(1).GetComponent<Button>();
 
-        if (_playerNameText == null)
-            _playerNameText = _controlPanel.transform.GetChild(2).GetComponent<TMP_Text>();
+        
 
-        if (_playerStatusText == null)
-            _playerStatusText = _controlPanel.transform.GetChild(3).GetComponent<TMP_Text>();
+        if (photonView.IsMine)
+        {
+            Debug.Log("Init()");
+            
+            if (_playerNameText == null)
+                _playerNameText = _controlPanel.transform.GetChild(2).GetComponent<TMP_Text>();
 
-        if (_playerReadyCountText == null)
-            _playerReadyCountText = _controlPanel.transform.GetChild(4).GetComponent<TMP_Text>();
+            if (_playerStatusText == null)
+                _playerStatusText = _controlPanel.transform.GetChild(3).GetComponent<TMP_Text>();
+
+            if (_playerReadyCountText == null)
+                _playerReadyCountText = _controlPanel.transform.GetChild(4).GetComponent<TMP_Text>();
+
+        }
 
         // 방장은 Play 버튼만 표시, 이외는 Ready 버튼만 표시
-        if (PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.IsMasterClient && photonView.IsMine)
         {
             _buttonReady.gameObject.SetActive(false);
             _isReady = true;
 
             _buttonPlay.onClick.AddListener(PhotonManager.Instance.LoadArena);
             Debug.Log("방장 전용 플레이 버튼 이벤트 등록");
+
+            _playerReadyCountText.text = _playerReadyCount.ToString() + "/" + PhotonNetwork.CurrentRoom.PlayerCount.ToString();
+
+            ShowPlayerName();
+            TogglePlayerStatus();
         }
-        else
+        else if (!PhotonNetwork.IsMasterClient && photonView.IsMine)
         {
             _buttonPlay.gameObject.SetActive(false);
 
             _buttonReady.onClick.AddListener(Ready);
             Debug.Log("클라이언트 전용 준비 버튼 이벤트 등록");
+            
+            ShowPlayerName();
+            TogglePlayerStatus();
         }
 
-        
-            Debug.Log("Init(): 방장한테 나 들어왔다고 알려라");
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            Debug.Log("Init(): 방장에게 플레이어 입장 알림");
             photonView.RPC("PlayerEntered", RpcTarget.MasterClient);
-        
-        ShowPlayerName();
-        TogglePlayerStatus();
+        }
     }
 
     void ShowPlayerName()
     {
+        Debug.Log("name: " + gameObject.name + ", ViewId: " + photonView.ViewID + ", IsMine?: " + photonView.IsMine);
         Debug.Log("GetPlayerName(): " + PhotonNetwork.NickName);
         _playerNameText.text = PhotonNetwork.NickName;
     }
@@ -121,10 +139,14 @@ public class GameCenter : MonoBehaviourPunCallbacks
     {
         if (_isReady)
         {
+            Debug.Log("name: " + gameObject.name + ", ViewId: " + photonView.ViewID + ", IsMine?: " + photonView.IsMine);
+            Debug.Log("Ready");
             _playerStatusText.text = "ready";
         }
         else
         {
+            Debug.Log("name: " + gameObject.name + ", ViewId: " + photonView.ViewID + ", IsMine?: " + photonView.IsMine);
+            Debug.Log("Unready");
             _playerStatusText.text = "Unready";
         }
     }
@@ -137,12 +159,16 @@ public class GameCenter : MonoBehaviourPunCallbacks
     {
         if (!_isReady)
         {
+            Debug.Log("name: " + gameObject.name + ", ViewId: " + photonView.ViewID + ", IsMine?: " + photonView.IsMine);
+            Debug.Log("Alert Ready");
             _isReady = true;
             photonView.RPC("PlayerReady", RpcTarget.MasterClient, _isReady);
             TogglePlayerStatus();
         }
         else
         {
+            Debug.Log("name: " + gameObject.name + ", ViewId: " + photonView.ViewID + ", IsMine?: " + photonView.IsMine);
+            Debug.Log("Alert Unready");
             _isReady = false;
             photonView.RPC("PlayerReady", RpcTarget.MasterClient, _isReady);
             TogglePlayerStatus();
@@ -164,7 +190,11 @@ public class GameCenter : MonoBehaviourPunCallbacks
         Debug.Log("[only master] _playerReadyCount: " + _playerReadyCount);
         Debug.Log("[only master] PhotonNetwork.CurrentRoom.PlayerCount: " + PhotonNetwork.CurrentRoom.PlayerCount);
 
-        _playerReadyCountText.text = _playerReadyCount.ToString() + "/" + PhotonNetwork.CurrentRoom.PlayerCount.ToString();
+        if (photonView.IsMine)
+        {
+            _playerReadyCountText.text = _playerReadyCount.ToString() + "/" + PhotonNetwork.CurrentRoom.PlayerCount.ToString();
+        }
+
         photonView.RPC("UpdateReady", RpcTarget.Others, _playerReadyCount);
     }
 
@@ -192,8 +222,12 @@ public class GameCenter : MonoBehaviourPunCallbacks
         Debug.Log("[only master] _playerReadyCount: " + _playerReadyCount);
         Debug.Log("[only master] PhotonNetwork.CurrentRoom.PlayerCount: " + PhotonNetwork.CurrentRoom.PlayerCount);
 
-        _playerReadyCountText.text = _playerReadyCount.ToString() + "/" + PhotonNetwork.CurrentRoom.PlayerCount.ToString();
-        photonView.RPC("UpdateReady", RpcTarget.Others, _playerReadyCount);
+        if (photonView.IsMine)
+        {
+            _playerReadyCountText.text = _playerReadyCount.ToString() + "/" + PhotonNetwork.CurrentRoom.PlayerCount.ToString();
+        }
+
+        photonView.RPC("UpdateReady", RpcTarget.All, _playerReadyCount);
     }
 
     [PunRPC]
@@ -201,7 +235,7 @@ public class GameCenter : MonoBehaviourPunCallbacks
     {
         Debug.Log("name: " + gameObject.name + ", ViewId: " + photonView.ViewID + ", IsMine?: " + photonView.IsMine);
 
-        Debug.Log("[except master] PlayerReady");
+        Debug.Log("[except master] UpdateReady");
 
         if (_playerReadyCountText == null)
         {
@@ -213,7 +247,10 @@ public class GameCenter : MonoBehaviourPunCallbacks
         Debug.Log("[except master] _playerReadyCount: " + _playerReadyCount);
         Debug.Log("[except master] PhotonNetwork.CurrentRoom.PlayerCount: " + PhotonNetwork.CurrentRoom.PlayerCount);
 
-        _playerReadyCountText.text = _playerReadyCount.ToString() + "/" + PhotonNetwork.CurrentRoom.PlayerCount.ToString();
+        if (photonView.IsMine)
+        {
+            _playerReadyCountText.text = _playerReadyCount.ToString() + "/" + PhotonNetwork.CurrentRoom.PlayerCount.ToString();
+        }
     }
 
     #endregion

@@ -205,8 +205,8 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient)
         {
             Debug.Log("OnJoinedRoom(): Load Room Scene");
-            SceneManager.LoadScene(1);
-            //StartCoroutine(LoadAsyncScene("Room"));
+            //SceneManager.LoadScene(1);
+            StartCoroutine(LoadAsyncScene("Room"));
         }
         else
         {
@@ -219,7 +219,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         if (scene.name == "Room")
         {
             Debug.Log("Room Scene 로드 완료");
-            InstantiateGameCenter();
+            //InstantiateGameCenter();
         }
     }
 
