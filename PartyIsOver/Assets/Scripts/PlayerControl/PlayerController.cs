@@ -15,6 +15,7 @@ public class AniFrameData
     public enum RollForce
     {
         Zero,
+        ZeroReverse,
         Forward,
         Backward,
         Up,
@@ -472,6 +473,9 @@ public class PlayerController : MonoBehaviour
         {
             case RollForce.Zero:
                 _direction = new Vector3(0, 0, 0);
+                break;
+            case RollForce.ZeroReverse:
+                _direction = new Vector3(-1,-1,-1);
                 break;
             case RollForce.Forward:
                 _direction = -data.StandardRigidbodies[index].transform.up;
