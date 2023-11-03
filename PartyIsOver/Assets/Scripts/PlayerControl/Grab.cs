@@ -24,7 +24,7 @@ public class Grab : MonoBehaviourPun
     public bool _isGrabbing {get; private set;}
 
 
-    private GameObject _grabItem;
+    public GameObject GrabItem;
     private Rigidbody _leftHandRigid;
     private Rigidbody _rightHandRigid;
 
@@ -87,7 +87,7 @@ public class Grab : MonoBehaviourPun
     {
         _grabDelayTimer -= Time.deltaTime;
 
-        if (_grabItem != null)
+        if (GrabItem != null)
         {
             // 놓기
             if (Input.GetMouseButtonDown(1))
@@ -120,10 +120,10 @@ public class Grab : MonoBehaviourPun
                 switch (_itemType)
                 {
                     case 1:
-                        Item1(_grabItem);
+                        Item1(GrabItem);
                         break;
                     case 2:
-                        Item2(_grabItem);
+                        Item2(GrabItem);
                         break;
                 }
             }
@@ -135,14 +135,14 @@ public class Grab : MonoBehaviourPun
 
     public void GrabPose()
     {
-        if(_grabItem.GetComponent<Item>().ItemType == ItemType.Ranged)
+        if(GrabItem.GetComponent<Item>().ItemType == ItemType.Ranged)
         {
-            _jointLeft.targetPosition = _grabItem.GetComponent<Item>().TwoHandedPos.position;
-            _jointRight.targetPosition = _grabItem.GetComponent<Item>().OneHandedPos.position;
+            _jointLeft.targetPosition = GrabItem.GetComponent<Item>().TwoHandedPos.position;
+            _jointRight.targetPosition = GrabItem.GetComponent<Item>().OneHandedPos.position;
         }
-        else if(_grabItem.GetComponent<Item>().ItemType == ItemType.OneHanded)
+        else if(GrabItem.GetComponent<Item>().ItemType == ItemType.OneHanded)
         {
-            _jointRight.targetPosition = _grabItem.GetComponent<Item>().OneHandedPos.position;
+            _jointRight.targetPosition = GrabItem.GetComponent<Item>().OneHandedPos.position;
         }
 
         // 기본 잡기 자세
@@ -271,7 +271,7 @@ public class Grab : MonoBehaviourPun
         {
             _grabDelayTimer = 0.5f;
             GrabObjectType = GrabObjectType.None;
-            _grabItem = item.transform.root.gameObject;
+            GrabItem = item.transform.root.gameObject;
             return true;
         }
         return false;
@@ -353,14 +353,17 @@ public class Grab : MonoBehaviourPun
                     targetPosition = _jointChest.transform.forward;
                 break;
             case ItemType.Ranged:
-                targetPosition = -_jointChest.transform.up;
+                {
+                    item.GetComponent<Item>().Body.gameObject.SetActive(false);
+                    targetPosition = -_jointChest.transform.up;
+                }
                 break;
             case ItemType.Potion:
                     targetPosition = _jointChest.transform.forward;
                 break;
         }
 
-        //item.gameObject.layer = gameObject.layer;
+        item.gameObject.layer = gameObject.layer;
         item.transform.right = -targetPosition.normalized;
 
         GrabPose();
@@ -372,7 +375,7 @@ public class Grab : MonoBehaviourPun
         //잡기에 성공했을경우 관절 생성 및 일부 고정
         if (side == Side.Left )
         {
-            _grabJointLeft = _grabItem.AddComponent<FixedJoint>();
+            _grabJointLeft = GrabItem.AddComponent<FixedJoint>();
             _grabJointLeft.connectedBody = _leftHandRigid;
             _grabJointLeft.breakForce = 9001;
 
@@ -385,7 +388,7 @@ public class Grab : MonoBehaviourPun
         }
         else if (side == Side.Right )
         {
-            _grabJointRight = _grabItem.AddComponent<FixedJoint>();
+            _grabJointRight = GrabItem.AddComponent<FixedJoint>();
             _grabJointRight.connectedBody = _rightHandRigid;
             _grabJointRight.breakForce = 9001;
 
@@ -402,7 +405,7 @@ public class Grab : MonoBehaviourPun
         Destroy(_grabJointLeft);
         Destroy(_grabJointRight);
 
-        _grabItem = null;
+        GrabItem = null;
 
 
         // 관절 복구

@@ -111,6 +111,8 @@ public class PlayerController : MonoBehaviour
     public bool isMove;
     public bool isDuck;
     public bool isKickDuck;
+    public bool isAI = false;
+
 
     public bool leftGrab;
     public bool rightGrab;
@@ -139,7 +141,6 @@ public class PlayerController : MonoBehaviour
     private Vector3 _runVectorForce5 = new Vector3(0f, 0f, 0.4f);
     private Vector3 _runVectorForce10 = new Vector3(0f, 0f, 0.8f);
 
-    public bool isAI = false;
 
     Pose leftArmPose;
     Pose rightArmPose;
@@ -174,16 +175,9 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        if (isAI)
-            return;
-        
-        Managers.Input.MouseAction -= OnMouseEvent;
-        Managers.Input.MouseAction += OnMouseEvent;
-        Managers.Input.KeyboardAction -= OnKeyboardEvent;
-        Managers.Input.KeyboardAction += OnKeyboardEvent;
-
         _bodyHandler.BodySetup();
     }
+
 
     void Init()
     {
@@ -191,40 +185,29 @@ public class PlayerController : MonoBehaviour
         targetingHandler = GetComponent<TargetingHandler>();
         _actor = GetComponent<Actor>();
         _grab = GetComponent<Grab>();
-        
+
     }
 
-    void OnKeyboardEvent(Define.KeyboardEvent evt)
+    public void OnKeyboardEvent_Idle(Define.KeyboardEvent evt)
     {
-        if (_actor.actorState == ActorState.Debuff)
-            return;
-        OnKeyboardEvent_Idle(evt);
-        OnKeyboardEvent_Idle(evt); 
-    }
 
-    void OnKeyboardEvent_Idle(Define.KeyboardEvent evt)
-    {
-        
-       switch (evt)
+        switch (evt)
         {
             case Define.KeyboardEvent.Press:
                 {
-
                 }
                 break;
             case Define.KeyboardEvent.PointerDown:
                 {
-                    
                 }
                 break;
             case Define.KeyboardEvent.PointerUp:
                 {
-
                 }
                 break;
             case Define.KeyboardEvent.Click:
                 {
-                    if (Input.GetKeyUp(KeyCode.H)) 
+                    if (Input.GetKeyUp(KeyCode.H))
                         Heading();
                     if (Input.GetKeyUp(KeyCode.Space))
                     {
@@ -234,7 +217,7 @@ public class PlayerController : MonoBehaviour
                 break;
             case Define.KeyboardEvent.Charge:
                 {
-                    if(Input.GetKeyUp(KeyCode.R))
+                    if (Input.GetKeyUp(KeyCode.R))
                         MeowNyangPunch();
                 }
                 break;
@@ -246,40 +229,34 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void OnMouseEvent(Define.MouseEvent evt)
-    {
-        OnMouseEvent_Idle(evt);
-    }
 
-    void OnMouseEvent_Idle(Define.MouseEvent evt)
+    public void OnMouseEvent_Idle(Define.MouseEvent evt)
     {
         switch (evt)
         {
             case Define.MouseEvent.PointerDown:
                 {
-
                 }
                 break;
             case Define.MouseEvent.Press:
                 {
-                    if(Input.GetMouseButton(0))
+                    if (Input.GetMouseButton(0))
                         _grab.Grabbing();
                 }
                 break;
             case Define.MouseEvent.PointerUp:
                 {
-                    if(Input.GetMouseButtonUp(0))
+                    if (Input.GetMouseButtonUp(0))
                     {
-                        Debug.Log("f");
                         _grab.GrabReset();
                     }
                 }
                 break;
             case Define.MouseEvent.Click:
                 {
-                    if(Input.GetMouseButtonUp(0))
+                    if (Input.GetMouseButtonUp(0))
                         PunchAndGrab();
-                    if(!isGrounded && Input.GetMouseButtonUp(1))
+                    if (!isGrounded && Input.GetMouseButtonUp(1))
                     {
                         DropKickTrigger();
                     }
@@ -288,12 +265,16 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+
+
     private void FixedUpdate()
     {
         if (isAI)
             return;
 
         _moveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+
+
 
         if (_actor.actorState != Actor.ActorState.Jump && _actor.actorState != Actor.ActorState.Roll)
         {
