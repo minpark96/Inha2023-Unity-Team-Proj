@@ -19,6 +19,7 @@ public class InteractableObject : MonoBehaviour
         Shock = 9,
         PowerUp = 10,
         Slow = 11,
+        Burn = 12,
 
     }
 
