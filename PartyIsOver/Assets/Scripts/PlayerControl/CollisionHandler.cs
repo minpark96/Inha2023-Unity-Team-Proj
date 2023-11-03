@@ -98,10 +98,10 @@ public class CollisionHandler : MonoBehaviour
                     //actor.inputHandler.SetVibration(1f, 0f, 0.2f);
                     break;
                 case InteractableObject.Damage.Ice:
-                    num2 = 10f;
+                    num2 = 1f;
                     break;
                 case InteractableObject.Damage.ElectricShock:
-                    num2 = 10f;
+                    num2 = 1f;
                     break;
                 default:
                     contact.thisCollider.attachedRigidbody.AddForce(contact.normal * 10f, ForceMode.VelocityChange);
