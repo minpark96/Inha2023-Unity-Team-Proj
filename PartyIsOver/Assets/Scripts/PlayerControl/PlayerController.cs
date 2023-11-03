@@ -258,7 +258,7 @@ public class PlayerController : MonoBehaviour
                 break;
         }
     }
-    private bool _isAngularLocked = false;
+
     void RestoreOriginalMotions()
     {
         for (int i = 0; i < childJoints.Length; i++)
@@ -288,13 +288,11 @@ public class PlayerController : MonoBehaviour
         }
         int _frameCount;
         
-
         for (int i = 0; i < TestRready2.Length; i++)
         {
             _frameCount = i;
             AniAngleForce(TestRready2, _frameCount);
         }
-        
         yield return new WaitForSeconds(1f);
     }
 
@@ -361,28 +359,7 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    void Punch(Side side)
-    {
-        _punchTimer = 0;
-        while(_punchTimer < 10)
-        {
-            Debug.Log(_punchTimer);
-            _punchTimer += Time.deltaTime;
-            if (_punchTimer < 0.1f)
-            {
-                ArmActionReadying(side);
-            }
-            if (_punchTimer >= 0.2f && _punchTimer < 0.3f)
-            {
-                ArmActionPunching(side);
-            }
-            if (_punchTimer >= 0.3f && _punchTimer < 0.5f)
-            {
-                ArmActionPunchResetting(side);
-            }
-        }
-        
-    }
+
 
     private void Update()
     {
@@ -717,6 +694,7 @@ public class PlayerController : MonoBehaviour
 
     void PunchWithDelay(Side side, float delay)
     {
+        
         _isCoroutineRunning = true;
         Punch(side);
         //yield return new WaitForSeconds(delay);
@@ -749,11 +727,36 @@ public class PlayerController : MonoBehaviour
     ÁÖ¸Ô ÆÝÄ¡ Â÷Â¡ ¸ØÃß±â
      */
 
- /*   IEnumerator Punch(Side side)
+    /*   IEnumerator Punch(Side side)
+       {
+           _punchTimer = 0;
+           while(_punchTimer <10.0f)
+           {
+               _punchTimer += Time.deltaTime;
+               if (_punchTimer < 0.1f)
+               {
+                   ArmActionReadying(side);
+               }
+               if (_punchTimer >= 0.2f && _punchTimer < 0.3f)
+               {
+                   ArmActionPunching(side);
+                   yield return null;
+               }
+               if (_punchTimer >= 0.3f && _punchTimer < 0.5f)
+               {
+                   ArmActionPunchResetting(side);
+               }
+           }
+           _punchTimer = 0;
+           yield return null;
+       }*/
+
+    void Punch(Side side)
     {
         _punchTimer = 0;
-        while(_punchTimer <10.0f)
+        while (_punchTimer < 10)
         {
+            Debug.Log(_punchTimer);
             _punchTimer += Time.deltaTime;
             if (_punchTimer < 0.1f)
             {
@@ -762,16 +765,13 @@ public class PlayerController : MonoBehaviour
             if (_punchTimer >= 0.2f && _punchTimer < 0.3f)
             {
                 ArmActionPunching(side);
-                yield return null;
             }
             if (_punchTimer >= 0.3f && _punchTimer < 0.5f)
             {
                 ArmActionPunchResetting(side);
             }
         }
-        _punchTimer = 0;
-        yield return null;
-    }*/
+    }
 
     public void Stand()
     {
