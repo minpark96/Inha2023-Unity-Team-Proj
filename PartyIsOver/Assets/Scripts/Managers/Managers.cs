@@ -24,6 +24,11 @@ public class Managers : MonoBehaviourPun
     private void Awake()
     {
         Init();
+
+    }
+
+    void Start()
+    {
     }
 
     void Start()
