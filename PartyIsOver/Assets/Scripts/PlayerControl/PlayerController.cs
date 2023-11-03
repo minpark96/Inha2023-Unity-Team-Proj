@@ -8,6 +8,7 @@ using static Actor;
 using static AniFrameData;
 using UnityEditor.Experimental.GraphView;
 using static AniAngleData;
+using Unity.VisualScripting;
 
 [System.Serializable]
 public class AniFrameData
@@ -96,10 +97,12 @@ public class PlayerController : MonoBehaviour
     private Transform _cameraArm;
 
     [SerializeField]
-    private BodyHandler bodyHandler;
+    private BodyHandler _bodyHandler;
 
     [SerializeField]
     private TargetingHandler targetingHandler;
+
+    private Grab _grab;
 
     private Actor _actor;
 
@@ -115,11 +118,15 @@ public class PlayerController : MonoBehaviour
     public bool rightKick;
     public bool isStateChange;
     public float RSkillDelayTime = 5;
+    public float MaxSpeed = 10f;
+    private float _runSpeedOffset = 350f;
 
     private Vector3 _moveInput;
     private Vector3 _moveDir;
     private bool _isCoroutineRunning = false;
     private bool _isCoroutineDrop = false;
+
+    
 
     [SerializeField]
     private float _idleTimer = 0;
@@ -169,17 +176,22 @@ public class PlayerController : MonoBehaviour
     {
         if (isAI)
             return;
+        
         Managers.Input.MouseAction -= OnMouseEvent;
         Managers.Input.MouseAction += OnMouseEvent;
         Managers.Input.KeyboardAction -= OnKeyboardEvent;
         Managers.Input.KeyboardAction += OnKeyboardEvent;
+
+        _bodyHandler.BodySetup();
     }
 
     void Init()
     {
-        bodyHandler = GetComponent<BodyHandler>();
+        _bodyHandler = GetComponent<BodyHandler>();
         targetingHandler = GetComponent<TargetingHandler>();
         _actor = GetComponent<Actor>();
+        _grab = GetComponent<Grab>();
+        
     }
 
     void OnKeyboardEvent(Define.KeyboardEvent evt)
@@ -250,12 +262,17 @@ public class PlayerController : MonoBehaviour
                 break;
             case Define.MouseEvent.Press:
                 {
-
+                    if(Input.GetMouseButton(0))
+                        _grab.Grabbing();
                 }
                 break;
             case Define.MouseEvent.PointerUp:
                 {
-
+                    if(Input.GetMouseButtonUp(0))
+                    {
+                        Debug.Log("f");
+                        _grab.GrabReset();
+                    }
                 }
                 break;
             case Define.MouseEvent.Click:
@@ -278,7 +295,7 @@ public class PlayerController : MonoBehaviour
 
         _moveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
 
-        if (_actor.actorState != Actor.ActorState.Jump)
+        if (_actor.actorState != Actor.ActorState.Jump && _actor.actorState != Actor.ActorState.Roll)
         {
             if (_moveInput.magnitude == 0f)
             {
@@ -291,7 +308,11 @@ public class PlayerController : MonoBehaviour
             }
         }
         if (Input.GetMouseButton(2))
+        {
+            _actor.actorState = ActorState.Roll;
             ForwardRollTrigger();
+        }
+
     }
 
     private void Update()
@@ -396,6 +417,7 @@ public class PlayerController : MonoBehaviour
 
         }*/
         _rollTime = 0;
+        _actor.actorState = ActorState.Stand;
         yield return null;
     }
 
@@ -593,7 +615,7 @@ public class PlayerController : MonoBehaviour
     IEnumerator DropKick()
     {
         Vector3 zero = Vector3.zero;
-        Transform partTransform = bodyHandler.Hip.transform;
+        Transform partTransform = _bodyHandler.Hip.transform;
         Transform transform2 = null;
         int _frameCount = 0;
 
@@ -609,17 +631,17 @@ public class PlayerController : MonoBehaviour
                 _frameCount = i;
                 if( i== 0 )
                 {
-                    transform2 = bodyHandler.RightFoot.transform;
-                    bodyHandler.RightFoot.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-                    bodyHandler.RightThigh.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+                    transform2 = _bodyHandler.RightFoot.transform;
+                    _bodyHandler.RightFoot.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+                    _bodyHandler.RightThigh.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
                     zero = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
                     AniForce(DropAniData, _frameCount, zero);
                 }
                 else if( i== 1 )
                 {
-                    transform2 = bodyHandler.LeftFoot.transform;
-                    bodyHandler.LeftFoot.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-                    bodyHandler.LeftThigh.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+                    transform2 = _bodyHandler.LeftFoot.transform;
+                    _bodyHandler.LeftFoot.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+                    _bodyHandler.LeftThigh.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
                     //bodyHandler.RightFoot.PartInteractable.damageModifier = InteractableObject.Damage.Punch; 데미지
                     zero = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
                     AniForce(DropAniData, _frameCount, zero);
@@ -629,7 +651,7 @@ public class PlayerController : MonoBehaviour
                     AniForce(DropAniData, _frameCount);
                 }
             }
-            yield return new WaitForSeconds(2);
+            yield return new WaitForSeconds(1);
             //스프링 복구
             //RestoreSpringTrigger();
             _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
@@ -732,13 +754,13 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            AlignToVector(bodyHandler.Head.PartRigidbody, -bodyHandler.Head.transform.up, _moveDir + new Vector3(0f, 0.2f, 0f), 0.1f, 2.5f * 1);
-            AlignToVector(bodyHandler.Head.PartRigidbody, bodyHandler.Head.transform.forward, Vector3.up, 0.1f, 2.5f * 1);
-            AlignToVector(bodyHandler.Chest.PartRigidbody, -bodyHandler.Chest.transform.up, _moveDir, 0.1f, 4f * 1);
-            AlignToVector(bodyHandler.Chest.PartRigidbody, bodyHandler.Chest.transform.forward, Vector3.up, 0.1f, 4f * 1);
-            AlignToVector(bodyHandler.Waist.PartRigidbody, -bodyHandler.Waist.transform.up, _moveDir, 0.1f, 4f * 1);
-            AlignToVector(bodyHandler.Waist.PartRigidbody, bodyHandler.Waist.transform.forward, Vector3.up, 0.1f, 4f * 1);
-            AlignToVector(bodyHandler.Hip.PartRigidbody, bodyHandler.Hip.transform.forward, Vector3.up, 0.1f, 3f * 1);
+            AlignToVector(_bodyHandler.Head.PartRigidbody, -_bodyHandler.Head.transform.up, _moveDir + new Vector3(0f, 0.2f, 0f), 0.1f, 2.5f * 1);
+            AlignToVector(_bodyHandler.Head.PartRigidbody, _bodyHandler.Head.transform.forward, Vector3.up, 0.1f, 2.5f * 1);
+            AlignToVector(_bodyHandler.Chest.PartRigidbody, -_bodyHandler.Chest.transform.up, _moveDir, 0.1f, 4f * 1);
+            AlignToVector(_bodyHandler.Chest.PartRigidbody, _bodyHandler.Chest.transform.forward, Vector3.up, 0.1f, 4f * 1);
+            AlignToVector(_bodyHandler.Waist.PartRigidbody, -_bodyHandler.Waist.transform.up, _moveDir, 0.1f, 4f * 1);
+            AlignToVector(_bodyHandler.Waist.PartRigidbody, _bodyHandler.Waist.transform.forward, Vector3.up, 0.1f, 4f * 1);
+            AlignToVector(_bodyHandler.Hip.PartRigidbody, _bodyHandler.Hip.transform.forward, Vector3.up, 0.1f, 3f * 1);
         }
     }
 
@@ -766,7 +788,7 @@ public class PlayerController : MonoBehaviour
     
     public void ArmActionPunching(Side side)
     {
-        Transform partTransform = bodyHandler.Chest.transform;
+        Transform partTransform = _bodyHandler.Chest.transform;
         Transform transform2 = null;
         Vector3 zero = Vector3.zero;
         int _frameCount = 0;
@@ -779,10 +801,10 @@ public class PlayerController : MonoBehaviour
                     for(int i = 0;i< LeftPunchingAniData.Length; i++)
                     {
                         _frameCount = i;
-                        transform2 = bodyHandler.LeftHand.transform;
-                        bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
-                        bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-                        bodyHandler.LeftForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+                        transform2 = _bodyHandler.LeftHand.transform;
+                        _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+                        _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+                        _bodyHandler.LeftForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
                         zero = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
                         AniForce(LeftPunchingAniData, _frameCount, zero);
                     }
@@ -791,10 +813,10 @@ public class PlayerController : MonoBehaviour
                     for (int i = 0; i < RightPunchingAniData.Length; i++)
                     {
                         _frameCount = i;
-                        transform2 = bodyHandler.RightHand.transform;
-                        bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
-                        bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-                        bodyHandler.RightForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+                        transform2 = _bodyHandler.RightHand.transform;
+                        _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+                        _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+                        _bodyHandler.RightForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
                         zero = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
                         AniForce(RightPunchingAniData, _frameCount, zero);
                     }
@@ -806,7 +828,7 @@ public class PlayerController : MonoBehaviour
 
     public void ArmActionPunchResetting(Side side)
     {
-        Transform partTransform = bodyHandler.Chest.transform;
+        Transform partTransform = _bodyHandler.Chest.transform;
         Vector3 vector = Vector3.zero;
         int _frameCount = 0;
         switch (side)
@@ -815,10 +837,10 @@ public class PlayerController : MonoBehaviour
                 for(int i = 0; i< LeftPunchResettingAniData.Length;i++)
                 {
                     _frameCount = i;
-                    vector = bodyHandler.Chest.transform.right / 2f;
-                    bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
-                    bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
-                    bodyHandler.LeftForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+                    vector = _bodyHandler.Chest.transform.right / 2f;
+                    _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+                    _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+                    _bodyHandler.LeftForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
                     AniAngleForce(LeftPunchResettingAniData, _frameCount, vector);
                 }
                 break;
@@ -826,10 +848,10 @@ public class PlayerController : MonoBehaviour
                 for (int i = 0; i < RightPunchResettingAniData.Length; i++)
                 {
                     _frameCount = i;
-                    vector = -bodyHandler.Chest.transform.right / 2f;
-                    bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
-                    bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
-                    bodyHandler.RightForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+                    vector = -_bodyHandler.Chest.transform.right / 2f;
+                    _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+                    _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+                    _bodyHandler.RightForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
                     AniAngleForce(RightPunchResettingAniData, _frameCount, vector);
                 }
                 break;
@@ -947,7 +969,7 @@ public class PlayerController : MonoBehaviour
     
     private void RunCyclePoseLeg(Side side, Pose pose)
     {
-        Transform hip =bodyHandler.Hip.transform;
+        Transform hip =_bodyHandler.Hip.transform;
         Transform thighTrans = null;
         Transform legTrans = null;
 
@@ -958,19 +980,19 @@ public class PlayerController : MonoBehaviour
         switch (side)
         {
             case Side.Left:
-                thighTrans = bodyHandler.LeftThigh.transform;
-                legTrans = bodyHandler.LeftLeg.transform;
+                thighTrans = _bodyHandler.LeftThigh.transform;
+                legTrans = _bodyHandler.LeftLeg.transform;
                 
-                thighRigid = bodyHandler.LeftThigh.GetComponent<Rigidbody>();
-                legRigid = bodyHandler.LeftLeg.PartRigidbody;
-                footRigid = bodyHandler.LeftFoot.PartRigidbody;
+                thighRigid = _bodyHandler.LeftThigh.GetComponent<Rigidbody>();
+                legRigid = _bodyHandler.LeftLeg.PartRigidbody;
+                footRigid = _bodyHandler.LeftFoot.PartRigidbody;
                 break;
             case Side.Right:
-                thighTrans = bodyHandler.RightThigh.transform;
-                legTrans = bodyHandler.RightLeg.transform;
-                thighRigid = bodyHandler.RightThigh.PartRigidbody;
-                legRigid = bodyHandler.RightLeg.PartRigidbody;
-                footRigid = bodyHandler.RightFoot.PartRigidbody;
+                thighTrans = _bodyHandler.RightThigh.transform;
+                legTrans = _bodyHandler.RightLeg.transform;
+                thighRigid = _bodyHandler.RightThigh.PartRigidbody;
+                legRigid = _bodyHandler.RightLeg.PartRigidbody;
+                footRigid = _bodyHandler.RightFoot.PartRigidbody;
                 break;
         }
  
@@ -1004,8 +1026,8 @@ public class PlayerController : MonoBehaviour
                 AlignToVector(legRigid, -legTrans.forward, -_moveDir * 2f, 0.1f, 2f * _applyedForce);
                 if (isDuck)
                 {
-                    bodyHandler.Hip.PartRigidbody.AddForce(_runVectorForce2, ForceMode.VelocityChange);
-                    bodyHandler.Ball.PartRigidbody.AddForce(-_runVectorForce2 , ForceMode.VelocityChange);
+                    _bodyHandler.Hip.PartRigidbody.AddForce(_runVectorForce2, ForceMode.VelocityChange);
+                    _bodyHandler.Ball.PartRigidbody.AddForce(-_runVectorForce2 , ForceMode.VelocityChange);
                     footRigid.AddForce(-_runVectorForce2 , ForceMode.VelocityChange);
                 }
                 break;
@@ -1015,7 +1037,7 @@ public class PlayerController : MonoBehaviour
     private void RunCyclePoseArm(Side side, Pose pose)
     {
         Vector3 vector = Vector3.zero;
-        Transform partTransform = bodyHandler.Chest.transform;
+        Transform partTransform = _bodyHandler.Chest.transform;
         Transform transform = null;
         Transform transform2 = null;
         Rigidbody rigidbody = null;
@@ -1027,20 +1049,20 @@ public class PlayerController : MonoBehaviour
         switch (side)
         {
             case Side.Left:
-                transform = bodyHandler.LeftArm.transform;
-                transform2 = bodyHandler.LeftForarm.transform;
-                rigidbody = bodyHandler.LeftArm.PartRigidbody;
-                rigidbody2 = bodyHandler.LeftForarm.PartRigidbody;
-                rigidbody3 = bodyHandler.LeftHand.PartRigidbody;
-                vector = bodyHandler.Chest.transform.right;
+                transform = _bodyHandler.LeftArm.transform;
+                transform2 = _bodyHandler.LeftForarm.transform;
+                rigidbody = _bodyHandler.LeftArm.PartRigidbody;
+                rigidbody2 = _bodyHandler.LeftForarm.PartRigidbody;
+                rigidbody3 = _bodyHandler.LeftHand.PartRigidbody;
+                vector = _bodyHandler.Chest.transform.right;
                 break;
             case Side.Right:
-                transform = bodyHandler.RightArm.transform;
-                transform2 = bodyHandler.RightForarm.transform;
-                rigidbody = bodyHandler.RightArm.PartRigidbody;
-                rigidbody2 = bodyHandler.RightForarm.PartRigidbody;
-                rigidbody3 = bodyHandler.RightHand.PartRigidbody;
-                vector = -bodyHandler.Chest.transform.right;
+                transform = _bodyHandler.RightArm.transform;
+                transform2 = _bodyHandler.RightForarm.transform;
+                rigidbody = _bodyHandler.RightArm.PartRigidbody;
+                rigidbody2 = _bodyHandler.RightForarm.PartRigidbody;
+                rigidbody3 = _bodyHandler.RightHand.PartRigidbody;
+                vector = -_bodyHandler.Chest.transform.right;
                 break;
         }
         if (!isDuck && !isKickDuck && !isRun)
@@ -1102,23 +1124,29 @@ public class PlayerController : MonoBehaviour
         Vector3 lookRight = new Vector3(_cameraArm.right.x, 0f, _cameraArm.right.z).normalized;
         _moveDir = lookForward * _moveInput.z + lookRight * _moveInput.x;
 
-        bodyHandler.Chest.PartRigidbody.AddForce((_runVectorForce10 + _moveDir) , ForceMode.VelocityChange);
-        bodyHandler.Hip.PartRigidbody.AddForce((-_runVectorForce5 + -_moveDir), ForceMode.VelocityChange);
+        _bodyHandler.Chest.PartRigidbody.AddForce((_runVectorForce10 + _moveDir) , ForceMode.VelocityChange);
+        _bodyHandler.Hip.PartRigidbody.AddForce((-_runVectorForce5 + -_moveDir), ForceMode.VelocityChange);
 
-        AlignToVector(bodyHandler.Chest.PartRigidbody, -bodyHandler.Chest.transform.up, _moveDir / 4f + -Vector3.up, 0.1f, 4f * _applyedForce);
-        AlignToVector(bodyHandler.Chest.PartRigidbody, bodyHandler.Chest.transform.forward, Vector3.up, 0.1f, 8f * _applyedForce);
-        AlignToVector(bodyHandler.Waist.PartRigidbody, -bodyHandler.Waist.transform.up, _moveDir / 4f + -Vector3.up, 0.1f, 4f * _applyedForce);
-        AlignToVector(bodyHandler.Waist.PartRigidbody, bodyHandler.Chest.transform.forward, Vector3.up, 0.1f, 8f * _applyedForce);
-        AlignToVector(bodyHandler.Hip.PartRigidbody, -bodyHandler.Hip.transform.up, _moveDir, 0.1f, 8f * _applyedForce);
-        AlignToVector(bodyHandler.Hip.PartRigidbody, bodyHandler.Hip.transform.forward, Vector3.up, 0.1f, 8f * _applyedForce);
+        AlignToVector(_bodyHandler.Chest.PartRigidbody, -_bodyHandler.Chest.transform.up, _moveDir / 4f + -Vector3.up, 0.1f, 4f * _applyedForce);
+        AlignToVector(_bodyHandler.Chest.PartRigidbody, _bodyHandler.Chest.transform.forward, Vector3.up, 0.1f, 8f * _applyedForce);
+        AlignToVector(_bodyHandler.Waist.PartRigidbody, -_bodyHandler.Waist.transform.up, _moveDir / 4f + -Vector3.up, 0.1f, 4f * _applyedForce);
+        AlignToVector(_bodyHandler.Waist.PartRigidbody, _bodyHandler.Chest.transform.forward, Vector3.up, 0.1f, 8f * _applyedForce);
+        AlignToVector(_bodyHandler.Hip.PartRigidbody, -_bodyHandler.Hip.transform.up, _moveDir, 0.1f, 8f * _applyedForce);
+        AlignToVector(_bodyHandler.Hip.PartRigidbody, _bodyHandler.Hip.transform.forward, Vector3.up, 0.1f, 8f * _applyedForce);
+
+        
 
         if (isRun)
         {
-            _hips.AddForce(_moveDir.normalized * RunSpeed * Time.deltaTime * 1.5f);
+            _hips.AddForce(_moveDir.normalized * RunSpeed * _runSpeedOffset*  Time.deltaTime * 1.5f);
+            if (_hips.velocity.magnitude > MaxSpeed)
+                _hips.velocity = _hips.velocity.normalized * MaxSpeed * 1.5f;
         }
         else
         {
-            _hips.AddForce(_moveDir.normalized * RunSpeed * Time.deltaTime);
+            _hips.AddForce(_moveDir.normalized * RunSpeed * _runSpeedOffset * Time.deltaTime);
+            if (_hips.velocity.magnitude > MaxSpeed)
+                _hips.velocity = _hips.velocity.normalized * MaxSpeed;
         }
     }
 
@@ -1173,5 +1201,13 @@ public class PlayerController : MonoBehaviour
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
         }
+    }
+
+    public bool MoveInputCheck()
+    {
+        if (_moveInput.magnitude == 0)
+            return false;
+        else
+            return true;
     }
 }
