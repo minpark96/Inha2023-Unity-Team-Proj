@@ -35,6 +35,13 @@ public class Actor : MonoBehaviour
         Strong =        0x10000000,  // ºÒ²ö
     }
 
+    public float HeadMultiple = 1.5f;
+    public float ArmMultiple = 0.8f;
+    public float HandMultiple = 0.8f;
+    public float LegMultiple = 0.8f;
+    public float DamageReduction = 0f;
+    public float PlayerAttackPoint = 1f;
+
 
     public ActorState actorState = ActorState.Stand;
     public ActorState lastActorState = ActorState.Run;

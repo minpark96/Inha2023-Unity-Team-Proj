@@ -29,7 +29,6 @@ public class Define
     }
 
 
-
     public enum ItemType
     {
         OneHanded,

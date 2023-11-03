@@ -11876,6 +11876,12 @@ MonoBehaviour:
   StatusHandler: {fileID: 0}
   BodyHandler: {fileID: 0}
   PlayerController: {fileID: 0}
+  HeadMultiple: 1.5
+  ArmMultiple: 0.8
+  HandMultiple: 0.8
+  LegMultiple: 0.8
+  DamageReduction: 0
+  PlayerAttackPoint: 1
   actorState: 4
   lastActorState: 8
   debuffState: 0
@@ -12215,6 +12221,7 @@ MonoBehaviour:
   rightKick: 0
   isStateChange: 0
   RSkillDelayTime: 5
+  MaxSpeed: 10
   _idleTimer: 0
   isAI: 1
   ForceStrength: 100
@@ -21122,6 +21129,12 @@ MonoBehaviour:
   StatusHandler: {fileID: 0}
   BodyHandler: {fileID: 0}
   PlayerController: {fileID: 0}
+  HeadMultiple: 1.5
+  ArmMultiple: 0.8
+  HandMultiple: 0.8
+  LegMultiple: 0.8
+  DamageReduction: 0
+  PlayerAttackPoint: 1
   actorState: 4
   lastActorState: 8
   debuffState: 0
@@ -21428,7 +21441,7 @@ MonoBehaviour:
     - 0.1
     AngleStability:
     - 2.5
-  RunSpeed: 35000
+  RunSpeed: 100
   _hips: {fileID: 147539449947577187}
   _cameraArm: {fileID: 8674840137374380114}
   _bodyHandler: {fileID: 0}
@@ -21444,6 +21457,7 @@ MonoBehaviour:
   rightKick: 0
   isStateChange: 0
   RSkillDelayTime: 5
+  MaxSpeed: 10
   _idleTimer: 0
   isAI: 0
   ForceStrength: 100

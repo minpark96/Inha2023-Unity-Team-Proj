@@ -8,6 +8,7 @@ using static Actor;
 using static AniFrameData;
 using UnityEditor.Experimental.GraphView;
 using static AniAngleData;
+using Unity.VisualScripting;
 
 [System.Serializable]
 public class AniFrameData
@@ -117,11 +118,15 @@ public class PlayerController : MonoBehaviour
     public bool rightKick;
     public bool isStateChange;
     public float RSkillDelayTime = 5;
+    public float MaxSpeed = 10f;
+    private float _runSpeedOffset = 350f;
 
     private Vector3 _moveInput;
     private Vector3 _moveDir;
     private bool _isCoroutineRunning = false;
     private bool _isCoroutineDrop = false;
+
+    
 
     [SerializeField]
     private float _idleTimer = 0;
@@ -1128,13 +1133,19 @@ public class PlayerController : MonoBehaviour
         AlignToVector(_bodyHandler.Hip.PartRigidbody, -_bodyHandler.Hip.transform.up, _moveDir, 0.1f, 8f * _applyedForce);
         AlignToVector(_bodyHandler.Hip.PartRigidbody, _bodyHandler.Hip.transform.forward, Vector3.up, 0.1f, 8f * _applyedForce);
 
+        
+
         if (isRun)
         {
-            _hips.AddForce(_moveDir.normalized * RunSpeed * Time.deltaTime * 1.5f);
+            _hips.AddForce(_moveDir.normalized * RunSpeed * _runSpeedOffset*  Time.deltaTime * 1.5f);
+            if (_hips.velocity.magnitude > MaxSpeed)
+                _hips.velocity = _hips.velocity.normalized * MaxSpeed * 1.5f;
         }
         else
         {
-            _hips.AddForce(_moveDir.normalized * RunSpeed * Time.deltaTime);
+            _hips.AddForce(_moveDir.normalized * RunSpeed * _runSpeedOffset * Time.deltaTime);
+            if (_hips.velocity.magnitude > MaxSpeed)
+                _hips.velocity = _hips.velocity.normalized * MaxSpeed;
         }
     }
 
