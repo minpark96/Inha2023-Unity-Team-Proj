@@ -16,6 +16,7 @@ public class AniFrameData
     public enum RollForce
     {
         Zero,
+        ZeroReverse,
         Forward,
         Backward,
         Up,
@@ -45,8 +46,8 @@ public class AniAngleData
     public Transform[] TargetDirection;
     public AniAngle[] ActionAngleDirections;
     public AniAngle[] TargetAngleDirections;
-    public float[] AnglePowerValues;
     public float[] AngleStability;
+    public float[] AnglePowerValues;
 
 }
 
@@ -88,6 +89,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     public AniAngleData[] HeadingAngleAniData;
 
+    [SerializeField]
+    public AniFrameData[] TestRready1;
+
+    [SerializeField]
+    public AniAngleData[] TestRready2;
+
     [Header("앞뒤 속도")]
     public float RunSpeed;
 
@@ -126,8 +133,6 @@ public class PlayerController : MonoBehaviour
     private bool _isCoroutineRunning = false;
     private bool _isCoroutineDrop = false;
 
-    
-
     [SerializeField]
     private float _idleTimer = 0;
     private float _punchTimer = 0;
@@ -135,9 +140,12 @@ public class PlayerController : MonoBehaviour
     private float _cycleSpeed;
     private float _applyedForce = 800f;
     private float _rollTime = 0;
-    private Vector3 _runVectorForce2 = new Vector3(0f,0f,0.2f);
+    private Vector3 _runVectorForce2 = new Vector3(0f, 0f, 0.2f);
     private Vector3 _runVectorForce5 = new Vector3(0f, 0f, 0.4f);
     private Vector3 _runVectorForce10 = new Vector3(0f, 0f, 0.8f);
+
+    private List<float> _xPosSpringAry = new List<float>();
+    private List<float> _yzPosSpringAry = new List<float>();
 
     public bool isAI = false;
 
@@ -176,7 +184,6 @@ public class PlayerController : MonoBehaviour
     {
         if (isAI)
             return;
-        
         Managers.Input.MouseAction -= OnMouseEvent;
         Managers.Input.MouseAction += OnMouseEvent;
         Managers.Input.KeyboardAction -= OnKeyboardEvent;
@@ -185,27 +192,38 @@ public class PlayerController : MonoBehaviour
         _bodyHandler.BodySetup();
     }
 
+    private ConfigurableJoint[] childJoints;
+    private ConfigurableJointMotion[] originalYMotions;
+    private ConfigurableJointMotion[] originalZMotions;
+
     void Init()
     {
         _bodyHandler = GetComponent<BodyHandler>();
         targetingHandler = GetComponent<TargetingHandler>();
         _actor = GetComponent<Actor>();
+
+        childJoints = GetComponentsInChildren<ConfigurableJoint>();
+        originalYMotions = new ConfigurableJointMotion[childJoints.Length];
+        originalZMotions = new ConfigurableJointMotion[childJoints.Length];
+
+        // 원래의 angularXMotion 값을 저장
+        for (int i = 0; i < childJoints.Length; i++)
+        {
+            originalYMotions[i] = childJoints[i].angularYMotion;
+            originalZMotions[i] = childJoints[i].angularZMotion;
+        }
         _grab = GetComponent<Grab>();
-        
     }
 
     void OnKeyboardEvent(Define.KeyboardEvent evt)
     {
-        if (_actor.actorState == ActorState.Debuff)
-            return;
         OnKeyboardEvent_Idle(evt);
-        OnKeyboardEvent_Idle(evt); 
     }
 
     void OnKeyboardEvent_Idle(Define.KeyboardEvent evt)
     {
-        
-       switch (evt)
+
+        switch (evt)
         {
             case Define.KeyboardEvent.Press:
                 {
@@ -214,7 +232,8 @@ public class PlayerController : MonoBehaviour
                 break;
             case Define.KeyboardEvent.PointerDown:
                 {
-                    
+                    if (Input.GetKeyUp(KeyCode.R))
+                        ForceRready();
                 }
                 break;
             case Define.KeyboardEvent.PointerUp:
@@ -224,7 +243,7 @@ public class PlayerController : MonoBehaviour
                 break;
             case Define.KeyboardEvent.Click:
                 {
-                    if (Input.GetKeyUp(KeyCode.H)) 
+                    if (Input.GetKeyUp(KeyCode.H))
                         Heading();
                     if (Input.GetKeyUp(KeyCode.Space))
                     {
@@ -234,16 +253,55 @@ public class PlayerController : MonoBehaviour
                 break;
             case Define.KeyboardEvent.Charge:
                 {
-                    if(Input.GetKeyUp(KeyCode.R))
+                    RestoreOriginalMotions();
+                    if (Input.GetKeyUp(KeyCode.R))
                         MeowNyangPunch();
                 }
                 break;
             case Define.KeyboardEvent.Hold:
                 {
                     //중일때 확인 ex 이펙트 출현하는 코드를 넣어주면 기모아지는 것 첨 될듯
+                    StartCoroutine(Rready());
                 }
                 break;
         }
+    }
+
+    void RestoreOriginalMotions()
+    {
+        for (int i = 0; i < childJoints.Length; i++)
+        {
+            childJoints[i].angularYMotion = originalYMotions[i];
+            childJoints[i].angularZMotion = originalZMotions[i];
+        }
+    }
+
+    void ForceRready()
+    {
+        int _frameCount;
+
+        for (int i = 0; i < TestRready1.Length; i++)
+        {
+            _frameCount = i;
+            AniForce(TestRready1, _frameCount);
+        }
+    }
+
+    IEnumerator Rready()
+    {
+        for (int i = 0; i < childJoints.Length; i++)
+        {
+            childJoints[i].angularYMotion = ConfigurableJointMotion.Locked;
+            childJoints[i].angularZMotion = ConfigurableJointMotion.Locked;
+        }
+        int _frameCount;
+
+        for (int i = 0; i < TestRready2.Length; i++)
+        {
+            _frameCount = i;
+            AniAngleForce(TestRready2, _frameCount);
+        }
+        yield return new WaitForSeconds(1f);
     }
 
     void OnMouseEvent(Define.MouseEvent evt)
@@ -262,13 +320,13 @@ public class PlayerController : MonoBehaviour
                 break;
             case Define.MouseEvent.Press:
                 {
-                    if(Input.GetMouseButton(0))
+                    if (Input.GetMouseButton(0))
                         _grab.Grabbing();
                 }
                 break;
             case Define.MouseEvent.PointerUp:
                 {
-                    if(Input.GetMouseButtonUp(0))
+                    if (Input.GetMouseButtonUp(0))
                     {
                         Debug.Log("f");
                         _grab.GrabReset();
@@ -277,12 +335,12 @@ public class PlayerController : MonoBehaviour
                 break;
             case Define.MouseEvent.Click:
                 {
-                    if(Input.GetMouseButtonUp(0))
+                    if (Input.GetMouseButtonUp(0))
                         PunchAndGrab();
-                    if(!isGrounded && Input.GetMouseButtonUp(1))
-                    {
+                    if (!isGrounded && Input.GetMouseButtonUp(1))
                         DropKickTrigger();
-                    }
+                    if (Input.GetMouseButtonUp(2))
+                        ForwardRollTrigger();
                 }
                 break;
         }
@@ -312,7 +370,6 @@ public class PlayerController : MonoBehaviour
             _actor.actorState = ActorState.Roll;
             ForwardRollTrigger();
         }
-
     }
 
     private void Update()
@@ -345,11 +402,29 @@ public class PlayerController : MonoBehaviour
     }*/
     #endregion
 
+    private void TestCase()
+    {
+        StartCoroutine(testcase());
+    }
+
+    IEnumerator testcase()
+    {
+        int _frameCount;
+
+        for (int i = 0; i < TestRready2.Length; i++)
+        {
+            _frameCount = i;
+            AniAngleForce(TestRready2, _frameCount);
+        }
+
+        yield return null;
+    }
+
     private void ForwardRollTrigger()
     {
         StartCoroutine(ForwardRollDelay(2f));
     }
-    
+
     IEnumerator ForwardRollDelay(float delay)
     {
         StartCoroutine(ForwardRoll());
@@ -358,10 +433,8 @@ public class PlayerController : MonoBehaviour
 
         //다시 회복
         //RestoreSpringTrigger();
-        _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
+        //_actor.StatusHandler.StartCoroutine("RestoreBodySpring");
     }
-
-    public float ForceStrength = 10.0f;
 
     IEnumerator ForwardRoll()
     {
@@ -370,12 +443,11 @@ public class PlayerController : MonoBehaviour
         //스프링 풀기
         //ResetBodySpring();
         _actor.StatusHandler.StartCoroutine("ResetBodySpring");
-
-        while(_rollTime < 1.2f)
+        while (_rollTime < 10.2f)
         {
-            _rollTime += Time.deltaTime;
+            _rollTime += Time.fixedDeltaTime;
 
-            if(_rollTime <= 0.1f)
+            if (_rollTime <= 0.1f)
             {
                 _frameCount = 0;
                 AniForce(RollAniData, _frameCount);
@@ -385,146 +457,127 @@ public class PlayerController : MonoBehaviour
                 _frameCount = 1;
                 AniForce(RollAniData, _frameCount);
             }
-            if( _rollTime >= 0.5f && _rollTime < 0.8f)
+            if (_rollTime >= 0.5f && _rollTime < 0.8f)
             {
                 _frameCount = 2;
                 AniForce(RollAniData, _frameCount);
             }
-            if(_rollTime >=0.8f && _rollTime < 1f)
+            if (_rollTime >= 0.8f && _rollTime < 1f)
             {
-                _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
                 _frameCount = 3;
                 AniForce(RollAniData, _frameCount);
             }
-            if(_rollTime>=1f &&  _rollTime <1.2f)
+            if (_rollTime >= 1f && _rollTime < 10.2f)
             {
+                _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
                 _frameCount = 4;
                 AniForce(RollAniData, _frameCount);
             }
         }
-        
-       /* for(int i =0; i< RollAniData.Length; i++)
-        {
-            _frameCount = i;
-            AniForce(RollAniData, _frameCount);
-
-            if(i == 3)
-            {
-                //스프링 복구
-                //RestoreSpringTrigger();
-                _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
-            }
-
-        }*/
         _rollTime = 0;
         _actor.actorState = ActorState.Stand;
         yield return null;
     }
 
-    void AniForce(AniFrameData[] _forceSpeed,int _elementCount)
+    Vector3 GetForceDirection(AniFrameData data, int index)
     {
-        if (_forceSpeed[_elementCount].StandardRigidbodies[0] == null)
-        {
-            for (int i = 0; i < _forceSpeed[_elementCount].ActionRigidbodies.Length; i++)
-            {
-                RollForce _rollState = _forceSpeed[_elementCount].ForceDirections[i];
+        RollForce _rollState = data.ForceDirections[index];
+        Vector3 _direction;
 
-                switch (_rollState)
-                {
-                    case RollForce.Zero:
-                        _direction = new Vector3(0, 0, 0);
-                        break;
-                    case RollForce.Forward:
-                        _direction = -_forceSpeed[_elementCount].ActionRigidbodies[i].transform.up;
-                        break;
-                    case RollForce.Backward:
-                        _direction = _forceSpeed[_elementCount].ActionRigidbodies[i].transform.up;
-                        break;
-                    case RollForce.Up:
-                        _direction = _forceSpeed[_elementCount].ActionRigidbodies[i].transform.forward;
-                        break;
-                    case RollForce.Down:
-                        _direction = -_forceSpeed[_elementCount].ActionRigidbodies[i].transform.forward;
-                        break;
-                }
+        switch (_rollState)
+        {
+            case RollForce.Zero:
+                _direction = new Vector3(0, 0, 0);
+                break;
+            case RollForce.ZeroReverse:
+                _direction = new Vector3(-1, -1, -1);
+                break;
+            case RollForce.Forward:
+                _direction = -data.StandardRigidbodies[index].transform.up;
+                break;
+            case RollForce.Backward:
+                _direction = data.StandardRigidbodies[index].transform.up;
+                break;
+            case RollForce.Up:
+                _direction = data.StandardRigidbodies[index].transform.forward;
+                break;
+            case RollForce.Down:
+                _direction = -data.StandardRigidbodies[index].transform.forward;
+                break;
+            default:
+                _direction = Vector3.zero;
+                break;
+        }
+        return _direction;
+    }
+
+    void AniForce(AniFrameData[] _forceSpeed, int _elementCount)
+    {
+        for (int i = 0; i < _forceSpeed[_elementCount].StandardRigidbodies.Length; i++)
+        {
+            Vector3 _direction = GetForceDirection(_forceSpeed[_elementCount], i);
+            _forceSpeed[_elementCount].ActionRigidbodies[i].AddForce(_direction * _forceSpeed[_elementCount].ForcePowerValues[i], ForceMode.Impulse);
+        }
+    }
+
+    void AniForce(AniFrameData[] _forceSpeed, int _elementCount, Vector3 _dir)
+    {
+        for (int i = 0; i < _forceSpeed[_elementCount].StandardRigidbodies.Length; i++)
+        {
+            if (_forceSpeed[_elementCount].ForceDirections[i] == RollForce.Zero || _forceSpeed[_elementCount].ForceDirections[i] == RollForce.ZeroReverse)
+                _forceSpeed[_elementCount].ActionRigidbodies[i].AddForce(_dir * _forceSpeed[_elementCount].ForcePowerValues[i], ForceMode.Impulse);
+            else
+            {
+                Vector3 _direction = GetForceDirection(_forceSpeed[_elementCount], i);
                 _forceSpeed[_elementCount].ActionRigidbodies[i].AddForce(_direction * _forceSpeed[_elementCount].ForcePowerValues[i], ForceMode.Impulse);
             }
         }
-        else
-            Debug.Log("StandardRigidbodies가 None이어야 합니다.");
     }
 
-    void AniForce(AniFrameData[] _forceSpeed, int _elementCount,Vector3 _dir)
+    Vector3 GetAngleDirection(AniAngle _angleState, Transform _Transformdirection)
     {
-        if (_forceSpeed[_elementCount].StandardRigidbodies[0] == null)
+        Vector3 _direction;
+
+        switch (_angleState)
         {
-            if(_forceSpeed[_elementCount].ForceDirections[0] == 0)
-            {
-                for (int i = 0; i < _forceSpeed[_elementCount].ActionRigidbodies.Length; i++)
-                {
-                    _forceSpeed[_elementCount].ActionRigidbodies[i].AddForce(_dir * _forceSpeed[_elementCount].ForcePowerValues[i], ForceMode.Impulse);
-                }
-            }
+            case AniAngle.Zero:
+                _direction = Vector3.zero;
+                break;
+            case AniAngle.Forward:
+                _direction = -_Transformdirection.transform.up;
+                break;
+            case AniAngle.Backward:
+                _direction = _Transformdirection.transform.up;
+                break;
+            case AniAngle.Up:
+                _direction = _Transformdirection.transform.forward;
+                break;
+            case AniAngle.Down:
+                _direction = -_Transformdirection.transform.forward;
+                break;
+            case AniAngle.Left:
+                _direction = -_Transformdirection.transform.right;
+                break;
+            case AniAngle.Right:
+                _direction = _Transformdirection.transform.right;
+                break;
+            default:
+                _direction = Vector3.zero;
+                break;
         }
-        else
-            Debug.Log("StandardRigidbodies가 None이어야 합니다.");
+
+        return _direction;
     }
 
-    void AniAngleForce(AniAngleData[] _aniAngleData,int _elementCount)
+    void AniAngleForce(AniAngleData[] _aniAngleData, int _elementCount)
     {
-        for (int i = 0; i < _aniAngleData[_elementCount].ActionDirection.Length; i++)
+        for (int i = 0; i < _aniAngleData[_elementCount].StandardRigidbodies.Length; i++)
         {
-            AniAngle _angleState = _aniAngleData[_elementCount].ActionAngleDirections[i];
-            AniAngle _targetangleState = _aniAngleData[_elementCount].TargetAngleDirections[i];
+            Vector3 _angleDirection = GetAngleDirection(_aniAngleData[_elementCount].ActionAngleDirections[i],
+                _aniAngleData[_elementCount].ActionDirection[i]);
+            Vector3 _targetDirection = GetAngleDirection(_aniAngleData[_elementCount].TargetAngleDirections[i],
+                _aniAngleData[_elementCount].TargetDirection[i]);
 
-            switch (_angleState)
-            {
-                case AniAngle.Zero:
-                    _angleDirection = new Vector3(0, 0, 0);
-                    break;
-                case AniAngle.Forward:
-                    _angleDirection = -_aniAngleData[_elementCount].ActionDirection[i].transform.up;
-                    break;
-                case AniAngle.Backward:
-                    _angleDirection = _aniAngleData[_elementCount].ActionDirection[i].transform.up;
-                    break;
-                case AniAngle.Up:
-                    _angleDirection = _aniAngleData[_elementCount].ActionDirection[i].transform.forward;
-                    break;
-                case AniAngle.Down:
-                    _angleDirection = -_aniAngleData[_elementCount].ActionDirection[i].transform.forward;
-                    break;
-                case AniAngle.Left:
-                    _angleDirection = -_aniAngleData[_elementCount].ActionDirection[i].transform.right;
-                    break;
-                case AniAngle.Right:
-                    _angleDirection = _aniAngleData[_elementCount].ActionDirection[i].transform.right;
-                    break;
-            }
-            switch (_targetangleState)
-            {
-                case AniAngle.Zero:
-                    _targetDirection = new Vector3(0, 0, 0);
-                    break;
-                case AniAngle.Forward:
-                    _targetDirection = -_aniAngleData[_elementCount].TargetDirection[i].transform.up;
-                    break;
-                case AniAngle.Backward:
-                    _targetDirection = _aniAngleData[_elementCount].TargetDirection[i].transform.up;
-                    break;
-                case AniAngle.Up:
-                    _targetDirection = _aniAngleData[_elementCount].TargetDirection[i].transform.forward;
-                    break;
-                case AniAngle.Down:
-                    _targetDirection = -_aniAngleData[_elementCount].TargetDirection[i].transform.forward;
-                    break;
-                case AniAngle.Left:
-                    _targetDirection = -_aniAngleData[_elementCount].TargetDirection[i].transform.right;
-                    break;
-                case AniAngle.Right:
-                    _targetDirection = _aniAngleData[_elementCount].TargetDirection[i].transform.right;
-                    break;
-            }
             AlignToVector(_aniAngleData[_elementCount].StandardRigidbodies[i], _angleDirection, _targetDirection,
                 _aniAngleData[_elementCount].AngleStability[i], _aniAngleData[_elementCount].AnglePowerValues[i]);
         }
@@ -532,59 +585,13 @@ public class PlayerController : MonoBehaviour
 
     void AniAngleForce(AniAngleData[] _aniAngleData, int _elementCount, Vector3 _vector)
     {
-        for (int i = 0; i < _aniAngleData[_elementCount].ActionDirection.Length; i++)
+        for (int i = 0; i < _aniAngleData[_elementCount].StandardRigidbodies.Length; i++)
         {
-            AniAngle _angleState = _aniAngleData[_elementCount].ActionAngleDirections[i];
-            AniAngle _targetangleState = _aniAngleData[_elementCount].TargetAngleDirections[i];
+            Vector3 _angleDirection = GetAngleDirection(_aniAngleData[_elementCount].ActionAngleDirections[i],
+                _aniAngleData[_elementCount].ActionDirection[i]);
+            Vector3 _targetDirection = GetAngleDirection(_aniAngleData[_elementCount].TargetAngleDirections[i],
+                _aniAngleData[_elementCount].TargetDirection[i]);
 
-            switch (_angleState)
-            {
-                case AniAngle.Zero:
-                    _angleDirection = new Vector3(0, 0, 0);
-                    break;
-                case AniAngle.Forward:
-                    _angleDirection = -_aniAngleData[_elementCount].ActionDirection[i].transform.up;
-                    break;
-                case AniAngle.Backward:
-                    _angleDirection = _aniAngleData[_elementCount].ActionDirection[i].transform.up;
-                    break;
-                case AniAngle.Up:
-                    _angleDirection = _aniAngleData[_elementCount].ActionDirection[i].transform.forward;
-                    break;
-                case AniAngle.Down:
-                    _angleDirection = -_aniAngleData[_elementCount].ActionDirection[i].transform.forward;
-                    break;
-                case AniAngle.Left:
-                    _angleDirection = -_aniAngleData[_elementCount].ActionDirection[i].transform.right;
-                    break;
-                case AniAngle.Right:
-                    _angleDirection = _aniAngleData[_elementCount].ActionDirection[i].transform.right;
-                    break;
-            }
-            switch (_targetangleState)
-            {
-                case AniAngle.Zero:
-                    _targetDirection = new Vector3(0, 0, 0);
-                    break;
-                case AniAngle.Forward:
-                    _targetDirection = -_aniAngleData[_elementCount].TargetDirection[i].transform.up;
-                    break;
-                case AniAngle.Backward:
-                    _targetDirection = _aniAngleData[_elementCount].TargetDirection[i].transform.up;
-                    break;
-                case AniAngle.Up:
-                    _targetDirection = _aniAngleData[_elementCount].TargetDirection[i].transform.forward;
-                    break;
-                case AniAngle.Down:
-                    _targetDirection = -_aniAngleData[_elementCount].TargetDirection[i].transform.forward;
-                    break;
-                case AniAngle.Left:
-                    _targetDirection = -_aniAngleData[_elementCount].TargetDirection[i].transform.right;
-                    break;
-                case AniAngle.Right:
-                    _targetDirection = _aniAngleData[_elementCount].TargetDirection[i].transform.right;
-                    break;
-            }
             AlignToVector(_aniAngleData[_elementCount].StandardRigidbodies[i], _angleDirection, _vector + _targetDirection,
                 _aniAngleData[_elementCount].AngleStability[i], _aniAngleData[_elementCount].AnglePowerValues[i]);
         }
@@ -597,7 +604,7 @@ public class PlayerController : MonoBehaviour
 
     private void DropKickTrigger()
     {
-        if(!_isCoroutineDrop)
+        if (!_isCoroutineDrop)
             StartCoroutine(DropKickDelay(2f));
     }
 
@@ -621,15 +628,14 @@ public class PlayerController : MonoBehaviour
 
         if (!isGrounded)
         {
-            for(int i =0; i < DropAniData.Length; i++)
+            for (int i = 0; i < DropAniData.Length; i++)
             {
                 //스프링 풀기
                 //ResetBodySpring();
                 _actor.StatusHandler.StartCoroutine("ResetBodySpring");
 
-
                 _frameCount = i;
-                if( i== 0 )
+                if (i == 0)
                 {
                     transform2 = _bodyHandler.RightFoot.transform;
                     _bodyHandler.RightFoot.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
@@ -637,7 +643,7 @@ public class PlayerController : MonoBehaviour
                     zero = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
                     AniForce(DropAniData, _frameCount, zero);
                 }
-                else if( i== 1 )
+                else if (i == 1)
                 {
                     transform2 = _bodyHandler.LeftFoot.transform;
                     _bodyHandler.LeftFoot.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
@@ -651,7 +657,7 @@ public class PlayerController : MonoBehaviour
                     AniForce(DropAniData, _frameCount);
                 }
             }
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(2);
             //스프링 복구
             //RestoreSpringTrigger();
             _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
@@ -664,7 +670,7 @@ public class PlayerController : MonoBehaviour
     {
         StartCoroutine(MeowNyangPunchDelay());
         StartCoroutine(RDelay());
-    } 
+    }
     IEnumerator MeowNyangPunchDelay()
     {
         int _punchcount = 0;
@@ -672,12 +678,12 @@ public class PlayerController : MonoBehaviour
         {
             if (_readySide == Side.Left)
             {
-                StartCoroutine(Punch(Side.Left));
+                Punch(Side.Left);
                 _readySide = Side.Right;
             }
             else
             {
-                 StartCoroutine(Punch(Side.Right));
+                Punch(Side.Right);
                 _readySide = Side.Left;
             }
             yield return new WaitForSeconds(0.2f);
@@ -690,14 +696,22 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    IEnumerator PunchWithDelay(Side side, float delay)
+    /*    IEnumerator PunchWithDelay(Side side, float delay)
+        {
+            _isCoroutineRunning = true;
+            Punch(side);
+            yield return new WaitForSeconds(delay);
+            _isCoroutineRunning = false;
+        }*/
+
+    void PunchWithDelay(Side side, float delay)
     {
+
         _isCoroutineRunning = true;
-        StartCoroutine(Punch(side));
-        yield return new WaitForSeconds(delay);
+        Punch(side);
+        //yield return new WaitForSeconds(delay);
         _isCoroutineRunning = false;
     }
-
     private void PunchAndGrab()
     {
         targetingHandler.SearchTarget();
@@ -705,21 +719,56 @@ public class PlayerController : MonoBehaviour
         {
             if (_readySide == Side.Left)
             {
-                StartCoroutine(PunchWithDelay(Side.Left, 0.5f));
+                PunchWithDelay(Side.Left, 0.5f);
                 _readySide = Side.Right;
             }
             else
             {
-                StartCoroutine(PunchWithDelay(Side.Right, 0.5f));
+                PunchWithDelay(Side.Right, 0.5f);
                 _readySide = Side.Left;
             }
         }
     }
 
-    IEnumerator Punch(Side side)
+    /*
+    
+    요구 사항 
+    HP 잔량 체크 스테미너
+    키 입력시 스킬 동작 시간 빼기
+
+    주먹 펀치 차징 멈추기
+     */
+
+    /*   IEnumerator Punch(Side side)
+       {
+           _punchTimer = 0;
+           while(_punchTimer <10.0f)
+           {
+               _punchTimer += Time.deltaTime;
+               if (_punchTimer < 0.1f)
+               {
+                   ArmActionReadying(side);
+               }
+               if (_punchTimer >= 0.2f && _punchTimer < 0.3f)
+               {
+                   ArmActionPunching(side);
+                   yield return null;
+               }
+               if (_punchTimer >= 0.3f && _punchTimer < 0.5f)
+               {
+                   ArmActionPunchResetting(side);
+               }
+           }
+           _punchTimer = 0;
+           yield return null;
+       }*/
+
+    void Punch(Side side)
     {
-        while(_punchTimer <= 0.5f)
+        _punchTimer = 0;
+        while (_punchTimer < 10)
         {
+            Debug.Log(_punchTimer);
             _punchTimer += Time.deltaTime;
             if (_punchTimer < 0.1f)
             {
@@ -728,20 +777,17 @@ public class PlayerController : MonoBehaviour
             if (_punchTimer >= 0.2f && _punchTimer < 0.3f)
             {
                 ArmActionPunching(side);
-                yield return null;
             }
             if (_punchTimer >= 0.3f && _punchTimer < 0.5f)
             {
                 ArmActionPunchResetting(side);
             }
         }
-        _punchTimer = 0f;
-        yield return null;
     }
 
     public void Stand()
     {
-        if(isStateChange)
+        if (isStateChange)
         {
             _idleTimer = 0f;
         }
@@ -785,7 +831,7 @@ public class PlayerController : MonoBehaviour
                 break;
         }
     }
-    
+
     public void ArmActionPunching(Side side)
     {
         Transform partTransform = _bodyHandler.Chest.transform;
@@ -798,7 +844,7 @@ public class PlayerController : MonoBehaviour
             switch (side)
             {
                 case Side.Left:
-                    for(int i = 0;i< LeftPunchingAniData.Length; i++)
+                    for (int i = 0; i < LeftPunchingAniData.Length; i++)
                     {
                         _frameCount = i;
                         transform2 = _bodyHandler.LeftHand.transform;
@@ -834,7 +880,7 @@ public class PlayerController : MonoBehaviour
         switch (side)
         {
             case Side.Left:
-                for(int i = 0; i< LeftPunchResettingAniData.Length;i++)
+                for (int i = 0; i < LeftPunchResettingAniData.Length; i++)
                 {
                     _frameCount = i;
                     vector = _bodyHandler.Chest.transform.right / 2f;
@@ -857,7 +903,7 @@ public class PlayerController : MonoBehaviour
                 break;
         }
     }
-    
+
     public void Jump()
     {
         if (isStateChange)
@@ -866,16 +912,16 @@ public class PlayerController : MonoBehaviour
             int _frameCount;
             if (_moveDir != Vector3.zero)
             {
-                for (int i = 0;i< MoveForceJumpAniData.Length;i++)
+                for (int i = 0; i < MoveForceJumpAniData.Length; i++)
                 {
                     _frameCount = i;
                     //AniForce(MoveForceJumpAniData, _frameCount, _moveDir); 헤드 추가 해주면 됨 values = 6
                     AniForce(MoveForceJumpAniData, _frameCount, Vector3.up);
-                    if(i == 2)
+                    if (i == 2)
                         AniForce(MoveForceJumpAniData, _frameCount, Vector3.down);
                 }
             }
-            for(int i = 0; i < MoveAngleJumpAniData.Length;i++)
+            for (int i = 0; i < MoveAngleJumpAniData.Length; i++)
             {
                 _frameCount = i;
                 AniAngleForce(MoveAngleJumpAniData, _frameCount, _moveDir + new Vector3(0, 0.2f, 0f));
@@ -890,17 +936,17 @@ public class PlayerController : MonoBehaviour
     private void Heading()
     {
         int _frameCount;
-        for (int i =0; i< HeadingAniData.Length ;i++) 
+        for (int i = 0; i < HeadingAniData.Length; i++)
         {
             _frameCount = i;
             AniForce(HeadingAniData, _frameCount);
         }
-        for(int i = 0; i< HeadingAngleAniData.Length ;i++)
+        for (int i = 0; i < HeadingAngleAniData.Length; i++)
         {
             _frameCount = i;
-            if(i == 0) 
+            if (i == 0)
                 AniAngleForce(HeadingAngleAniData, _frameCount, _moveDir + new Vector3(0f, 0.2f, 0f));
-            if(i == 1)
+            if (i == 1)
                 AniAngleForce(HeadingAngleAniData, _frameCount, _moveDir + new Vector3(0f, 0.2f, 0f));
 
         }
@@ -966,10 +1012,10 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    
+
     private void RunCyclePoseLeg(Side side, Pose pose)
     {
-        Transform hip =_bodyHandler.Hip.transform;
+        Transform hip = _bodyHandler.Hip.transform;
         Transform thighTrans = null;
         Transform legTrans = null;
 
@@ -982,7 +1028,7 @@ public class PlayerController : MonoBehaviour
             case Side.Left:
                 thighTrans = _bodyHandler.LeftThigh.transform;
                 legTrans = _bodyHandler.LeftLeg.transform;
-                
+
                 thighRigid = _bodyHandler.LeftThigh.GetComponent<Rigidbody>();
                 legRigid = _bodyHandler.LeftLeg.PartRigidbody;
                 footRigid = _bodyHandler.LeftFoot.PartRigidbody;
@@ -995,7 +1041,7 @@ public class PlayerController : MonoBehaviour
                 footRigid = _bodyHandler.RightFoot.PartRigidbody;
                 break;
         }
- 
+
         switch (pose)
         {
             case Pose.Bent:
@@ -1018,7 +1064,7 @@ public class PlayerController : MonoBehaviour
                 {
                     thighRigid.AddForce(hip.up * 2f * _applyedForce);
                     footRigid.AddForce(-hip.up * 2f * _applyedForce);
-                    footRigid.AddForce(-_runVectorForce2 , ForceMode.VelocityChange);
+                    footRigid.AddForce(-_runVectorForce2, ForceMode.VelocityChange);
                 }
                 break;
             case Pose.Behind:
@@ -1027,8 +1073,8 @@ public class PlayerController : MonoBehaviour
                 if (isDuck)
                 {
                     _bodyHandler.Hip.PartRigidbody.AddForce(_runVectorForce2, ForceMode.VelocityChange);
-                    _bodyHandler.Ball.PartRigidbody.AddForce(-_runVectorForce2 , ForceMode.VelocityChange);
-                    footRigid.AddForce(-_runVectorForce2 , ForceMode.VelocityChange);
+                    _bodyHandler.Ball.PartRigidbody.AddForce(-_runVectorForce2, ForceMode.VelocityChange);
+                    footRigid.AddForce(-_runVectorForce2, ForceMode.VelocityChange);
                 }
                 break;
         }
@@ -1124,7 +1170,7 @@ public class PlayerController : MonoBehaviour
         Vector3 lookRight = new Vector3(_cameraArm.right.x, 0f, _cameraArm.right.z).normalized;
         _moveDir = lookForward * _moveInput.z + lookRight * _moveInput.x;
 
-        _bodyHandler.Chest.PartRigidbody.AddForce((_runVectorForce10 + _moveDir) , ForceMode.VelocityChange);
+        _bodyHandler.Chest.PartRigidbody.AddForce((_runVectorForce10 + _moveDir), ForceMode.VelocityChange);
         _bodyHandler.Hip.PartRigidbody.AddForce((-_runVectorForce5 + -_moveDir), ForceMode.VelocityChange);
 
         AlignToVector(_bodyHandler.Chest.PartRigidbody, -_bodyHandler.Chest.transform.up, _moveDir / 4f + -Vector3.up, 0.1f, 4f * _applyedForce);
@@ -1134,11 +1180,9 @@ public class PlayerController : MonoBehaviour
         AlignToVector(_bodyHandler.Hip.PartRigidbody, -_bodyHandler.Hip.transform.up, _moveDir, 0.1f, 8f * _applyedForce);
         AlignToVector(_bodyHandler.Hip.PartRigidbody, _bodyHandler.Hip.transform.forward, Vector3.up, 0.1f, 8f * _applyedForce);
 
-        
-
         if (isRun)
         {
-            _hips.AddForce(_moveDir.normalized * RunSpeed * _runSpeedOffset*  Time.deltaTime * 1.5f);
+            _hips.AddForce(_moveDir.normalized * RunSpeed * _runSpeedOffset * Time.deltaTime * 1.5f);
             if (_hips.velocity.magnitude > MaxSpeed)
                 _hips.velocity = _hips.velocity.normalized * MaxSpeed * 1.5f;
         }
@@ -1202,7 +1246,6 @@ public class PlayerController : MonoBehaviour
             Cursor.lockState = CursorLockMode.None;
         }
     }
-
     public bool MoveInputCheck()
     {
         if (_moveInput.magnitude == 0)

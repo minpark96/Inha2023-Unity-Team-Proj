@@ -31,10 +31,6 @@ public class Managers : MonoBehaviourPun
     {
     }
 
-    void Start()
-    {
-    }
-
     void Update()
     {
         _input.OnUpdate();
