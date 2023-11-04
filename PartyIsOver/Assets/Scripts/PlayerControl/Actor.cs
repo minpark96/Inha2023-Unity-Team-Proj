@@ -7,7 +7,7 @@ public class Actor : MonoBehaviour
     public StatusHandler StatusHandler;
     public BodyHandler BodyHandler;
     public PlayerController PlayerController;
-    
+    public Grab Grab;
 
     public enum ActorState
     {
@@ -60,6 +60,7 @@ public class Actor : MonoBehaviour
         BodyHandler = GetComponent<BodyHandler>();
         StatusHandler = GetComponent<StatusHandler>();
         PlayerController = GetComponent<PlayerController>();
+        Grab = GetComponent<Grab>();
     }
    
 
