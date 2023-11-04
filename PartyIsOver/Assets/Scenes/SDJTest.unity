@@ -1026,6 +1026,15 @@ MonoBehaviour:
   actor: {fileID: 0}
   invulnerable: 0
   _health: 0
+  _stamina: 0
+  _powerUpTime: 3
+  _burnTime: 3
+  _burnDamage: 1
+  _exhaustedTime: 5
+  _slowTime: 3
+  _freezeTime: 3
+  _shockTime: 3
+  _stunTime: 3
 --- !u!114 &83486394
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21454,20 +21463,23 @@ MonoBehaviour:
     ForcePowerValues:
     - 30
     - 50
-    - 200
+    - 100
   - StandardRigidbodies:
     - {fileID: 2594633235711231716}
-    - {fileID: 2595093891940388792}
-    - {fileID: 2595093891940388792}
+    - {fileID: 2595146148450866934}
+    - {fileID: 2594666722529992205}
+    - {fileID: 2594666722529992205}
     ActionRigidbodies:
     - {fileID: 2594633235711231716}
-    - {fileID: 2595093891940388792}
-    - {fileID: 2595093891940388792}
-    ForceDirections: 020000000400000002000000
+    - {fileID: 2595146148450866934}
+    - {fileID: 2594666722529992205}
+    - {fileID: 2594666722529992205}
+    ForceDirections: 02000000020000000400000002000000
     ForcePowerValues:
     - 100
     - 20
     - 100
+    - 200
   - StandardRigidbodies:
     - {fileID: 2594633235711231716}
     - {fileID: 2595093891940388792}
@@ -21552,7 +21564,7 @@ MonoBehaviour:
     AngleStability:
     - 0.01
     AnglePowerValues:
-    - 20000
+    - 20
   LeftPunchAniData:
   - StandardRigidbodies:
     - {fileID: 2594584007050088136}
@@ -21577,7 +21589,7 @@ MonoBehaviour:
     AngleStability:
     - 0.01
     AnglePowerValues:
-    - 20000
+    - 20
   RightPunchingAniData:
   - StandardRigidbodies:
     - {fileID: 2594283914657201982}
@@ -21806,6 +21818,15 @@ MonoBehaviour:
   actor: {fileID: 0}
   invulnerable: 0
   _health: 0
+  _stamina: 0
+  _powerUpTime: 3
+  _burnTime: 3
+  _burnDamage: 1
+  _exhaustedTime: 5
+  _slowTime: 3
+  _freezeTime: 3
+  _shockTime: 3
+  _stunTime: 3
 --- !u!114 &2653568215181255331
 MonoBehaviour:
   m_ObjectHideFlags: 0

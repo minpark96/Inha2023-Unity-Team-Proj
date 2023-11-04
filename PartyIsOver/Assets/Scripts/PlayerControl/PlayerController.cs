@@ -788,7 +788,7 @@ public class PlayerController : MonoBehaviour
     /*
     
     요구 사항 
-    HP 잔량 체크 스테미너
+    HP 잔량 체크 스테미너 - O
     키 입력시 스킬 동작 시간 빼기
 
     주먹 펀치 차징 멈추기
