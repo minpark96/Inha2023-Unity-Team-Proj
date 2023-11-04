@@ -1,58 +1,36 @@
 using ExitGames.Client.Photon;
 using Photon.Pun;
+using Photon.Realtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using static Define;
 
 public class GameCenter : MonoBehaviourPunCallbacks
 {
     #region Private Serializable Fields
 
     [SerializeField]
-    private GameObject _controlPanel;
-
-    [Tooltip("플레이어 이름 표시 텍스트")]
-    [SerializeField]
-    private TMP_Text _playerNameText;
-
-    [Tooltip("플레이어 준비 상태 표시 텍스트")]
-    [SerializeField]
-    private TMP_Text _playerStatusText;
-
-    [Tooltip("준비 완료 플레이어 수 표시 텍스트")]
-    [SerializeField]
-    private TMP_Text _playerReadyCountText;
-
-    [Tooltip("준비/해제 버튼, 클라이언트 전용")]
-    [SerializeField]
-    Button _buttonReady;
-
-    [Tooltip("시작 버튼, 방장 전용")]
-    [SerializeField]
-    Button _buttonPlay;
+    private RoomUI _roomUI;
 
     #endregion
 
     #region Private Fields
-
-    bool _isReady = false;
 
     #endregion
 
     #region Public Fields
 
     public static GameObject LocalGameCenterInstance = null;
-    public int _playerReadyCount = 1;
 
     #endregion
 
     #region Private Methods
 
-    private void Awake()
+    void Awake()
     {
         if (photonView.IsMine)
         {
@@ -61,129 +39,110 @@ public class GameCenter : MonoBehaviourPunCallbacks
         DontDestroyOnLoad(this.gameObject);
     }
 
-    private void Start()
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        Init();
+        if (scene.name == "Arena")
+        {
+            Debug.Log("Arena Scene 로드 완료 후 초기화");
+            //InitArenaUI();
+        }
     }
 
-    private void Init()
+    void Start()
     {
-        Debug.Log("name: " + gameObject.name + ", ViewId: " + photonView.ViewID + ", IsMine?: " + photonView.IsMine);
+        InitRoomUI();
+    }
 
-        // UI 초기화 부분 나중에 뺄 것, Init에서 초기화 하면 안됨
-        if (_controlPanel == null)
-            _controlPanel = GameObject.Find("Control Panel");
+    void InitRoomUI()
+    {
+        Debug.Log("InitRoomUI() / name: " + gameObject.name + ", ViewId: " + photonView.ViewID + ", IsMine?: " + photonView.IsMine);
 
-        if (_buttonReady == null)
-            _buttonReady = _controlPanel.transform.GetChild(0).GetComponent<Button>();
+        _roomUI = GameObject.Find("Control Panel").transform.GetComponent<RoomUI>();
 
-        if (_buttonPlay == null)
-            _buttonPlay = _controlPanel.transform.GetChild(1).GetComponent<Button>();
-            
-        if (_playerNameText == null)
-            _playerNameText = _controlPanel.transform.GetChild(2).GetComponent<TMP_Text>();
-
-        if (_playerStatusText == null)
-            _playerStatusText = _controlPanel.transform.GetChild(3).GetComponent<TMP_Text>();
-
-        if (_playerReadyCountText == null)
-            _playerReadyCountText = _controlPanel.transform.GetChild(4).GetComponent<TMP_Text>();
-
-        // 방장은 Play 버튼만 표시, 이외는 Ready 버튼만 표시
         if (PhotonNetwork.IsMasterClient)
         {
-            _buttonReady.gameObject.SetActive(false);
-            _isReady = true;
-            _buttonPlay.interactable = false;
-
-            if (photonView.IsMine)
-            {
-                _buttonPlay.onClick.AddListener(PhotonManager.Instance.LoadArena);
-                Debug.Log("방장 전용 플레이 버튼 이벤트 등록");
-            }
-
-            _playerReadyCountText.text = _playerReadyCount.ToString() + "/" + PhotonNetwork.CurrentRoom.PlayerCount.ToString();
+            _roomUI.IsReady = true;
+            _roomUI.SetButtonActive("ready", false);
+            _roomUI.AddButtonEvent("play", PhotonManager.Instance.LoadArena);
+            _roomUI.UpdateReadyCountText(_roomUI.IsReady);
+            _roomUI.SetButtonInteractable("play", false);
+            _roomUI.SetPlayerStatus("Wait for Other Players...");
         }
         else
         {
-            _buttonPlay.gameObject.SetActive(false);
-
-            _buttonReady.onClick.AddListener(Ready);
-            Debug.Log("클라이언트 전용 준비 버튼 이벤트 등록");
-            Debug.Log("Init(): 방장에게 플레이어 입장 알림");
-            photonView.RPC("PlayerEntered", RpcTarget.MasterClient);
+            _roomUI.SetButtonActive("play", false);
+            _roomUI.AddButtonEvent("ready", Ready);
+            _roomUI.SetPlayerStatus("Unready");
+            photonView.RPC("EnteredRoom", RpcTarget.MasterClient);
         }
-
-        ShowPlayerName();
-        TogglePlayerStatus();
     }
 
-    void ShowPlayerName()
+    void UpdateMasterStatus()
     {
-        Debug.Log("name: " + gameObject.name + ", ViewId: " + photonView.ViewID + ", IsMine?: " + photonView.IsMine);
-        Debug.Log("GetPlayerName(): " + PhotonNetwork.NickName);
-        _playerNameText.text = PhotonNetwork.NickName;
-    }
-
-    void TogglePlayerStatus()
-    {
-        Debug.Log("name: " + gameObject.name + ", ViewId: " + photonView.ViewID + ", IsMine?: " + photonView.IsMine);
-        if (_isReady)
+        if (_roomUI.PlayerReadyCount == PhotonNetwork.CurrentRoom.PlayerCount)
         {
-            Debug.Log("Ready");
-            _playerStatusText.text = "ready";
+            _roomUI.SetPlayerStatus("All Players Ready!");
+            _roomUI.SetButtonInteractable("play", true);
         }
         else
         {
-            Debug.Log("Unready");
-            _playerStatusText.text = "Unready";
+            _roomUI.SetPlayerStatus("Wait for Other Players...");
+            _roomUI.SetButtonInteractable("play", false);
         }
     }
-    void UpdatePlayerReadyCountText()
+
+    void Ready()
     {
-        Debug.Log("UpdatePlayerReadyCountText()");
-        Debug.Log("name: " + gameObject.name + ", ViewId: " + photonView.ViewID + ", IsMine?: " + photonView.IsMine);
-        if (_playerReadyCountText == null)
-            Debug.Log("_playerReadyCountText is null");
-        if (photonView.IsMine)
-            _playerReadyCountText.text = _playerReadyCount.ToString() + "/" + PhotonNetwork.CurrentRoom.PlayerCount.ToString();
+        _roomUI.IsReady = !_roomUI.IsReady;
+        _roomUI.SetPlayerStatus();
+        photonView.RPC("PlayerReady", RpcTarget.MasterClient, _roomUI.IsReady);
     }
 
     #endregion
 
-    #region Public Methods
+    #region MonoBehaviourPunCallbacks Methods
 
-    public void Ready()
+    public override void OnEnable()
     {
-        _isReady = !_isReady;
-        photonView.RPC("PlayerReady", RpcTarget.MasterClient, _isReady);
-        TogglePlayerStatus();
+        Debug.Log("GameCenter OnEnable");
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    public override void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    #endregion
+
+    #region PunRPC Methods
+
+    [PunRPC]
+    void EnteredRoom()
+    {
+        Debug.Log("[master received] EnteredRoom(void)");
+
+        _roomUI.UpdateReadyCountText(_roomUI.PlayerReadyCount);
+        UpdateMasterStatus();
+        photonView.RPC("UpdateCount", RpcTarget.Others, _roomUI.PlayerReadyCount);
     }
 
     [PunRPC]
-    public void PlayerEntered()
+    void UpdateCount(int count)
     {
-        Debug.Log("[only master] PlayerEntered");
-        UpdatePlayerReadyCountText();
-        photonView.RPC("UpdateReady", RpcTarget.Others, _playerReadyCount);
+        Debug.Log("[except master received] UpdateCount(int): " + count);
+
+        _roomUI.UpdateReadyCountText(count);
     }
 
     [PunRPC]
-    public void PlayerReady(bool isReady)
-    { 
-        Debug.Log("[only master] PlayerReady");
-        _playerReadyCount += (isReady ? 1 : -1);
-        UpdatePlayerReadyCountText();
-        photonView.RPC("UpdateReady", RpcTarget.Others, _playerReadyCount);
-        _buttonPlay.interactable = (_playerReadyCount == PhotonNetwork.CurrentRoom.PlayerCount);
-    }
-
-    [PunRPC]
-    public void UpdateReady(int playerReadyCount)
+    void PlayerReady(bool isReady)
     {
-        Debug.Log("[except master] UpdateReady()");
-        _playerReadyCount = playerReadyCount;
-        UpdatePlayerReadyCountText();
+        Debug.Log("[master received] PlayerReady(void): " + isReady);
+
+        _roomUI.UpdateReadyCountText(isReady);
+        UpdateMasterStatus();
+        photonView.RPC("UpdateCount", RpcTarget.Others, _roomUI.PlayerReadyCount);
     }
 
     #endregion

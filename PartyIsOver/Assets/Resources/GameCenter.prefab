@@ -45,13 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6f63ac4c9d10a648938e213e6549e8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _controlPanel: {fileID: 0}
-  _playerNameText: {fileID: 0}
-  _playerStatusText: {fileID: 0}
-  _playerReadyCountText: {fileID: 0}
-  _buttonReady: {fileID: 0}
-  _buttonPlay: {fileID: 0}
-  _playerReadyCount: 1
+  _roomUI: {fileID: 0}
 --- !u!114 &-6182396937385309685
 MonoBehaviour:
   m_ObjectHideFlags: 0
