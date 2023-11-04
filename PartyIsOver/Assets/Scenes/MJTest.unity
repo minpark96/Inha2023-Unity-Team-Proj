@@ -1048,7 +1048,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StatusHandler: {fileID: 0}
   BodyHandler: {fileID: 0}
-  PlayerControll: {fileID: 0}
+  PlayerController: {fileID: 0}
+  HeadMultiple: 1.5
+  ArmMultiple: 0.8
+  HandMultiple: 0.8
+  LegMultiple: 0.8
+  DamageReduction: 0
+  PlayerAttackPoint: 1
   actorState: 128
   lastActorState: 8
   debuffState: 32
@@ -1096,7 +1102,7 @@ MonoBehaviour:
   RunSpeed: 35000
   _hips: {fileID: 591689919}
   _cameraArm: {fileID: 1035871480}
-  bodyHandler: {fileID: 0}
+  _bodyHandler: {fileID: 0}
   targetingHandler: {fileID: 0}
   isGrounded: 0
   isRun: 0
@@ -1109,6 +1115,7 @@ MonoBehaviour:
   rightKick: 0
   isStateChange: 0
   RSkillDelayTime: 5
+  MaxSpeed: 10
   _idleTimer: 0
   isAI: 1
   ForceStrength: 10
@@ -21921,10 +21928,10 @@ MonoBehaviour:
     - 0.1
     AngleStability:
     - 2.5
-  RunSpeed: 35000
+  RunSpeed: 100
   _hips: {fileID: 2594666722529992205}
   _cameraArm: {fileID: 6804104365043234108}
-  bodyHandler: {fileID: 0}
+  _bodyHandler: {fileID: 0}
   targetingHandler: {fileID: 0}
   isGrounded: 0
   isRun: 0
@@ -21937,6 +21944,7 @@ MonoBehaviour:
   rightKick: 0
   isStateChange: 0
   RSkillDelayTime: 5
+  MaxSpeed: 10
   _idleTimer: 0
   isAI: 0
   ForceStrength: 100
@@ -21995,7 +22003,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StatusHandler: {fileID: 0}
   BodyHandler: {fileID: 0}
-  PlayerControll: {fileID: 0}
+  PlayerController: {fileID: 0}
+  HeadMultiple: 1.5
+  ArmMultiple: 0.8
+  HandMultiple: 0.8
+  LegMultiple: 0.8
+  DamageReduction: 0
+  PlayerAttackPoint: 1
   actorState: 4
   lastActorState: 8
   debuffState: 0
@@ -22265,7 +22279,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8d2732e4766ccf4fba1c58f524e0dae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bodyHandler: {fileID: 0}
+  GrabObjectType: 0
   _turnForce: 0
 --- !u!135 &2675591024976243569
 SphereCollider:
