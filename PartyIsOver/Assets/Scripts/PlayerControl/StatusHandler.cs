@@ -17,8 +17,9 @@ public class StatusHandler : MonoBehaviour
     // Ã¼·Â
     [SerializeField]
     private float _health;
-    public float Health { get { return _health; } set { _health = value; } }
+    [SerializeField]
     private float _maxHealth = 200f;
+    public float Health { get { return _health; } set { _health = value; } }
     private float _healthDamage;
     private bool _isDead;
 

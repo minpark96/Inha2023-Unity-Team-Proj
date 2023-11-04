@@ -127,6 +127,7 @@ public class PlayerController : MonoBehaviour
     public float RSkillDelayTime = 5;
     public float MaxSpeed = 10f;
     private float _runSpeedOffset = 350f;
+    public float PunchDelay = 0.5f;
 
     private Vector3 _moveInput;
     private Vector3 _moveDir;
@@ -182,13 +183,6 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        if (isAI)
-            return;
-        Managers.Input.MouseAction -= OnMouseEvent;
-        Managers.Input.MouseAction += OnMouseEvent;
-        Managers.Input.KeyboardAction -= OnKeyboardEvent;
-        Managers.Input.KeyboardAction += OnKeyboardEvent;
-
         _bodyHandler.BodySetup();
     }
 
@@ -215,12 +209,8 @@ public class PlayerController : MonoBehaviour
         _grab = GetComponent<Grab>();
     }
 
-    void OnKeyboardEvent(Define.KeyboardEvent evt)
-    {
-        OnKeyboardEvent_Idle(evt);
-    }
 
-    void OnKeyboardEvent_Idle(Define.KeyboardEvent evt)
+    public void OnKeyboardEvent_Idle(Define.KeyboardEvent evt)
     {
 
         switch (evt)
@@ -304,12 +294,7 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(1f);
     }
 
-    void OnMouseEvent(Define.MouseEvent evt)
-    {
-        OnMouseEvent_Idle(evt);
-    }
-
-    void OnMouseEvent_Idle(Define.MouseEvent evt)
+    public void OnMouseEvent_Idle(Define.MouseEvent evt)
     {
         switch (evt)
         {
@@ -767,19 +752,19 @@ public class PlayerController : MonoBehaviour
         _isCoroutineRunning = false;
     }
 
-    private void PunchAndGrab()
+    public void PunchAndGrab()
     {
         targetingHandler.SearchTarget();
         if (!_isCoroutineRunning)
         {
             if (_readySide == Side.Left)
             {
-                StartCoroutine(PunchWithDelay(Side.Left, 0.5f));
+                StartCoroutine(PunchWithDelay(Side.Left, PunchDelay));
                 _readySide = Side.Right;
             }
             else
             {
-                StartCoroutine(PunchWithDelay(Side.Right, 0.5f));
+                StartCoroutine(PunchWithDelay(Side.Right, PunchDelay));
                 _readySide = Side.Left;
             }
         }
