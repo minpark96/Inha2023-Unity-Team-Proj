@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class CollisionHandler : MonoBehaviour
@@ -118,6 +119,10 @@ public class CollisionHandler : MonoBehaviour
                     break;
             }
 
+            damage = ApplyBodyPartDamageModifier(damage);
+            damage *= actor.PlayerAttackPoint;
+
+
             //데미지 적용
             damage = Mathf.RoundToInt(damage);
 
@@ -132,12 +137,39 @@ public class CollisionHandler : MonoBehaviour
                     actor.StatusHandler.AddDamage(InteractableObject.Damage.Default, damage, collisionCollider.gameObject);
                 }
             }
+
+
+            float ApplyBodyPartDamageModifier(float damage)
+            {
+                if (transform == actor.BodyHandler.RightArm.transform ||
+                    transform == actor.BodyHandler.LeftArm.transform)
+                    damage *= actor.ArmMultiple;
+                else if (transform == actor.BodyHandler.RightForarm.transform ||
+                    transform == actor.BodyHandler.LeftForarm.transform)
+                    damage *= actor.ArmMultiple;
+                else if (transform == actor.BodyHandler.RightHand.transform ||
+                    transform == actor.BodyHandler.LeftHand.transform)
+                    damage *= actor.HandMultiple;
+                else if (transform == actor.BodyHandler.RightLeg.transform ||
+                    transform == actor.BodyHandler.LeftLeg.transform)
+                    damage *= actor.LegMultiple;
+                else if (transform == actor.BodyHandler.RightThigh.transform ||
+                    transform == actor.BodyHandler.LeftThigh.transform)
+                    damage *= actor.LegMultiple;
+                else if (transform == actor.BodyHandler.RightFoot.transform ||
+                    transform == actor.BodyHandler.LeftFoot.transform)
+                    damage *= actor.LegMultiple;
+                else if (transform == actor.BodyHandler.Head.transform)
+                    damage *= actor.HeadMultiple;
+
+                return damage;
+            }
         }
     }
-
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.collider.gameObject.layer != LayerMask.NameToLayer("Ground"))
+        if (collision.collider.gameObject.layer != LayerMask.NameToLayer("Ground"))
             DamageCheck(collision);
     }
+    
 }
