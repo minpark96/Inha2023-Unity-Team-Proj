@@ -106,7 +106,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable
     /// MonoBehaviour method called on GameObject by Unity on every frame.
     /// </summary>
     void Update()
-    {
+    { 
         if (photonView.IsMine)
         {
             ProcessInputs();

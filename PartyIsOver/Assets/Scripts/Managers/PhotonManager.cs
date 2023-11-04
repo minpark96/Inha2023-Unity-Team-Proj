@@ -136,19 +136,22 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     public void LeaveRoom()
     {
         Debug.Log("LeaveRoom(): Call PhotonNetwork.LeaveRoom()");
-        bool log = PhotonNetwork.LeaveRoom();
+        PhotonNetwork.LeaveRoom();
     }
 
     public void LoadArena()
     {
-        Debug.Log("¿Ü¾ÊµÇ;");
-        if (!PhotonNetwork.IsMasterClient)
+        Debug.Log("LoadArena()");
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            PhotonNetwork.LoadLevel("Arena");
+        }
+        else
         {
             Debug.LogError("PhotonNetwork : Trying to Load a level but we are not the master Client");
             return;
         }
-
-        PhotonNetwork.LoadLevel("Arena");
     }
 
     #endregion
