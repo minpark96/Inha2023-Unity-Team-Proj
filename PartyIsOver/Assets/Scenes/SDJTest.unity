@@ -1040,7 +1040,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StatusHandler: {fileID: 0}
   BodyHandler: {fileID: 0}
-  PlayerControll: {fileID: 0}
+  PlayerController: {fileID: 0}
+  HeadMultiple: 1.5
+  ArmMultiple: 0.8
+  HandMultiple: 0.8
+  LegMultiple: 0.8
+  DamageReduction: 0
+  PlayerAttackPoint: 1
   actorState: 4
   lastActorState: 8
   debuffState: 0
@@ -1085,10 +1091,12 @@ MonoBehaviour:
   MoveAngleJumpAniData: []
   HeadingAniData: []
   HeadingAngleAniData: []
+  TestRready1: []
+  TestRready2: []
   RunSpeed: 35000
   _hips: {fileID: 591689919}
   _cameraArm: {fileID: 1035871480}
-  bodyHandler: {fileID: 0}
+  _bodyHandler: {fileID: 0}
   targetingHandler: {fileID: 0}
   isGrounded: 0
   isRun: 0
@@ -1100,10 +1108,10 @@ MonoBehaviour:
   leftKick: 0
   rightKick: 0
   isStateChange: 0
-  MeowNyangPunchDelayTime: 0
+  RSkillDelayTime: 0
+  MaxSpeed: 10
   _idleTimer: 0
   isAI: 1
-  ForceStrength: 10
 --- !u!114 &83486397
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20868,6 +20876,7 @@ GameObject:
   - component: {fileID: 2675591024976243570}
   - component: {fileID: 2675591024976243572}
   - component: {fileID: 2675591024976243571}
+  - component: {fileID: 2675591024976243573}
   m_Layer: 7
   m_Name: GreenFistR
   m_TagString: CharacterFist
@@ -20943,6 +20952,7 @@ GameObject:
   - component: {fileID: 2653568215181255325}
   - component: {fileID: 2653568215181255327}
   - component: {fileID: 2653568215181255328}
+  - component: {fileID: 2653568215181255332}
   - component: {fileID: 2653568215181255329}
   - component: {fileID: 2653568215181255331}
   - component: {fileID: 2653568215181255330}
@@ -21005,8 +21015,8 @@ GameObject:
   - component: {fileID: 2675482982836170736}
   - component: {fileID: 2675482982836170739}
   - component: {fileID: 2675482982836170738}
-  - component: {fileID: 2675482982836170737}
   - component: {fileID: 2675482982836170740}
+  - component: {fileID: 2675482982836170737}
   m_Layer: 7
   m_Name: GreenFistL
   m_TagString: CharacterFist
@@ -21327,7 +21337,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2649834542870219044}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2.95, y: 0, z: 0}
+  m_LocalPosition: {x: 2.95, y: 0, z: 2.739}
   m_LocalScale: {x: 1, y: 1.0000002, z: 1.0000002}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -21417,63 +21427,77 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RollAniData:
   - StandardRigidbodies:
-    - {fileID: 0}
+    - {fileID: 2594633235711231716}
+    - {fileID: 2595146148450866934}
+    - {fileID: 2594666722529992205}
+    - {fileID: 2594666722529992205}
     ActionRigidbodies:
     - {fileID: 2594633235711231716}
     - {fileID: 2595146148450866934}
+    - {fileID: 2594666722529992205}
+    - {fileID: 2594666722529992205}
+    ForceDirections: 02000000020000000200000004000000
+    ForcePowerValues:
+    - 20
+    - 20
+    - 20
+    - 20
+  - StandardRigidbodies:
+    - {fileID: 2594633235711231716}
     - {fileID: 2595146148450866934}
-    ForceDirections: 010000000100000002000000
-    ForcePowerValues:
-    - 1
-    - 1
-    - 1
-  - StandardRigidbodies:
-    - {fileID: 0}
+    - {fileID: 2594666722529992205}
     ActionRigidbodies:
     - {fileID: 2594633235711231716}
-    - {fileID: 2595093891940388792}
-    - {fileID: 2595093891940388792}
-    ForceDirections: 010000000200000003000000
+    - {fileID: 2595146148450866934}
+    - {fileID: 2594666722529992205}
+    ForceDirections: 020000000200000004000000
     ForcePowerValues:
-    - 1
-    - 1
-    - 1
-  - StandardRigidbodies:
-    - {fileID: 0}
-    ActionRigidbodies:
-    - {fileID: 2594633235711231716}
-    - {fileID: 2595093891940388792}
-    - {fileID: 2595093891940388792}
-    ForceDirections: 010000000100000002000000
-    ForcePowerValues:
-    - 1
-    - 1
     - 30
+    - 50
+    - 200
   - StandardRigidbodies:
-    - {fileID: 0}
+    - {fileID: 2594633235711231716}
+    - {fileID: 2595093891940388792}
+    - {fileID: 2595093891940388792}
     ActionRigidbodies:
     - {fileID: 2594633235711231716}
     - {fileID: 2595093891940388792}
     - {fileID: 2595093891940388792}
-    ForceDirections: 010000000100000003000000
+    ForceDirections: 020000000400000002000000
     ForcePowerValues:
-    - 1
-    - 10
-    - 10
+    - 100
+    - 20
+    - 100
   - StandardRigidbodies:
-    - {fileID: 0}
+    - {fileID: 2594633235711231716}
+    - {fileID: 2595093891940388792}
+    - {fileID: 2595093891940388792}
     ActionRigidbodies:
     - {fileID: 2594633235711231716}
     - {fileID: 2595093891940388792}
     - {fileID: 2595093891940388792}
-    ForceDirections: 010000000100000003000000
+    ForceDirections: 020000000400000003000000
     ForcePowerValues:
-    - 1
-    - 1
-    - 1
+    - 100
+    - 20
+    - 100
+  - StandardRigidbodies:
+    - {fileID: 2594633235711231716}
+    - {fileID: 2595093891940388792}
+    - {fileID: 2595093891940388792}
+    ActionRigidbodies:
+    - {fileID: 2594633235711231716}
+    - {fileID: 2595093891940388792}
+    - {fileID: 2595093891940388792}
+    ForceDirections: 020000000400000002000000
+    ForcePowerValues:
+    - 100
+    - 20
+    - 100
   DropAniData:
   - StandardRigidbodies:
-    - {fileID: 0}
+    - {fileID: 2594666722529992205}
+    - {fileID: 2594666722529992205}
     ActionRigidbodies:
     - {fileID: 2629071512273945756}
     - {fileID: 5606036378121964916}
@@ -21482,7 +21506,8 @@ MonoBehaviour:
     - 100
     - 100
   - StandardRigidbodies:
-    - {fileID: 0}
+    - {fileID: 2594666722529992205}
+    - {fileID: 2594666722529992205}
     ActionRigidbodies:
     - {fileID: 2595082768219155816}
     - {fileID: 3843378844782920912}
@@ -21491,84 +21516,90 @@ MonoBehaviour:
     - 100
     - 100
   - StandardRigidbodies:
-    - {fileID: 0}
+    - {fileID: 2594633235711231716}
+    - {fileID: 2594633235711231716}
+    - {fileID: 2594633235711231716}
     ActionRigidbodies:
     - {fileID: 2594633235711231716}
     - {fileID: 2595146148450866934}
-    ForceDirections: 0200000001000000
+    - {fileID: 2595093891940388792}
+    ForceDirections: 030000000300000003000000
     ForcePowerValues:
+    - 50
     - 50
     - 50
   RightPunchAniData:
   - StandardRigidbodies:
     - {fileID: 2594584007050088136}
     ActionDirection:
-    - {fileID: 2651576759596361956}
+    - {fileID: 2653621403242456562}
     TargetDirection:
     - {fileID: 2651576759596361956}
-    ActionAngleDirections: 01000000
-    TargetAngleDirections: 06000000
-    AnglePowerValues:
-    - 0.01
+    ActionAngleDirections: 03000000
+    TargetAngleDirections: 05000000
     AngleStability:
+    - 0.01
+    AnglePowerValues:
     - 20
   - StandardRigidbodies:
-    - {fileID: 2675591024976243572}
+    - {fileID: 2594991716837427516}
     ActionDirection:
-    - {fileID: 2651576759596361956}
+    - {fileID: 2651689543264262341}
     TargetDirection:
     - {fileID: 2651576759596361956}
-    ActionAngleDirections: 01000000
-    TargetAngleDirections: 04000000
-    AnglePowerValues:
-    - 0.01
+    ActionAngleDirections: 03000000
+    TargetAngleDirections: 02000000
     AngleStability:
-    - 20
+    - 0.01
+    AnglePowerValues:
+    - 20000
   LeftPunchAniData:
   - StandardRigidbodies:
     - {fileID: 2594584007050088136}
     ActionDirection:
-    - {fileID: 2651576759596361956}
+    - {fileID: 2653621403242456562}
     TargetDirection:
     - {fileID: 2651576759596361956}
-    ActionAngleDirections: 01000000
+    ActionAngleDirections: 03000000
     TargetAngleDirections: 05000000
-    AnglePowerValues:
-    - 0.01
     AngleStability:
+    - 0.01
+    AnglePowerValues:
     - 20
   - StandardRigidbodies:
-    - {fileID: 2675482982836170739}
+    - {fileID: 2594440936434609163}
     ActionDirection:
-    - {fileID: 2651576759596361956}
+    - {fileID: 2652002312297138278}
     TargetDirection:
     - {fileID: 2651576759596361956}
-    ActionAngleDirections: 01000000
-    TargetAngleDirections: 04000000
-    AnglePowerValues:
-    - 0.01
+    ActionAngleDirections: 03000000
+    TargetAngleDirections: 02000000
     AngleStability:
-    - 20
+    - 0.01
+    AnglePowerValues:
+    - 20000
   RightPunchingAniData:
   - StandardRigidbodies:
-    - {fileID: 0}
+    - {fileID: 2594283914657201982}
+    - {fileID: 2675591024976243572}
     ActionRigidbodies:
     - {fileID: 2594283914657201982}
     - {fileID: 2675591024976243572}
     ForceDirections: 0000000000000000
     ForcePowerValues:
-    - 8
-    - 12
+    - 20
+    - 30
   LeftPunchingAniData:
   - StandardRigidbodies:
-    - {fileID: 0}
+    - {fileID: 2594584007050088136}
+    - {fileID: 2675482982836170739}
     ActionRigidbodies:
     - {fileID: 2594584007050088136}
     - {fileID: 2675482982836170739}
     ForceDirections: 0000000000000000
     ForcePowerValues:
-    - 8
-    - 12
+    - 20
+    - 30
   RightPunchResettingAniData:
   - StandardRigidbodies:
     - {fileID: 2594283914657201982}
@@ -21578,10 +21609,10 @@ MonoBehaviour:
     - {fileID: 2651576759596361956}
     ActionAngleDirections: 03000000
     TargetAngleDirections: 01000000
-    AnglePowerValues:
-    - 0.01
     AngleStability:
-    - 2
+    - 0.01
+    AnglePowerValues:
+    - 20
   - StandardRigidbodies:
     - {fileID: 2675591024976243572}
     ActionDirection:
@@ -21590,10 +21621,10 @@ MonoBehaviour:
     - {fileID: 2651576759596361956}
     ActionAngleDirections: 03000000
     TargetAngleDirections: 02000000
-    AnglePowerValues:
-    - 0.01
     AngleStability:
     - 2
+    AnglePowerValues:
+    - 0.01
   LeftPunchResettingAniData:
   - StandardRigidbodies:
     - {fileID: 2594584007050088136}
@@ -21603,10 +21634,10 @@ MonoBehaviour:
     - {fileID: 2651576759596361956}
     ActionAngleDirections: 03000000
     TargetAngleDirections: 01000000
-    AnglePowerValues:
-    - 0.01
     AngleStability:
-    - 2
+    - 0.01
+    AnglePowerValues:
+    - 20
   - StandardRigidbodies:
     - {fileID: 2675482982836170739}
     ActionDirection:
@@ -21615,27 +21646,27 @@ MonoBehaviour:
     - {fileID: 2651576759596361956}
     ActionAngleDirections: 03000000
     TargetAngleDirections: 02000000
-    AnglePowerValues:
-    - 0.01
     AngleStability:
     - 2
+    AnglePowerValues:
+    - 0.01
   MoveForceJumpAniData:
   - StandardRigidbodies:
-    - {fileID: 0}
+    - {fileID: 2594666722529992205}
     ActionRigidbodies:
     - {fileID: 2595146148450866934}
     ForceDirections: 00000000
     ForcePowerValues:
     - 170
   - StandardRigidbodies:
-    - {fileID: 0}
+    - {fileID: 2594666722529992205}
     ActionRigidbodies:
     - {fileID: 2595093891940388792}
     ForceDirections: 00000000
     ForcePowerValues:
     - 170
   - StandardRigidbodies:
-    - {fileID: 0}
+    - {fileID: 2594666722529992205}
     ActionRigidbodies:
     - {fileID: 2594666722529992205}
     ForceDirections: 00000000
@@ -21650,10 +21681,10 @@ MonoBehaviour:
     - {fileID: 2651701807778266666}
     ActionAngleDirections: 01000000
     TargetAngleDirections: 00000000
-    AnglePowerValues:
-    - 0.1
     AngleStability:
     - 4
+    AnglePowerValues:
+    - 0.1
   - StandardRigidbodies:
     - {fileID: 2594633235711231716}
     ActionDirection:
@@ -21662,23 +21693,23 @@ MonoBehaviour:
     - {fileID: 2651701807778266666}
     ActionAngleDirections: 03000000
     TargetAngleDirections: 03000000
-    AnglePowerValues:
-    - 0.1
     AngleStability:
     - 4
+    AnglePowerValues:
+    - 0.1
   HeadingAniData:
   - StandardRigidbodies:
-    - {fileID: 0}
+    - {fileID: 2594633235711231716}
     ActionRigidbodies:
     - {fileID: 2594633235711231716}
-    ForceDirections: 01000000
+    ForceDirections: 02000000
     ForcePowerValues:
     - 50
   - StandardRigidbodies:
-    - {fileID: 0}
+    - {fileID: 2594633235711231716}
     ActionRigidbodies:
     - {fileID: 2595146148450866934}
-    ForceDirections: 01000000
+    ForceDirections: 02000000
     ForcePowerValues:
     - 50
   HeadingAngleAniData:
@@ -21690,10 +21721,10 @@ MonoBehaviour:
     - {fileID: 2651701807778266666}
     ActionAngleDirections: 01000000
     TargetAngleDirections: 00000000
-    AnglePowerValues:
-    - 0.1
     AngleStability:
     - 2.5
+    AnglePowerValues:
+    - 0.1
   - StandardRigidbodies:
     - {fileID: 2594633235711231716}
     ActionDirection:
@@ -21702,14 +21733,32 @@ MonoBehaviour:
     - {fileID: 2651701807778266666}
     ActionAngleDirections: 03000000
     TargetAngleDirections: 00000000
-    AnglePowerValues:
-    - 0.1
     AngleStability:
     - 2.5
-  RunSpeed: 35000
+    AnglePowerValues:
+    - 0.1
+  TestRready1:
+  - StandardRigidbodies: []
+    ActionRigidbodies: []
+    ForceDirections: 
+    ForcePowerValues: []
+  TestRready2:
+  - StandardRigidbodies:
+    - {fileID: 2675591024976243572}
+    ActionDirection:
+    - {fileID: 2651701807778266666}
+    TargetDirection:
+    - {fileID: 2651701807778266666}
+    ActionAngleDirections: 01000000
+    TargetAngleDirections: 03000000
+    AngleStability:
+    - 0.01
+    AnglePowerValues:
+    - 100
+  RunSpeed: 100
   _hips: {fileID: 2594666722529992205}
   _cameraArm: {fileID: 6804104365043234108}
-  bodyHandler: {fileID: 0}
+  _bodyHandler: {fileID: 0}
   targetingHandler: {fileID: 0}
   isGrounded: 0
   isRun: 0
@@ -21721,10 +21770,10 @@ MonoBehaviour:
   leftKick: 0
   rightKick: 0
   isStateChange: 0
-  MeowNyangPunchDelayTime: 5
+  RSkillDelayTime: 0
+  MaxSpeed: 10
   _idleTimer: 0
   isAI: 0
-  ForceStrength: 100
 --- !u!114 &2653568215181255329
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21771,10 +21820,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StatusHandler: {fileID: 0}
   BodyHandler: {fileID: 0}
-  PlayerControll: {fileID: 0}
+  PlayerController: {fileID: 0}
+  HeadMultiple: 1.5
+  ArmMultiple: 0.8
+  HandMultiple: 0.8
+  LegMultiple: 0.8
+  DamageReduction: 0
+  PlayerAttackPoint: 1
   actorState: 4
   lastActorState: 8
   debuffState: 0
+--- !u!114 &2653568215181255332
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2649834542870219044}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8d2732e4766ccf4fba1c58f524e0dae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GrabObjectType: 0
+  _turnForce: 0
 --- !u!4 &2653577453574409601
 Transform:
   m_ObjectHideFlags: 0
@@ -22038,11 +22107,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2649976933566476892}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d8d2732e4766ccf4fba1c58f524e0dae, type: 3}
+  m_Script: {fileID: 11500000, guid: 219c787728d3c4a48bbd6535e6eceb5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bodyHandler: {fileID: 0}
-  _turnForce: 0
+  isCheck: 0
 --- !u!135 &2675591024976243569
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -22184,6 +22252,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 3
+--- !u!114 &2675591024976243573
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2648250188410213268}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 219c787728d3c4a48bbd6535e6eceb5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isCheck: 0
 --- !u!135 &2675785402846248957
 SphereCollider:
   m_ObjectHideFlags: 0
