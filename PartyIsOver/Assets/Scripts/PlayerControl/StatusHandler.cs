@@ -350,17 +350,17 @@ public class StatusHandler : MonoBehaviour
             
             if (number > 7)
             {
-                for (int i = 1; i < 15; i++)
+                for (int i = 4; i < 15; i++)
                 {
-                    if (i == 3) continue;
+                    //if (i == 3) continue;
                     actor.BodyHandler.BodyParts[i].transform.rotation = Quaternion.Euler(20, 0, 0);
                 }
             }
             else
             {
-                for (int i = 1; i < 15; i++)
+                for (int i = 4; i < 15; i++)
                 {
-                    if (i == 3) continue;
+                    //if (i == 3) continue;
                     actor.BodyHandler.BodyParts[i].transform.rotation = Quaternion.Euler(-20, 0, 0);
                 }
             }
@@ -444,7 +444,8 @@ public class StatusHandler : MonoBehaviour
             if (Time.time - lastBurnTime >= 1.0f) // 1초간 데미지+액션
             {
                 _health -= _burnDamage;
-                actor.BodyHandler.BodyParts[3].PartRigidbody.AddForce(new Vector3(0, 0, 100f), ForceMode.VelocityChange);
+                actor.BodyHandler.BodyParts[2].PartRigidbody.AddForce(new Vector3(0, 0, 25f), ForceMode.VelocityChange);
+                actor.BodyHandler.BodyParts[3].PartRigidbody.AddForce(new Vector3(0, 0, 25f), ForceMode.VelocityChange);
                 lastBurnTime = Time.time;
             }
 
