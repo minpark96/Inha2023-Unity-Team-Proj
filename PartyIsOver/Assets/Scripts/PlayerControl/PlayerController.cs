@@ -132,6 +132,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 _moveDir;
     private bool _isCoroutineRunning = false;
     private bool _isCoroutineDrop = false;
+    private bool _isCoroutineRoll = false;
 
     [SerializeField]
     private float _idleTimer = 0;
@@ -420,13 +421,16 @@ public class PlayerController : MonoBehaviour
 
     private void ForwardRollTrigger()
     {
-        StartCoroutine(ForwardRollDelay(2f));
+        if(!_isCoroutineRoll)
+            StartCoroutine(ForwardRollDelay(3f));
     }
 
     IEnumerator ForwardRollDelay(float delay)
     {
+        _isCoroutineRoll = true;
         yield return ForwardRoll(0.07f,0.2f, 0.2f, 0.2f, 0.2f);
         yield return new WaitForSeconds(delay);
+        _isCoroutineRoll = false;
 
         //다시 회복
         //RestoreSpringTrigger();
@@ -439,35 +443,35 @@ public class PlayerController : MonoBehaviour
         _actor.StatusHandler.StartCoroutine("ResetBodySpring");
         float rollTime = Time.time;
 
-        while (Time.time + readyRoll < readyRoll)
+        while (Time.time - rollTime < readyRoll)
         {
             _frameCount = 0;
             AniForce(RollAniData, _frameCount);
             yield return new WaitForSeconds(duration);
         }
         rollTime = Time.time;
-        while (Time.time + readyRoll < startRoll)
+        while (Time.time - rollTime < startRoll)
         {
             _frameCount = 1;
             AniForce(RollAniData, _frameCount);
             yield return new WaitForSeconds(duration);
         }
         rollTime = Time.time;
-        while (Time.time + readyRoll < rolling)
+        while (Time.time - rollTime < rolling)
         {
             _frameCount = 2;
             AniForce(RollAniData, _frameCount);
             yield return new WaitForSeconds(duration);
         }
         rollTime = Time.time;
-        _actor.actorState = ActorState.Stand;
-        while (Time.time + readyRoll < endRoll)
+        _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
+        while (Time.time - rollTime < endRoll)
         {
             _frameCount = 3;
             AniForce(RollAniData, _frameCount);
             yield return new WaitForSeconds(duration);
         }
-        
+        _actor.actorState = ActorState.Stand;
     }
 
     IEnumerator ForwardRoll_old()
