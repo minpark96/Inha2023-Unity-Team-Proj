@@ -1325,6 +1325,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GrabItem: {fileID: 0}
+  RangeWeaponSkin: {fileID: 0}
   GrabObjectType: 0
   _turnForce: 0
 --- !u!114 &120528309
@@ -6322,6 +6323,7 @@ MonoBehaviour:
   OneHandedPos: {fileID: 0}
   TwoHandedPos: {fileID: 0}
   Head: {fileID: 0}
+  Body: {fileID: 0}
 --- !u!65 &605799948
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6795,15 +6797,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2157187129093270689, guid: f3c97911c36914c45938356a009436c5, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.1329999
+      value: -0.04
       objectReference: {fileID: 0}
     - target: {fileID: 2157187129093270689, guid: f3c97911c36914c45938356a009436c5, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.85099983
+      value: 0.9
       objectReference: {fileID: 0}
     - target: {fileID: 2157187129093270689, guid: f3c97911c36914c45938356a009436c5, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -2.1359994
+      value: -3.09
       objectReference: {fileID: 0}
     - target: {fileID: 2157187129093270689, guid: f3c97911c36914c45938356a009436c5, type: 3}
       propertyPath: m_LocalRotation.w
@@ -6811,15 +6813,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2157187129093270689, guid: f3c97911c36914c45938356a009436c5, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2157187129093270689, guid: f3c97911c36914c45938356a009436c5, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2157187129093270689, guid: f3c97911c36914c45938356a009436c5, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2157187129093270689, guid: f3c97911c36914c45938356a009436c5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -7216,8 +7218,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 700473814}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.266, y: 0.12, z: 0.308}
-  m_LocalScale: {x: 0.2, y: 0.48, z: 0.42}
+  m_LocalPosition: {x: -0.28, y: 0.22, z: 0.11}
+  m_LocalScale: {x: 0.3, y: 0.2, z: 0.6}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 605799950}
@@ -9945,12 +9947,12 @@ GameObject:
   m_Component:
   - component: {fileID: 945686915}
   m_Layer: 8
-  m_Name: WeaponHelper
+  m_Name: RangeWeaponSkin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &945686915
 Transform:
   m_ObjectHideFlags: 0
@@ -9958,8 +9960,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 945686914}
-  m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0.067, y: -2.029, z: -0.684}
+  m_LocalRotation: {x: 0.7071068, y: -0.000000021073426, z: 0.000000021073426, w: 0.7071068}
+  m_LocalPosition: {x: 0.06699991, y: -2.98, z: -0.68}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -14594,6 +14596,7 @@ MonoBehaviour:
   OneHandedPos: {fileID: 0}
   TwoHandedPos: {fileID: 0}
   Head: {fileID: 0}
+  Body: {fileID: 0}
 --- !u!65 &1482417461
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -15251,6 +15254,7 @@ MonoBehaviour:
   OneHandedPos: {fileID: 0}
   TwoHandedPos: {fileID: 0}
   Head: {fileID: 0}
+  Body: {fileID: 0}
 --- !u!65 &1558737194
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -16404,8 +16408,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1764469116}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.197, y: 0.135, z: -0.062}
-  m_LocalScale: {x: 0.2, y: 0.42, z: 0.39}
+  m_LocalPosition: {x: -0.284, y: -0.1, z: 0.11}
+  m_LocalScale: {x: 0.3, y: 0.2, z: 0.6}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 605799950}
@@ -21976,6 +21980,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GrabItem: {fileID: 0}
+  RangeWeaponSkin: {fileID: 0}
   GrabObjectType: 0
   _turnForce: 0
 --- !u!114 &206444035059181557
