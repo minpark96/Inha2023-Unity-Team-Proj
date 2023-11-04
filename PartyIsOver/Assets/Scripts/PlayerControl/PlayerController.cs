@@ -349,6 +349,8 @@ public class PlayerController : MonoBehaviour
     {
         if (isAI)
             return;
+        if (_actor.debuffState == DebuffState.Freeze)
+            return;
 
         _moveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
 
