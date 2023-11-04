@@ -88,7 +88,7 @@ public class StatusHandler : MonoBehaviour
     {
         actor = transform.GetComponent<Actor>();
         _health = _maxHealth;
-        _maxSpeed = actor.PlayerControll.RunSpeed;
+        _maxSpeed = actor.PlayerController.RunSpeed;
 
         actor.BodyHandler.BodySetup();
 
@@ -245,12 +245,12 @@ public class StatusHandler : MonoBehaviour
 
     IEnumerator PowerUp(float delay)
     {
-        float beforeSpeed = actor.PlayerControll.RunSpeed;
+        float beforeSpeed = actor.PlayerController.RunSpeed;
 
         // 불끈
         _hasPowerUp = true;
         actor.actorState = Actor.ActorState.Debuff;
-        actor.PlayerControll.RunSpeed += _maxSpeed * 0.1f;
+        actor.PlayerController.RunSpeed += _maxSpeed * 0.1f;
 
         yield return new WaitForSeconds(delay);
 
@@ -258,7 +258,7 @@ public class StatusHandler : MonoBehaviour
         _hasPowerUp = false;
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.PowerUp;
-        actor.PlayerControll.RunSpeed = beforeSpeed;
+        actor.PlayerController.RunSpeed = beforeSpeed;
 
         endTime = Time.time; // 디버그용
     }
@@ -333,12 +333,12 @@ public class StatusHandler : MonoBehaviour
     }
     IEnumerator Slow(float delay)
     {
-        float beforeSpeed = actor.PlayerControll.RunSpeed;
+        float beforeSpeed = actor.PlayerController.RunSpeed;
 
         // 둔화
         _hasSlow = true;
         actor.actorState = Actor.ActorState.Debuff;
-        actor.PlayerControll.RunSpeed -= _maxSpeed * 0.1f;
+        actor.PlayerController.RunSpeed -= _maxSpeed * 0.1f;
 
         yield return new WaitForSeconds(delay);
 
@@ -346,7 +346,7 @@ public class StatusHandler : MonoBehaviour
         _hasSlow = false;
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Slow;
-        actor.PlayerControll.RunSpeed = beforeSpeed;
+        actor.PlayerController.RunSpeed = beforeSpeed;
 
         endTime = Time.time; // 디버그용
     }
