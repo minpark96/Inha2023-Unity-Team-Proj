@@ -16,6 +16,7 @@ public class Grab : MonoBehaviourPun
     private TargetingHandler _targetingHandler;
     private BodyHandler _bodyHandler;
     private InteractableObject _searchTarget;
+    private Actor _actor;
 
     bool _isRightGrab = false;
     bool _isLeftGrab = false;
@@ -64,7 +65,7 @@ public class Grab : MonoBehaviourPun
     {
         _bodyHandler = transform.root.GetComponent<BodyHandler>();
         _targetingHandler = GetComponent<TargetingHandler>();
-
+        _actor = GetComponent<Actor>();
         _bodyHandler.BodySetup();
 
 
@@ -90,15 +91,7 @@ public class Grab : MonoBehaviourPun
         if (GrabItem != null)
         {
             // 놓기
-            if (Input.GetMouseButtonDown(1))
-            {
-                Debug.Log("놨다");
-
-
-
-               
-                return;
-            }
+            
 
             // 임시 코드
             if (Input.GetKeyDown(KeyCode.Alpha1))
@@ -150,8 +143,16 @@ public class Grab : MonoBehaviourPun
                 break;
             case Define.MouseEvent.Click:
                 {
-                    //if (Input.GetMouseButtonUp(0))
-                        //PunchAndGrab();
+                    if (Input.GetMouseButtonUp(0))
+                    {
+                        if(GrabItem.GetComponent<Item>().ItemType == ItemType.TwoHanded ||
+                            GrabItem.GetComponent<Item>().ItemType == ItemType.OneHanded)
+                            _actor.PlayerController.PunchAndGrab();
+                    }
+                    if (Input.GetMouseButtonUp(1))
+                    {
+                        GrabReset();
+                    }
                 }
                 break;
         }

@@ -53,8 +53,11 @@ public class PlayerInputHandler : MonoBehaviour
         if (_actor.actorState == ActorState.Debuff)
             return;
 
+
         if (_actor.Grab.GrabItem == null)
+        {
             _actor.PlayerController.OnMouseEvent_Idle(evt);
+        }
         else
             _actor.Grab.OnMouseEvent_EquipItem(evt);
     }
