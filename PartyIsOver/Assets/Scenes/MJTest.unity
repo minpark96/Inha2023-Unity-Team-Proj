@@ -1048,7 +1048,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StatusHandler: {fileID: 0}
   BodyHandler: {fileID: 0}
-  PlayerControll: {fileID: 0}
+  PlayerController: {fileID: 0}
+  HeadMultiple: 1.5
+  ArmMultiple: 0.8
+  HandMultiple: 0.8
+  LegMultiple: 0.8
+  DamageReduction: 0
+  PlayerAttackPoint: 1
   actorState: 128
   lastActorState: 8
   debuffState: 32
@@ -1093,10 +1099,12 @@ MonoBehaviour:
   MoveAngleJumpAniData: []
   HeadingAniData: []
   HeadingAngleAniData: []
+  TestRready1: []
+  TestRready2: []
   RunSpeed: 35000
   _hips: {fileID: 591689919}
   _cameraArm: {fileID: 1035871480}
-  bodyHandler: {fileID: 0}
+  _bodyHandler: {fileID: 0}
   targetingHandler: {fileID: 0}
   isGrounded: 0
   isRun: 0
@@ -1109,9 +1117,9 @@ MonoBehaviour:
   rightKick: 0
   isStateChange: 0
   RSkillDelayTime: 5
+  MaxSpeed: 10
   _idleTimer: 0
   isAI: 1
-  ForceStrength: 10
 --- !u!114 &83486397
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18761,9 +18769,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1374206150748085098}
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.0079944655, y: -0.09264515, z: 5.684342e-16}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.00799523, y: -0.09264529, z: -8.7224955e-10}
+  m_LocalScale: {x: 1.0000004, y: 1.0000002, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1445829185283835915}
@@ -19823,9 +19831,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5438667818849481613}
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.009812551, y: -0.03657847, z: 5.684342e-16}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.009813196, y: -0.036578655, z: -8.7224955e-10}
+  m_LocalScale: {x: 1.0000004, y: 1.0000002, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1445829185283835915}
@@ -20531,9 +20539,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 667160786073456262}
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.021767646, y: -0.14347042, z: 5.684342e-16}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.021768415, y: -0.14347053, z: -0.0000000017444991}
+  m_LocalScale: {x: 1.0000004, y: 1.0000002, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1445829185283835915}
@@ -21716,10 +21724,10 @@ MonoBehaviour:
     - {fileID: 2651576759596361956}
     ActionAngleDirections: 01000000
     TargetAngleDirections: 06000000
-    AnglePowerValues:
-    - 0.01
     AngleStability:
     - 20
+    AnglePowerValues:
+    - 0.01
   - StandardRigidbodies:
     - {fileID: 2675591024976243572}
     ActionDirection:
@@ -21728,10 +21736,10 @@ MonoBehaviour:
     - {fileID: 2651576759596361956}
     ActionAngleDirections: 01000000
     TargetAngleDirections: 04000000
-    AnglePowerValues:
-    - 0.01
     AngleStability:
     - 20
+    AnglePowerValues:
+    - 0.01
   LeftPunchAniData:
   - StandardRigidbodies:
     - {fileID: 2594584007050088136}
@@ -21741,10 +21749,10 @@ MonoBehaviour:
     - {fileID: 2651576759596361956}
     ActionAngleDirections: 01000000
     TargetAngleDirections: 05000000
-    AnglePowerValues:
-    - 0.01
     AngleStability:
     - 20
+    AnglePowerValues:
+    - 0.01
   - StandardRigidbodies:
     - {fileID: 2675482982836170739}
     ActionDirection:
@@ -21753,10 +21761,10 @@ MonoBehaviour:
     - {fileID: 2651576759596361956}
     ActionAngleDirections: 01000000
     TargetAngleDirections: 04000000
-    AnglePowerValues:
-    - 0.01
     AngleStability:
     - 20
+    AnglePowerValues:
+    - 0.01
   RightPunchingAniData:
   - StandardRigidbodies:
     - {fileID: 0}
@@ -21786,10 +21794,10 @@ MonoBehaviour:
     - {fileID: 2651576759596361956}
     ActionAngleDirections: 03000000
     TargetAngleDirections: 01000000
-    AnglePowerValues:
-    - 0.01
     AngleStability:
     - 2
+    AnglePowerValues:
+    - 0.01
   - StandardRigidbodies:
     - {fileID: 2675591024976243572}
     ActionDirection:
@@ -21798,10 +21806,10 @@ MonoBehaviour:
     - {fileID: 2651576759596361956}
     ActionAngleDirections: 03000000
     TargetAngleDirections: 02000000
-    AnglePowerValues:
-    - 0.01
     AngleStability:
     - 2
+    AnglePowerValues:
+    - 0.01
   LeftPunchResettingAniData:
   - StandardRigidbodies:
     - {fileID: 2594584007050088136}
@@ -21811,10 +21819,10 @@ MonoBehaviour:
     - {fileID: 2651576759596361956}
     ActionAngleDirections: 03000000
     TargetAngleDirections: 01000000
-    AnglePowerValues:
-    - 0.01
     AngleStability:
     - 2
+    AnglePowerValues:
+    - 0.01
   - StandardRigidbodies:
     - {fileID: 2675482982836170739}
     ActionDirection:
@@ -21823,10 +21831,10 @@ MonoBehaviour:
     - {fileID: 2651576759596361956}
     ActionAngleDirections: 03000000
     TargetAngleDirections: 02000000
-    AnglePowerValues:
-    - 0.01
     AngleStability:
     - 2
+    AnglePowerValues:
+    - 0.01
   MoveForceJumpAniData:
   - StandardRigidbodies:
     - {fileID: 0}
@@ -21865,10 +21873,10 @@ MonoBehaviour:
     - {fileID: 2651701807778266666}
     ActionAngleDirections: 01000000
     TargetAngleDirections: 00000000
-    AnglePowerValues:
-    - 0.1
     AngleStability:
     - 4
+    AnglePowerValues:
+    - 0.1
   - StandardRigidbodies:
     - {fileID: 2594633235711231716}
     ActionDirection:
@@ -21877,10 +21885,10 @@ MonoBehaviour:
     - {fileID: 2651701807778266666}
     ActionAngleDirections: 03000000
     TargetAngleDirections: 03000000
-    AnglePowerValues:
-    - 0.1
     AngleStability:
     - 4
+    AnglePowerValues:
+    - 0.1
   HeadingAniData:
   - StandardRigidbodies:
     - {fileID: 0}
@@ -21905,10 +21913,10 @@ MonoBehaviour:
     - {fileID: 2651701807778266666}
     ActionAngleDirections: 01000000
     TargetAngleDirections: 00000000
-    AnglePowerValues:
-    - 0.1
     AngleStability:
     - 2.5
+    AnglePowerValues:
+    - 0.1
   - StandardRigidbodies:
     - {fileID: 2594633235711231716}
     ActionDirection:
@@ -21917,14 +21925,16 @@ MonoBehaviour:
     - {fileID: 2651701807778266666}
     ActionAngleDirections: 03000000
     TargetAngleDirections: 00000000
-    AnglePowerValues:
-    - 0.1
     AngleStability:
     - 2.5
-  RunSpeed: 35000
+    AnglePowerValues:
+    - 0.1
+  TestRready1: []
+  TestRready2: []
+  RunSpeed: 100
   _hips: {fileID: 2594666722529992205}
   _cameraArm: {fileID: 6804104365043234108}
-  bodyHandler: {fileID: 0}
+  _bodyHandler: {fileID: 0}
   targetingHandler: {fileID: 0}
   isGrounded: 0
   isRun: 0
@@ -21937,9 +21947,9 @@ MonoBehaviour:
   rightKick: 0
   isStateChange: 0
   RSkillDelayTime: 5
+  MaxSpeed: 10
   _idleTimer: 0
   isAI: 0
-  ForceStrength: 100
 --- !u!114 &2653568215181255329
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21995,7 +22005,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StatusHandler: {fileID: 0}
   BodyHandler: {fileID: 0}
-  PlayerControll: {fileID: 0}
+  PlayerController: {fileID: 0}
+  HeadMultiple: 1.5
+  ArmMultiple: 0.8
+  HandMultiple: 0.8
+  LegMultiple: 0.8
+  DamageReduction: 0
+  PlayerAttackPoint: 1
   actorState: 4
   lastActorState: 8
   debuffState: 0
@@ -22265,7 +22281,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8d2732e4766ccf4fba1c58f524e0dae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bodyHandler: {fileID: 0}
+  GrabObjectType: 0
   _turnForce: 0
 --- !u!135 &2675591024976243569
 SphereCollider:
@@ -22961,9 +22977,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2955923559484894178}
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.2741883, y: -0.00117949, z: 8.5265126e-16}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.27418965, y: -0.0011795163, z: -0.000000027911986}
+  m_LocalScale: {x: 1.0000004, y: 1.0000002, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1445829185283835915}
