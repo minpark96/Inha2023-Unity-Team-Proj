@@ -61,14 +61,11 @@ public class Actor : MonoBehaviour
         if (actorState != lastActorState)
         {
             PlayerController.isStateChange = true;
-            Debug.Log("stateChange");
         }
         else
         {
             PlayerController.isStateChange = false;
         }
-
-
 
         switch (actorState)
         {

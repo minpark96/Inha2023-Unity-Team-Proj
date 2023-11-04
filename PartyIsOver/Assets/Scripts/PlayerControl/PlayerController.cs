@@ -135,7 +135,6 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField]
     private float _idleTimer = 0;
-    private float _punchTimer = 0;
     private float _cycleTimer = 0;
     private float _cycleSpeed;
     private float _applyedForce = 800f;
@@ -328,7 +327,6 @@ public class PlayerController : MonoBehaviour
                 {
                     if (Input.GetMouseButtonUp(0))
                     {
-                        Debug.Log("f");
                         _grab.GrabReset();
                     }
                 }
@@ -445,6 +443,7 @@ public class PlayerController : MonoBehaviour
         _actor.StatusHandler.StartCoroutine("ResetBodySpring");
         while (_rollTime < 10.2f)
         {
+            Time.timeScale = 0.2f;
             _rollTime += Time.fixedDeltaTime;
 
             if (_rollTime <= 0.1f)
@@ -529,7 +528,7 @@ public class PlayerController : MonoBehaviour
             else
             {
                 Vector3 _direction = GetForceDirection(_forceSpeed[_elementCount], i);
-                _forceSpeed[_elementCount].ActionRigidbodies[i].AddForce(_direction * _forceSpeed[_elementCount].ForcePowerValues[i], ForceMode.Impulse);
+                _forceSpeed[_elementCount].ActionRigidbodies[i].AddForce(_direction * _forceSpeed[_elementCount].ForcePowerValues[i] , ForceMode.Impulse);
             }
         }
     }
@@ -621,10 +620,7 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator DropKick()
     {
-        Vector3 zero = Vector3.zero;
         Transform partTransform = _bodyHandler.Hip.transform;
-        Transform transform2 = null;
-        int _frameCount = 0;
 
         if (!isGrounded)
         {
@@ -634,27 +630,26 @@ public class PlayerController : MonoBehaviour
                 //ResetBodySpring();
                 _actor.StatusHandler.StartCoroutine("ResetBodySpring");
 
-                _frameCount = i;
                 if (i == 0)
                 {
-                    transform2 = _bodyHandler.RightFoot.transform;
+                    Transform transform2 = _bodyHandler.RightFoot.transform;
                     _bodyHandler.RightFoot.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
                     _bodyHandler.RightThigh.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-                    zero = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
-                    AniForce(DropAniData, _frameCount, zero);
+                    Vector3 dir = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
+                    AniForce(DropAniData, i, dir);
                 }
                 else if (i == 1)
                 {
-                    transform2 = _bodyHandler.LeftFoot.transform;
+                    Transform transform2 = _bodyHandler.LeftFoot.transform;
                     _bodyHandler.LeftFoot.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
                     _bodyHandler.LeftThigh.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
                     //bodyHandler.RightFoot.PartInteractable.damageModifier = InteractableObject.Damage.Punch; µ¥¹ÌÁö
-                    zero = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
-                    AniForce(DropAniData, _frameCount, zero);
+                    Vector3 dir = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
+                    AniForce(DropAniData, i, dir);
                 }
                 else
                 {
-                    AniForce(DropAniData, _frameCount);
+                    AniForce(DropAniData, i);
                 }
             }
             yield return new WaitForSeconds(2);
@@ -678,40 +673,59 @@ public class PlayerController : MonoBehaviour
         {
             if (_readySide == Side.Left)
             {
-                Punch(Side.Left);
+                yield return MeowPunch(Side.Left, 0.07f, 0.1f, 0.1f, 0.3f);
                 _readySide = Side.Right;
             }
             else
             {
-                Punch(Side.Right);
+                yield return MeowPunch(Side.Right, 0.07f, 0.1f, 0.1f, 0.3f);
                 _readySide = Side.Left;
             }
             yield return new WaitForSeconds(0.2f);
             _punchcount++;
         }
     }
+
+    IEnumerator MeowPunch(Side side, float duration, float readyTime, float punchTime, float resettingTime)
+    {
+        float checkTime = Time.time;
+
+        while (Time.time - checkTime < readyTime)
+        {
+            ArmActionReadying(side);
+            yield return new WaitForSeconds(duration);
+        }
+        checkTime = Time.time;
+
+        while (Time.time - checkTime < punchTime)
+        {
+            ArmActionPunching(side);
+            yield return new WaitForSeconds(duration);
+        }
+        checkTime = Time.time;
+
+        while (Time.time - checkTime < resettingTime)
+        {
+            ArmActionPunchResetting(side);
+            yield return new WaitForSeconds(duration);
+        }
+    }
+
+
     IEnumerator RDelay()
     {
         yield return new WaitForSeconds(RSkillDelayTime);
-
     }
 
-    /*    IEnumerator PunchWithDelay(Side side, float delay)
-        {
-            _isCoroutineRunning = true;
-            Punch(side);
-            yield return new WaitForSeconds(delay);
-            _isCoroutineRunning = false;
-        }*/
-
-    void PunchWithDelay(Side side, float delay)
+    IEnumerator PunchWithDelay(Side side, float delay)
     {
 
         _isCoroutineRunning = true;
-        Punch(side);
-        //yield return new WaitForSeconds(delay);
+        yield return Punch(side, 0.07f, 0.1f, 0.1f, 0.3f);
+        yield return new WaitForSeconds(delay);
         _isCoroutineRunning = false;
     }
+
     private void PunchAndGrab()
     {
         targetingHandler.SearchTarget();
@@ -719,12 +733,12 @@ public class PlayerController : MonoBehaviour
         {
             if (_readySide == Side.Left)
             {
-                PunchWithDelay(Side.Left, 0.5f);
+                StartCoroutine(PunchWithDelay(Side.Left, 0.5f));
                 _readySide = Side.Right;
             }
             else
             {
-                PunchWithDelay(Side.Right, 0.5f);
+                StartCoroutine(PunchWithDelay(Side.Right, 0.5f));
                 _readySide = Side.Left;
             }
         }
@@ -739,51 +753,32 @@ public class PlayerController : MonoBehaviour
     ÁÖ¸Ô ÆÝÄ¡ Â÷Â¡ ¸ØÃß±â
      */
 
-    /*   IEnumerator Punch(Side side)
-       {
-           _punchTimer = 0;
-           while(_punchTimer <10.0f)
-           {
-               _punchTimer += Time.deltaTime;
-               if (_punchTimer < 0.1f)
-               {
-                   ArmActionReadying(side);
-               }
-               if (_punchTimer >= 0.2f && _punchTimer < 0.3f)
-               {
-                   ArmActionPunching(side);
-                   yield return null;
-               }
-               if (_punchTimer >= 0.3f && _punchTimer < 0.5f)
-               {
-                   ArmActionPunchResetting(side);
-               }
-           }
-           _punchTimer = 0;
-           yield return null;
-       }*/
-
-    void Punch(Side side)
+    //°ªÀÌ µé¾î ¿À´Â°Ô 0.01 0.1 0.1 0.3
+    IEnumerator Punch(Side side, float duration, float readyTime, float punchTime,float resettingTime)
     {
-        _punchTimer = 0;
-        while (_punchTimer < 10)
+        float checkTime = Time.time;
+
+        while (Time.time - checkTime < readyTime)
         {
-            Debug.Log(_punchTimer);
-            _punchTimer += Time.deltaTime;
-            if (_punchTimer < 0.1f)
-            {
-                ArmActionReadying(side);
-            }
-            if (_punchTimer >= 0.2f && _punchTimer < 0.3f)
-            {
-                ArmActionPunching(side);
-            }
-            if (_punchTimer >= 0.3f && _punchTimer < 0.5f)
-            {
-                ArmActionPunchResetting(side);
-            }
+            ArmActionReadying(side);
+            yield return new WaitForSeconds(duration);
+        }
+        checkTime = Time.time;
+
+        while (Time.time - checkTime < punchTime)
+        {
+            ArmActionPunching(side);
+            yield return new WaitForSeconds(duration);
+        }
+        checkTime = Time.time;
+
+        while (Time.time - checkTime < resettingTime)
+        {
+            ArmActionPunchResetting(side);
+            yield return new WaitForSeconds(duration);
         }
     }
+
 
     public void Stand()
     {
@@ -812,95 +807,64 @@ public class PlayerController : MonoBehaviour
 
     public void ArmActionReadying(Side side)
     {
-        int _frameCount = 0;
-        switch (side)
+        AniAngleData[] aniAngleDatas = (side == Side.Right) ? RightPunchAniData : LeftPunchAniData;
+        for (int i = 0; i < aniAngleDatas.Length; i++)
         {
-            case Side.Left:
-                for (int i = 0; i < RightPunchAniData.Length; i++)
-                {
-                    _frameCount = i;
-                    AniAngleForce(RightPunchAniData, _frameCount);
-                }
-                break;
-            case Side.Right:
-                for (int i = 0; i < LeftPunchAniData.Length; i++)
-                {
-                    _frameCount = i;
-                    AniAngleForce(LeftPunchAniData, _frameCount);
-                }
-                break;
+            AniAngleForce(aniAngleDatas, i);
         }
     }
 
     public void ArmActionPunching(Side side)
     {
-        Transform partTransform = _bodyHandler.Chest.transform;
-        Transform transform2 = null;
-        Vector3 zero = Vector3.zero;
-        int _frameCount = 0;
-
-        if (target == null)
-        {
-            switch (side)
-            {
-                case Side.Left:
-                    for (int i = 0; i < LeftPunchingAniData.Length; i++)
-                    {
-                        _frameCount = i;
-                        transform2 = _bodyHandler.LeftHand.transform;
-                        _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
-                        _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-                        _bodyHandler.LeftForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-                        zero = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
-                        AniForce(LeftPunchingAniData, _frameCount, zero);
-                    }
-                    break;
-                case Side.Right:
-                    for (int i = 0; i < RightPunchingAniData.Length; i++)
-                    {
-                        _frameCount = i;
-                        transform2 = _bodyHandler.RightHand.transform;
-                        _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
-                        _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-                        _bodyHandler.RightForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-                        zero = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
-                        AniForce(RightPunchingAniData, _frameCount, zero);
-                    }
-                    break;
-            }
+        if (target)
             return;
+
+        Transform partTransform = _bodyHandler.Chest.transform;
+
+        BodyPart bodyPartHand = _bodyHandler.LeftHand;
+        BodyPart bodyPartForarm = _bodyHandler.LeftForarm;
+        AniFrameData[] aniFrameDatas = LeftPunchingAniData;
+
+        if(side == Side.Right)
+        {
+            bodyPartHand = _bodyHandler.RightHand;
+            bodyPartForarm = _bodyHandler.RightForarm;
+            aniFrameDatas = RightPunchingAniData;
+        }
+
+        for (int i = 0; i < aniFrameDatas.Length; i++)
+        {
+            Transform transform2 = bodyPartHand.transform;
+            bodyPartHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+            bodyPartHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+            bodyPartForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+            Vector3 dir = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
+            AniForce(aniFrameDatas, i, dir);
         }
     }
 
     public void ArmActionPunchResetting(Side side)
     {
         Transform partTransform = _bodyHandler.Chest.transform;
-        Vector3 vector = Vector3.zero;
-        int _frameCount = 0;
-        switch (side)
+
+        BodyPart bodyPartHand = _bodyHandler.LeftHand;
+        BodyPart bodyPartForarm = _bodyHandler.LeftForarm;
+        AniAngleData[] aniAngleDatas = LeftPunchResettingAniData;
+
+        if (side == Side.Right)
         {
-            case Side.Left:
-                for (int i = 0; i < LeftPunchResettingAniData.Length; i++)
-                {
-                    _frameCount = i;
-                    vector = _bodyHandler.Chest.transform.right / 2f;
-                    _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
-                    _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
-                    _bodyHandler.LeftForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
-                    AniAngleForce(LeftPunchResettingAniData, _frameCount, vector);
-                }
-                break;
-            case Side.Right:
-                for (int i = 0; i < RightPunchResettingAniData.Length; i++)
-                {
-                    _frameCount = i;
-                    vector = -_bodyHandler.Chest.transform.right / 2f;
-                    _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
-                    _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
-                    _bodyHandler.RightForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
-                    AniAngleForce(RightPunchResettingAniData, _frameCount, vector);
-                }
-                break;
+            bodyPartHand = _bodyHandler.RightHand;
+            bodyPartForarm = _bodyHandler.RightForarm;
+            aniAngleDatas = RightPunchResettingAniData;
+        }
+
+        for (int i = 0; i < aniAngleDatas.Length; i++)
+        {
+            bodyPartHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+            bodyPartHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+            bodyPartForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+            Vector3 dir = partTransform.transform.right / 2f;
+            AniAngleForce(LeftPunchResettingAniData, i, dir);
         }
     }
 
@@ -951,7 +915,6 @@ public class PlayerController : MonoBehaviour
 
         }
     }
-
 
     public void Move()
     {
@@ -1010,8 +973,6 @@ public class PlayerController : MonoBehaviour
         num4++;
         rightLegPose = ((num4 <= 3) ? ((Pose)num4) : Pose.Bent);
     }
-
-
 
     private void RunCyclePoseLeg(Side side, Pose pose)
     {
