@@ -75,3 +75,7 @@ crashlytics-build.properties
 [Aa]ssets/[Ss]treamingAssets/aa/*
 
 # End of https://www.toptal.com/developers/gitignore/api/unity
+
+# Settings-minpark96
+PartyIsOver/Assets/Photon/PhotonUnityNetworking/Resources/PhotonServerSettings.asset
+PartyIsOver/ProjectSettings/EditorBuildSettings.asset

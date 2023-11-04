@@ -151,7 +151,8 @@
             Clears all pool items with byte array sizes between lower and upper inclusively.
             </summary>
             <remarks>
-            Use this if you sent some unusually large RaiseEvents and believe the buffers of that size
+            Use this if you sent some unusually large 
+            s and believe the buffers of that size
             will not be needed again, and you would like to free up the buffer memory.
             </remarks>
         </member>
