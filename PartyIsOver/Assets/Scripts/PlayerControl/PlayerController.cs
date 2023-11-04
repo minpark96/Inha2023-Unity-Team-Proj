@@ -425,8 +425,7 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator ForwardRollDelay(float delay)
     {
-        StartCoroutine(ForwardRoll());
-
+        yield return ForwardRoll(0.07f,0.2f, 0.2f, 0.2f, 0.2f);
         yield return new WaitForSeconds(delay);
 
         //다시 회복
@@ -434,10 +433,46 @@ public class PlayerController : MonoBehaviour
         //_actor.StatusHandler.StartCoroutine("RestoreBodySpring");
     }
 
-    IEnumerator ForwardRoll()
+    IEnumerator ForwardRoll(float duration, float readyRoll, float startRoll, float rolling, float endRoll)
     {
         int _frameCount = 0;
+        _actor.StatusHandler.StartCoroutine("ResetBodySpring");
+        float rollTime = Time.time;
 
+        while (Time.time + readyRoll < readyRoll)
+        {
+            _frameCount = 0;
+            AniForce(RollAniData, _frameCount);
+            yield return new WaitForSeconds(duration);
+        }
+        rollTime = Time.time;
+        while (Time.time + readyRoll < startRoll)
+        {
+            _frameCount = 1;
+            AniForce(RollAniData, _frameCount);
+            yield return new WaitForSeconds(duration);
+        }
+        rollTime = Time.time;
+        while (Time.time + readyRoll < rolling)
+        {
+            _frameCount = 2;
+            AniForce(RollAniData, _frameCount);
+            yield return new WaitForSeconds(duration);
+        }
+        rollTime = Time.time;
+        _actor.actorState = ActorState.Stand;
+        while (Time.time + readyRoll < endRoll)
+        {
+            _frameCount = 3;
+            AniForce(RollAniData, _frameCount);
+            yield return new WaitForSeconds(duration);
+        }
+        
+    }
+
+    IEnumerator ForwardRoll_old()
+    {
+        int _frameCount = 0;
         //스프링 풀기
         //ResetBodySpring();
         _actor.StatusHandler.StartCoroutine("ResetBodySpring");
