@@ -669,7 +669,7 @@ public class PlayerController : MonoBehaviour
                     Transform transform2 = _bodyHandler.LeftFoot.transform;
                     _bodyHandler.LeftFoot.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
                     _bodyHandler.LeftThigh.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-                    //bodyHandler.RightFoot.PartInteractable.damageModifier = InteractableObject.Damage.Punch; µ¥¹ÌÁö
+                    _bodyHandler.RightFoot.PartInteractable.damageModifier = InteractableObject.Damage.DropKick;
                     Vector3 dir = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
                     AniForce(DropAniData, i, dir);
                 }

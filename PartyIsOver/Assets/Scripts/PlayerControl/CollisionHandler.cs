@@ -78,7 +78,7 @@ public class CollisionHandler : MonoBehaviour
                         damage *= 700f;
                         break;
                     }
-                case InteractableObject.Damage.DivingKick:
+                case InteractableObject.Damage.DropKick:
                     //actor.applyedForce = 0.5f;
                     damage *= 140f;
                     contact.thisCollider.attachedRigidbody.AddForce(contact.normal * 25f, ForceMode.VelocityChange);

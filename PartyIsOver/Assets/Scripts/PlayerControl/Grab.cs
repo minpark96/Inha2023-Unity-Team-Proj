@@ -188,6 +188,7 @@ public class Grab : MonoBehaviourPun
         {
             GrabItem.gameObject.layer = LayerMask.NameToLayer("Item");
             GrabItem.GetComponent<Item>().Body.gameObject.SetActive(true);
+            RangeWeaponSkin.gameObject.SetActive(false);
             GrabItem = null;
             _isRightGrab = false;
             _isLeftGrab = false;
@@ -381,6 +382,7 @@ public class Grab : MonoBehaviourPun
             case ItemType.Ranged:
                 {
                     item.GetComponent<Item>().Body.gameObject.SetActive(false);
+                    RangeWeaponSkin.gameObject.SetActive(true);
                     targetPosition = -_jointChest.transform.up;
                 }
                 break;

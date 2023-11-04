@@ -10,7 +10,7 @@ public class InteractableObject : MonoBehaviour
         Default = 1,
         Object = 2,
         Punch = 3,
-        DivingKick = 4,
+        DropKick = 4,
         Headbutt = 5,
         Knockout = 6,
         Special= 7,
