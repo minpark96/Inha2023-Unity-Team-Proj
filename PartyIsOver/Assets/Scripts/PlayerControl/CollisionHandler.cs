@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class CollisionHandler : MonoBehaviour
@@ -109,6 +110,9 @@ public class CollisionHandler : MonoBehaviour
                     break;
             }
 
+            num2 = ApplyBodyPartDamageModifier(num2);
+            num2 *= actor.PlayerAttackPoint;
+
 
             //데미지 적용
             num2 = Mathf.RoundToInt(num2);
@@ -128,12 +132,34 @@ public class CollisionHandler : MonoBehaviour
                 }
             }
 
-
-
             //Debug.Log(collision.gameObject.name);
-
         }
+    }
 
+    float ApplyBodyPartDamageModifier(float damage)
+    {
+        if (transform == actor.BodyHandler.RightArm.transform ||
+            transform == actor.BodyHandler.LeftArm.transform)
+            damage *= actor.ArmMultiple;
+        else if (transform == actor.BodyHandler.RightForarm.transform ||
+            transform == actor.BodyHandler.LeftForarm.transform)
+            damage *= actor.ArmMultiple;
+        else if (transform == actor.BodyHandler.RightHand.transform ||
+            transform == actor.BodyHandler.LeftHand.transform)
+            damage *= actor.HandMultiple;
+        else if (transform == actor.BodyHandler.RightLeg.transform ||
+            transform == actor.BodyHandler.LeftLeg.transform)
+            damage *= actor.LegMultiple;
+        else if (transform == actor.BodyHandler.RightThigh.transform ||
+            transform == actor.BodyHandler.LeftThigh.transform)
+            damage *= actor.LegMultiple;
+        else if (transform == actor.BodyHandler.RightFoot.transform ||
+            transform == actor.BodyHandler.LeftFoot.transform)
+            damage *= actor.LegMultiple;
+        else if (transform == actor.BodyHandler.Head.transform)
+            damage *= actor.HeadMultiple;
+
+        return damage;
     }
 
     //private void OnCollisionEnter(Collision collision)

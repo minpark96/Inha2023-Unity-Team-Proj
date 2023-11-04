@@ -18,6 +18,7 @@ TagManager:
   - Body (High Priority)
   - Prop (Medium Priority)
   - Camera Target (Track)
+  - ItemHandle
   layers:
   - Default
   - TransparentFX

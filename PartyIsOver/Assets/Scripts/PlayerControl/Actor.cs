@@ -7,7 +7,8 @@ public class Actor : MonoBehaviourPun
 {
     public StatusHandler StatusHandler;
     public BodyHandler BodyHandler;
-    public PlayerController PlayerControll;
+    public PlayerController PlayerController;
+    
 
     public enum ActorState
     {
@@ -19,6 +20,7 @@ public class Actor : MonoBehaviourPun
         Fall = 0x20,
         Climb = 0x40,
         Debuff = 0x80,
+        Roll,
     }
 
     public enum DebuffState
@@ -33,6 +35,13 @@ public class Actor : MonoBehaviourPun
         Invisible =     0x01000000,  // Åõ¸í
         Strong =        0x10000000,  // ºÒ²ö
     }
+
+    public float HeadMultiple = 1.5f;
+    public float ArmMultiple = 0.8f;
+    public float HandMultiple = 0.8f;
+    public float LegMultiple = 0.8f;
+    public float DamageReduction = 0f;
+    public float PlayerAttackPoint = 1f;
 
 
     public ActorState actorState = ActorState.Stand;
@@ -51,7 +60,7 @@ public class Actor : MonoBehaviourPun
         DontDestroyOnLoad(this.gameObject);
         BodyHandler = GetComponent<BodyHandler>();
         StatusHandler = GetComponent<StatusHandler>();
-        PlayerControll = GetComponent<PlayerController>();
+        PlayerController = GetComponent<PlayerController>();
     }
    
 
@@ -59,12 +68,12 @@ public class Actor : MonoBehaviourPun
     {
         if (actorState != lastActorState)
         {
-            PlayerControll.isStateChange = true;
+            PlayerController.isStateChange = true;
             Debug.Log("stateChange");
         }
         else
         {
-            PlayerControll.isStateChange = false;
+            PlayerController.isStateChange = false;
         }
 
 
@@ -76,17 +85,19 @@ public class Actor : MonoBehaviourPun
             case ActorState.Unconscious:
                 break;
             case ActorState.Stand:
-                PlayerControll.Stand();
+                PlayerController.Stand();
                 break;
             case ActorState.Run:
-                PlayerControll.Move();
+                PlayerController.Move();
                 break;
             case ActorState.Jump:
-                PlayerControll.Jump();
+                PlayerController.Jump();
                 break;
             case ActorState.Fall:
                 break;
             case ActorState.Climb:
+                break;
+            case ActorState.Roll:
                 break;
         }
 
