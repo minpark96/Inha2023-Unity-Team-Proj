@@ -88,41 +88,6 @@ public class Grab : MonoBehaviourPun
     {
         _grabDelayTimer -= Time.deltaTime;
 
-        if (GrabItem != null)
-        {
-            // 놓기
-            
-
-            // 임시 코드
-            if (Input.GetKeyDown(KeyCode.Alpha1))
-            {
-                Debug.Log("아이템 타입1");
-                _itemType = 1;
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha2))
-            {
-                Debug.Log("아이템 타입2");
-                _itemType = 2;
-            }
-
-
-            // 펀치와 합칠 필요 있음 > Input.GetMouseButtonDown(0)
-            if (Input.GetKeyDown(KeyCode.L))
-            {
-                switch (_itemType)
-                {
-                    case 1:
-                        Item1(GrabItem);
-                        break;
-                    case 2:
-                        Item2(GrabItem);
-                        break;
-                }
-            }
-
-            
-
-        }
     }
 
     public void OnMouseEvent_EquipItem(Define.MouseEvent evt)
@@ -135,6 +100,7 @@ public class Grab : MonoBehaviourPun
                 break;
             case Define.MouseEvent.Press:
                 {
+
                 }
                 break;
             case Define.MouseEvent.PointerUp:
@@ -145,9 +111,14 @@ public class Grab : MonoBehaviourPun
                 {
                     if (Input.GetMouseButtonUp(0))
                     {
-                        if(GrabItem.GetComponent<Item>().ItemType == ItemType.TwoHanded ||
-                            GrabItem.GetComponent<Item>().ItemType == ItemType.OneHanded)
-                            _actor.PlayerController.PunchAndGrab();
+                        //if(GrabItem.GetComponent<Item>().ItemType == ItemType.TwoHanded ||
+                        //    GrabItem.GetComponent<Item>().ItemType == ItemType.OneHanded)
+                        //    _actor.PlayerController.PunchAndGrab();
+                        if (GrabItem.GetComponent<Item>().ItemType == ItemType.TwoHanded)
+                            StartCoroutine(HorizontalAttack());
+                        else if(GrabItem.GetComponent<Item>().ItemType == ItemType.OneHanded)
+                            StartCoroutine(VerticalAttack());
+
                     }
                     if (Input.GetMouseButtonUp(1))
                     {
@@ -219,6 +190,8 @@ public class Grab : MonoBehaviourPun
         else
         {
             //서치타겟이 아이템이 아닐 때
+
+
 
             //타겟의 가장 가까운 지점으로 손을 뻗어서 접촉시 그랩상태로 들어감
             //타겟의 위치와 거리에 따라 양손그랩, 한손그랩이 들어감
@@ -449,20 +422,7 @@ public class Grab : MonoBehaviourPun
     }
 
 
-
-
-    // 묘비: 위에서 아래로 찍어내리기
-    private void Item1(GameObject grabGameObj)
-    {
-        StartCoroutine("Item1Action", grabGameObj);
-    }
-    // 냉동참치: 360도 회전
-    private void Item2(GameObject grabGameObj)
-    {
-        StartCoroutine("Item2Action", grabGameObj);
-    }
-
-    IEnumerator Item1Action(GameObject grabGameObj)
+    IEnumerator VerticalAttack()
     {
         int forcingCount = 2000;
 
@@ -479,14 +439,14 @@ public class Grab : MonoBehaviourPun
 
         yield return 0;
     }
-    IEnumerator Item2Action(GameObject grabGameObj)
+    IEnumerator HorizontalAttack()
     {
         int forcingCount = 5000;
 
         _jointLeft.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce*3, 0, 0));
         _jointRight.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce*3, 0, 0));
 
-
+        Debug.Log("h");
         while (forcingCount > 0)
         {
             AlignToVector(_jointLeft.GetComponent<Rigidbody>(), _jointLeft.transform.position, new Vector3(0.2f, 0f, 0f), 0.1f, 2f);
@@ -505,12 +465,32 @@ public class Grab : MonoBehaviourPun
 
             forcingCount--;
         }
-        Debug.Log("코루틴 끝");
 
         yield return 0;
     }
 
-   
+    void UsePotion()
+    {
+        _jointLeft.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 3, 0, 0));
+        _jointRight.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 3, 0, 0));
+
+        Debug.Log("h");
+
+        AlignToVector(_jointLeft.GetComponent<Rigidbody>(), _jointLeft.transform.position, new Vector3(0.2f, 0f, 0f), 0.1f, 2f);
+        AlignToVector(_jointLeftForeArm.GetComponent<Rigidbody>(), _jointLeftForeArm.transform.position, new Vector3(0.2f, 0f, 0f), 0.1f, 2f);
+        AlignToVector(_jointLeftUpperArm.GetComponent<Rigidbody>(), _jointLeftUpperArm.transform.position, new Vector3(0.2f, 0f, 0f), 0.1f, 2f);
+
+        AlignToVector(_jointRight.GetComponent<Rigidbody>(), _jointRight.transform.position, _jointLeft.transform.position, 0.1f, 2f);
+        AlignToVector(_jointRightForeArm.GetComponent<Rigidbody>(), _jointRightForeArm.transform.position, _jointLeftForeArm.transform.position, 0.1f, 2f);
+        AlignToVector(_jointRightUpperArm.GetComponent<Rigidbody>(), _jointRightUpperArm.transform.position, _jointLeftUpperArm.transform.position, 0.1f, 2f);
+
+        AlignToVector(_jointChest.GetComponent<Rigidbody>(), _jointChest.transform.position, _jointLeft.transform.position, 0.1f, 2f);
+
+        //AlignToVector(_jointRight.GetComponent<Rigidbody>(), _jointRight.transform.position, new Vector3(0.2f, 0f, 0f), 0.1f, 0.1f);
+        //AlignToVector(_jointRightForeArm.GetComponent<Rigidbody>(), _jointRightForeArm.transform.position, new Vector3(0.2f, 0f, 0f), 0.1f, 0.1f);
+        //AlignToVector(_jointRightUpperArm.GetComponent<Rigidbody>(), _jointRightUpperArm.transform.position, new Vector3(0.2f, 0f, 0f), 0.1f, 0.1f);
+
+    }
 
 
 

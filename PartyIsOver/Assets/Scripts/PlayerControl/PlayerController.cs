@@ -215,11 +215,6 @@ public class PlayerController : MonoBehaviour
 
         switch (evt)
         {
-            case Define.KeyboardEvent.Press:
-                {
-
-                }
-                break;
             case Define.KeyboardEvent.PointerDown:
                 {
                     if (Input.GetKeyUp(KeyCode.R))
@@ -683,6 +678,9 @@ public class PlayerController : MonoBehaviour
             //스프링 복구
             //RestoreSpringTrigger();
             _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
+            _bodyHandler.LeftLeg.PartInteractable.damageModifier = InteractableObject.Damage.Default; 
+            _bodyHandler.RightLeg.PartInteractable.damageModifier = InteractableObject.Damage.Default; 
+
 
         }
         yield return null;
