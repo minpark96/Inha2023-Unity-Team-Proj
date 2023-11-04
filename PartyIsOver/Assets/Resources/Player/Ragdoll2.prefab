@@ -9839,6 +9839,7 @@ GameObject:
   - component: {fileID: 5164006939630707523}
   - component: {fileID: 5164006939630707521}
   - component: {fileID: 5164006939630707520}
+  - component: {fileID: 2082881364}
   m_Layer: 7
   m_Name: Ragdoll2
   m_TagString: Untagged
@@ -9853,7 +9854,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5169983603716950214}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 2.95, y: 0, z: 2.739}
   m_LocalScale: {x: 1, y: 1.0000002, z: 1.0000002}
   m_ConstrainProportionsScale: 0
@@ -10104,8 +10105,8 @@ MonoBehaviour:
     - {fileID: 5069075246722378390}
     ForceDirections: 0000000000000000
     ForcePowerValues:
-    - 20
-    - 30
+    - 40
+    - 60
   LeftPunchingAniData:
   - StandardRigidbodies:
     - {fileID: 5150062576097496874}
@@ -10115,8 +10116,8 @@ MonoBehaviour:
     - {fileID: 5068901783686819345}
     ForceDirections: 0000000000000000
     ForcePowerValues:
-    - 20
-    - 30
+    - 40
+    - 60
   RightPunchResettingAniData:
   - StandardRigidbodies:
     - {fileID: 5150391404254772956}
@@ -10289,7 +10290,7 @@ MonoBehaviour:
   isStateChange: 0
   RSkillDelayTime: 0
   MaxSpeed: 10
-  PunchDelay: 0.5
+  PunchDelay: 0.15
   _idleTimer: 0
   isAI: 0
 --- !u!114 &5164006939630707526
@@ -10323,7 +10324,7 @@ MonoBehaviour:
   detectionRadius: 3
   layerMask:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 1344
   maxAngle: 90
 --- !u!114 &5164006939630707521
 MonoBehaviour:
@@ -10375,6 +10376,18 @@ MonoBehaviour:
   _freezeTime: 3
   _shockTime: 3
   _stunTime: 3
+--- !u!114 &2082881364
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5169983603716950214}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed7dbf9958ea1234c969b763dce58da1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5170124894939591614
 GameObject:
   m_ObjectHideFlags: 0
