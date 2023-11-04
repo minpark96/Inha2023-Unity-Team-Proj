@@ -57,6 +57,9 @@ public class PlayerController : MonoBehaviour
     public AniFrameData[] RollAniData;
 
     [SerializeField]
+    public AniAngleData[] RollAngleAniData;
+
+    [SerializeField]
     public AniFrameData[] DropAniData;
 
     [SerializeField]
@@ -110,7 +113,6 @@ public class PlayerController : MonoBehaviour
     private TargetingHandler targetingHandler;
 
     private Grab _grab;
-
     private Actor _actor;
 
     public bool isGrounded;
@@ -150,6 +152,9 @@ public class PlayerController : MonoBehaviour
 
     public bool isAI = false;
 
+    Rigidbody _hipRB;
+    Transform _hipTF;
+
     Pose leftArmPose;
     Pose rightArmPose;
     Pose leftLegPose;
@@ -185,7 +190,6 @@ public class PlayerController : MonoBehaviour
     {
         _bodyHandler.BodySetup();
     }
-
     private ConfigurableJoint[] childJoints;
     private ConfigurableJointMotion[] originalYMotions;
     private ConfigurableJointMotion[] originalZMotions;
@@ -195,6 +199,8 @@ public class PlayerController : MonoBehaviour
         _bodyHandler = GetComponent<BodyHandler>();
         targetingHandler = GetComponent<TargetingHandler>();
         _actor = GetComponent<Actor>();
+        _hipRB = transform.Find("GreenHip").GetComponent<Rigidbody>();
+        _hipTF = transform.Find("GreenHip");
 
         childJoints = GetComponentsInChildren<ConfigurableJoint>();
         originalYMotions = new ConfigurableJointMotion[childJoints.Length];
@@ -268,28 +274,25 @@ public class PlayerController : MonoBehaviour
 
     void ForceRready()
     {
-        int _frameCount;
-
         for (int i = 0; i < TestRready1.Length; i++)
         {
-            _frameCount = i;
-            AniForce(TestRready1, _frameCount);
+            AniForce(TestRready1, i);
         }
     }
 
     IEnumerator Rready()
     {
+        Debug.Log("1");
+
         for (int i = 0; i < childJoints.Length; i++)
         {
             childJoints[i].angularYMotion = ConfigurableJointMotion.Locked;
             childJoints[i].angularZMotion = ConfigurableJointMotion.Locked;
         }
-        int _frameCount;
 
         for (int i = 0; i < TestRready2.Length; i++)
         {
-            _frameCount = i;
-            AniAngleForce(TestRready2, _frameCount);
+            AniAngleForce(TestRready2, i);
         }
         yield return new WaitForSeconds(1f);
     }
@@ -415,7 +418,7 @@ public class PlayerController : MonoBehaviour
     IEnumerator ForwardRollDelay(float delay)
     {
         _isCoroutineRoll = true;
-        yield return ForwardRoll(0.07f,0.2f, 0.2f, 0.2f, 0.2f);
+        yield return ForwardRoll(0.07f,1.5f);
         yield return new WaitForSeconds(delay);
         _isCoroutineRoll = false;
 
@@ -424,85 +427,57 @@ public class PlayerController : MonoBehaviour
         //_actor.StatusHandler.StartCoroutine("RestoreBodySpring");
     }
 
-    IEnumerator ForwardRoll(float duration, float readyRoll, float startRoll, float rolling, float endRoll)
+    IEnumerator ReadyCHild()
     {
-        int _frameCount = 0;
+        
+        yield return null;
+    }
+
+
+    IEnumerator ForwardRoll(float duration, float readyRoll)
+    {
+        _actor.StatusHandler.StartCoroutine("ResetBodySpring");
+        _hipRB.constraints &= ~RigidbodyConstraints.FreezeRotationX;
+        float rollTime = Time.time;
+
+        while (Time.time - rollTime < readyRoll)
+        {
+            AniAngleForce(RollAngleAniData, 0);
+            AniForce(RollAniData, 0);
+            yield return new WaitForSeconds(duration);
+        }
+
+        _hipRB.constraints |= RigidbodyConstraints.FreezeRotationX;
+        _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
+        _actor.actorState = ActorState.Stand;
+    }
+
+    IEnumerator ForwardRoll_old(float duration, float readyRoll, float startRoll, float rolling, float endRoll)
+    {
         _actor.StatusHandler.StartCoroutine("ResetBodySpring");
         float rollTime = Time.time;
 
         while (Time.time - rollTime < readyRoll)
         {
-            _frameCount = 0;
-            AniForce(RollAniData, _frameCount);
+            AniAngleForce(RollAngleAniData, 0);
             yield return new WaitForSeconds(duration);
         }
         rollTime = Time.time;
         while (Time.time - rollTime < startRoll)
         {
-            _frameCount = 1;
-            AniForce(RollAniData, _frameCount);
+            AniForce(RollAniData, 0);
             yield return new WaitForSeconds(duration);
         }
         rollTime = Time.time;
         while (Time.time - rollTime < rolling)
         {
-            _frameCount = 2;
-            AniForce(RollAniData, _frameCount);
+            AniAngleForce(RollAngleAniData, 1);
             yield return new WaitForSeconds(duration);
         }
-        rollTime = Time.time;
         _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
-        while (Time.time - rollTime < endRoll)
-        {
-            _frameCount = 3;
-            AniForce(RollAniData, _frameCount);
-            yield return new WaitForSeconds(duration);
-        }
         _actor.actorState = ActorState.Stand;
     }
-
-    IEnumerator ForwardRoll_old()
-    {
-        int _frameCount = 0;
-        //스프링 풀기
-        //ResetBodySpring();
-        _actor.StatusHandler.StartCoroutine("ResetBodySpring");
-        while (_rollTime < 10.2f)
-        {
-            Time.timeScale = 0.2f;
-            _rollTime += Time.fixedDeltaTime;
-
-            if (_rollTime <= 0.1f)
-            {
-                _frameCount = 0;
-                AniForce(RollAniData, _frameCount);
-            }
-            if (_rollTime >= 0.2f && _rollTime < 0.5f)
-            {
-                _frameCount = 1;
-                AniForce(RollAniData, _frameCount);
-            }
-            if (_rollTime >= 0.5f && _rollTime < 0.8f)
-            {
-                _frameCount = 2;
-                AniForce(RollAniData, _frameCount);
-            }
-            if (_rollTime >= 0.8f && _rollTime < 1f)
-            {
-                _frameCount = 3;
-                AniForce(RollAniData, _frameCount);
-            }
-            if (_rollTime >= 1f && _rollTime < 10.2f)
-            {
-                _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
-                _frameCount = 4;
-                AniForce(RollAniData, _frameCount);
-            }
-        }
-        _rollTime = 0;
-        _actor.actorState = ActorState.Stand;
-        yield return null;
-    }
+   
 
     Vector3 GetForceDirection(AniFrameData data, int index)
     {
@@ -603,7 +578,7 @@ public class PlayerController : MonoBehaviour
             Vector3 _targetDirection = GetAngleDirection(_aniAngleData[_elementCount].TargetAngleDirections[i],
                 _aniAngleData[_elementCount].TargetDirection[i]);
 
-            AlignToVector(_aniAngleData[_elementCount].StandardRigidbodies[i], _angleDirection, _targetDirection,
+            AlignToVectorOld(_aniAngleData[_elementCount].StandardRigidbodies[i], _angleDirection, _targetDirection,
                 _aniAngleData[_elementCount].AngleStability[i], _aniAngleData[_elementCount].AnglePowerValues[i]);
         }
     }
@@ -683,7 +658,8 @@ public class PlayerController : MonoBehaviour
             //스프링 복구
             //RestoreSpringTrigger();
             _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
-
+            _bodyHandler.LeftLeg.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+            _bodyHandler.RightLeg.PartInteractable.damageModifier = InteractableObject.Damage.Default;
         }
         yield return null;
     }
@@ -1183,6 +1159,23 @@ public class PlayerController : MonoBehaviour
     }
 
     public void AlignToVector(Rigidbody part, Vector3 alignmentVector, Vector3 targetVector, float stability, float speed)
+    {
+        if (part == null)
+        {
+            return;
+        }
+        Vector3 vector = Vector3.Cross(Quaternion.AngleAxis(part.angularVelocity.magnitude * 57.29578f * stability / speed, part.angularVelocity) * alignmentVector, targetVector * 10f);
+        if (!float.IsNaN(vector.x) && !float.IsNaN(vector.y) && !float.IsNaN(vector.z))
+        {
+            part.AddTorque(vector * speed * speed);
+            {
+                Debug.DrawRay(part.position, alignmentVector * 0.2f, Color.red, 0f, depthTest: false);
+                Debug.DrawRay(part.position, targetVector * 0.2f, Color.green, 0f, depthTest: false);
+            }
+        }
+    }
+
+    public void AlignToVectorOld(Rigidbody part, Vector3 alignmentVector, Vector3 targetVector, float stability, float speed)
     {
         if (part == null)
         {
