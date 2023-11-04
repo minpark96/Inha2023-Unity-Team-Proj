@@ -324,6 +324,7 @@ public class StatusHandler : MonoBehaviour
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Exhausted;
         angularXDrive.positionSpring = _xPosSpringAry[0];
+
         actor.BodyHandler.BodyParts[0].PartJoint.angularXDrive = angularXDrive;
         _stamina = 100;
 
