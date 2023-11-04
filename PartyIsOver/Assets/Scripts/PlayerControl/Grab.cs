@@ -11,7 +11,9 @@ using static Define;
 public class Grab : MonoBehaviourPun
 {
     private TargetingHandler _targetingHandler;
-    InteractableObject _searchTarget;
+    private BodyHandler _bodyHandler;
+    private InteractableObject _searchTarget;
+    private Actor _actor;
 
     bool _isRightGrab = false;
     bool _isLeftGrab = false;
@@ -21,15 +23,15 @@ public class Grab : MonoBehaviourPun
     public bool _isGrabbing {get; private set;}
 
 
-    private GameObject _grabItem;
+    public GameObject GrabItem;
+    public Transform RangeWeaponSkin;
+
     private Rigidbody _leftHandRigid;
     private Rigidbody _rightHandRigid;
 
-    // 양손 추가
     private FixedJoint _grabJointLeft;
     private FixedJoint _grabJointRight;
 
-    // 양손 자세 추가
     private ConfigurableJoint _jointLeft;
     private ConfigurableJoint _jointRight;
     private ConfigurableJoint _jointLeftForeArm;
@@ -40,8 +42,7 @@ public class Grab : MonoBehaviourPun
 
     Vector3 targetPosition;
 
-
-    private BodyHandler _bodyHandler;
+    
 
     public GrabObjectType GrabObjectType = GrabObjectType.None;
 
@@ -61,7 +62,7 @@ public class Grab : MonoBehaviourPun
     {
         _bodyHandler = transform.root.GetComponent<BodyHandler>();
         _targetingHandler = GetComponent<TargetingHandler>();
-
+        _actor = GetComponent<Actor>();
         _bodyHandler.BodySetup();
 
 
@@ -84,19 +85,10 @@ public class Grab : MonoBehaviourPun
     {
         _grabDelayTimer -= Time.deltaTime;
 
-        if (_grabItem != null)
+        if (GrabItem != null)
         {
             // 놓기
-            if (Input.GetMouseButtonDown(1))
-            {
-                Debug.Log("놨다");
-
-
-                _isRightGrab = false;
-                _isLeftGrab = false;
-                DestroyJoint();
-                return;
-            }
+            
 
             // 임시 코드
             if (Input.GetKeyDown(KeyCode.Alpha1))
@@ -117,10 +109,10 @@ public class Grab : MonoBehaviourPun
                 switch (_itemType)
                 {
                     case 1:
-                        Item1(_grabItem);
+                        Item1(GrabItem);
                         break;
                     case 2:
-                        Item2(_grabItem);
+                        Item2(GrabItem);
                         break;
                 }
             }
@@ -130,16 +122,51 @@ public class Grab : MonoBehaviourPun
         }
     }
 
+    public void OnMouseEvent_EquipItem(Define.MouseEvent evt)
+    {
+        switch (evt)
+        {
+            case Define.MouseEvent.PointerDown:
+                {
+                }
+                break;
+            case Define.MouseEvent.Press:
+                {
+                }
+                break;
+            case Define.MouseEvent.PointerUp:
+                {
+                }
+                break;
+            case Define.MouseEvent.Click:
+                {
+                    if (Input.GetMouseButtonUp(0))
+                    {
+                        if(GrabItem.GetComponent<Item>().ItemType == ItemType.TwoHanded ||
+                            GrabItem.GetComponent<Item>().ItemType == ItemType.OneHanded)
+                            _actor.PlayerController.PunchAndGrab();
+                    }
+                    if (Input.GetMouseButtonUp(1))
+                    {
+                        GrabReset();
+                    }
+                }
+                break;
+        }
+    }
+
+
+
     public void GrabPose()
     {
-        if(_grabItem.GetComponent<Item>().ItemType == ItemType.Ranged)
+        if(GrabItem.GetComponent<Item>().ItemType == ItemType.Ranged)
         {
-            _jointLeft.targetPosition = _grabItem.GetComponent<Item>().TwoHandedPos.position;
-            _jointRight.targetPosition = _grabItem.GetComponent<Item>().OneHandedPos.position;
+            _jointLeft.targetPosition = GrabItem.GetComponent<Item>().TwoHandedPos.position;
+            _jointRight.targetPosition = GrabItem.GetComponent<Item>().OneHandedPos.position;
         }
-        else if(_grabItem.GetComponent<Item>().ItemType == ItemType.OneHanded)
+        else if(GrabItem.GetComponent<Item>().ItemType == ItemType.OneHanded)
         {
-            _jointRight.targetPosition = _grabItem.GetComponent<Item>().OneHandedPos.position;
+            _jointRight.targetPosition = GrabItem.GetComponent<Item>().OneHandedPos.position;
         }
 
         // 기본 잡기 자세
@@ -154,6 +181,15 @@ public class Grab : MonoBehaviourPun
     public void GrabReset()
     {
         _isGrabbing = false;
+        if(GrabItem != null)
+        {
+            GrabItem.gameObject.layer = LayerMask.NameToLayer("Item");
+            GrabItem.GetComponent<Item>().Body.gameObject.SetActive(true);
+            GrabItem = null;
+            _isRightGrab = false;
+            _isLeftGrab = false;
+        }
+        DestroyJoint();
     }
 
     public void Grabbing()
@@ -202,61 +238,57 @@ public class Grab : MonoBehaviourPun
                     else
                         return;
                     //아이템에 맞게 관절조정 함수 추가해야함
+
+                    JointFix(Side.Right);
                 }
                 break;
             case ItemType.TwoHanded:
                 {
                     //아이템 방향따라 오른쪽 손잡이를 오른손으로 잡기 진행
-                    if (ItemDirCheck(item))
-                    {
-                        Vector3 dir = item.OneHandedPos.position - _rightHandRigid.transform.position;
-                        _rightHandRigid.AddForce(dir * 90f);
-
-                        Vector3 dir2 = item.TwoHandedPos.position - _leftHandRigid.transform.position;
-                        _leftHandRigid.AddForce(dir2 * 90f);
-
-                        if (ItemGrabCheck(item, Side.Both))
-                            ItemRotate(item.transform, true);
-                        else
-                            return;
-                    }
-                    else
-                    {
-                        Vector3 dir = item.TwoHandedPos.position - _rightHandRigid.transform.position;
-                        _rightHandRigid.AddForce(dir * 90f);
-
-                        Vector3 dir2 = item.OneHandedPos.position - _leftHandRigid.transform.position;
-                        _leftHandRigid.AddForce(dir2 * 90f);
-
-                        if(ItemGrabCheck(item,Side.Both))
-                            ItemRotate(item.transform, false);
-                        else
-                            return;
-                    }
-                    JointFix(Side.Left);
+                    TwoHandedGrab(item);
                 }
                 break;
             case ItemType.Ranged:
                 {
-                    Vector3 dir = item.OneHandedPos.position - _rightHandRigid.transform.position;
-                    _rightHandRigid.AddForce(dir * 90f);
-
-                    Vector3 dir2 = item.TwoHandedPos.position - _leftHandRigid.transform.position;
-                    _leftHandRigid.AddForce(dir2 * 90f);
-
-                    if (ItemGrabCheck(item, Side.Both))
-                        ItemRotate(item.transform, false);
-                    else
-                        return;
-                    JointFix(Side.Left);
+                    TwoHandedGrab(item);
                 }
                 break;
+        }
+    }
 
+    void TwoHandedGrab(Item item)
+    {
+        if (ItemDirCheck(item))
+        {
+            Vector3 dir = item.OneHandedPos.position - _rightHandRigid.transform.position;
+            _rightHandRigid.AddForce(dir * 90f);
 
+            dir = item.TwoHandedPos.position - _leftHandRigid.transform.position;
+            _leftHandRigid.AddForce(dir * 90f);
+
+            if (ItemGrabCheck(item, Side.Both))
+                ItemRotate(item.transform, true);
+            else
+                return;
+        }
+        else
+        {
+            Vector3 dir = item.TwoHandedPos.position - _rightHandRigid.transform.position;
+            _rightHandRigid.AddForce(dir * 90f);
+
+            dir = item.OneHandedPos.position - _leftHandRigid.transform.position;
+            _leftHandRigid.AddForce(dir * 90f);
+
+            if (ItemGrabCheck(item, Side.Both))
+                ItemRotate(item.transform, false);
+            else
+                return;
         }
 
+        JointFix(Side.Left);
         JointFix(Side.Right);
     }
+
 
     /// <summary>
     /// 손이 아이템에 제대로 접촉했는지 체크 후 관절생성
@@ -268,7 +300,7 @@ public class Grab : MonoBehaviourPun
         {
             _grabDelayTimer = 0.5f;
             GrabObjectType = GrabObjectType.None;
-            _grabItem = item.transform.root.gameObject;
+            GrabItem = item.transform.root.gameObject;
             return true;
         }
         return false;
@@ -313,16 +345,10 @@ public class Grab : MonoBehaviourPun
         Vector3 toOneHandedHandle = (item.OneHandedPos.position - _jointChest.transform.position).normalized; // 오른손이 잡아야할 oneHanded 손잡이 벡터
         Vector3 crossProduct = Vector3.Cross(toItem, toOneHandedHandle);
 
-        if (crossProduct.y > 0)
-        {
-            // 원핸드 손잡이가 오른쪽
-            return true;
-        }
+        if (crossProduct.y > 0) 
+            return true;// 원핸드 손잡이가 오른쪽
         else
-        {
-            // 원핸드 손잡이가 왼쪽
-            return false;
-        }
+            return false;// 원핸드 손잡이가 왼쪽
     }
 
 
@@ -350,13 +376,15 @@ public class Grab : MonoBehaviourPun
                     targetPosition = _jointChest.transform.forward;
                 break;
             case ItemType.Ranged:
-                targetPosition = -_jointChest.transform.up;
+                {
+                    item.GetComponent<Item>().Body.gameObject.SetActive(false);
+                    targetPosition = -_jointChest.transform.up;
+                }
                 break;
             case ItemType.Potion:
                     targetPosition = _jointChest.transform.forward;
                 break;
         }
-
         //item.gameObject.layer = gameObject.layer;
         item.transform.right = -targetPosition.normalized;
 
@@ -369,7 +397,7 @@ public class Grab : MonoBehaviourPun
         //잡기에 성공했을경우 관절 생성 및 일부 고정
         if (side == Side.Left )
         {
-            _grabJointLeft = _grabItem.AddComponent<FixedJoint>();
+            _grabJointLeft = GrabItem.AddComponent<FixedJoint>();
             _grabJointLeft.connectedBody = _leftHandRigid;
             _grabJointLeft.breakForce = 9001;
 
@@ -382,7 +410,7 @@ public class Grab : MonoBehaviourPun
         }
         else if (side == Side.Right )
         {
-            _grabJointRight = _grabItem.AddComponent<FixedJoint>();
+            _grabJointRight = GrabItem.AddComponent<FixedJoint>();
             _grabJointRight.connectedBody = _rightHandRigid;
             _grabJointRight.breakForce = 9001;
 
@@ -398,9 +426,6 @@ public class Grab : MonoBehaviourPun
     {
         Destroy(_grabJointLeft);
         Destroy(_grabJointRight);
-
-        _grabItem = null;
-
 
         // 관절 복구
         _jointLeft.angularYMotion = ConfigurableJointMotion.Limited;
