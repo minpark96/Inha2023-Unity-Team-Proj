@@ -1,8 +1,9 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Actor : MonoBehaviour
+public class Actor : MonoBehaviourPun
 {
     public StatusHandler StatusHandler;
     public BodyHandler BodyHandler;
@@ -54,9 +55,16 @@ public class Actor : MonoBehaviour
 
     public DebuffState debuffState = DebuffState.Default;
 
+    public static GameObject LocalPlayerInstance;
 
     private void Awake()
     {
+        if (photonView.IsMine)
+        {
+            LocalPlayerInstance = this.gameObject;
+        }
+        DontDestroyOnLoad(this.gameObject);
+
         BodyHandler = GetComponent<BodyHandler>();
         StatusHandler = GetComponent<StatusHandler>();
         PlayerController = GetComponent<PlayerController>();
