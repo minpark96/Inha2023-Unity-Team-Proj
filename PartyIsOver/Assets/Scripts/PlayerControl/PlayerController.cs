@@ -373,7 +373,7 @@ public class PlayerController : MonoBehaviour
         else
             isRun = false;
     }
-
+    
     #region ±âÁî¸ğ
     private Rigidbody ray;
 
