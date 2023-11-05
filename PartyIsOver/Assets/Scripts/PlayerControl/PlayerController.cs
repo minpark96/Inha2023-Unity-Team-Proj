@@ -166,6 +166,9 @@ public class PlayerController : MonoBehaviour
     Vector3 _angleDirection;
     Vector3 _targetDirection;
 
+    private Dictionary<Transform, Quaternion> initialRotations = new Dictionary<Transform, Quaternion>();
+
+
     public enum Side
     {
         Left = 0,
@@ -411,7 +414,23 @@ public class PlayerController : MonoBehaviour
     private void ForwardRollTrigger()
     {
         if(!_isCoroutineRoll)
+        {
             StartCoroutine(ForwardRollDelay(3f));
+            Transform[] childTransforms = GetComponentsInChildren<Transform>();
+            foreach (Transform childTransform in childTransforms)
+            {
+                initialRotations[childTransform] = childTransform.localRotation;
+            }
+        }
+    }
+
+    public void RestoreRotations()
+    {
+        // 저장한 초기 rotation 값을 다시 적용합니다.
+        foreach (var entry in initialRotations)
+        {
+            entry.Key.localRotation = entry.Value;
+        }
     }
 
     IEnumerator ForwardRollDelay(float delay)
@@ -426,13 +445,6 @@ public class PlayerController : MonoBehaviour
         //_actor.StatusHandler.StartCoroutine("RestoreBodySpring");
     }
 
-    IEnumerator ReadyCHild()
-    {
-        
-        yield return null;
-    }
-
-
     IEnumerator ForwardRoll(float duration, float readyRoll)
     {
         _actor.StatusHandler.StartCoroutine("ResetBodySpring");
@@ -446,9 +458,11 @@ public class PlayerController : MonoBehaviour
             yield return new WaitForSeconds(duration);
         }
 
+        RestoreRotations();
         _hipRB.constraints |= RigidbodyConstraints.FreezeRotationX;
         _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
         _actor.actorState = ActorState.Stand;
+
     }
 
     IEnumerator ForwardRoll_old(float duration, float readyRoll, float startRoll, float rolling, float endRoll)
