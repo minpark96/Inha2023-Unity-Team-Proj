@@ -426,6 +426,9 @@ public class Grab : MonoBehaviourPun
         _jointLeft.GetComponent<Rigidbody>().AddForce(new Vector3(0, _turnForce, 0));
         _jointRight.GetComponent<Rigidbody>().AddForce(new Vector3(0, _turnForce, 0));
 
+        Debug.Log("VerticalAttack");
+
+
         while (forcingCount > 0)
         {
             AlignToVector(_jointLeft.GetComponent<Rigidbody>(), _jointLeft.transform.position, new Vector3(0f, 0.2f, 0f), 0.1f, 6f);
@@ -443,7 +446,7 @@ public class Grab : MonoBehaviourPun
         _jointLeft.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce*3, 0, 0));
         _jointRight.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce*3, 0, 0));
 
-        Debug.Log("h");
+        Debug.Log("horizontalAttack");
         while (forcingCount > 0)
         {
             AlignToVector(_jointLeft.GetComponent<Rigidbody>(), _jointLeft.transform.position, new Vector3(0.2f, 0f, 0f), 0.1f, 2f);
@@ -462,6 +465,7 @@ public class Grab : MonoBehaviourPun
 
             forcingCount--;
         }
+        Debug.Log("코루틴 끝");
 
         yield return 0;
     }
@@ -489,6 +493,10 @@ public class Grab : MonoBehaviourPun
 
     }
 
+    void FireProjectile()
+    {
+
+    }
 
 
     //리지드바디 part의 alignmentVector방향을 targetVector방향으로 회전
