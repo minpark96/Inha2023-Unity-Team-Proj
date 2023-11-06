@@ -116,6 +116,10 @@ public class PlayerController : MonoBehaviour
     private Grab _grab;
     private Actor _actor;
 
+    public float ReadyPunch = 0.1f;
+    public float Punching = 0.1f;
+    public float ResetPunch = 0.3f;
+
     public bool isGrounded;
     public bool isRun;
     public bool isMove;
@@ -743,7 +747,7 @@ public class PlayerController : MonoBehaviour
     {
 
         _isCoroutineRunning = true;
-        yield return Punch(side, 0.07f, 0.1f, 0.1f, 0.3f);
+        yield return Punch(side, 0.07f, ReadyPunch, Punching, ResetPunch);
         yield return new WaitForSeconds(delay);
         _isCoroutineRunning = false;
     }
@@ -776,7 +780,7 @@ public class PlayerController : MonoBehaviour
      */
 
     //값이 들어 오는게 0.01 0.1 0.1 0.3
-    IEnumerator Punch(Side side, float duration, float readyTime, float punchTime,float resettingTime)
+    IEnumerator Punch(Side side, float duration, float readyTime, float punchTime,float resetTime)
     {
         float checkTime = Time.time;
 
@@ -794,7 +798,7 @@ public class PlayerController : MonoBehaviour
         }
         checkTime = Time.time;
 
-        while (Time.time - checkTime < resettingTime)
+        while (Time.time - checkTime < resetTime)
         {
             ArmActionPunchResetting(side);
             yield return new WaitForSeconds(duration);
