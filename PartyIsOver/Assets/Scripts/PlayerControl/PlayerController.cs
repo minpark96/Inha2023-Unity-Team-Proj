@@ -404,12 +404,9 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator testcase()
     {
-        int _frameCount;
-
         for (int i = 0; i < TestRready2.Length; i++)
         {
-            _frameCount = i;
-            AniAngleForce(TestRready2, _frameCount);
+            AniAngleForce(TestRready2, i);
         }
 
         yield return null;
@@ -419,12 +416,13 @@ public class PlayerController : MonoBehaviour
     {
         if(!_isCoroutineRoll)
         {
-            StartCoroutine(ForwardRollDelay(3f));
             Transform[] childTransforms = GetComponentsInChildren<Transform>();
             foreach (Transform childTransform in childTransforms)
             {
                 initialRotations[childTransform] = childTransform.localRotation;
             }
+
+            StartCoroutine(ForwardRollDelay(3f));
         }
     }
 
@@ -443,10 +441,6 @@ public class PlayerController : MonoBehaviour
         yield return ForwardRoll(0.07f,1.5f);
         yield return new WaitForSeconds(delay);
         _isCoroutineRoll = false;
-
-        //다시 회복
-        //RestoreSpringTrigger();
-        //_actor.StatusHandler.StartCoroutine("RestoreBodySpring");
     }
 
     IEnumerator ForwardRoll(float duration, float readyRoll)
