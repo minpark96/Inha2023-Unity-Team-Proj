@@ -5580,7 +5580,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5164006939630707582}
-  m_RootOrder: 10
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &3365814731327851670
 Rigidbody:
@@ -7899,7 +7899,7 @@ Transform:
   m_Children:
   - {fileID: 7613673029169691110}
   m_Father: {fileID: 5164006939630707582}
-  m_RootOrder: 6
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!136 &5070107337095981484
 CapsuleCollider:
@@ -8120,7 +8120,7 @@ Transform:
   - {fileID: 9161922701773012603}
   - {fileID: 7167868894689633484}
   m_Father: {fileID: 5164006939630707582}
-  m_RootOrder: 4
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!136 &5070676647335331915
 CapsuleCollider:
@@ -8717,7 +8717,7 @@ Transform:
   - {fileID: 8672610265966427658}
   - {fileID: 5164144746239226852}
   m_Father: {fileID: 5164006939630707582}
-  m_RootOrder: 3
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!136 &5070781527122417228
 CapsuleCollider:
@@ -8936,7 +8936,7 @@ Transform:
   m_Children:
   - {fileID: 3674146846749940325}
   m_Father: {fileID: 5164006939630707582}
-  m_RootOrder: 2
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!136 &5070032428324279287
 CapsuleCollider:
@@ -9156,7 +9156,7 @@ Transform:
   - {fileID: 6026303775750416852}
   - {fileID: 6539017304165819431}
   m_Father: {fileID: 5164006939630707582}
-  m_RootOrder: 8
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!136 &5070930102950019811
 CapsuleCollider:
@@ -9595,7 +9595,7 @@ Transform:
   m_Children:
   - {fileID: 1876905128374464283}
   m_Father: {fileID: 5164006939630707582}
-  m_RootOrder: 9
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!136 &5070944147653744277
 CapsuleCollider:
@@ -10215,7 +10215,7 @@ Transform:
   - {fileID: 165677321738583965}
   - {fileID: 7063263571882023361}
   m_Father: {fileID: 5164006939630707582}
-  m_RootOrder: 1
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!54 &5150041985222952710
 Rigidbody:
@@ -10415,7 +10415,6 @@ GameObject:
   - component: {fileID: 5164006939630707520}
   - component: {fileID: 2082881364}
   - component: {fileID: -2979741912738784003}
-  - component: {fileID: -4852433551159537254}
   m_Layer: 7
   m_Name: Ragdoll2
   m_TagString: Untagged
@@ -10436,16 +10435,16 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7167868894082623177}
-  - {fileID: 5167280749045366728}
-  - {fileID: 5167082102304172294}
-  - {fileID: 5164184801533818450}
-  - {fileID: 5166887327713608788}
-  - {fileID: 5163944778516892771}
-  - {fileID: 5166829500882293250}
   - {fileID: 6210198329121031468}
-  - {fileID: 5167102377172443495}
-  - {fileID: 5167200909828775987}
   - {fileID: 3406290343782578698}
+  - {fileID: 5166829500882293250}
+  - {fileID: 5167200909828775987}
+  - {fileID: 5163944778516892771}
+  - {fileID: 5167102377172443495}
+  - {fileID: 5166887327713608788}
+  - {fileID: 5164184801533818450}
+  - {fileID: 5167082102304172294}
+  - {fileID: 5167280749045366728}
   - {fileID: 5164199765165057040}
   - {fileID: 5166921885974893282}
   - {fileID: 5166944635759495556}
@@ -10490,22 +10489,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Root: {fileID: 5164006939630707582}
   BodyParts: []
-  Head: {fileID: 5015787384701703986}
-  Chest: {fileID: 5014860434847319107}
-  Waist: {fileID: 5014804370705970448}
-  Hip: {fileID: 5070676647335331912}
-  LeftArm: {fileID: 5015685618108127322}
-  LeftForarm: {fileID: 5015406720499631859}
-  LeftHand: {fileID: 5068901783686819347}
-  LeftThigh: {fileID: 5018433394129415002}
-  LeftLeg: {fileID: 5014908378340600409}
   LeftFoot: {fileID: 6210198329121031475}
-  RightArm: {fileID: 5018455412112069697}
-  RightForarm: {fileID: 5015364474370536174}
-  RightHand: {fileID: 5069075246722378384}
-  RightThigh: {fileID: 5018449923900053348}
-  RightLeg: {fileID: 5018425065884028287}
   RightFoot: {fileID: 3365814731327851671}
+  LeftLeg: {fileID: 5014908378340600409}
+  RightLeg: {fileID: 5018425065884028287}
+  LeftThigh: {fileID: 5018433394129415002}
+  RightThigh: {fileID: 5018449923900053348}
+  Hip: {fileID: 5070676647335331912}
+  Waist: {fileID: 5014804370705970448}
+  Chest: {fileID: 5014860434847319107}
+  Head: {fileID: 5015787384701703986}
+  LeftArm: {fileID: 5015685618108127322}
+  RightArm: {fileID: 5018455412112069697}
+  LeftForarm: {fileID: 5015406720499631859}
+  RightForarm: {fileID: 5015364474370536174}
+  LeftHand: {fileID: 5068901783686819347}
+  RightHand: {fileID: 5069075246722378384}
   Ball: {fileID: 5014761802810601888}
 --- !u!114 &5164006939630707522
 MonoBehaviour:
@@ -10521,103 +10520,72 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RollAniData:
   - StandardRigidbodies:
-    - {fileID: 5150041985222952710}
-    - {fileID: 5150619769091741460}
-    - {fileID: 5150844099323961327}
-    - {fileID: 5150844099323961327}
+    - {fileID: 5150041985222952710, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+    - {fileID: 5150643447561375322, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+    - {fileID: 5150643447561375322, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+    - {fileID: 5150844099323961327, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+    - {fileID: 5150844099323961327, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+    - {fileID: 5150698295106137226, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+    - {fileID: 5117554088992720254, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ActionRigidbodies:
-    - {fileID: 5150041985222952710}
-    - {fileID: 5150619769091741460}
-    - {fileID: 5150844099323961327}
-    - {fileID: 5150844099323961327}
-    ForceDirections: 02000000020000000200000004000000
+    - {fileID: 5150041985222952710, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+    - {fileID: 5150643447561375322, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+    - {fileID: 5150643447561375322, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+    - {fileID: 5150844099323961327, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+    - {fileID: 5150844099323961327, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+    - {fileID: 5150698295106137226, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+    - {fileID: 5117554088992720254, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+    ForceDirections: 02000000040000000200000004000000020000000300000003000000
     ForcePowerValues:
+    - 100
     - 20
-    - 20
-    - 20
-    - 20
+    - 100
+    - 100
+    - 100
+    - 100
+    - 100
+  RollAngleAniData:
   - StandardRigidbodies:
-    - {fileID: 5150041985222952710}
-    - {fileID: 5150619769091741460}
-    - {fileID: 5150844099323961327}
-    ActionRigidbodies:
-    - {fileID: 5150041985222952710}
-    - {fileID: 5150619769091741460}
-    - {fileID: 5150844099323961327}
-    ForceDirections: 020000000200000004000000
-    ForcePowerValues:
-    - 30
-    - 50
+    - {fileID: 5150844099323961327, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+    ActionDirection:
+    - {fileID: 5166887327713608788, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+    TargetDirection:
+    - {fileID: 5166887327713608788, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+    ActionAngleDirections: 03000000
+    TargetAngleDirections: 01000000
+    AngleStability:
+    - 0.01
+    AnglePowerValues:
     - 200
-  - StandardRigidbodies:
-    - {fileID: 5150041985222952710}
-    - {fileID: 5150643447561375322}
-    - {fileID: 5150643447561375322}
-    ActionRigidbodies:
-    - {fileID: 5150041985222952710}
-    - {fileID: 5150643447561375322}
-    - {fileID: 5150643447561375322}
-    ForceDirections: 020000000400000002000000
-    ForcePowerValues:
-    - 100
-    - 20
-    - 100
-  - StandardRigidbodies:
-    - {fileID: 5150041985222952710}
-    - {fileID: 5150643447561375322}
-    - {fileID: 5150643447561375322}
-    ActionRigidbodies:
-    - {fileID: 5150041985222952710}
-    - {fileID: 5150643447561375322}
-    - {fileID: 5150643447561375322}
-    ForceDirections: 020000000400000003000000
-    ForcePowerValues:
-    - 100
-    - 20
-    - 100
-  - StandardRigidbodies:
-    - {fileID: 5150041985222952710}
-    - {fileID: 5150643447561375322}
-    - {fileID: 5150643447561375322}
-    ActionRigidbodies:
-    - {fileID: 5150041985222952710}
-    - {fileID: 5150643447561375322}
-    - {fileID: 5150643447561375322}
-    ForceDirections: 020000000400000002000000
-    ForcePowerValues:
-    - 100
-    - 20
-    - 100
-  RollAngleAniData: []
   DropAniData:
   - StandardRigidbodies:
-    - {fileID: 5150844099323961327}
-    - {fileID: 5150844099323961327}
+    - {fileID: 5150844099323961327, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+    - {fileID: 5150844099323961327, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ActionRigidbodies:
-    - {fileID: 5117554088992720254}
-    - {fileID: 3365814731327851670}
+    - {fileID: 5117554088992720254, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+    - {fileID: 3365814731327851670, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ForceDirections: 0000000000000000
     ForcePowerValues:
     - 100
     - 100
   - StandardRigidbodies:
-    - {fileID: 5150844099323961327}
-    - {fileID: 5150844099323961327}
+    - {fileID: 5150844099323961327, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+    - {fileID: 5150844099323961327, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ActionRigidbodies:
-    - {fileID: 5150698295106137226}
-    - {fileID: 6210198329121031474}
+    - {fileID: 5150698295106137226, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+    - {fileID: 6210198329121031474, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ForceDirections: 0000000000000000
     ForcePowerValues:
     - 100
     - 100
   - StandardRigidbodies:
-    - {fileID: 5150041985222952710}
-    - {fileID: 5150041985222952710}
-    - {fileID: 5150041985222952710}
+    - {fileID: 5150041985222952710, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+    - {fileID: 5150041985222952710, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+    - {fileID: 5150041985222952710, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ActionRigidbodies:
-    - {fileID: 5150041985222952710}
-    - {fileID: 5150619769091741460}
-    - {fileID: 5150643447561375322}
+    - {fileID: 5150041985222952710, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+    - {fileID: 5150619769091741460, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+    - {fileID: 5150643447561375322, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ForceDirections: 030000000300000003000000
     ForcePowerValues:
     - 50
@@ -10625,11 +10593,11 @@ MonoBehaviour:
     - 50
   RightPunchAniData:
   - StandardRigidbodies:
-    - {fileID: 5150062576097496874}
+    - {fileID: 5150062576097496874, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ActionDirection:
-    - {fileID: 5164199765165057040}
+    - {fileID: 5164199765165057040, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     TargetDirection:
-    - {fileID: 5167082102304172294}
+    - {fileID: 5167082102304172294, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ActionAngleDirections: 03000000
     TargetAngleDirections: 05000000
     AngleStability:
@@ -10637,11 +10605,11 @@ MonoBehaviour:
     AnglePowerValues:
     - 20
   - StandardRigidbodies:
-    - {fileID: 5150466505743223006}
+    - {fileID: 5150466505743223006, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ActionDirection:
-    - {fileID: 5167268553317947687}
+    - {fileID: 5167268553317947687, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     TargetDirection:
-    - {fileID: 5167082102304172294}
+    - {fileID: 5167082102304172294, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ActionAngleDirections: 03000000
     TargetAngleDirections: 02000000
     AngleStability:
@@ -10650,11 +10618,11 @@ MonoBehaviour:
     - 20000
   LeftPunchAniData:
   - StandardRigidbodies:
-    - {fileID: 5150062576097496874}
+    - {fileID: 5150062576097496874, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ActionDirection:
-    - {fileID: 5164199765165057040}
+    - {fileID: 5164199765165057040, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     TargetDirection:
-    - {fileID: 5167082102304172294}
+    - {fileID: 5167082102304172294, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ActionAngleDirections: 03000000
     TargetAngleDirections: 05000000
     AngleStability:
@@ -10662,11 +10630,11 @@ MonoBehaviour:
     AnglePowerValues:
     - 20
   - StandardRigidbodies:
-    - {fileID: 5149915107359780329}
+    - {fileID: 5149915107359780329, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ActionDirection:
-    - {fileID: 5166944635759495556}
+    - {fileID: 5166944635759495556, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     TargetDirection:
-    - {fileID: 5167082102304172294}
+    - {fileID: 5167082102304172294, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ActionAngleDirections: 03000000
     TargetAngleDirections: 02000000
     AngleStability:
@@ -10675,33 +10643,33 @@ MonoBehaviour:
     - 20000
   RightPunchingAniData:
   - StandardRigidbodies:
-    - {fileID: 5150391404254772956}
-    - {fileID: 5069075246722378390}
+    - {fileID: 5150391404254772956, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+    - {fileID: 5069075246722378390, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ActionRigidbodies:
-    - {fileID: 5150391404254772956}
-    - {fileID: 5069075246722378390}
+    - {fileID: 5150391404254772956, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+    - {fileID: 5069075246722378390, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ForceDirections: 0000000000000000
     ForcePowerValues:
     - 40
     - 60
   LeftPunchingAniData:
   - StandardRigidbodies:
-    - {fileID: 5150062576097496874}
-    - {fileID: 5068901783686819345}
+    - {fileID: 5150062576097496874, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+    - {fileID: 5068901783686819345, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ActionRigidbodies:
-    - {fileID: 5150062576097496874}
-    - {fileID: 5068901783686819345}
+    - {fileID: 5150062576097496874, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+    - {fileID: 5068901783686819345, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ForceDirections: 0000000000000000
     ForcePowerValues:
     - 40
     - 60
   RightPunchResettingAniData:
   - StandardRigidbodies:
-    - {fileID: 5150391404254772956}
+    - {fileID: 5150391404254772956, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ActionDirection:
-    - {fileID: 5167082102304172294}
+    - {fileID: 5167082102304172294, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     TargetDirection:
-    - {fileID: 5167082102304172294}
+    - {fileID: 5167082102304172294, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ActionAngleDirections: 03000000
     TargetAngleDirections: 01000000
     AngleStability:
@@ -10709,11 +10677,11 @@ MonoBehaviour:
     AnglePowerValues:
     - 20
   - StandardRigidbodies:
-    - {fileID: 5069075246722378390}
+    - {fileID: 5069075246722378390, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ActionDirection:
-    - {fileID: 5167082102304172294}
+    - {fileID: 5167082102304172294, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     TargetDirection:
-    - {fileID: 5167082102304172294}
+    - {fileID: 5167082102304172294, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ActionAngleDirections: 03000000
     TargetAngleDirections: 02000000
     AngleStability:
@@ -10722,11 +10690,11 @@ MonoBehaviour:
     - 0.01
   LeftPunchResettingAniData:
   - StandardRigidbodies:
-    - {fileID: 5150062576097496874}
+    - {fileID: 5150062576097496874, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ActionDirection:
-    - {fileID: 5167082102304172294}
+    - {fileID: 5167082102304172294, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     TargetDirection:
-    - {fileID: 5167082102304172294}
+    - {fileID: 5167082102304172294, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ActionAngleDirections: 03000000
     TargetAngleDirections: 01000000
     AngleStability:
@@ -10734,11 +10702,11 @@ MonoBehaviour:
     AnglePowerValues:
     - 20
   - StandardRigidbodies:
-    - {fileID: 5068901783686819345}
+    - {fileID: 5068901783686819345, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ActionDirection:
-    - {fileID: 5167082102304172294}
+    - {fileID: 5167082102304172294, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     TargetDirection:
-    - {fileID: 5167082102304172294}
+    - {fileID: 5167082102304172294, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ActionAngleDirections: 03000000
     TargetAngleDirections: 02000000
     AngleStability:
@@ -10747,33 +10715,33 @@ MonoBehaviour:
     - 0.01
   MoveForceJumpAniData:
   - StandardRigidbodies:
-    - {fileID: 5150844099323961327}
+    - {fileID: 5150844099323961327, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ActionRigidbodies:
-    - {fileID: 5150619769091741460}
+    - {fileID: 5150619769091741460, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ForceDirections: 00000000
     ForcePowerValues:
     - 170
   - StandardRigidbodies:
-    - {fileID: 5150844099323961327}
+    - {fileID: 5150844099323961327, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ActionRigidbodies:
-    - {fileID: 5150643447561375322}
+    - {fileID: 5150643447561375322, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ForceDirections: 00000000
     ForcePowerValues:
     - 170
   - StandardRigidbodies:
-    - {fileID: 5150844099323961327}
+    - {fileID: 5150844099323961327, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ActionRigidbodies:
-    - {fileID: 5150844099323961327}
+    - {fileID: 5150844099323961327, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ForceDirections: 00000000
     ForcePowerValues:
     - 6
   MoveAngleJumpAniData:
   - StandardRigidbodies:
-    - {fileID: 5150041985222952710}
+    - {fileID: 5150041985222952710, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ActionDirection:
-    - {fileID: 5167280749045366728}
+    - {fileID: 5167280749045366728, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     TargetDirection:
-    - {fileID: 5167280749045366728}
+    - {fileID: 5167280749045366728, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ActionAngleDirections: 01000000
     TargetAngleDirections: 00000000
     AngleStability:
@@ -10781,11 +10749,11 @@ MonoBehaviour:
     AnglePowerValues:
     - 0.1
   - StandardRigidbodies:
-    - {fileID: 5150041985222952710}
+    - {fileID: 5150041985222952710, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ActionDirection:
-    - {fileID: 5167280749045366728}
+    - {fileID: 5167280749045366728, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     TargetDirection:
-    - {fileID: 5167280749045366728}
+    - {fileID: 5167280749045366728, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ActionAngleDirections: 03000000
     TargetAngleDirections: 03000000
     AngleStability:
@@ -10794,26 +10762,26 @@ MonoBehaviour:
     - 0.1
   HeadingAniData:
   - StandardRigidbodies:
-    - {fileID: 5150041985222952710}
+    - {fileID: 5150041985222952710, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ActionRigidbodies:
-    - {fileID: 5150041985222952710}
+    - {fileID: 5150041985222952710, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ForceDirections: 02000000
     ForcePowerValues:
     - 50
   - StandardRigidbodies:
-    - {fileID: 5150041985222952710}
+    - {fileID: 5150041985222952710, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ActionRigidbodies:
-    - {fileID: 5150619769091741460}
+    - {fileID: 5150619769091741460, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ForceDirections: 02000000
     ForcePowerValues:
     - 50
   HeadingAngleAniData:
   - StandardRigidbodies:
-    - {fileID: 5150041985222952710}
+    - {fileID: 5150041985222952710, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ActionDirection:
-    - {fileID: 5167280749045366728}
+    - {fileID: 5167280749045366728, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     TargetDirection:
-    - {fileID: 5167280749045366728}
+    - {fileID: 5167280749045366728, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ActionAngleDirections: 01000000
     TargetAngleDirections: 00000000
     AngleStability:
@@ -10821,11 +10789,11 @@ MonoBehaviour:
     AnglePowerValues:
     - 0.1
   - StandardRigidbodies:
-    - {fileID: 5150041985222952710}
+    - {fileID: 5150041985222952710, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ActionDirection:
-    - {fileID: 5167280749045366728}
+    - {fileID: 5167280749045366728, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     TargetDirection:
-    - {fileID: 5167280749045366728}
+    - {fileID: 5167280749045366728, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ActionAngleDirections: 03000000
     TargetAngleDirections: 00000000
     AngleStability:
@@ -10833,17 +10801,33 @@ MonoBehaviour:
     AnglePowerValues:
     - 0.1
   TestRready1:
-  - StandardRigidbodies: []
-    ActionRigidbodies: []
-    ForceDirections: 
-    ForcePowerValues: []
+  - StandardRigidbodies:
+    - {fileID: 5150619769091741460, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+    - {fileID: 5150619769091741460, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+    - {fileID: 5150619769091741460, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+    ActionRigidbodies:
+    - {fileID: 5150466505743223006, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+    - {fileID: 5069075246722378390, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+    - {fileID: 5150391404254772956, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+    ForceDirections: 070000000200000003000000
+    ForcePowerValues:
+    - 1
+    - 1
+    - 2
+  - StandardRigidbodies:
+    - {fileID: 5150619769091741460, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+    ActionRigidbodies:
+    - {fileID: 5068901783686819345, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+    ForceDirections: 02000000
+    ForcePowerValues:
+    - 1
   TestRready2:
   - StandardRigidbodies:
-    - {fileID: 5069075246722378390}
+    - {fileID: 5069075246722378390, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ActionDirection:
-    - {fileID: 5167280749045366728}
+    - {fileID: 5167280749045366728, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     TargetDirection:
-    - {fileID: 5167280749045366728}
+    - {fileID: 5167280749045366728, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
     ActionAngleDirections: 01000000
     TargetAngleDirections: 03000000
     AngleStability:
@@ -10851,13 +10835,12 @@ MonoBehaviour:
     AnglePowerValues:
     - 100
   RunSpeed: 100
-  _hips: {fileID: 5150844099323961327}
-  _cameraArm: {fileID: 4401259382300767454}
+  _hips: {fileID: 5150844099323961327, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
   _bodyHandler: {fileID: 0}
   targetingHandler: {fileID: 0}
-  ReadyPunch: 0.1
-  Punching: 0.1
-  ResetPunch: 0.3
+  ReadyPunch: 0
+  Punching: 0
+  ResetPunch: 0
   isGrounded: 0
   isRun: 0
   isMove: 0
@@ -10918,6 +10901,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0444d9ac95de644cb7ff3b6d6c356fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CameraArm: {fileID: 0}
   StatusHandler: {fileID: 0}
   BodyHandler: {fileID: 0}
   PlayerController: {fileID: 0}
@@ -10990,18 +10974,6 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &-4852433551159537254
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5169983603716950214}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76b6c03489acdd542a554d8f0a29233b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &5170124894939591614
 GameObject:
   m_ObjectHideFlags: 0
@@ -14300,7 +14272,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5164006939630707582}
-  m_RootOrder: 7
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &6210198329121031474
 Rigidbody:
