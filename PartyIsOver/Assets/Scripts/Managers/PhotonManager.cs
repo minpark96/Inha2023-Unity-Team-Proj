@@ -28,7 +28,13 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     static PhotonManager p_instance;
 
-    static float _position;
+    List<Vector3> _spawnPoints = new List<Vector3> { 
+        new Vector3(5f, 5f, 0f), 
+        new Vector3(2.5f, 5f, 4.33f), 
+        new Vector3(-2.5f, 5f, 4.33f), 
+        new Vector3(-5f, 5f, 0f), 
+        new Vector3(-2.5f, 5f, -4.33f), 
+        new Vector3(2.5f, 5f, -4.33f) };
 
     #endregion
 
@@ -163,8 +169,28 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         {
             Debug.LogFormat("PhotonManager.cs => We are Instantiating LocalPlayer from {0}", SceneManagerHelper.ActiveSceneName);
             // we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
-            float position = UnityEngine.Random.Range(0f, 30f);
-            PhotonNetwork.Instantiate(_playerPrefab, new Vector3(position, 5f, position), Quaternion.identity, 0);
+            
+            switch (PhotonNetwork.LocalPlayer.ActorNumber)
+            {
+                case 1:
+                    PhotonNetwork.Instantiate(_playerPrefab, _spawnPoints[0], Quaternion.identity, 0);
+                    break;
+                case 2:
+                    PhotonNetwork.Instantiate(_playerPrefab, _spawnPoints[1], Quaternion.identity, 0);
+                    break;
+                case 3:
+                    PhotonNetwork.Instantiate(_playerPrefab, _spawnPoints[2], Quaternion.identity, 0);
+                    break;
+                case 4:
+                    PhotonNetwork.Instantiate(_playerPrefab, _spawnPoints[3], Quaternion.identity, 0);
+                    break;
+                case 5:
+                    PhotonNetwork.Instantiate(_playerPrefab, _spawnPoints[4], Quaternion.identity, 0);
+                    break;
+                case 6:
+                    PhotonNetwork.Instantiate(_playerPrefab, _spawnPoints[5], Quaternion.identity, 0);
+                    break;
+            }
         }
     }
 

@@ -10588,6 +10588,7 @@ MonoBehaviour:
     - 100
     - 20
     - 100
+  RollAngleAniData: []
   DropAniData:
   - StandardRigidbodies:
     - {fileID: 5150844099323961327}
@@ -10854,6 +10855,9 @@ MonoBehaviour:
   _cameraArm: {fileID: 4401259382300767454}
   _bodyHandler: {fileID: 0}
   targetingHandler: {fileID: 0}
+  ReadyPunch: 0.1
+  Punching: 0.1
+  ResetPunch: 0.3
   isGrounded: 0
   isRun: 0
   isMove: 0
