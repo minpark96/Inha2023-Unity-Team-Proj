@@ -9,6 +9,7 @@ using static AniFrameData;
 using static AniAngleData;
 using Unity.VisualScripting;
 using Photon.Pun;
+using static Unity.VisualScripting.Metadata;
 
 [System.Serializable]
 public class AniFrameData
@@ -159,7 +160,6 @@ public class PlayerController : MonoBehaviourPun
     public bool isAI = false;
 
     Rigidbody _hipRB;
-    Transform _hipTF;
 
     Pose leftArmPose;
     Pose rightArmPose;
@@ -173,9 +173,9 @@ public class PlayerController : MonoBehaviourPun
     Vector3 _angleDirection;
     Vector3 _targetDirection;
 
-    private Dictionary<Transform, Quaternion> initialRotations = new Dictionary<Transform, Quaternion>();
-
-
+    Rigidbody _childRigidbody;
+    Transform[] _children;
+    private Dictionary<Transform, Quaternion> _initialRotations = new Dictionary<Transform, Quaternion>();
     public enum Side
     {
         Left = 0,
@@ -209,11 +209,12 @@ public class PlayerController : MonoBehaviourPun
         targetingHandler = GetComponent<TargetingHandler>();
         _actor = GetComponent<Actor>();
         _hipRB = transform.Find("GreenHip").GetComponent<Rigidbody>();
-        _hipTF = transform.Find("GreenHip");
 
         childJoints = GetComponentsInChildren<ConfigurableJoint>();
         originalYMotions = new ConfigurableJointMotion[childJoints.Length];
         originalZMotions = new ConfigurableJointMotion[childJoints.Length];
+
+        _children = GetComponentsInChildren<Transform>();
 
         // 원래의 angularXMotion 값을 저장
         for (int i = 0; i < childJoints.Length; i++)
@@ -342,7 +343,7 @@ public class PlayerController : MonoBehaviourPun
                         PunchAndGrab();
                     if (!isGrounded && Input.GetMouseButtonUp(1))
                         DropKickTrigger();
-                    if (Input.GetMouseButtonUp(2))
+                    if (!_isCoroutineRoll && Input.GetMouseButtonUp(2))
                         ForwardRollTrigger();
                 }
                 break;
@@ -439,7 +440,7 @@ public class PlayerController : MonoBehaviourPun
             Transform[] childTransforms = GetComponentsInChildren<Transform>();
             foreach (Transform childTransform in childTransforms)
             {
-                initialRotations[childTransform] = childTransform.localRotation;
+                _initialRotations[childTransform] = childTransform.localRotation;
             }
             StartCoroutine(ForwardRollDelay(3f));
         }
@@ -448,7 +449,7 @@ public class PlayerController : MonoBehaviourPun
     public void RestoreRotations()
     {
         // 저장한 초기 rotation 값을 다시 적용합니다.
-        foreach (var entry in initialRotations)
+        foreach (var entry in _initialRotations)
         {
             entry.Key.localRotation = entry.Value;
         }
@@ -474,40 +475,26 @@ public class PlayerController : MonoBehaviourPun
             AniForce(RollAniData, 0);
             yield return new WaitForSeconds(duration);
         }
+        VelocityZero();
 
         RestoreRotations();
         _hipRB.constraints |= RigidbodyConstraints.FreezeRotationX;
         _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
         _actor.actorState = ActorState.Stand;
-
     }
 
-    IEnumerator ForwardRoll_old(float duration, float readyRoll, float startRoll, float rolling, float endRoll)
+    void VelocityZero()
     {
-        _actor.StatusHandler.StartCoroutine("ResetBodySpring");
-        float rollTime = Time.time;
+        foreach (Transform child in _children)
+        {
+            _childRigidbody = child.GetComponent<Rigidbody>();
 
-        while (Time.time - rollTime < readyRoll)
-        {
-            AniAngleForce(RollAngleAniData, 0);
-            yield return new WaitForSeconds(duration);
+            if (_childRigidbody != null)
+            {
+                _childRigidbody.velocity = Vector3.zero;
+            }
         }
-        rollTime = Time.time;
-        while (Time.time - rollTime < startRoll)
-        {
-            AniForce(RollAniData, 0);
-            yield return new WaitForSeconds(duration);
-        }
-        rollTime = Time.time;
-        while (Time.time - rollTime < rolling)
-        {
-            AniAngleForce(RollAngleAniData, 1);
-            yield return new WaitForSeconds(duration);
-        }
-        _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
-        _actor.actorState = ActorState.Stand;
     }
-   
 
     Vector3 GetForceDirection(AniFrameData data, int index)
     {
