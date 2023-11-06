@@ -1,10 +1,13 @@
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Actor : MonoBehaviourPun
 {
+    public Transform CameraArm;
+
     public StatusHandler StatusHandler;
     public BodyHandler BodyHandler;
     public PlayerController PlayerController;
@@ -52,7 +55,6 @@ public class Actor : MonoBehaviourPun
 
     public ActorState actorState = ActorState.Stand;
     public ActorState lastActorState = ActorState.Run;
-
     public DebuffState debuffState = DebuffState.Default;
 
     public static GameObject LocalPlayerInstance;
@@ -65,8 +67,14 @@ public class Actor : MonoBehaviourPun
         {
             LocalPlayerInstance = this.gameObject;
         }
+        else
+        {
+            // 다른 클라이언트 카메라 끄기
+            transform.GetChild(0).gameObject.SetActive(false);
+        }
         DontDestroyOnLoad(this.gameObject);
 
+        CameraArm = transform.GetChild(0).GetChild(0);
         BodyHandler = GetComponent<BodyHandler>();
         StatusHandler = GetComponent<StatusHandler>();
         PlayerController = GetComponent<PlayerController>();
@@ -85,14 +93,18 @@ public class Actor : MonoBehaviourPun
         }
     }
 
+    private void Update()
+    {
+        if (!photonView.IsMine) return;
+
+        LookAround();
+        CursorControl();
+    }
 
     private void FixedUpdate()
     {
-        if (!photonView.IsMine)
-        {
-            return;
-        }
-
+        if (!photonView.IsMine) return;
+        
         if (actorState != lastActorState)
         {
             PlayerController.isStateChange = true;
@@ -101,7 +113,6 @@ public class Actor : MonoBehaviourPun
         {
             PlayerController.isStateChange = false;
         }
-
 
         switch (actorState)
         {
@@ -127,5 +138,40 @@ public class Actor : MonoBehaviourPun
         }
 
         lastActorState = actorState;
+    }
+
+    //카메라 컨트롤
+    private void LookAround()
+    {
+        CameraArm.parent.transform.position = BodyHandler.Hip.transform.position;
+
+        Vector2 mouseDelta = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+        Vector3 camAngle = CameraArm.rotation.eulerAngles;
+        float x = camAngle.x - mouseDelta.y;
+
+        if (x < 180f)
+        {
+            x = Mathf.Clamp(x, -1f, 70f);
+        }
+        else
+        {
+            x = Mathf.Clamp(x, 335f, 361f);
+        }
+        CameraArm.rotation = Quaternion.Euler(x, camAngle.y + mouseDelta.x, camAngle.z);
+    }
+
+    private void CursorControl()
+    {
+        if (Input.anyKeyDown)
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+
+        if (!Cursor.visible && Input.GetKeyDown(KeyCode.Escape))
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+        }
     }
 }

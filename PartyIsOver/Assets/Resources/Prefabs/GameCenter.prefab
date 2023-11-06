@@ -46,6 +46,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _roomUI: {fileID: 0}
+  _spawnPoints:
+  - {x: 5, y: 5, z: 0}
+  - {x: 2.5, y: 5, z: 4.33}
+  - {x: -2.5, y: 5, z: 4.33}
+  - {x: -5, y: 5, z: 0}
+  - {x: -2.5, y: 5, z: -4.33}
+  - {x: 2.5, y: 5, z: -4.33}
 --- !u!114 &-6182396937385309685
 MonoBehaviour:
   m_ObjectHideFlags: 0
