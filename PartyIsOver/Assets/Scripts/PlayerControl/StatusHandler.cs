@@ -114,12 +114,16 @@ public class StatusHandler : MonoBehaviour
         {
             if(!_hasExhausted)
             {
+                startTime = Time.time; // 디버그용
                 actor.debuffState |= Actor.DebuffState.Exhausted;
                 StartCoroutine(Exhausted(_exhaustedTime));
             }
         }
     }
 
+    // 디버프 시간 관리 (디버그용)
+    float startTime = 0;
+    float endTime = 0;
     private void OnGUI()
     {
         if(this.name == "Ragdoll2")
@@ -127,6 +131,7 @@ public class StatusHandler : MonoBehaviour
             GUI.contentColor = Color.red;
             GUI.Label(new Rect(0, 0, 200, 200), "버프상태:" + actor.debuffState.ToString());
             GUI.Label(new Rect(0, 20, 200, 200), "액션상태:" + actor.actorState.ToString());
+            GUI.Label(new Rect(0, 40, 200, 200), "디버프 걸린 시간:" + (endTime - startTime));
 
             GUI.contentColor = Color.blue;
             GUI.Label(new Rect(0, 60, 200, 200), "체력: " + _health);
@@ -156,6 +161,8 @@ public class StatusHandler : MonoBehaviour
 
     public void DebuffCheck(InteractableObject.Damage type)
     {
+        startTime = Time.time; // 디버그용
+
         if (actor.debuffState == Actor.DebuffState.Freeze) return;
 
         switch (type)
@@ -251,6 +258,8 @@ public class StatusHandler : MonoBehaviour
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.PowerUp;
         actor.PlayerController.RunSpeed -= _maxSpeed * 0.1f;
+
+        endTime = Time.time; // 디버그용
     }
     IEnumerator Burn(float delay)
     {
@@ -271,7 +280,7 @@ public class StatusHandler : MonoBehaviour
                 StopCoroutine(Burn(delay));
             }
 
-            if (Time.time - lastBurnTime >= 1.0f) // 1초간 데미지 받기 + 액션
+            if (Time.time - lastBurnTime >= 1.0f) // 1초간 데미지+액션
             {
                 _health -= _burnDamage;
                 actor.BodyHandler.BodyParts[2].PartRigidbody.AddForce((actor.BodyHandler.Hip.transform.right) * 25, ForceMode.VelocityChange);
@@ -287,6 +296,8 @@ public class StatusHandler : MonoBehaviour
         _hasBurn = false;
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Burn;
+
+        endTime = Time.time; // 디버그용
     }
     IEnumerator Exhausted(float delay)
     {
@@ -317,6 +328,8 @@ public class StatusHandler : MonoBehaviour
 
         actor.BodyHandler.BodyParts[0].PartJoint.angularXDrive = angularXDrive;
         _stamina = 100;
+
+        endTime = Time.time; // 디버그용
     }
     IEnumerator Slow(float delay)
     {
@@ -332,9 +345,13 @@ public class StatusHandler : MonoBehaviour
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Slow;
         actor.PlayerController.RunSpeed += _maxSpeed * 0.1f;
+
+        endTime = Time.time; // 디버그용
     }
     IEnumerator Freeze(float delay)
     {
+        yield return new WaitForSeconds(0.2f);
+
         // 빙결
         _hasFreeze = true;
         actor.actorState = Actor.ActorState.Debuff;
@@ -367,9 +384,13 @@ public class StatusHandler : MonoBehaviour
         {
             actor.BodyHandler.BodyParts[i].PartRigidbody.isKinematic = false;
         }
+
+        endTime = Time.time; // 디버그용
     }
     IEnumerator Shock(float delay)
     {
+        yield return new WaitForSeconds(0.2f);
+
         // 감전
         _hasShock = true;
         actor.actorState = Actor.ActorState.Debuff;
@@ -419,6 +440,8 @@ public class StatusHandler : MonoBehaviour
             yield return null;
         }
 
+        endTime = Time.time; // 디버그용
+
         // 감전 해제
         _hasShock = false;
         actor.actorState = Actor.ActorState.Stand;
@@ -465,6 +488,7 @@ public class StatusHandler : MonoBehaviour
         _hasStun = false;
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Stun;
+        endTime = Time.time;
     }
 
 
@@ -559,4 +583,41 @@ public class StatusHandler : MonoBehaviour
 
         yield return null;
     }
+
+    // player controller로 옮기기
+    IEnumerator RestoreBodySpring()
+    {
+        JointDrive angularXDrive;
+        JointDrive angularYZDrive;
+
+        float startTime = Time.time;
+        float springLerpDuration = 2f;
+
+        while (Time.time < startTime + springLerpDuration)
+        {
+            float elapsed = Time.time - startTime;
+            float percentage = elapsed / springLerpDuration;
+            int j = 0;
+
+            for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
+            {
+                if (i == 3)
+                {
+                    continue;
+                }
+                angularXDrive = actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive;
+                angularXDrive.positionSpring = _xPosSpringAry[j] * percentage;
+
+                actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive = angularXDrive;
+
+                angularYZDrive = actor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive;
+                angularYZDrive.positionSpring = _yzPosSpringAry[j] * percentage;
+                actor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive = angularYZDrive;
+                j++;
+
+                yield return null;
+            }
+        }
+    }
 }
+

@@ -450,7 +450,7 @@ public class PlayerController : MonoBehaviour
             yield return new WaitForSeconds(duration);
         }
         rollTime = Time.time;
-        StartCoroutine("RestoreBodySpring");
+        _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
         while (Time.time - rollTime < endRoll)
         {
             _frameCount = 3;
@@ -463,8 +463,9 @@ public class PlayerController : MonoBehaviour
     IEnumerator ForwardRoll_old()
     {
         int _frameCount = 0;
-        StartCoroutine("ResetBodySpring");
-
+        //스프링 풀기
+        //ResetBodySpring();
+        _actor.StatusHandler.StartCoroutine("ResetBodySpring");
         while (_rollTime < 10.2f)
         {
             Time.timeScale = 0.2f;
@@ -492,7 +493,7 @@ public class PlayerController : MonoBehaviour
             }
             if (_rollTime >= 1f && _rollTime < 10.2f)
             {
-                StartCoroutine("RestoreBodySpring");
+                _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
                 _frameCount = 4;
                 AniForce(RollAniData, _frameCount);
             }
@@ -678,8 +679,9 @@ public class PlayerController : MonoBehaviour
                 }
             }
             yield return new WaitForSeconds(2);
-
-            StartCoroutine("RestoreBodySpring");
+            //스프링 복구
+            //RestoreSpringTrigger();
+            _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
 
         }
         yield return null;
@@ -1195,42 +1197,6 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-
-    IEnumerator RestoreBodySpring()
-    {
-        JointDrive angularXDrive;
-        JointDrive angularYZDrive;
-
-        float startTime = Time.time;
-        float springLerpDuration = 2f;
-
-        while (Time.time < startTime + springLerpDuration)
-        {
-            float elapsed = Time.time - startTime;
-            float percentage = elapsed / springLerpDuration;
-            int j = 0;
-
-            for (int i = 0; i < _bodyHandler.BodyParts.Count; i++)
-            {
-                if (i == 3)
-                {
-                    continue;
-                }
-                angularXDrive = _bodyHandler.BodyParts[i].PartJoint.angularXDrive;
-                angularXDrive.positionSpring = _xPosSpringAry[j] * percentage;
-
-                _bodyHandler.BodyParts[i].PartJoint.angularXDrive = angularXDrive;
-
-                angularYZDrive = _bodyHandler.BodyParts[i].PartJoint.angularYZDrive;
-                angularYZDrive.positionSpring = _yzPosSpringAry[j] * percentage;
-                _bodyHandler.BodyParts[i].PartJoint.angularYZDrive = angularYZDrive;
-                j++;
-
-                yield return null;
-            }
-        }
-    }
-
 
     //카메라 컨트롤
     private void LookAround()

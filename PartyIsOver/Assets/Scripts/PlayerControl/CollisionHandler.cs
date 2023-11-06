@@ -120,9 +120,11 @@ public class CollisionHandler : MonoBehaviour
                     break;
             }
 
-            //데미지 적용
             damage = ApplyBodyPartDamageModifier(damage);
             damage *= actor.PlayerAttackPoint;
+
+
+            //데미지 적용
             damage = Mathf.RoundToInt(damage);
 
             if (damage > 0f && velocityMagnitude > damageMinimumVelocity)
