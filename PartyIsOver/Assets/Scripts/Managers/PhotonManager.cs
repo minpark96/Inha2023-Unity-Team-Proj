@@ -28,6 +28,8 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     static PhotonManager p_instance;
 
+    static float _position;
+
     #endregion
 
     #region Public Fields
@@ -82,7 +84,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
         if (PhotonNetwork.IsMasterClient)
         {
-            PhotonNetwork.LoadLevel("Arena");
+            PhotonNetwork.LoadLevel("PlayerMoveTest");
         }
         else
         {
@@ -145,6 +147,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         Debug.Log("[JoinLobby()] Load Lobby Scene");
         SceneManager.LoadScene(1);
     }
+
     void InstantiateGameCenter()
     {
         if (GameCenter.LocalGameCenterInstance == null)
@@ -154,13 +157,14 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         }
     }
 
-    void InstantiatePlayer()
+    public void InstantiatePlayer()
     {
         if (Actor.LocalPlayerInstance == null)
         {
             Debug.LogFormat("PhotonManager.cs => We are Instantiating LocalPlayer from {0}", SceneManagerHelper.ActiveSceneName);
             // we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
-            PhotonNetwork.Instantiate(_playerPrefab, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
+            float position = UnityEngine.Random.Range(0f, 30f);
+            PhotonNetwork.Instantiate(_playerPrefab, new Vector3(position, 5f, position), Quaternion.identity, 0);
         }
     }
 
