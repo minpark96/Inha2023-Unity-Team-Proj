@@ -15,41 +15,33 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     #region Private Fields
 
+    static PhotonManager p_instance;
+
     string _gameVersion = "1";
     bool _isConnecting;
+    const byte MAX_PLAYERS_PER_ROOM = 6;
 
     // 일단 넣어 놓은 것, LaucherUI 로 분리해야 함
     Button _buttonStart;
     GameObject _controlPanel;
     GameObject _progressLabel;
-    
-    GameCenter _gameCenter = null;
-    const byte MAX_PLAYERS_PER_ROOM = 6;
 
-    static PhotonManager p_instance;
+    // 프리팹 경로
+    string _gameCenterPath = "GameCenter";
 
-    List<Vector3> _spawnPoints = new List<Vector3> { 
-        new Vector3(5f, 5f, 0f), 
-        new Vector3(2.5f, 5f, 4.33f), 
-        new Vector3(-2.5f, 5f, 4.33f), 
-        new Vector3(-5f, 5f, 0f), 
-        new Vector3(-2.5f, 5f, -4.33f), 
-        new Vector3(2.5f, 5f, -4.33f) };
+    string _roomSceneName = "Room";
 
     #endregion
 
     #region Public Fields
 
     public static PhotonManager Instance { get { return p_instance; } }
-    //public string _playerPrefab = "My Robot Kyle";
-    public string _playerPrefab = "Ragdoll2";
-    //public string _playerPrefab = "Cube";
 
     #endregion
 
     #region MonoBehaviour CallBacks
 
-    private void Awake()
+    void Awake()
     {
         Init();
     }
@@ -84,27 +76,11 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         PhotonNetwork.LeaveRoom();
     }
 
-    public void LoadArena()
-    {
-        Debug.Log("LoadArena()");
-
-        if (PhotonNetwork.IsMasterClient)
-        {
-            PhotonNetwork.LoadLevel("SDJTest");
-        }
-        else
-        {
-            Debug.LogError("PhotonNetwork : Trying to Load a level but we are not the master Client");
-            return;
-        }
-    }
-
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name == "Room")
+        if (scene.name == _roomSceneName)
         {
-            Debug.Log("Room Scene 로드 완료");
-            //InstantiateGameCenter();
+            Debug.LogFormat("{0} Scene 로드 완료", _roomSceneName);
         }
     }
 
@@ -159,38 +135,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         if (GameCenter.LocalGameCenterInstance == null)
         {
             Debug.LogFormat("PhotonManager.cs => We are Instantiating LocalGameCenter from {0}", SceneManagerHelper.ActiveSceneName);
-            PhotonNetwork.Instantiate("GameCenter", new Vector3(0f, 0f, 0f), Quaternion.identity, 0);
-        }
-    }
-
-    public void InstantiatePlayer()
-    {
-        if (Actor.LocalPlayerInstance == null)
-        {
-            Debug.LogFormat("PhotonManager.cs => We are Instantiating LocalPlayer from {0}", SceneManagerHelper.ActiveSceneName);
-            // we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
-            
-            switch (PhotonNetwork.LocalPlayer.ActorNumber)
-            {
-                case 1:
-                    PhotonNetwork.Instantiate(_playerPrefab, _spawnPoints[0], Quaternion.identity, 0);
-                    break;
-                case 2:
-                    PhotonNetwork.Instantiate(_playerPrefab, _spawnPoints[1], Quaternion.identity, 0);
-                    break;
-                case 3:
-                    PhotonNetwork.Instantiate(_playerPrefab, _spawnPoints[2], Quaternion.identity, 0);
-                    break;
-                case 4:
-                    PhotonNetwork.Instantiate(_playerPrefab, _spawnPoints[3], Quaternion.identity, 0);
-                    break;
-                case 5:
-                    PhotonNetwork.Instantiate(_playerPrefab, _spawnPoints[4], Quaternion.identity, 0);
-                    break;
-                case 6:
-                    PhotonNetwork.Instantiate(_playerPrefab, _spawnPoints[5], Quaternion.identity, 0);
-                    break;
-            }
+            Managers.Resource.PhotonNetworkInstantiate(_gameCenterPath);
         }
     }
 
@@ -206,7 +151,6 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         Debug.LogFormat("[LoadAsyncScene()] Scene {0} Loaded", SceneManagerHelper.ActiveSceneName);
 
         InstantiateGameCenter();
-        //InstantiatePlayer();
     }
 
     #endregion
@@ -247,14 +191,14 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
         if (PhotonNetwork.IsMasterClient)
         {
-            Debug.Log("[OnJoinedRoom()] Load Room Scene");
-            StartCoroutine(LoadAsyncScene("Room"));
+            Debug.LogFormat("[OnJoinedRoom()] Load {0} Scene", _roomSceneName);
+            StartCoroutine(LoadAsyncScene(_roomSceneName));
         }
     }
 
     public override void OnLeftRoom()
     {
-        Debug.Log("[OnLeftRoom()] LoadScene(1)");
+        Debug.Log("[OnLeftRoom()] LoadScene(0)");
         SceneManager.LoadScene(0);
     }
 

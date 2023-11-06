@@ -105,8 +105,7 @@ public class PlayerController : MonoBehaviourPun
 
     [SerializeField]
     private Rigidbody _hips;
-    [SerializeField]
-    private Transform _cameraArm;
+    
 
     [SerializeField]
     private BodyHandler _bodyHandler;
@@ -388,9 +387,6 @@ public class PlayerController : MonoBehaviourPun
         {
             return;
         }
-
-        CursorControll();
-        LookAround();
 
         if (Input.GetKey(KeyCode.LeftShift))
             isRun = true;
@@ -1173,8 +1169,8 @@ public class PlayerController : MonoBehaviourPun
 
     private void RunCyclePoseBody()
     {
-        Vector3 lookForward = new Vector3(_cameraArm.forward.x, 0f, _cameraArm.forward.z).normalized;
-        Vector3 lookRight = new Vector3(_cameraArm.right.x, 0f, _cameraArm.right.z).normalized;
+        Vector3 lookForward = new Vector3(_actor.CameraArm.forward.x, 0f, _actor.CameraArm.forward.z).normalized;
+        Vector3 lookRight = new Vector3(_actor.CameraArm.right.x, 0f, _actor.CameraArm.right.z).normalized;
         _moveDir = lookForward * _moveInput.z + lookRight * _moveInput.x;
 
         _bodyHandler.Chest.PartRigidbody.AddForce((_runVectorForce10 + _moveDir), ForceMode.VelocityChange);
@@ -1233,48 +1229,5 @@ public class PlayerController : MonoBehaviourPun
                 Debug.DrawRay(part.position, targetVector * 0.2f, Color.green, 0f, depthTest: false);
             }
         }
-    }
-
-    //카메라 컨트롤
-    private void LookAround()
-    {
-        _cameraArm.parent.transform.position = _hips.transform.position;
-
-        Vector2 mouseDelta = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
-        Vector3 camAngle = _cameraArm.rotation.eulerAngles;
-        float x = camAngle.x - mouseDelta.y;
-
-        if (x < 180f)
-        {
-            x = Mathf.Clamp(x, -1f, 70f);
-        }
-        else
-        {
-            x = Mathf.Clamp(x, 335f, 361f);
-        }
-        _cameraArm.rotation = Quaternion.Euler(x, camAngle.y + mouseDelta.x, camAngle.z);
-
-    }
-
-    private void CursorControll()
-    {
-        if (Input.anyKeyDown)
-        {
-            Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.Locked;
-        }
-
-        if (!Cursor.visible && Input.GetKeyDown(KeyCode.Escape))
-        {
-            Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.None;
-        }
-    }
-    public bool MoveInputCheck()
-    {
-        if (_moveInput.magnitude == 0)
-            return false;
-        else
-            return true;
     }
 }
