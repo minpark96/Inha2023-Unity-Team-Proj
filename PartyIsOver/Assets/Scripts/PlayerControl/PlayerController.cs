@@ -490,6 +490,7 @@ public class PlayerController : MonoBehaviourPun
                 }
                 // 속도 초기화
                 _childRigidbody.velocity = Vector3.zero;
+                _childRigidbody.isKinematic =true;
             }
         }
     }
