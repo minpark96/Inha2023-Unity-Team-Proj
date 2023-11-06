@@ -51,7 +51,7 @@ namespace Photon.Tutorial
 
                     // #Critical
                     // Load the Room Level.
-                    LoadArena();
+                    //LoadArena();
                 }
             }
         }

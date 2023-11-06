@@ -8,6 +8,7 @@ using static Actor;
 using static AniFrameData;
 using static AniAngleData;
 using Unity.VisualScripting;
+using Photon.Pun;
 
 [System.Serializable]
 public class AniFrameData
@@ -52,7 +53,7 @@ public class AniAngleData
 
 }
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviourPun
 {
     [SerializeField]
     public AniFrameData[] RollAniData;
@@ -226,6 +227,10 @@ public class PlayerController : MonoBehaviour
 
     public void OnKeyboardEvent_Idle(Define.KeyboardEvent evt)
     {
+        if (!photonView.IsMine)
+        {
+            return;
+        }
 
         switch (evt)
         {
@@ -305,6 +310,11 @@ public class PlayerController : MonoBehaviour
 
     public void OnMouseEvent_Idle(Define.MouseEvent evt)
     {
+        if (!photonView.IsMine)
+        {
+            return;
+        }
+
         switch (evt)
         {
             case Define.MouseEvent.PointerDown:
@@ -341,6 +351,11 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!photonView.IsMine)
+        {
+            return;
+        }
+
         if (isAI)
             return;
         if (_actor.debuffState == DebuffState.Freeze)
@@ -369,6 +384,11 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        if (!photonView.IsMine)
+        {
+            return;
+        }
+
         CursorControll();
         LookAround();
 

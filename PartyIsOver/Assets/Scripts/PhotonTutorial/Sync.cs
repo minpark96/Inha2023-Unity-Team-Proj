@@ -21,6 +21,7 @@ public class Sync : MonoBehaviourPunCallbacks
         //    ChildrenTransforms.Add(gameObject.transform.GetChild(i));
         //}
 
+
         if (!photonView.IsMine)
         {
             gameObject.transform.GetChild(0).gameObject.SetActive(false);
