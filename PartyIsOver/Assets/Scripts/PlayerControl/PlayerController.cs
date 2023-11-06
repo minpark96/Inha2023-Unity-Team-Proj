@@ -20,6 +20,8 @@ public class AniFrameData
         Backward,
         Up,
         Down,
+        Right,
+        Left,
     }
     public Rigidbody[] StandardRigidbodies;
     public Rigidbody[] ActionRigidbodies;
@@ -230,8 +232,6 @@ public class PlayerController : MonoBehaviour
                 break;
             case Define.KeyboardEvent.PointerDown:
                 {
-                    if (Input.GetKeyUp(KeyCode.R))
-                        ForceRready();
                 }
                 break;
             case Define.KeyboardEvent.PointerUp:
@@ -260,6 +260,8 @@ public class PlayerController : MonoBehaviour
                 {
                     //중일때 확인 ex 이펙트 출현하는 코드를 넣어주면 기모아지는 것 첨 될듯
                     StartCoroutine(Rready());
+                    ForceRready();
+
                 }
                 break;
         }
@@ -284,8 +286,6 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator Rready()
     {
-        Debug.Log("1");
-
         for (int i = 0; i < childJoints.Length; i++)
         {
             childJoints[i].angularYMotion = ConfigurableJointMotion.Locked;
@@ -516,6 +516,12 @@ public class PlayerController : MonoBehaviour
                 break;
             case RollForce.Down:
                 _direction = -data.StandardRigidbodies[index].transform.forward;
+                break;
+            case RollForce.Left:
+                _direction = -data.StandardRigidbodies[index].transform.right;
+                break;
+            case RollForce.Right:
+                _direction = data.StandardRigidbodies[index].transform.right;
                 break;
             default:
                 _direction = Vector3.zero;
