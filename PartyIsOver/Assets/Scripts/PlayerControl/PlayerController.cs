@@ -441,7 +441,6 @@ public class PlayerController : MonoBehaviourPun
             {
                 initialRotations[childTransform] = childTransform.localRotation;
             }
-
             StartCoroutine(ForwardRollDelay(3f));
         }
     }

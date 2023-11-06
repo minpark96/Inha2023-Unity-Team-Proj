@@ -84,7 +84,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
         if (PhotonNetwork.IsMasterClient)
         {
-            PhotonNetwork.LoadLevel("PlayerMoveTest");
+            PhotonNetwork.LoadLevel("SDJTest");
         }
         else
         {

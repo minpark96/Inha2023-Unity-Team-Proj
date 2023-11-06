@@ -41,7 +41,7 @@ public class GameCenter : MonoBehaviourPunCallbacks
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name == "PlayerMoveTest")
+        if (scene.name == "SDJTest")
         {
             Debug.Log("Arena Scene 로드 완료 후 초기화");
             PhotonManager.Instance.InstantiatePlayer();

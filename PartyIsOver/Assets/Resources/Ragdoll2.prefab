@@ -5560,6 +5560,8 @@ GameObject:
   - component: {fileID: 3365814731327851671}
   - component: {fileID: 1864798614270171580}
   - component: {fileID: 2519170846651779471}
+  - component: {fileID: 3674372926754479976}
+  - component: {fileID: 3985421140612564718}
   m_Layer: 7
   m_Name: foot_r
   m_TagString: Untagged
@@ -5749,6 +5751,33 @@ MonoBehaviour:
   m_SynchronizeAngularVelocity: 1
   m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
+--- !u!114 &3674372926754479976
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3365814731327851664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c38a3cdc25b8b0e4693b43ff7499d1b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageMinimumVelocity: 0.25
+  actor: {fileID: 0}
+--- !u!114 &3985421140612564718
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3365814731327851664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 015abfabc52bdf8489d8523bc44d3a3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageModifier: 1
 --- !u!1 &3396398243709297476
 GameObject:
   m_ObjectHideFlags: 0
@@ -7427,6 +7456,8 @@ GameObject:
   - component: {fileID: 5015685618108127322}
   - component: {fileID: 198947459384103225}
   - component: {fileID: 7273419718366838183}
+  - component: {fileID: 6141227977969024519}
+  - component: {fileID: 3342757661129372327}
   m_Layer: 7
   m_Name: GreenUpperArmL
   m_TagString: Lhand
@@ -7632,6 +7663,33 @@ MonoBehaviour:
   m_SynchronizeAngularVelocity: 1
   m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
+--- !u!114 &6141227977969024519
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5168169040231348521}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c38a3cdc25b8b0e4693b43ff7499d1b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageMinimumVelocity: 0.25
+  actor: {fileID: 0}
+--- !u!114 &3342757661129372327
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5168169040231348521}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 015abfabc52bdf8489d8523bc44d3a3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageModifier: 1
 --- !u!1 &5168192060615758454
 GameObject:
   m_ObjectHideFlags: 0
@@ -7648,6 +7706,8 @@ GameObject:
   - component: {fileID: 5069075246722378384}
   - component: {fileID: 4733058259063628010}
   - component: {fileID: 8038601559837329419}
+  - component: {fileID: 2434860929778931567}
+  - component: {fileID: 6171605578798127351}
   m_Layer: 7
   m_Name: GreenFistR
   m_TagString: CharacterFist
@@ -7863,6 +7923,33 @@ MonoBehaviour:
   m_SynchronizeAngularVelocity: 1
   m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
+--- !u!114 &2434860929778931567
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5168192060615758454}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c38a3cdc25b8b0e4693b43ff7499d1b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageMinimumVelocity: 0.25
+  actor: {fileID: 0}
+--- !u!114 &6171605578798127351
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5168192060615758454}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 015abfabc52bdf8489d8523bc44d3a3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageModifier: 1
 --- !u!1 &5168228728991225702
 GameObject:
   m_ObjectHideFlags: 0
@@ -7878,6 +7965,8 @@ GameObject:
   - component: {fileID: 5014908378340600409}
   - component: {fileID: 207480772812122471}
   - component: {fileID: 1032308271426170664}
+  - component: {fileID: 3488317851628083351}
+  - component: {fileID: 5869443889227662248}
   m_Layer: 7
   m_Name: GreenLegL2
   m_TagString: CharacterFoot
@@ -8082,6 +8171,33 @@ MonoBehaviour:
   m_SynchronizeAngularVelocity: 1
   m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
+--- !u!114 &3488317851628083351
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5168228728991225702}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c38a3cdc25b8b0e4693b43ff7499d1b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageMinimumVelocity: 0.25
+  actor: {fileID: 0}
+--- !u!114 &5869443889227662248
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5168228728991225702}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 015abfabc52bdf8489d8523bc44d3a3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageModifier: 1
 --- !u!1 &5168241402966337078
 GameObject:
   m_ObjectHideFlags: 0
@@ -8096,6 +8212,8 @@ GameObject:
   - component: {fileID: 5070676647335331912}
   - component: {fileID: 6874332521079647623}
   - component: {fileID: 2607658718712949132}
+  - component: {fileID: 1914196640426158963}
+  - component: {fileID: 6174035885446473422}
   m_Layer: 7
   m_Name: GreenHip
   m_TagString: CharacterHip
@@ -8207,6 +8325,33 @@ MonoBehaviour:
   m_SynchronizeAngularVelocity: 1
   m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
+--- !u!114 &1914196640426158963
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5168241402966337078}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c38a3cdc25b8b0e4693b43ff7499d1b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageMinimumVelocity: 0.25
+  actor: {fileID: 0}
+--- !u!114 &6174035885446473422
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5168241402966337078}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 015abfabc52bdf8489d8523bc44d3a3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageModifier: 1
 --- !u!1 &5169075590960504597
 GameObject:
   m_ObjectHideFlags: 0
@@ -8222,6 +8367,8 @@ GameObject:
   - component: {fileID: 5018433394129415002}
   - component: {fileID: 3492737988224658461}
   - component: {fileID: 6925311964325043758}
+  - component: {fileID: 6717862722599111149}
+  - component: {fileID: 9190137227468644100}
   m_Layer: 7
   m_Name: GreenLegL1
   m_TagString: Untagged
@@ -8427,6 +8574,33 @@ MonoBehaviour:
   m_SynchronizeAngularVelocity: 1
   m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
+--- !u!114 &6717862722599111149
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5169075590960504597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c38a3cdc25b8b0e4693b43ff7499d1b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageMinimumVelocity: 0.25
+  actor: {fileID: 0}
+--- !u!114 &9190137227468644100
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5169075590960504597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 015abfabc52bdf8489d8523bc44d3a3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageModifier: 1
 --- !u!1 &5169102531625790280
 GameObject:
   m_ObjectHideFlags: 0
@@ -8473,6 +8647,8 @@ GameObject:
   - component: {fileID: 5015364474370536174}
   - component: {fileID: 2180785869615727197}
   - component: {fileID: 4054832757515169232}
+  - component: {fileID: 6127144531213509153}
+  - component: {fileID: 484337437680103118}
   m_Layer: 7
   m_Name: GreenForeArmR
   m_TagString: Rhand
@@ -8678,6 +8854,33 @@ MonoBehaviour:
   m_SynchronizeAngularVelocity: 1
   m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
+--- !u!114 &6127144531213509153
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5169180419576924986}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c38a3cdc25b8b0e4693b43ff7499d1b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageMinimumVelocity: 0.25
+  actor: {fileID: 0}
+--- !u!114 &484337437680103118
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5169180419576924986}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 015abfabc52bdf8489d8523bc44d3a3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageModifier: 1
 --- !u!1 &5169610900901912614
 GameObject:
   m_ObjectHideFlags: 0
@@ -8693,6 +8896,8 @@ GameObject:
   - component: {fileID: 5014804370705970448}
   - component: {fileID: 6615551888151346478}
   - component: {fileID: 4532543277646099659}
+  - component: {fileID: 5677267887362108467}
+  - component: {fileID: 1281575981561438159}
   m_Layer: 7
   m_Name: GreenWaist
   m_TagString: Untagged
@@ -8900,6 +9105,33 @@ MonoBehaviour:
   m_SynchronizeAngularVelocity: 1
   m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
+--- !u!114 &5677267887362108467
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5169610900901912614}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c38a3cdc25b8b0e4693b43ff7499d1b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageMinimumVelocity: 0.25
+  actor: {fileID: 0}
+--- !u!114 &1281575981561438159
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5169610900901912614}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 015abfabc52bdf8489d8523bc44d3a3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageModifier: 1
 --- !u!1 &5169612602225680657
 GameObject:
   m_ObjectHideFlags: 0
@@ -8915,6 +9147,8 @@ GameObject:
   - component: {fileID: 5014860434847319107}
   - component: {fileID: 517009036791536304}
   - component: {fileID: 6276121518637528916}
+  - component: {fileID: 571587690384059377}
+  - component: {fileID: 5122840980903630974}
   m_Layer: 7
   m_Name: GreenChest
   m_TagString: CharacterChest
@@ -9119,6 +9353,33 @@ MonoBehaviour:
   m_SynchronizeAngularVelocity: 1
   m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
+--- !u!114 &571587690384059377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5169612602225680657}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c38a3cdc25b8b0e4693b43ff7499d1b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageMinimumVelocity: 0.25
+  actor: {fileID: 0}
+--- !u!114 &5122840980903630974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5169612602225680657}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 015abfabc52bdf8489d8523bc44d3a3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageModifier: 1
 --- !u!1 &5169613982111508579
 GameObject:
   m_ObjectHideFlags: 0
@@ -9134,6 +9395,8 @@ GameObject:
   - component: {fileID: 5018449923900053348}
   - component: {fileID: 5926378590280173916}
   - component: {fileID: 1402387083089452662}
+  - component: {fileID: 2768541814370882790}
+  - component: {fileID: 5208199489084488372}
   m_Layer: 7
   m_Name: GreenLegR1
   m_TagString: Untagged
@@ -9339,6 +9602,33 @@ MonoBehaviour:
   m_SynchronizeAngularVelocity: 1
   m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
+--- !u!114 &2768541814370882790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5169613982111508579}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c38a3cdc25b8b0e4693b43ff7499d1b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageMinimumVelocity: 0.25
+  actor: {fileID: 0}
+--- !u!114 &5208199489084488372
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5169613982111508579}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 015abfabc52bdf8489d8523bc44d3a3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageModifier: 1
 --- !u!1 &5169634861635219570
 GameObject:
   m_ObjectHideFlags: 0
@@ -9354,6 +9644,8 @@ GameObject:
   - component: {fileID: 5015406720499631859}
   - component: {fileID: 1400102275092751700}
   - component: {fileID: 6199728969126587717}
+  - component: {fileID: 2503428440027241521}
+  - component: {fileID: 1305835321416010592}
   m_Layer: 7
   m_Name: GreenForeArmL
   m_TagString: Lhand
@@ -9559,6 +9851,33 @@ MonoBehaviour:
   m_SynchronizeAngularVelocity: 1
   m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
+--- !u!114 &2503428440027241521
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5169634861635219570}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c38a3cdc25b8b0e4693b43ff7499d1b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageMinimumVelocity: 0.25
+  actor: {fileID: 0}
+--- !u!114 &1305835321416010592
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5169634861635219570}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 015abfabc52bdf8489d8523bc44d3a3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageModifier: 1
 --- !u!1 &5169766461459173945
 GameObject:
   m_ObjectHideFlags: 0
@@ -9574,6 +9893,8 @@ GameObject:
   - component: {fileID: 5018425065884028287}
   - component: {fileID: 7010085230316306319}
   - component: {fileID: 4057157430773944778}
+  - component: {fileID: 1799262258688035524}
+  - component: {fileID: 8617627891612990457}
   m_Layer: 7
   m_Name: GreenLegR2
   m_TagString: CharacterFoot
@@ -9778,6 +10099,33 @@ MonoBehaviour:
   m_SynchronizeAngularVelocity: 1
   m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
+--- !u!114 &1799262258688035524
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5169766461459173945}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c38a3cdc25b8b0e4693b43ff7499d1b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageMinimumVelocity: 0.25
+  actor: {fileID: 0}
+--- !u!114 &8617627891612990457
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5169766461459173945}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 015abfabc52bdf8489d8523bc44d3a3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageModifier: 1
 --- !u!1 &5169771990771016526
 GameObject:
   m_ObjectHideFlags: 0
@@ -9793,6 +10141,8 @@ GameObject:
   - component: {fileID: 5018455412112069697}
   - component: {fileID: 1494565386959782751}
   - component: {fileID: 1895965349595828167}
+  - component: {fileID: 3629335144179997737}
+  - component: {fileID: 2211157137884644030}
   m_Layer: 7
   m_Name: GreenUpperArmR
   m_TagString: Rhand
@@ -9998,6 +10348,33 @@ MonoBehaviour:
   m_SynchronizeAngularVelocity: 1
   m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
+--- !u!114 &3629335144179997737
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5169771990771016526}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c38a3cdc25b8b0e4693b43ff7499d1b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageMinimumVelocity: 0.25
+  actor: {fileID: 0}
+--- !u!114 &2211157137884644030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5169771990771016526}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 015abfabc52bdf8489d8523bc44d3a3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageModifier: 1
 --- !u!1 &5169854652013515696
 GameObject:
   m_ObjectHideFlags: 0
@@ -10190,6 +10567,8 @@ GameObject:
   - component: {fileID: 5015787384701703986}
   - component: {fileID: 2609301282637170986}
   - component: {fileID: 9143063268733653159}
+  - component: {fileID: 1139144248165702615}
+  - component: {fileID: 3063277394464611793}
   m_Layer: 7
   m_Name: GreenHead
   m_TagString: CharacterHead
@@ -10397,6 +10776,33 @@ MonoBehaviour:
   m_SynchronizeAngularVelocity: 1
   m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
+--- !u!114 &1139144248165702615
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5169902651132579566}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c38a3cdc25b8b0e4693b43ff7499d1b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageMinimumVelocity: 0.25
+  actor: {fileID: 0}
+--- !u!114 &3063277394464611793
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5169902651132579566}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 015abfabc52bdf8489d8523bc44d3a3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageModifier: 1
 --- !u!1 &5169983603716950214
 GameObject:
   m_ObjectHideFlags: 0
@@ -10522,101 +10928,71 @@ MonoBehaviour:
   RollAniData:
   - StandardRigidbodies:
     - {fileID: 5150041985222952710}
-    - {fileID: 5150619769091741460}
+    - {fileID: 5150643447561375322}
+    - {fileID: 5150643447561375322}
     - {fileID: 5150844099323961327}
     - {fileID: 5150844099323961327}
+    - {fileID: 5150698295106137226}
+    - {fileID: 5117554088992720254}
     ActionRigidbodies:
     - {fileID: 5150041985222952710}
-    - {fileID: 5150619769091741460}
+    - {fileID: 5150643447561375322}
+    - {fileID: 5150643447561375322}
     - {fileID: 5150844099323961327}
     - {fileID: 5150844099323961327}
-    ForceDirections: 02000000020000000200000004000000
+    - {fileID: 5150698295106137226}
+    - {fileID: 5117554088992720254}
+    ForceDirections: 02000000040000000200000004000000020000000300000003000000
     ForcePowerValues:
-    - 20
-    - 20
-    - 20
-    - 20
+    - 10
+    - 2
+    - 10
+    - 10
+    - 10
+    - 10
+    - 10
+  RollAngleAniData:
   - StandardRigidbodies:
-    - {fileID: 5150041985222952710}
-    - {fileID: 5150619769091741460}
     - {fileID: 5150844099323961327}
-    ActionRigidbodies:
-    - {fileID: 5150041985222952710}
-    - {fileID: 5150619769091741460}
-    - {fileID: 5150844099323961327}
-    ForceDirections: 020000000200000004000000
-    ForcePowerValues:
-    - 30
-    - 50
+    ActionDirection:
+    - {fileID: 5166887327713608788}
+    TargetDirection:
+    - {fileID: 5166887327713608788}
+    ActionAngleDirections: 03000000
+    TargetAngleDirections: 01000000
+    AngleStability:
+    - 0.01
+    AnglePowerValues:
     - 200
-  - StandardRigidbodies:
-    - {fileID: 5150041985222952710}
-    - {fileID: 5150643447561375322}
-    - {fileID: 5150643447561375322}
-    ActionRigidbodies:
-    - {fileID: 5150041985222952710}
-    - {fileID: 5150643447561375322}
-    - {fileID: 5150643447561375322}
-    ForceDirections: 020000000400000002000000
-    ForcePowerValues:
-    - 100
-    - 20
-    - 100
-  - StandardRigidbodies:
-    - {fileID: 5150041985222952710}
-    - {fileID: 5150643447561375322}
-    - {fileID: 5150643447561375322}
-    ActionRigidbodies:
-    - {fileID: 5150041985222952710}
-    - {fileID: 5150643447561375322}
-    - {fileID: 5150643447561375322}
-    ForceDirections: 020000000400000003000000
-    ForcePowerValues:
-    - 100
-    - 20
-    - 100
-  - StandardRigidbodies:
-    - {fileID: 5150041985222952710}
-    - {fileID: 5150643447561375322}
-    - {fileID: 5150643447561375322}
-    ActionRigidbodies:
-    - {fileID: 5150041985222952710}
-    - {fileID: 5150643447561375322}
-    - {fileID: 5150643447561375322}
-    ForceDirections: 020000000400000002000000
-    ForcePowerValues:
-    - 100
-    - 20
-    - 100
   DropAniData:
   - StandardRigidbodies:
-    - {fileID: 5150844099323961327}
-    - {fileID: 5150844099323961327}
+    - {fileID: 0}
+    - {fileID: 0}
     ActionRigidbodies:
-    - {fileID: 5117554088992720254}
-    - {fileID: 3365814731327851670}
+    - {fileID: 0}
+    - {fileID: 0}
     ForceDirections: 0000000000000000
     ForcePowerValues:
     - 100
     - 100
   - StandardRigidbodies:
-    - {fileID: 5150844099323961327}
-    - {fileID: 5150844099323961327}
+    - {fileID: 0}
+    - {fileID: 0}
     ActionRigidbodies:
-    - {fileID: 5150698295106137226}
-    - {fileID: 6210198329121031474}
+    - {fileID: 0}
+    - {fileID: 0}
     ForceDirections: 0000000000000000
     ForcePowerValues:
     - 100
     - 100
   - StandardRigidbodies:
-    - {fileID: 5150041985222952710}
-    - {fileID: 5150041985222952710}
-    - {fileID: 5150041985222952710}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
     ActionRigidbodies:
-    - {fileID: 5150041985222952710}
-    - {fileID: 5150619769091741460}
-    - {fileID: 5150643447561375322}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
     ForceDirections: 030000000300000003000000
     ForcePowerValues:
     - 50
@@ -10624,11 +11000,11 @@ MonoBehaviour:
     - 50
   RightPunchAniData:
   - StandardRigidbodies:
-    - {fileID: 5150062576097496874}
+    - {fileID: 0}
     ActionDirection:
-    - {fileID: 5164199765165057040}
+    - {fileID: 0}
     TargetDirection:
-    - {fileID: 5167082102304172294}
+    - {fileID: 0}
     ActionAngleDirections: 03000000
     TargetAngleDirections: 05000000
     AngleStability:
@@ -10636,11 +11012,11 @@ MonoBehaviour:
     AnglePowerValues:
     - 20
   - StandardRigidbodies:
-    - {fileID: 5150466505743223006}
+    - {fileID: 0}
     ActionDirection:
-    - {fileID: 5167268553317947687}
+    - {fileID: 0}
     TargetDirection:
-    - {fileID: 5167082102304172294}
+    - {fileID: 0}
     ActionAngleDirections: 03000000
     TargetAngleDirections: 02000000
     AngleStability:
@@ -10649,11 +11025,11 @@ MonoBehaviour:
     - 20000
   LeftPunchAniData:
   - StandardRigidbodies:
-    - {fileID: 5150062576097496874}
+    - {fileID: 0}
     ActionDirection:
-    - {fileID: 5164199765165057040}
+    - {fileID: 0}
     TargetDirection:
-    - {fileID: 5167082102304172294}
+    - {fileID: 0}
     ActionAngleDirections: 03000000
     TargetAngleDirections: 05000000
     AngleStability:
@@ -10661,11 +11037,11 @@ MonoBehaviour:
     AnglePowerValues:
     - 20
   - StandardRigidbodies:
-    - {fileID: 5149915107359780329}
+    - {fileID: 0}
     ActionDirection:
-    - {fileID: 5166944635759495556}
+    - {fileID: 0}
     TargetDirection:
-    - {fileID: 5167082102304172294}
+    - {fileID: 0}
     ActionAngleDirections: 03000000
     TargetAngleDirections: 02000000
     AngleStability:
@@ -10674,33 +11050,33 @@ MonoBehaviour:
     - 20000
   RightPunchingAniData:
   - StandardRigidbodies:
-    - {fileID: 5150391404254772956}
-    - {fileID: 5069075246722378390}
+    - {fileID: 0}
+    - {fileID: 0}
     ActionRigidbodies:
-    - {fileID: 5150391404254772956}
-    - {fileID: 5069075246722378390}
+    - {fileID: 0}
+    - {fileID: 0}
     ForceDirections: 0000000000000000
     ForcePowerValues:
     - 40
     - 60
   LeftPunchingAniData:
   - StandardRigidbodies:
-    - {fileID: 5150062576097496874}
-    - {fileID: 5068901783686819345}
+    - {fileID: 0}
+    - {fileID: 0}
     ActionRigidbodies:
-    - {fileID: 5150062576097496874}
-    - {fileID: 5068901783686819345}
+    - {fileID: 0}
+    - {fileID: 0}
     ForceDirections: 0000000000000000
     ForcePowerValues:
     - 40
     - 60
   RightPunchResettingAniData:
   - StandardRigidbodies:
-    - {fileID: 5150391404254772956}
+    - {fileID: 0}
     ActionDirection:
-    - {fileID: 5167082102304172294}
+    - {fileID: 0}
     TargetDirection:
-    - {fileID: 5167082102304172294}
+    - {fileID: 0}
     ActionAngleDirections: 03000000
     TargetAngleDirections: 01000000
     AngleStability:
@@ -10708,11 +11084,11 @@ MonoBehaviour:
     AnglePowerValues:
     - 20
   - StandardRigidbodies:
-    - {fileID: 5069075246722378390}
+    - {fileID: 0}
     ActionDirection:
-    - {fileID: 5167082102304172294}
+    - {fileID: 0}
     TargetDirection:
-    - {fileID: 5167082102304172294}
+    - {fileID: 0}
     ActionAngleDirections: 03000000
     TargetAngleDirections: 02000000
     AngleStability:
@@ -10721,11 +11097,11 @@ MonoBehaviour:
     - 0.01
   LeftPunchResettingAniData:
   - StandardRigidbodies:
-    - {fileID: 5150062576097496874}
+    - {fileID: 0}
     ActionDirection:
-    - {fileID: 5167082102304172294}
+    - {fileID: 0}
     TargetDirection:
-    - {fileID: 5167082102304172294}
+    - {fileID: 0}
     ActionAngleDirections: 03000000
     TargetAngleDirections: 01000000
     AngleStability:
@@ -10733,11 +11109,11 @@ MonoBehaviour:
     AnglePowerValues:
     - 20
   - StandardRigidbodies:
-    - {fileID: 5068901783686819345}
+    - {fileID: 0}
     ActionDirection:
-    - {fileID: 5167082102304172294}
+    - {fileID: 0}
     TargetDirection:
-    - {fileID: 5167082102304172294}
+    - {fileID: 0}
     ActionAngleDirections: 03000000
     TargetAngleDirections: 02000000
     AngleStability:
@@ -10746,33 +11122,33 @@ MonoBehaviour:
     - 0.01
   MoveForceJumpAniData:
   - StandardRigidbodies:
-    - {fileID: 5150844099323961327}
+    - {fileID: 0}
     ActionRigidbodies:
-    - {fileID: 5150619769091741460}
+    - {fileID: 0}
     ForceDirections: 00000000
     ForcePowerValues:
     - 170
   - StandardRigidbodies:
-    - {fileID: 5150844099323961327}
+    - {fileID: 0}
     ActionRigidbodies:
-    - {fileID: 5150643447561375322}
+    - {fileID: 0}
     ForceDirections: 00000000
     ForcePowerValues:
     - 170
   - StandardRigidbodies:
-    - {fileID: 5150844099323961327}
+    - {fileID: 0}
     ActionRigidbodies:
-    - {fileID: 5150844099323961327}
+    - {fileID: 0}
     ForceDirections: 00000000
     ForcePowerValues:
     - 6
   MoveAngleJumpAniData:
   - StandardRigidbodies:
-    - {fileID: 5150041985222952710}
+    - {fileID: 0}
     ActionDirection:
-    - {fileID: 5167280749045366728}
+    - {fileID: 0}
     TargetDirection:
-    - {fileID: 5167280749045366728}
+    - {fileID: 0}
     ActionAngleDirections: 01000000
     TargetAngleDirections: 00000000
     AngleStability:
@@ -10780,11 +11156,11 @@ MonoBehaviour:
     AnglePowerValues:
     - 0.1
   - StandardRigidbodies:
-    - {fileID: 5150041985222952710}
+    - {fileID: 0}
     ActionDirection:
-    - {fileID: 5167280749045366728}
+    - {fileID: 0}
     TargetDirection:
-    - {fileID: 5167280749045366728}
+    - {fileID: 0}
     ActionAngleDirections: 03000000
     TargetAngleDirections: 03000000
     AngleStability:
@@ -10793,26 +11169,26 @@ MonoBehaviour:
     - 0.1
   HeadingAniData:
   - StandardRigidbodies:
-    - {fileID: 5150041985222952710}
+    - {fileID: 0}
     ActionRigidbodies:
-    - {fileID: 5150041985222952710}
+    - {fileID: 0}
     ForceDirections: 02000000
     ForcePowerValues:
     - 50
   - StandardRigidbodies:
-    - {fileID: 5150041985222952710}
+    - {fileID: 0}
     ActionRigidbodies:
-    - {fileID: 5150619769091741460}
+    - {fileID: 0}
     ForceDirections: 02000000
     ForcePowerValues:
     - 50
   HeadingAngleAniData:
   - StandardRigidbodies:
-    - {fileID: 5150041985222952710}
+    - {fileID: 0}
     ActionDirection:
-    - {fileID: 5167280749045366728}
+    - {fileID: 0}
     TargetDirection:
-    - {fileID: 5167280749045366728}
+    - {fileID: 0}
     ActionAngleDirections: 01000000
     TargetAngleDirections: 00000000
     AngleStability:
@@ -10820,11 +11196,11 @@ MonoBehaviour:
     AnglePowerValues:
     - 0.1
   - StandardRigidbodies:
-    - {fileID: 5150041985222952710}
+    - {fileID: 0}
     ActionDirection:
-    - {fileID: 5167280749045366728}
+    - {fileID: 0}
     TargetDirection:
-    - {fileID: 5167280749045366728}
+    - {fileID: 0}
     ActionAngleDirections: 03000000
     TargetAngleDirections: 00000000
     AngleStability:
@@ -10832,17 +11208,33 @@ MonoBehaviour:
     AnglePowerValues:
     - 0.1
   TestRready1:
-  - StandardRigidbodies: []
-    ActionRigidbodies: []
-    ForceDirections: 
-    ForcePowerValues: []
+  - StandardRigidbodies:
+    - {fileID: 5150619769091741460}
+    - {fileID: 5150619769091741460}
+    - {fileID: 5150619769091741460}
+    ActionRigidbodies:
+    - {fileID: 5150466505743223006}
+    - {fileID: 5069075246722378390}
+    - {fileID: 5150466505743223006}
+    ForceDirections: 070000000200000003000000
+    ForcePowerValues:
+    - 1
+    - 1
+    - 2
+  - StandardRigidbodies:
+    - {fileID: 5150619769091741460}
+    ActionRigidbodies:
+    - {fileID: 5068901783686819345}
+    ForceDirections: 02000000
+    ForcePowerValues:
+    - 1
   TestRready2:
   - StandardRigidbodies:
-    - {fileID: 5069075246722378390}
+    - {fileID: 0}
     ActionDirection:
-    - {fileID: 5167280749045366728}
+    - {fileID: 0}
     TargetDirection:
-    - {fileID: 5167280749045366728}
+    - {fileID: 0}
     ActionAngleDirections: 01000000
     TargetAngleDirections: 03000000
     AngleStability:
@@ -10850,10 +11242,13 @@ MonoBehaviour:
     AnglePowerValues:
     - 100
   RunSpeed: 100
-  _hips: {fileID: 5150844099323961327}
-  _cameraArm: {fileID: 4401259382300767454}
+  _hips: {fileID: 0}
+  _cameraArm: {fileID: 0}
   _bodyHandler: {fileID: 0}
   targetingHandler: {fileID: 0}
+  ReadyPunch: 0.1
+  Punching: 0.1
+  ResetPunch: 0.3
   isGrounded: 0
   isRun: 0
   isMove: 0
@@ -11014,6 +11409,8 @@ GameObject:
   - component: {fileID: 5068901783686819347}
   - component: {fileID: 6008882796968733740}
   - component: {fileID: 5745246718750440644}
+  - component: {fileID: 4265674961035506949}
+  - component: {fileID: 3800292863962313733}
   m_Layer: 7
   m_Name: GreenFistL
   m_TagString: CharacterFist
@@ -11229,6 +11626,33 @@ MonoBehaviour:
   m_SynchronizeAngularVelocity: 1
   m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
+--- !u!114 &4265674961035506949
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5170124894939591614}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c38a3cdc25b8b0e4693b43ff7499d1b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageMinimumVelocity: 0.25
+  actor: {fileID: 0}
+--- !u!114 &3800292863962313733
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5170124894939591614}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 015abfabc52bdf8489d8523bc44d3a3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageModifier: 1
 --- !u!1 &5204457323832773025
 GameObject:
   m_ObjectHideFlags: 0
@@ -14276,6 +14700,8 @@ GameObject:
   - component: {fileID: 6210198329121031475}
   - component: {fileID: 1488548298055806982}
   - component: {fileID: 8367476406674241014}
+  - component: {fileID: 2406294289807077000}
+  - component: {fileID: 3337576757659269649}
   m_Layer: 7
   m_Name: foot_l
   m_TagString: Untagged
@@ -14465,6 +14891,33 @@ MonoBehaviour:
   m_SynchronizeAngularVelocity: 1
   m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
+--- !u!114 &2406294289807077000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7755679402455053580}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c38a3cdc25b8b0e4693b43ff7499d1b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageMinimumVelocity: 0.25
+  actor: {fileID: 0}
+--- !u!114 &3337576757659269649
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7755679402455053580}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 015abfabc52bdf8489d8523bc44d3a3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageModifier: 1
 --- !u!1 &7763812043976254396
 GameObject:
   m_ObjectHideFlags: 0
