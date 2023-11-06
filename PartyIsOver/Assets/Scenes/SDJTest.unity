@@ -1026,6 +1026,7 @@ MonoBehaviour:
   actor: {fileID: 0}
   invulnerable: 0
   _health: 0
+  _maxHealth: 200
   _stamina: 0
   _powerUpTime: 3
   _burnTime: 3
@@ -1120,6 +1121,7 @@ MonoBehaviour:
   isStateChange: 0
   RSkillDelayTime: 0
   MaxSpeed: 10
+  PunchDelay: 0.5
   _idleTimer: 0
   isAI: 1
 --- !u!114 &83486397
@@ -9888,6 +9890,7 @@ GameObject:
   - component: {fileID: 1195674185}
   - component: {fileID: 1195674184}
   - component: {fileID: 1195674183}
+  - component: {fileID: 1195674186}
   m_Layer: 8
   m_Name: foot_l
   m_TagString: Untagged
@@ -10038,6 +10041,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 3
+--- !u!135 &1195674186
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1195674181}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1215931906
 GameObject:
   m_ObjectHideFlags: 0
@@ -11827,6 +11843,7 @@ GameObject:
   - component: {fileID: 1441491803}
   - component: {fileID: 1441491802}
   - component: {fileID: 1441491801}
+  - component: {fileID: 1441491804}
   m_Layer: 8
   m_Name: foot_r
   m_TagString: Untagged
@@ -11977,6 +11994,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 3
+--- !u!135 &1441491804
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1441491799}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1447469115
 GameObject:
   m_ObjectHideFlags: 0
@@ -15172,7 +15202,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1801369410
 Transform:
   m_ObjectHideFlags: 0
