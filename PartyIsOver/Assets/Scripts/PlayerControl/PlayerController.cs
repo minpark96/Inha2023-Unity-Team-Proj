@@ -9,7 +9,6 @@ using static AniFrameData;
 using static AniAngleData;
 using Unity.VisualScripting;
 using Photon.Pun;
-using static Unity.VisualScripting.Metadata;
 
 [System.Serializable]
 public class AniFrameData
@@ -446,15 +445,6 @@ public class PlayerController : MonoBehaviourPun
         }
     }
 
-    public void RestoreRotations()
-    {
-        // 저장한 초기 rotation 값을 다시 적용합니다.
-        foreach (var entry in _initialRotations)
-        {
-            entry.Key.localRotation = entry.Value;
-        }
-    }
-
     IEnumerator ForwardRollDelay(float delay)
     {
         _isCoroutineRoll = true;
@@ -475,15 +465,45 @@ public class PlayerController : MonoBehaviourPun
             AniForce(RollAniData, 0);
             yield return new WaitForSeconds(duration);
         }
-        VelocityZero();
 
+        //힘은 0, Rotation 복구 하기
         RestoreRotations();
+
+        //Freeze RotationX축 잠금
         _hipRB.constraints |= RigidbodyConstraints.FreezeRotationX;
+        //스프링 값 올리기
         _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
         _actor.actorState = ActorState.Stand;
     }
+    public void RestoreRotations()
+    {
+        foreach (Transform child in _children)
+        {
+            Rigidbody _childRigidbody = child.GetComponent<Rigidbody>();
+            Debug.Log(_childRigidbody);
+            if (_childRigidbody != null)
+            {
+                // 초기 회전값 복원
+                if (_initialRotations.ContainsKey(child))
+                {
+                    child.localRotation = _initialRotations[child];
+                }
 
-    void VelocityZero()
+                // 속도 초기화
+                _childRigidbody.velocity = Vector3.zero;
+            }
+        }
+    }
+    public void RestoreRotationsOld()
+    {
+        // 저장한 초기 rotation 값을 다시 적용합니다.
+        foreach (var entry in _initialRotations)
+        {
+            entry.Key.localRotation = entry.Value;
+        }
+    }
+
+    void VelocityZeroOld()
     {
         foreach (Transform child in _children)
         {

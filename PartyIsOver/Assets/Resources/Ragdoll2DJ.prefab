@@ -5578,7 +5578,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5164006939630707582}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &3365814731327851670
 Rigidbody:
@@ -7774,7 +7774,7 @@ Transform:
   m_Children:
   - {fileID: 7613673029169691110}
   m_Father: {fileID: 5164006939630707582}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!136 &5070107337095981484
 CapsuleCollider:
@@ -8037,7 +8037,7 @@ Transform:
   - {fileID: 4674852344781314097}
   - {fileID: 973908134422296232}
   m_Father: {fileID: 5164006939630707582}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!136 &5070844763924282505
 CapsuleCollider:
@@ -8600,7 +8600,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5169612602225680657}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0.99039114, z: -0.00082516164}
+  m_LocalPosition: {x: 0, y: 0.99039125, z: -0.0008251665}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -8785,7 +8785,7 @@ Transform:
   - {fileID: 6026303775750416852}
   - {fileID: 6539017304165819431}
   m_Father: {fileID: 5164006939630707582}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!136 &5070930102950019811
 CapsuleCollider:
@@ -9142,7 +9142,7 @@ Transform:
   m_Children:
   - {fileID: 1876905128374464283}
   m_Father: {fileID: 5164006939630707582}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!136 &5070944147653744277
 CapsuleCollider:
@@ -9842,7 +9842,7 @@ GameObject:
   - component: {fileID: 2082881364}
   - component: {fileID: -2979741912738784003}
   m_Layer: 7
-  m_Name: Ragdoll2
+  m_Name: Ragdoll2DJ
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9860,12 +9860,12 @@ Transform:
   m_LocalScale: {x: 1, y: 1.0000002, z: 1.0000002}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 6210198329121031468}
   - {fileID: 3406290343782578698}
-  - {fileID: 5166829500882293250}
+  - {fileID: 6210198329121031468}
   - {fileID: 5167200909828775987}
-  - {fileID: 5163944778516892771}
+  - {fileID: 5166829500882293250}
   - {fileID: 5167102377172443495}
+  - {fileID: 5163944778516892771}
   - {fileID: 5166887327713608788}
   - {fileID: 5164184801533818450}
   - {fileID: 5167082102304172294}
@@ -13680,7 +13680,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5164006939630707582}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &6210198329121031474
 Rigidbody:
