@@ -41,10 +41,10 @@ public class GameCenter : MonoBehaviourPunCallbacks
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name == "Arena")
+        if (scene.name == "PlayerMoveTest")
         {
             Debug.Log("Arena Scene 로드 완료 후 초기화");
-            //InitArenaUI();
+            PhotonManager.Instance.InstantiatePlayer();
         }
     }
 
@@ -65,7 +65,7 @@ public class GameCenter : MonoBehaviourPunCallbacks
             _roomUI.SetButtonActive("ready", false);
             _roomUI.AddButtonEvent("play", PhotonManager.Instance.LoadArena);
             _roomUI.UpdateReadyCountText(_roomUI.IsReady);
-            _roomUI.SetButtonInteractable("play", false);
+            _roomUI.SetButtonInteractable("play", true);
             _roomUI.SetPlayerStatus("Wait for Other Players...");
         }
         else

@@ -57,6 +57,8 @@ public class Actor : MonoBehaviourPun
 
     public static GameObject LocalPlayerInstance;
 
+    public static int LayerCnt = 26;
+
     private void Awake()
     {
         if (photonView.IsMine)
@@ -69,11 +71,28 @@ public class Actor : MonoBehaviourPun
         StatusHandler = GetComponent<StatusHandler>();
         PlayerController = GetComponent<PlayerController>();
         Grab = GetComponent<Grab>();
+
+        ChangeLayerRecursively(gameObject, LayerCnt++);
     }
-   
+
+    private void ChangeLayerRecursively(GameObject obj, int layer)
+    {
+        obj.layer = layer;
+
+        foreach (Transform child in obj.transform)
+        {
+            ChangeLayerRecursively(child.gameObject, layer);
+        }
+    }
+
 
     private void FixedUpdate()
     {
+        if (!photonView.IsMine)
+        {
+            return;
+        }
+
         if (actorState != lastActorState)
         {
             PlayerController.isStateChange = true;
