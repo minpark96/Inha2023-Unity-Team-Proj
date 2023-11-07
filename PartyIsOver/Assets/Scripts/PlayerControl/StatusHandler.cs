@@ -6,6 +6,8 @@ using UnityEngine.UI;
 using static InteractableObject;
 using static UnityEngine.Rendering.VirtualTexturing.Debugging;
 
+
+
 public class StatusHandler : MonoBehaviour
 {
     private float _damageModifer = 1f;
@@ -29,12 +31,14 @@ public class StatusHandler : MonoBehaviour
     public float Stamina { get { return _stamina; } set { _stamina = value; } }
     private float _maxStamina = 100f;
 
+    // 기절 시간
     private float _maxUnconsciousTime=5f;
     private float _minUnconsciousTime=3f;
     private float _unconsciousTime = 0f;
 
     private float _knockoutThreshold=20f;
 
+    // 초기 관절값
     private List<float> _xPosSpringAry = new List<float>();
     private List<float> _yzPosSpringAry = new List<float>();
 
@@ -57,32 +61,35 @@ public class StatusHandler : MonoBehaviour
     private bool _hasBalloon;
     private bool _hasGhost;
 
-
+   
     [Header("불끈 시간")]
     [SerializeField]
-    private float _powerUpTime = 3f;
+    private float _powerUpTime;
     [Header("화상 시간")]
     [SerializeField]
-    private float _burnTime = 3f;
-    [Header("화상 데미지")]
-    [SerializeField]
-    private float _burnDamage = 1f;
+    private float _burnTime;
     [Header("지침 시간")]
     [SerializeField]
-    private float _exhaustedTime = 5f;
+    private float _exhaustedTime;
     [Header("둔화 시간")]
     [SerializeField]
-    private float _slowTime = 3f;
+    private float _slowTime;
     [Header("빙결 시간")]
     [SerializeField]
-    private float _freezeTime = 3f;
+    private float _freezeTime;
     [Header("감전 시간")]
     [SerializeField]
-    private float _shockTime = 3f;
+    private float _shockTime;
     [Header("기절 시간")]
     [SerializeField]
-    private float _stunTime = 3f;
+    private float _stunTime;
 
+    [Header("감전 데미지")]
+    [SerializeField]
+    public float _iceDamage;
+    [Header("화상 데미지")]
+    [SerializeField]
+    public float _burnDamage;
 
 
     void Start()
@@ -140,10 +147,6 @@ public class StatusHandler : MonoBehaviour
         // 데미지 체크
         damage *= _damageModifer;
 
-        if (type == Damage.PowerUp) // 공격력 10% 증가
-            damage *= 1.1f;
-
-
         if (!invulnerable && actor.actorState != Actor.ActorState.Dead && actor.actorState != Actor.ActorState.Unconscious)
         {
             _healthDamage += damage;
@@ -156,27 +159,30 @@ public class StatusHandler : MonoBehaviour
 
     public void DebuffCheck(InteractableObject.Damage type)
     {
-        if (actor.debuffState == Actor.DebuffState.Freeze) return;
+        if (actor.debuffState == Actor.DebuffState.Ice) return;
+        if (actor.debuffState == Actor.DebuffState.Balloon) return;
 
         switch (type)
         {
-            case Damage.Freeze: // 빙결
-                actor.debuffState |= Actor.DebuffState.Freeze;
+            case Damage.Ice: // 빙결
+                actor.debuffState |= Actor.DebuffState.Ice;
                 // 다른 디버프 체크
                 foreach (Actor.DebuffState state in System.Enum.GetValues(typeof(Actor.DebuffState)))
                 {
                     // 빙결 이외의 상태가 켜지면 끄기
-                    if (state != Actor.DebuffState.Freeze && (actor.debuffState & state) != 0)
+                    if (state != Actor.DebuffState.Ice && (actor.debuffState & state) != 0)
                     {
                         actor.debuffState &= ~state;
                     }
                 }
                 break;
+            case Damage.Balloon:
+                break;
             case Damage.PowerUp: // 불끈
                 actor.debuffState |= Actor.DebuffState.PowerUp;
                 break;
-            case Damage.Slow: // 둔화
-                actor.debuffState |= Actor.DebuffState.Slow;
+            case Damage.Burn: // 화상
+                actor.debuffState |= Actor.DebuffState.Burn;
                 break;
             case Damage.Shock: // 감전
                 actor.debuffState |= Actor.DebuffState.Shock;
@@ -184,9 +190,7 @@ public class StatusHandler : MonoBehaviour
             case Damage.Knockout: // 기절 (실험용 Damage.Knockout 씀)
                 actor.debuffState |= Actor.DebuffState.Stun;
                 break;
-            case Damage.Burn: // 화상
-                actor.debuffState |= Actor.DebuffState.Burn;
-                break;
+           
         }
     }
 
@@ -212,7 +216,7 @@ public class StatusHandler : MonoBehaviour
                     if(!_hasSlow)
                         StartCoroutine(Slow(_slowTime));
                     break;
-                case Actor.DebuffState.Freeze:
+                case Actor.DebuffState.Ice:
                     if(!_hasFreeze)
                         StartCoroutine(Freeze(_freezeTime));
                     break;
@@ -264,7 +268,7 @@ public class StatusHandler : MonoBehaviour
 
         while (elapsedTime < delay)
         {
-            if (actor.debuffState == Actor.DebuffState.Freeze)
+            if (actor.debuffState == Actor.DebuffState.Ice)
             {
                 _hasBurn = false;
                 actor.actorState = Actor.ActorState.Stand;
@@ -357,7 +361,7 @@ public class StatusHandler : MonoBehaviour
         // 빙결 해제
         _hasFreeze = false;
         actor.actorState = Actor.ActorState.Stand;
-        actor.debuffState &= ~Actor.DebuffState.Freeze;
+        actor.debuffState &= ~Actor.DebuffState.Ice;
 
         // 이펙트 삭제
         if (hasObject)
@@ -396,7 +400,7 @@ public class StatusHandler : MonoBehaviour
       
         while (Time.time - startTime < delay)
         {
-            if (actor.debuffState == Actor.DebuffState.Freeze)
+            if (actor.debuffState == Actor.DebuffState.Ice)
             {
                 _hasShock = false;
                 actor.actorState = Actor.ActorState.Stand;
@@ -425,10 +429,10 @@ public class StatusHandler : MonoBehaviour
 
         // 감전 해제
         _hasShock = false;
-        actor.actorState = Actor.ActorState.Stand;
-        actor.debuffState &= ~Actor.DebuffState.Shock;
         StartCoroutine(ResetBodySpring());
         StartCoroutine(Stun(3));
+        actor.actorState = Actor.ActorState.Stand;
+        actor.debuffState &= ~Actor.DebuffState.Shock;
     }
     IEnumerator Stun(float delay)
     {
@@ -464,7 +468,7 @@ public class StatusHandler : MonoBehaviour
             
             if (realDamage >= _knockoutThreshold)
             {
-                if (actor.debuffState == Actor.DebuffState.Freeze)
+                if (actor.debuffState == Actor.DebuffState.Ice)
                     return;
 
                 _maxUnconsciousTime = Mathf.Clamp(_maxUnconsciousTime + 1.5f, _minUnconsciousTime, 20f);
