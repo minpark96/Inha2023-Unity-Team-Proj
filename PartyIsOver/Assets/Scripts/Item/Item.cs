@@ -7,13 +7,17 @@ using static Define;
 
 public class Item : MonoBehaviour
 {
-    public ItemType ItemType;
+    public Actor Owner;
 
-    private Actor _owner;
     
+    public ItemType ItemType;
     public InteractableObject InteractableObject;
-    public InteractableObject.Damage damageType;
-    public float mass;
+    InteractableObject.Damage UseDamageType  = InteractableObject.Damage.Default; //나중에 아이템데이터에서 대입
+    public float damage;
+
+
+    public ItemData ItemData;
+
 
     public Transform OneHandedPos;
     public Transform TwoHandedPos;
@@ -36,7 +40,7 @@ public class Item : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+    
     }
 
     public virtual void Use()
@@ -45,12 +49,5 @@ public class Item : MonoBehaviour
     }
 
 
-
-    public virtual void Equip(ItemType ItemType)
-    {
-        
-    }
-
-    
 
 }
