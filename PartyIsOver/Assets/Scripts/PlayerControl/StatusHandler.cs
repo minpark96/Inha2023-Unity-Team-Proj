@@ -29,14 +29,15 @@ public class StatusHandler : MonoBehaviour
     public float Stamina { get { return _stamina; } set { _stamina = value; } }
     private float _maxStamina = 100f;
 
-    private float _maxUnconsciousTime = 5f;
-    private float _minUnconsciousTime = 3f;
+    private float _maxUnconsciousTime=5f;
+    private float _minUnconsciousTime=3f;
     private float _unconsciousTime = 0f;
 
-    private float _knockoutThreshold = 20f;
+    private float _knockoutThreshold=20f;
 
     private List<float> _xPosSpringAry = new List<float>();
     private List<float> _yzPosSpringAry = new List<float>();
+
 
     // 이펙트 생성
     private bool hasObject = false;
@@ -82,6 +83,8 @@ public class StatusHandler : MonoBehaviour
     [SerializeField]
     private float _stunTime = 3f;
 
+
+
     void Start()
     {
         actor = transform.GetComponent<Actor>();
@@ -100,34 +103,30 @@ public class StatusHandler : MonoBehaviour
         }
     }
 
+    
     void Update()
     {
         if (_healthDamage != 0f)
             UpdateHealth();
 
         // 지침 디버프 활성화/비활성화
-        if (_stamina == 0)
+        if(_stamina == 0)
         {
-            if (!_hasExhausted)
+            if(!_hasExhausted)
             {
-                startTime = Time.time; // 디버그용
                 actor.debuffState |= Actor.DebuffState.Exhausted;
                 StartCoroutine(Exhausted(_exhaustedTime));
             }
         }
     }
 
-    // 디버프 시간 관리 (디버그용)
-    float startTime = 0;
-    float endTime = 0;
     private void OnGUI()
     {
-        if (this.name == "Ragdoll2")
+        if(this.name == "Ragdoll2")
         {
             GUI.contentColor = Color.red;
             GUI.Label(new Rect(0, 0, 200, 200), "버프상태:" + actor.debuffState.ToString());
             GUI.Label(new Rect(0, 20, 200, 200), "액션상태:" + actor.actorState.ToString());
-            GUI.Label(new Rect(0, 40, 200, 200), "디버프 걸린 시간:" + (endTime - startTime));
 
             GUI.contentColor = Color.blue;
             GUI.Label(new Rect(0, 60, 200, 200), "체력: " + _health);
@@ -157,8 +156,6 @@ public class StatusHandler : MonoBehaviour
 
     public void DebuffCheck(InteractableObject.Damage type)
     {
-        startTime = Time.time; // 디버그용
-
         if (actor.debuffState == Actor.DebuffState.Freeze) return;
 
         switch (type)
@@ -198,13 +195,13 @@ public class StatusHandler : MonoBehaviour
         foreach (Actor.DebuffState state in System.Enum.GetValues(typeof(Actor.DebuffState)))
         {
             Actor.DebuffState checking = actor.debuffState & state;
-
+            
             switch (checking)
             {
                 case Actor.DebuffState.Default:
                     break;
                 case Actor.DebuffState.PowerUp:
-                    if (!_hasPowerUp)
+                    if(!_hasPowerUp)
                         StartCoroutine(PowerUp(_powerUpTime));
                     break;
                 case Actor.DebuffState.Burn:
@@ -212,11 +209,11 @@ public class StatusHandler : MonoBehaviour
                         StartCoroutine(Burn(_burnTime));
                     break;
                 case Actor.DebuffState.Slow:
-                    if (!_hasSlow)
+                    if(!_hasSlow)
                         StartCoroutine(Slow(_slowTime));
                     break;
                 case Actor.DebuffState.Freeze:
-                    if (!_hasFreeze)
+                    if(!_hasFreeze)
                         StartCoroutine(Freeze(_freezeTime));
                     break;
                 case Actor.DebuffState.Shock:
@@ -254,8 +251,6 @@ public class StatusHandler : MonoBehaviour
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.PowerUp;
         actor.PlayerController.RunSpeed -= _maxSpeed * 0.1f;
-
-        endTime = Time.time; // 디버그용
     }
     IEnumerator Burn(float delay)
     {
@@ -292,8 +287,6 @@ public class StatusHandler : MonoBehaviour
         _hasBurn = false;
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Burn;
-
-        endTime = Time.time; // 디버그용
     }
     IEnumerator Exhausted(float delay)
     {
@@ -324,8 +317,6 @@ public class StatusHandler : MonoBehaviour
 
         actor.BodyHandler.BodyParts[0].PartJoint.angularXDrive = angularXDrive;
         _stamina = 100;
-
-        endTime = Time.time; // 디버그용
     }
     IEnumerator Slow(float delay)
     {
@@ -341,8 +332,6 @@ public class StatusHandler : MonoBehaviour
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Slow;
         actor.PlayerController.RunSpeed += _maxSpeed * 0.1f;
-
-        endTime = Time.time; // 디버그용
     }
     IEnumerator Freeze(float delay)
     {
@@ -380,8 +369,6 @@ public class StatusHandler : MonoBehaviour
         {
             actor.BodyHandler.BodyParts[i].PartRigidbody.isKinematic = false;
         }
-
-        endTime = Time.time; // 디버그용
     }
     IEnumerator Shock(float delay)
     {
@@ -406,7 +393,7 @@ public class StatusHandler : MonoBehaviour
         }
 
         float startTime = Time.time;
-
+      
         while (Time.time - startTime < delay)
         {
             if (actor.debuffState == Actor.DebuffState.Freeze)
@@ -436,8 +423,6 @@ public class StatusHandler : MonoBehaviour
             yield return null;
         }
 
-        endTime = Time.time; // 디버그용
-
         // 감전 해제
         _hasShock = false;
         actor.actorState = Actor.ActorState.Stand;
@@ -454,7 +439,6 @@ public class StatusHandler : MonoBehaviour
         _hasStun = false;
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Stun;
-        endTime = Time.time;
     }
 
 
@@ -477,7 +461,7 @@ public class StatusHandler : MonoBehaviour
         {
             if (_unconsciousTime >= 0f)
                 _unconsciousTime = Mathf.Clamp(_unconsciousTime - Time.deltaTime, 0f, _maxUnconsciousTime);
-
+            
             if (realDamage >= _knockoutThreshold)
             {
                 if (actor.debuffState == Actor.DebuffState.Freeze)
@@ -546,14 +530,10 @@ public class StatusHandler : MonoBehaviour
             angularYZDrive.positionSpring = 0f;
             actor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive = angularYZDrive;
         }
+
         yield return null;
     }
-    void Stun()
-    {
-        _hasStun = true;
-        ResetBodySpring();
-    }
-    // player controller로 옮기기
+
     IEnumerator RestoreBodySpring()
     {
         JointDrive angularXDrive;
@@ -589,4 +569,3 @@ public class StatusHandler : MonoBehaviour
         }
     }
 }
-

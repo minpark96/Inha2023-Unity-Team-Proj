@@ -14,7 +14,6 @@ public class PlayerInputHandler : MonoBehaviour
         _actor = GetComponent<Actor>();
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         if (_actor.PlayerController.isAI)
@@ -28,7 +27,6 @@ public class PlayerInputHandler : MonoBehaviour
         Managers.Input.KeyboardAction += OnKeyboardEvent;
     }
 
-    // Update is called once per frame
     void Update()
     {
         
@@ -46,8 +44,6 @@ public class PlayerInputHandler : MonoBehaviour
 
     }
 
-
-
     void OnMouseEvent(Define.MouseEvent evt)
     {
         if (_actor.actorState == ActorState.Debuff)
@@ -61,7 +57,4 @@ public class PlayerInputHandler : MonoBehaviour
         else
             _actor.Grab.OnMouseEvent_EquipItem(evt);
     }
-
-
-
 }

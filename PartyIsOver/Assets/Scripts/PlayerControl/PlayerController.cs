@@ -100,6 +100,9 @@ public class PlayerController : MonoBehaviourPun
     [SerializeField]
     public AniAngleData[] TestRready2;
 
+    [Header("앞뒤 속도")]
+    public float RunSpeed;
+
     [SerializeField]
     private Rigidbody _hips;
     [SerializeField]
@@ -114,15 +117,10 @@ public class PlayerController : MonoBehaviourPun
     private Grab _grab;
     private Actor _actor;
 
-    [Header("앞뒤 속도")]
-    public float RunSpeed;
-
-    [Header("PunchTime")]
     public float ReadyPunch = 0.1f;
     public float Punching = 0.1f;
     public float ResetPunch = 0.3f;
 
-    [Header("StatusCheck")]
     public bool isGrounded;
     public bool isRun;
     public bool isMove;
@@ -134,14 +132,10 @@ public class PlayerController : MonoBehaviourPun
     public bool leftKick;
     public bool rightKick;
     public bool isStateChange;
-
-    [Header("DelayTime")]
     public float RSkillDelayTime = 5;
-    public float PunchDelay = 0.5f;
-
-    [Header("AllCheck")]
     public float MaxSpeed = 10f;
     private float _runSpeedOffset = 350f;
+    public float PunchDelay = 0.5f;
 
     private Vector3 _moveInput;
     private Vector3 _moveDir;
@@ -181,7 +175,6 @@ public class PlayerController : MonoBehaviourPun
     Rigidbody _childRigidbody;
     Transform[] _children;
     private Dictionary<Transform, Quaternion> _initialRotations = new Dictionary<Transform, Quaternion>();
-
     public enum Side
     {
         Left = 0,
@@ -205,6 +198,7 @@ public class PlayerController : MonoBehaviourPun
     {
         _bodyHandler.BodySetup();
     }
+
     private ConfigurableJoint[] childJoints;
     private ConfigurableJointMotion[] originalYMotions;
     private ConfigurableJointMotion[] originalZMotions;
@@ -229,58 +223,6 @@ public class PlayerController : MonoBehaviourPun
             originalZMotions[i] = childJoints[i].angularZMotion;
         }
         _grab = GetComponent<Grab>();
-    }
-
-
-    public void OnKeyboardEvent_Idle(Define.KeyboardEvent evt)
-    {
-        if (!photonView.IsMine)
-        {
-            return;
-        }
-
-        switch (evt)
-        {
-            case Define.KeyboardEvent.Press:
-                {
-
-                }
-                break;
-            case Define.KeyboardEvent.PointerDown:
-                {
-                }
-                break;
-            case Define.KeyboardEvent.PointerUp:
-                {
-
-                }
-                break;
-            case Define.KeyboardEvent.Click:
-                {
-                    if (Input.GetKeyUp(KeyCode.H))
-                        Heading();
-                    if (Input.GetKeyUp(KeyCode.Space))
-                    {
-                        _actor.actorState = Actor.ActorState.Jump;
-                    }
-                }
-                break;
-            case Define.KeyboardEvent.Charge:
-                {
-                    RestoreOriginalMotions();
-                    if (Input.GetKeyUp(KeyCode.R))
-                        MeowNyangPunch();
-                }
-                break;
-            case Define.KeyboardEvent.Hold:
-                {
-                    //중일때 확인 ex 이펙트 출현하는 코드를 넣어주면 기모아지는 것 첨 될듯
-                    StartCoroutine(Rready());
-                    ForceRready();
-
-                }
-                break;
-        }
     }
 
     void RestoreOriginalMotions()
@@ -313,6 +255,74 @@ public class PlayerController : MonoBehaviourPun
             AniAngleForce(TestRready2, i);
         }
         yield return new WaitForSeconds(1f);
+    }
+
+    bool isW;
+    public void OnKeyboardEvent_Idle(Define.KeyboardEvent evt)
+    {
+        if (!photonView.IsMine)
+        {
+            return;
+        }
+
+        switch (evt)
+        {
+            case Define.KeyboardEvent.Press:
+                {
+                    if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S))
+                    {
+                        _moveInput.z = Input.GetAxis("Vertical");
+                    }
+                    if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
+                    {
+                        _moveInput.x = Input.GetAxis("Horizontal");
+                    }
+
+                    if (Input.GetKey(KeyCode.LeftShift))
+                    {
+                        _actor.actorState = Actor.ActorState.Run;
+                        isRun = true;
+                    }
+                }
+                break;
+            case Define.KeyboardEvent.Click:
+                {
+                    if (Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.S))
+                    {
+                        _moveInput.z = 0;
+                    }
+                    if (Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
+                    {
+                        _moveInput.x = 0;
+                    }
+
+                    if (Input.GetKeyUp(KeyCode.LeftShift))
+                    {
+                        _actor.actorState = Actor.ActorState.Stand;
+                        isRun = false;
+                    }
+
+                    if (Input.GetKeyUp(KeyCode.H))
+                        Heading();
+                    if (Input.GetKeyUp(KeyCode.Space))
+                        _actor.actorState = Actor.ActorState.Jump;
+                }
+                break;
+            case Define.KeyboardEvent.Charge:
+                {
+                    RestoreOriginalMotions();
+                    if (Input.GetKeyUp(KeyCode.R))
+                        MeowNyangPunch();
+                }
+                break;
+            case Define.KeyboardEvent.Hold:
+                {
+                    //중일때 확인 ex 이펙트 출현하는 코드를 넣어주면 기모아지는 것 첨 될듯
+                    StartCoroutine(Rready());
+                    ForceRready();
+                }
+                break;
+        }
     }
 
     public void OnMouseEvent_Idle(Define.MouseEvent evt)
@@ -349,7 +359,6 @@ public class PlayerController : MonoBehaviourPun
                         PunchAndGrab();
                     if (!isGrounded && Input.GetMouseButtonUp(1))
                         DropKickTrigger();
-                    //뛰는 상태에서만 구르기 가능
                     if (!_isCoroutineRoll && Input.GetMouseButtonUp(2))
                         ForwardRollTrigger();
                 }
@@ -366,12 +375,8 @@ public class PlayerController : MonoBehaviourPun
 
         if (isAI)
             return;
-        if (_actor.debuffState == DebuffState.Freeze)
-            return;
 
-        _moveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-
-        if (_actor.actorState != Actor.ActorState.Jump && _actor.actorState != Actor.ActorState.Roll)
+        if (_actor.actorState != Actor.ActorState.Jump && _actor.actorState != Actor.ActorState.Roll && _actor.actorState != Actor.ActorState.Run)
         {
             if (_moveInput.magnitude == 0f)
             {
@@ -379,14 +384,9 @@ public class PlayerController : MonoBehaviourPun
             }
             else
             {
+                _actor.actorState = Actor.ActorState.Walk;
                 Stand();
-                _actor.actorState = Actor.ActorState.Run;
             }
-        }
-        if (Input.GetMouseButton(2))
-        {
-            _actor.actorState = ActorState.Roll;
-            ForwardRollTrigger();
         }
     }
 
@@ -396,31 +396,8 @@ public class PlayerController : MonoBehaviourPun
         {
             return;
         }
-        if (Input.GetKey(KeyCode.LeftShift))
-            isRun = true;
-        else
-            isRun = false;
     }
     
-    #region 기즈모
-    private Rigidbody ray;
-
-    //Vector3 direction = Vector3.forward;
-
-    private void OnDrawGizmos()
-    {
-        //Debug.DrawRay(bodyHandler.Head.PartRigidbody.position, -bodyHandler.Head.transform.up * 10f, Color.red);
-        //Debug.DrawRay(bodyHandler.Waist.PartRigidbody.position, bodyHandler.Waist.transform.up * 10f, Color.red);
-        //Debug.DrawRay(bodyHandler.Head.transform.forward, Vector3.up * 10f, Color.green);
-    }
-    /*void Ray_1()
-    {
-        
-        ray.origin = _hips.transform.position;
-        ray.direction = -_hips.transform.right;
-    }*/
-    #endregion
-
     private void TestCase()
     {
         StartCoroutine(testcase());
@@ -438,7 +415,7 @@ public class PlayerController : MonoBehaviourPun
 
     private void ForwardRollTrigger()
     {
-        if(!_isCoroutineRoll)
+        if (!_isCoroutineRoll)
         {
             Transform[] childTransforms = GetComponentsInChildren<Transform>();
             foreach (Transform childTransform in childTransforms)
@@ -453,7 +430,6 @@ public class PlayerController : MonoBehaviourPun
     IEnumerator ForwardRollDelay(float delay)
     {
         _isCoroutineRoll = true;
-
         yield return ForwardRoll(0.07f,1.5f);
         yield return new WaitForSeconds(delay);
         _isCoroutineRoll = false;
@@ -478,17 +454,6 @@ public class PlayerController : MonoBehaviourPun
         }
         //힘은 0, Rotation 복구 하기
         RestoreRotations();
-        /*while(Time.time < startRollTime + 2)
-        {
-            foreach (Transform child in _children)
-            {
-                if (_initialRotations.ContainsKey(child))
-                {
-                    Vector3.Slerp(child.localRotation.eulerAngles, _initialRotations[child].eulerAngles, 0.1f) ;
-                }
-            }
-        }*/
-
         _actor.actorState = Actor.ActorState.Stand;
     }
     // 진행 순서 구르기 -> 회전하고 남는 힘 0 대입과 구르기 전 Rotation 값 넣기 -> Freeze Rotationx 축 잠금
@@ -506,7 +471,7 @@ public class PlayerController : MonoBehaviourPun
                 _childRigidbody.velocity = Vector3.zero;
                 _childRigidbody.angularVelocity = Vector3.zero;
                 // 초기 회전값 복원 Dictionary에서 특정 키의 존재 여부를 확인
-                if(_initialRotations.ContainsKey(child))
+                if (_initialRotations.ContainsKey(child))
                 {
                     child.localRotation = _initialRotations[child];
                 }
@@ -514,7 +479,7 @@ public class PlayerController : MonoBehaviourPun
                 if (_childRigidbody.name == "GreenHip")
                     _hipRB.constraints |= RigidbodyConstraints.FreezeRotationX;
             }
-        }    
+        }
     }
 
     Vector3 GetForceDirection(AniFrameData data, int index)
@@ -609,6 +574,7 @@ public class PlayerController : MonoBehaviourPun
                 _direction = Vector3.zero;
                 break;
         }
+
         return _direction;
     }
 
@@ -670,8 +636,6 @@ public class PlayerController : MonoBehaviourPun
         {
             for (int i = 0; i < DropAniData.Length; i++)
             {
-                //스프링 풀기
-                //ResetBodySpring();
                 _actor.StatusHandler.StartCoroutine("ResetBodySpring");
 
                 if (i == 0)
@@ -698,8 +662,6 @@ public class PlayerController : MonoBehaviourPun
                 }
             }
             yield return new WaitForSeconds(2);
-            //스프링 복구
-            //RestoreSpringTrigger();
             _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
             _bodyHandler.LeftLeg.PartInteractable.damageModifier = InteractableObject.Damage.Default;
             _bodyHandler.RightLeg.PartInteractable.damageModifier = InteractableObject.Damage.Default;
@@ -823,8 +785,8 @@ public class PlayerController : MonoBehaviourPun
             ArmActionPunchResetting(side);
             yield return new WaitForSeconds(duration);
         }
-
     }
+
 
     public void Stand()
     {
@@ -920,16 +882,13 @@ public class PlayerController : MonoBehaviourPun
         {
             isGrounded = false;
             int _frameCount;
-            if (_moveDir != Vector3.zero)
+            for (int i = 0; i < MoveForceJumpAniData.Length; i++)
             {
-                for (int i = 0; i < MoveForceJumpAniData.Length; i++)
-                {
-                    _frameCount = i;
-                    //AniForce(MoveForceJumpAniData, _frameCount, _moveDir); 헤드 추가 해주면 됨 values = 6
-                    AniForce(MoveForceJumpAniData, _frameCount, Vector3.up);
-                    if (i == 2)
-                        AniForce(MoveForceJumpAniData, _frameCount, Vector3.down);
-                }
+                _frameCount = i;
+                //AniForce(MoveForceJumpAniData, _frameCount, _moveDir); 헤드 추가 해주면 됨 values = 6
+                AniForce(MoveForceJumpAniData, _frameCount, Vector3.up);
+                if (i == 2)
+                    AniForce(MoveForceJumpAniData, _frameCount, Vector3.down);
             }
             for (int i = 0; i < MoveAngleJumpAniData.Length; i++)
             {
@@ -964,7 +923,7 @@ public class PlayerController : MonoBehaviourPun
 
     public void Move()
     {
-        if (isRun)
+        if (_actor.actorState == ActorState.Run)
         {
             _cycleSpeed = 0.1f;
         }
