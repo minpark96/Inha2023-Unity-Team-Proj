@@ -8,6 +8,7 @@ using static Actor;
 using static AniFrameData;
 using static AniAngleData;
 using Unity.VisualScripting;
+using Photon.Pun;
 
 [System.Serializable]
 public class AniFrameData
@@ -52,7 +53,7 @@ public class AniAngleData
 
 }
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviourPun
 {
     [SerializeField]
     public AniFrameData[] RollAniData;
@@ -158,7 +159,6 @@ public class PlayerController : MonoBehaviour
     public bool isAI = false;
 
     Rigidbody _hipRB;
-    Transform _hipTF;
 
     Pose leftArmPose;
     Pose rightArmPose;
@@ -172,9 +172,9 @@ public class PlayerController : MonoBehaviour
     Vector3 _angleDirection;
     Vector3 _targetDirection;
 
-    private Dictionary<Transform, Quaternion> initialRotations = new Dictionary<Transform, Quaternion>();
-
-
+    Rigidbody _childRigidbody;
+    Transform[] _children;
+    private Dictionary<Transform, Quaternion> _initialRotations = new Dictionary<Transform, Quaternion>();
     public enum Side
     {
         Left = 0,
@@ -208,11 +208,12 @@ public class PlayerController : MonoBehaviour
         targetingHandler = GetComponent<TargetingHandler>();
         _actor = GetComponent<Actor>();
         _hipRB = transform.Find("GreenHip").GetComponent<Rigidbody>();
-        _hipTF = transform.Find("GreenHip");
 
         childJoints = GetComponentsInChildren<ConfigurableJoint>();
         originalYMotions = new ConfigurableJointMotion[childJoints.Length];
         originalZMotions = new ConfigurableJointMotion[childJoints.Length];
+
+        _children = GetComponentsInChildren<Transform>();
 
         // 원래의 angularXMotion 값을 저장
         for (int i = 0; i < childJoints.Length; i++)
@@ -226,6 +227,10 @@ public class PlayerController : MonoBehaviour
 
     public void OnKeyboardEvent_Idle(Define.KeyboardEvent evt)
     {
+        if (!photonView.IsMine)
+        {
+            return;
+        }
 
         switch (evt)
         {
@@ -305,6 +310,11 @@ public class PlayerController : MonoBehaviour
 
     public void OnMouseEvent_Idle(Define.MouseEvent evt)
     {
+        if (!photonView.IsMine)
+        {
+            return;
+        }
+
         switch (evt)
         {
             case Define.MouseEvent.PointerDown:
@@ -332,7 +342,7 @@ public class PlayerController : MonoBehaviour
                         PunchAndGrab();
                     if (!isGrounded && Input.GetMouseButtonUp(1))
                         DropKickTrigger();
-                    if (Input.GetMouseButtonUp(2))
+                    if (!_isCoroutineRoll && Input.GetMouseButtonUp(2))
                         ForwardRollTrigger();
                 }
                 break;
@@ -341,6 +351,11 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!photonView.IsMine)
+        {
+            return;
+        }
+
         if (isAI)
             return;
         if (_actor.debuffState == DebuffState.Freeze)
@@ -369,6 +384,11 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        if (!photonView.IsMine)
+        {
+            return;
+        }
+
         CursorControll();
         LookAround();
 
@@ -404,12 +424,9 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator testcase()
     {
-        int _frameCount;
-
         for (int i = 0; i < TestRready2.Length; i++)
         {
-            _frameCount = i;
-            AniAngleForce(TestRready2, _frameCount);
+            AniAngleForce(TestRready2, i);
         }
 
         yield return null;
@@ -419,21 +436,12 @@ public class PlayerController : MonoBehaviour
     {
         if(!_isCoroutineRoll)
         {
-            StartCoroutine(ForwardRollDelay(3f));
             Transform[] childTransforms = GetComponentsInChildren<Transform>();
             foreach (Transform childTransform in childTransforms)
             {
-                initialRotations[childTransform] = childTransform.localRotation;
+                _initialRotations[childTransform] = childTransform.localRotation;
             }
-        }
-    }
-
-    public void RestoreRotations()
-    {
-        // 저장한 초기 rotation 값을 다시 적용합니다.
-        foreach (var entry in initialRotations)
-        {
-            entry.Key.localRotation = entry.Value;
+            StartCoroutine(ForwardRollDelay(3f));
         }
     }
 
@@ -443,10 +451,6 @@ public class PlayerController : MonoBehaviour
         yield return ForwardRoll(0.07f,1.5f);
         yield return new WaitForSeconds(delay);
         _isCoroutineRoll = false;
-
-        //다시 회복
-        //RestoreSpringTrigger();
-        //_actor.StatusHandler.StartCoroutine("RestoreBodySpring");
     }
 
     IEnumerator ForwardRoll(float duration, float readyRoll)
@@ -462,39 +466,54 @@ public class PlayerController : MonoBehaviour
             yield return new WaitForSeconds(duration);
         }
 
+        //힘은 0, Rotation 복구 하기
         RestoreRotations();
+
+        //Freeze RotationX축 잠금
         _hipRB.constraints |= RigidbodyConstraints.FreezeRotationX;
+        //스프링 값 올리기
         _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
         _actor.actorState = ActorState.Stand;
-
     }
-
-    IEnumerator ForwardRoll_old(float duration, float readyRoll, float startRoll, float rolling, float endRoll)
+    public void RestoreRotations()
     {
-        _actor.StatusHandler.StartCoroutine("ResetBodySpring");
-        float rollTime = Time.time;
-
-        while (Time.time - rollTime < readyRoll)
+        foreach (Transform child in _children)
         {
-            AniAngleForce(RollAngleAniData, 0);
-            yield return new WaitForSeconds(duration);
+            Rigidbody _childRigidbody = child.GetComponent<Rigidbody>();
+            Debug.Log(_childRigidbody);
+            if (_childRigidbody != null)
+            {
+                // 초기 회전값 복원
+                if (_initialRotations.ContainsKey(child))
+                {
+                    child.localRotation = _initialRotations[child];
+                }
+                // 속도 초기화
+                _childRigidbody.velocity = Vector3.zero;
+            }
         }
-        rollTime = Time.time;
-        while (Time.time - rollTime < startRoll)
-        {
-            AniForce(RollAniData, 0);
-            yield return new WaitForSeconds(duration);
-        }
-        rollTime = Time.time;
-        while (Time.time - rollTime < rolling)
-        {
-            AniAngleForce(RollAngleAniData, 1);
-            yield return new WaitForSeconds(duration);
-        }
-        _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
-        _actor.actorState = ActorState.Stand;
     }
-   
+    public void RestoreRotationsOld()
+    {
+        // 저장한 초기 rotation 값을 다시 적용합니다.
+        foreach (var entry in _initialRotations)
+        {
+            entry.Key.localRotation = entry.Value;
+        }
+    }
+
+    void VelocityZeroOld()
+    {
+        foreach (Transform child in _children)
+        {
+            _childRigidbody = child.GetComponent<Rigidbody>();
+
+            if (_childRigidbody != null)
+            {
+                _childRigidbody.velocity = Vector3.zero;
+            }
+        }
+    }
 
     Vector3 GetForceDirection(AniFrameData data, int index)
     {

@@ -14,17 +14,32 @@ public class GameCenter : MonoBehaviourPunCallbacks
     #region Private Serializable Fields
 
     [SerializeField]
-    private RoomUI _roomUI;
+    RoomUI _roomUI;
 
     #endregion
 
     #region Private Fields
+
+    string _arenaName = "SDJTest";
+    // 프리팹 경로
+    string _playerPath = "Ragdoll2";
 
     #endregion
 
     #region Public Fields
 
     public static GameObject LocalGameCenterInstance = null;
+
+    // 스폰 포인트 6인 기준
+    public List<Vector3> _spawnPoints = new List<Vector3>
+    {
+        new Vector3(5f, 5f, 0f),
+        new Vector3(2.5f, 5f, 4.33f),
+        new Vector3(-2.5f, 5f, 4.33f),
+        new Vector3(-5f, 5f, 0f),
+        new Vector3(-2.5f, 5f, -4.33f),
+        new Vector3(2.5f, 5f, -4.33f)
+    };
 
     #endregion
 
@@ -41,10 +56,55 @@ public class GameCenter : MonoBehaviourPunCallbacks
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name == "Arena")
+        if (scene.name == _arenaName)
         {
             Debug.Log("Arena Scene 로드 완료 후 초기화");
-            //InitArenaUI();
+            InstantiatePlayer();
+        }
+    }
+
+    void InstantiatePlayer()
+    {
+        if (Actor.LocalPlayerInstance == null)
+        {
+            Debug.LogFormat("PhotonManager.cs => We are Instantiating LocalPlayer from {0}", SceneManagerHelper.ActiveSceneName);
+
+            switch (PhotonNetwork.LocalPlayer.ActorNumber)
+            {
+                case 1:
+                    Managers.Resource.PhotonNetworkInstantiate(_playerPath, pos: _spawnPoints[0]);
+                    break;
+                case 2:
+                    Managers.Resource.PhotonNetworkInstantiate(_playerPath, pos: _spawnPoints[1]);
+                    break;
+                case 3:
+                    Managers.Resource.PhotonNetworkInstantiate(_playerPath, pos: _spawnPoints[2]);
+                    break;
+                case 4:
+                    Managers.Resource.PhotonNetworkInstantiate(_playerPath, pos: _spawnPoints[3]);
+                    break;
+                case 5:
+                    Managers.Resource.PhotonNetworkInstantiate(_playerPath, pos: _spawnPoints[4]);
+                    break;
+                case 6:
+                    Managers.Resource.PhotonNetworkInstantiate(_playerPath, pos: _spawnPoints[5]);
+                    break;
+            }
+        }
+    }
+
+    void LoadArena()
+    {
+        Debug.Log("LoadArena()");
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            PhotonNetwork.LoadLevel(_arenaName);
+        }
+        else
+        {
+            Debug.LogError("PhotonNetwork : Trying to Load a level but we are not the master Client");
+            return;
         }
     }
 
@@ -63,9 +123,9 @@ public class GameCenter : MonoBehaviourPunCallbacks
         {
             _roomUI.IsReady = true;
             _roomUI.SetButtonActive("ready", false);
-            _roomUI.AddButtonEvent("play", PhotonManager.Instance.LoadArena);
+            _roomUI.AddButtonEvent("play", LoadArena);
             _roomUI.UpdateReadyCountText(_roomUI.IsReady);
-            _roomUI.SetButtonInteractable("play", false);
+            _roomUI.SetButtonInteractable("play", true);
             _roomUI.SetPlayerStatus("Wait for Other Players...");
         }
         else

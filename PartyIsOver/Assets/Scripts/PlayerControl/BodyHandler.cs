@@ -9,43 +9,24 @@ public class BodyHandler : MonoBehaviour
     public Transform Root;
     public List<BodyPart> BodyParts = new List<BodyPart>();
 
-
-
-    public BodyPart Head;
-
-    public BodyPart Chest;
-
-    public BodyPart Waist;
-
-    public BodyPart Hip;
-
-
-
-    public BodyPart LeftArm;
-
-    public BodyPart LeftForarm;
-
-    public BodyPart LeftHand;
-
-    public BodyPart LeftThigh;
-
-    public BodyPart LeftLeg;
-
     public BodyPart LeftFoot;
-
-
-
-    public BodyPart RightArm;
-
-    public BodyPart RightForarm;
-
-    public BodyPart RightHand;
-
+    public BodyPart RightFoot;
+    public BodyPart LeftLeg;
+    public BodyPart RightLeg;
+    public BodyPart LeftThigh;
     public BodyPart RightThigh;
 
-    public BodyPart RightLeg;
+    public BodyPart Hip;
+    public BodyPart Waist;
+    public BodyPart Chest;
+    public BodyPart Head;
 
-    public BodyPart RightFoot;
+    public BodyPart LeftArm;
+    public BodyPart RightArm;
+    public BodyPart LeftForarm;
+    public BodyPart RightForarm;
+    public BodyPart LeftHand;
+    public BodyPart RightHand;
 
     public BodyPart Ball;
 
