@@ -435,6 +435,19 @@ public class PlayerController : MonoBehaviourPun
         _isCoroutineRoll = false;
     }
 
+    /*
+    
+    foreach (Transform child in _children)
+        {
+            if (_initialRotations.ContainsKey(child))
+            {
+                Vector3 lerpedDirecion = Vector3.Slerp(child.localRotation.eulerAngles, _initialRotations[child].eulerAngles, 0.1f);
+                child.localRotation = Quaternion.LookRotation(lerpedDirecion);
+            }
+        }
+
+     */
+
     IEnumerator ForwardRoll(float duration, float readyRoll)
     {
         _hips.velocity = -_hips.transform.up.normalized * MaxSpeed * 1.5f;
@@ -446,18 +459,58 @@ public class PlayerController : MonoBehaviourPun
 
         float rollTime = Time.time;
         float startRollTime = Time.time;
+
         while (Time.time - rollTime < readyRoll)
         {
             AniAngleForce(RollAngleAniData, 0);
             AniForce(RollAniData, 0);
             yield return new WaitForSeconds(duration);
         }
+
+        //힘은 0, Rotation 복구 하기
+        RestoreRotations();
+        while (Time.time - startRollTime < 0.1f)
+        {
+            foreach (Transform child in _children)
+            {
+                if (_initialRotations.ContainsKey(child))
+                {
+                    Debug.Log("Slerp");
+                    Vector3 lerpedDirecion = Vector3.Slerp(child.localRotation.eulerAngles, _initialRotations[child].eulerAngles, 0.1f);
+                    child.localRotation = Quaternion.LookRotation(lerpedDirecion);
+                }
+            }
+            yield return new WaitForSeconds(duration);
+        }
+        _actor.actorState = Actor.ActorState.Stand;
+    }
+
+    IEnumerator ForwardRollOld(float duration, float readyRoll)
+    {
+        _hips.velocity = -_hips.transform.up.normalized * MaxSpeed * 1.5f;
+        yield return new WaitForSeconds(0.08f);
+        _actor.actorState = ActorState.Roll;
+
+        _actor.StatusHandler.StartCoroutine("ResetBodySpring");
+        _hipRB.constraints &= ~RigidbodyConstraints.FreezeRotationX;
+
+        float rollTime = Time.time;
+        float startRollTime = Time.time;
+
+        while (Time.time - rollTime < readyRoll)
+        {
+            AniAngleForce(RollAngleAniData, 0);
+            AniForce(RollAniData, 0);
+            yield return new WaitForSeconds(duration);
+        }
+        
         //힘은 0, Rotation 복구 하기
         RestoreRotations();
         _actor.actorState = Actor.ActorState.Stand;
     }
     // 진행 순서 구르기 -> 회전하고 남는 힘 0 대입과 구르기 전 Rotation 값 넣기 -> Freeze Rotationx 축 잠금
     // -> 스프링값 올리기 (스프링 값을 천천히 올려야 누워 있다가 일어서는 것 처럼 보임)
+
     public void RestoreRotations()
     {
         _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
@@ -481,6 +534,31 @@ public class PlayerController : MonoBehaviourPun
             }
         }
     }
+
+    public void RestoreRotationsOld()
+    {
+        _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
+
+        foreach (Transform child in _children)
+        {
+            _childRigidbody = child.GetComponent<Rigidbody>();
+            if (_childRigidbody != null)
+            {
+                //회전 힘과 AddForce 힘을 벡터 0으로 해서 값 빼기
+                _childRigidbody.velocity = Vector3.zero;
+                _childRigidbody.angularVelocity = Vector3.zero;
+                // 초기 회전값 복원 Dictionary에서 특정 키의 존재 여부를 확인
+                if (_initialRotations.ContainsKey(child))
+                {
+                    child.localRotation = _initialRotations[child];
+                }
+
+                if (_childRigidbody.name == "GreenHip")
+                    _hipRB.constraints |= RigidbodyConstraints.FreezeRotationX;
+            }
+        }
+    }
+
 
     Vector3 GetForceDirection(AniFrameData data, int index)
     {

@@ -10260,11 +10260,11 @@ MonoBehaviour:
     - 0.01
     AnglePowerValues:
     - 100
+  RunSpeed: 100
   _hips: {fileID: 5150844099323961327}
   _cameraArm: {fileID: 4401259382300767454}
   _bodyHandler: {fileID: 0}
   targetingHandler: {fileID: 0}
-  RunSpeed: 100
   ReadyPunch: 0.1
   Punching: 0.1
   ResetPunch: 0.3
@@ -10279,8 +10279,8 @@ MonoBehaviour:
   rightKick: 0
   isStateChange: 0
   RSkillDelayTime: 0
-  PunchDelay: 0.15
   MaxSpeed: 10
+  PunchDelay: 0.15
   _idleTimer: 0
   isAI: 0
 --- !u!114 &5164006939630707526
