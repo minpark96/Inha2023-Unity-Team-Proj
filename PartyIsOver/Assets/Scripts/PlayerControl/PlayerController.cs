@@ -478,7 +478,7 @@ public class PlayerController : MonoBehaviourPun
         }
         //힘은 0, Rotation 복구 하기
         RestoreRotations();
-        while(Time.time < startRollTime + 2)
+        /*while(Time.time < startRollTime + 2)
         {
             foreach (Transform child in _children)
             {
@@ -487,7 +487,7 @@ public class PlayerController : MonoBehaviourPun
                     Vector3.Slerp(child.localRotation.eulerAngles, _initialRotations[child].eulerAngles, 0.1f) ;
                 }
             }
-        }
+        }*/
 
         _actor.actorState = Actor.ActorState.Stand;
     }
@@ -506,8 +506,12 @@ public class PlayerController : MonoBehaviourPun
                 _childRigidbody.velocity = Vector3.zero;
                 _childRigidbody.angularVelocity = Vector3.zero;
                 // 초기 회전값 복원 Dictionary에서 특정 키의 존재 여부를 확인
-                
-                if(_childRigidbody.name == "GreenHip")
+                if(_initialRotations.ContainsKey(child))
+                {
+                    child.localRotation = _initialRotations[child];
+                }
+
+                if (_childRigidbody.name == "GreenHip")
                     _hipRB.constraints |= RigidbodyConstraints.FreezeRotationX;
             }
         }    
