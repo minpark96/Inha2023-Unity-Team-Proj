@@ -23,12 +23,13 @@ public class Actor : MonoBehaviourPun
         Dead = 0x1,
         Unconscious = 0x2,
         Stand = 0x4,
-        Run = 0x8,
-        Jump = 0x10,
-        Fall = 0x20,
-        Climb = 0x40,
-        Debuff = 0x80,
-        Roll,
+        Walk = 0x8,
+        Run = 0x10,
+        Roll = 0x20,
+        Jump = 0x40,
+        Fall = 0x80,
+        Climb = 0x100,
+        Debuff = 0x200,
     }
 
     public enum DebuffState
@@ -150,6 +151,9 @@ public class Actor : MonoBehaviourPun
                 break;
             case ActorState.Stand:
                 PlayerController.Stand();
+                break;
+            case ActorState.Walk:
+                PlayerController.Move();
                 break;
             case ActorState.Run:
                 PlayerController.Move();
