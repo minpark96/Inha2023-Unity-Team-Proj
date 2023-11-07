@@ -197,16 +197,8 @@ public class PlayerController : MonoBehaviourPun
     void Start()
     {
         _bodyHandler.BodySetup();
-
-        for (int i = 0; i < _bodyHandler.BodyParts.Count; i++)
-        {
-            if (i == 3)
-                continue;
-
-            _xPosSpringAry.Add(_bodyHandler.BodyParts[i].PartJoint.angularXDrive.positionSpring);
-            _yzPosSpringAry.Add(_bodyHandler.BodyParts[i].PartJoint.angularYZDrive.positionSpring);
-        }
     }
+
     private ConfigurableJoint[] childJoints;
     private ConfigurableJointMotion[] originalYMotions;
     private ConfigurableJointMotion[] originalZMotions;
@@ -423,13 +415,14 @@ public class PlayerController : MonoBehaviourPun
 
     private void ForwardRollTrigger()
     {
-        if(!_isCoroutineRoll)
+        if (!_isCoroutineRoll)
         {
             Transform[] childTransforms = GetComponentsInChildren<Transform>();
             foreach (Transform childTransform in childTransforms)
             {
                 _initialRotations[childTransform] = childTransform.localRotation;
             }
+            _actor.actorState = Actor.ActorState.Jump;
             StartCoroutine(ForwardRollDelay(3f));
         }
     }
@@ -444,62 +437,47 @@ public class PlayerController : MonoBehaviourPun
 
     IEnumerator ForwardRoll(float duration, float readyRoll)
     {
-        StartCoroutine(ResetBodySpring());
-        _hipRB.constraints &= ~RigidbodyConstraints.FreezeRotationX;
-        float rollTime = Time.time;
+        _hips.velocity = -_hips.transform.up.normalized * MaxSpeed * 1.5f;
+        yield return new WaitForSeconds(0.08f);
+        _actor.actorState = ActorState.Roll;
 
+        _actor.StatusHandler.StartCoroutine("ResetBodySpring");
+        _hipRB.constraints &= ~RigidbodyConstraints.FreezeRotationX;
+
+        float rollTime = Time.time;
+        float startRollTime = Time.time;
         while (Time.time - rollTime < readyRoll)
         {
             AniAngleForce(RollAngleAniData, 0);
             AniForce(RollAniData, 0);
             yield return new WaitForSeconds(duration);
         }
-
         //힘은 0, Rotation 복구 하기
         RestoreRotations();
-
-        //Freeze RotationX축 잠금
-        _hipRB.constraints |= RigidbodyConstraints.FreezeRotationX;
-        //스프링 값 올리기
-        StartCoroutine(RestoreBodySpring());
-        _actor.actorState = ActorState.Stand;
+        _actor.actorState = Actor.ActorState.Stand;
     }
+    // 진행 순서 구르기 -> 회전하고 남는 힘 0 대입과 구르기 전 Rotation 값 넣기 -> Freeze Rotationx 축 잠금
+    // -> 스프링값 올리기 (스프링 값을 천천히 올려야 누워 있다가 일어서는 것 처럼 보임)
     public void RestoreRotations()
     {
+        _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
+
         foreach (Transform child in _children)
         {
-            Rigidbody _childRigidbody = child.GetComponent<Rigidbody>();
-            Debug.Log(_childRigidbody);
+            _childRigidbody = child.GetComponent<Rigidbody>();
             if (_childRigidbody != null)
             {
-                // 초기 회전값 복원
+                //회전 힘과 AddForce 힘을 벡터 0으로 해서 값 빼기
+                _childRigidbody.velocity = Vector3.zero;
+                _childRigidbody.angularVelocity = Vector3.zero;
+                // 초기 회전값 복원 Dictionary에서 특정 키의 존재 여부를 확인
                 if (_initialRotations.ContainsKey(child))
                 {
                     child.localRotation = _initialRotations[child];
                 }
-                // 속도 초기화
-                _childRigidbody.velocity = Vector3.zero;
-            }
-        }
-    }
-    public void RestoreRotationsOld()
-    {
-        // 저장한 초기 rotation 값을 다시 적용합니다.
-        foreach (var entry in _initialRotations)
-        {
-            entry.Key.localRotation = entry.Value;
-        }
-    }
 
-    void VelocityZeroOld()
-    {
-        foreach (Transform child in _children)
-        {
-            _childRigidbody = child.GetComponent<Rigidbody>();
-
-            if (_childRigidbody != null)
-            {
-                _childRigidbody.velocity = Vector3.zero;
+                if (_childRigidbody.name == "GreenHip")
+                    _hipRB.constraints |= RigidbodyConstraints.FreezeRotationX;
             }
         }
     }
@@ -609,7 +587,7 @@ public class PlayerController : MonoBehaviourPun
             Vector3 _targetDirection = GetAngleDirection(_aniAngleData[_elementCount].TargetAngleDirections[i],
                 _aniAngleData[_elementCount].TargetDirection[i]);
 
-            AlignToVectorOld(_aniAngleData[_elementCount].StandardRigidbodies[i], _angleDirection, _targetDirection,
+            AlignToVector(_aniAngleData[_elementCount].StandardRigidbodies[i], _angleDirection, _targetDirection,
                 _aniAngleData[_elementCount].AngleStability[i], _aniAngleData[_elementCount].AnglePowerValues[i]);
         }
     }
@@ -658,7 +636,7 @@ public class PlayerController : MonoBehaviourPun
         {
             for (int i = 0; i < DropAniData.Length; i++)
             {
-                StartCoroutine(ResetBodySpring());
+                _actor.StatusHandler.StartCoroutine("ResetBodySpring");
 
                 if (i == 0)
                 {
@@ -684,8 +662,7 @@ public class PlayerController : MonoBehaviourPun
                 }
             }
             yield return new WaitForSeconds(2);
-
-            StartCoroutine(RestoreBodySpring());
+            _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
             _bodyHandler.LeftLeg.PartInteractable.damageModifier = InteractableObject.Damage.Default;
             _bodyHandler.RightLeg.PartInteractable.damageModifier = InteractableObject.Damage.Default;
         }
@@ -905,16 +882,13 @@ public class PlayerController : MonoBehaviourPun
         {
             isGrounded = false;
             int _frameCount;
-            if (_moveDir != Vector3.zero)
+            for (int i = 0; i < MoveForceJumpAniData.Length; i++)
             {
-                for (int i = 0; i < MoveForceJumpAniData.Length; i++)
-                {
-                    _frameCount = i;
-                    //AniForce(MoveForceJumpAniData, _frameCount, _moveDir); 헤드 추가 해주면 됨 values = 6
-                    AniForce(MoveForceJumpAniData, _frameCount, Vector3.up);
-                    if (i == 2)
-                        AniForce(MoveForceJumpAniData, _frameCount, Vector3.down);
-                }
+                _frameCount = i;
+                //AniForce(MoveForceJumpAniData, _frameCount, _moveDir); 헤드 추가 해주면 됨 values = 6
+                AniForce(MoveForceJumpAniData, _frameCount, Vector3.up);
+                if (i == 2)
+                    AniForce(MoveForceJumpAniData, _frameCount, Vector3.down);
             }
             for (int i = 0; i < MoveAngleJumpAniData.Length; i++)
             {
@@ -1199,79 +1173,6 @@ public class PlayerController : MonoBehaviourPun
             {
                 Debug.DrawRay(part.position, alignmentVector * 0.2f, Color.red, 0f, depthTest: false);
                 Debug.DrawRay(part.position, targetVector * 0.2f, Color.green, 0f, depthTest: false);
-            }
-        }
-    }
-
-    public void AlignToVectorOld(Rigidbody part, Vector3 alignmentVector, Vector3 targetVector, float stability, float speed)
-    {
-        if (part == null)
-        {
-            return;
-        }
-        Vector3 vector = Vector3.Cross(Quaternion.AngleAxis(part.angularVelocity.magnitude * 57.29578f * stability / speed, part.angularVelocity) * alignmentVector, targetVector * 10f);
-        if (!float.IsNaN(vector.x) && !float.IsNaN(vector.y) && !float.IsNaN(vector.z))
-        {
-            part.AddTorque(vector * speed * speed);
-            {
-                Debug.DrawRay(part.position, alignmentVector * 0.2f, Color.red, 0f, depthTest: false);
-                Debug.DrawRay(part.position, targetVector * 0.2f, Color.green, 0f, depthTest: false);
-            }
-        }
-    }
-
-    IEnumerator ResetBodySpring()
-    {
-        JointDrive angularXDrive;
-        JointDrive angularYZDrive;
-
-        for (int i = 0; i < _bodyHandler.BodyParts.Count; i++)
-        {
-            if (i == 3)
-                continue;
-
-            angularXDrive = _bodyHandler.BodyParts[i].PartJoint.angularXDrive;
-            angularXDrive.positionSpring = 0f;
-            _bodyHandler.BodyParts[i].PartJoint.angularXDrive = angularXDrive;
-
-            angularYZDrive = _bodyHandler.BodyParts[i].PartJoint.angularYZDrive;
-            angularYZDrive.positionSpring = 0f;
-            _bodyHandler.BodyParts[i].PartJoint.angularYZDrive = angularYZDrive;
-        }
-
-        yield return null;
-    }
-    IEnumerator RestoreBodySpring()
-    {
-        JointDrive angularXDrive;
-        JointDrive angularYZDrive;
-
-        float startTime = Time.time;
-        float springLerpDuration = 2f;
-
-        while (Time.time < startTime + springLerpDuration)
-        {
-            float elapsed = Time.time - startTime;
-            float percentage = elapsed / springLerpDuration;
-            int j = 0;
-
-            for (int i = 0; i <_bodyHandler.BodyParts.Count; i++)
-            {
-                if (i == 3)
-                {
-                    continue;
-                }
-                angularXDrive = _bodyHandler.BodyParts[i].PartJoint.angularXDrive;
-                angularXDrive.positionSpring = _xPosSpringAry[j] * percentage;
-
-                _bodyHandler.BodyParts[i].PartJoint.angularXDrive = angularXDrive;
-
-                angularYZDrive = _bodyHandler.BodyParts[i].PartJoint.angularYZDrive;
-                angularYZDrive.positionSpring = _yzPosSpringAry[j] * percentage;
-                _bodyHandler.BodyParts[i].PartJoint.angularYZDrive = angularYZDrive;
-                j++;
-
-                yield return null;
             }
         }
     }
