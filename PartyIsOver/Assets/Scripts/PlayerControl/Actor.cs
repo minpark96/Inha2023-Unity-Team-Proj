@@ -52,6 +52,21 @@ public class Actor : MonoBehaviourPun
     public float DamageReduction = 0f;
     public float PlayerAttackPoint = 1f;
 
+    // 체력
+    [SerializeField]
+    private float _health;
+    [SerializeField]
+    private float _maxHealth = 200f;
+    public float Health { get { return _health; } set { _health = value; } }
+    public float MaxHealth { get { return _maxHealth; } }
+
+    // 스테미나
+    [SerializeField]
+    private float _stamina;
+    [SerializeField]
+    private float _maxStamina = 100f;
+    public float Stamina { get { return _stamina; } set { _stamina = value; } }
+    public float MaxStamina { get { return _maxStamina; } }
 
     public ActorState actorState = ActorState.Stand;
     public ActorState lastActorState = ActorState.Run;
@@ -81,6 +96,8 @@ public class Actor : MonoBehaviourPun
         Grab = GetComponent<Grab>();
 
         ChangeLayerRecursively(gameObject, LayerCnt++);
+
+        _health = _maxHealth;
     }
 
     private void ChangeLayerRecursively(GameObject obj, int layer)
