@@ -100,9 +100,6 @@ public class PlayerController : MonoBehaviourPun
     [SerializeField]
     public AniAngleData[] TestRready2;
 
-    [Header("앞뒤 속도")]
-    public float RunSpeed;
-
     [SerializeField]
     private Rigidbody _hips;
     [SerializeField]
@@ -117,10 +114,15 @@ public class PlayerController : MonoBehaviourPun
     private Grab _grab;
     private Actor _actor;
 
+    [Header("앞뒤 속도")]
+    public float RunSpeed;
+
+    [Header("PunchTime")]
     public float ReadyPunch = 0.1f;
     public float Punching = 0.1f;
     public float ResetPunch = 0.3f;
 
+    [Header("StatusCheck")]
     public bool isGrounded;
     public bool isRun;
     public bool isMove;
@@ -132,10 +134,14 @@ public class PlayerController : MonoBehaviourPun
     public bool leftKick;
     public bool rightKick;
     public bool isStateChange;
+
+    [Header("DelayTime")]
     public float RSkillDelayTime = 5;
+    public float PunchDelay = 0.5f;
+
+    [Header("AllCheck")]
     public float MaxSpeed = 10f;
     private float _runSpeedOffset = 350f;
-    public float PunchDelay = 0.5f;
 
     private Vector3 _moveInput;
     private Vector3 _moveDir;
@@ -175,8 +181,6 @@ public class PlayerController : MonoBehaviourPun
     Rigidbody _childRigidbody;
     Transform[] _children;
     private Dictionary<Transform, Quaternion> _initialRotations = new Dictionary<Transform, Quaternion>();
-
-    private Animator _animator;
 
     public enum Side
     {
@@ -225,14 +229,6 @@ public class PlayerController : MonoBehaviourPun
             originalZMotions[i] = childJoints[i].angularZMotion;
         }
         _grab = GetComponent<Grab>();
-        _animator = GetComponent<Animator>();
-
-        Transform[] childTransforms = GetComponentsInChildren<Transform>();
-        foreach (Transform childTransform in childTransforms)
-        {
-            
-            _initialRotations[childTransform] = childTransform.localRotation;
-        }
     }
 
 
@@ -400,10 +396,6 @@ public class PlayerController : MonoBehaviourPun
         {
             return;
         }
-
-        CursorControll();
-        LookAround();
-
         if (Input.GetKey(KeyCode.LeftShift))
             isRun = true;
         else
@@ -448,7 +440,12 @@ public class PlayerController : MonoBehaviourPun
     {
         if(!_isCoroutineRoll)
         {
-            _actor.actorState = ActorState.Roll;
+            Transform[] childTransforms = GetComponentsInChildren<Transform>();
+            foreach (Transform childTransform in childTransforms)
+            {
+                _initialRotations[childTransform] = childTransform.localRotation;
+            }
+            _actor.actorState = Actor.ActorState.Jump;
             StartCoroutine(ForwardRollDelay(3f));
         }
     }
@@ -457,7 +454,6 @@ public class PlayerController : MonoBehaviourPun
     {
         _isCoroutineRoll = true;
 
-        //yield return new WaitForSeconds(delay);
         yield return ForwardRoll(0.07f,1.5f);
         yield return new WaitForSeconds(delay);
         _isCoroutineRoll = false;
@@ -465,21 +461,33 @@ public class PlayerController : MonoBehaviourPun
 
     IEnumerator ForwardRoll(float duration, float readyRoll)
     {
+        _hips.velocity = -_hips.transform.up.normalized * MaxSpeed * 1.5f;
+        yield return new WaitForSeconds(0.08f);
+        _actor.actorState = ActorState.Roll;
+
         _actor.StatusHandler.StartCoroutine("ResetBodySpring");
         _hipRB.constraints &= ~RigidbodyConstraints.FreezeRotationX;
-        float rollTime = Time.time;
 
+        float rollTime = Time.time;
+        float startRollTime = Time.time;
         while (Time.time - rollTime < readyRoll)
         {
             AniAngleForce(RollAngleAniData, 0);
             AniForce(RollAniData, 0);
             yield return new WaitForSeconds(duration);
         }
-        //Freeze RotationX축 잠금
-
         //힘은 0, Rotation 복구 하기
         RestoreRotations();
-        //스프링 값 올리기
+        while(Time.time < startRollTime + 2)
+        {
+            foreach (Transform child in _children)
+            {
+                if (_initialRotations.ContainsKey(child))
+                {
+                    Vector3.Slerp(child.localRotation.eulerAngles, _initialRotations[child].eulerAngles, 0.1f) ;
+                }
+            }
+        }
 
         _actor.actorState = Actor.ActorState.Stand;
     }
@@ -494,39 +502,15 @@ public class PlayerController : MonoBehaviourPun
             _childRigidbody = child.GetComponent<Rigidbody>();
             if (_childRigidbody != null)
             {
+                //회전 힘과 AddForce 힘을 벡터 0으로 해서 값 빼기
                 _childRigidbody.velocity = Vector3.zero;
                 _childRigidbody.angularVelocity = Vector3.zero;
                 // 초기 회전값 복원 Dictionary에서 특정 키의 존재 여부를 확인
-                if (_initialRotations.ContainsKey(child))
-                {
-                    child.localRotation = _initialRotations[child]; 
-                }
+                
                 if(_childRigidbody.name == "GreenHip")
                     _hipRB.constraints |= RigidbodyConstraints.FreezeRotationX;
             }
-        }
-        
-    }
-    public void RestoreRotationsOld()
-    {
-        // 저장한 초기 rotation 값을 다시 적용합니다.
-        foreach (var entry in _initialRotations)
-        {
-            entry.Key.localRotation = entry.Value;
-        }
-    }
-
-    void VelocityZeroOld()
-    {
-        foreach (Transform child in _children)
-        {
-            _childRigidbody = child.GetComponent<Rigidbody>();
-
-            if (_childRigidbody != null)
-            {
-                _childRigidbody.velocity = Vector3.zero;
-            }
-        }
+        }    
     }
 
     Vector3 GetForceDirection(AniFrameData data, int index)
@@ -621,7 +605,6 @@ public class PlayerController : MonoBehaviourPun
                 _direction = Vector3.zero;
                 break;
         }
-
         return _direction;
     }
 
@@ -634,7 +617,7 @@ public class PlayerController : MonoBehaviourPun
             Vector3 _targetDirection = GetAngleDirection(_aniAngleData[_elementCount].TargetAngleDirections[i],
                 _aniAngleData[_elementCount].TargetDirection[i]);
 
-            AlignToVectorOld(_aniAngleData[_elementCount].StandardRigidbodies[i], _angleDirection, _targetDirection,
+            AlignToVector(_aniAngleData[_elementCount].StandardRigidbodies[i], _angleDirection, _targetDirection,
                 _aniAngleData[_elementCount].AngleStability[i], _aniAngleData[_elementCount].AnglePowerValues[i]);
         }
     }
@@ -836,8 +819,8 @@ public class PlayerController : MonoBehaviourPun
             ArmActionPunchResetting(side);
             yield return new WaitForSeconds(duration);
         }
-    }
 
+    }
 
     public void Stand()
     {
@@ -1229,65 +1212,5 @@ public class PlayerController : MonoBehaviourPun
                 Debug.DrawRay(part.position, targetVector * 0.2f, Color.green, 0f, depthTest: false);
             }
         }
-    }
-
-    public void AlignToVectorOld(Rigidbody part, Vector3 alignmentVector, Vector3 targetVector, float stability, float speed)
-    {
-        if (part == null)
-        {
-            return;
-        }
-        Vector3 vector = Vector3.Cross(Quaternion.AngleAxis(part.angularVelocity.magnitude * 57.29578f * stability / speed, part.angularVelocity) * alignmentVector, targetVector * 10f);
-        if (!float.IsNaN(vector.x) && !float.IsNaN(vector.y) && !float.IsNaN(vector.z))
-        {
-            part.AddTorque(vector * speed * speed);
-            {
-                Debug.DrawRay(part.position, alignmentVector * 0.2f, Color.red, 0f, depthTest: false);
-                Debug.DrawRay(part.position, targetVector * 0.2f, Color.green, 0f, depthTest: false);
-            }
-        }
-    }
-
-    //카메라 컨트롤
-    private void LookAround()
-    {
-        _cameraArm.parent.transform.position = _hips.transform.position;
-
-        Vector2 mouseDelta = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
-        Vector3 camAngle = _cameraArm.rotation.eulerAngles;
-        float x = camAngle.x - mouseDelta.y;
-
-        if (x < 180f)
-        {
-            x = Mathf.Clamp(x, -1f, 70f);
-        }
-        else
-        {
-            x = Mathf.Clamp(x, 335f, 361f);
-        }
-        _cameraArm.rotation = Quaternion.Euler(x, camAngle.y + mouseDelta.x, camAngle.z);
-
-    }
-
-    private void CursorControll()
-    {
-        if (Input.anyKeyDown)
-        {
-            Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.Locked;
-        }
-
-        if (!Cursor.visible && Input.GetKeyDown(KeyCode.Escape))
-        {
-            Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.None;
-        }
-    }
-    public bool MoveInputCheck()
-    {
-        if (_moveInput.magnitude == 0)
-            return false;
-        else
-            return true;
     }
 }

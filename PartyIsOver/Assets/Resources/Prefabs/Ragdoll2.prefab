@@ -9970,31 +9970,6 @@ MonoBehaviour:
     - 12
     - 12
     - 12
-  - StandardRigidbodies:
-    - {fileID: 5150041985222952710}
-    - {fileID: 5150643447561375322}
-    - {fileID: 5150643447561375322}
-    - {fileID: 5150844099323961327}
-    - {fileID: 5150844099323961327}
-    - {fileID: 5150698295106137226}
-    - {fileID: 5117554088992720254}
-    ActionRigidbodies:
-    - {fileID: 5150041985222952710}
-    - {fileID: 5150643447561375322}
-    - {fileID: 5150643447561375322}
-    - {fileID: 5150844099323961327}
-    - {fileID: 5150844099323961327}
-    - {fileID: 5150698295106137226}
-    - {fileID: 5117554088992720254}
-    ForceDirections: 02000000040000000200000004000000020000000300000003000000
-    ForcePowerValues:
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
-    - 0
   RollAngleAniData:
   - StandardRigidbodies:
     - {fileID: 5150844099323961327}
@@ -10285,14 +10260,14 @@ MonoBehaviour:
     - 0.01
     AnglePowerValues:
     - 100
-  RunSpeed: 100
   _hips: {fileID: 5150844099323961327}
   _cameraArm: {fileID: 4401259382300767454}
   _bodyHandler: {fileID: 0}
   targetingHandler: {fileID: 0}
-  ReadyPunch: 0
-  Punching: 0
-  ResetPunch: 0
+  RunSpeed: 100
+  ReadyPunch: 0.1
+  Punching: 0.1
+  ResetPunch: 0.3
   isGrounded: 0
   isRun: 0
   isMove: 0
@@ -10304,8 +10279,8 @@ MonoBehaviour:
   rightKick: 0
   isStateChange: 0
   RSkillDelayTime: 0
-  MaxSpeed: 10
   PunchDelay: 0.15
+  MaxSpeed: 10
   _idleTimer: 0
   isAI: 0
 --- !u!114 &5164006939630707526
