@@ -93,8 +93,6 @@ public class StatusHandler : MonoBehaviour
     
     void Update()
     {
-        if (_healthDamage != 0f)
-            UpdateHealth();
 
         // 지침 디버프 활성화/비활성화
         if(actor.Stamina == 0)
@@ -143,6 +141,9 @@ public class StatusHandler : MonoBehaviour
         // 상태이상 체크
         DebuffCheck(type);
         DebuffAction();
+
+        if (_healthDamage != 0f)
+            UpdateHealth();
     }
 
     public void DebuffCheck(InteractableObject.Damage type)
@@ -528,6 +529,9 @@ public class StatusHandler : MonoBehaviour
         }
 
         actor.Health = Mathf.Clamp(tempHealth, 0f, actor.MaxHealth);
+
+        actor.HurtEventInvoke();
+
         _healthDamage = 0f;
     }
 

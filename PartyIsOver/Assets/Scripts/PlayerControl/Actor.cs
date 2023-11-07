@@ -6,6 +6,11 @@ using UnityEngine;
 
 public class Actor : MonoBehaviourPun
 {
+    public delegate void PlayerHurt(float HP, int viewID);
+    public event PlayerHurt OnPlayerHurt;
+    public delegate void PlayerExhaust(float Stamina, int viewID);
+    public event PlayerExhaust OnPlayerExhaust;
+
     public Transform CameraArm;
 
     public StatusHandler StatusHandler;
@@ -75,6 +80,12 @@ public class Actor : MonoBehaviourPun
     public static GameObject LocalPlayerInstance;
 
     public static int LayerCnt = 26;
+
+    public void HurtEventInvoke()
+    {
+        
+        OnPlayerHurt.Invoke(_health, photonView.ViewID);
+    }
 
     private void Awake()
     {

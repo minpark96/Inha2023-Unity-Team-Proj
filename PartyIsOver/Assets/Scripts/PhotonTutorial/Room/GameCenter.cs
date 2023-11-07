@@ -20,7 +20,7 @@ public class GameCenter : MonoBehaviourPunCallbacks
 
     #region Private Fields
 
-    string _arenaName = "SDJTest";
+    string _arenaName = "PlayerMoveTest";
     // 프리팹 경로
     string _playerPath = "Ragdoll2";
 
@@ -31,7 +31,7 @@ public class GameCenter : MonoBehaviourPunCallbacks
     public static GameObject LocalGameCenterInstance = null;
 
     // 스폰 포인트 6인 기준
-    public List<Vector3> _spawnPoints = new List<Vector3>
+    public List<Vector3> SpawnPoints = new List<Vector3>
     {
         new Vector3(5f, 5f, 0f),
         new Vector3(2.5f, 5f, 4.33f),
@@ -40,6 +40,8 @@ public class GameCenter : MonoBehaviourPunCallbacks
         new Vector3(-2.5f, 5f, -4.33f),
         new Vector3(2.5f, 5f, -4.33f)
     };
+
+    public List<Actor> Actors = new List<Actor>();
 
     #endregion
 
@@ -69,28 +71,52 @@ public class GameCenter : MonoBehaviourPunCallbacks
         {
             Debug.LogFormat("PhotonManager.cs => We are Instantiating LocalPlayer from {0}", SceneManagerHelper.ActiveSceneName);
 
+            GameObject go = null;
+
             switch (PhotonNetwork.LocalPlayer.ActorNumber)
             {
                 case 1:
-                    Managers.Resource.PhotonNetworkInstantiate(_playerPath, pos: _spawnPoints[0]);
+                    go = Managers.Resource.PhotonNetworkInstantiate(_playerPath, pos: SpawnPoints[0]);
                     break;
                 case 2:
-                    Managers.Resource.PhotonNetworkInstantiate(_playerPath, pos: _spawnPoints[1]);
+                    go = Managers.Resource.PhotonNetworkInstantiate(_playerPath, pos: SpawnPoints[1]);
                     break;
                 case 3:
-                    Managers.Resource.PhotonNetworkInstantiate(_playerPath, pos: _spawnPoints[2]);
+                    go = Managers.Resource.PhotonNetworkInstantiate(_playerPath, pos: SpawnPoints[2]);
                     break;
                 case 4:
-                    Managers.Resource.PhotonNetworkInstantiate(_playerPath, pos: _spawnPoints[3]);
+                    go = Managers.Resource.PhotonNetworkInstantiate(_playerPath, pos: SpawnPoints[3]);
                     break;
                 case 5:
-                    Managers.Resource.PhotonNetworkInstantiate(_playerPath, pos: _spawnPoints[4]);
+                    go = Managers.Resource.PhotonNetworkInstantiate(_playerPath, pos: SpawnPoints[4]);
                     break;
                 case 6:
-                    Managers.Resource.PhotonNetworkInstantiate(_playerPath, pos: _spawnPoints[5]);
+                    go = Managers.Resource.PhotonNetworkInstantiate(_playerPath, pos: SpawnPoints[5]);
                     break;
             }
+
+            Actor actor = go.GetComponent<Actor>();
+            if (actor != null)
+            {
+                actor.OnPlayerHurt -= AnounceHurt;
+                //actor.OnPlayerExhaust -= DecreaseStamina;
+                actor.OnPlayerHurt += AnounceHurt;
+                //actor.OnPlayerExhaust += DecreaseStamina;
+            }
+            Actors.Add(actor);
         }
+    }
+
+    void AnounceHurt(float HP, int viewID)
+    {
+        Debug.Log("AnounceHurt(float, int)");
+
+        photonView.RPC("DecreseHP", RpcTarget.MasterClient, HP, viewID);
+    }
+
+    void DecreaseStamina(int amount)
+    {
+
     }
 
     void LoadArena()
@@ -176,6 +202,38 @@ public class GameCenter : MonoBehaviourPunCallbacks
     #endregion
 
     #region PunRPC Methods
+
+    [PunRPC]
+    void DeacreaseHP(float HP, int viewID)
+    {
+        Debug.Log("[master received] DeacreaseHP(void)");
+
+        for (int i = 0; i < Actors.Count; i++)
+        {
+            if (Actors[i].photonView.ViewID == viewID)
+            {
+                Actors[i].Health = HP;
+                break;
+            }
+        }
+
+        photonView.RPC("SyncHP", RpcTarget.Others, HP, viewID);
+    }
+
+    [PunRPC]
+    void SyncHP(float HP, int viewID)
+    {
+        Debug.Log("[except master received] SyncHP(void)");
+
+        for (int i = 0; i < Actors.Count; i++)
+        {
+            if (Actors[i].photonView.ViewID == viewID)
+            {
+                Actors[i].Health = HP;
+                break;
+            }
+        }
+    }
 
     [PunRPC]
     void EnteredRoom()
