@@ -197,6 +197,15 @@ public class PlayerController : MonoBehaviourPun
     void Start()
     {
         _bodyHandler.BodySetup();
+
+        for (int i = 0; i < _bodyHandler.BodyParts.Count; i++)
+        {
+            if (i == 3)
+                continue;
+
+            _xPosSpringAry.Add(_bodyHandler.BodyParts[i].PartJoint.angularXDrive.positionSpring);
+            _yzPosSpringAry.Add(_bodyHandler.BodyParts[i].PartJoint.angularYZDrive.positionSpring);
+        }
     }
     private ConfigurableJoint[] childJoints;
     private ConfigurableJointMotion[] originalYMotions;
@@ -222,58 +231,6 @@ public class PlayerController : MonoBehaviourPun
             originalZMotions[i] = childJoints[i].angularZMotion;
         }
         _grab = GetComponent<Grab>();
-    }
-
-
-    public void OnKeyboardEvent_Idle(Define.KeyboardEvent evt)
-    {
-        if (!photonView.IsMine)
-        {
-            return;
-        }
-
-        switch (evt)
-        {
-            case Define.KeyboardEvent.Press:
-                {
-
-                }
-                break;
-            case Define.KeyboardEvent.PointerDown:
-                {
-                }
-                break;
-            case Define.KeyboardEvent.PointerUp:
-                {
-
-                }
-                break;
-            case Define.KeyboardEvent.Click:
-                {
-                    if (Input.GetKeyUp(KeyCode.H))
-                        Heading();
-                    if (Input.GetKeyUp(KeyCode.Space))
-                    {
-                        _actor.actorState = Actor.ActorState.Jump;
-                    }
-                }
-                break;
-            case Define.KeyboardEvent.Charge:
-                {
-                    RestoreOriginalMotions();
-                    if (Input.GetKeyUp(KeyCode.R))
-                        MeowNyangPunch();
-                }
-                break;
-            case Define.KeyboardEvent.Hold:
-                {
-                    //중일때 확인 ex 이펙트 출현하는 코드를 넣어주면 기모아지는 것 첨 될듯
-                    StartCoroutine(Rready());
-                    ForceRready();
-
-                }
-                break;
-        }
     }
 
     void RestoreOriginalMotions()
@@ -306,6 +263,74 @@ public class PlayerController : MonoBehaviourPun
             AniAngleForce(TestRready2, i);
         }
         yield return new WaitForSeconds(1f);
+    }
+
+    bool isW;
+    public void OnKeyboardEvent_Idle(Define.KeyboardEvent evt)
+    {
+        if (!photonView.IsMine)
+        {
+            return;
+        }
+
+        switch (evt)
+        {
+            case Define.KeyboardEvent.Press:
+                {
+                    if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S))
+                    {
+                        _moveInput.z = Input.GetAxis("Vertical");
+                    }
+                    if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
+                    {
+                        _moveInput.x = Input.GetAxis("Horizontal");
+                    }
+
+                    if (Input.GetKey(KeyCode.LeftShift))
+                    {
+                        _actor.actorState = Actor.ActorState.Run;
+                        isRun = true;
+                    }
+                }
+                break;
+            case Define.KeyboardEvent.Click:
+                {
+                    if (Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.S))
+                    {
+                        _moveInput.z = 0;
+                    }
+                    if (Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
+                    {
+                        _moveInput.x = 0;
+                    }
+
+                    if (Input.GetKeyUp(KeyCode.LeftShift))
+                    {
+                        _actor.actorState = Actor.ActorState.Stand;
+                        isRun = false;
+                    }
+
+                    if (Input.GetKeyUp(KeyCode.H))
+                        Heading();
+                    if (Input.GetKeyUp(KeyCode.Space))
+                        _actor.actorState = Actor.ActorState.Jump;
+                }
+                break;
+            case Define.KeyboardEvent.Charge:
+                {
+                    RestoreOriginalMotions();
+                    if (Input.GetKeyUp(KeyCode.R))
+                        MeowNyangPunch();
+                }
+                break;
+            case Define.KeyboardEvent.Hold:
+                {
+                    //중일때 확인 ex 이펙트 출현하는 코드를 넣어주면 기모아지는 것 첨 될듯
+                    StartCoroutine(Rready());
+                    ForceRready();
+                }
+                break;
+        }
     }
 
     public void OnMouseEvent_Idle(Define.MouseEvent evt)
@@ -358,12 +383,8 @@ public class PlayerController : MonoBehaviourPun
 
         if (isAI)
             return;
-        if (_actor.debuffState == DebuffState.Freeze)
-            return;
 
-        _moveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-
-        if (_actor.actorState != Actor.ActorState.Jump && _actor.actorState != Actor.ActorState.Roll)
+        if (_actor.actorState != Actor.ActorState.Jump && _actor.actorState != Actor.ActorState.Roll && _actor.actorState != Actor.ActorState.Run)
         {
             if (_moveInput.magnitude == 0f)
             {
@@ -371,14 +392,9 @@ public class PlayerController : MonoBehaviourPun
             }
             else
             {
+                _actor.actorState = Actor.ActorState.Walk;
                 Stand();
-                _actor.actorState = Actor.ActorState.Run;
             }
-        }
-        if (Input.GetMouseButton(2))
-        {
-            _actor.actorState = ActorState.Roll;
-            ForwardRollTrigger();
         }
     }
 
@@ -388,35 +404,8 @@ public class PlayerController : MonoBehaviourPun
         {
             return;
         }
-
-        CursorControll();
-        LookAround();
-
-        if (Input.GetKey(KeyCode.LeftShift))
-            isRun = true;
-        else
-            isRun = false;
     }
     
-    #region 기즈모
-    private Rigidbody ray;
-
-    //Vector3 direction = Vector3.forward;
-
-    private void OnDrawGizmos()
-    {
-        //Debug.DrawRay(bodyHandler.Head.PartRigidbody.position, -bodyHandler.Head.transform.up * 10f, Color.red);
-        //Debug.DrawRay(bodyHandler.Waist.PartRigidbody.position, bodyHandler.Waist.transform.up * 10f, Color.red);
-        //Debug.DrawRay(bodyHandler.Head.transform.forward, Vector3.up * 10f, Color.green);
-    }
-    /*void Ray_1()
-    {
-        
-        ray.origin = _hips.transform.position;
-        ray.direction = -_hips.transform.right;
-    }*/
-    #endregion
-
     private void TestCase()
     {
         StartCoroutine(testcase());
@@ -455,7 +444,7 @@ public class PlayerController : MonoBehaviourPun
 
     IEnumerator ForwardRoll(float duration, float readyRoll)
     {
-        _actor.StatusHandler.StartCoroutine("ResetBodySpring");
+        StartCoroutine(ResetBodySpring());
         _hipRB.constraints &= ~RigidbodyConstraints.FreezeRotationX;
         float rollTime = Time.time;
 
@@ -472,7 +461,7 @@ public class PlayerController : MonoBehaviourPun
         //Freeze RotationX축 잠금
         _hipRB.constraints |= RigidbodyConstraints.FreezeRotationX;
         //스프링 값 올리기
-        _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
+        StartCoroutine(RestoreBodySpring());
         _actor.actorState = ActorState.Stand;
     }
     public void RestoreRotations()
@@ -669,9 +658,7 @@ public class PlayerController : MonoBehaviourPun
         {
             for (int i = 0; i < DropAniData.Length; i++)
             {
-                //스프링 풀기
-                //ResetBodySpring();
-                _actor.StatusHandler.StartCoroutine("ResetBodySpring");
+                StartCoroutine(ResetBodySpring());
 
                 if (i == 0)
                 {
@@ -697,9 +684,8 @@ public class PlayerController : MonoBehaviourPun
                 }
             }
             yield return new WaitForSeconds(2);
-            //스프링 복구
-            //RestoreSpringTrigger();
-            _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
+
+            StartCoroutine(RestoreBodySpring());
             _bodyHandler.LeftLeg.PartInteractable.damageModifier = InteractableObject.Damage.Default;
             _bodyHandler.RightLeg.PartInteractable.damageModifier = InteractableObject.Damage.Default;
         }
@@ -963,7 +949,7 @@ public class PlayerController : MonoBehaviourPun
 
     public void Move()
     {
-        if (isRun)
+        if (_actor.actorState == ActorState.Run)
         {
             _cycleSpeed = 0.1f;
         }
@@ -1234,46 +1220,59 @@ public class PlayerController : MonoBehaviourPun
         }
     }
 
-    //카메라 컨트롤
-    private void LookAround()
+    IEnumerator ResetBodySpring()
     {
-        _cameraArm.parent.transform.position = _hips.transform.position;
+        JointDrive angularXDrive;
+        JointDrive angularYZDrive;
 
-        Vector2 mouseDelta = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
-        Vector3 camAngle = _cameraArm.rotation.eulerAngles;
-        float x = camAngle.x - mouseDelta.y;
-
-        if (x < 180f)
+        for (int i = 0; i < _bodyHandler.BodyParts.Count; i++)
         {
-            x = Mathf.Clamp(x, -1f, 70f);
-        }
-        else
-        {
-            x = Mathf.Clamp(x, 335f, 361f);
-        }
-        _cameraArm.rotation = Quaternion.Euler(x, camAngle.y + mouseDelta.x, camAngle.z);
+            if (i == 3)
+                continue;
 
+            angularXDrive = _bodyHandler.BodyParts[i].PartJoint.angularXDrive;
+            angularXDrive.positionSpring = 0f;
+            _bodyHandler.BodyParts[i].PartJoint.angularXDrive = angularXDrive;
+
+            angularYZDrive = _bodyHandler.BodyParts[i].PartJoint.angularYZDrive;
+            angularYZDrive.positionSpring = 0f;
+            _bodyHandler.BodyParts[i].PartJoint.angularYZDrive = angularYZDrive;
+        }
+
+        yield return null;
     }
-
-    private void CursorControll()
+    IEnumerator RestoreBodySpring()
     {
-        if (Input.anyKeyDown)
-        {
-            Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.Locked;
-        }
+        JointDrive angularXDrive;
+        JointDrive angularYZDrive;
 
-        if (!Cursor.visible && Input.GetKeyDown(KeyCode.Escape))
+        float startTime = Time.time;
+        float springLerpDuration = 2f;
+
+        while (Time.time < startTime + springLerpDuration)
         {
-            Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.None;
+            float elapsed = Time.time - startTime;
+            float percentage = elapsed / springLerpDuration;
+            int j = 0;
+
+            for (int i = 0; i <_bodyHandler.BodyParts.Count; i++)
+            {
+                if (i == 3)
+                {
+                    continue;
+                }
+                angularXDrive = _bodyHandler.BodyParts[i].PartJoint.angularXDrive;
+                angularXDrive.positionSpring = _xPosSpringAry[j] * percentage;
+
+                _bodyHandler.BodyParts[i].PartJoint.angularXDrive = angularXDrive;
+
+                angularYZDrive = _bodyHandler.BodyParts[i].PartJoint.angularYZDrive;
+                angularYZDrive.positionSpring = _yzPosSpringAry[j] * percentage;
+                _bodyHandler.BodyParts[i].PartJoint.angularYZDrive = angularYZDrive;
+                j++;
+
+                yield return null;
+            }
         }
-    }
-    public bool MoveInputCheck()
-    {
-        if (_moveInput.magnitude == 0)
-            return false;
-        else
-            return true;
     }
 }

@@ -1010,7 +1010,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &83486393
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1048,6 +1048,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0444d9ac95de644cb7ff3b6d6c356fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CameraArm: {fileID: 0}
   StatusHandler: {fileID: 0}
   BodyHandler: {fileID: 0}
   PlayerController: {fileID: 0}
@@ -1091,6 +1092,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   RollAniData: []
+  RollAngleAniData: []
   DropAniData: []
   RightPunchAniData: []
   LeftPunchAniData: []
@@ -1109,6 +1111,9 @@ MonoBehaviour:
   _cameraArm: {fileID: 1035871480}
   _bodyHandler: {fileID: 0}
   targetingHandler: {fileID: 0}
+  ReadyPunch: 0.1
+  Punching: 0.1
+  ResetPunch: 0.3
   isGrounded: 0
   isRun: 0
   isMove: 0
@@ -1138,22 +1143,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Root: {fileID: 83486399}
   BodyParts: []
-  Head: {fileID: 1159502198}
-  Chest: {fileID: 537815023}
-  Waist: {fileID: 1223179819}
-  Hip: {fileID: 591689920}
-  LeftArm: {fileID: 1483005024}
-  LeftForarm: {fileID: 240328773}
-  LeftHand: {fileID: 573083520}
-  LeftThigh: {fileID: 1143729350}
-  LeftLeg: {fileID: 501211367}
   LeftFoot: {fileID: 1195674183}
-  RightArm: {fileID: 1432834841}
-  RightForarm: {fileID: 713996576}
-  RightHand: {fileID: 668244677}
-  RightThigh: {fileID: 242557668}
-  RightLeg: {fileID: 1109409743}
   RightFoot: {fileID: 1441491801}
+  LeftLeg: {fileID: 501211367}
+  RightLeg: {fileID: 1109409743}
+  LeftThigh: {fileID: 1143729350}
+  RightThigh: {fileID: 242557668}
+  Hip: {fileID: 591689920}
+  Waist: {fileID: 1223179819}
+  Chest: {fileID: 537815023}
+  Head: {fileID: 1159502198}
+  LeftArm: {fileID: 1483005024}
+  RightArm: {fileID: 1432834841}
+  LeftForarm: {fileID: 240328773}
+  RightForarm: {fileID: 713996576}
+  LeftHand: {fileID: 573083520}
+  RightHand: {fileID: 668244677}
   Ball: {fileID: 723357614}
 --- !u!4 &83486399
 Transform:
@@ -1185,7 +1190,7 @@ Transform:
   - {fileID: 573083524}
   - {fileID: 668244681}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -0}
 --- !u!114 &83486400
 MonoBehaviour:
@@ -3755,67 +3760,6 @@ Transform:
   m_Father: {fileID: 1223179817}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &431099088
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: -2979741912738784003, guid: 2778e3a6712951f47bff1104b8bdd9da, type: 3}
-      propertyPath: sceneViewId
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5164006939630707582, guid: 2778e3a6712951f47bff1104b8bdd9da, type: 3}
-      propertyPath: m_RootOrder
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5164006939630707582, guid: 2778e3a6712951f47bff1104b8bdd9da, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 2.95
-      objectReference: {fileID: 0}
-    - target: {fileID: 5164006939630707582, guid: 2778e3a6712951f47bff1104b8bdd9da, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5164006939630707582, guid: 2778e3a6712951f47bff1104b8bdd9da, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0.43
-      objectReference: {fileID: 0}
-    - target: {fileID: 5164006939630707582, guid: 2778e3a6712951f47bff1104b8bdd9da, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5164006939630707582, guid: 2778e3a6712951f47bff1104b8bdd9da, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5164006939630707582, guid: 2778e3a6712951f47bff1104b8bdd9da, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5164006939630707582, guid: 2778e3a6712951f47bff1104b8bdd9da, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5164006939630707582, guid: 2778e3a6712951f47bff1104b8bdd9da, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5164006939630707582, guid: 2778e3a6712951f47bff1104b8bdd9da, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5164006939630707582, guid: 2778e3a6712951f47bff1104b8bdd9da, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5169983603716950214, guid: 2778e3a6712951f47bff1104b8bdd9da, type: 3}
-      propertyPath: m_Name
-      value: Ragdoll2
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 2778e3a6712951f47bff1104b8bdd9da, type: 3}
 --- !u!1 &451953441
 GameObject:
   m_ObjectHideFlags: 0
@@ -5708,6 +5652,67 @@ Transform:
   m_Father: {fileID: 1143729353}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &644679482
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -2979741912738784003, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+      propertyPath: sceneViewId
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5164006939630707582, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+      propertyPath: m_RootOrder
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 5164006939630707582, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 2.95
+      objectReference: {fileID: 0}
+    - target: {fileID: 5164006939630707582, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5164006939630707582, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 2.739
+      objectReference: {fileID: 0}
+    - target: {fileID: 5164006939630707582, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5164006939630707582, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5164006939630707582, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5164006939630707582, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5164006939630707582, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5164006939630707582, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5164006939630707582, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5169983603716950214, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
+      propertyPath: m_Name
+      value: Ragdoll2
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: af6a4426e4450294e8bc9da077c6a169, type: 3}
 --- !u!1 &668244676
 GameObject:
   m_ObjectHideFlags: 0
@@ -23165,7 +23170,7 @@ Transform:
   - {fileID: 2651600154899673814}
   - {fileID: 2653333906631292594}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -0}
 --- !u!114 &2653568215181255327
 MonoBehaviour:
@@ -23181,22 +23186,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Root: {fileID: 2653568215181255324}
   BodyParts: []
-  Head: {fileID: 2802024866263701200}
-  Chest: {fileID: 2801588848915514785}
-  Waist: {fileID: 2801600473431487730}
-  Hip: {fileID: 2677331994739263914}
-  LeftArm: {fileID: 2801847783180245432}
-  LeftForarm: {fileID: 2802135203211806481}
-  LeftHand: {fileID: 2675482982836170737}
-  LeftThigh: {fileID: 2800232216506460856}
-  LeftLeg: {fileID: 2801778079153613755}
   LeftFoot: {fileID: 3843378844782920913}
-  RightArm: {fileID: 2800183797090473379}
-  RightForarm: {fileID: 2802159958102799116}
-  RightHand: {fileID: 2675591024976243570}
-  RightThigh: {fileID: 2800253075633493638}
-  RightLeg: {fileID: 2800224987189693597}
   RightFoot: {fileID: 5606036378121964917}
+  LeftLeg: {fileID: 2801778079153613755}
+  RightLeg: {fileID: 2800224987189693597}
+  LeftThigh: {fileID: 2800232216506460856}
+  RightThigh: {fileID: 2800253075633493638}
+  Hip: {fileID: 2677331994739263914}
+  Waist: {fileID: 2801600473431487730}
+  Chest: {fileID: 2801588848915514785}
+  Head: {fileID: 2802024866263701200}
+  LeftArm: {fileID: 2801847783180245432}
+  RightArm: {fileID: 2800183797090473379}
+  LeftForarm: {fileID: 2802135203211806481}
+  RightForarm: {fileID: 2802159958102799116}
+  LeftHand: {fileID: 2675482982836170737}
+  RightHand: {fileID: 2675591024976243570}
   Ball: {fileID: 2801627655295430722}
 --- !u!114 &2653568215181255328
 MonoBehaviour:
@@ -23266,6 +23271,7 @@ MonoBehaviour:
     - 1
     - 1
     - 1
+  RollAngleAniData: []
   DropAniData:
   - StandardRigidbodies:
     - {fileID: 0}
@@ -23515,6 +23521,9 @@ MonoBehaviour:
   _cameraArm: {fileID: 6804104365043234108}
   _bodyHandler: {fileID: 0}
   targetingHandler: {fileID: 0}
+  ReadyPunch: 0.1
+  Punching: 0.1
+  ResetPunch: 0.3
   isGrounded: 0
   isRun: 0
   isMove: 0
@@ -23584,6 +23593,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0444d9ac95de644cb7ff3b6d6c356fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CameraArm: {fileID: 0}
   StatusHandler: {fileID: 0}
   BodyHandler: {fileID: 0}
   PlayerController: {fileID: 0}

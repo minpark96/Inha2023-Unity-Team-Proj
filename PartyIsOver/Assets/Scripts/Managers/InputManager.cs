@@ -10,27 +10,33 @@ public class InputManager
     public Action<Define.MouseEvent> MouseAction = null;
     public Action<Define.KeyboardEvent> KeyboardAction = null;
 
-    bool _pressed = false;
-    float _pressedTime = 0;
+    bool _leftMpressed = false;
+    float _leftMpressedTime = 0;
 
-    bool _mpressed = false;
-    float _mpressedTime = 0;
+    bool _rightMpressed = false;
+    float _rightMpressedTime = 0;
 
-    bool _hpressed = false;
-    float _hpressedTime = 0;
+    bool _wheelMpressed = false;
+    float _wheelMpressedTime = 0;
 
-    bool _keyPressed = false;
-    float _keyPressedTime = 0;
+    bool _hkeyPressed = false;
+    float _hkeyPressedTime = 0;
 
     bool _rkeyPressed = false;
     float _rkeyPressedTime = 0;
 
-    bool _speyPressed = false;
-    float _spkeyPressedTime = 0;
+    bool _spaceKeyPressed = false;
+    float _spaceKeyPressedTime = 0;
 
-    float _chargeTime = 0;
     bool _isCharge = false;
+    float _chargeTime = 0;
     float _chargeThreshold = 1.0f;
+
+    bool _wkeyPressed = false;
+    bool _akeyPressed = false;
+    bool _skeyPressed = false;
+    bool _dkeyPressed = false;
+    bool _lshiftKeyPressed = false;
 
 
     public void OnUpdate()
@@ -42,28 +48,131 @@ public class InputManager
         if (Input.anyKey && KeyAction != null)
             KeyAction.Invoke();
 
+        // 이동
+        if (KeyboardAction != null)
+        {
+            if (Input.GetKey(KeyCode.W))
+            {
+                if (!_wkeyPressed)
+                {
+                    KeyboardAction.Invoke(Define.KeyboardEvent.PointerDown);
+                }
+                KeyboardAction.Invoke(Define.KeyboardEvent.Press);
+                _wkeyPressed = true;
+            }
+            else
+            {
+                if (_wkeyPressed)
+                {
+                    KeyboardAction.Invoke(Define.KeyboardEvent.Click);
+                }
+                _wkeyPressed = false;
+            }
+        }
+        if (KeyboardAction != null)
+        {
+            if (Input.GetKey(KeyCode.A))
+            {
+                if (!_akeyPressed)
+                {
+                    KeyboardAction.Invoke(Define.KeyboardEvent.PointerDown);
+                }
+                KeyboardAction.Invoke(Define.KeyboardEvent.Press);
+                _akeyPressed = true;
+            }
+            else
+            {
+                if (_akeyPressed)
+                {
+                    KeyboardAction.Invoke(Define.KeyboardEvent.Click);
+                }
+                _akeyPressed = false;
+            }
+        }
+        if (KeyboardAction != null)
+        {
+            if (Input.GetKey(KeyCode.S))
+            {
+                if (!_skeyPressed)
+                {
+                    KeyboardAction.Invoke(Define.KeyboardEvent.PointerDown);
+                }
+                KeyboardAction.Invoke(Define.KeyboardEvent.Press);
+                _skeyPressed = true;
+            }
+            else
+            {
+                if (_skeyPressed)
+                {
+                    KeyboardAction.Invoke(Define.KeyboardEvent.Click);
+                }
+                _skeyPressed = false;
+            }
+        }
+        if (KeyboardAction != null)
+        {
+            if (Input.GetKey(KeyCode.D))
+            {
+                if (!_dkeyPressed)
+                {
+                    KeyboardAction.Invoke(Define.KeyboardEvent.PointerDown);
+                }
+                KeyboardAction.Invoke(Define.KeyboardEvent.Press);
+                _dkeyPressed = true;
+            }
+            else
+            {
+                if (_dkeyPressed)
+                {
+                    KeyboardAction.Invoke(Define.KeyboardEvent.Click);
+                }
+                _dkeyPressed = false;
+            }
+        }
+        if (KeyboardAction != null)
+        {
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                if (!_lshiftKeyPressed)
+                {
+                    KeyboardAction.Invoke(Define.KeyboardEvent.PointerDown);
+                }
+                KeyboardAction.Invoke(Define.KeyboardEvent.Press);
+                _lshiftKeyPressed = true;
+            }
+            else
+            {
+                if (_lshiftKeyPressed)
+                {
+                    KeyboardAction.Invoke(Define.KeyboardEvent.Click);
+                }
+                _lshiftKeyPressed = false;
+            }
+        }
+
+        // 스킬
         if (KeyboardAction != null)
         {
             if (Input.GetKey(KeyCode.H))
             {
-                if (!_keyPressed)
+                if (!_hkeyPressed)
                 {
                     KeyboardAction.Invoke(Define.KeyboardEvent.PointerDown);
-                    _keyPressedTime = Time.time;
+                    _hkeyPressedTime = Time.time;
                 }
                 KeyboardAction.Invoke(Define.KeyboardEvent.Press);
-                _keyPressed = true;
+                _hkeyPressed = true;
             }
             else 
             {
-                if ((_keyPressed))
+                if (_hkeyPressed)
                 {
-                    if (Time.time < _keyPressedTime + 0.2f)
+                    if (Time.time < _hkeyPressedTime + 0.2f)
                         KeyboardAction.Invoke(Define.KeyboardEvent.Click);
                     KeyboardAction.Invoke(Define.KeyboardEvent.PointerUp);
                 }
-                _keyPressed = false;
-                _keyPressedTime = 0;
+                _hkeyPressed = false;
+                _hkeyPressedTime = 0;
             }
         }
 
@@ -71,24 +180,24 @@ public class InputManager
         {
             if (Input.GetKey(KeyCode.Space))
             {
-                if (!_speyPressed)
+                if (!_spaceKeyPressed)
                 {
                     KeyboardAction.Invoke(Define.KeyboardEvent.PointerDown);
-                    _spkeyPressedTime = Time.time;
+                    _spaceKeyPressedTime = Time.time;
                 }
                 KeyboardAction.Invoke(Define.KeyboardEvent.Press);
-                _speyPressed = true;
+                _spaceKeyPressed = true;
             }
             else
             {
-                if ((_speyPressed))
+                if (_spaceKeyPressed)
                 {
-                    if (Time.time < _spkeyPressedTime + 0.2f)
+                    if (Time.time < _spaceKeyPressedTime + 0.2f)
                         KeyboardAction.Invoke(Define.KeyboardEvent.Click);
                     KeyboardAction.Invoke(Define.KeyboardEvent.PointerUp);
                 }
-                _speyPressed = false;
-                _spkeyPressedTime = 0;
+                _spaceKeyPressed = false;
+                _spaceKeyPressedTime = 0;
             }
         }
 
@@ -134,24 +243,24 @@ public class InputManager
         {
             if (Input.GetMouseButton(0))
             {
-                if (!_pressed)
+                if (!_leftMpressed)
                 {
                     MouseAction.Invoke(Define.MouseEvent.PointerDown);
-                    _pressedTime = Time.time;
+                    _leftMpressedTime = Time.time;
                 }
                 MouseAction.Invoke(Define.MouseEvent.Press);
-                _pressed = true;
+                _leftMpressed = true;
             }
             else 
             {
-                if (_pressed)
+                if (_leftMpressed)
                 {
-                    if (Time.time < _pressedTime + 0.2f)
+                    if (Time.time < _leftMpressedTime + 0.2f)
                         MouseAction.Invoke(Define.MouseEvent.Click);
                     MouseAction.Invoke(Define.MouseEvent.PointerUp);
                 }
-                _pressed = false;
-                _pressedTime = 0;
+                _leftMpressed = false;
+                _leftMpressedTime = 0;
             }
         }
 
@@ -159,24 +268,24 @@ public class InputManager
         {
             if (Input.GetMouseButton(1))
             {
-                if (!_mpressed)
+                if (!_rightMpressed)
                 {
                     MouseAction.Invoke(Define.MouseEvent.PointerDown);
-                    _mpressedTime = Time.time;
+                    _rightMpressedTime = Time.time;
                 }
                 MouseAction.Invoke(Define.MouseEvent.Press);
-                _mpressed = true;
+                _rightMpressed = true;
             }
             else
             {
-                if (_mpressed)
+                if (_rightMpressed)
                 {
-                    if (Time.time < _mpressedTime + 0.2f)
+                    if (Time.time < _rightMpressedTime + 0.2f)
                         MouseAction.Invoke(Define.MouseEvent.Click);
                     MouseAction.Invoke(Define.MouseEvent.PointerUp);
                 }
-                _mpressed = false;
-                _mpressedTime = 0;
+                _rightMpressed = false;
+                _rightMpressedTime = 0;
             }
         }
 
@@ -184,24 +293,24 @@ public class InputManager
         {
             if (Input.GetMouseButton(2))
             {
-                if (!_hpressed)
+                if (!_wheelMpressed)
                 {
                     MouseAction.Invoke(Define.MouseEvent.PointerDown);
-                    _hpressedTime = Time.time;
+                    _wheelMpressedTime = Time.time;
                 }
                 MouseAction.Invoke(Define.MouseEvent.Press);
-                _hpressed = true;
+                _wheelMpressed = true;
             }
             else
             {
-                if (_hpressed)
+                if (_wheelMpressed)
                 {
-                    if (Time.time < _hpressedTime + 0.2f)
+                    if (Time.time < _wheelMpressedTime + 0.2f)
                         MouseAction.Invoke(Define.MouseEvent.Click);
                     MouseAction.Invoke(Define.MouseEvent.PointerUp);
                 }
-                _hpressed = false;
-                _hpressedTime = 0;
+                _wheelMpressed = false;
+                _wheelMpressedTime = 0;
             }
         }
     }
