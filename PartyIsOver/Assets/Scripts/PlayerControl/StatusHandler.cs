@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net.NetworkInformation;
@@ -6,30 +7,16 @@ using UnityEngine.UI;
 using static InteractableObject;
 using static UnityEngine.Rendering.VirtualTexturing.Debugging;
 
-
-
-public class StatusHandler : MonoBehaviour
+public class StatusHandler : MonoBehaviourPun
 {
     private float _damageModifer = 1f;
 
     public Actor actor;
 
     public bool invulnerable = false;
-
-    // 체력
-    [SerializeField]
-    private float _health;
-    [SerializeField]
-    private float _maxHealth = 200f;
-    public float Health { get { return _health; } set { _health = value; } }
+    
     private float _healthDamage;
     private bool _isDead;
-
-    // 스테미나
-    [SerializeField]
-    private float _stamina;
-    public float Stamina { get { return _stamina; } set { _stamina = value; } }
-    private float _maxStamina = 100f;
 
     // 기절 시간
     private float _maxUnconsciousTime=5f;
@@ -95,7 +82,6 @@ public class StatusHandler : MonoBehaviour
     void Start()
     {
         actor = transform.GetComponent<Actor>();
-        _health = _maxHealth;
         _maxSpeed = actor.PlayerController.RunSpeed;
 
         actor.BodyHandler.BodySetup();
@@ -113,11 +99,9 @@ public class StatusHandler : MonoBehaviour
     
     void Update()
     {
-        if (_healthDamage != 0f)
-            UpdateHealth();
 
         // 지침 디버프 활성화/비활성화
-        if(_stamina == 0)
+        if(actor.Stamina == 0)
         {
             if(!_hasExhausted)
             {
@@ -129,15 +113,15 @@ public class StatusHandler : MonoBehaviour
 
     private void OnGUI()
     {
-        if(this.name == "Ragdoll2")
+        if (this.name == "Ragdoll2(Clone)" && photonView.IsMine)
         {
             GUI.contentColor = Color.red;
             GUI.Label(new Rect(0, 0, 200, 200), "버프상태:" + actor.debuffState.ToString());
             GUI.Label(new Rect(0, 20, 200, 200), "액션상태:" + actor.actorState.ToString());
 
             GUI.contentColor = Color.blue;
-            GUI.Label(new Rect(0, 60, 200, 200), "체력: " + _health);
-            GUI.Label(new Rect(0, 80, 200, 200), "스테미나: " + _stamina);
+            GUI.Label(new Rect(0, 60, 200, 200), "체력: " + actor.Health);
+            GUI.Label(new Rect(0, 80, 200, 200), "스테미나: " + actor.Stamina);
         }
     }
 
@@ -155,6 +139,9 @@ public class StatusHandler : MonoBehaviour
         // 상태이상 체크
         DebuffCheck(type);
         DebuffAction();
+
+        if (_healthDamage != 0f)
+            UpdateHealth();
     }
 
     public void DebuffCheck(InteractableObject.Damage type)
@@ -277,7 +264,7 @@ public class StatusHandler : MonoBehaviour
 
             if (Time.time - lastBurnTime >= 1.0f) // 1초간 데미지+액션
             {
-                _health -= _burnDamage;
+                actor.Health -= _burnDamage;
                 actor.BodyHandler.BodyParts[2].PartRigidbody.AddForce((actor.BodyHandler.Hip.transform.right) * 25, ForceMode.VelocityChange);
                 actor.BodyHandler.BodyParts[3].PartRigidbody.AddForce((actor.BodyHandler.Hip.transform.right) * 25, ForceMode.VelocityChange);
                 lastBurnTime = Time.time;
@@ -309,7 +296,7 @@ public class StatusHandler : MonoBehaviour
             float elapsed = Time.time - startTime;
             float percentage = elapsed / delay;
 
-            _stamina = Mathf.Clamp(_maxStamina * percentage, 0, _maxStamina);
+            actor.Stamina = Mathf.Clamp(actor.MaxStamina * percentage, 0, actor.MaxStamina);
             yield return null;
         }
 
@@ -320,7 +307,7 @@ public class StatusHandler : MonoBehaviour
         angularXDrive.positionSpring = _xPosSpringAry[0];
 
         actor.BodyHandler.BodyParts[0].PartJoint.angularXDrive = angularXDrive;
-        _stamina = 100;
+        actor.Stamina = 100;
     }
     IEnumerator Slow(float delay)
     {
@@ -434,6 +421,7 @@ public class StatusHandler : MonoBehaviour
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Shock;
     }
+
     IEnumerator Stun(float delay)
     {
         _hasStun = true;
@@ -445,20 +433,19 @@ public class StatusHandler : MonoBehaviour
         actor.debuffState &= ~Actor.DebuffState.Stun;
     }
 
-
     public void UpdateHealth()
     {
         if (_isDead)
             return;
 
         //현재 체력 받아오기
-        float tempHealth = _health;
+        float tempHealth = actor.Health;
 
         //무적상태가 아닐때만 데미지 적용
         if (tempHealth > 0f && !invulnerable)
             tempHealth -= _healthDamage;
 
-        float realDamage = _health - tempHealth;
+        float realDamage = actor.Health - tempHealth;
 
         //기절상태가 아닐때 일정 이상의 데미지를 받으면 기절
         if (actor.actorState != Actor.ActorState.Unconscious)
@@ -495,7 +482,10 @@ public class StatusHandler : MonoBehaviour
             EnterUnconsciousState();
         }
 
-        _health = Mathf.Clamp(tempHealth, 0f, _maxHealth);
+        actor.Health = Mathf.Clamp(tempHealth, 0f, actor.MaxHealth);
+
+        actor.HurtEventInvoke();
+
         _healthDamage = 0f;
     }
 
