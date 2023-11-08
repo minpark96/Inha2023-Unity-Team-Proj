@@ -157,6 +157,7 @@ public class PlayerController : MonoBehaviourPun
     private List<float> _yzPosSpringAry = new List<float>();
 
     public bool isAI = false;
+    public bool isBalloon = false;
 
     Rigidbody _hipRB;
 
@@ -341,6 +342,15 @@ public class PlayerController : MonoBehaviourPun
                 break;
         }
     }
+    public void OnKeyboardEvent_Balloon(Define.MouseEvent evt)
+    {
+        if (!photonView.IsMine)
+        {
+            return;
+        }
+
+
+    }
 
     public void OnMouseEvent_Grab(Define.MouseEvent evt)
     {
@@ -404,6 +414,15 @@ public class PlayerController : MonoBehaviourPun
         if (isAI)
             return;
 
+        if (_actor.debuffState == Actor.DebuffState.Balloon)
+            isBalloon = true;
+        
+        if (isBalloon)
+        {
+            BalloonShapeOn();
+            return;
+        }
+
         if (_actor.actorState != Actor.ActorState.Jump && _actor.actorState != Actor.ActorState.Roll && _actor.actorState != Actor.ActorState.Run)
         {
             if (_moveInput.magnitude == 0f)
@@ -440,6 +459,35 @@ public class PlayerController : MonoBehaviourPun
 
         yield return null;
     }
+
+    private void BalloonShapeOn()
+    {
+        foreach(BodyPart body in _bodyHandler.BodyParts)
+        {
+            if (body == _bodyHandler.BodyParts[2]) continue;
+            body.gameObject.SetActive(false);
+        }
+
+        GameObject waist = _bodyHandler.BodyParts[2].gameObject;
+        //GameObject balloon = waist.transform.Find("Balloon").GameObject();
+
+        List<Transform> waistChild = new List<Transform>();
+        int childLength = waist.transform.childCount;
+
+        for (int i = 0; i < childLength; i++)
+        {
+            waistChild.Add(waist.transform.GetChild(i));
+
+            if(i == childLength - 1)
+                waistChild[i].gameObject.SetActive(true);
+            else
+                waistChild[i].gameObject.SetActive(false);
+
+        }
+
+    }
+
+
 
     private void ForwardRollTrigger()
     {

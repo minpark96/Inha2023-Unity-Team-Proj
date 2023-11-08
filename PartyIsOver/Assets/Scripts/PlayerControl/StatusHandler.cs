@@ -113,7 +113,7 @@ public class StatusHandler : MonoBehaviourPun
 
     private void OnGUI()
     {
-        if (this.name == "Ragdoll2(Clone)" && photonView.IsMine)
+        if (this.name == "Ragdoll2" && photonView.IsMine)
         {
             GUI.contentColor = Color.red;
             GUI.Label(new Rect(0, 0, 200, 200), "버프상태:" + actor.debuffState.ToString());
@@ -184,9 +184,10 @@ public class StatusHandler : MonoBehaviourPun
             case Damage.Shock: // 감전
                 actor.debuffState |= Actor.DebuffState.Shock;
                 break;
-            case Damage.Knockout: // 기절 (실험용 Damage.Knockout 씀)
+            case Damage.Stun: // 기절
                 actor.debuffState |= Actor.DebuffState.Stun;
                 break;
+
         }
     }
 
@@ -229,14 +230,14 @@ public class StatusHandler : MonoBehaviourPun
                     break;
                 case Actor.DebuffState.Drunk:
                     break;
-                case Actor.DebuffState.Balloon:
-                    break;
+                //case Actor.DebuffState.Balloon:
+                    //break;
                 case Actor.DebuffState.Ghost:
                     break;
             }
         }
     }
-
+   
     IEnumerator PowerUp(float delay)
     {
         // 불끈
@@ -430,7 +431,6 @@ public class StatusHandler : MonoBehaviourPun
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Shock;
     }
-
     IEnumerator Stun(float delay)
     {
         _hasStun = true;

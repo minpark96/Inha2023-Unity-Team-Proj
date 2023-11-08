@@ -40,12 +40,12 @@ public class Actor : MonoBehaviourPun
         // 디버프
         Burn =      0x2,  // 화상
         Exhausted = 0x4,  // 지침
-        Slow =      0x8, // 둔화
-        Ice =    0x10, // 빙결
+        Slow =      0x8,  // 둔화
+        Ice =       0x10, // 빙결
         Shock =     0x20, // 감전
         Stun =      0x40, // 기절
         // 상태변화
-        Drunk =     0x80, // 취함
+        Drunk =     0x80,  // 취함
         Balloon =   0x100, // 풍선
         Ghost =     0x200, // 유령
     }
