@@ -9,6 +9,7 @@ using static AniFrameData;
 using static AniAngleData;
 using Unity.VisualScripting;
 using Photon.Pun;
+using UnityEditor.Build;
 
 [System.Serializable]
 public class AniFrameData
@@ -55,6 +56,7 @@ public class AniAngleData
 
 public class PlayerController : MonoBehaviourPun
 {
+    [Header("AnimationControll")]
     [SerializeField]
     public AniFrameData[] RollAniData;
 
@@ -95,13 +97,20 @@ public class PlayerController : MonoBehaviourPun
     public AniAngleData[] HeadingAngleAniData;
 
     [SerializeField]
+    public AniFrameData[] RSkillAniData;
+
+    [SerializeField]
+    public AniAngleData[] RSkillAngleAniData;
+
+    [SerializeField]
     public AniFrameData[] TestRready1;
 
     [SerializeField]
     public AniAngleData[] TestRready2;
 
-    [Header("앞뒤 속도")]
+    [Header("Speed")]
     public float RunSpeed;
+    public float MaxSpeed = 10f;
 
     [SerializeField]
     private Rigidbody _hips;
@@ -117,38 +126,48 @@ public class PlayerController : MonoBehaviourPun
     private Grab _grab;
     private Actor _actor;
 
+    [Header("PunchControll")]
     public float ReadyPunch = 0.1f;
     public float Punching = 0.1f;
     public float ResetPunch = 0.3f;
 
+    [Header("StatusControll")]
     public bool isGrounded;
     public bool isRun;
     public bool isMove;
     public bool isDuck;
     public bool isKickDuck;
-
     public bool leftGrab;
     public bool rightGrab;
     public bool leftKick;
     public bool rightKick;
     public bool isStateChange;
-    public float RSkillDelayTime = 5;
-    public float MaxSpeed = 10f;
-    private float _runSpeedOffset = 350f;
-    public float PunchDelay = 0.5f;
+    public bool isMeowNyangPunch = false;
+    private bool _isRSkillCheck;
 
+    [Header("SkillControll")]
+    public float RSkillCoolTime = 10;
+    public float MeowPunchPower = 1f; 
+    public float MeowPunchReadyPunch = 0.1f;
+    public float MeowPunchPunching = 0.1f;
+    public float MeowPunchResetPunch = 0.3f;
+
+    public float NuclearPunchPower = 1f;
+    public float NuclearPunchReadyPunch = 0.1f;
+    public float NuclearPunching = 0.1f;
+    public float NuclearPunchResetPunch = 0.3f;
+
+    private float _runSpeedOffset = 350f;
     private Vector3 _moveInput;
     private Vector3 _moveDir;
     private bool _isCoroutineRunning = false;
     private bool _isCoroutineDrop = false;
     private bool _isCoroutineRoll = false;
-
-    [SerializeField]
     private float _idleTimer = 0;
     private float _cycleTimer = 0;
     private float _cycleSpeed;
     private float _applyedForce = 800f;
-    private float _rollTime = 0;
+
     private Vector3 _runVectorForce2 = new Vector3(0f, 0f, 0.2f);
     private Vector3 _runVectorForce5 = new Vector3(0f, 0f, 0.4f);
     private Vector3 _runVectorForce10 = new Vector3(0f, 0f, 0.8f);
@@ -156,6 +175,7 @@ public class PlayerController : MonoBehaviourPun
     private List<float> _xPosSpringAry = new List<float>();
     private List<float> _yzPosSpringAry = new List<float>();
 
+    [Header("Dummy")]
     public bool isAI = false;
     public bool isBalloon = false;
 
@@ -176,6 +196,7 @@ public class PlayerController : MonoBehaviourPun
     Rigidbody _childRigidbody;
     Transform[] _children;
     private Dictionary<Transform, Quaternion> _initialRotations = new Dictionary<Transform, Quaternion>();
+
     public enum Side
     {
         Left = 0,
@@ -235,29 +256,6 @@ public class PlayerController : MonoBehaviourPun
         }
     }
 
-    void ForceRready()
-    {
-        for (int i = 0; i < TestRready1.Length; i++)
-        {
-            AniForce(TestRready1, i);
-        }
-    }
-
-    IEnumerator Rready()
-    {
-        for (int i = 0; i < childJoints.Length; i++)
-        {
-            childJoints[i].angularYMotion = ConfigurableJointMotion.Locked;
-            childJoints[i].angularZMotion = ConfigurableJointMotion.Locked;
-        }
-
-        for (int i = 0; i < TestRready2.Length; i++)
-        {
-            AniAngleForce(TestRready2, i);
-        }
-        yield return new WaitForSeconds(1f);
-    }
-
     public void OnKeyboardEvent_Move(Define.KeyboardEvent evt)
     {
         if (!photonView.IsMine)
@@ -292,7 +290,6 @@ public class PlayerController : MonoBehaviourPun
                 }
                 break;
         }
-
     }
     public void OnKeyboardEvent_Skill(Define.KeyboardEvent evt)
     {
@@ -329,15 +326,20 @@ public class PlayerController : MonoBehaviourPun
             case Define.KeyboardEvent.Charge:
                 {
                     RestoreOriginalMotions();
-                    if (Input.GetKeyUp(KeyCode.R))
+                    if (Input.GetKeyUp(KeyCode.R) && !isMeowNyangPunch)
                         MeowNyangPunch();
+                    else
+                        NuclearPunch();
                 }
                 break;
             case Define.KeyboardEvent.Hold:
                 {
                     //중일때 확인 ex 이펙트 출현하는 코드를 넣어주면 기모아지는 것 첨 될듯
-                    StartCoroutine(Rready());
-                    ForceRready();
+                    if (!_isRSkillCheck)
+                    {
+                        _isRSkillCheck = true;
+                        StartCoroutine(Rready());
+                    }
                 }
                 break;
         }
@@ -350,6 +352,43 @@ public class PlayerController : MonoBehaviourPun
         }
 
 
+    }
+
+    IEnumerator Rready()
+    {
+        for (int i = 0; i < childJoints.Length; i++)
+        {
+            childJoints[i].angularYMotion = ConfigurableJointMotion.Locked;
+            childJoints[i].angularZMotion = ConfigurableJointMotion.Locked;
+        }
+
+        for (int i = 0; i < RSkillAngleAniData.Length; i++)
+        {
+            AniAngleForce(RSkillAngleAniData, i);
+        }
+        yield return ForceRready(0.1f);
+    }
+
+    IEnumerator ForceRready(float _delay)
+    {
+        for (int i = 0; i < RSkillAniData.Length; i++)
+        {
+            AniForce(RSkillAniData, i);
+        }
+        yield return new WaitForSeconds(_delay);
+        //물체의 모션을 고정
+        Rigidbody _RPartRigidbody;
+
+        for (int i = 0; i < RSkillAniData.Length; i++)
+        {
+            for (int j = 0; j < RSkillAniData[i].StandardRigidbodies.Length; j++)
+            {
+                _RPartRigidbody = RSkillAniData[i].ActionRigidbodies[j];
+                _RPartRigidbody.constraints = RigidbodyConstraints.FreezeAll;
+                _RPartRigidbody.velocity = Vector3.zero;
+                _RPartRigidbody.angularVelocity = Vector3.zero;
+            }
+        }
     }
 
     public void OnMouseEvent_Grab(Define.MouseEvent evt)
@@ -444,21 +483,6 @@ public class PlayerController : MonoBehaviourPun
             return;
         }
     }
-    
-    private void TestCase()
-    {
-        StartCoroutine(testcase());
-    }
-
-    IEnumerator testcase()
-    {
-        for (int i = 0; i < TestRready2.Length; i++)
-        {
-            AniAngleForce(TestRready2, i);
-        }
-
-        yield return null;
-    }
 
     private void BalloonShapeOn()
     {
@@ -506,7 +530,7 @@ public class PlayerController : MonoBehaviourPun
     IEnumerator ForwardRollDelay(float delay)
     {
         _isCoroutineRoll = true;
-        yield return ForwardRoll(0.07f,1.5f);
+        yield return ForwardRoll(0.07f, 1.5f);
         yield return new WaitForSeconds(delay);
         _isCoroutineRoll = false;
     }
@@ -522,18 +546,60 @@ public class PlayerController : MonoBehaviourPun
 
         float rollTime = Time.time;
         float startRollTime = Time.time;
+
         while (Time.time - rollTime < readyRoll)
         {
             AniAngleForce(RollAngleAniData, 0);
             AniForce(RollAniData, 0);
             yield return new WaitForSeconds(duration);
         }
+
+        //힘은 0, Rotation 복구 하기
+        RestoreRotations();
+
+        //디버그가 안찍힘 확인 해봐야 할거 같음
+        while (Time.time - startRollTime < 0.1f)
+        {
+            foreach (Transform child in _children)
+            {
+                if (_initialRotations.ContainsKey(child))
+                {
+                    Debug.Log("Slerp아직 잘 안됨 수정 부분임");
+                    Vector3 lerpedDirecion = Vector3.Slerp(child.localRotation.eulerAngles, _initialRotations[child].eulerAngles, 0.1f);
+                    child.localRotation = Quaternion.LookRotation(lerpedDirecion);
+                }
+            }
+            yield return new WaitForSeconds(duration);
+        }
+        _actor.actorState = Actor.ActorState.Stand;
+    }
+
+    IEnumerator ForwardRollOld(float duration, float readyRoll)
+    {
+        _hips.velocity = -_hips.transform.up.normalized * MaxSpeed * 1.5f;
+        yield return new WaitForSeconds(0.08f);
+        _actor.actorState = ActorState.Roll;
+
+        _actor.StatusHandler.StartCoroutine("ResetBodySpring");
+        _hipRB.constraints &= ~RigidbodyConstraints.FreezeRotationX;
+
+        float rollTime = Time.time;
+        float startRollTime = Time.time;
+
+        while (Time.time - rollTime < readyRoll)
+        {
+            AniAngleForce(RollAngleAniData, 0);
+            AniForce(RollAniData, 0);
+            yield return new WaitForSeconds(duration);
+        }
+
         //힘은 0, Rotation 복구 하기
         RestoreRotations();
         _actor.actorState = Actor.ActorState.Stand;
     }
     // 진행 순서 구르기 -> 회전하고 남는 힘 0 대입과 구르기 전 Rotation 값 넣기 -> Freeze Rotationx 축 잠금
     // -> 스프링값 올리기 (스프링 값을 천천히 올려야 누워 있다가 일어서는 것 처럼 보임)
+
     public void RestoreRotations()
     {
         _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
@@ -557,6 +623,31 @@ public class PlayerController : MonoBehaviourPun
             }
         }
     }
+
+    public void RestoreRotationsOld()
+    {
+        _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
+
+        foreach (Transform child in _children)
+        {
+            _childRigidbody = child.GetComponent<Rigidbody>();
+            if (_childRigidbody != null)
+            {
+                //회전 힘과 AddForce 힘을 벡터 0으로 해서 값 빼기
+                _childRigidbody.velocity = Vector3.zero;
+                _childRigidbody.angularVelocity = Vector3.zero;
+                // 초기 회전값 복원 Dictionary에서 특정 키의 존재 여부를 확인
+                if (_initialRotations.ContainsKey(child))
+                {
+                    child.localRotation = _initialRotations[child];
+                }
+
+                if (_childRigidbody.name == "GreenHip")
+                    _hipRB.constraints |= RigidbodyConstraints.FreezeRotationX;
+            }
+        }
+    }
+
 
     Vector3 GetForceDirection(AniFrameData data, int index)
     {
@@ -614,7 +705,23 @@ public class PlayerController : MonoBehaviourPun
             else
             {
                 Vector3 _direction = GetForceDirection(_forceSpeed[_elementCount], i);
-                _forceSpeed[_elementCount].ActionRigidbodies[i].AddForce(_direction * _forceSpeed[_elementCount].ForcePowerValues[i] , ForceMode.Impulse);
+                _forceSpeed[_elementCount].ActionRigidbodies[i].AddForce(_direction * _forceSpeed[_elementCount].ForcePowerValues[i], ForceMode.Impulse);
+            }
+        }
+    }
+
+    void AniForce(AniFrameData[] _forceSpeed, int _elementCount, Vector3 _dir, float _punchpower)
+    {
+        for (int i = 0; i < _forceSpeed[_elementCount].StandardRigidbodies.Length; i++)
+        {
+            if (_forceSpeed[_elementCount].ForceDirections[i] == RollForce.Zero || _forceSpeed[_elementCount].ForceDirections[i] == RollForce.ZeroReverse)
+            {
+                _forceSpeed[_elementCount].ActionRigidbodies[i].AddForce(_dir * _forceSpeed[_elementCount].ForcePowerValues[i] * _punchpower, ForceMode.Impulse);
+            }
+            else
+            {
+                Vector3 _direction = GetForceDirection(_forceSpeed[_elementCount], i);
+                _forceSpeed[_elementCount].ActionRigidbodies[i].AddForce(_direction * _forceSpeed[_elementCount].ForcePowerValues[i] * _punchpower, ForceMode.Impulse);
             }
         }
     }
@@ -682,11 +789,6 @@ public class PlayerController : MonoBehaviourPun
         }
     }
 
-    IEnumerator TurnDelay(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-    }
-
     private void DropKickTrigger()
     {
         if (!_isCoroutineDrop)
@@ -745,29 +847,64 @@ public class PlayerController : MonoBehaviourPun
         yield return null;
     }
 
+    private void NuclearPunch()
+    {
+        StartCoroutine(NuclearPunchDelay());
+        Rigidbody _RPartRigidbody;
+
+        for (int i = 0; i < RSkillAniData.Length; i++)
+        {
+            for (int j = 0; j < RSkillAniData[i].StandardRigidbodies.Length; j++)
+            {
+                _RPartRigidbody = RSkillAniData[i].ActionRigidbodies[j];
+                _RPartRigidbody.constraints = RigidbodyConstraints.None;
+            }
+        }
+    }
+    IEnumerator NuclearPunchDelay()
+    {
+        yield return MeowPunch(Side.Right, 0.07f, NuclearPunchReadyPunch, NuclearPunching, NuclearPunchResetPunch);
+        yield return RSkillCoolTimer();
+    }
     private void MeowNyangPunch()
     {
         StartCoroutine(MeowNyangPunchDelay());
-        StartCoroutine(RDelay());
+        Rigidbody _RPartRigidbody;
+
+        for (int i = 0; i < RSkillAniData.Length; i++)
+        {
+            for (int j = 0; j < RSkillAniData[i].StandardRigidbodies.Length; j++)
+            {
+                _RPartRigidbody = RSkillAniData[i].ActionRigidbodies[j];
+                _RPartRigidbody.constraints = RigidbodyConstraints.None;
+            }
+        }
     }
     IEnumerator MeowNyangPunchDelay()
     {
         int _punchcount = 0;
+        _readySide = Side.Right;
         while (_punchcount < 5)
         {
             if (_readySide == Side.Left)
             {
-                yield return MeowPunch(Side.Left, 0.07f, 0.1f, 0.1f, 0.3f);
+                yield return MeowPunch(Side.Left, 0.07f, MeowPunchReadyPunch, MeowPunchPunching, MeowPunchResetPunch);
                 _readySide = Side.Right;
             }
             else
             {
-                yield return MeowPunch(Side.Right, 0.07f, 0.1f, 0.1f, 0.3f);
+                yield return MeowPunch(Side.Right, 0.07f, MeowPunchReadyPunch, MeowPunchPunching, MeowPunchResetPunch);
                 _readySide = Side.Left;
             }
-            yield return new WaitForSeconds(0.2f);
             _punchcount++;
         }
+        yield return RSkillCoolTimer();
+
+    }
+    IEnumerator RSkillCoolTimer()
+    {
+        _isRSkillCheck = false;
+        yield return new WaitForSeconds(RSkillCoolTime);
     }
 
     IEnumerator MeowPunch(Side side, float duration, float readyTime, float punchTime, float resettingTime)
@@ -795,21 +932,6 @@ public class PlayerController : MonoBehaviourPun
         }
     }
 
-
-    IEnumerator RDelay()
-    {
-        yield return new WaitForSeconds(RSkillDelayTime);
-    }
-
-    IEnumerator PunchWithDelay(Side side, float delay)
-    {
-
-        _isCoroutineRunning = true;
-        yield return Punch(side, 0.07f, ReadyPunch, Punching, ResetPunch);
-        yield return new WaitForSeconds(delay);
-        _isCoroutineRunning = false;
-    }
-
     public void PunchAndGrab()
     {
         targetingHandler.SearchTarget();
@@ -817,17 +939,23 @@ public class PlayerController : MonoBehaviourPun
         {
             if (_readySide == Side.Left)
             {
-                StartCoroutine(PunchWithDelay(Side.Left, PunchDelay));
+                StartCoroutine(PunchWithDelay(Side.Left));
                 _readySide = Side.Right;
             }
             else
             {
-                StartCoroutine(PunchWithDelay(Side.Right, PunchDelay));
+                StartCoroutine(PunchWithDelay(Side.Right));
                 _readySide = Side.Left;
             }
         }
     }
 
+    IEnumerator PunchWithDelay(Side side)
+    {
+        _isCoroutineRunning = true;
+        yield return Punch(side, 0.07f, ReadyPunch, Punching, ResetPunch);
+        _isCoroutineRunning = false;
+    }
     /*
     
     요구 사항 
@@ -900,6 +1028,7 @@ public class PlayerController : MonoBehaviourPun
 
     public void ArmActionPunching(Side side)
     {
+
         if (target)
             return;
 
@@ -923,10 +1052,18 @@ public class PlayerController : MonoBehaviourPun
             bodyPartHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
             bodyPartForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
             Vector3 dir = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
-            AniForce(aniFrameDatas, i, dir);
+           
+            if(_isRSkillCheck)
+            {
+                if(!isMeowNyangPunch)
+                    AniForce(aniFrameDatas, i, dir, MeowPunchPower);
+                else
+                    AniForce(aniFrameDatas, i, dir, NuclearPunchPower);
+            }
+            else
+                AniForce(aniFrameDatas, i, dir);
         }
     }
-
     public void ArmActionPunchResetting(Side side)
     {
         Transform partTransform = _bodyHandler.Chest.transform;
@@ -957,19 +1094,15 @@ public class PlayerController : MonoBehaviourPun
         if (isStateChange)
         {
             isGrounded = false;
-            int _frameCount;
             for (int i = 0; i < MoveForceJumpAniData.Length; i++)
             {
-                _frameCount = i;
-                //AniForce(MoveForceJumpAniData, _frameCount, _moveDir); 헤드 추가 해주면 됨 values = 6
-                AniForce(MoveForceJumpAniData, _frameCount, Vector3.up);
+                AniForce(MoveForceJumpAniData, i, Vector3.up);
                 if (i == 2)
-                    AniForce(MoveForceJumpAniData, _frameCount, Vector3.down);
+                    AniForce(MoveForceJumpAniData, i, Vector3.down);
             }
             for (int i = 0; i < MoveAngleJumpAniData.Length; i++)
             {
-                _frameCount = i;
-                AniAngleForce(MoveAngleJumpAniData, _frameCount, _moveDir + new Vector3(0, 0.2f, 0f));
+                AniAngleForce(MoveAngleJumpAniData, i, _moveDir + new Vector3(0, 0.2f, 0f));
             }
         }
         if (isGrounded)
@@ -980,20 +1113,16 @@ public class PlayerController : MonoBehaviourPun
 
     private void Heading()
     {
-        int _frameCount;
         for (int i = 0; i < HeadingAniData.Length; i++)
         {
-            _frameCount = i;
-            AniForce(HeadingAniData, _frameCount);
+            AniForce(HeadingAniData, i);
         }
         for (int i = 0; i < HeadingAngleAniData.Length; i++)
         {
-            _frameCount = i;
             if (i == 0)
-                AniAngleForce(HeadingAngleAniData, _frameCount, _moveDir + new Vector3(0f, 0.2f, 0f));
+                AniAngleForce(HeadingAngleAniData, i, _moveDir + new Vector3(0f, 0.2f, 0f));
             if (i == 1)
-                AniAngleForce(HeadingAngleAniData, _frameCount, _moveDir + new Vector3(0f, 0.2f, 0f));
-
+                AniAngleForce(HeadingAngleAniData, i, _moveDir + new Vector3(0f, 0.2f, 0f));
         }
     }
 
