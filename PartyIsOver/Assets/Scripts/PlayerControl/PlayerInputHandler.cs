@@ -36,23 +36,35 @@ public class PlayerInputHandler : MonoBehaviour
 
     void OnKeyboardEvent(Define.KeyboardEvent evt)
     {
-        if (_actor.actorState == ActorState.Debuff)
+        if (_actor.debuffState == DebuffState.Ice || _actor.debuffState == DebuffState.Balloon)
             return;
+        if(_actor.debuffState == DebuffState.Shock || _actor.debuffState == DebuffState.Stun)
+            return;
+        if(_actor.debuffState == DebuffState.Exhausted)
+        {
+            _actor.PlayerController.OnKeyboardEvent_Move(evt);
+            return;
+        }
 
         if (_actor.Grab.GrabItem == null)
-            _actor.PlayerController.OnKeyboardEvent_Idle(evt);
-
+        {
+            _actor.PlayerController.OnKeyboardEvent_Move(evt);
+            _actor.PlayerController.OnKeyboardEvent_Skill(evt);
+        }
     }
 
     void OnMouseEvent(Define.MouseEvent evt)
     {
-        if (_actor.actorState == ActorState.Debuff)
+        if (_actor.debuffState == DebuffState.Ice || _actor.debuffState == DebuffState.Balloon)
             return;
-
+        if (_actor.debuffState == DebuffState.Shock || _actor.debuffState == DebuffState.Stun)
+            return;
 
         if (_actor.Grab.GrabItem == null)
         {
-            _actor.PlayerController.OnMouseEvent_Idle(evt);
+            _actor.PlayerController.OnMouseEvent_Grab(evt);
+            if (_actor.debuffState != DebuffState.Burn)
+                _actor.PlayerController.OnMouseEvent_Skill(evt);
         }
         else
             _actor.Grab.OnMouseEvent_EquipItem(evt);

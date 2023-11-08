@@ -15,12 +15,14 @@ public class InteractableObject : MonoBehaviour
         Knockout = 6,
         Special= 7,
 
-        Freeze = 8,
-        Shock = 9,
-        PowerUp = 10,
-        Slow = 11,
-        Burn = 12,
-
+        PowerUp = 8,
+        Burn = 9,
+        Slow = 10,
+        Ice = 11,
+        Shock = 12,
+        Stun = 13,
+        Drunk = 14,
+        Balloon = 15,
     }
 
     public Damage damageModifier = Damage.Default;
