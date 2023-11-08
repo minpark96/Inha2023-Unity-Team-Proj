@@ -10226,6 +10226,40 @@ MonoBehaviour:
     - 2.5
     AnglePowerValues:
     - 0.1
+  RSkillAniData:
+  - StandardRigidbodies:
+    - {fileID: 5150619769091741460}
+    - {fileID: 5150619769091741460}
+    - {fileID: 5150619769091741460}
+    ActionRigidbodies:
+    - {fileID: 5150466505743223006}
+    - {fileID: 5069075246722378390}
+    - {fileID: 5150391404254772956}
+    ForceDirections: 070000000200000003000000
+    ForcePowerValues:
+    - 1
+    - 1
+    - 2
+  - StandardRigidbodies:
+    - {fileID: 5150619769091741460}
+    ActionRigidbodies:
+    - {fileID: 5068901783686819345}
+    ForceDirections: 02000000
+    ForcePowerValues:
+    - 1
+  RSkillAngleAniData:
+  - StandardRigidbodies:
+    - {fileID: 5069075246722378390}
+    ActionDirection:
+    - {fileID: 5167280749045366728}
+    TargetDirection:
+    - {fileID: 5167280749045366728}
+    ActionAngleDirections: 01000000
+    TargetAngleDirections: 03000000
+    AngleStability:
+    - 0.01
+    AnglePowerValues:
+    - 100
   TestRready1:
   - StandardRigidbodies:
     - {fileID: 5150619769091741460}
@@ -10361,12 +10395,13 @@ MonoBehaviour:
   _stamina: 0
   _powerUpTime: 3
   _burnTime: 3
-  _burnDamage: 1
   _exhaustedTime: 5
   _slowTime: 3
   _freezeTime: 3
   _shockTime: 3
   _stunTime: 3
+  _iceDamage: 0
+  _burnDamage: 1
 --- !u!114 &2082881364
 MonoBehaviour:
   m_ObjectHideFlags: 0

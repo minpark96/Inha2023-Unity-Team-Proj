@@ -95,6 +95,12 @@ public class PlayerController : MonoBehaviourPun
     public AniAngleData[] HeadingAngleAniData;
 
     [SerializeField]
+    public AniFrameData[] RSkillAniData;
+
+    [SerializeField]
+    public AniAngleData[] RSkillAngleAniData;
+
+    [SerializeField]
     public AniFrameData[] TestRready1;
 
     [SerializeField]
@@ -236,9 +242,9 @@ public class PlayerController : MonoBehaviourPun
 
     void ForceRready()
     {
-        for (int i = 0; i < TestRready1.Length; i++)
+        for (int i = 0; i < RSkillAniData.Length; i++)
         {
-            AniForce(TestRready1, i);
+            AniForce(RSkillAniData, i);
         }
     }
 
@@ -250,9 +256,9 @@ public class PlayerController : MonoBehaviourPun
             childJoints[i].angularZMotion = ConfigurableJointMotion.Locked;
         }
 
-        for (int i = 0; i < TestRready2.Length; i++)
+        for (int i = 0; i < RSkillAngleAniData.Length; i++)
         {
-            AniAngleForce(TestRready2, i);
+            AniAngleForce(RSkillAngleAniData, i);
         }
         yield return new WaitForSeconds(1f);
     }
@@ -425,21 +431,6 @@ public class PlayerController : MonoBehaviourPun
             return;
         }
     }
-    
-    private void TestCase()
-    {
-        StartCoroutine(testcase());
-    }
-
-    IEnumerator testcase()
-    {
-        for (int i = 0; i < TestRready2.Length; i++)
-        {
-            AniAngleForce(TestRready2, i);
-        }
-
-        yield return null;
-    }
 
     private void ForwardRollTrigger()
     {
@@ -463,19 +454,6 @@ public class PlayerController : MonoBehaviourPun
         _isCoroutineRoll = false;
     }
 
-    /*
-    
-    foreach (Transform child in _children)
-        {
-            if (_initialRotations.ContainsKey(child))
-            {
-                Vector3 lerpedDirecion = Vector3.Slerp(child.localRotation.eulerAngles, _initialRotations[child].eulerAngles, 0.1f);
-                child.localRotation = Quaternion.LookRotation(lerpedDirecion);
-            }
-        }
-
-     */
-
     IEnumerator ForwardRoll(float duration, float readyRoll)
     {
         _hips.velocity = -_hips.transform.up.normalized * MaxSpeed * 1.5f;
@@ -497,6 +475,8 @@ public class PlayerController : MonoBehaviourPun
 
         //힘은 0, Rotation 복구 하기
         RestoreRotations();
+
+        //디버그가 안찍힘 확인 해봐야 할거 같음
         while (Time.time - startRollTime < 0.1f)
         {
             foreach (Transform child in _children)
