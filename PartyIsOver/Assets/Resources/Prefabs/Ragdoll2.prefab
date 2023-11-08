@@ -10501,8 +10501,8 @@ MonoBehaviour:
   Head: {fileID: 5015787384701703986}
   LeftArm: {fileID: 5015685618108127322}
   RightArm: {fileID: 5018455412112069697}
-  LeftForarm: {fileID: 5015406720499631859}
-  RightForarm: {fileID: 5015364474370536174}
+  LeftForearm: {fileID: 5015406720499631859}
+  RightForearm: {fileID: 5015364474370536174}
   LeftHand: {fileID: 5068901783686819347}
   RightHand: {fileID: 5069075246722378384}
   Ball: {fileID: 5014761802810601888}
@@ -11015,7 +11015,8 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents: []
+  ObservedComponents:
+  - {fileID: 5164006939630707522}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0

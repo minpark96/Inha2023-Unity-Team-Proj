@@ -53,6 +53,7 @@ MonoBehaviour:
   - {x: -5, y: 5, z: 0}
   - {x: -2.5, y: 5, z: -4.33}
   - {x: 2.5, y: 5, z: -4.33}
+  ActorViewIDs: 
   Actors: []
 --- !u!114 &-6182396937385309685
 MonoBehaviour:
