@@ -99,6 +99,7 @@ public class CollisionHandler : MonoBehaviourPun
                     contact.thisCollider.attachedRigidbody.AddForce(contact.normal * 10f, ForceMode.VelocityChange);
                     break;
                 case InteractableObject.Damage.Default:
+                    damage = 0f;
                     break;
             }
 
@@ -126,8 +127,8 @@ public class CollisionHandler : MonoBehaviourPun
                 if (transform == actor.BodyHandler.RightArm.transform ||
                     transform == actor.BodyHandler.LeftArm.transform)
                     damage *= actor.ArmMultiple;
-                else if (transform == actor.BodyHandler.RightForarm.transform ||
-                    transform == actor.BodyHandler.LeftForarm.transform)
+                else if (transform == actor.BodyHandler.RightForearm.transform ||
+                    transform == actor.BodyHandler.LeftForearm.transform)
                     damage *= actor.ArmMultiple;
                 else if (transform == actor.BodyHandler.RightHand.transform ||
                     transform == actor.BodyHandler.LeftHand.transform)
@@ -183,9 +184,7 @@ public class CollisionHandler : MonoBehaviourPun
 
     private void OnCollisionEnter(Collision collision)
     {
-        //if (!photonView.IsMine) return;
-
-        Debug.Log(photonView.ViewID + " 나 맞았음!");
+        if (!PhotonNetwork.IsMasterClient) return;
 
         if (collision.collider.gameObject.layer != LayerMask.NameToLayer("Ground"))
             DamageCheck(collision);

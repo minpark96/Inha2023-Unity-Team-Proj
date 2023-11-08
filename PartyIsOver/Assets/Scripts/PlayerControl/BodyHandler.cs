@@ -23,8 +23,8 @@ public class BodyHandler : MonoBehaviour
 
     public BodyPart LeftArm;
     public BodyPart RightArm;
-    public BodyPart LeftForarm;
-    public BodyPart RightForarm;
+    public BodyPart LeftForearm;
+    public BodyPart RightForearm;
     public BodyPart LeftHand;
     public BodyPart RightHand;
 
@@ -47,7 +47,7 @@ public class BodyHandler : MonoBehaviour
         BodyParts.Add(Hip);
 
         BodyParts.Add(LeftArm);
-        BodyParts.Add(LeftForarm);
+        BodyParts.Add(LeftForearm);
         BodyParts.Add(LeftHand);
 
         BodyParts.Add(LeftThigh);
@@ -55,7 +55,7 @@ public class BodyHandler : MonoBehaviour
         BodyParts.Add(LeftFoot);
 
         BodyParts.Add(RightArm);
-        BodyParts.Add(RightForarm);
+        BodyParts.Add(RightForearm);
         BodyParts.Add(RightHand);
 
         BodyParts.Add(RightThigh);

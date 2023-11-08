@@ -20,7 +20,7 @@ public class GameCenter : MonoBehaviourPunCallbacks
 
     #region Private Fields
 
-    string _arenaName = "SDJTest";
+    string _arenaName = "PlayerMoveTest";
     // 프리팹 경로
     string _playerPath = "Ragdoll2";
 
@@ -119,7 +119,7 @@ public class GameCenter : MonoBehaviourPunCallbacks
         GUI.contentColor = Color.black;
         for (int i = 0; i <ActorViewIDs.Count; i++)
         {
-            GUI.Label(new Rect(0, 140 + i * 20, 200, 200), "Actor View ID: " + ActorViewIDs[i]);
+            GUI.Label(new Rect(0, 140 + i * 20, 200, 200), "Actor View ID: " + ActorViewIDs[i] + " / HP: " + Actors[i].Health);
         }
     }
 
@@ -128,10 +128,32 @@ public class GameCenter : MonoBehaviourPunCallbacks
         if (actor != null)
         {
             Debug.Log("구독 부분 " + actor.photonView.ViewID);
-            actor.OnPlayerHurt -= AnounceHurt;
-            actor.OnPlayerHurt += AnounceHurt;
+            actor.OnPlayerHurt -= SendInfo;
+            actor.OnPlayerHurt += SendInfo;
             //actor.OnPlayerExhaust -= DecreaseStamina;
             //actor.OnPlayerExhaust += DecreaseStamina;
+        }
+    }
+   
+    void SendInfo(float HP, int viewID)
+    {
+        Debug.Log("[master Event] SendInfo()");
+
+        photonView.RPC("SyncHP", RpcTarget.Others, HP, viewID);
+    }
+
+    [PunRPC]
+    void SyncHP(float hp, int viewID)
+    {
+        Debug.Log("[except master received] SyncHP()");
+
+        for (int i = 0; i < Actors.Count; i++)
+        {
+            if (Actors[i].photonView.ViewID == viewID)
+            {
+                Actors[i].Health = hp;
+                break;
+            }
         }
     }
 
@@ -170,13 +192,6 @@ public class GameCenter : MonoBehaviourPunCallbacks
                 SubscribeActorEvent(actor);
             }
         }
-    }
-
-    void AnounceHurt(float HP, int viewID)
-    {
-        Debug.Log("AnounceHurt(float, int)");
-
-        photonView.RPC("DecreseHP", RpcTarget.MasterClient, HP, viewID);
     }
 
     void DecreaseStamina(int amount)
@@ -284,38 +299,6 @@ public class GameCenter : MonoBehaviourPunCallbacks
         _roomUI.UpdateReadyCountText(isReady);
         UpdateMasterStatus();
         photonView.RPC("UpdateCount", RpcTarget.Others, _roomUI.PlayerReadyCount);
-    }
-
-    [PunRPC]
-    void DeacreaseHP(float HP, int viewID)
-    {
-        Debug.Log("[master received] DeacreaseHP(void)");
-
-        for (int i = 0; i < Actors.Count; i++)
-        {
-            if (Actors[i].photonView.ViewID == viewID)
-            {
-                Actors[i].Health = HP;
-                break;
-            }
-        }
-
-        photonView.RPC("SyncHP", RpcTarget.Others, HP, viewID);
-    }
-
-    [PunRPC]
-    void SyncHP(float hp, int viewID)
-    {
-        Debug.Log("[except master received] SyncHP(void)");
-
-        for (int i = 0; i < Actors.Count; i++)
-        {
-            if (Actors[i].photonView.ViewID == viewID)
-            {
-                Actors[i].Health = hp;
-                break;
-            }
-        }
     }
 
     #endregion
