@@ -147,6 +147,7 @@ public class PlayerController : MonoBehaviourPun
 
     [Header("SkillControll")]
     public float RSkillCoolTime = 10;
+    public float RSkillChargeTime = 0.5f;
     public float MeowPunchPower = 1f; 
     public float MeowPunchReadyPunch = 0.1f;
     public float MeowPunchPunching = 0.1f;
@@ -310,6 +311,7 @@ public class PlayerController : MonoBehaviourPun
                 break;
             case Define.KeyboardEvent.Click:
                 {
+                    Debug.Log("Click");
                     if (Input.GetKeyUp(KeyCode.LeftShift))
                     {
                         _actor.actorState = Actor.ActorState.Stand;
@@ -320,6 +322,9 @@ public class PlayerController : MonoBehaviourPun
                         Heading();
                     if (Input.GetKeyUp(KeyCode.Space))
                         _actor.actorState = Actor.ActorState.Jump;
+
+                    if(Input.GetKeyUp(KeyCode.R))
+                        StartCoroutine(ResetCharge());
                 }
                 break;
             case Define.KeyboardEvent.Charge:
@@ -333,18 +338,19 @@ public class PlayerController : MonoBehaviourPun
                 break;
             case Define.KeyboardEvent.Hold:
                 {
+                    Debug.Log("Hold");
                     //중일때 확인 ex 이펙트 출현하는 코드를 넣어주면 기모아지는 것 첨 될듯
                     if (!_isRSkillCheck)
                     {
                         _isRSkillCheck = true;
-                        StartCoroutine(Rready());
+                        StartCoroutine(ChargeReady());
                     }
                 }
                 break;
         }
     }
 
-    IEnumerator Rready()
+    IEnumerator ChargeReady()
     {
         for (int i = 0; i < childJoints.Length; i++)
         {
@@ -356,7 +362,7 @@ public class PlayerController : MonoBehaviourPun
         {
             AniAngleForce(RSkillAngleAniData, i);
         }
-        yield return ForceRready(0.1f);
+        yield return ForceRready(RSkillChargeTime);
     }
 
     IEnumerator ForceRready(float _delay)
@@ -379,6 +385,21 @@ public class PlayerController : MonoBehaviourPun
                 _RPartRigidbody.angularVelocity = Vector3.zero;
             }
         }
+    }
+
+    IEnumerator ResetCharge()
+    {
+        Rigidbody _RPartRigidbody;
+
+        for (int i = 0; i < RSkillAniData.Length; i++)
+        {
+            for (int j = 0; j < RSkillAniData[i].StandardRigidbodies.Length; j++)
+            {
+                _RPartRigidbody = RSkillAniData[i].ActionRigidbodies[j];
+                _RPartRigidbody.constraints = RigidbodyConstraints.None;
+            }
+        }
+        yield return null;
     }
 
     public void OnMouseEvent_Grab(Define.MouseEvent evt)
@@ -802,36 +823,21 @@ public class PlayerController : MonoBehaviourPun
     private void NuclearPunch()
     {
         StartCoroutine(NuclearPunchDelay());
-        Rigidbody _RPartRigidbody;
-
-        for (int i = 0; i < RSkillAniData.Length; i++)
-        {
-            for (int j = 0; j < RSkillAniData[i].StandardRigidbodies.Length; j++)
-            {
-                _RPartRigidbody = RSkillAniData[i].ActionRigidbodies[j];
-                _RPartRigidbody.constraints = RigidbodyConstraints.None;
-            }
-        }
+        StartCoroutine(ResetCharge());
     }
+
     IEnumerator NuclearPunchDelay()
     {
         yield return MeowPunch(Side.Right, 0.07f, NuclearPunchReadyPunch, NuclearPunching, NuclearPunchResetPunch);
         yield return RSkillCoolTimer();
     }
+
     private void MeowNyangPunch()
     {
         StartCoroutine(MeowNyangPunchDelay());
-        Rigidbody _RPartRigidbody;
-
-        for (int i = 0; i < RSkillAniData.Length; i++)
-        {
-            for (int j = 0; j < RSkillAniData[i].StandardRigidbodies.Length; j++)
-            {
-                _RPartRigidbody = RSkillAniData[i].ActionRigidbodies[j];
-                _RPartRigidbody.constraints = RigidbodyConstraints.None;
-            }
-        }
+        StartCoroutine(ResetCharge());
     }
+
     IEnumerator MeowNyangPunchDelay()
     {
         int _punchcount = 0;

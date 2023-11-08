@@ -30,7 +30,7 @@ public class InputManager
 
     bool _isCharge = false;
     float _chargeTime = 0;
-    float _chargeThreshold = 1.0f;
+    float _chargeThreshold = 0f;
 
     bool _wkeyPressed = false;
     bool _akeyPressed = false;
@@ -229,7 +229,7 @@ public class InputManager
             {
                 if (_rkeyPressed)
                 {
-                    if (Time.time < _rkeyPressedTime + 0.2f)
+                    if (Time.time < _rkeyPressedTime + 2f)
                         KeyboardAction.Invoke(Define.KeyboardEvent.Click);
                     else
                         KeyboardAction.Invoke(Define.KeyboardEvent.Charge);

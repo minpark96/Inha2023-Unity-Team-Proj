@@ -10889,6 +10889,7 @@ MonoBehaviour:
   isStateChange: 0
   isMeowNyangPunch: 1
   RSkillCoolTime: 5
+  RSkillChargeTime: 0.5
   MeowPunchPower: 1
   MeowPunchReadyPunch: 0.1
   MeowPunchPunching: 0.1
