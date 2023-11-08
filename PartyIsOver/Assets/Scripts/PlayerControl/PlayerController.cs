@@ -247,14 +247,7 @@ public class PlayerController : MonoBehaviourPun
         _grab = GetComponent<Grab>();
     }
 
-    void RestoreOriginalMotions()
-    {
-        for (int i = 0; i < childJoints.Length; i++)
-        {
-            childJoints[i].angularYMotion = originalYMotions[i];
-            childJoints[i].angularZMotion = originalZMotions[i];
-        }
-    }
+    Vector3 _beforePosition;
 
     public void OnKeyboardEvent_Move(Define.KeyboardEvent evt)
     {
@@ -267,25 +260,17 @@ public class PlayerController : MonoBehaviourPun
         {
             case Define.KeyboardEvent.Press:
                 {
-                    if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S))
+                    if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
                     {
-                        _moveInput.z = Input.GetAxis("Vertical");
-                    }
-                    if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
-                    {
-                        _moveInput.x = Input.GetAxis("Horizontal");
+                        _moveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
                     }
                 }
                 break;
             case Define.KeyboardEvent.Click:
                 {
-                    if (Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.S))
+                    if (Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.S) || Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
                     {
-                        _moveInput.z = 0;
-                    }
-                    if (Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
-                    {
-                        _moveInput.x = 0;
+                        _moveInput = new Vector3(0, 0, 0);
                     }
                 }
                 break;
@@ -344,52 +329,26 @@ public class PlayerController : MonoBehaviourPun
                 break;
         }
     }
-    public void OnKeyboardEvent_Balloon(Define.MouseEvent evt)
+    public void OnKeyboardEvent_Balloon(Define.KeyboardEvent evt)
     {
         if (!photonView.IsMine)
         {
             return;
         }
 
+        // 스페이스바 구현
 
     }
 
-    IEnumerator Rready()
+    public void OnMouseEvent_Balloon(Define.MouseEvent evt)
     {
-        for (int i = 0; i < childJoints.Length; i++)
+        if (!photonView.IsMine)
         {
-            childJoints[i].angularYMotion = ConfigurableJointMotion.Locked;
-            childJoints[i].angularZMotion = ConfigurableJointMotion.Locked;
+            return;
         }
-
-        for (int i = 0; i < RSkillAngleAniData.Length; i++)
-        {
-            AniAngleForce(RSkillAngleAniData, i);
-        }
-        yield return ForceRready(0.1f);
+        // 좌클릭, 우클릭 구현
     }
 
-    IEnumerator ForceRready(float _delay)
-    {
-        for (int i = 0; i < RSkillAniData.Length; i++)
-        {
-            AniForce(RSkillAniData, i);
-        }
-        yield return new WaitForSeconds(_delay);
-        //물체의 모션을 고정
-        Rigidbody _RPartRigidbody;
-
-        for (int i = 0; i < RSkillAniData.Length; i++)
-        {
-            for (int j = 0; j < RSkillAniData[i].StandardRigidbodies.Length; j++)
-            {
-                _RPartRigidbody = RSkillAniData[i].ActionRigidbodies[j];
-                _RPartRigidbody.constraints = RigidbodyConstraints.FreezeAll;
-                _RPartRigidbody.velocity = Vector3.zero;
-                _RPartRigidbody.angularVelocity = Vector3.zero;
-            }
-        }
-    }
 
     public void OnMouseEvent_Grab(Define.MouseEvent evt)
     {
@@ -453,25 +412,26 @@ public class PlayerController : MonoBehaviourPun
         if (isAI)
             return;
 
-        if (_actor.debuffState == Actor.DebuffState.Balloon)
-            isBalloon = true;
-        
-        if (isBalloon)
+        if (_actor.debuffState == Actor.DebuffState.Balloon && isBalloon == false)
         {
-            BalloonShapeOn();
-            return;
+            isBalloon = true;
+            _actor.actorState = Actor.ActorState.Balloon;
+            StartCoroutine(BalloonShapeOn());
         }
 
-        if (_actor.actorState != Actor.ActorState.Jump && _actor.actorState != Actor.ActorState.Roll && _actor.actorState != Actor.ActorState.Run)
+        if(_actor.actorState != Actor.ActorState.Balloon)
         {
-            if (_moveInput.magnitude == 0f)
+            if (_actor.actorState != Actor.ActorState.Jump && _actor.actorState != Actor.ActorState.Roll && _actor.actorState != Actor.ActorState.Run)
             {
-                _actor.actorState = Actor.ActorState.Stand;
-            }
-            else
-            {
-                _actor.actorState = Actor.ActorState.Walk;
-                Stand();
+                if (_moveInput.magnitude == 0f)
+                {
+                    _actor.actorState = Actor.ActorState.Stand;
+                }
+                else
+                {
+                    _actor.actorState = Actor.ActorState.Walk;
+                    Stand();
+                }
             }
         }
     }
@@ -484,34 +444,76 @@ public class PlayerController : MonoBehaviourPun
         }
     }
 
-    private void BalloonShapeOn()
+    public List<Transform> before = new List<Transform>();
+
+    IEnumerator BalloonShapeOn()
     {
+        List<Vector3> rotation = new List<Vector3>();
+
+        before.Add(_bodyHandler.BodyParts[3].transform);
+
         foreach(BodyPart body in _bodyHandler.BodyParts)
         {
-            if (body == _bodyHandler.BodyParts[2]) continue;
+            if (body == _bodyHandler.BodyParts[3]) continue;
             body.gameObject.SetActive(false);
         }
 
-        GameObject waist = _bodyHandler.BodyParts[2].gameObject;
-        //GameObject balloon = waist.transform.Find("Balloon").GameObject();
+        GameObject hip = _bodyHandler.BodyParts[3].gameObject;
 
-        List<Transform> waistChild = new List<Transform>();
-        int childLength = waist.transform.childCount;
+        List<Transform> hipChild = new List<Transform>();
+        int childLength = hip.transform.childCount;
 
         for (int i = 0; i < childLength; i++)
         {
-            waistChild.Add(waist.transform.GetChild(i));
+            hipChild.Add(hip.transform.GetChild(i));
 
             if(i == childLength - 1)
-                waistChild[i].gameObject.SetActive(true);
+                hipChild[i].gameObject.SetActive(true);
             else
-                waistChild[i].gameObject.SetActive(false);
-
+                hipChild[i].gameObject.SetActive(false);
         }
 
+        yield return new WaitForSeconds(5.0f);
+
+        BalloonShapeOff();
+    }
+    private void BalloonShapeOff()
+    {
+        foreach (BodyPart body in _bodyHandler.BodyParts)
+        {
+            body.gameObject.SetActive(true);
+        }
+
+        GameObject hip = _bodyHandler.BodyParts[3].gameObject;
+
+        List<Transform> hipChild = new List<Transform>();
+        int childLength = hip.transform.childCount;
+
+        for (int i = 0; i < childLength; i++)
+        {
+            hipChild.Add(hip.transform.GetChild(i));
+
+            if (i == childLength - 1)
+                hipChild[i].gameObject.SetActive(false);
+            else
+                hipChild[i].gameObject.SetActive(true);
+        }
+
+        _bodyHandler.BodyParts[3].transform.position = before[0].position;
+        _bodyHandler.BodyParts[3].transform.rotation = before[0].rotation;
+
+        _actor.actorState = Actor.ActorState.Stand;
+        _actor.debuffState = Actor.DebuffState.Default;
+        isBalloon = false;
     }
 
+    public void BalloonMove()
+    {
+        GameObject hip = _bodyHandler.BodyParts[3].gameObject;
+        GameObject balloon = hip.transform.Find("Balloon").GameObject();
 
+        balloon.transform.position += _moveInput;
+    }
 
     private void ForwardRollTrigger()
     {
@@ -847,6 +849,51 @@ public class PlayerController : MonoBehaviourPun
         yield return null;
     }
 
+    void RestoreOriginalMotions()
+    {
+        for (int i = 0; i < childJoints.Length; i++)
+        {
+            childJoints[i].angularYMotion = originalYMotions[i];
+            childJoints[i].angularZMotion = originalZMotions[i];
+        }
+    }
+
+    IEnumerator Rready()
+    {
+        for (int i = 0; i < childJoints.Length; i++)
+        {
+            childJoints[i].angularYMotion = ConfigurableJointMotion.Locked;
+            childJoints[i].angularZMotion = ConfigurableJointMotion.Locked;
+        }
+
+        for (int i = 0; i < RSkillAngleAniData.Length; i++)
+        {
+            AniAngleForce(RSkillAngleAniData, i);
+        }
+        yield return ForceRready(0.1f);
+    }
+
+    IEnumerator ForceRready(float _delay)
+    {
+        for (int i = 0; i < RSkillAniData.Length; i++)
+        {
+            AniForce(RSkillAniData, i);
+        }
+        yield return new WaitForSeconds(_delay);
+        //물체의 모션을 고정
+        Rigidbody _RPartRigidbody;
+
+        for (int i = 0; i < RSkillAniData.Length; i++)
+        {
+            for (int j = 0; j < RSkillAniData[i].StandardRigidbodies.Length; j++)
+            {
+                _RPartRigidbody = RSkillAniData[i].ActionRigidbodies[j];
+                _RPartRigidbody.constraints = RigidbodyConstraints.FreezeAll;
+                _RPartRigidbody.velocity = Vector3.zero;
+                _RPartRigidbody.angularVelocity = Vector3.zero;
+            }
+        }
+    }
     private void NuclearPunch()
     {
         StartCoroutine(NuclearPunchDelay());

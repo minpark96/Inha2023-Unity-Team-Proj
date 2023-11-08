@@ -1010,7 +1010,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &83486393
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1106,9 +1106,12 @@ MonoBehaviour:
   MoveAngleJumpAniData: []
   HeadingAniData: []
   HeadingAngleAniData: []
+  RSkillAniData: []
+  RSkillAngleAniData: []
   TestRready1: []
   TestRready2: []
   RunSpeed: 35000
+  MaxSpeed: 10
   _hips: {fileID: 591689919}
   _cameraArm: {fileID: 1035871480}
   _bodyHandler: {fileID: 0}
@@ -1126,12 +1129,19 @@ MonoBehaviour:
   leftKick: 0
   rightKick: 0
   isStateChange: 0
-  RSkillDelayTime: 5
-  MaxSpeed: 10
-  PunchDelay: 0.5
-  _idleTimer: 0
+  isMeowNyangPunch: 0
+  RSkillCoolTime: 10
+  MeowPunchPower: 1
+  MeowPunchReadyPunch: 0.1
+  MeowPunchPunching: 0.1
+  MeowPunchResetPunch: 0.3
+  NuclearPunchPower: 1
+  NuclearPunchReadyPunch: 0.1
+  NuclearPunching: 0.1
+  NuclearPunchResetPunch: 0.3
   isAI: 1
   isBalloon: 0
+  before: []
 --- !u!114 &83486397
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1229,13 +1239,14 @@ GameObject:
   - component: {fileID: 99926897}
   - component: {fileID: 99926896}
   - component: {fileID: 99926895}
+  - component: {fileID: 99926898}
   m_Layer: 7
   m_Name: Balloon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &99926894
 Transform:
   m_ObjectHideFlags: 0
@@ -1243,13 +1254,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 99926893}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.77, z: 0}
+  m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0, z: 1}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1409357333}
-  m_RootOrder: 17
+  m_Father: {fileID: 1277986698}
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!135 &99926895
 SphereCollider:
@@ -1259,7 +1270,7 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 99926893}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
@@ -1271,7 +1282,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 99926893}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -1314,6 +1325,22 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 99926893}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!54 &99926898
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 99926893}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 126
+  m_CollisionDetection: 0
 --- !u!1 &118227128
 GameObject:
   m_ObjectHideFlags: 0
@@ -11612,6 +11639,11 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.000000059604645, y: 0.004032314, z: 0.9532265}
     m_Extent: {x: 1.4501212, y: 0.27808768, z: 0.25729126}
   m_DirtyAABB: 0
+--- !u!4 &1277986698 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5166887327713608788, guid: 763a199fa1132cc4688fb4fcfd0b05ef, type: 3}
+  m_PrefabInstance: {fileID: 1730029008}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1282451644
 GameObject:
   m_ObjectHideFlags: 0
@@ -12240,11 +12272,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damageModifier: 1
---- !u!4 &1409357333 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5164006939630707582, guid: 763a199fa1132cc4688fb4fcfd0b05ef, type: 3}
-  m_PrefabInstance: {fileID: 1730029008}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1414633732
 GameObject:
   m_ObjectHideFlags: 0
@@ -15960,6 +15987,22 @@ PrefabInstance:
       propertyPath: sceneViewId
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 2998148718336443777, guid: 763a199fa1132cc4688fb4fcfd0b05ef, type: 3}
+      propertyPath: m_CastShadows
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2998148718336443777, guid: 763a199fa1132cc4688fb4fcfd0b05ef, type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2998148718336443777, guid: 763a199fa1132cc4688fb4fcfd0b05ef, type: 3}
+      propertyPath: m_SkinnedMotionVectors
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2998148718336443777, guid: 763a199fa1132cc4688fb4fcfd0b05ef, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 68969ffab2e346a0a58207170aa902e9, type: 2}
     - target: {fileID: 3875774960659529914, guid: 763a199fa1132cc4688fb4fcfd0b05ef, type: 3}
       propertyPath: sceneViewId
       value: 10

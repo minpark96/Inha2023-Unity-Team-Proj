@@ -29,18 +29,16 @@ public class PlayerInputHandler : MonoBehaviour
 
     void OnKeyboardEvent(Define.KeyboardEvent evt)
     {
-        if (_actor.debuffState == DebuffState.Ice || _actor.debuffState == DebuffState.Balloon)
+        if (_actor.debuffState == DebuffState.Ice || _actor.debuffState == DebuffState.Shock || _actor.debuffState == DebuffState.Stun)
             return;
-        if(_actor.debuffState == DebuffState.Shock || _actor.debuffState == DebuffState.Stun)
-            return;
-       
+
 
         _actor.PlayerController.OnKeyboardEvent_Move(evt);
 
 
         if (_actor.Grab.GrabItem == null)
         {
-            if(_actor.debuffState != DebuffState.Exhausted)
+            if(_actor.debuffState != DebuffState.Exhausted || _actor.debuffState != DebuffState.Balloon)
                 _actor.PlayerController.OnKeyboardEvent_Skill(evt);
         }
     }
