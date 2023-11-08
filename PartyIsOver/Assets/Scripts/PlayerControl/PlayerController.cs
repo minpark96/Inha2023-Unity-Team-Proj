@@ -9,7 +9,6 @@ using static AniFrameData;
 using static AniAngleData;
 using Unity.VisualScripting;
 using Photon.Pun;
-using UnityEditor.Build;
 
 [System.Serializable]
 public class AniFrameData
@@ -54,7 +53,7 @@ public class AniAngleData
 
 }
 
-public class PlayerController : MonoBehaviourPun
+public class PlayerController : MonoBehaviourPun, IPunObservable
 {
     [Header("AnimationControll")]
     [SerializeField]
@@ -1075,29 +1074,34 @@ public class PlayerController : MonoBehaviourPun
 
     public void ArmActionPunching(Side side)
     {
-
         if (target)
             return;
 
         Transform partTransform = _bodyHandler.Chest.transform;
+        AniFrameData[] aniFrameDatas = RightPunchingAniData;
 
-        BodyPart bodyPartHand = _bodyHandler.LeftHand;
-        BodyPart bodyPartForarm = _bodyHandler.LeftForarm;
-        AniFrameData[] aniFrameDatas = LeftPunchingAniData;
-
-        if(side == Side.Right)
-        {
-            bodyPartHand = _bodyHandler.RightHand;
-            bodyPartForarm = _bodyHandler.RightForarm;
-            aniFrameDatas = RightPunchingAniData;
-        }
+        if (side == Side.Left)
+            aniFrameDatas = LeftPunchingAniData;
 
         for (int i = 0; i < aniFrameDatas.Length; i++)
         {
-            Transform transform2 = bodyPartHand.transform;
-            bodyPartHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
-            bodyPartHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-            bodyPartForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+            Transform transform2;
+            if (side == Side.Left)
+            {
+                transform2 = _bodyHandler.RightHand.transform;
+                _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+                _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+                _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+                
+            }
+            else
+            {
+                transform2 = _bodyHandler.LeftHand.transform;
+                _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+                _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+                _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+            }
+
             Vector3 dir = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
            
             if(_isRSkillCheck)
@@ -1111,26 +1115,32 @@ public class PlayerController : MonoBehaviourPun
                 AniForce(aniFrameDatas, i, dir);
         }
     }
+
     public void ArmActionPunchResetting(Side side)
     {
         Transform partTransform = _bodyHandler.Chest.transform;
 
-        BodyPart bodyPartHand = _bodyHandler.LeftHand;
-        BodyPart bodyPartForarm = _bodyHandler.LeftForarm;
         AniAngleData[] aniAngleDatas = LeftPunchResettingAniData;
 
         if (side == Side.Right)
         {
-            bodyPartHand = _bodyHandler.RightHand;
-            bodyPartForarm = _bodyHandler.RightForarm;
             aniAngleDatas = RightPunchResettingAniData;
         }
 
         for (int i = 0; i < aniAngleDatas.Length; i++)
         {
-            bodyPartHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
-            bodyPartHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
-            bodyPartForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+            if (side == Side.Right)
+            {
+                _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+                _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+                _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+            }
+            else
+            {
+                _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+                _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+                _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+            }
             Vector3 dir = partTransform.transform.right / 2f;
             AniAngleForce(LeftPunchResettingAniData, i, dir);
         }
@@ -1314,17 +1324,17 @@ public class PlayerController : MonoBehaviourPun
         {
             case Side.Left:
                 transform = _bodyHandler.LeftArm.transform;
-                transform2 = _bodyHandler.LeftForarm.transform;
+                transform2 = _bodyHandler.LeftForearm.transform;
                 rigidbody = _bodyHandler.LeftArm.PartRigidbody;
-                rigidbody2 = _bodyHandler.LeftForarm.PartRigidbody;
+                rigidbody2 = _bodyHandler.LeftForearm.PartRigidbody;
                 rigidbody3 = _bodyHandler.LeftHand.PartRigidbody;
                 vector = _bodyHandler.Chest.transform.right;
                 break;
             case Side.Right:
                 transform = _bodyHandler.RightArm.transform;
-                transform2 = _bodyHandler.RightForarm.transform;
+                transform2 = _bodyHandler.RightForearm.transform;
                 rigidbody = _bodyHandler.RightArm.PartRigidbody;
-                rigidbody2 = _bodyHandler.RightForarm.PartRigidbody;
+                rigidbody2 = _bodyHandler.RightForearm.PartRigidbody;
                 rigidbody3 = _bodyHandler.RightHand.PartRigidbody;
                 vector = -_bodyHandler.Chest.transform.right;
                 break;
@@ -1426,6 +1436,26 @@ public class PlayerController : MonoBehaviourPun
                 Debug.DrawRay(part.position, alignmentVector * 0.2f, Color.red, 0f, depthTest: false);
                 Debug.DrawRay(part.position, targetVector * 0.2f, Color.green, 0f, depthTest: false);
             }
+        }
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            // We own this player: send the others our data
+            stream.SendNext(_bodyHandler.RightHand.PartInteractable.damageModifier);
+            stream.SendNext(_bodyHandler.LeftHand.PartInteractable.damageModifier);
+            stream.SendNext(_bodyHandler.RightLeg.PartInteractable.damageModifier);
+            stream.SendNext(_bodyHandler.LeftLeg.PartInteractable.damageModifier);
+        }
+        else
+        {
+            // Network player, receive data
+            this._bodyHandler.RightHand.PartInteractable.damageModifier = (InteractableObject.Damage)stream.ReceiveNext();
+            this._bodyHandler.LeftHand.PartInteractable.damageModifier = (InteractableObject.Damage)stream.ReceiveNext();
+            this._bodyHandler.RightLeg.PartInteractable.damageModifier = (InteractableObject.Damage)stream.ReceiveNext();
+            this._bodyHandler.LeftLeg.PartInteractable.damageModifier = (InteractableObject.Damage)stream.ReceiveNext();
         }
     }
 }
