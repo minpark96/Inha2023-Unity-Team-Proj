@@ -5558,6 +5558,8 @@ GameObject:
   - component: {fileID: 3365814731327851670}
   - component: {fileID: 3365814731327851665}
   - component: {fileID: 3365814731327851671}
+  - component: {fileID: 5435006518194873442}
+  - component: {fileID: 6744311504430411381}
   m_Layer: 7
   m_Name: foot_r
   m_TagString: Untagged
@@ -5708,6 +5710,45 @@ MonoBehaviour:
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
   PartTransform: {fileID: 0}
+--- !u!114 &5435006518194873442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3365814731327851664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 6744311504430411381}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &6744311504430411381
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3365814731327851664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64179f3720bbfe947b7724caa67b7c1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizeVelocity: 1
+  m_SynchronizeAngularVelocity: 1
+  m_TeleportEnabled: 1
+  m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &3396398243709297476
 GameObject:
   m_ObjectHideFlags: 0
@@ -7384,6 +7425,8 @@ GameObject:
   - component: {fileID: 5150062576097496874}
   - component: {fileID: 5015685618108127317}
   - component: {fileID: 5015685618108127322}
+  - component: {fileID: 8889642134314674026}
+  - component: {fileID: 6169081727393321281}
   m_Layer: 7
   m_Name: GreenUpperArmL
   m_TagString: Lhand
@@ -7550,6 +7593,45 @@ MonoBehaviour:
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
   PartTransform: {fileID: 0}
+--- !u!114 &8889642134314674026
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5168169040231348521}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 6169081727393321281}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &6169081727393321281
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5168169040231348521}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64179f3720bbfe947b7724caa67b7c1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizeVelocity: 1
+  m_SynchronizeAngularVelocity: 1
+  m_TeleportEnabled: 1
+  m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &5168192060615758454
 GameObject:
   m_ObjectHideFlags: 0
@@ -7564,6 +7646,8 @@ GameObject:
   - component: {fileID: 5069075246722378385}
   - component: {fileID: 5069075246722378391}
   - component: {fileID: 5069075246722378384}
+  - component: {fileID: 7357067785758980616}
+  - component: {fileID: 2445116335052208937}
   m_Layer: 7
   m_Name: GreenFistR
   m_TagString: CharacterFist
@@ -7740,6 +7824,45 @@ MonoBehaviour:
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
   PartTransform: {fileID: 0}
+--- !u!114 &7357067785758980616
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5168192060615758454}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 2445116335052208937}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &2445116335052208937
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5168192060615758454}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64179f3720bbfe947b7724caa67b7c1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizeVelocity: 1
+  m_SynchronizeAngularVelocity: 1
+  m_TeleportEnabled: 1
+  m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &5168228728991225702
 GameObject:
   m_ObjectHideFlags: 0
@@ -7753,6 +7876,8 @@ GameObject:
   - component: {fileID: 5150636913932746756}
   - component: {fileID: 5014908378340600408}
   - component: {fileID: 5014908378340600409}
+  - component: {fileID: 1149883997925020940}
+  - component: {fileID: 5870654014314662501}
   m_Layer: 7
   m_Name: GreenLegL2
   m_TagString: CharacterFoot
@@ -7918,6 +8043,45 @@ MonoBehaviour:
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
   PartTransform: {fileID: 0}
+--- !u!114 &1149883997925020940
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5168228728991225702}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 5870654014314662501}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &5870654014314662501
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5168228728991225702}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64179f3720bbfe947b7724caa67b7c1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizeVelocity: 1
+  m_SynchronizeAngularVelocity: 1
+  m_TeleportEnabled: 1
+  m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &5168241402966337078
 GameObject:
   m_ObjectHideFlags: 0
@@ -7930,6 +8094,8 @@ GameObject:
   - component: {fileID: 5070676647335331915}
   - component: {fileID: 5150844099323961327}
   - component: {fileID: 5070676647335331912}
+  - component: {fileID: 6945020795748048623}
+  - component: {fileID: 4871091955242223544}
   m_Layer: 7
   m_Name: GreenHip
   m_TagString: CharacterHip
@@ -8002,6 +8168,45 @@ MonoBehaviour:
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
   PartTransform: {fileID: 0}
+--- !u!114 &6945020795748048623
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5168241402966337078}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 4871091955242223544}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &4871091955242223544
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5168241402966337078}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64179f3720bbfe947b7724caa67b7c1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizeVelocity: 1
+  m_SynchronizeAngularVelocity: 1
+  m_TeleportEnabled: 1
+  m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &5169075590960504597
 GameObject:
   m_ObjectHideFlags: 0
@@ -8015,6 +8220,8 @@ GameObject:
   - component: {fileID: 5150698295106137226}
   - component: {fileID: 5018433394129414997}
   - component: {fileID: 5018433394129415002}
+  - component: {fileID: 4438274951581535046}
+  - component: {fileID: 8482553469836286144}
   m_Layer: 7
   m_Name: GreenLegL1
   m_TagString: Untagged
@@ -8181,6 +8388,45 @@ MonoBehaviour:
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
   PartTransform: {fileID: 0}
+--- !u!114 &4438274951581535046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5169075590960504597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 8482553469836286144}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &8482553469836286144
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5169075590960504597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64179f3720bbfe947b7724caa67b7c1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizeVelocity: 1
+  m_SynchronizeAngularVelocity: 1
+  m_TeleportEnabled: 1
+  m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &5169102531625790280
 GameObject:
   m_ObjectHideFlags: 0
@@ -8225,6 +8471,8 @@ GameObject:
   - component: {fileID: 5150466505743223006}
   - component: {fileID: 5015364474370536169}
   - component: {fileID: 5015364474370536174}
+  - component: {fileID: 427175637744360419}
+  - component: {fileID: 5562696309609195425}
   m_Layer: 7
   m_Name: GreenForeArmR
   m_TagString: Rhand
@@ -8391,6 +8639,45 @@ MonoBehaviour:
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
   PartTransform: {fileID: 0}
+--- !u!114 &427175637744360419
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5169180419576924986}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 5562696309609195425}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &5562696309609195425
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5169180419576924986}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64179f3720bbfe947b7724caa67b7c1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizeVelocity: 1
+  m_SynchronizeAngularVelocity: 1
+  m_TeleportEnabled: 1
+  m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &5169610900901912614
 GameObject:
   m_ObjectHideFlags: 0
@@ -8404,6 +8691,8 @@ GameObject:
   - component: {fileID: 5150643447561375322}
   - component: {fileID: 5014804370705970451}
   - component: {fileID: 5014804370705970448}
+  - component: {fileID: 9037307402165807372}
+  - component: {fileID: 8867989288502118094}
   m_Layer: 7
   m_Name: GreenWaist
   m_TagString: Untagged
@@ -8572,6 +8861,45 @@ MonoBehaviour:
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
   PartTransform: {fileID: 0}
+--- !u!114 &9037307402165807372
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5169610900901912614}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 8867989288502118094}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &8867989288502118094
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5169610900901912614}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64179f3720bbfe947b7724caa67b7c1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizeVelocity: 1
+  m_SynchronizeAngularVelocity: 1
+  m_TeleportEnabled: 1
+  m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &5169612602225680657
 GameObject:
   m_ObjectHideFlags: 0
@@ -8585,6 +8913,8 @@ GameObject:
   - component: {fileID: 5150619769091741460}
   - component: {fileID: 5014860434847319106}
   - component: {fileID: 5014860434847319107}
+  - component: {fileID: 3875774960659529914}
+  - component: {fileID: 8824525538350686152}
   m_Layer: 7
   m_Name: GreenChest
   m_TagString: CharacterChest
@@ -8750,6 +9080,45 @@ MonoBehaviour:
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
   PartTransform: {fileID: 0}
+--- !u!114 &3875774960659529914
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5169612602225680657}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 8824525538350686152}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &8824525538350686152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5169612602225680657}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64179f3720bbfe947b7724caa67b7c1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizeVelocity: 1
+  m_SynchronizeAngularVelocity: 1
+  m_TeleportEnabled: 1
+  m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &5169613982111508579
 GameObject:
   m_ObjectHideFlags: 0
@@ -8763,6 +9132,8 @@ GameObject:
   - component: {fileID: 5117554088992720254}
   - component: {fileID: 5018449923900053351}
   - component: {fileID: 5018449923900053348}
+  - component: {fileID: 359504273448955861}
+  - component: {fileID: 520168988760543345}
   m_Layer: 7
   m_Name: GreenLegR1
   m_TagString: Untagged
@@ -8929,6 +9300,45 @@ MonoBehaviour:
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
   PartTransform: {fileID: 0}
+--- !u!114 &359504273448955861
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5169613982111508579}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 520168988760543345}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &520168988760543345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5169613982111508579}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64179f3720bbfe947b7724caa67b7c1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizeVelocity: 1
+  m_SynchronizeAngularVelocity: 1
+  m_TeleportEnabled: 1
+  m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &5169634861635219570
 GameObject:
   m_ObjectHideFlags: 0
@@ -8942,6 +9352,8 @@ GameObject:
   - component: {fileID: 5149915107359780329}
   - component: {fileID: 5015406720499631858}
   - component: {fileID: 5015406720499631859}
+  - component: {fileID: 6096047576432914358}
+  - component: {fileID: 6590444927812312904}
   m_Layer: 7
   m_Name: GreenForeArmL
   m_TagString: Lhand
@@ -9108,6 +9520,45 @@ MonoBehaviour:
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
   PartTransform: {fileID: 0}
+--- !u!114 &6096047576432914358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5169634861635219570}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 6590444927812312904}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &6590444927812312904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5169634861635219570}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64179f3720bbfe947b7724caa67b7c1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizeVelocity: 1
+  m_SynchronizeAngularVelocity: 1
+  m_TeleportEnabled: 1
+  m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &5169766461459173945
 GameObject:
   m_ObjectHideFlags: 0
@@ -9121,6 +9572,8 @@ GameObject:
   - component: {fileID: 5149934926995603220}
   - component: {fileID: 5018425065884028286}
   - component: {fileID: 5018425065884028287}
+  - component: {fileID: 9140428210862795658}
+  - component: {fileID: 5417601122390140050}
   m_Layer: 7
   m_Name: GreenLegR2
   m_TagString: CharacterFoot
@@ -9286,6 +9739,45 @@ MonoBehaviour:
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
   PartTransform: {fileID: 0}
+--- !u!114 &9140428210862795658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5169766461459173945}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 5417601122390140050}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &5417601122390140050
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5169766461459173945}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64179f3720bbfe947b7724caa67b7c1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizeVelocity: 1
+  m_SynchronizeAngularVelocity: 1
+  m_TeleportEnabled: 1
+  m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &5169771990771016526
 GameObject:
   m_ObjectHideFlags: 0
@@ -9299,6 +9791,8 @@ GameObject:
   - component: {fileID: 5150391404254772956}
   - component: {fileID: 5018455412112069696}
   - component: {fileID: 5018455412112069697}
+  - component: {fileID: 2025992064279053874}
+  - component: {fileID: 8954976323957321080}
   m_Layer: 7
   m_Name: GreenUpperArmR
   m_TagString: Rhand
@@ -9465,6 +9959,45 @@ MonoBehaviour:
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
   PartTransform: {fileID: 0}
+--- !u!114 &2025992064279053874
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5169771990771016526}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 8954976323957321080}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &8954976323957321080
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5169771990771016526}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64179f3720bbfe947b7724caa67b7c1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizeVelocity: 1
+  m_SynchronizeAngularVelocity: 1
+  m_TeleportEnabled: 1
+  m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &5169854652013515696
 GameObject:
   m_ObjectHideFlags: 0
@@ -9655,6 +10188,8 @@ GameObject:
   - component: {fileID: 5015787384701703981}
   - component: {fileID: 5069696853581315615}
   - component: {fileID: 5015787384701703986}
+  - component: {fileID: 1553366972375785788}
+  - component: {fileID: 8667846879694838817}
   m_Layer: 7
   m_Name: GreenHead
   m_TagString: CharacterHead
@@ -9823,6 +10358,45 @@ MonoBehaviour:
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
   PartTransform: {fileID: 0}
+--- !u!114 &1553366972375785788
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5169902651132579566}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 8667846879694838817}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &8667846879694838817
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5169902651132579566}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64179f3720bbfe947b7724caa67b7c1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizeVelocity: 1
+  m_SynchronizeAngularVelocity: 1
+  m_TeleportEnabled: 1
+  m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &5169983603716950214
 GameObject:
   m_ObjectHideFlags: 0
@@ -10260,11 +10834,11 @@ MonoBehaviour:
     - 0.01
     AnglePowerValues:
     - 100
+  RunSpeed: 100
   _hips: {fileID: 5150844099323961327}
   _cameraArm: {fileID: 4401259382300767454}
   _bodyHandler: {fileID: 0}
   targetingHandler: {fileID: 0}
-  RunSpeed: 100
   ReadyPunch: 0.1
   Punching: 0.1
   ResetPunch: 0.3
@@ -10279,8 +10853,8 @@ MonoBehaviour:
   rightKick: 0
   isStateChange: 0
   RSkillDelayTime: 0
-  PunchDelay: 0.15
   MaxSpeed: 10
+  PunchDelay: 0.15
   _idleTimer: 0
   isAI: 0
 --- !u!114 &5164006939630707526
@@ -10339,6 +10913,10 @@ MonoBehaviour:
   LegMultiple: 0.8
   DamageReduction: 0
   PlayerAttackPoint: 1
+  _health: 0
+  _maxHealth: 200
+  _stamina: 0
+  _maxStamina: 100
   actorState: 4
   lastActorState: 8
   debuffState: 0
@@ -10356,9 +10934,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   actor: {fileID: 0}
   invulnerable: 0
-  _health: 0
-  _maxHealth: 200
-  _stamina: 0
   _powerUpTime: 3
   _burnTime: 3
   _burnDamage: 1
@@ -10415,6 +10990,8 @@ GameObject:
   - component: {fileID: 5068901783686819344}
   - component: {fileID: 5068901783686819350}
   - component: {fileID: 5068901783686819347}
+  - component: {fileID: 2910100891033078898}
+  - component: {fileID: 4833813678095764888}
   m_Layer: 7
   m_Name: GreenFistL
   m_TagString: CharacterFist
@@ -10591,6 +11168,45 @@ MonoBehaviour:
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
   PartTransform: {fileID: 0}
+--- !u!114 &2910100891033078898
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5170124894939591614}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 4833813678095764888}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &4833813678095764888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5170124894939591614}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64179f3720bbfe947b7724caa67b7c1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizeVelocity: 1
+  m_SynchronizeAngularVelocity: 1
+  m_TeleportEnabled: 1
+  m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &5204457323832773025
 GameObject:
   m_ObjectHideFlags: 0
@@ -13636,6 +14252,8 @@ GameObject:
   - component: {fileID: 6210198329121031474}
   - component: {fileID: 6210198329121031469}
   - component: {fileID: 6210198329121031475}
+  - component: {fileID: 4824801577141072937}
+  - component: {fileID: 2155850034191712619}
   m_Layer: 7
   m_Name: foot_l
   m_TagString: Untagged
@@ -13786,6 +14404,45 @@ MonoBehaviour:
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
   PartTransform: {fileID: 0}
+--- !u!114 &4824801577141072937
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7755679402455053580}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 2155850034191712619}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &2155850034191712619
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7755679402455053580}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64179f3720bbfe947b7724caa67b7c1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizeVelocity: 1
+  m_SynchronizeAngularVelocity: 1
+  m_TeleportEnabled: 1
+  m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &7763812043976254396
 GameObject:
   m_ObjectHideFlags: 0

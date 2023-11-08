@@ -1,8 +1,9 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LimbCollision : MonoBehaviour
+public class LimbCollision : MonoBehaviourPun
 {
     public PlayerController playerController;
 
@@ -18,7 +19,8 @@ public class LimbCollision : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(!playerController.isGrounded)
+        if (!photonView.IsMine) return;
+        if (!playerController.isGrounded)
             playerController.isGrounded = true;
     }
 

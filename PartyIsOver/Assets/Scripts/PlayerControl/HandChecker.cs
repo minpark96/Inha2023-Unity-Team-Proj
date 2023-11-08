@@ -1,9 +1,10 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static Define;
 
-public class HandChecker : MonoBehaviour
+public class HandChecker : MonoBehaviourPun
 {
     public bool isCheck = false;
 
@@ -23,6 +24,7 @@ public class HandChecker : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (!photonView.IsMine) return;
         if (other.tag == "ItemHandle" && _grab._isGrabbing)
         {
             _grab.GrabObjectType = Define.GrabObjectType.Item;
@@ -32,6 +34,7 @@ public class HandChecker : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
+        if (!photonView.IsMine) return;
         if (other.tag == "ItemHandle")
         {
             _grab.GrabObjectType = Define.GrabObjectType.None;

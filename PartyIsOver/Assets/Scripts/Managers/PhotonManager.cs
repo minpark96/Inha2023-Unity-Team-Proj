@@ -64,7 +64,6 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         }
         else
         {
-            Debug.Log("PUN Basics Tutorial/Launcher: ConnectUsingSettings() was called by PUN");
             _isConnecting = PhotonNetwork.ConnectUsingSettings();
             PhotonNetwork.GameVersion = _gameVersion;
         }
@@ -80,7 +79,6 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     {
         if (scene.name == _roomSceneName)
         {
-            Debug.LogFormat("{0} Scene 로드 완료", _roomSceneName);
         }
     }
 
@@ -134,7 +132,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     {
         if (GameCenter.LocalGameCenterInstance == null)
         {
-            Debug.LogFormat("PhotonManager.cs => We are Instantiating LocalGameCenter from {0}", SceneManagerHelper.ActiveSceneName);
+            //Debug.LogFormat("PhotonManager.cs => We are Instantiating LocalGameCenter from {0}", SceneManagerHelper.ActiveSceneName);
             Managers.Resource.PhotonNetworkInstantiate(_gameCenterPath);
         }
     }
@@ -148,7 +146,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
             yield return null;
         }
 
-        Debug.LogFormat("[LoadAsyncScene()] Scene {0} Loaded", SceneManagerHelper.ActiveSceneName);
+        //Debug.LogFormat("[LoadAsyncScene()] Scene {0} Loaded", SceneManagerHelper.ActiveSceneName);
 
         InstantiateGameCenter();
     }
@@ -159,11 +157,8 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     public override void OnConnectedToMaster()
     {
-        Debug.Log("PUN Basics Tutorial/Launcher: OnConnectedToMaster() was called by PUN");
-
         if (_isConnecting)
         {
-            Debug.Log("PUN Basics Tutorial/Launcher: JoinRandomRoom() was called by PUN");
             PhotonNetwork.JoinRandomRoom();
             _isConnecting = false;
         }
@@ -187,11 +182,8 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
-        Debug.Log("PUN Basics Tutorial/Launcher: OnJoinedRoom() called by PUN. Now this client is in a room.");
-
         if (PhotonNetwork.IsMasterClient)
         {
-            Debug.LogFormat("[OnJoinedRoom()] Load {0} Scene", _roomSceneName);
             StartCoroutine(LoadAsyncScene(_roomSceneName));
         }
     }
@@ -204,12 +196,12 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     public override void OnPlayerEnteredRoom(Player other)
     {
-        Debug.LogFormat("[OnPlayerEnteredRoom()] {0}", other.NickName);
+        //Debug.LogFormat("[OnPlayerEnteredRoom()] {0}", other.NickName);
     }
 
     public override void OnPlayerLeftRoom(Player other)
     {
-        Debug.LogFormat("[OnPlayerLeftRoom()] {0}", other.NickName);
+        //Debug.LogFormat("[OnPlayerLeftRoom()] {0}", other.NickName);
 
     }
 

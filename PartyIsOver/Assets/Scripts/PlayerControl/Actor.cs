@@ -6,6 +6,11 @@ using UnityEngine;
 
 public class Actor : MonoBehaviourPun
 {
+    public delegate void PlayerHurt(float HP, int viewID);
+    public event PlayerHurt OnPlayerHurt;
+    public delegate void PlayerExhaust(float Stamina, int viewID);
+    public event PlayerExhaust OnPlayerExhaust;
+
     public Transform CameraArm;
 
     public StatusHandler StatusHandler;
@@ -52,6 +57,21 @@ public class Actor : MonoBehaviourPun
     public float DamageReduction = 0f;
     public float PlayerAttackPoint = 1f;
 
+    // 체력
+    [SerializeField]
+    private float _health;
+    [SerializeField]
+    private float _maxHealth = 200f;
+    public float Health { get { return _health; } set { _health = value; } }
+    public float MaxHealth { get { return _maxHealth; } }
+
+    // 스테미나
+    [SerializeField]
+    private float _stamina;
+    [SerializeField]
+    private float _maxStamina = 100f;
+    public float Stamina { get { return _stamina; } set { _stamina = value; } }
+    public float MaxStamina { get { return _maxStamina; } }
 
     public ActorState actorState = ActorState.Stand;
     public ActorState lastActorState = ActorState.Run;
@@ -60,6 +80,12 @@ public class Actor : MonoBehaviourPun
     public static GameObject LocalPlayerInstance;
 
     public static int LayerCnt = 26;
+
+    public void HurtEventInvoke()
+    {
+        Debug.Log("HurtEventInvoke()");
+        OnPlayerHurt(_health, photonView.ViewID);
+    }
 
     private void Awake()
     {
@@ -81,6 +107,8 @@ public class Actor : MonoBehaviourPun
         Grab = GetComponent<Grab>();
 
         ChangeLayerRecursively(gameObject, LayerCnt++);
+
+        _health = _maxHealth;
     }
 
     private void ChangeLayerRecursively(GameObject obj, int layer)
