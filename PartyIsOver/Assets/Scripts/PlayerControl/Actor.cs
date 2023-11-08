@@ -84,7 +84,8 @@ public class Actor : MonoBehaviourPun
 
     public void HurtEventInvoke()
     {
-        OnPlayerHurt?.Invoke(_health, photonView.ViewID);
+        Debug.Log("HurtEventInvoke()");
+        OnPlayerHurt(_health, photonView.ViewID);
     }
 
     private void Awake()

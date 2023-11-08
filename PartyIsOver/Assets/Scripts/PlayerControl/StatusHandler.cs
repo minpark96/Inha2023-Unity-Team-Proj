@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net.NetworkInformation;
@@ -6,7 +7,7 @@ using UnityEngine.UI;
 using static InteractableObject;
 using static UnityEngine.Rendering.VirtualTexturing.Debugging;
 
-public class StatusHandler : MonoBehaviour
+public class StatusHandler : MonoBehaviourPun
 {
     private float _damageModifer = 1f;
 
@@ -107,7 +108,7 @@ public class StatusHandler : MonoBehaviour
 
     private void OnGUI()
     {
-        if(this.name == "Ragdoll2")
+        if (this.name == "Ragdoll2(Clone)" && photonView.IsMine)
         {
             GUI.contentColor = Color.red;
             GUI.Label(new Rect(0, 0, 200, 200), "버프상태:" + actor.debuffState.ToString());
@@ -417,6 +418,7 @@ public class StatusHandler : MonoBehaviour
         StartCoroutine(ResetBodySpring());
         StartCoroutine(Stun(3));
     }
+
     IEnumerator Stun(float delay)
     {
         _hasStun = true;
@@ -427,7 +429,6 @@ public class StatusHandler : MonoBehaviour
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Stun;
     }
-
 
     public void UpdateHealth()
     {

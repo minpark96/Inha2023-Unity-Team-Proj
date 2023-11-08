@@ -60,7 +60,6 @@ public class GameCenter : MonoBehaviourPunCallbacks
     {
         if (scene.name == _arenaName)
         {
-            Debug.Log("Arena Scene 로드 완료 후 초기화");
             InstantiatePlayer();
         }
     }
@@ -69,7 +68,7 @@ public class GameCenter : MonoBehaviourPunCallbacks
     {
         if (Actor.LocalPlayerInstance == null)
         {
-            Debug.LogFormat("PhotonManager.cs => We are Instantiating LocalPlayer from {0}", SceneManagerHelper.ActiveSceneName);
+            //Debug.LogFormat("PhotonManager.cs => We are Instantiating LocalPlayer from {0}", SceneManagerHelper.ActiveSceneName);
 
             GameObject go = null;
 
@@ -121,8 +120,6 @@ public class GameCenter : MonoBehaviourPunCallbacks
 
     void LoadArena()
     {
-        Debug.Log("LoadArena()");
-
         if (PhotonNetwork.IsMasterClient)
         {
             PhotonNetwork.LoadLevel(_arenaName);
@@ -141,8 +138,6 @@ public class GameCenter : MonoBehaviourPunCallbacks
 
     void InitRoomUI()
     {
-        Debug.Log("InitRoomUI() / name: " + gameObject.name + ", ViewId: " + photonView.ViewID + ", IsMine?: " + photonView.IsMine);
-
         _roomUI = GameObject.Find("Control Panel").transform.GetComponent<RoomUI>();
 
         if (PhotonNetwork.IsMasterClient)
@@ -238,8 +233,6 @@ public class GameCenter : MonoBehaviourPunCallbacks
     [PunRPC]
     void EnteredRoom()
     {
-        Debug.Log("[master received] EnteredRoom(void)");
-
         _roomUI.UpdateReadyCountText(_roomUI.PlayerReadyCount);
         UpdateMasterStatus();
         photonView.RPC("UpdateCount", RpcTarget.Others, _roomUI.PlayerReadyCount);
@@ -248,16 +241,12 @@ public class GameCenter : MonoBehaviourPunCallbacks
     [PunRPC]
     void UpdateCount(int count)
     {
-        Debug.Log("[except master received] UpdateCount(int): " + count);
-
         _roomUI.UpdateReadyCountText(count);
     }
 
     [PunRPC]
     void PlayerReady(bool isReady)
     {
-        Debug.Log("[master received] PlayerReady(void): " + isReady);
-
         _roomUI.UpdateReadyCountText(isReady);
         UpdateMasterStatus();
         photonView.RPC("UpdateCount", RpcTarget.Others, _roomUI.PlayerReadyCount);

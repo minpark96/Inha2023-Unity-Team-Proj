@@ -1,9 +1,10 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using UnityEngine;
 
-public class CollisionHandler : MonoBehaviour
+public class CollisionHandler : MonoBehaviourPun
 {
     public float damageMinimumVelocity = 0.25f;
 
@@ -168,6 +169,7 @@ public class CollisionHandler : MonoBehaviour
     }
     private void OnCollisionEnter(Collision collision)
     {
+        if (!photonView.IsMine) return;
         if (collision.collider.gameObject.layer != LayerMask.NameToLayer("Ground"))
             DamageCheck(collision);
     }
