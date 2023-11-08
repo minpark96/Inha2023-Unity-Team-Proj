@@ -140,6 +140,8 @@ public class StatusHandler : MonoBehaviourPun
         DebuffCheck(type);
         DebuffAction();
 
+        Debug.Log("[AddDamage()] _healthDamage " + photonView.ViewID + " - " + _healthDamage);
+
         if (_healthDamage != 0f)
             UpdateHealth();
     }
@@ -501,9 +503,9 @@ public class StatusHandler : MonoBehaviourPun
         //actor.BodyHandler.ResetLeftGrab();
         //actor.BodyHandler.ResetRightGrab();
         actor.BodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
-        actor.BodyHandler.LeftForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+        actor.BodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
         actor.BodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
-        actor.BodyHandler.RightForarm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+        actor.BodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
     }
 
     IEnumerator ResetBodySpring()

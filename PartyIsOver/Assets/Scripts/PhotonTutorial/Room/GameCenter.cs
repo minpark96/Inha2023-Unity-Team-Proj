@@ -20,7 +20,7 @@ public class GameCenter : MonoBehaviourPunCallbacks
 
     #region Private Fields
 
-    string _arenaName = "SDJTest";
+    string _arenaName = "PlayerMoveTest";
     // 프리팹 경로
     string _playerPath = "Ragdoll2";
 
@@ -41,6 +41,7 @@ public class GameCenter : MonoBehaviourPunCallbacks
         new Vector3(2.5f, 5f, -4.33f)
     };
 
+    public List<int> ActorViewIDs = new List<int>();
     public List<Actor> Actors = new List<Actor>();
 
     #endregion
@@ -94,23 +95,103 @@ public class GameCenter : MonoBehaviourPunCallbacks
                     break;
             }
 
-            Actor actor = go.GetComponent<Actor>();
-            if (actor != null)
+            PhotonView pv = go.GetComponent<PhotonView>();
+            int viewID = pv.ViewID;
+
+            if (PhotonNetwork.IsMasterClient)
             {
-                actor.OnPlayerHurt -= AnounceHurt;
-                //actor.OnPlayerExhaust -= DecreaseStamina;
-                actor.OnPlayerHurt += AnounceHurt;
-                //actor.OnPlayerExhaust += DecreaseStamina;
+                Actor actor = go.GetComponent<Actor>();
+                ActorViewIDs.Add(viewID);
+                Actors.Add(actor);
+                SubscribeActorEvent(actor);
             }
-            Actors.Add(actor);
+            else
+            {
+                photonView.RPC("RegisterActorInfo", RpcTarget.MasterClient, viewID);
+            }
+
         }
     }
 
-    void AnounceHurt(float HP, int viewID)
+    private void OnGUI()
     {
-        Debug.Log("AnounceHurt(float, int)");
+        GUI.backgroundColor = Color.white;
+        GUI.contentColor = Color.black;
+        for (int i = 0; i <ActorViewIDs.Count; i++)
+        {
+            GUI.Label(new Rect(0, 140 + i * 20, 200, 200), "Actor View ID: " + ActorViewIDs[i] + " / HP: " + Actors[i].Health);
+        }
+    }
 
-        photonView.RPC("DecreseHP", RpcTarget.MasterClient, HP, viewID);
+    void SubscribeActorEvent(Actor actor)
+    {
+        if (actor != null)
+        {
+            Debug.Log("구독 부분 " + actor.photonView.ViewID);
+            actor.OnPlayerHurt -= SendInfo;
+            actor.OnPlayerHurt += SendInfo;
+            //actor.OnPlayerExhaust -= DecreaseStamina;
+            //actor.OnPlayerExhaust += DecreaseStamina;
+        }
+    }
+   
+    void SendInfo(float HP, int viewID)
+    {
+        Debug.Log("[master Event] SendInfo()");
+
+        photonView.RPC("SyncHP", RpcTarget.Others, HP, viewID);
+    }
+
+    [PunRPC]
+    void SyncHP(float hp, int viewID)
+    {
+        Debug.Log("[except master received] SyncHP()");
+
+        for (int i = 0; i < Actors.Count; i++)
+        {
+            if (Actors[i].photonView.ViewID == viewID)
+            {
+                Actors[i].Health = hp;
+                break;
+            }
+        }
+    }
+
+    [PunRPC]
+    void RegisterActorInfo(int viewID)
+    {
+        Debug.Log("마스터: RegisterActorInfo");
+        Debug.Log(viewID);
+
+        ActorViewIDs.Add(viewID);
+        AddActor(viewID);
+
+        photonView.RPC("SyncActorsList", RpcTarget.Others, ActorViewIDs.ToArray());
+    }
+
+    [PunRPC]
+    void SyncActorsList(int[] ids)
+    {
+        for (int i = ActorViewIDs.Count; i < ids.Length; i++)
+        {
+            ActorViewIDs.Add(ids[i]);
+            AddActor(ids[i]);
+        }
+    }
+
+    void AddActor(int id)
+    {
+        PhotonView targetPV = PhotonView.Find(id);
+
+        if (targetPV != null)
+        {
+            Actor actor = targetPV.transform.GetComponent<Actor>();
+            Actors.Add(actor);
+            if (PhotonNetwork.IsMasterClient)
+            {
+                SubscribeActorEvent(actor);
+            }
+        }
     }
 
     void DecreaseStamina(int amount)
@@ -185,7 +266,6 @@ public class GameCenter : MonoBehaviourPunCallbacks
 
     public override void OnEnable()
     {
-        Debug.Log("GameCenter OnEnable");
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
@@ -199,42 +279,11 @@ public class GameCenter : MonoBehaviourPunCallbacks
     #region PunRPC Methods
 
     [PunRPC]
-    void DeacreaseHP(float HP, int viewID)
-    {
-        Debug.Log("[master received] DeacreaseHP(void)");
-
-        for (int i = 0; i < Actors.Count; i++)
-        {
-            if (Actors[i].photonView.ViewID == viewID)
-            {
-                Actors[i].Health = HP;
-                break;
-            }
-        }
-
-        photonView.RPC("SyncHP", RpcTarget.Others, HP, viewID);
-    }
-
-    [PunRPC]
-    void SyncHP(float HP, int viewID)
-    {
-        Debug.Log("[except master received] SyncHP(void)");
-
-        for (int i = 0; i < Actors.Count; i++)
-        {
-            if (Actors[i].photonView.ViewID == viewID)
-            {
-                Actors[i].Health = HP;
-                break;
-            }
-        }
-    }
-
-    [PunRPC]
     void EnteredRoom()
     {
         _roomUI.UpdateReadyCountText(_roomUI.PlayerReadyCount);
         UpdateMasterStatus();
+
         photonView.RPC("UpdateCount", RpcTarget.Others, _roomUI.PlayerReadyCount);
     }
 

@@ -83,7 +83,20 @@ public class Actor : MonoBehaviourPun
 
     public void HurtEventInvoke()
     {
+        Debug.Log(photonView.ViewID + " 초기화 됐는지 체크한다");
+        if (BodyHandler == null)
+            Debug.Log(photonView.ViewID + " BodyHandler is null " + BodyHandler);
+        if (StatusHandler == null)
+            Debug.Log(photonView.ViewID + " StatusHandler is null " + StatusHandler);
+        if (PlayerController == null)
+            Debug.Log(photonView.ViewID + " PlayerController is null " + PlayerController);
+        if (Grab == null)
+            Debug.Log(photonView.ViewID + " Grab is null " + Grab);
         Debug.Log("HurtEventInvoke()");
+
+        if (OnPlayerHurt == null)
+            Debug.Log(photonView.ViewID + " 이벤트 null");
+
         OnPlayerHurt(_health, photonView.ViewID);
     }
 
