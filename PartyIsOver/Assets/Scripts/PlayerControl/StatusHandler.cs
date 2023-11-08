@@ -176,7 +176,17 @@ public class StatusHandler : MonoBehaviour
                     }
                 }
                 break;
-            case Damage.Balloon:
+            case Damage.Balloon: // 풍선
+                actor.debuffState |= Actor.DebuffState.Balloon;
+                // 다른 디버프 체크
+                foreach (Actor.DebuffState state in System.Enum.GetValues(typeof(Actor.DebuffState)))
+                {
+                    // 풍선 이외의 상태가 켜지면 끄기
+                    if (state != Actor.DebuffState.Balloon && (actor.debuffState & state) != 0)
+                    {
+                        actor.debuffState &= ~state;
+                    }
+                }
                 break;
             case Damage.PowerUp: // 불끈
                 actor.debuffState |= Actor.DebuffState.PowerUp;
@@ -190,7 +200,6 @@ public class StatusHandler : MonoBehaviour
             case Damage.Knockout: // 기절 (실험용 Damage.Knockout 씀)
                 actor.debuffState |= Actor.DebuffState.Stun;
                 break;
-           
         }
     }
 

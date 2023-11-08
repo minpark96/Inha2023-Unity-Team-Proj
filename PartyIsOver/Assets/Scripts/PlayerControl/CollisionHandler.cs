@@ -55,58 +55,12 @@ public class CollisionHandler : MonoBehaviour
 
 
             // 물리적 공격을 받을 때
-            switch (collisionInteractable.damageModifier)
-            {
-                case InteractableObject.Damage.Ignore:
-                    damage = 0f;
-                    break;
-                case InteractableObject.Damage.Object:
-                    damage *= 20f;
-                    //thisCollider.attachedRigidbody : 충돌발생시 두개의 충돌체중 충돌 정보를 얻기위해 사용된 콜라이더의 충돌체 
-                    contact.thisCollider.attachedRigidbody.AddForce(contact.normal * 5f, ForceMode.VelocityChange);
-                    //actor.inputHandler.SetVibration(0.2f, 0f, 0.1f);
-                    break;
-                case InteractableObject.Damage.Punch:
-                    {
-                        Actor componentInParent = collisionInteractable.GetComponentInParent<Actor>();
-                        contact.thisCollider.attachedRigidbody.AddForce(contact.normal * 3f + Vector3.up * 2f, ForceMode.VelocityChange);
-                        //actor.inputHandler.SetVibration(0.5f, 0f, 0.1f);
-                        damage *= 700f;
-                        break;
-                    }
-                case InteractableObject.Damage.DropKick:
-                    Debug.Log("damage");
-                    //actor.applyedForce = 0.5f;
-                    damage *= 1004f;
-                    contact.thisCollider.attachedRigidbody.AddForce(contact.normal * 25f, ForceMode.VelocityChange);
-                    contact.thisCollider.attachedRigidbody.AddForce(Vector3.up * 10f, ForceMode.VelocityChange);
-                    // actor.inputHandler.SetVibration(0.7f, 0f, 0.1f);
-                    break;
-                case InteractableObject.Damage.Headbutt:
-                    //actor.applyedForce = 0.5f;
-                    damage *= 80f;
-                    contact.thisCollider.attachedRigidbody.AddForce(contact.normal * 20f, ForceMode.VelocityChange);
-                    contact.thisCollider.attachedRigidbody.AddForce(Vector3.up * 10f, ForceMode.VelocityChange);
-                    //actor.inputHandler.SetVibration(0.6f, 0f, 0.1f);
-                    break;
-                case InteractableObject.Damage.Knockout:
-                    damage = 1000000f;
-                    contact.thisCollider.attachedRigidbody.AddForce(contact.normal * 10f, ForceMode.VelocityChange);
-                    //actor.inputHandler.SetVibration(1f, 0f, 0.2f);
-                    break;
-                default:
-                    contact.thisCollider.attachedRigidbody.AddForce(contact.normal * 10f, ForceMode.VelocityChange);
-                    break;
-                case InteractableObject.Damage.Default:
-                    break;
-            }
-
+            damage = PhysicalDamage(collisionInteractable, damage);
             damage = ApplyBodyPartDamageModifier(damage);
             damage *= actor.PlayerAttackPoint;
-
-            //데미지 적용
             damage = Mathf.RoundToInt(damage);
 
+            //데미지 적용
             if (damage > 0f && velocityMagnitude > damageMinimumVelocity)
             {
                 if (collisionInteractable != null)
@@ -179,6 +133,58 @@ public class CollisionHandler : MonoBehaviour
             }
         }
     }
+
+    private float PhysicalDamage(InteractableObject collisionInteractable, float damage)
+    {
+        switch (collisionInteractable.damageModifier)
+        {
+            case InteractableObject.Damage.Ignore:
+                damage = 0f;
+                break;
+            case InteractableObject.Damage.Object:
+                damage *= 20f;
+                //thisCollider.attachedRigidbody : 충돌발생시 두개의 충돌체중 충돌 정보를 얻기위해 사용된 콜라이더의 충돌체 
+                contact.thisCollider.attachedRigidbody.AddForce(contact.normal * 5f, ForceMode.VelocityChange);
+                //actor.inputHandler.SetVibration(0.2f, 0f, 0.1f);
+                break;
+            case InteractableObject.Damage.Punch:
+                {
+                    Actor componentInParent = collisionInteractable.GetComponentInParent<Actor>();
+                    contact.thisCollider.attachedRigidbody.AddForce(contact.normal * 3f + Vector3.up * 2f, ForceMode.VelocityChange);
+                    //actor.inputHandler.SetVibration(0.5f, 0f, 0.1f);
+                    damage *= 700f;
+                    break;
+                }
+            case InteractableObject.Damage.DropKick:
+                //actor.applyedForce = 0.5f;
+                damage *= 1004f;
+                contact.thisCollider.attachedRigidbody.AddForce(contact.normal * 25f, ForceMode.VelocityChange);
+                contact.thisCollider.attachedRigidbody.AddForce(Vector3.up * 10f, ForceMode.VelocityChange);
+                // actor.inputHandler.SetVibration(0.7f, 0f, 0.1f);
+                break;
+            case InteractableObject.Damage.Headbutt:
+                //actor.applyedForce = 0.5f;
+                damage *= 80f;
+                contact.thisCollider.attachedRigidbody.AddForce(contact.normal * 20f, ForceMode.VelocityChange);
+                contact.thisCollider.attachedRigidbody.AddForce(Vector3.up * 10f, ForceMode.VelocityChange);
+                //actor.inputHandler.SetVibration(0.6f, 0f, 0.1f);
+                break;
+            case InteractableObject.Damage.Knockout:
+                damage = 1000000f;
+                contact.thisCollider.attachedRigidbody.AddForce(contact.normal * 10f, ForceMode.VelocityChange);
+                //actor.inputHandler.SetVibration(1f, 0f, 0.2f);
+                break;
+            default:
+                contact.thisCollider.attachedRigidbody.AddForce(contact.normal * 10f, ForceMode.VelocityChange);
+                break;
+            case InteractableObject.Damage.Default:
+                break;
+        }
+
+        return damage;
+    }
+
+
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.collider.gameObject.layer != LayerMask.NameToLayer("Ground"))
