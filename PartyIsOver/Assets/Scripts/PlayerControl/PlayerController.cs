@@ -342,7 +342,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
                 break;
             case Define.KeyboardEvent.Hold:
                 {
-                    Debug.Log("Hold");
                     //중일때 확인 ex 이펙트 출현하는 코드를 넣어주면 기모아지는 것 첨 될듯
                     if (!_isRSkillCheck)
                     {

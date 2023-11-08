@@ -10804,12 +10804,18 @@ MonoBehaviour:
   - StandardRigidbodies:
     - {fileID: 5150619769091741460}
     - {fileID: 5150619769091741460}
+    - {fileID: 5150619769091741460}
+    - {fileID: 5150619769091741460}
     ActionRigidbodies:
     - {fileID: 5150391404254772956}
+    - {fileID: 5150391404254772956}
+    - {fileID: 5150391404254772956}
     - {fileID: 5150466505743223006}
-    ForceDirections: 0300000007000000
+    ForceDirections: 06000000030000000400000007000000
     ForcePowerValues:
+    - 30
     - 100
+    - 30
     - 10
   - StandardRigidbodies:
     - {fileID: 5150619769091741460}
