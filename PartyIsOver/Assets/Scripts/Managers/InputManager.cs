@@ -30,7 +30,7 @@ public class InputManager
 
     bool _isCharge = false;
     float _chargeTime = 0;
-    float _chargeThreshold = 0f;
+    float _chargeThreshold = 0.2f;
 
     bool _wkeyPressed = false;
     bool _akeyPressed = false;

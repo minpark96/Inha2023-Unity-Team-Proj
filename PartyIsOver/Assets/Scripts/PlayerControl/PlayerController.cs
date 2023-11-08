@@ -147,7 +147,7 @@ public class PlayerController : MonoBehaviourPun
 
     [Header("SkillControll")]
     public float RSkillCoolTime = 10;
-    public float RSkillChargeTime = 0.5f;
+    public float ChargeAniHoldTime = 0.5f;
     public float MeowPunchPower = 1f; 
     public float MeowPunchReadyPunch = 0.1f;
     public float MeowPunchPunching = 0.1f;
@@ -249,6 +249,8 @@ public class PlayerController : MonoBehaviourPun
 
     void RestoreOriginalMotions()
     {
+        Debug.Log("복구 : RestoreOriginalMotions");
+
         for (int i = 0; i < childJoints.Length; i++)
         {
             childJoints[i].angularYMotion = originalYMotions[i];
@@ -311,7 +313,6 @@ public class PlayerController : MonoBehaviourPun
                 break;
             case Define.KeyboardEvent.Click:
                 {
-                    Debug.Log("Click");
                     if (Input.GetKeyUp(KeyCode.LeftShift))
                     {
                         _actor.actorState = Actor.ActorState.Stand;
@@ -324,7 +325,11 @@ public class PlayerController : MonoBehaviourPun
                         _actor.actorState = Actor.ActorState.Jump;
 
                     if(Input.GetKeyUp(KeyCode.R))
+                    {
+                        RestoreOriginalMotions();
+                        _isRSkillCheck = false;
                         StartCoroutine(ResetCharge());
+                    }
                 }
                 break;
             case Define.KeyboardEvent.Charge:
@@ -362,7 +367,7 @@ public class PlayerController : MonoBehaviourPun
         {
             AniAngleForce(RSkillAngleAniData, i);
         }
-        yield return ForceRready(RSkillChargeTime);
+        yield return ForceRready(ChargeAniHoldTime);
     }
 
     IEnumerator ForceRready(float _delay)
@@ -389,6 +394,9 @@ public class PlayerController : MonoBehaviourPun
 
     IEnumerator ResetCharge()
     {
+        yield return new WaitForSeconds(0.2f);
+
+        Debug.Log("Freeze풀기 : ResetCharge ");
         Rigidbody _RPartRigidbody;
 
         for (int i = 0; i < RSkillAniData.Length; i++)
