@@ -5,7 +5,7 @@ using UnityEngine;
 public class ProjectileStandard : ProjectileBase
 {
     public Transform root;
-    public float speed = 20f;
+    private float speed = 15f;
     public float maxLifeTime = 5f;
 
     private ProjectileBase projectileBase;
@@ -16,10 +16,10 @@ public class ProjectileStandard : ProjectileBase
     private Vector3 velocity;
 
     //중력
-    //public float gravityDownAcceleration = 0f;
+    public float gravityDownAcceleration = 0f;
 
     //Hit
-    private List<Collider> _ignoredColliders;
+    public List<Collider> _ignoredColliders;
     public float radius = 0.01f;
 
     public GameObject impactVfxPrefab;
@@ -29,6 +29,7 @@ public class ProjectileStandard : ProjectileBase
     private void OnEnable()
     {
         projectileBase = this.GetComponent<ProjectileBase>();
+        projectileBase.InteractableObject = GetComponent<InteractableObject>();
         projectileBase.OnShoot += OnShoot;
 
         Destroy(gameObject, maxLifeTime);
@@ -41,17 +42,19 @@ public class ProjectileStandard : ProjectileBase
 
         //무시되는 충돌체 가져오기
         _ignoredColliders = new List<Collider>();
-        Collider[] ownerColliders = projectileBase.owner.GetComponentsInParent<Collider>();
+        Collider[] ownerColliders = projectileBase.Owner.GetComponentsInChildren<Collider>();
         _ignoredColliders.AddRange(ownerColliders);
     }
 
     private void Update()
     {
-        ////중력
-        //if(gravityDownAcceleration > 0f)
-        //{
-        //    velocity += Vector3.down * gravityDownAcceleration * Time.deltaTime;
-        //}
+        //중력
+        if (gravityDownAcceleration > 0f)
+        {
+            velocity += Vector3.down * gravityDownAcceleration * Time.deltaTime;
+        }
+
+        transform.position += velocity * Time.deltaTime;
 
         //Hit
         RaycastHit nearHit = new RaycastHit();
@@ -77,10 +80,10 @@ public class ProjectileStandard : ProjectileBase
         {
             if(nearHit.collider.GetComponentInParent<CollisionHandler>())
             {
+                Debug.Log(nearHit.transform.gameObject);
                 OnHit(nearHit.point, nearHit.normal, nearHit.collider);
                 //Enemy enemy = nearHit.collider.GetComponentInParent<Enemy>();
                 //enemy.SetState(EnemyState.E_OnDamage);
-
             }
         }
 
@@ -88,7 +91,7 @@ public class ProjectileStandard : ProjectileBase
         transform.forward = velocity.normalized;
         lastRootPosition = root.position;
     }
-    private void OnHit(Vector3 point, Vector3 normal,Collider collider)
+    public virtual void OnHit(Vector3 point, Vector3 normal,Collider collider)
     {
         //이펙트
         if (impactVfxPrefab!=null)

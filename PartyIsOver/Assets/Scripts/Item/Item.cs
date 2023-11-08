@@ -7,15 +7,8 @@ using static Define;
 
 public class Item : MonoBehaviour
 {
-    public Actor Owner;
-
-    
-    public ItemType ItemType;
+    public Actor Owner;  
     public InteractableObject InteractableObject;
-    InteractableObject.Damage UseDamageType  = InteractableObject.Damage.Default; //나중에 아이템데이터에서 대입
-    public float damage;
-
-
     public ItemData ItemData;
 
 
@@ -28,10 +21,14 @@ public class Item : MonoBehaviour
     void Start()
     {
         InteractableObject = GetComponent<InteractableObject>();
+        InteractableObject.damageModifier = InteractableObject.Damage.Default;
+        if(ItemData.ItemType == ItemType.OneHanded || ItemData.ItemType == ItemType.TwoHanded)
+            InteractableObject.damageModifier = InteractableObject.Damage.Object;
+
         Body = transform.GetChild(0);
         Head = transform.GetChild(1);
         OneHandedPos = transform.GetChild(2);
-        if(transform.GetChild(3) != null && (ItemType == ItemType.TwoHanded || ItemType == ItemType.Ranged))
+        if(transform.GetChild(3) != null && (ItemData.ItemType == ItemType.TwoHanded || ItemData.ItemType == ItemType.Ranged))
         {
             TwoHandedPos = transform.GetChild(3);
         }
@@ -45,7 +42,13 @@ public class Item : MonoBehaviour
 
     public virtual void Use()
     {
-
+        //포션사용
+        InteractableObject.damageModifier = ItemData.UseDamageType;
+        Destroy(gameObject,1f);
+        //뚫어뻥 만들땐 스크립트 하나 더 파고 Item을 상속받아서 Use를 관절연결하는 함수로 오버라이드
+        //방사형 만들때 ItemData 스크립트에서 Projectile을 일반 원거리무기의 투사체랑 같이 쓸 수 있게 하거나
+        //ItemData 스크립트에서 Projectile을 빼고 원거리랑 방사형은 새로 작업하는 식으로 진행
+        
     }
 
 

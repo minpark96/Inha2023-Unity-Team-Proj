@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 79c7bb5d6cb4cdd42ac37a4c0f452e5c, type: 3}
-  m_Name: IceGun
+  m_Name: OneHanded1
   m_EditorClassIdentifier: 
-  _itemName: IceGun
-  _itemType: 2
-  _projectile: {fileID: -4489562901240129692, guid: 84a16ef6178c9a74a8b52064b87a0941, type: 3}
-  _useDamageType: 0
-  _damage: 0
-  _coolTime: 0
+  _itemName: 1
+  _itemType: 0
+  _projectile: {fileID: 0}
+  _useDamageType: 2
+  _damage: 10
+  _coolTime: 3

@@ -111,11 +111,14 @@ public class Grab : MonoBehaviourPun
                         //if(GrabItem.GetComponent<Item>().ItemType == ItemType.TwoHanded ||
                         //    GrabItem.GetComponent<Item>().ItemType == ItemType.OneHanded)
                         //    _actor.PlayerController.PunchAndGrab();
-                        if (GrabItem.GetComponent<Item>().ItemType == ItemType.TwoHanded)
+                        if (GrabItem.GetComponent<Item>().ItemData.ItemType == ItemType.TwoHanded)
                             StartCoroutine(HorizontalAttack());
-                        else if(GrabItem.GetComponent<Item>().ItemType == ItemType.OneHanded)
+                        else if (GrabItem.GetComponent<Item>().ItemData.ItemType == ItemType.OneHanded)
                             StartCoroutine(VerticalAttack());
-
+                        else if (GrabItem.GetComponent<Item>().ItemData.ItemType == ItemType.Ranged)
+                            UseItem();
+                        else if (GrabItem.GetComponent<Item>().ItemData.ItemType == ItemType.Potion)
+                            StartCoroutine(UsePotionAnim());
                     }
                     if (Input.GetMouseButtonUp(1))
                     {
@@ -130,12 +133,12 @@ public class Grab : MonoBehaviourPun
 
     public void GrabPose()
     {
-        if(GrabItem.GetComponent<Item>().ItemType == ItemType.Ranged)
+        if(GrabItem.GetComponent<Item>().ItemData.ItemType == ItemType.Ranged)
         {
             _jointLeft.targetPosition = GrabItem.GetComponent<Item>().TwoHandedPos.position;
             _jointRight.targetPosition = GrabItem.GetComponent<Item>().OneHandedPos.position;
         }
-        else if(GrabItem.GetComponent<Item>().ItemType == ItemType.OneHanded)
+        else if(GrabItem.GetComponent<Item>().ItemData.ItemType == ItemType.OneHanded)
         {
             _jointRight.targetPosition = GrabItem.GetComponent<Item>().OneHandedPos.position;
         }
@@ -157,6 +160,7 @@ public class Grab : MonoBehaviourPun
             GrabItem.gameObject.layer = LayerMask.NameToLayer("Item");
             GrabItem.GetComponent<Item>().Body.gameObject.SetActive(true);
             RangeWeaponSkin.gameObject.SetActive(false);
+            GrabItem.GetComponent<Item>().Owner = null;
             GrabItem = null;
             _isRightGrab = false;
             _isLeftGrab = false;
@@ -200,7 +204,7 @@ public class Grab : MonoBehaviourPun
 
     void HandleItemGrabbing(Item item)
     {
-        switch (item.ItemType)
+        switch (item.ItemData.ItemType)
         {
             case ItemType.OneHanded:
                 {
@@ -275,6 +279,8 @@ public class Grab : MonoBehaviourPun
             _grabDelayTimer = 0.5f;
             GrabObjectType = GrabObjectType.None;
             GrabItem = item.transform.root.gameObject;
+            GrabItem.GetComponent<Item>().Owner = GetComponent<Actor>();
+
             return true;
         }
         return false;
@@ -337,7 +343,7 @@ public class Grab : MonoBehaviourPun
 
         Vector3 targetPosition = _jointChest.transform.forward;
 
-        switch (item.GetComponent<Item>().ItemType)
+        switch (item.GetComponent<Item>().ItemData.ItemType)
         {
             case ItemType.TwoHanded:
                         //아이템의 헤드부분이 해당 방향벡터를 바라보게
@@ -470,7 +476,7 @@ public class Grab : MonoBehaviourPun
         yield return 0;
     }
 
-    void UsePotion()
+    IEnumerator UsePotionAnim()
     {
         _jointLeft.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 3, 0, 0));
         _jointRight.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 3, 0, 0));
@@ -490,17 +496,18 @@ public class Grab : MonoBehaviourPun
         //AlignToVector(_jointRight.GetComponent<Rigidbody>(), _jointRight.transform.position, new Vector3(0.2f, 0f, 0f), 0.1f, 0.1f);
         //AlignToVector(_jointRightForeArm.GetComponent<Rigidbody>(), _jointRightForeArm.transform.position, new Vector3(0.2f, 0f, 0f), 0.1f, 0.1f);
         //AlignToVector(_jointRightUpperArm.GetComponent<Rigidbody>(), _jointRightUpperArm.transform.position, new Vector3(0.2f, 0f, 0f), 0.1f, 0.1f);
+        yield return 0;
 
     }
 
-    void FireProjectile()
+    private void UseItem()
     {
-
+        GrabItem.GetComponent<Item>().Use();
     }
 
 
     //리지드바디 part의 alignmentVector방향을 targetVector방향으로 회전
-    public void AlignToVector(Rigidbody part, Vector3 alignmentVector, Vector3 targetVector, float stability, float speed)
+    private void AlignToVector(Rigidbody part, Vector3 alignmentVector, Vector3 targetVector, float stability, float speed)
     {
         if (part == null)
         {

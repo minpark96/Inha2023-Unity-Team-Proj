@@ -16,6 +16,11 @@ public class ItemData : ScriptableObject
     public ItemType ItemType { get { return _itemType; } }
 
     [SerializeField]
+    private ProjectileBase _projectile;
+    public ProjectileBase Projectile { get { return _projectile; } }
+
+
+    [SerializeField]
     private InteractableObject.Damage _useDamageType;
     public InteractableObject.Damage UseDamageType { get { return _useDamageType; } }
 
