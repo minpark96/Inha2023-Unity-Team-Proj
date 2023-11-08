@@ -10800,6 +10800,40 @@ MonoBehaviour:
     - 2.5
     AnglePowerValues:
     - 0.1
+  RSkillAniData:
+  - StandardRigidbodies:
+    - {fileID: 5150619769091741460}
+    - {fileID: 5150619769091741460}
+    - {fileID: 5150619769091741460}
+    ActionRigidbodies:
+    - {fileID: 5150466505743223006}
+    - {fileID: 5069075246722378390}
+    - {fileID: 5150391404254772956}
+    ForceDirections: 070000000200000003000000
+    ForcePowerValues:
+    - 1
+    - 1
+    - 4
+  - StandardRigidbodies:
+    - {fileID: 5150619769091741460}
+    ActionRigidbodies:
+    - {fileID: 5068901783686819345}
+    ForceDirections: 02000000
+    ForcePowerValues:
+    - 4
+  RSkillAngleAniData:
+  - StandardRigidbodies:
+    - {fileID: 5069075246722378390}
+    ActionDirection:
+    - {fileID: 5167280749045366728}
+    TargetDirection:
+    - {fileID: 5167280749045366728}
+    ActionAngleDirections: 01000000
+    TargetAngleDirections: 03000000
+    AngleStability:
+    - 0.01
+    AnglePowerValues:
+    - 100
   TestRready1:
   - StandardRigidbodies:
     - {fileID: 5150619769091741460}
@@ -10835,6 +10869,7 @@ MonoBehaviour:
     AnglePowerValues:
     - 100
   RunSpeed: 100
+  MaxSpeed: 10
   _hips: {fileID: 5150844099323961327}
   _cameraArm: {fileID: 4401259382300767454}
   _bodyHandler: {fileID: 0}
@@ -10852,10 +10887,16 @@ MonoBehaviour:
   leftKick: 0
   rightKick: 0
   isStateChange: 0
-  RSkillDelayTime: 0
-  MaxSpeed: 10
-  PunchDelay: 0.15
-  _idleTimer: 0
+  isMeowNyangPunch: 1
+  RSkillCoolTime: 5
+  MeowPunchPower: 1
+  MeowPunchReadyPunch: 0.1
+  MeowPunchPunching: 0.1
+  MeowPunchResetPunch: 0.3
+  NuclearPunchPower: 5
+  NuclearPunchReadyPunch: 0.1
+  NuclearPunching: 0.1
+  NuclearPunchResetPunch: 0.3
   isAI: 0
 --- !u!114 &5164006939630707526
 MonoBehaviour:

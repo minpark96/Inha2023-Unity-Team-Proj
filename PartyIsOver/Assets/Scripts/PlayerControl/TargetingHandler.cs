@@ -70,7 +70,6 @@ public class TargetingHandler : MonoBehaviour
         
         if(_nearestCollider == null)
         {
-            Debug.Log("Interactable target null");
             return null;
         }
 
