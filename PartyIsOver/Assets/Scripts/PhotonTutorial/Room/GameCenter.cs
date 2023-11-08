@@ -41,6 +41,7 @@ public class GameCenter : MonoBehaviourPunCallbacks
         new Vector3(2.5f, 5f, -4.33f)
     };
 
+    public List<int> ActorViewIDs = new List<int>();
     public List<Actor> Actors = new List<Actor>();
 
     #endregion
@@ -94,15 +95,80 @@ public class GameCenter : MonoBehaviourPunCallbacks
                     break;
             }
 
-            Actor actor = go.GetComponent<Actor>();
-            if (actor != null)
+            PhotonView pv = go.GetComponent<PhotonView>();
+            int viewID = pv.ViewID;
+
+            if (PhotonNetwork.IsMasterClient)
             {
-                actor.OnPlayerHurt -= AnounceHurt;
-                //actor.OnPlayerExhaust -= DecreaseStamina;
-                actor.OnPlayerHurt += AnounceHurt;
-                //actor.OnPlayerExhaust += DecreaseStamina;
+                Actor actor = go.GetComponent<Actor>();
+                ActorViewIDs.Add(viewID);
+                Actors.Add(actor);
+                SubscribeActorEvent(actor);
             }
+            else
+            {
+                photonView.RPC("RegisterActorInfo", RpcTarget.MasterClient, viewID);
+            }
+
+        }
+    }
+
+    private void OnGUI()
+    {
+        GUI.backgroundColor = Color.white;
+        GUI.contentColor = Color.black;
+        for (int i = 0; i <ActorViewIDs.Count; i++)
+        {
+            GUI.Label(new Rect(0, 140 + i * 20, 200, 200), "Actor View ID: " + ActorViewIDs[i]);
+        }
+    }
+
+    void SubscribeActorEvent(Actor actor)
+    {
+        if (actor != null)
+        {
+            Debug.Log("구독 부분 " + actor.photonView.ViewID);
+            actor.OnPlayerHurt -= AnounceHurt;
+            actor.OnPlayerHurt += AnounceHurt;
+            //actor.OnPlayerExhaust -= DecreaseStamina;
+            //actor.OnPlayerExhaust += DecreaseStamina;
+        }
+    }
+
+    [PunRPC]
+    void RegisterActorInfo(int viewID)
+    {
+        Debug.Log("마스터: RegisterActorInfo");
+        Debug.Log(viewID);
+
+        ActorViewIDs.Add(viewID);
+        AddActor(viewID);
+
+        photonView.RPC("SyncActorsList", RpcTarget.Others, ActorViewIDs.ToArray());
+    }
+
+    [PunRPC]
+    void SyncActorsList(int[] ids)
+    {
+        for (int i = ActorViewIDs.Count; i < ids.Length; i++)
+        {
+            ActorViewIDs.Add(ids[i]);
+            AddActor(ids[i]);
+        }
+    }
+
+    void AddActor(int id)
+    {
+        PhotonView targetPV = PhotonView.Find(id);
+
+        if (targetPV != null)
+        {
+            Actor actor = targetPV.transform.GetComponent<Actor>();
             Actors.Add(actor);
+            if (PhotonNetwork.IsMasterClient)
+            {
+                SubscribeActorEvent(actor);
+            }
         }
     }
 
@@ -185,7 +251,6 @@ public class GameCenter : MonoBehaviourPunCallbacks
 
     public override void OnEnable()
     {
-        Debug.Log("GameCenter OnEnable");
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
@@ -197,6 +262,29 @@ public class GameCenter : MonoBehaviourPunCallbacks
     #endregion
 
     #region PunRPC Methods
+
+    [PunRPC]
+    void EnteredRoom()
+    {
+        _roomUI.UpdateReadyCountText(_roomUI.PlayerReadyCount);
+        UpdateMasterStatus();
+
+        photonView.RPC("UpdateCount", RpcTarget.Others, _roomUI.PlayerReadyCount);
+    }
+
+    [PunRPC]
+    void UpdateCount(int count)
+    {
+        _roomUI.UpdateReadyCountText(count);
+    }
+
+    [PunRPC]
+    void PlayerReady(bool isReady)
+    {
+        _roomUI.UpdateReadyCountText(isReady);
+        UpdateMasterStatus();
+        photonView.RPC("UpdateCount", RpcTarget.Others, _roomUI.PlayerReadyCount);
+    }
 
     [PunRPC]
     void DeacreaseHP(float HP, int viewID)
@@ -216,7 +304,7 @@ public class GameCenter : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    void SyncHP(float HP, int viewID)
+    void SyncHP(float hp, int viewID)
     {
         Debug.Log("[except master received] SyncHP(void)");
 
@@ -224,32 +312,10 @@ public class GameCenter : MonoBehaviourPunCallbacks
         {
             if (Actors[i].photonView.ViewID == viewID)
             {
-                Actors[i].Health = HP;
+                Actors[i].Health = hp;
                 break;
             }
         }
-    }
-
-    [PunRPC]
-    void EnteredRoom()
-    {
-        _roomUI.UpdateReadyCountText(_roomUI.PlayerReadyCount);
-        UpdateMasterStatus();
-        photonView.RPC("UpdateCount", RpcTarget.Others, _roomUI.PlayerReadyCount);
-    }
-
-    [PunRPC]
-    void UpdateCount(int count)
-    {
-        _roomUI.UpdateReadyCountText(count);
-    }
-
-    [PunRPC]
-    void PlayerReady(bool isReady)
-    {
-        _roomUI.UpdateReadyCountText(isReady);
-        UpdateMasterStatus();
-        photonView.RPC("UpdateCount", RpcTarget.Others, _roomUI.PlayerReadyCount);
     }
 
     #endregion

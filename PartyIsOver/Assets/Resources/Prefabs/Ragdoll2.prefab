@@ -10936,12 +10936,13 @@ MonoBehaviour:
   invulnerable: 0
   _powerUpTime: 3
   _burnTime: 3
-  _burnDamage: 1
   _exhaustedTime: 5
   _slowTime: 3
   _freezeTime: 3
   _shockTime: 3
   _stunTime: 3
+  _iceDamage: 0
+  _burnDamage: 1
 --- !u!114 &2082881364
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -180,9 +180,13 @@ public class CollisionHandler : MonoBehaviourPun
             }
         }
     }
+
     private void OnCollisionEnter(Collision collision)
     {
-        if (!photonView.IsMine) return;
+        //if (!photonView.IsMine) return;
+
+        Debug.Log(photonView.ViewID + " 나 맞았음!");
+
         if (collision.collider.gameObject.layer != LayerMask.NameToLayer("Ground"))
             DamageCheck(collision);
     }

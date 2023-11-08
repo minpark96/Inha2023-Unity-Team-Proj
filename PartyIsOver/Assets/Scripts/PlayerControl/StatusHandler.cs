@@ -140,6 +140,8 @@ public class StatusHandler : MonoBehaviourPun
         DebuffCheck(type);
         DebuffAction();
 
+        Debug.Log("[AddDamage()] _healthDamage " + photonView.ViewID + " - " + _healthDamage);
+
         if (_healthDamage != 0f)
             UpdateHealth();
     }
