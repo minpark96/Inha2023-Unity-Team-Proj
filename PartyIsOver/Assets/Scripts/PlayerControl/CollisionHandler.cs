@@ -24,10 +24,7 @@ public class CollisionHandler : MonoBehaviour
         }
     }
 
-    void Update()
-    {
 
-    }
     private void DamageCheck(Collision collision)
     {
         InteractableObject collisionInteractable = collision.transform.GetComponent<InteractableObject>();
@@ -57,7 +54,7 @@ public class CollisionHandler : MonoBehaviour
             }
 
 
-            //충돌체 interactableObject의 데미지종류별로 케이스 나눔
+            // 물리적 공격을 받을 때
             switch (collisionInteractable.damageModifier)
             {
                 case InteractableObject.Damage.Ignore:
@@ -97,21 +94,6 @@ public class CollisionHandler : MonoBehaviour
                     contact.thisCollider.attachedRigidbody.AddForce(contact.normal * 10f, ForceMode.VelocityChange);
                     //actor.inputHandler.SetVibration(1f, 0f, 0.2f);
                     break;
-                case InteractableObject.Damage.Freeze:
-                    damage = 1f;
-                    break;
-                case InteractableObject.Damage.Shock:
-                    damage = 1f;
-                    break;
-                case InteractableObject.Damage.PowerUp:
-                    damage = 1f;
-                    break;
-                case InteractableObject.Damage.Slow:
-                    damage = 1f;
-                    break;
-                case InteractableObject.Damage.Burn:
-                    damage = 1f;
-                    break;
                 default:
                     contact.thisCollider.attachedRigidbody.AddForce(contact.normal * 10f, ForceMode.VelocityChange);
                     break;
@@ -121,7 +103,6 @@ public class CollisionHandler : MonoBehaviour
 
             damage = ApplyBodyPartDamageModifier(damage);
             damage *= actor.PlayerAttackPoint;
-
 
             //데미지 적용
             damage = Mathf.RoundToInt(damage);
@@ -164,6 +145,38 @@ public class CollisionHandler : MonoBehaviour
 
                 return damage;
             }
+
+            // 버프형 공격을 받을 때
+            switch (collisionInteractable.damageModifier)
+            {
+                case InteractableObject.Damage.PowerUp:
+                    damage = 0f;
+                    break;
+                case InteractableObject.Damage.Burn:
+                    damage = actor.StatusHandler._burnDamage;
+                    break;
+                case InteractableObject.Damage.Ice:
+                    damage = actor.StatusHandler._iceDamage;
+                    break;
+                case InteractableObject.Damage.Shock:
+                    damage = 0f;
+                    break;
+                case InteractableObject.Damage.Drunk:
+                    damage = 0f;
+                    break;
+                case InteractableObject.Damage.Balloon:
+                    damage = 1f;
+                    break;
+            }
+
+            if (collisionInteractable != null)
+            {
+                actor.StatusHandler.AddDamage(collisionInteractable.damageModifier, damage, collisionCollider.gameObject);
+            }
+            else
+            {
+                actor.StatusHandler.AddDamage(InteractableObject.Damage.Default, damage, collisionCollider.gameObject);
+            }
         }
     }
     private void OnCollisionEnter(Collision collision)
@@ -171,5 +184,4 @@ public class CollisionHandler : MonoBehaviour
         if (collision.collider.gameObject.layer != LayerMask.NameToLayer("Ground"))
             DamageCheck(collision);
     }
-    
 }

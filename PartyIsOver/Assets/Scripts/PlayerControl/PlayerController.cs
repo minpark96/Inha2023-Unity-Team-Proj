@@ -257,8 +257,7 @@ public class PlayerController : MonoBehaviourPun
         yield return new WaitForSeconds(1f);
     }
 
-    bool isW;
-    public void OnKeyboardEvent_Idle(Define.KeyboardEvent evt)
+    public void OnKeyboardEvent_Move(Define.KeyboardEvent evt)
     {
         if (!photonView.IsMine)
         {
@@ -277,12 +276,6 @@ public class PlayerController : MonoBehaviourPun
                     {
                         _moveInput.x = Input.GetAxis("Horizontal");
                     }
-
-                    if (Input.GetKey(KeyCode.LeftShift))
-                    {
-                        _actor.actorState = Actor.ActorState.Run;
-                        isRun = true;
-                    }
                 }
                 break;
             case Define.KeyboardEvent.Click:
@@ -295,7 +288,31 @@ public class PlayerController : MonoBehaviourPun
                     {
                         _moveInput.x = 0;
                     }
+                }
+                break;
+        }
 
+    }
+    public void OnKeyboardEvent_Skill(Define.KeyboardEvent evt)
+    {
+        if (!photonView.IsMine)
+        {
+            return;
+        }
+
+        switch (evt)
+        {
+            case Define.KeyboardEvent.Press:
+                {
+                    if (Input.GetKey(KeyCode.LeftShift))
+                    {
+                        _actor.actorState = Actor.ActorState.Run;
+                        isRun = true;
+                    }
+                }
+                break;
+            case Define.KeyboardEvent.Click:
+                {
                     if (Input.GetKeyUp(KeyCode.LeftShift))
                     {
                         _actor.actorState = Actor.ActorState.Stand;
@@ -325,7 +342,7 @@ public class PlayerController : MonoBehaviourPun
         }
     }
 
-    public void OnMouseEvent_Idle(Define.MouseEvent evt)
+    public void OnMouseEvent_Grab(Define.MouseEvent evt)
     {
         if (!photonView.IsMine)
         {
@@ -334,11 +351,6 @@ public class PlayerController : MonoBehaviourPun
 
         switch (evt)
         {
-            case Define.MouseEvent.PointerDown:
-                {
-
-                }
-                break;
             case Define.MouseEvent.Press:
                 {
                     if (Input.GetMouseButton(0))
@@ -351,6 +363,22 @@ public class PlayerController : MonoBehaviourPun
                     {
                         _grab.GrabReset();
                     }
+                }
+                break;
+        }
+    }
+    public void OnMouseEvent_Skill(Define.MouseEvent evt)
+    {
+        if (!photonView.IsMine)
+        {
+            return;
+        }
+
+        switch (evt)
+        {
+            case Define.MouseEvent.PointerDown:
+                {
+
                 }
                 break;
             case Define.MouseEvent.Click:
