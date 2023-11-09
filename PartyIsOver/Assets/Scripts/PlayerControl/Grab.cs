@@ -72,8 +72,8 @@ public class Grab : MonoBehaviourPun
         _jointLeft = _bodyHandler.LeftHand.PartJoint;
         _jointRight = _bodyHandler.RightHand.PartJoint;
 
-        _jointLeftForeArm = _bodyHandler.LeftForarm.PartJoint;
-        _jointRightForeArm = _bodyHandler.RightForarm.PartJoint;
+        _jointLeftForeArm = _bodyHandler.LeftForearm.PartJoint;
+        _jointRightForeArm = _bodyHandler.RightForearm.PartJoint;
 
         _jointLeftUpperArm = _bodyHandler.LeftArm.PartJoint;
         _jointRightUpperArm = _bodyHandler.RightArm.PartJoint;

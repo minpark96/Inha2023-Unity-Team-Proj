@@ -5783,8 +5783,8 @@ GameObject:
   - component: {fileID: 3365814731327851670}
   - component: {fileID: 3365814731327851665}
   - component: {fileID: 3365814731327851671}
-  - component: {fileID: 1864798614270171580}
-  - component: {fileID: 2519170846651779471}
+  - component: {fileID: 5435006518194873442}
+  - component: {fileID: 6744311504430411381}
   m_Layer: 7
   m_Name: foot_r
   m_TagString: Untagged
@@ -5805,7 +5805,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5164006939630707582}
-  m_RootOrder: 10
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &3365814731327851670
 Rigidbody:
@@ -5935,7 +5935,7 @@ MonoBehaviour:
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
   PartTransform: {fileID: 0}
---- !u!114 &1864798614270171580
+--- !u!114 &5435006518194873442
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5954,11 +5954,11 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
-  - {fileID: 2519170846651779471}
+  - {fileID: 6744311504430411381}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &2519170846651779471
+--- !u!114 &6744311504430411381
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5972,7 +5972,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
   m_SynchronizeAngularVelocity: 1
-  m_TeleportEnabled: 0
+  m_TeleportEnabled: 1
   m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &3396398243709297476
 GameObject:
@@ -7682,8 +7682,8 @@ GameObject:
   - component: {fileID: 5150062576097496874}
   - component: {fileID: 5015685618108127317}
   - component: {fileID: 5015685618108127322}
-  - component: {fileID: 198947459384103225}
-  - component: {fileID: 7273419718366838183}
+  - component: {fileID: 8889642134314674026}
+  - component: {fileID: 6169081727393321281}
   m_Layer: 7
   m_Name: GreenUpperArmL
   m_TagString: Lhand
@@ -7850,7 +7850,7 @@ MonoBehaviour:
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
   PartTransform: {fileID: 0}
---- !u!114 &198947459384103225
+--- !u!114 &8889642134314674026
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -7869,11 +7869,11 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
-  - {fileID: 7273419718366838183}
+  - {fileID: 6169081727393321281}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &7273419718366838183
+--- !u!114 &6169081727393321281
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -7887,7 +7887,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
   m_SynchronizeAngularVelocity: 1
-  m_TeleportEnabled: 0
+  m_TeleportEnabled: 1
   m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &5168192060615758454
 GameObject:
@@ -7903,8 +7903,8 @@ GameObject:
   - component: {fileID: 5069075246722378385}
   - component: {fileID: 5069075246722378391}
   - component: {fileID: 5069075246722378384}
-  - component: {fileID: 4733058259063628010}
-  - component: {fileID: 8038601559837329419}
+  - component: {fileID: 7357067785758980616}
+  - component: {fileID: 2445116335052208937}
   m_Layer: 7
   m_Name: GreenFistR
   m_TagString: CharacterFist
@@ -8081,7 +8081,7 @@ MonoBehaviour:
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
   PartTransform: {fileID: 0}
---- !u!114 &4733058259063628010
+--- !u!114 &7357067785758980616
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8100,11 +8100,11 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
-  - {fileID: 8038601559837329419}
+  - {fileID: 2445116335052208937}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &8038601559837329419
+--- !u!114 &2445116335052208937
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8118,7 +8118,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
   m_SynchronizeAngularVelocity: 1
-  m_TeleportEnabled: 0
+  m_TeleportEnabled: 1
   m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &5168228728991225702
 GameObject:
@@ -8133,8 +8133,8 @@ GameObject:
   - component: {fileID: 5150636913932746756}
   - component: {fileID: 5014908378340600408}
   - component: {fileID: 5014908378340600409}
-  - component: {fileID: 207480772812122471}
-  - component: {fileID: 1032308271426170664}
+  - component: {fileID: 1149883997925020940}
+  - component: {fileID: 5870654014314662501}
   m_Layer: 7
   m_Name: GreenLegL2
   m_TagString: CharacterFoot
@@ -8156,7 +8156,7 @@ Transform:
   m_Children:
   - {fileID: 7613673029169691110}
   m_Father: {fileID: 5164006939630707582}
-  m_RootOrder: 6
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!136 &5070107337095981484
 CapsuleCollider:
@@ -8300,7 +8300,7 @@ MonoBehaviour:
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
   PartTransform: {fileID: 0}
---- !u!114 &207480772812122471
+--- !u!114 &1149883997925020940
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8319,11 +8319,11 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
-  - {fileID: 1032308271426170664}
+  - {fileID: 5870654014314662501}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &1032308271426170664
+--- !u!114 &5870654014314662501
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8337,7 +8337,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
   m_SynchronizeAngularVelocity: 1
-  m_TeleportEnabled: 0
+  m_TeleportEnabled: 1
   m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &5168241402966337078
 GameObject:
@@ -8351,8 +8351,8 @@ GameObject:
   - component: {fileID: 5070676647335331915}
   - component: {fileID: 5150844099323961327}
   - component: {fileID: 5070676647335331912}
-  - component: {fileID: 6874332521079647623}
-  - component: {fileID: 2607658718712949132}
+  - component: {fileID: 6945020795748048623}
+  - component: {fileID: 4871091955242223544}
   m_Layer: 7
   m_Name: GreenHip
   m_TagString: CharacterHip
@@ -8377,7 +8377,7 @@ Transform:
   - {fileID: 9161922701773012603}
   - {fileID: 7167868894689633484}
   m_Father: {fileID: 5164006939630707582}
-  m_RootOrder: 4
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!136 &5070676647335331915
 CapsuleCollider:
@@ -8425,7 +8425,7 @@ MonoBehaviour:
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
   PartTransform: {fileID: 0}
---- !u!114 &6874332521079647623
+--- !u!114 &6945020795748048623
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8444,11 +8444,11 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
-  - {fileID: 2607658718712949132}
+  - {fileID: 4871091955242223544}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &2607658718712949132
+--- !u!114 &4871091955242223544
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8462,7 +8462,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
   m_SynchronizeAngularVelocity: 1
-  m_TeleportEnabled: 0
+  m_TeleportEnabled: 1
   m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &5169075590960504597
 GameObject:
@@ -8477,8 +8477,8 @@ GameObject:
   - component: {fileID: 5150698295106137226}
   - component: {fileID: 5018433394129414997}
   - component: {fileID: 5018433394129415002}
-  - component: {fileID: 3492737988224658461}
-  - component: {fileID: 6925311964325043758}
+  - component: {fileID: 4438274951581535046}
+  - component: {fileID: 8482553469836286144}
   m_Layer: 7
   m_Name: GreenLegL1
   m_TagString: Untagged
@@ -8645,7 +8645,7 @@ MonoBehaviour:
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
   PartTransform: {fileID: 0}
---- !u!114 &3492737988224658461
+--- !u!114 &4438274951581535046
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8664,11 +8664,11 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
-  - {fileID: 6925311964325043758}
+  - {fileID: 8482553469836286144}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &6925311964325043758
+--- !u!114 &8482553469836286144
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8682,7 +8682,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
   m_SynchronizeAngularVelocity: 1
-  m_TeleportEnabled: 0
+  m_TeleportEnabled: 1
   m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &5169102531625790280
 GameObject:
@@ -8728,8 +8728,8 @@ GameObject:
   - component: {fileID: 5150466505743223006}
   - component: {fileID: 5015364474370536169}
   - component: {fileID: 5015364474370536174}
-  - component: {fileID: 2180785869615727197}
-  - component: {fileID: 4054832757515169232}
+  - component: {fileID: 427175637744360419}
+  - component: {fileID: 5562696309609195425}
   m_Layer: 7
   m_Name: GreenForeArmR
   m_TagString: Rhand
@@ -8896,7 +8896,7 @@ MonoBehaviour:
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
   PartTransform: {fileID: 0}
---- !u!114 &2180785869615727197
+--- !u!114 &427175637744360419
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8915,11 +8915,11 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
-  - {fileID: 4054832757515169232}
+  - {fileID: 5562696309609195425}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &4054832757515169232
+--- !u!114 &5562696309609195425
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8933,7 +8933,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
   m_SynchronizeAngularVelocity: 1
-  m_TeleportEnabled: 0
+  m_TeleportEnabled: 1
   m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &5169610900901912614
 GameObject:
@@ -8948,8 +8948,8 @@ GameObject:
   - component: {fileID: 5150643447561375322}
   - component: {fileID: 5014804370705970451}
   - component: {fileID: 5014804370705970448}
-  - component: {fileID: 6615551888151346478}
-  - component: {fileID: 4532543277646099659}
+  - component: {fileID: 9037307402165807372}
+  - component: {fileID: 8867989288502118094}
   m_Layer: 7
   m_Name: GreenWaist
   m_TagString: Untagged
@@ -8975,7 +8975,7 @@ Transform:
   - {fileID: 5164144746239226852}
   - {fileID: 5920935753702849301}
   m_Father: {fileID: 5164006939630707582}
-  m_RootOrder: 3
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!136 &5070781527122417228
 CapsuleCollider:
@@ -9119,7 +9119,7 @@ MonoBehaviour:
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
   PartTransform: {fileID: 0}
---- !u!114 &6615551888151346478
+--- !u!114 &9037307402165807372
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9138,11 +9138,11 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
-  - {fileID: 4532543277646099659}
+  - {fileID: 8867989288502118094}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &4532543277646099659
+--- !u!114 &8867989288502118094
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9156,7 +9156,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
   m_SynchronizeAngularVelocity: 1
-  m_TeleportEnabled: 0
+  m_TeleportEnabled: 1
   m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &5169612602225680657
 GameObject:
@@ -9171,8 +9171,8 @@ GameObject:
   - component: {fileID: 5150619769091741460}
   - component: {fileID: 5014860434847319106}
   - component: {fileID: 5014860434847319107}
-  - component: {fileID: 517009036791536304}
-  - component: {fileID: 6276121518637528916}
+  - component: {fileID: 3875774960659529914}
+  - component: {fileID: 8824525538350686152}
   m_Layer: 7
   m_Name: GreenChest
   m_TagString: CharacterChest
@@ -9194,7 +9194,7 @@ Transform:
   m_Children:
   - {fileID: 3674146846749940325}
   m_Father: {fileID: 5164006939630707582}
-  m_RootOrder: 2
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!136 &5070032428324279287
 CapsuleCollider:
@@ -9338,7 +9338,7 @@ MonoBehaviour:
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
   PartTransform: {fileID: 0}
---- !u!114 &517009036791536304
+--- !u!114 &3875774960659529914
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9357,11 +9357,11 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
-  - {fileID: 6276121518637528916}
+  - {fileID: 8824525538350686152}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &6276121518637528916
+--- !u!114 &8824525538350686152
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9375,7 +9375,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
   m_SynchronizeAngularVelocity: 1
-  m_TeleportEnabled: 0
+  m_TeleportEnabled: 1
   m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &5169613982111508579
 GameObject:
@@ -9390,8 +9390,8 @@ GameObject:
   - component: {fileID: 5117554088992720254}
   - component: {fileID: 5018449923900053351}
   - component: {fileID: 5018449923900053348}
-  - component: {fileID: 5926378590280173916}
-  - component: {fileID: 1402387083089452662}
+  - component: {fileID: 359504273448955861}
+  - component: {fileID: 520168988760543345}
   m_Layer: 7
   m_Name: GreenLegR1
   m_TagString: Untagged
@@ -9414,7 +9414,7 @@ Transform:
   - {fileID: 6026303775750416852}
   - {fileID: 6539017304165819431}
   m_Father: {fileID: 5164006939630707582}
-  m_RootOrder: 8
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!136 &5070930102950019811
 CapsuleCollider:
@@ -9558,7 +9558,7 @@ MonoBehaviour:
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
   PartTransform: {fileID: 0}
---- !u!114 &5926378590280173916
+--- !u!114 &359504273448955861
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9577,11 +9577,11 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
-  - {fileID: 1402387083089452662}
+  - {fileID: 520168988760543345}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &1402387083089452662
+--- !u!114 &520168988760543345
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9595,7 +9595,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
   m_SynchronizeAngularVelocity: 1
-  m_TeleportEnabled: 0
+  m_TeleportEnabled: 1
   m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &5169634861635219570
 GameObject:
@@ -9610,8 +9610,8 @@ GameObject:
   - component: {fileID: 5149915107359780329}
   - component: {fileID: 5015406720499631858}
   - component: {fileID: 5015406720499631859}
-  - component: {fileID: 1400102275092751700}
-  - component: {fileID: 6199728969126587717}
+  - component: {fileID: 6096047576432914358}
+  - component: {fileID: 6590444927812312904}
   m_Layer: 7
   m_Name: GreenForeArmL
   m_TagString: Lhand
@@ -9778,7 +9778,7 @@ MonoBehaviour:
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
   PartTransform: {fileID: 0}
---- !u!114 &1400102275092751700
+--- !u!114 &6096047576432914358
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9797,11 +9797,11 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
-  - {fileID: 6199728969126587717}
+  - {fileID: 6590444927812312904}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &6199728969126587717
+--- !u!114 &6590444927812312904
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9815,7 +9815,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
   m_SynchronizeAngularVelocity: 1
-  m_TeleportEnabled: 0
+  m_TeleportEnabled: 1
   m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &5169766461459173945
 GameObject:
@@ -9830,8 +9830,8 @@ GameObject:
   - component: {fileID: 5149934926995603220}
   - component: {fileID: 5018425065884028286}
   - component: {fileID: 5018425065884028287}
-  - component: {fileID: 7010085230316306319}
-  - component: {fileID: 4057157430773944778}
+  - component: {fileID: 9140428210862795658}
+  - component: {fileID: 5417601122390140050}
   m_Layer: 7
   m_Name: GreenLegR2
   m_TagString: CharacterFoot
@@ -9853,7 +9853,7 @@ Transform:
   m_Children:
   - {fileID: 1876905128374464283}
   m_Father: {fileID: 5164006939630707582}
-  m_RootOrder: 9
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!136 &5070944147653744277
 CapsuleCollider:
@@ -9997,7 +9997,7 @@ MonoBehaviour:
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
   PartTransform: {fileID: 0}
---- !u!114 &7010085230316306319
+--- !u!114 &9140428210862795658
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -10016,11 +10016,11 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
-  - {fileID: 4057157430773944778}
+  - {fileID: 5417601122390140050}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &4057157430773944778
+--- !u!114 &5417601122390140050
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -10034,7 +10034,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
   m_SynchronizeAngularVelocity: 1
-  m_TeleportEnabled: 0
+  m_TeleportEnabled: 1
   m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &5169771990771016526
 GameObject:
@@ -10049,8 +10049,8 @@ GameObject:
   - component: {fileID: 5150391404254772956}
   - component: {fileID: 5018455412112069696}
   - component: {fileID: 5018455412112069697}
-  - component: {fileID: 1494565386959782751}
-  - component: {fileID: 1895965349595828167}
+  - component: {fileID: 2025992064279053874}
+  - component: {fileID: 8954976323957321080}
   m_Layer: 7
   m_Name: GreenUpperArmR
   m_TagString: Rhand
@@ -10217,7 +10217,7 @@ MonoBehaviour:
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
   PartTransform: {fileID: 0}
---- !u!114 &1494565386959782751
+--- !u!114 &2025992064279053874
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -10236,11 +10236,11 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
-  - {fileID: 1895965349595828167}
+  - {fileID: 8954976323957321080}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &1895965349595828167
+--- !u!114 &8954976323957321080
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -10254,7 +10254,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
   m_SynchronizeAngularVelocity: 1
-  m_TeleportEnabled: 0
+  m_TeleportEnabled: 1
   m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &5169854652013515696
 GameObject:
@@ -10446,8 +10446,8 @@ GameObject:
   - component: {fileID: 5015787384701703981}
   - component: {fileID: 5069696853581315615}
   - component: {fileID: 5015787384701703986}
-  - component: {fileID: 2609301282637170986}
-  - component: {fileID: 9143063268733653159}
+  - component: {fileID: 1553366972375785788}
+  - component: {fileID: 8667846879694838817}
   m_Layer: 7
   m_Name: GreenHead
   m_TagString: CharacterHead
@@ -10473,7 +10473,7 @@ Transform:
   - {fileID: 165677321738583965}
   - {fileID: 7063263571882023361}
   m_Father: {fileID: 5164006939630707582}
-  m_RootOrder: 1
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!54 &5150041985222952710
 Rigidbody:
@@ -10616,7 +10616,7 @@ MonoBehaviour:
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
   PartTransform: {fileID: 0}
---- !u!114 &2609301282637170986
+--- !u!114 &1553366972375785788
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -10635,11 +10635,11 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
-  - {fileID: 9143063268733653159}
+  - {fileID: 8667846879694838817}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &9143063268733653159
+--- !u!114 &8667846879694838817
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -10653,7 +10653,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
   m_SynchronizeAngularVelocity: 1
-  m_TeleportEnabled: 0
+  m_TeleportEnabled: 1
   m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &5169983603716950214
 GameObject:
@@ -10693,16 +10693,16 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7167868894082623177}
-  - {fileID: 5167280749045366728}
-  - {fileID: 5167082102304172294}
-  - {fileID: 5164184801533818450}
-  - {fileID: 5166887327713608788}
-  - {fileID: 5163944778516892771}
-  - {fileID: 5166829500882293250}
   - {fileID: 6210198329121031468}
-  - {fileID: 5167102377172443495}
-  - {fileID: 5167200909828775987}
   - {fileID: 3406290343782578698}
+  - {fileID: 5166829500882293250}
+  - {fileID: 5167200909828775987}
+  - {fileID: 5163944778516892771}
+  - {fileID: 5167102377172443495}
+  - {fileID: 5166887327713608788}
+  - {fileID: 5164184801533818450}
+  - {fileID: 5167082102304172294}
+  - {fileID: 5167280749045366728}
   - {fileID: 5164199765165057040}
   - {fileID: 5166921885974893282}
   - {fileID: 5166944635759495556}
@@ -10747,22 +10747,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Root: {fileID: 5164006939630707582}
   BodyParts: []
-  Head: {fileID: 5015787384701703986}
-  Chest: {fileID: 5014860434847319107}
-  Waist: {fileID: 5014804370705970448}
-  Hip: {fileID: 5070676647335331912}
-  LeftArm: {fileID: 5015685618108127322}
-  LeftForarm: {fileID: 5015406720499631859}
-  LeftHand: {fileID: 5068901783686819347}
-  LeftThigh: {fileID: 5018433394129415002}
-  LeftLeg: {fileID: 5014908378340600409}
   LeftFoot: {fileID: 6210198329121031475}
-  RightArm: {fileID: 5018455412112069697}
-  RightForarm: {fileID: 5015364474370536174}
-  RightHand: {fileID: 5069075246722378384}
-  RightThigh: {fileID: 5018449923900053348}
-  RightLeg: {fileID: 5018425065884028287}
   RightFoot: {fileID: 3365814731327851671}
+  LeftLeg: {fileID: 5014908378340600409}
+  RightLeg: {fileID: 5018425065884028287}
+  LeftThigh: {fileID: 5018433394129415002}
+  RightThigh: {fileID: 5018449923900053348}
+  Hip: {fileID: 5070676647335331912}
+  Waist: {fileID: 5014804370705970448}
+  Chest: {fileID: 5014860434847319107}
+  Head: {fileID: 5015787384701703986}
+  LeftArm: {fileID: 5015685618108127322}
+  RightArm: {fileID: 5018455412112069697}
+  LeftForearm: {fileID: 5015406720499631859}
+  RightForearm: {fileID: 5015364474370536174}
+  LeftHand: {fileID: 5068901783686819347}
+  RightHand: {fileID: 5069075246722378384}
   Ball: {fileID: 5014761802810601888}
 --- !u!114 &5164006939630707522
 MonoBehaviour:
@@ -10779,73 +10779,42 @@ MonoBehaviour:
   RollAniData:
   - StandardRigidbodies:
     - {fileID: 5150041985222952710}
-    - {fileID: 5150619769091741460}
+    - {fileID: 5150643447561375322}
+    - {fileID: 5150643447561375322}
     - {fileID: 5150844099323961327}
     - {fileID: 5150844099323961327}
+    - {fileID: 5150698295106137226}
+    - {fileID: 5117554088992720254}
     ActionRigidbodies:
     - {fileID: 5150041985222952710}
-    - {fileID: 5150619769091741460}
+    - {fileID: 5150643447561375322}
+    - {fileID: 5150643447561375322}
     - {fileID: 5150844099323961327}
     - {fileID: 5150844099323961327}
-    ForceDirections: 02000000020000000200000004000000
+    - {fileID: 5150698295106137226}
+    - {fileID: 5117554088992720254}
+    ForceDirections: 02000000040000000200000004000000020000000300000003000000
     ForcePowerValues:
-    - 20
-    - 20
-    - 20
-    - 20
+    - 12
+    - 3.5
+    - 12
+    - 12
+    - 12
+    - 12
+    - 12
+  RollAngleAniData:
   - StandardRigidbodies:
-    - {fileID: 5150041985222952710}
-    - {fileID: 5150619769091741460}
     - {fileID: 5150844099323961327}
-    ActionRigidbodies:
-    - {fileID: 5150041985222952710}
-    - {fileID: 5150619769091741460}
-    - {fileID: 5150844099323961327}
-    ForceDirections: 020000000200000004000000
-    ForcePowerValues:
-    - 30
-    - 50
+    ActionDirection:
+    - {fileID: 5166887327713608788}
+    TargetDirection:
+    - {fileID: 5166887327713608788}
+    ActionAngleDirections: 03000000
+    TargetAngleDirections: 01000000
+    AngleStability:
+    - 0.01
+    AnglePowerValues:
     - 200
-  - StandardRigidbodies:
-    - {fileID: 5150041985222952710}
-    - {fileID: 5150643447561375322}
-    - {fileID: 5150643447561375322}
-    ActionRigidbodies:
-    - {fileID: 5150041985222952710}
-    - {fileID: 5150643447561375322}
-    - {fileID: 5150643447561375322}
-    ForceDirections: 020000000400000002000000
-    ForcePowerValues:
-    - 100
-    - 20
-    - 100
-  - StandardRigidbodies:
-    - {fileID: 5150041985222952710}
-    - {fileID: 5150643447561375322}
-    - {fileID: 5150643447561375322}
-    ActionRigidbodies:
-    - {fileID: 5150041985222952710}
-    - {fileID: 5150643447561375322}
-    - {fileID: 5150643447561375322}
-    ForceDirections: 020000000400000003000000
-    ForcePowerValues:
-    - 100
-    - 20
-    - 100
-  - StandardRigidbodies:
-    - {fileID: 5150041985222952710}
-    - {fileID: 5150643447561375322}
-    - {fileID: 5150643447561375322}
-    ActionRigidbodies:
-    - {fileID: 5150041985222952710}
-    - {fileID: 5150643447561375322}
-    - {fileID: 5150643447561375322}
-    ForceDirections: 020000000400000002000000
-    ForcePowerValues:
-    - 100
-    - 20
-    - 100
-  RollAngleAniData: []
   DropAniData:
   - StandardRigidbodies:
     - {fileID: 5150844099323961327}
@@ -11089,11 +11058,61 @@ MonoBehaviour:
     - 2.5
     AnglePowerValues:
     - 0.1
+  RSkillAniData:
+  - StandardRigidbodies:
+    - {fileID: 5150619769091741460}
+    - {fileID: 5150619769091741460}
+    - {fileID: 5150619769091741460}
+    ActionRigidbodies:
+    - {fileID: 5150466505743223006}
+    - {fileID: 5069075246722378390}
+    - {fileID: 5150391404254772956}
+    ForceDirections: 070000000200000003000000
+    ForcePowerValues:
+    - 1
+    - 1
+    - 4
+  - StandardRigidbodies:
+    - {fileID: 5150619769091741460}
+    ActionRigidbodies:
+    - {fileID: 5068901783686819345}
+    ForceDirections: 02000000
+    ForcePowerValues:
+    - 4
+  RSkillAngleAniData:
+  - StandardRigidbodies:
+    - {fileID: 5069075246722378390}
+    ActionDirection:
+    - {fileID: 5167280749045366728}
+    TargetDirection:
+    - {fileID: 5167280749045366728}
+    ActionAngleDirections: 01000000
+    TargetAngleDirections: 03000000
+    AngleStability:
+    - 0.01
+    AnglePowerValues:
+    - 100
   TestRready1:
-  - StandardRigidbodies: []
-    ActionRigidbodies: []
-    ForceDirections: 
-    ForcePowerValues: []
+  - StandardRigidbodies:
+    - {fileID: 5150619769091741460}
+    - {fileID: 5150619769091741460}
+    - {fileID: 5150619769091741460}
+    ActionRigidbodies:
+    - {fileID: 5150466505743223006}
+    - {fileID: 5069075246722378390}
+    - {fileID: 5150391404254772956}
+    ForceDirections: 070000000200000003000000
+    ForcePowerValues:
+    - 1
+    - 1
+    - 2
+  - StandardRigidbodies:
+    - {fileID: 5150619769091741460}
+    ActionRigidbodies:
+    - {fileID: 5068901783686819345}
+    ForceDirections: 02000000
+    ForcePowerValues:
+    - 1
   TestRready2:
   - StandardRigidbodies:
     - {fileID: 5069075246722378390}
@@ -11108,6 +11127,7 @@ MonoBehaviour:
     AnglePowerValues:
     - 100
   RunSpeed: 100
+  MaxSpeed: 10
   _hips: {fileID: 5150844099323961327}
   _bodyHandler: {fileID: 0}
   targetingHandler: {fileID: 0}
@@ -11124,10 +11144,16 @@ MonoBehaviour:
   leftKick: 0
   rightKick: 0
   isStateChange: 0
-  RSkillDelayTime: 0
-  MaxSpeed: 10
-  PunchDelay: 0.15
-  _idleTimer: 0
+  isMeowNyangPunch: 1
+  RSkillCoolTime: 5
+  MeowPunchPower: 1
+  MeowPunchReadyPunch: 0.1
+  MeowPunchPunching: 0.1
+  MeowPunchResetPunch: 0.3
+  NuclearPunchPower: 5
+  NuclearPunchReadyPunch: 0.1
+  NuclearPunching: 0.1
+  NuclearPunchResetPunch: 0.3
   isAI: 0
 --- !u!114 &5164006939630707526
 MonoBehaviour:
@@ -11185,6 +11211,10 @@ MonoBehaviour:
   LegMultiple: 0.8
   DamageReduction: 0
   PlayerAttackPoint: 1
+  _health: 0
+  _maxHealth: 200
+  _stamina: 0
+  _maxStamina: 100
   actorState: 4
   lastActorState: 8
   debuffState: 0
@@ -11202,17 +11232,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   actor: {fileID: 0}
   invulnerable: 0
-  _health: 0
-  _maxHealth: 200
-  _stamina: 0
   _powerUpTime: 3
   _burnTime: 3
-  _burnDamage: 1
   _exhaustedTime: 5
   _slowTime: 3
   _freezeTime: 3
   _shockTime: 3
   _stunTime: 3
+  _iceDamage: 0
+  _burnDamage: 1
 --- !u!114 &2082881364
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11243,7 +11271,8 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents: []
+  ObservedComponents:
+  - {fileID: 5164006939630707522}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -11261,8 +11290,8 @@ GameObject:
   - component: {fileID: 5068901783686819344}
   - component: {fileID: 5068901783686819350}
   - component: {fileID: 5068901783686819347}
-  - component: {fileID: 6008882796968733740}
-  - component: {fileID: 5745246718750440644}
+  - component: {fileID: 2910100891033078898}
+  - component: {fileID: 4833813678095764888}
   m_Layer: 7
   m_Name: GreenFistL
   m_TagString: CharacterFist
@@ -11439,7 +11468,7 @@ MonoBehaviour:
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
   PartTransform: {fileID: 0}
---- !u!114 &6008882796968733740
+--- !u!114 &2910100891033078898
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -11458,11 +11487,11 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
-  - {fileID: 5745246718750440644}
+  - {fileID: 4833813678095764888}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &5745246718750440644
+--- !u!114 &4833813678095764888
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -11476,7 +11505,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
   m_SynchronizeAngularVelocity: 1
-  m_TeleportEnabled: 0
+  m_TeleportEnabled: 1
   m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &5204457323832773025
 GameObject:
@@ -14602,8 +14631,8 @@ GameObject:
   - component: {fileID: 6210198329121031474}
   - component: {fileID: 6210198329121031469}
   - component: {fileID: 6210198329121031475}
-  - component: {fileID: 1488548298055806982}
-  - component: {fileID: 8367476406674241014}
+  - component: {fileID: 4824801577141072937}
+  - component: {fileID: 2155850034191712619}
   m_Layer: 7
   m_Name: foot_l
   m_TagString: Untagged
@@ -14624,7 +14653,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5164006939630707582}
-  m_RootOrder: 7
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &6210198329121031474
 Rigidbody:
@@ -14754,7 +14783,7 @@ MonoBehaviour:
   PartInteractable: {fileID: 0}
   PartJoint: {fileID: 0}
   PartTransform: {fileID: 0}
---- !u!114 &1488548298055806982
+--- !u!114 &4824801577141072937
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -14773,11 +14802,11 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
-  - {fileID: 8367476406674241014}
+  - {fileID: 2155850034191712619}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &8367476406674241014
+--- !u!114 &2155850034191712619
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -14791,7 +14820,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
   m_SynchronizeAngularVelocity: 1
-  m_TeleportEnabled: 0
+  m_TeleportEnabled: 1
   m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &7763812043976254396
 GameObject:
