@@ -11063,22 +11063,25 @@ MonoBehaviour:
     - {fileID: 5150619769091741460}
     - {fileID: 5150619769091741460}
     - {fileID: 5150619769091741460}
+    - {fileID: 5150619769091741460}
     ActionRigidbodies:
-    - {fileID: 5150466505743223006}
-    - {fileID: 5069075246722378390}
     - {fileID: 5150391404254772956}
-    ForceDirections: 070000000200000003000000
+    - {fileID: 5150391404254772956}
+    - {fileID: 5150391404254772956}
+    - {fileID: 5150466505743223006}
+    ForceDirections: 06000000030000000400000007000000
     ForcePowerValues:
-    - 1
-    - 1
-    - 4
+    - 30
+    - 100
+    - 30
+    - 10
   - StandardRigidbodies:
     - {fileID: 5150619769091741460}
     ActionRigidbodies:
     - {fileID: 5068901783686819345}
     ForceDirections: 02000000
     ForcePowerValues:
-    - 4
+    - 10
   RSkillAngleAniData:
   - StandardRigidbodies:
     - {fileID: 5069075246722378390}
@@ -11146,6 +11149,7 @@ MonoBehaviour:
   isStateChange: 0
   isMeowNyangPunch: 1
   RSkillCoolTime: 5
+  ChargeAniHoldTime: 0.5
   MeowPunchPower: 1
   MeowPunchReadyPunch: 0.1
   MeowPunchPunching: 0.1
@@ -11153,7 +11157,7 @@ MonoBehaviour:
   NuclearPunchPower: 5
   NuclearPunchReadyPunch: 0.1
   NuclearPunching: 0.1
-  NuclearPunchResetPunch: 0.3
+  NuclearPunchResetPunch: 0.1
   isAI: 0
 --- !u!114 &5164006939630707526
 MonoBehaviour:
