@@ -30,24 +30,22 @@ public class Actor : MonoBehaviourPun
         Fall = 0x80,
         Climb = 0x100,
         Debuff = 0x200,
+        Balloon = 0x400,
     }
 
     public enum DebuffState
     {
-        Default =   0x0,  // X
-        // 버프
-        PowerUp =   0x1,  // 불끈
-        // 디버프
-        Burn =      0x2,  // 화상
-        Exhausted = 0x4,  // 지침
-        Slow =      0x8, // 둔화
-        Ice =    0x10, // 빙결
-        Shock =     0x20, // 감전
-        Stun =      0x40, // 기절
-        // 상태변화
-        Drunk =     0x80, // 취함
-        Balloon =   0x100, // 풍선
-        Ghost =     0x200, // 유령
+        Default =   0x0,
+        PowerUp =   0x1,
+        Burn =      0x2,
+        Exhausted = 0x4,
+        Slow =      0x8,
+        Ice =       0x10,
+        Shock =     0x20, 
+        Stun =      0x40, 
+        Drunk =     0x80,  
+        Balloon =   0x100, 
+        Ghost =     0x200,
     }
 
     public float HeadMultiple = 1.5f;
@@ -169,6 +167,9 @@ public class Actor : MonoBehaviourPun
             case ActorState.Climb:
                 break;
             case ActorState.Roll:
+                break;
+            case ActorState.Balloon:
+                PlayerController.BalloonMove();
                 break;
         }
 

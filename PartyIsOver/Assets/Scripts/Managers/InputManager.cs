@@ -30,7 +30,7 @@ public class InputManager
 
     bool _isCharge = false;
     float _chargeTime = 0;
-    float _chargeThreshold = 1.0f;
+    float _chargeThreshold = 0.2f;
 
     bool _wkeyPressed = false;
     bool _akeyPressed = false;
@@ -38,6 +38,7 @@ public class InputManager
     bool _dkeyPressed = false;
     bool _lshiftKeyPressed = false;
 
+    Define.KeyboardEvent a;
 
     public void OnUpdate()
     {
@@ -200,7 +201,7 @@ public class InputManager
                 _spaceKeyPressedTime = 0;
             }
         }
-
+        
         if (KeyboardAction != null)
         {
             if (Input.GetKeyDown(KeyCode.R))
@@ -229,10 +230,14 @@ public class InputManager
             {
                 if (_rkeyPressed)
                 {
-                    if (Time.time < _rkeyPressedTime + 0.2f)
+                    if (Time.time < _rkeyPressedTime + 0.7f)
+                    {
                         KeyboardAction.Invoke(Define.KeyboardEvent.Click);
-                    else
+                    }
+                    else if(Time.time > _rkeyPressedTime + 2f)
+                    {
                         KeyboardAction.Invoke(Define.KeyboardEvent.Charge);
+                    }
                 }
                 _rkeyPressed = false;
                 _isCharge = false;
@@ -321,5 +326,4 @@ public class InputManager
         MouseAction = null;
         KeyboardAction = null;
     }
-
 }
