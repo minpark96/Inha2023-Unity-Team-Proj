@@ -81,7 +81,6 @@ public class Define
         Click,
         Hold,
         Charge,
-
     }
 
 
