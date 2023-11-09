@@ -116,10 +116,12 @@ public class GameCenter : MonoBehaviourPunCallbacks
     private void OnGUI()
     {
         GUI.backgroundColor = Color.white;
-        GUI.contentColor = Color.black;
         for (int i = 0; i <ActorViewIDs.Count; i++)
         {
-            GUI.Label(new Rect(0, 140 + i * 20, 200, 200), "Actor View ID: " + ActorViewIDs[i] + " / HP: " + Actors[i].Health);
+            GUI.contentColor = Color.black;
+            GUI.Label(new Rect(0, 140 + i * 40, 200, 200), "Actor View ID: " + ActorViewIDs[i] + " / HP: " + Actors[i].Health);
+            GUI.contentColor = Color.red;
+            GUI.Label(new Rect(0, 160 + i * 40, 200, 200), "Debuff: " + Actors[i].debuffState);
         }
     }
 
@@ -135,23 +137,24 @@ public class GameCenter : MonoBehaviourPunCallbacks
         }
     }
    
-    void SendInfo(float HP, int viewID)
+    void SendInfo(float HP, Actor.DebuffState state, int viewID)
     {
         Debug.Log("[master Event] SendInfo()");
 
-        photonView.RPC("SyncHP", RpcTarget.Others, HP, viewID);
+        photonView.RPC("SyncInfo", RpcTarget.Others, HP, state, viewID);
     }
 
     [PunRPC]
-    void SyncHP(float hp, int viewID)
+    void SyncInfo(float hp, Actor.DebuffState state, int viewID)
     {
-        Debug.Log("[except master received] SyncHP()");
+        Debug.Log("[except master received] SyncInfo()");
 
         for (int i = 0; i < Actors.Count; i++)
         {
             if (Actors[i].photonView.ViewID == viewID)
             {
                 Actors[i].Health = hp;
+                Actors[i].debuffState = state;
                 break;
             }
         }
