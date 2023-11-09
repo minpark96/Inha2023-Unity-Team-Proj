@@ -58,6 +58,8 @@ public class PlayerInputHandler : MonoBehaviour
                 _actor.PlayerController.OnMouseEvent_Grab(evt);
         }
         else
+        {
             _actor.Grab.OnMouseEvent_EquipItem(evt);
+        }
     }
 }
