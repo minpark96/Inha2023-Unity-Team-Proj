@@ -8,13 +8,11 @@ public class PlayerInputHandler : MonoBehaviour
 {
     private Actor _actor;
 
-
     private void Awake()
     {
         _actor = GetComponent<Actor>();
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         if (_actor.PlayerController.isAI)
@@ -28,42 +26,40 @@ public class PlayerInputHandler : MonoBehaviour
         Managers.Input.KeyboardAction += OnKeyboardEvent;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-
 
     void OnKeyboardEvent(Define.KeyboardEvent evt)
     {
-        if (_actor.actorState == ActorState.Debuff)
+        if (_actor.debuffState == DebuffState.Ice || _actor.debuffState == DebuffState.Shock || _actor.debuffState == DebuffState.Stun)
             return;
 
-        if (_actor.Grab.GrabItem == null)
-            _actor.PlayerController.OnKeyboardEvent_Idle(evt);
 
-    }
-
-
-
-    void OnMouseEvent(Define.MouseEvent evt)
-    {
-        if (_actor.actorState == ActorState.Debuff)
-            return;
+        _actor.PlayerController.OnKeyboardEvent_Move(evt);
 
 
         if (_actor.Grab.GrabItem == null)
         {
-            _actor.PlayerController.OnMouseEvent_Idle(evt);
+            if(_actor.debuffState != DebuffState.Exhausted || _actor.debuffState != DebuffState.Balloon)
+                _actor.PlayerController.OnKeyboardEvent_Skill(evt);
+        }
+    }
+
+    void OnMouseEvent(Define.MouseEvent evt)
+    {
+        if (_actor.debuffState == DebuffState.Ice || _actor.debuffState == DebuffState.Balloon)
+            return;
+        if (_actor.debuffState == DebuffState.Shock || _actor.debuffState == DebuffState.Stun)
+            return;
+
+        if (_actor.Grab.GrabItem == null)
+        {
+            _actor.PlayerController.OnMouseEvent_Skill(evt);
+
+            if (_actor.debuffState != DebuffState.Burn)
+                _actor.PlayerController.OnMouseEvent_Grab(evt);
         }
         else
         {
             _actor.Grab.OnMouseEvent_EquipItem(evt);
         }
     }
-
-
-
 }

@@ -6,6 +6,11 @@ using UnityEngine;
 
 public class Actor : MonoBehaviourPun
 {
+    public delegate void PlayerHurt(float HP, int viewID);
+    public event PlayerHurt OnPlayerHurt;
+    public delegate void PlayerExhaust(float Stamina, int viewID);
+    public event PlayerExhaust OnPlayerExhaust;
+
     public Transform CameraArm;
 
     public StatusHandler StatusHandler;
@@ -18,31 +23,29 @@ public class Actor : MonoBehaviourPun
         Dead = 0x1,
         Unconscious = 0x2,
         Stand = 0x4,
-        Run = 0x8,
-        Jump = 0x10,
-        Fall = 0x20,
-        Climb = 0x40,
-        Debuff = 0x80,
-        Roll,
+        Walk = 0x8,
+        Run = 0x10,
+        Roll = 0x20,
+        Jump = 0x40,
+        Fall = 0x80,
+        Climb = 0x100,
+        Debuff = 0x200,
+        Balloon = 0x400,
     }
 
     public enum DebuffState
     {
-        Default =   0x0,  // X
-        // 버프
-        PowerUp =   0x1,  // 불끈
-        Invisible = 0x2,  // 투명     >> X
-        // 디버프
-        Burn =      0x4,  // 화상
-        Exhausted = 0x8,  // 지침
-        Slow =      0x10, // 둔화
-        Freeze =    0x20, // 빙결
-        Shock =     0x40, // 감전
-        Stun =      0x80, // 기절
-        // 상태변화
-        Drunk =     0x100, // 취함
-        Balloon =   0x200, // 풍선
-        Ghost =     0x400, // 유령
+        Default =   0x0,
+        PowerUp =   0x1,
+        Burn =      0x2,
+        Exhausted = 0x4,
+        Slow =      0x8,
+        Ice =       0x10,
+        Shock =     0x20, 
+        Stun =      0x40, 
+        Drunk =     0x80,  
+        Balloon =   0x100, 
+        Ghost =     0x200,
     }
 
     public float HeadMultiple = 1.5f;
@@ -52,6 +55,21 @@ public class Actor : MonoBehaviourPun
     public float DamageReduction = 0f;
     public float PlayerAttackPoint = 1f;
 
+    // 체력
+    [SerializeField]
+    private float _health;
+    [SerializeField]
+    private float _maxHealth = 200f;
+    public float Health { get { return _health; } set { _health = value; } }
+    public float MaxHealth { get { return _maxHealth; } }
+
+    // 스테미나
+    [SerializeField]
+    private float _stamina;
+    [SerializeField]
+    private float _maxStamina = 100f;
+    public float Stamina { get { return _stamina; } set { _stamina = value; } }
+    public float MaxStamina { get { return _maxStamina; } }
 
     public ActorState actorState = ActorState.Stand;
     public ActorState lastActorState = ActorState.Run;
@@ -60,6 +78,25 @@ public class Actor : MonoBehaviourPun
     public static GameObject LocalPlayerInstance;
 
     public static int LayerCnt = 26;
+
+    public void HurtEventInvoke()
+    {
+        Debug.Log(photonView.ViewID + " 초기화 됐는지 체크한다");
+        if (BodyHandler == null)
+            Debug.Log(photonView.ViewID + " BodyHandler is null " + BodyHandler);
+        if (StatusHandler == null)
+            Debug.Log(photonView.ViewID + " StatusHandler is null " + StatusHandler);
+        if (PlayerController == null)
+            Debug.Log(photonView.ViewID + " PlayerController is null " + PlayerController);
+        if (Grab == null)
+            Debug.Log(photonView.ViewID + " Grab is null " + Grab);
+        Debug.Log("HurtEventInvoke()");
+
+        if (OnPlayerHurt == null)
+            Debug.Log(photonView.ViewID + " 이벤트 null");
+
+        OnPlayerHurt(_health, photonView.ViewID);
+    }
 
     private void Awake()
     {
@@ -81,6 +118,8 @@ public class Actor : MonoBehaviourPun
         Grab = GetComponent<Grab>();
 
         ChangeLayerRecursively(gameObject, LayerCnt++);
+
+        _health = _maxHealth;
     }
 
     private void ChangeLayerRecursively(GameObject obj, int layer)
@@ -123,6 +162,9 @@ public class Actor : MonoBehaviourPun
             case ActorState.Stand:
                 PlayerController.Stand();
                 break;
+            case ActorState.Walk:
+                PlayerController.Move();
+                break;
             case ActorState.Run:
                 PlayerController.Move();
                 break;
@@ -134,6 +176,9 @@ public class Actor : MonoBehaviourPun
             case ActorState.Climb:
                 break;
             case ActorState.Roll:
+                break;
+            case ActorState.Balloon:
+                PlayerController.BalloonMove();
                 break;
         }
 
