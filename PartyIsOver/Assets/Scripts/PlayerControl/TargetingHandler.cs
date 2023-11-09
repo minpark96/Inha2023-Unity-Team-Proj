@@ -59,11 +59,9 @@ public class TargetingHandler : MonoBehaviour
             {
                 if (_nearestObject == null || toCollider.magnitude < (_nearestObject.transform.position - chestTransform.position).magnitude)
                 {
-
                     _nearestCollider = colliders[i];
                     _nearestObject = colliders[i].GetComponent<InteractableObject>();
                 }
-
             }
         }
 
@@ -78,4 +76,27 @@ public class TargetingHandler : MonoBehaviour
         return _nearestObject;
     }
 
+
+    public Vector3 FindClosestCollisionPoint()
+    {
+        if (_nearestObject == null || _nearestCollider == null)
+        {
+            return Vector3.zero;
+        }
+
+        Vector3 start = _bodyHandler.Chest.transform.position;
+        Vector3 direction = (_nearestCollider.transform.position - start).normalized;
+        float distance = Vector3.Distance(start, _nearestCollider.transform.position);
+
+        RaycastHit hit;
+
+        if (Physics.Raycast(start, direction, out hit, distance, layerMask))
+        {
+            return hit.point;
+        }
+        else
+        {
+            return Vector3.zero;
+        }
+    }
 }
