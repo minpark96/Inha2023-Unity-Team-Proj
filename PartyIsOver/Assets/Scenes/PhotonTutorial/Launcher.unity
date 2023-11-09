@@ -1534,4 +1534,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0493597706ad4f4c874ee95b39935e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerPrefab: Ragdoll2
