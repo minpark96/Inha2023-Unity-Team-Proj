@@ -481,10 +481,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
     private void FixedUpdate()
     {
-        if (!photonView.IsMine)
-        {
-            return;
-        }
+        if (!photonView.IsMine) return;
 
         if (isAI)
             return;
@@ -507,14 +504,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
                 _actor.actorState = Actor.ActorState.Walk;
                 Stand();
             }
-        }
-    }
-
-    private void Update()
-    {
-        if (!photonView.IsMine)
-        {
-            return;
         }
     }
 

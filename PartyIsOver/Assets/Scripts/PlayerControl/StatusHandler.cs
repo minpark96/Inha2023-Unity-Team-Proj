@@ -134,14 +134,15 @@ public class StatusHandler : MonoBehaviourPun
             _healthDamage += damage;
         }
 
-        // 상태이상 체크
-        DebuffCheck(type);
-        DebuffAction();
-
-        //Debug.Log("[AddDamage()] _healthDamage " + photonView.ViewID + " - " + _healthDamage);
-
         if (_healthDamage != 0f)
             UpdateHealth();
+
+        if (actor.actorState != Actor.ActorState.Dead)
+        {
+            // 상태이상 체크
+            DebuffCheck(type);
+            DebuffAction();
+        }
 
         actor.StatusChangeEventInvoke();
     }
@@ -448,14 +449,19 @@ public class StatusHandler : MonoBehaviourPun
     IEnumerator Stun(float delay)
     {
         _hasStun = true;
-        yield return new WaitForSeconds(delay);
-        yield return RestoreBodySpring();
+        
+        // 사망 상태를 위해서 임시로 999
+        if (delay != 999)
+        {
+            yield return new WaitForSeconds(delay);
+            yield return RestoreBodySpring();
 
-        _hasStun = false;
-        actor.actorState = Actor.ActorState.Stand;
-        actor.debuffState &= ~Actor.DebuffState.Stun;
+            _hasStun = false;
+            actor.actorState = Actor.ActorState.Stand;
+            actor.debuffState &= ~Actor.DebuffState.Stun;
 
-        actor.StatusChangeEventInvoke();
+            actor.StatusChangeEventInvoke();
+        }
     }
 
     public void UpdateHealth()
@@ -514,7 +520,8 @@ public class StatusHandler : MonoBehaviourPun
 
     void KillPlayer()
     {
-
+        StartCoroutine(Stun(999));
+        actor.actorState = Actor.ActorState.Dead;
     }
 
     void EnterUnconsciousState()

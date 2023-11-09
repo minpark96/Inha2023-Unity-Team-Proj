@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class Actor : MonoBehaviourPun
 {
-    public delegate void PlayerHurt(float HP, DebuffState state, int viewID);
+    public delegate void PlayerHurt(float HP, ActorState actorState, DebuffState debuffstate, int viewID);
     public event PlayerHurt OnPlayerHurt;
     public delegate void PlayerExhaust(float Stamina, int viewID);
     public event PlayerExhaust OnPlayerExhaust;
@@ -81,12 +81,12 @@ public class Actor : MonoBehaviourPun
 
     public void StatusChangeEventInvoke()
     {
-        Debug.Log("HurtEventInvoke()");
+        Debug.Log("StatusChangeEventInvoke()");
 
         if (OnPlayerHurt == null)
             Debug.Log(photonView.ViewID + " ¿Ã∫•∆Æ null");
 
-        OnPlayerHurt(_health, debuffState, photonView.ViewID);
+        OnPlayerHurt(_health, actorState, debuffState, photonView.ViewID);
     }
 
     private void Awake()

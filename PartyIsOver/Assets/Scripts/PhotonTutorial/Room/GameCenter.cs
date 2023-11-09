@@ -20,7 +20,7 @@ public class GameCenter : MonoBehaviourPunCallbacks
 
     #region Private Fields
 
-    string _arenaName = "SDJTest";
+    string _arenaName = "PlayerMoveTest";
     // ÇÁ¸®ÆÕ °æ·Î
     string _playerPath = "Ragdoll2";
 
@@ -109,7 +109,6 @@ public class GameCenter : MonoBehaviourPunCallbacks
             {
                 photonView.RPC("RegisterActorInfo", RpcTarget.MasterClient, viewID);
             }
-
         }
     }
 
@@ -137,15 +136,15 @@ public class GameCenter : MonoBehaviourPunCallbacks
         }
     }
    
-    void SendInfo(float HP, Actor.DebuffState state, int viewID)
+    void SendInfo(float HP, Actor.ActorState actorState, Actor.DebuffState debuffstate, int viewID)
     {
         Debug.Log("[master Event] SendInfo()");
 
-        photonView.RPC("SyncInfo", RpcTarget.Others, HP, state, viewID);
+        photonView.RPC("SyncInfo", RpcTarget.Others, HP, actorState, debuffstate, viewID);
     }
 
     [PunRPC]
-    void SyncInfo(float hp, Actor.DebuffState state, int viewID)
+    void SyncInfo(float hp, Actor.ActorState actorState, Actor.DebuffState debuffstate, int viewID)
     {
         Debug.Log("[except master received] SyncInfo()");
 
@@ -154,7 +153,8 @@ public class GameCenter : MonoBehaviourPunCallbacks
             if (Actors[i].photonView.ViewID == viewID)
             {
                 Actors[i].Health = hp;
-                Actors[i].debuffState = state;
+                Actors[i].actorState = actorState;
+                Actors[i].debuffState = debuffstate;
                 break;
             }
         }
