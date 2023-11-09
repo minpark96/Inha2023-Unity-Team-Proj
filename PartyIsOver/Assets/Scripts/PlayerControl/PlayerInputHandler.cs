@@ -49,7 +49,7 @@ public class PlayerInputHandler : MonoBehaviour
         if (_actor.Grab.GrabItem == null)
         {
             _actor.PlayerController.OnKeyboardEvent_Move(evt);
-            _actor.PlayerController.OnKeyboardEvent_Skill(evt);
+            _actor.PlayerController.OnKeyboardEvent_SkillOld(evt);
         }
     }
 

@@ -248,8 +248,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
     void RestoreOriginalMotions()
     {
-        Debug.Log("복구 : RestoreOriginalMotions");
-
+        //y z 초기값 대입
         for (int i = 0; i < childJoints.Length; i++)
         {
             childJoints[i].angularYMotion = originalYMotions[i];
@@ -292,7 +291,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
                 break;
         }
     }
-    public void OnKeyboardEvent_Skill(Define.KeyboardEvent evt)
+    public void OnKeyboardEvent_SkillOld(Define.KeyboardEvent evt)
     {
         if (!photonView.IsMine)
         {
@@ -301,6 +300,18 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
         switch (evt)
         {
+            case Define.KeyboardEvent.PointerDown:
+                {
+                    if (Input.GetKeyDown(KeyCode.R))
+                    {
+                        if (!_isRSkillCheck)
+                        {
+                            _isRSkillCheck = true;
+                            StartCoroutine(ChargeReady());
+                        }
+                    }
+                }
+                break;
             case Define.KeyboardEvent.Press:
                 {
                     if (Input.GetKey(KeyCode.LeftShift))
@@ -343,11 +354,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             case Define.KeyboardEvent.Hold:
                 {
                     //중일때 확인 ex 이펙트 출현하는 코드를 넣어주면 기모아지는 것 첨 될듯
-                    if (!_isRSkillCheck)
-                    {
-                        _isRSkillCheck = true;
-                        StartCoroutine(ChargeReady());
-                    }
+                    
                 }
                 break;
         }
@@ -377,7 +384,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         yield return new WaitForSeconds(_delay);
         //물체의 모션을 고정
         Rigidbody _RPartRigidbody;
-
         for (int i = 0; i < RSkillAniData.Length; i++)
         {
             for (int j = 0; j < RSkillAniData[i].StandardRigidbodies.Length; j++)
@@ -388,13 +394,11 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
                 _RPartRigidbody.angularVelocity = Vector3.zero;
             }
         }
+        yield return null;
     }
 
     IEnumerator ResetCharge()
     {
-        yield return new WaitForSeconds(0.2f);
-
-        Debug.Log("Freeze풀기 : ResetCharge ");
         Rigidbody _RPartRigidbody;
 
         for (int i = 0; i < RSkillAniData.Length; i++)
@@ -402,10 +406,14 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             for (int j = 0; j < RSkillAniData[i].StandardRigidbodies.Length; j++)
             {
                 _RPartRigidbody = RSkillAniData[i].ActionRigidbodies[j];
+                //Debug.Log("Freeze풀기 : "+ _RPartRigidbody);
                 _RPartRigidbody.constraints = RigidbodyConstraints.None;
+                _RPartRigidbody.velocity = Vector3.zero;
+                _RPartRigidbody.angularVelocity = Vector3.zero;
             }
         }
-        yield return null;
+
+        yield return new WaitForSeconds(0.5f);
     }
 
     public void OnMouseEvent_Grab(Define.MouseEvent evt)
