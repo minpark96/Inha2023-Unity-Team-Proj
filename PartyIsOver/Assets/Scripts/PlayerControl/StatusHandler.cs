@@ -49,32 +49,25 @@ public class StatusHandler : MonoBehaviourPun
     private bool _hasGhost;
 
    
-    [Header("불끈 시간")]
+    [Header("Debuff Duration")]
     [SerializeField]
     private float _powerUpTime;
-    [Header("화상 시간")]
     [SerializeField]
     private float _burnTime;
-    [Header("지침 시간")]
     [SerializeField]
     private float _exhaustedTime;
-    [Header("둔화 시간")]
     [SerializeField]
     private float _slowTime;
-    [Header("빙결 시간")]
     [SerializeField]
     private float _freezeTime;
-    [Header("감전 시간")]
     [SerializeField]
     private float _shockTime;
-    [Header("기절 시간")]
     [SerializeField]
     private float _stunTime;
 
-    [Header("감전 데미지")]
+    [Header("Debuff Damage")]
     [SerializeField]
     public float _iceDamage;
-    [Header("화상 데미지")]
     [SerializeField]
     public float _burnDamage;
 
@@ -99,7 +92,6 @@ public class StatusHandler : MonoBehaviourPun
     
     void Update()
     {
-
         // 지침 디버프 활성화/비활성화
         if(actor.Stamina == 0)
         {
@@ -113,7 +105,7 @@ public class StatusHandler : MonoBehaviourPun
 
     private void OnGUI()
     {
-        if (this.name == "Ragdoll2(Clone)" && photonView.IsMine)
+        if (this.name == "Ragdoll2" && photonView.IsMine)
         {
             GUI.contentColor = Color.red;
             GUI.Label(new Rect(0, 0, 200, 200), "버프상태:" + actor.debuffState.ToString());
@@ -122,6 +114,12 @@ public class StatusHandler : MonoBehaviourPun
             GUI.contentColor = Color.blue;
             GUI.Label(new Rect(0, 60, 200, 200), "체력: " + actor.Health);
             GUI.Label(new Rect(0, 80, 200, 200), "스테미나: " + actor.Stamina);
+        }
+
+        if (this.name == "Dummy")
+        {
+            GUI.contentColor = Color.blue;
+            GUI.Label(new Rect(0, 120, 200, 200), "더미 체력: " + actor.Health);
         }
     }
 
@@ -165,7 +163,17 @@ public class StatusHandler : MonoBehaviourPun
                     }
                 }
                 break;
-            case Damage.Balloon:
+            case Damage.Balloon: // 풍선
+                actor.debuffState |= Actor.DebuffState.Balloon;
+                // 다른 디버프 체크
+                foreach (Actor.DebuffState state in System.Enum.GetValues(typeof(Actor.DebuffState)))
+                {
+                    // 풍선 이외의 상태가 켜지면 끄기
+                    if (state != Actor.DebuffState.Balloon && (actor.debuffState & state) != 0)
+                    {
+                        actor.debuffState &= ~state;
+                    }
+                }
                 break;
             case Damage.PowerUp: // 불끈
                 actor.debuffState |= Actor.DebuffState.PowerUp;
@@ -176,10 +184,10 @@ public class StatusHandler : MonoBehaviourPun
             case Damage.Shock: // 감전
                 actor.debuffState |= Actor.DebuffState.Shock;
                 break;
-            case Damage.Knockout: // 기절 (실험용 Damage.Knockout 씀)
+            case Damage.Stun: // 기절
                 actor.debuffState |= Actor.DebuffState.Stun;
                 break;
-           
+
         }
     }
 
@@ -222,14 +230,14 @@ public class StatusHandler : MonoBehaviourPun
                     break;
                 case Actor.DebuffState.Drunk:
                     break;
-                case Actor.DebuffState.Balloon:
-                    break;
+                //case Actor.DebuffState.Balloon:
+                    //break;
                 case Actor.DebuffState.Ghost:
                     break;
             }
         }
     }
-
+   
     IEnumerator PowerUp(float delay)
     {
         // 불끈
@@ -423,7 +431,6 @@ public class StatusHandler : MonoBehaviourPun
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Shock;
     }
-
     IEnumerator Stun(float delay)
     {
         _hasStun = true;

@@ -29,7 +29,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     // ÇÁ¸®ÆÕ °æ·Î
     string _gameCenterPath = "GameCenter";
 
-    string _roomSceneName = "Room";
+    string _roomSceneName = "MJTest";
 
     #endregion
 

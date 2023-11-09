@@ -8,7 +8,6 @@ public class PlayerInputHandler : MonoBehaviour
 {
     private Actor _actor;
 
-
     private void Awake()
     {
         _actor = GetComponent<Actor>();
@@ -27,29 +26,20 @@ public class PlayerInputHandler : MonoBehaviour
         Managers.Input.KeyboardAction += OnKeyboardEvent;
     }
 
-    void Update()
-    {
-        
-    }
-
-
 
     void OnKeyboardEvent(Define.KeyboardEvent evt)
     {
-        if (_actor.debuffState == DebuffState.Ice || _actor.debuffState == DebuffState.Balloon)
+        if (_actor.debuffState == DebuffState.Ice || _actor.debuffState == DebuffState.Shock || _actor.debuffState == DebuffState.Stun)
             return;
-        if(_actor.debuffState == DebuffState.Shock || _actor.debuffState == DebuffState.Stun)
-            return;
-        if(_actor.debuffState == DebuffState.Exhausted)
-        {
-            _actor.PlayerController.OnKeyboardEvent_Move(evt);
-            return;
-        }
+
+
+        _actor.PlayerController.OnKeyboardEvent_Move(evt);
+
 
         if (_actor.Grab.GrabItem == null)
         {
-            _actor.PlayerController.OnKeyboardEvent_Move(evt);
-            _actor.PlayerController.OnKeyboardEvent_SkillOld(evt);
+            if(_actor.debuffState != DebuffState.Exhausted || _actor.debuffState != DebuffState.Balloon)
+                _actor.PlayerController.OnKeyboardEvent_Skill(evt);
         }
     }
 
@@ -62,9 +52,10 @@ public class PlayerInputHandler : MonoBehaviour
 
         if (_actor.Grab.GrabItem == null)
         {
-            _actor.PlayerController.OnMouseEvent_Grab(evt);
+            _actor.PlayerController.OnMouseEvent_Skill(evt);
+
             if (_actor.debuffState != DebuffState.Burn)
-                _actor.PlayerController.OnMouseEvent_Skill(evt);
+                _actor.PlayerController.OnMouseEvent_Grab(evt);
         }
         else
             _actor.Grab.OnMouseEvent_EquipItem(evt);
