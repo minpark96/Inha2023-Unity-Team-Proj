@@ -15900,6 +15900,10 @@ PrefabInstance:
       propertyPath: _stamina
       value: 100
       objectReference: {fileID: 0}
+    - target: {fileID: 5164006939630707521, guid: 763a199fa1132cc4688fb4fcfd0b05ef, type: 3}
+      propertyPath: _stamina
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 5164006939630707582, guid: 763a199fa1132cc4688fb4fcfd0b05ef, type: 3}
       propertyPath: m_RootOrder
       value: 5

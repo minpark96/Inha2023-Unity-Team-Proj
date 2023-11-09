@@ -249,8 +249,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         beforePos = gameObject.transform;
     }
 
-    Vector3 _beforePosition;
-
     public void OnKeyboardEvent_Move(Define.KeyboardEvent evt)
     {
         if (!photonView.IsMine)
@@ -421,19 +419,17 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             StartCoroutine(BalloonShapeOn());
         }
 
-        if(_actor.actorState != Actor.ActorState.Balloon)
+       
+        if (_actor.actorState != Actor.ActorState.Jump && _actor.actorState != Actor.ActorState.Roll && _actor.actorState != Actor.ActorState.Run)
         {
-            if (_actor.actorState != Actor.ActorState.Jump && _actor.actorState != Actor.ActorState.Roll && _actor.actorState != Actor.ActorState.Run)
+            if (_moveInput.magnitude == 0f)
             {
-                if (_moveInput.magnitude == 0f)
-                {
-                    _actor.actorState = Actor.ActorState.Stand;
-                }
-                else
-                {
-                    _actor.actorState = Actor.ActorState.Walk;
-                    Stand();
-                }
+                _actor.actorState = Actor.ActorState.Stand;
+            }
+            else
+            {
+                _actor.actorState = Actor.ActorState.Walk;
+                Stand();
             }
         }
     }
@@ -446,13 +442,17 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         }
     }
 
-    List<Transform> before = new List<Transform>();
-
     IEnumerator BalloonShapeOn()
     {
-        _bodyHandler.BodyParts[0].transform.localScale = new Vector3(2, 2, 1);
-        _bodyHandler.BodyParts[1].transform.localScale = new Vector3(2, 2, 2);
-        _bodyHandler.BodyParts[2].transform.localScale = new Vector3(2, 2, 2);
+        _bodyHandler.BodyParts[0].transform.localScale = new Vector3(1.5f, 1.5f, 0.6f); // head
+        _bodyHandler.BodyParts[1].transform.localScale = new Vector3(2f, 2.3f, 2.3f); // chest
+        _bodyHandler.BodyParts[2].transform.localScale = new Vector3(2f, 2f, 2.5f); // waist
+
+        for (int i = 4; i < 13; i++)
+        {
+            if (i >= 7 && i <= 9) continue;
+            _bodyHandler.BodyParts[i].PartRigidbody.freezeRotation = true;
+        }
 
         yield return new WaitForSeconds(5.0f);
 
@@ -463,6 +463,12 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         _bodyHandler.BodyParts[0].transform.localScale = new Vector3(1, 1, 1);
         _bodyHandler.BodyParts[1].transform.localScale = new Vector3(1, 1, 1);
         _bodyHandler.BodyParts[2].transform.localScale = new Vector3(1, 1, 1);
+
+        for (int i = 4; i < 13; i++)
+        {
+            if (i >= 7 && i <= 9) continue;
+            _bodyHandler.BodyParts[i].PartRigidbody.freezeRotation = false;
+        }
 
         _actor.actorState = Actor.ActorState.Stand;
         _actor.debuffState = Actor.DebuffState.Default;
