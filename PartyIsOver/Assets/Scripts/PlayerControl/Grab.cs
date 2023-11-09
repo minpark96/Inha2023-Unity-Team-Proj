@@ -453,7 +453,7 @@ public class Grab : MonoBehaviourPun
         Debug.Log("horizontalAttack");
 
         //아이템 때문에 추가
-        yield return _actor.PlayerController.Punch(PlayerController.Side.Right, 0.07f, 0.1f, 0.1f, 0.1f , 3f);
+        yield return _actor.PlayerController.ItemTwoHand(PlayerController.Side.Right, 0.07f, 0.1f, 0.5f, 0.1f , 3f);
 
         Debug.Log("코루틴 끝");
 

@@ -10,6 +10,7 @@ using static AniAngleData;
 using Unity.VisualScripting;
 using Photon.Pun;
 using UnityEngine.UIElements;
+using static Grab;
 
 [System.Serializable]
 public class AniFrameData
@@ -158,6 +159,10 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     public float NuclearPunchReadyPunch = 0.1f;
     public float NuclearPunching = 0.1f;
     public float NuclearPunchResetPunch = 0.3f;
+
+    [Header("ItemControll")]
+    public float ItempSwingPower;
+
 
     private float _runSpeedOffset = 350f;
     private Vector3 _moveInput;
@@ -1527,10 +1532,107 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
     #region ItemTwoHand
 
-    IEnumerator ItemTwoHand()
+    public void ItemTwoHandTrigger()
     {
+        StartCoroutine(ItemTwoHandDelay(Side.Right));
+    }
 
-        yield return null;
+    IEnumerator ItemTwoHandDelay(Side side)
+    {
+        yield return ItemTwoHand(side, 0.07f, 0.1f, 0.3f, 0.1f, ItempSwingPower);
+    }
+
+    public IEnumerator ItemTwoHand(Side side, float duration, float readyTime, float punchTime, float resetTime, float itemPower)
+    {
+        float checkTime = Time.time;
+
+        while (Time.time - checkTime < readyTime)
+        {
+            ItemTwoHandReady(side);
+            yield return new WaitForSeconds(duration);
+        }
+        checkTime = Time.time;
+
+        while (Time.time - checkTime < punchTime)
+        {
+            ItemTwoHandSwing(side, itemPower);
+            yield return new WaitForSeconds(duration);
+        }
+        checkTime = Time.time;
+
+        while (Time.time - checkTime < resetTime)
+        {
+            ItemTwoHandReSet(side);
+            yield return new WaitForSeconds(duration);
+        }
+    }
+
+
+    #endregion
+
+    #region ItemTwoHandAnimation
+
+    public void ItemTwoHandReady(Side side)
+    {
+        //upperArm 2 chest1 up right 0.01 20 foreArm chest up back 
+        //TestRready ¿À¸¥ÂÊ ¿ÞÂÊ ±¸º°ÇØ¼­ ÁÂ¿ì·Î ÈÖµÎ·ê¼ö ÀÖÀ½
+        AniAngleData[] itemTwoHands = (side == Side.Right) ? TestRready2 : TestRready2;
+        for (int i = 0; i < itemTwoHands.Length; i++)
+        {
+            AniAngleForce(itemTwoHands, i);
+        }
+    }
+
+    public void ItemTwoHandSwing(Side side, float itemPower)
+    {
+        if (target)
+            return;
+
+        Transform partTransform = _bodyHandler.Chest.transform;
+        AniFrameData[] itemTwoHands = TestRready1;
+        Transform transform2 = _bodyHandler.LeftHand.transform;
+        _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+        _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+        _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+
+        if (side == Side.Right)
+        {
+            itemTwoHands = TestRready1;
+            transform2 = _bodyHandler.RightHand.transform;
+            _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+            _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+            _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+        }
+
+        for (int i = 0; i < itemTwoHands.Length; i++)
+        {
+            Vector3 dir = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
+            AniForce(itemTwoHands, i, dir , itemPower);
+        }
+    }
+
+    public void ItemTwoHandReSet(Side side)
+    {
+        Transform partTransform = _bodyHandler.Chest.transform;
+
+        AniAngleData[] itemTwoHands = TestRready2;
+        _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+        _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+        _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+
+        if (side == Side.Right)
+        {
+            itemTwoHands = TestRready2;
+            _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+            _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+            _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+        }
+
+        for (int i = 0; i < itemTwoHands.Length; i++)
+        {
+            Vector3 dir = partTransform.transform.right / 2f;
+            AniAngleForce(itemTwoHands, i, dir);
+        }
     }
 
     #endregion

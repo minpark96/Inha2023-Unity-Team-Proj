@@ -11565,9 +11565,9 @@ MonoBehaviour:
     - 50
   RightPunchAniData:
   - StandardRigidbodies:
-    - {fileID: 5856411775826887216}
+    - {fileID: 5856729462922818502}
     ActionDirection:
-    - {fileID: 5878457040528025866}
+    - {fileID: 5875523848119066616}
     TargetDirection:
     - {fileID: 5875996918003196956}
     ActionAngleDirections: 03000000
@@ -11587,7 +11587,7 @@ MonoBehaviour:
     AngleStability:
     - 0.01
     AnglePowerValues:
-    - 20000
+    - 20
   LeftPunchAniData:
   - StandardRigidbodies:
     - {fileID: 5856411775826887216}
@@ -11612,7 +11612,7 @@ MonoBehaviour:
     AngleStability:
     - 0.01
     AnglePowerValues:
-    - 20000
+    - 20
   RightPunchingAniData:
   - StandardRigidbodies:
     - {fileID: 5856729462922818502}
@@ -11814,22 +11814,34 @@ MonoBehaviour:
     - {fileID: 5855867809452644878}
     - {fileID: 5855867809452644878}
     - {fileID: 5855867809452644878}
-    ActionRigidbodies:
-    - {fileID: 5856003484643476932}
-    - {fileID: 5793437608505534348}
-    - {fileID: 5856729462922818502}
-    ForceDirections: 070000000200000003000000
-    ForcePowerValues:
-    - 1
-    - 1
-    - 2
-  - StandardRigidbodies:
     - {fileID: 5855867809452644878}
     ActionRigidbodies:
-    - {fileID: 5793545070783210251}
-    ForceDirections: 02000000
+    - {fileID: 5856729462922818502}
+    - {fileID: 5856729462922818502}
+    - {fileID: 5856729462922818502}
+    - {fileID: 5856003484643476932}
+    ForceDirections: 06000000030000000400000007000000
     ForcePowerValues:
-    - 1
+    - 15
+    - 50
+    - 15
+    - 5
+  - StandardRigidbodies:
+    - {fileID: 5855867809452644878}
+    - {fileID: 5855867809452644878}
+    - {fileID: 5855867809452644878}
+    - {fileID: 5855867809452644878}
+    ActionRigidbodies:
+    - {fileID: 5856411775826887216}
+    - {fileID: 5856572161679450355}
+    - {fileID: 5793545070783210251}
+    - {fileID: 5855867809452644878}
+    ForceDirections: 02000000020000000200000002000000
+    ForcePowerValues:
+    - 2
+    - 2
+    - 2
+    - 2
   TestRready2:
   - StandardRigidbodies:
     - {fileID: 5793437608505534348}
@@ -11874,6 +11886,7 @@ MonoBehaviour:
   NuclearPunchReadyPunch: 0.1
   NuclearPunching: 0.1
   NuclearPunchResetPunch: 0.1
+  ItempSwingPower: 1000
   isAI: 0
 --- !u!114 &5878509405600198236
 MonoBehaviour:
