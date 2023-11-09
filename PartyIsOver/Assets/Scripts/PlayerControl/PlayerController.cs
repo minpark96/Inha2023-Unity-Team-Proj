@@ -143,6 +143,8 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     public bool isStateChange;
     public bool isMeowNyangPunch = false;
     private bool _isRSkillCheck;
+    public bool isBalloon = false;
+
 
     [Header("SkillControll")]
     public float RSkillCoolTime = 10;
@@ -222,7 +224,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     private ConfigurableJoint[] childJoints;
     private ConfigurableJointMotion[] originalYMotions;
     private ConfigurableJointMotion[] originalZMotions;
-
+    Transform beforePos;
     void Init()
     {
         _bodyHandler = GetComponent<BodyHandler>();
@@ -243,16 +245,11 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             originalZMotions[i] = childJoints[i].angularZMotion;
         }
         _grab = GetComponent<Grab>();
+        
+        beforePos = gameObject.transform;
     }
 
-    void RestoreOriginalMotions()
-    {
-        for (int i = 0; i < childJoints.Length; i++)
-        {
-            childJoints[i].angularYMotion = originalYMotions[i];
-            childJoints[i].angularZMotion = originalZMotions[i];
-        }
-    }
+    Vector3 _beforePosition;
 
     public void OnKeyboardEvent_Move(Define.KeyboardEvent evt)
     {
@@ -265,25 +262,17 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         {
             case Define.KeyboardEvent.Press:
                 {
-                    if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S))
+                    if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
                     {
-                        _moveInput.z = Input.GetAxis("Vertical");
-                    }
-                    if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
-                    {
-                        _moveInput.x = Input.GetAxis("Horizontal");
+                        _moveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
                     }
                 }
                 break;
             case Define.KeyboardEvent.Click:
                 {
-                    if (Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.S))
+                    if (Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.S) || Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
                     {
-                        _moveInput.z = 0;
-                    }
-                    if (Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
-                    {
-                        _moveInput.x = 0;
+                        _moveInput = new Vector3(0, 0, 0);
                     }
                 }
                 break;
@@ -342,43 +331,26 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
                 break;
         }
     }
-
-    IEnumerator Rready()
+    public void OnKeyboardEvent_Balloon(Define.KeyboardEvent evt)
     {
-        for (int i = 0; i < childJoints.Length; i++)
+        if (!photonView.IsMine)
         {
-            childJoints[i].angularYMotion = ConfigurableJointMotion.Locked;
-            childJoints[i].angularZMotion = ConfigurableJointMotion.Locked;
+            return;
         }
 
-        for (int i = 0; i < RSkillAngleAniData.Length; i++)
-        {
-            AniAngleForce(RSkillAngleAniData, i);
-        }
-        yield return ForceRready(0.1f);
+        // 스페이스바 구현
+
     }
 
-    IEnumerator ForceRready(float _delay)
+    public void OnMouseEvent_Balloon(Define.MouseEvent evt)
     {
-        for (int i = 0; i < RSkillAniData.Length; i++)
+        if (!photonView.IsMine)
         {
-            AniForce(RSkillAniData, i);
+            return;
         }
-        yield return new WaitForSeconds(_delay);
-        //물체의 모션을 고정
-        Rigidbody _RPartRigidbody;
-
-        for (int i = 0; i < RSkillAniData.Length; i++)
-        {
-            for (int j = 0; j < RSkillAniData[i].StandardRigidbodies.Length; j++)
-            {
-                _RPartRigidbody = RSkillAniData[i].ActionRigidbodies[j];
-                _RPartRigidbody.constraints = RigidbodyConstraints.FreezeAll;
-                _RPartRigidbody.velocity = Vector3.zero;
-                _RPartRigidbody.angularVelocity = Vector3.zero;
-            }
-        }
+        // 좌클릭, 우클릭 구현
     }
+
 
     public void OnMouseEvent_Grab(Define.MouseEvent evt)
     {
@@ -442,16 +414,26 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         if (isAI)
             return;
 
-        if (_actor.actorState != Actor.ActorState.Jump && _actor.actorState != Actor.ActorState.Roll && _actor.actorState != Actor.ActorState.Run)
+        if (_actor.debuffState == Actor.DebuffState.Balloon && isBalloon == false)
         {
-            if (_moveInput.magnitude == 0f)
+            isBalloon = true;
+            _actor.actorState = Actor.ActorState.Balloon;
+            StartCoroutine(BalloonShapeOn());
+        }
+
+        if(_actor.actorState != Actor.ActorState.Balloon)
+        {
+            if (_actor.actorState != Actor.ActorState.Jump && _actor.actorState != Actor.ActorState.Roll && _actor.actorState != Actor.ActorState.Run)
             {
-                _actor.actorState = Actor.ActorState.Stand;
-            }
-            else
-            {
-                _actor.actorState = Actor.ActorState.Walk;
-                Stand();
+                if (_moveInput.magnitude == 0f)
+                {
+                    _actor.actorState = Actor.ActorState.Stand;
+                }
+                else
+                {
+                    _actor.actorState = Actor.ActorState.Walk;
+                    Stand();
+                }
             }
         }
     }
@@ -462,6 +444,35 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         {
             return;
         }
+    }
+
+    List<Transform> before = new List<Transform>();
+
+    IEnumerator BalloonShapeOn()
+    {
+        _bodyHandler.BodyParts[0].transform.localScale = new Vector3(2, 2, 1);
+        _bodyHandler.BodyParts[1].transform.localScale = new Vector3(2, 2, 2);
+        _bodyHandler.BodyParts[2].transform.localScale = new Vector3(2, 2, 2);
+
+        yield return new WaitForSeconds(5.0f);
+
+        BalloonShapeOff();
+    }
+    private void BalloonShapeOff()
+    {
+        _bodyHandler.BodyParts[0].transform.localScale = new Vector3(1, 1, 1);
+        _bodyHandler.BodyParts[1].transform.localScale = new Vector3(1, 1, 1);
+        _bodyHandler.BodyParts[2].transform.localScale = new Vector3(1, 1, 1);
+
+        _actor.actorState = Actor.ActorState.Stand;
+        _actor.debuffState = Actor.DebuffState.Default;
+        isBalloon = false;
+    }
+
+    public void BalloonMove()
+    {
+
+        //balloon.transform.position += _moveInput;
     }
 
     private void ForwardRollTrigger()
@@ -798,6 +809,51 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         yield return null;
     }
 
+    void RestoreOriginalMotions()
+    {
+        for (int i = 0; i < childJoints.Length; i++)
+        {
+            childJoints[i].angularYMotion = originalYMotions[i];
+            childJoints[i].angularZMotion = originalZMotions[i];
+        }
+    }
+
+    IEnumerator Rready()
+    {
+        for (int i = 0; i < childJoints.Length; i++)
+        {
+            childJoints[i].angularYMotion = ConfigurableJointMotion.Locked;
+            childJoints[i].angularZMotion = ConfigurableJointMotion.Locked;
+        }
+
+        for (int i = 0; i < RSkillAngleAniData.Length; i++)
+        {
+            AniAngleForce(RSkillAngleAniData, i);
+        }
+        yield return ForceRready(0.1f);
+    }
+
+    IEnumerator ForceRready(float _delay)
+    {
+        for (int i = 0; i < RSkillAniData.Length; i++)
+        {
+            AniForce(RSkillAniData, i);
+        }
+        yield return new WaitForSeconds(_delay);
+        //물체의 모션을 고정
+        Rigidbody _RPartRigidbody;
+
+        for (int i = 0; i < RSkillAniData.Length; i++)
+        {
+            for (int j = 0; j < RSkillAniData[i].StandardRigidbodies.Length; j++)
+            {
+                _RPartRigidbody = RSkillAniData[i].ActionRigidbodies[j];
+                _RPartRigidbody.constraints = RigidbodyConstraints.FreezeAll;
+                _RPartRigidbody.velocity = Vector3.zero;
+                _RPartRigidbody.angularVelocity = Vector3.zero;
+            }
+        }
+    }
     private void NuclearPunch()
     {
         StartCoroutine(NuclearPunchDelay());
