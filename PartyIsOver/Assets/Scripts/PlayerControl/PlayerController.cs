@@ -143,6 +143,8 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     public bool isStateChange;
     public bool isMeowNyangPunch = false;
     private bool _isRSkillCheck;
+    public bool isBalloon = false;
+
 
     [Header("SkillControll")]
     public float RSkillCoolTime = 10;
@@ -176,7 +178,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
     [Header("Dummy")]
     public bool isAI = false;
-    public bool isBalloon = false;
 
     Rigidbody _hipRB;
 
@@ -223,7 +224,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     private ConfigurableJoint[] childJoints;
     private ConfigurableJointMotion[] originalYMotions;
     private ConfigurableJointMotion[] originalZMotions;
-
+    Transform beforePos;
     void Init()
     {
         _bodyHandler = GetComponent<BodyHandler>();
@@ -244,6 +245,8 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             originalZMotions[i] = childJoints[i].angularZMotion;
         }
         _grab = GetComponent<Grab>();
+        
+        beforePos = gameObject.transform;
     }
 
     Vector3 _beforePosition;
@@ -443,34 +446,13 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         }
     }
 
-    public List<Transform> before = new List<Transform>();
+    List<Transform> before = new List<Transform>();
 
     IEnumerator BalloonShapeOn()
     {
-        List<Vector3> rotation = new List<Vector3>();
-
-        before.Add(_bodyHandler.BodyParts[3].transform);
-
-        foreach(BodyPart body in _bodyHandler.BodyParts)
-        {
-            if (body == _bodyHandler.BodyParts[3]) continue;
-            body.gameObject.SetActive(false);
-        }
-
-        GameObject hip = _bodyHandler.BodyParts[3].gameObject;
-
-        List<Transform> hipChild = new List<Transform>();
-        int childLength = hip.transform.childCount;
-
-        for (int i = 0; i < childLength; i++)
-        {
-            hipChild.Add(hip.transform.GetChild(i));
-
-            if(i == childLength - 1)
-                hipChild[i].gameObject.SetActive(true);
-            else
-                hipChild[i].gameObject.SetActive(false);
-        }
+        _bodyHandler.BodyParts[0].transform.localScale = new Vector3(2, 2, 1);
+        _bodyHandler.BodyParts[1].transform.localScale = new Vector3(2, 2, 2);
+        _bodyHandler.BodyParts[2].transform.localScale = new Vector3(2, 2, 2);
 
         yield return new WaitForSeconds(5.0f);
 
@@ -478,28 +460,9 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     }
     private void BalloonShapeOff()
     {
-        foreach (BodyPart body in _bodyHandler.BodyParts)
-        {
-            body.gameObject.SetActive(true);
-        }
-
-        GameObject hip = _bodyHandler.BodyParts[3].gameObject;
-
-        List<Transform> hipChild = new List<Transform>();
-        int childLength = hip.transform.childCount;
-
-        for (int i = 0; i < childLength; i++)
-        {
-            hipChild.Add(hip.transform.GetChild(i));
-
-            if (i == childLength - 1)
-                hipChild[i].gameObject.SetActive(false);
-            else
-                hipChild[i].gameObject.SetActive(true);
-        }
-
-        _bodyHandler.BodyParts[3].transform.position = before[0].position;
-        _bodyHandler.BodyParts[3].transform.rotation = before[0].rotation;
+        _bodyHandler.BodyParts[0].transform.localScale = new Vector3(1, 1, 1);
+        _bodyHandler.BodyParts[1].transform.localScale = new Vector3(1, 1, 1);
+        _bodyHandler.BodyParts[2].transform.localScale = new Vector3(1, 1, 1);
 
         _actor.actorState = Actor.ActorState.Stand;
         _actor.debuffState = Actor.DebuffState.Default;
@@ -508,10 +471,8 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
     public void BalloonMove()
     {
-        GameObject hip = _bodyHandler.BodyParts[3].gameObject;
-        GameObject balloon = hip.transform.Find("Balloon").GameObject();
 
-        balloon.transform.position += _moveInput;
+        //balloon.transform.position += _moveInput;
     }
 
     private void ForwardRollTrigger()
