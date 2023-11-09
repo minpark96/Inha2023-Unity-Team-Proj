@@ -454,6 +454,11 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             _bodyHandler.BodyParts[i].PartRigidbody.freezeRotation = true;
         }
 
+        for (int i = 0; i < _bodyHandler.BodyParts.Count; i++)
+        {
+            _bodyHandler.BodyParts[i].PartRigidbody.velocity = Vector3.zero;
+        }
+
         yield return new WaitForSeconds(5.0f);
 
         BalloonShapeOff();
