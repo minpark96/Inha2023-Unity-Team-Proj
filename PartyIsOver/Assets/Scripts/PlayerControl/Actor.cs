@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class Actor : MonoBehaviourPun
 {
-    public delegate void PlayerHurt(float HP, int viewID);
+    public delegate void PlayerHurt(float HP, DebuffState state, int viewID);
     public event PlayerHurt OnPlayerHurt;
     public delegate void PlayerExhaust(float Stamina, int viewID);
     public event PlayerExhaust OnPlayerExhaust;
@@ -65,7 +65,7 @@ public class Actor : MonoBehaviourPun
 
     // 스테미나
     [SerializeField]
-    private float _stamina;
+    private float _stamina = 100f;
     [SerializeField]
     private float _maxStamina = 100f;
     public float Stamina { get { return _stamina; } set { _stamina = value; } }
@@ -79,23 +79,14 @@ public class Actor : MonoBehaviourPun
 
     public static int LayerCnt = 26;
 
-    public void HurtEventInvoke()
+    public void StatusChangeEventInvoke()
     {
-        Debug.Log(photonView.ViewID + " 초기화 됐는지 체크한다");
-        if (BodyHandler == null)
-            Debug.Log(photonView.ViewID + " BodyHandler is null " + BodyHandler);
-        if (StatusHandler == null)
-            Debug.Log(photonView.ViewID + " StatusHandler is null " + StatusHandler);
-        if (PlayerController == null)
-            Debug.Log(photonView.ViewID + " PlayerController is null " + PlayerController);
-        if (Grab == null)
-            Debug.Log(photonView.ViewID + " Grab is null " + Grab);
         Debug.Log("HurtEventInvoke()");
 
         if (OnPlayerHurt == null)
             Debug.Log(photonView.ViewID + " 이벤트 null");
 
-        OnPlayerHurt(_health, photonView.ViewID);
+        OnPlayerHurt(_health, debuffState, photonView.ViewID);
     }
 
     private void Awake()

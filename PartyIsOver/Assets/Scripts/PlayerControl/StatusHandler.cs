@@ -142,6 +142,8 @@ public class StatusHandler : MonoBehaviourPun
 
         if (_healthDamage != 0f)
             UpdateHealth();
+
+        actor.StatusChangeEventInvoke();
     }
 
     public void DebuffCheck(InteractableObject.Damage type)
@@ -252,6 +254,8 @@ public class StatusHandler : MonoBehaviourPun
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.PowerUp;
         actor.PlayerController.RunSpeed -= _maxSpeed * 0.1f;
+
+        actor.StatusChangeEventInvoke();
     }
     IEnumerator Burn(float delay)
     {
@@ -288,6 +292,8 @@ public class StatusHandler : MonoBehaviourPun
         _hasBurn = false;
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Burn;
+
+        actor.StatusChangeEventInvoke();
     }
     IEnumerator Exhausted(float delay)
     {
@@ -318,6 +324,8 @@ public class StatusHandler : MonoBehaviourPun
 
         actor.BodyHandler.BodyParts[0].PartJoint.angularXDrive = angularXDrive;
         actor.Stamina = 100;
+
+        actor.StatusChangeEventInvoke();
     }
     IEnumerator Slow(float delay)
     {
@@ -333,6 +341,8 @@ public class StatusHandler : MonoBehaviourPun
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Slow;
         actor.PlayerController.RunSpeed += _maxSpeed * 0.1f;
+
+        actor.StatusChangeEventInvoke();
     }
     IEnumerator Freeze(float delay)
     {
@@ -359,6 +369,8 @@ public class StatusHandler : MonoBehaviourPun
         _hasFreeze = false;
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Ice;
+
+        actor.StatusChangeEventInvoke();
 
         // ¿Ã∆Â∆Æ ªË¡¶
         if (hasObject)
@@ -430,6 +442,8 @@ public class StatusHandler : MonoBehaviourPun
         StartCoroutine(Stun(3));
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Shock;
+
+        actor.StatusChangeEventInvoke();
     }
     IEnumerator Stun(float delay)
     {
@@ -440,6 +454,8 @@ public class StatusHandler : MonoBehaviourPun
         _hasStun = false;
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Stun;
+
+        actor.StatusChangeEventInvoke();
     }
 
     public void UpdateHealth()
@@ -492,8 +508,6 @@ public class StatusHandler : MonoBehaviourPun
         }
 
         actor.Health = Mathf.Clamp(tempHealth, 0f, actor.MaxHealth);
-
-        actor.HurtEventInvoke();
 
         _healthDamage = 0f;
     }

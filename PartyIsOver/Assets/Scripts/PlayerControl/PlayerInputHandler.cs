@@ -32,9 +32,7 @@ public class PlayerInputHandler : MonoBehaviour
         if (_actor.debuffState == DebuffState.Ice || _actor.debuffState == DebuffState.Shock || _actor.debuffState == DebuffState.Stun)
             return;
 
-
         _actor.PlayerController.OnKeyboardEvent_Move(evt);
-
 
         if (_actor.Grab.GrabItem == null)
         {
