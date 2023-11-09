@@ -7,13 +7,13 @@ using static Define;
 public class HandChecker : MonoBehaviourPun
 {
     public bool isCheck = false;
-
-    Grab _grab;
+    private Actor _actor; 
 
     // Start is called before the first frame update
     void Start()
     {
-        _grab = transform.root.GetComponent<Grab>();
+        _actor = transform.root.GetComponent<Actor>();
+
     }
 
     // Update is called once per frame
@@ -22,22 +22,25 @@ public class HandChecker : MonoBehaviourPun
         
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionStay(Collision collision)
     {
         if (!photonView.IsMine) return;
-        if (other.tag == "ItemHandle" && _grab._isGrabbing)
+        if(collision.collider == null) return;
+
+        if (collision.collider.tag == "ItemHandle" && _actor.Grab._isGrabbing)
         {
-            _grab.GrabObjectType = Define.GrabObjectType.Item;
+            _actor.Grab.GrabObjectType = Define.GrabObjectType.Item;
             isCheck = true;
         }
     }
-
-    private void OnTriggerExit(Collider other)
+    private void OnCollisionExit(Collision collision)
     {
         if (!photonView.IsMine) return;
-        if (other.tag == "ItemHandle")
+        if (collision.collider == null) return;
+
+        if (collision.collider.tag == "ItemHandle")
         {
-            _grab.GrabObjectType = Define.GrabObjectType.None;
+            _actor.Grab.GrabObjectType = Define.GrabObjectType.None;
             isCheck = false;
         }
     }

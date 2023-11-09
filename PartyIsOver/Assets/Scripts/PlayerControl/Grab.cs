@@ -7,12 +7,16 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using static Define;
+using static UnityEditor.Progress;
 
 public class Grab : MonoBehaviourPun
 {
     private TargetingHandler _targetingHandler;
     private BodyHandler _bodyHandler;
-    private InteractableObject _searchTarget;
+    private InteractableObject _leftSearchTarget;
+    private InteractableObject _rightSearchTarget;
+
+
     private Actor _actor;
 
     bool _isRightGrab = false;
@@ -172,26 +176,55 @@ public class Grab : MonoBehaviourPun
     {
         if (_grabDelayTimer > 0f || _isRightGrab)
             return;
-        
+
         //타겟서치 태그설정 주의할것
-        _searchTarget = _targetingHandler.SearchTarget();
+        _leftSearchTarget = _targetingHandler.SearchTarget(Side.Left);
+        _rightSearchTarget = _targetingHandler.SearchTarget(Side.Right);
+
 
         //발견한 오브젝트가 없으면 리턴
-        if (_searchTarget == null)
+        if (_leftSearchTarget == null && _rightSearchTarget == null)
             return;
 
         _isGrabbing = true;
 
-        //서치타겟이 아이템이고, 일정 거리 이내에 있을때
-        if (_searchTarget.GetComponent<Item>() != null && Vector3.Distance(_searchTarget.transform.position, _bodyHandler.Chest.transform.position) <= 1.5f)
+        //타겟이 정면에 있을때
+        if(_leftSearchTarget == _rightSearchTarget)
         {
-            Item item = _searchTarget.GetComponent<Item>();
-            HandleItemGrabbing(item);  
+            //아이템이면서 일정 거리 이내에 있을때
+            if (Vector3.Distance(_leftSearchTarget.transform.position, _bodyHandler.Chest.transform.position) <= 1.5f
+                 && _leftSearchTarget.GetComponent<Item>() != null)
+            {
+                Item item = _leftSearchTarget.GetComponent<Item>();
+                HandleItemGrabbing(item);
+                return;
+            }
+
+            //아이템이 아닐때
         }
         else
         {
-            //서치타겟이 아이템이 아닐 때
+            //타겟이 정면이 아닐때
 
+
+            //여기 하는중 이제 손은 뻗으니 아이템 함수들 최대한 재활용해서  잡기판정 하면 됌
+
+            if(!(_leftSearchTarget == null))
+            {
+                Debug.Log(_leftSearchTarget);
+                Vector3 dir = _targetingHandler.
+                    FindClosestCollisionPoint(_leftSearchTarget.GetComponent<Collider>()) - _leftHandRigid.transform.position;
+
+                _leftHandRigid.AddForce(dir * 80f);
+            }
+
+            if(!(_rightSearchTarget == null))
+            {
+                Vector3 dir = _targetingHandler.
+                    FindClosestCollisionPoint(_rightSearchTarget.GetComponent<Collider>()) - _rightHandRigid.transform.position;
+
+                _rightHandRigid.AddForce(dir * 80f);
+            }
 
 
             //타겟의 가장 가까운 지점으로 손을 뻗어서 접촉시 그랩상태로 들어감
@@ -273,11 +306,11 @@ public class Grab : MonoBehaviourPun
     /// </summary>
     bool ItemGrabCheck(Item item,Side side)
     {
-        //HandChecker 스크립트에서 양손 다 아이템의 trigger와 접촉중인지 판정
+        //HandChecker 스크립트에서 양손 다 아이템의 손잡이와 접촉중인지 판정
         if (GrabObjectType == GrabObjectType.Item && HandCollisionCheck(side))
         {
             _grabDelayTimer = 0.5f;
-            GrabObjectType = GrabObjectType.None;
+            GrabObjectType = GrabObjectType.None; 
             GrabItem = item.transform.root.gameObject;
             GrabItem.GetComponent<Item>().Owner = GetComponent<Actor>();
 
@@ -378,29 +411,37 @@ public class Grab : MonoBehaviourPun
         //잡기에 성공했을경우 관절 생성 및 일부 고정
         if (side == Side.Left )
         {
-            _grabJointLeft = GrabItem.AddComponent<FixedJoint>();
+            _grabJointLeft = _leftSearchTarget.AddComponent<FixedJoint>();
             _grabJointLeft.connectedBody = _leftHandRigid;
             _grabJointLeft.breakForce = 9001;
 
-            _jointLeft.angularYMotion = ConfigurableJointMotion.Locked;
-            _jointLeftForeArm.angularYMotion = ConfigurableJointMotion.Locked;
-            _jointLeftUpperArm.angularYMotion = ConfigurableJointMotion.Locked;
-            _jointLeft.angularZMotion = ConfigurableJointMotion.Locked;
-            _jointLeftForeArm.angularZMotion = ConfigurableJointMotion.Locked;
-            _jointLeftUpperArm.angularZMotion = ConfigurableJointMotion.Locked;
+            if (_leftSearchTarget.GetComponent<Item>() != null)
+            {
+                _jointLeft.angularYMotion = ConfigurableJointMotion.Locked;
+                _jointLeftForeArm.angularYMotion = ConfigurableJointMotion.Locked;
+                _jointLeftUpperArm.angularYMotion = ConfigurableJointMotion.Locked;
+                _jointLeft.angularZMotion = ConfigurableJointMotion.Locked;
+                _jointLeftForeArm.angularZMotion = ConfigurableJointMotion.Locked;
+                _jointLeftUpperArm.angularZMotion = ConfigurableJointMotion.Locked;
+            }
+
         }
         else if (side == Side.Right )
         {
-            _grabJointRight = GrabItem.AddComponent<FixedJoint>();
+            _grabJointRight = _rightSearchTarget.AddComponent<FixedJoint>();
             _grabJointRight.connectedBody = _rightHandRigid;
             _grabJointRight.breakForce = 9001;
 
-            _jointRight.angularYMotion = ConfigurableJointMotion.Locked;
-            _jointRightForeArm.angularYMotion = ConfigurableJointMotion.Locked;
-            _jointRightUpperArm.angularYMotion = ConfigurableJointMotion.Locked;
-            _jointRight.angularZMotion = ConfigurableJointMotion.Locked;
-            _jointRightForeArm.angularZMotion = ConfigurableJointMotion.Locked;
-            _jointRightUpperArm.angularZMotion = ConfigurableJointMotion.Locked;
+            if (_rightSearchTarget.GetComponent<Item>() != null)
+            {
+                _jointRight.angularYMotion = ConfigurableJointMotion.Locked;
+                _jointRightForeArm.angularYMotion = ConfigurableJointMotion.Locked;
+                _jointRightUpperArm.angularYMotion = ConfigurableJointMotion.Locked;
+                _jointRight.angularZMotion = ConfigurableJointMotion.Locked;
+                _jointRightForeArm.angularZMotion = ConfigurableJointMotion.Locked;
+                _jointRightUpperArm.angularZMotion = ConfigurableJointMotion.Locked;
+            }
+
         }
     }
     void DestroyJoint()

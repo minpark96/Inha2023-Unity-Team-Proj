@@ -951,7 +951,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
     public void PunchAndGrab()
     {
-        targetingHandler.SearchTarget();
         if (!_isCoroutineRunning)
         {
             if (_readySide == Side.Left)
@@ -1045,8 +1044,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
     public void ArmActionPunching(Side side)
     {
-        if (target)
-            return;
 
         Transform partTransform = _bodyHandler.Chest.transform;
         AniFrameData[] aniFrameDatas = LeftPunchingAniData;
