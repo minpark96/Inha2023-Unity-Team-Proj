@@ -38,9 +38,9 @@ public class PlayerInputHandler : MonoBehaviour
     {
         if (_actor.debuffState == DebuffState.Ice || _actor.debuffState == DebuffState.Balloon)
             return;
-        if(_actor.debuffState == DebuffState.Shock || _actor.debuffState == DebuffState.Stun)
+        if (_actor.debuffState == DebuffState.Shock || _actor.debuffState == DebuffState.Stun)
             return;
-        if(_actor.debuffState == DebuffState.Exhausted)
+        if (_actor.debuffState == DebuffState.Exhausted)
         {
             _actor.PlayerController.OnKeyboardEvent_Move(evt);
             return;
