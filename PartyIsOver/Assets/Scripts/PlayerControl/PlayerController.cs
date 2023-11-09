@@ -983,7 +983,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
      */
 
     //값이 들어 오는게 0.01 0.1 0.1 0.3
-    IEnumerator Punch(Side side, float duration, float readyTime, float punchTime, float resetTime)
+    public IEnumerator Punch(Side side, float duration, float readyTime, float punchTime, float resetTime)
     {
         float checkTime = Time.time;
 
@@ -1008,6 +1008,31 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         }
     }
 
+    //아이템 때문에 추가
+    public IEnumerator Punch(Side side, float duration, float readyTime, float punchTime, float resetTime, float itemPower)
+    {
+        float checkTime = Time.time;
+
+        while (Time.time - checkTime < readyTime)
+        {
+            ArmActionReadying(side);
+            yield return new WaitForSeconds(duration);
+        }
+        checkTime = Time.time;
+
+        while (Time.time - checkTime < punchTime)
+        {
+            ArmActionPunching(side, itemPower);
+            yield return new WaitForSeconds(duration);
+        }
+        checkTime = Time.time;
+
+        while (Time.time - checkTime < resetTime)
+        {
+            ArmActionPunchResetting(side);
+            yield return new WaitForSeconds(duration);
+        }
+    }
 
     public void Stand()
     {
@@ -1077,6 +1102,35 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             }
             else
                 AniForce(aniFrameDatas, i, dir);
+        }
+    }
+
+    // 아이템 때문에 추가
+    public void ArmActionPunching(Side side, float itemPower)
+    {
+        if (target)
+            return;
+
+        Transform partTransform = _bodyHandler.Chest.transform;
+        AniFrameData[] aniFrameDatas = LeftPunchingAniData;
+        Transform transform2 = _bodyHandler.LeftHand.transform;
+        _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+        _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+        _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+
+        if (side == Side.Right)
+        {
+            aniFrameDatas = RightPunchingAniData;
+            transform2 = _bodyHandler.RightHand.transform;
+            _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+            _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+            _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+        }
+
+        for (int i = 0; i < aniFrameDatas.Length; i++)
+        {
+            Vector3 dir = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
+            AniForce(aniFrameDatas, i, dir, itemPower);
         }
     }
 
