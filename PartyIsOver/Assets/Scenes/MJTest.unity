@@ -1132,6 +1132,7 @@ MonoBehaviour:
   isMeowNyangPunch: 0
   isBalloon: 0
   RSkillCoolTime: 10
+  ChargeAniHoldTime: 0.5
   MeowPunchPower: 1
   MeowPunchReadyPunch: 0.1
   MeowPunchPunching: 0.1
@@ -16009,9 +16010,29 @@ PrefabInstance:
       propertyPath: sceneViewId
       value: 17
       objectReference: {fileID: 0}
+    - target: {fileID: 5875873347556913874, guid: 763a199fa1132cc4688fb4fcfd0b05ef, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5875873347556913874, guid: 763a199fa1132cc4688fb4fcfd0b05ef, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5875873347556913874, guid: 763a199fa1132cc4688fb4fcfd0b05ef, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5878509405600198235, guid: 763a199fa1132cc4688fb4fcfd0b05ef, type: 3}
+      propertyPath: _stamina
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 5878509405600198244, guid: 763a199fa1132cc4688fb4fcfd0b05ef, type: 3}
       propertyPath: m_RootOrder
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5878509405600198244, guid: 763a199fa1132cc4688fb4fcfd0b05ef, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -9.34
       objectReference: {fileID: 0}
     - target: {fileID: 6096047576432914358, guid: 763a199fa1132cc4688fb4fcfd0b05ef, type: 3}
       propertyPath: sceneViewId
