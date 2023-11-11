@@ -22078,6 +22078,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ragdoll2
       objectReference: {fileID: 0}
+    - target: {fileID: 5873236424662451676, guid: 763a199fa1132cc4688fb4fcfd0b05ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5878509405600198244, guid: 763a199fa1132cc4688fb4fcfd0b05ef, type: 3}
       propertyPath: m_RootOrder
       value: 14
