@@ -10,6 +10,7 @@ using static AniAngleData;
 using Unity.VisualScripting;
 using Photon.Pun;
 using UnityEngine.UIElements;
+using static Grab;
 
 [System.Serializable]
 public class AniFrameData
@@ -103,6 +104,12 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     public AniAngleData[] RSkillAngleAniData;
 
     [SerializeField]
+    public AniFrameData[] ItemTwoHandAniData;
+
+    [SerializeField]
+    public AniAngleData[] ItemTwoHandAngleData;
+
+    [SerializeField]
     public AniFrameData[] TestRready1;
 
     [SerializeField]
@@ -159,8 +166,12 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     public float NuclearPunching = 0.1f;
     public float NuclearPunchResetPunch = 0.3f;
 
+    [Header("ItemControll")]
+    public float ItempSwingPower;
+
+
     private float _runSpeedOffset = 350f;
-    private Vector3 _moveInput;
+    public Vector3 MoveInput;
     private Vector3 _moveDir;
     private bool _isCoroutineRunning = false;
     private bool _isCoroutineDrop = false;
@@ -250,6 +261,8 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             originalZMotions[i] = childJoints[i].angularZMotion;
         }
         _grab = GetComponent<Grab>();
+
+        _balloonState = GetComponent<BalloonState>();
     }
 
     void RestoreOriginalMotions()
@@ -262,6 +275,66 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         }
     }
 
+    #region OnMouseEvent_Grab
+    public void OnMouseEvent_Grab(Define.MouseEvent evt)
+    {
+        if (!photonView.IsMine)
+        {
+            return;
+        }
+
+        switch (evt)
+        {
+            case Define.MouseEvent.Press:
+                {
+                    if (Input.GetMouseButton(0))
+                        _grab.Grabbing();
+                }
+                break;
+            case Define.MouseEvent.PointerUp:
+                {
+                    if (Input.GetMouseButtonUp(0))
+                    {
+                        _grab.GrabReset();
+                    }
+                }
+                break;
+        }
+    }
+    #endregion
+
+    #region OnMouseEvent_Skill
+
+    public void OnMouseEvent_Skill(Define.MouseEvent evt)
+    {
+        if (!photonView.IsMine)
+        {
+            return;
+        }
+
+        switch (evt)
+        {
+            case Define.MouseEvent.PointerDown:
+                {
+
+                }
+                break;
+            case Define.MouseEvent.Click:
+                {
+                    if (Input.GetMouseButtonUp(0))
+                        PunchAndGrab();
+                    if (!isGrounded && Input.GetMouseButtonUp(1))
+                        DropKickTrigger();
+                    if (!_isCoroutineRoll && Input.GetMouseButtonUp(2))
+                        ForwardRollTrigger();
+                }
+                break;
+        }
+    }
+    #endregion
+
+    #region OnKeyboardEvent_Move
+
     public void OnKeyboardEvent_Move(Define.KeyboardEvent evt)
     {
         if (!photonView.IsMine)
@@ -271,32 +344,34 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
         switch (evt)
         {
+            case Define.KeyboardEvent.PointerDown:
+                {
+                    if (Input.GetKeyDown(KeyCode.Space))
+                        _actor.actorState = Actor.ActorState.Jump;
+                }
+                break;
             case Define.KeyboardEvent.Press:
                 {
-                    if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S))
+                    if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
                     {
-                        _moveInput.z = Input.GetAxis("Vertical");
-                    }
-                    if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
-                    {
-                        _moveInput.x = Input.GetAxis("Horizontal");
+                        MoveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
                     }
                 }
                 break;
             case Define.KeyboardEvent.Click:
                 {
-                    if (Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.S))
+                    if (Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.S) || Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
                     {
-                        _moveInput.z = 0;
-                    }
-                    if (Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
-                    {
-                        _moveInput.x = 0;
+                        MoveInput = new Vector3(0, 0, 0);
                     }
                 }
                 break;
         }
     }
+    #endregion
+
+    #region OnKeyboardEvent_Skill
+
     public void OnKeyboardEvent_Skill(Define.KeyboardEvent evt)
     {
         if (!photonView.IsMine)
@@ -316,6 +391,8 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
                             StartCoroutine(ChargeReady());
                         }
                     }
+
+                    
                 }
                 break;
             case Define.KeyboardEvent.Press:
@@ -337,12 +414,10 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
                     if (Input.GetKeyUp(KeyCode.H))
                         Heading();
-                    if (Input.GetKeyUp(KeyCode.Space))
-                        _actor.actorState = Actor.ActorState.Jump;
+                    
 
                     if (Input.GetKeyUp(KeyCode.R))
                     {
-
                         _isRSkillCheck = false;
                         StartCoroutine(ResetCharge());
                     }
@@ -366,6 +441,34 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         }
     }
 
+    #endregion
+
+    public void OnKeyboardEvent_BalloonSkill(Define.KeyboardEvent evt)
+    {
+        if (!photonView.IsMine)
+        {
+            return;
+        }
+
+        switch(evt)
+        {
+            case Define.KeyboardEvent.PointerUp:
+                {
+                    if (Input.GetKeyUp(KeyCode.Space))
+                        _actor.actorState = Actor.ActorState.Jump;
+                }
+                break;
+            case Define.KeyboardEvent.Click:
+                {
+                    if (Input.GetKeyUp(KeyCode.Space))
+                        _actor.actorState = Actor.ActorState.Jump;
+                }
+                break;
+        }
+    }
+
+
+    #region ChargeSkill
     IEnumerator ChargeReady()
     {
         for (int i = 0; i < childJoints.Length; i++)
@@ -380,6 +483,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         }
         yield return ForceRready(ChargeAniHoldTime);
     }
+
     IEnumerator ForceRready(float _delay)
     {
         startChargeTime = Time.time;
@@ -426,59 +530,85 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         RestoreOriginalMotions();
         yield return new WaitForSeconds(0.5f);
     }
+    #endregion
 
-    public void OnMouseEvent_Grab(Define.MouseEvent evt)
+    #region ChargeSkillAnimation
+
+    private void NuclearPunch()
     {
-        if (!photonView.IsMine)
-        {
-            return;
-        }
-
-        switch (evt)
-        {
-            case Define.MouseEvent.Press:
-                {
-                    if (Input.GetMouseButton(0))
-                        _grab.Grabbing();
-                }
-                break;
-            case Define.MouseEvent.PointerUp:
-                {
-                    if (Input.GetMouseButtonUp(0))
-                    {
-                        _grab.GrabReset();
-                    }
-                }
-                break;
-        }
-    }
-    public void OnMouseEvent_Skill(Define.MouseEvent evt)
-    {
-        if (!photonView.IsMine)
-        {
-            return;
-        }
-
-        switch (evt)
-        {
-            case Define.MouseEvent.PointerDown:
-                {
-
-                }
-                break;
-            case Define.MouseEvent.Click:
-                {
-                    if (Input.GetMouseButtonUp(0))
-                        PunchAndGrab();
-                    if (!isGrounded && Input.GetMouseButtonUp(1))
-                        DropKickTrigger();
-                    if (!_isCoroutineRoll && Input.GetMouseButtonUp(2))
-                        ForwardRollTrigger();
-                }
-                break;
-        }
+        StartCoroutine(NuclearPunchDelay());
+        StartCoroutine(ResetCharge());
     }
 
+    IEnumerator NuclearPunchDelay()
+    {
+        yield return MeowPunch(Side.Right, 0.07f, NuclearPunchReadyPunch, NuclearPunching, NuclearPunchResetPunch);
+        yield return RSkillCoolTimer();
+    }
+
+    private void MeowNyangPunch()
+    {
+        StartCoroutine(MeowNyangPunchDelay());
+        StartCoroutine(ResetCharge());
+    }
+
+    IEnumerator MeowNyangPunchDelay()
+    {
+        int _punchcount = 0;
+        _readySide = Side.Right;
+        while (_punchcount < 5)
+        {
+            if (_readySide == Side.Left)
+            {
+                yield return MeowPunch(Side.Left, 0.07f, MeowPunchReadyPunch, MeowPunchPunching, MeowPunchResetPunch);
+                _readySide = Side.Right;
+            }
+            else
+            {
+                yield return MeowPunch(Side.Right, 0.07f, MeowPunchReadyPunch, MeowPunchPunching, MeowPunchResetPunch);
+                _readySide = Side.Left;
+            }
+            _punchcount++;
+        }
+        yield return RSkillCoolTimer();
+
+    }
+    IEnumerator RSkillCoolTimer()
+    {
+        _isRSkillCheck = false;
+        yield return new WaitForSeconds(RSkillCoolTime);
+    }
+
+    IEnumerator MeowPunch(Side side, float duration, float readyTime, float punchTime, float resettingTime)
+    {
+        float checkTime = Time.time;
+
+        while (Time.time - checkTime < readyTime)
+        {
+            ArmActionReadying(side);
+            yield return new WaitForSeconds(duration);
+        }
+        checkTime = Time.time;
+
+        while (Time.time - checkTime < punchTime)
+        {
+            ArmActionPunching(side);
+            yield return new WaitForSeconds(duration);
+        }
+        checkTime = Time.time;
+
+        while (Time.time - checkTime < resettingTime)
+        {
+            ArmActionPunchResetting(side);
+            yield return new WaitForSeconds(duration);
+        }
+    }
+
+    #endregion
+
+    private BalloonState _balloonState;
+
+    #region FixedUpdate
     private void FixedUpdate()
     {
         if (!photonView.IsMine)
@@ -492,68 +622,41 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         if (_actor.debuffState == Actor.DebuffState.Balloon && isBalloon == false)
         {
             isBalloon = true;
-            _actor.actorState = Actor.ActorState.Balloon;
-            StartCoroutine(BalloonShapeOn());
+            StartCoroutine(_balloonState.BalloonShapeOn());
         }
 
         if (_actor.actorState != Actor.ActorState.Jump && _actor.actorState != Actor.ActorState.Roll && _actor.actorState != Actor.ActorState.Run)
         {
-            if (_moveInput.magnitude == 0f)
+            if (MoveInput.magnitude == 0f)
             {
                 _actor.actorState = Actor.ActorState.Stand;
             }
             else
             {
-                _actor.actorState = Actor.ActorState.Walk;
+                if (_actor.debuffState == Actor.DebuffState.Balloon)
+                    _actor.actorState = Actor.ActorState.BalloonWalk;
+                else
+                    _actor.actorState = Actor.ActorState.Walk;
+
                 Stand();
             }
         }
     }
+    
+    #endregion
 
-    private void Update()
-    {
-        if (!photonView.IsMine)
-        {
-            return;
-        }
-    }
-
-    IEnumerator BalloonShapeOn()
-    {
-        _bodyHandler.BodyParts[0].transform.localScale = new Vector3(2, 2, 1);
-        _bodyHandler.BodyParts[1].transform.localScale = new Vector3(2, 2, 2);
-        _bodyHandler.BodyParts[2].transform.localScale = new Vector3(2, 2, 2);
-
-        yield return new WaitForSeconds(5.0f);
-
-        BalloonShapeOff();
-    }
-    private void BalloonShapeOff()
-    {
-        _bodyHandler.BodyParts[0].transform.localScale = new Vector3(1, 1, 1);
-        _bodyHandler.BodyParts[1].transform.localScale = new Vector3(1, 1, 1);
-        _bodyHandler.BodyParts[2].transform.localScale = new Vector3(1, 1, 1);
-
-        _actor.actorState = Actor.ActorState.Stand;
-        _actor.debuffState = Actor.DebuffState.Default;
-        isBalloon = false;
-    }
-
-    public void BalloonMove()
-    {
-
-        //balloon.transform.position += _moveInput;
-    }
-
+    #region ForwardRoll
     private void ForwardRollTrigger()
     {
         if (!_isCoroutineRoll)
         {
+            //자식들의 오브젝터 rotation을 뛰기 전에 저장
             Transform[] childTransforms = GetComponentsInChildren<Transform>();
             foreach (Transform childTransform in childTransforms)
             {
                 _initialRotations[childTransform] = childTransform.localRotation;
             }
+            //점프를 해야 잘 굴러서 점프를 한번 한 다음에 구르기 시작
             _actor.actorState = Actor.ActorState.Jump;
             StartCoroutine(ForwardRollDelay(3f));
         }
@@ -569,16 +672,21 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
     IEnumerator ForwardRoll(float duration, float readyRoll)
     {
+        //최고 속도를 구를 때 마다 일정하게 값을 넣을려고
         _hips.velocity = -_hips.transform.up.normalized * MaxSpeed * 1.5f;
+        //연산이 너무 빨라서 잠깐 멈춰줘야함
         yield return new WaitForSeconds(0.08f);
+        //상태를 Roll 상태로 전환
         _actor.actorState = ActorState.Roll;
 
+        //spring을 풀어서 구르기가 자연스럽게 할 수 있게 한다.
         _actor.StatusHandler.StartCoroutine("ResetBodySpring");
+        //hip의 잠겨 있는 FreezeRotationX 축을 풀음
         _hipRB.constraints &= ~RigidbodyConstraints.FreezeRotationX;
 
         float rollTime = Time.time;
-        float startRollTime = Time.time;
 
+        //실제로 회전 하는 것
         while (Time.time - rollTime < readyRoll)
         {
             AniAngleForce(RollAngleAniData, 0);
@@ -587,10 +695,20 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         }
 
         //힘은 0, Rotation 복구 하기
-        RestoreRotations();
+        foreach (Transform child in _children)
+        {
+            yield return RestoreRotations(child);
+        }
+        //yield return StartSlerp(duration);
 
-        //디버그가 안찍힘 확인 해봐야 할거 같음
-        while (Time.time - startRollTime < 0.1f)
+        _actor.actorState = Actor.ActorState.Stand;
+    }
+
+    IEnumerator StartSlerp(float duration)
+    {
+        float startRollTime = Time.time;
+
+        while (Time.time - startRollTime < 0.07f)
         {
             foreach (Transform child in _children)
             {
@@ -603,7 +721,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             }
             yield return new WaitForSeconds(duration);
         }
-        _actor.actorState = Actor.ActorState.Stand;
     }
 
     IEnumerator ForwardRollOld(float duration, float readyRoll)
@@ -625,35 +742,41 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             yield return new WaitForSeconds(duration);
         }
 
-        //힘은 0, Rotation 복구 하기
-        RestoreRotations();
+        //힘은 0, Rotation, 스프링 복구 하기
+        //RestoreRotations();
         _actor.actorState = Actor.ActorState.Stand;
     }
-    // 진행 순서 구르기 -> 회전하고 남는 힘 0 대입과 구르기 전 Rotation 값 넣기 -> Freeze Rotationx 축 잠금
-    // -> 스프링값 올리기 (스프링 값을 천천히 올려야 누워 있다가 일어서는 것 처럼 보임)
 
-    public void RestoreRotations()
+    IEnumerator RestoreRotations(Transform child)
     {
-        _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
-
-        foreach (Transform child in _children)
+        _childRigidbody = child.GetComponent<Rigidbody>();
+        if (_childRigidbody != null)
         {
-            _childRigidbody = child.GetComponent<Rigidbody>();
-            if (_childRigidbody != null)
+            //Debug.Log(_initialRotations[child]);
+            // 초기 회전값 복원 Dictionary에서 특정 키의 존재 여부를 확인
+            if (_initialRotations.ContainsKey(child))
             {
                 //회전 힘과 AddForce 힘을 벡터 0으로 해서 값 빼기
                 _childRigidbody.velocity = Vector3.zero;
                 _childRigidbody.angularVelocity = Vector3.zero;
-                // 초기 회전값 복원 Dictionary에서 특정 키의 존재 여부를 확인
-                if (_initialRotations.ContainsKey(child))
+                child.localRotation = _initialRotations[child];
+                //int count= 0;
+                //while (Quaternion.Angle(child.localRotation, _initialRotations[child]) > 1f)
+                /*while(count <10)
                 {
-                    child.localRotation = _initialRotations[child];
-                }
-
-                if (_childRigidbody.name == "GreenHip")
-                    _hipRB.constraints |= RigidbodyConstraints.FreezeRotationX;
+                    //_initialRotations[child] 목표값
+                    //child.localRotation 시작 값
+                    child.localRotation = Quaternion.Slerp(child.localRotation, _initialRotations[child], 0.4f);
+                    Debug.Log(string.Format("{0}     :  {1:N2}", child.name, Quaternion.Angle(child.localRotation, _initialRotations[child])));
+                    count++;
+                    yield return new WaitForSeconds(0.07f);
+                }*/
             }
+            //다시 잠금
+            if (_childRigidbody.name == "GreenHip")
+                _hipRB.constraints |= RigidbodyConstraints.FreezeRotationX;
         }
+        yield return _actor.StatusHandler.RestoreBodySpring(0.07f);
     }
 
     public void RestoreRotationsOld()
@@ -674,12 +797,16 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
                     child.localRotation = _initialRotations[child];
                 }
 
+                //다시 잠금
                 if (_childRigidbody.name == "GreenHip")
                     _hipRB.constraints |= RigidbodyConstraints.FreezeRotationX;
             }
         }
     }
 
+    #endregion
+
+    #region Animation Direction Force Angle
 
     Vector3 GetForceDirection(AniFrameData data, int index)
     {
@@ -821,6 +948,10 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         }
     }
 
+    #endregion
+
+    #region DropKick
+
     private void DropKickTrigger()
     {
         if (!_isCoroutineDrop)
@@ -879,76 +1010,9 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         yield return null;
     }
 
-    private void NuclearPunch()
-    {
-        StartCoroutine(NuclearPunchDelay());
-        StartCoroutine(ResetCharge());
-    }
+    #endregion
 
-    IEnumerator NuclearPunchDelay()
-    {
-        yield return MeowPunch(Side.Right, 0.07f, NuclearPunchReadyPunch, NuclearPunching, NuclearPunchResetPunch);
-        yield return RSkillCoolTimer();
-    }
-
-    private void MeowNyangPunch()
-    {
-        StartCoroutine(MeowNyangPunchDelay());
-        StartCoroutine(ResetCharge());
-    }
-
-    IEnumerator MeowNyangPunchDelay()
-    {
-        int _punchcount = 0;
-        _readySide = Side.Right;
-        while (_punchcount < 5)
-        {
-            if (_readySide == Side.Left)
-            {
-                yield return MeowPunch(Side.Left, 0.07f, MeowPunchReadyPunch, MeowPunchPunching, MeowPunchResetPunch);
-                _readySide = Side.Right;
-            }
-            else
-            {
-                yield return MeowPunch(Side.Right, 0.07f, MeowPunchReadyPunch, MeowPunchPunching, MeowPunchResetPunch);
-                _readySide = Side.Left;
-            }
-            _punchcount++;
-        }
-        yield return RSkillCoolTimer();
-
-    }
-    IEnumerator RSkillCoolTimer()
-    {
-        _isRSkillCheck = false;
-        yield return new WaitForSeconds(RSkillCoolTime);
-    }
-
-    IEnumerator MeowPunch(Side side, float duration, float readyTime, float punchTime, float resettingTime)
-    {
-        float checkTime = Time.time;
-
-        while (Time.time - checkTime < readyTime)
-        {
-            ArmActionReadying(side);
-            yield return new WaitForSeconds(duration);
-        }
-        checkTime = Time.time;
-
-        while (Time.time - checkTime < punchTime)
-        {
-            ArmActionPunching(side);
-            yield return new WaitForSeconds(duration);
-        }
-        checkTime = Time.time;
-
-        while (Time.time - checkTime < resettingTime)
-        {
-            ArmActionPunchResetting(side);
-            yield return new WaitForSeconds(duration);
-        }
-    }
-
+    #region Punch
     public void PunchAndGrab()
     {
         if (!_isCoroutineRunning)
@@ -972,17 +1036,9 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         yield return Punch(side, 0.07f, ReadyPunch, Punching, ResetPunch);
         _isCoroutineRunning = false;
     }
-    /*
-    
-    요구 사항 
-    HP 잔량 체크 스테미너 - O
-    키 입력시 스킬 동작 시간 빼기
-
-    주먹 펀치 차징 멈추기
-     */
 
     //값이 들어 오는게 0.01 0.1 0.1 0.3
-    IEnumerator Punch(Side side, float duration, float readyTime, float punchTime, float resetTime)
+    public IEnumerator Punch(Side side, float duration, float readyTime, float punchTime, float resetTime)
     {
         float checkTime = Time.time;
 
@@ -1007,31 +1063,34 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         }
     }
 
-
-    public void Stand()
+    //아이템 때문에 추가
+    public IEnumerator Punch(Side side, float duration, float readyTime, float punchTime, float resetTime, float itemPower)
     {
-        if (isStateChange)
+        float checkTime = Time.time;
+
+        while (Time.time - checkTime < readyTime)
         {
-            _idleTimer = 0f;
+            ArmActionReadying(side);
+            yield return new WaitForSeconds(duration);
         }
-        if (_idleTimer < 30f)
+        checkTime = Time.time;
+
+        while (Time.time - checkTime < punchTime)
         {
-            _idleTimer = Mathf.Clamp(_idleTimer + Time.deltaTime, -60f, 30f);
+            ArmActionPunching(side, itemPower);
+            yield return new WaitForSeconds(duration);
         }
-        if (_actor.actorState == Actor.ActorState.Run && !leftGrab && !rightGrab)
+        checkTime = Time.time;
+
+        while (Time.time - checkTime < resetTime)
         {
-        }
-        else
-        {
-            AlignToVector(_bodyHandler.Head.PartRigidbody, -_bodyHandler.Head.transform.up, _moveDir + new Vector3(0f, 0.2f, 0f), 0.1f, 2.5f * 1);
-            AlignToVector(_bodyHandler.Head.PartRigidbody, _bodyHandler.Head.transform.forward, Vector3.up, 0.1f, 2.5f * 1);
-            AlignToVector(_bodyHandler.Chest.PartRigidbody, -_bodyHandler.Chest.transform.up, _moveDir, 0.1f, 4f * 1);
-            AlignToVector(_bodyHandler.Chest.PartRigidbody, _bodyHandler.Chest.transform.forward, Vector3.up, 0.1f, 4f * 1);
-            AlignToVector(_bodyHandler.Waist.PartRigidbody, -_bodyHandler.Waist.transform.up, _moveDir, 0.1f, 4f * 1);
-            AlignToVector(_bodyHandler.Waist.PartRigidbody, _bodyHandler.Waist.transform.forward, Vector3.up, 0.1f, 4f * 1);
-            AlignToVector(_bodyHandler.Hip.PartRigidbody, _bodyHandler.Hip.transform.forward, Vector3.up, 0.1f, 3f * 1);
+            ArmActionPunchResetting(side);
+            yield return new WaitForSeconds(duration);
         }
     }
+    #endregion
+
+    #region PunchAnimation
 
     public void ArmActionReadying(Side side)
     {
@@ -1047,7 +1106,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
         Transform partTransform = _bodyHandler.Chest.transform;
         AniFrameData[] aniFrameDatas = LeftPunchingAniData;
-        Transform transform2 = _bodyHandler.LeftHand.transform; 
+        Transform transform2 = _bodyHandler.LeftHand.transform;
         _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
         _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
         _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
@@ -1077,6 +1136,35 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         }
     }
 
+    // 아이템 때문에 추가
+    public void ArmActionPunching(Side side, float itemPower)
+    {
+        if (target)
+            return;
+
+        Transform partTransform = _bodyHandler.Chest.transform;
+        AniFrameData[] aniFrameDatas = LeftPunchingAniData;
+        Transform transform2 = _bodyHandler.LeftHand.transform;
+        _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+        _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+        _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+
+        if (side == Side.Right)
+        {
+            aniFrameDatas = RightPunchingAniData;
+            transform2 = _bodyHandler.RightHand.transform;
+            _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+            _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+            _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+        }
+
+        for (int i = 0; i < aniFrameDatas.Length; i++)
+        {
+            Vector3 dir = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
+            AniForce(aniFrameDatas, i, dir, itemPower);
+        }
+    }
+
     public void ArmActionPunchResetting(Side side)
     {
         Transform partTransform = _bodyHandler.Chest.transform;
@@ -1101,6 +1189,36 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         }
     }
 
+    #endregion
+
+    #region Stand
+    public void Stand()
+    {
+        if (isStateChange)
+        {
+            _idleTimer = 0f;
+        }
+        if (_idleTimer < 30f)
+        {
+            _idleTimer = Mathf.Clamp(_idleTimer + Time.deltaTime, -60f, 30f);
+        }
+        if (_actor.actorState == Actor.ActorState.Run && !leftGrab && !rightGrab)
+        {
+        }
+        else
+        {
+            AlignToVector(_bodyHandler.Head.PartRigidbody, -_bodyHandler.Head.transform.up, _moveDir + new Vector3(0f, 0.2f, 0f), 0.1f, 2.5f * 1);
+            AlignToVector(_bodyHandler.Head.PartRigidbody, _bodyHandler.Head.transform.forward, Vector3.up, 0.1f, 2.5f * 1);
+            AlignToVector(_bodyHandler.Chest.PartRigidbody, -_bodyHandler.Chest.transform.up, _moveDir, 0.1f, 4f * 1);
+            AlignToVector(_bodyHandler.Chest.PartRigidbody, _bodyHandler.Chest.transform.forward, Vector3.up, 0.1f, 4f * 1);
+            AlignToVector(_bodyHandler.Waist.PartRigidbody, -_bodyHandler.Waist.transform.up, _moveDir, 0.1f, 4f * 1);
+            AlignToVector(_bodyHandler.Waist.PartRigidbody, _bodyHandler.Waist.transform.forward, Vector3.up, 0.1f, 4f * 1);
+            AlignToVector(_bodyHandler.Hip.PartRigidbody, _bodyHandler.Hip.transform.forward, Vector3.up, 0.1f, 3f * 1);
+        }
+    }
+    #endregion
+
+    #region Jump
     public void Jump()
     {
         if (isStateChange)
@@ -1117,12 +1235,30 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
                 AniAngleForce(MoveAngleJumpAniData, i, _moveDir + new Vector3(0, 0.2f, 0f));
             }
         }
+       
+        if(_actor.debuffState == DebuffState.Balloon)
+        {
+            isGrounded = false;
+            for (int i = 0; i < MoveForceJumpAniData.Length; i++)
+            {
+                AniForce(MoveForceJumpAniData, i, Vector3.up);
+                if (i == 2)
+                    AniForce(MoveForceJumpAniData, i, Vector3.down);
+            }
+            for (int i = 0; i < MoveAngleJumpAniData.Length; i++)
+            {
+                AniAngleForce(MoveAngleJumpAniData, i, _moveDir + new Vector3(0, 0.2f, 0f));
+            }
+        }
+
         if (isGrounded)
         {
             _actor.actorState = Actor.ActorState.Stand;
         }
     }
+    #endregion
 
+    #region Heading
     private void Heading()
     {
         for (int i = 0; i < HeadingAniData.Length; i++)
@@ -1137,7 +1273,9 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
                 AniAngleForce(HeadingAngleAniData, i, _moveDir + new Vector3(0f, 0.2f, 0f));
         }
     }
+    #endregion
 
+    #region MoveAnimation
     public void Move()
     {
         if (_actor.actorState == ActorState.Run)
@@ -1351,7 +1489,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     {
         Vector3 lookForward = new Vector3(_cameraArm.forward.x, 0f, _cameraArm.forward.z).normalized;
         Vector3 lookRight = new Vector3(_cameraArm.right.x, 0f, _cameraArm.right.z).normalized;
-        _moveDir = lookForward * _moveInput.z + lookRight * _moveInput.x;
+        _moveDir = lookForward * MoveInput.z + lookRight * MoveInput.x;
 
         _bodyHandler.Chest.PartRigidbody.AddForce((_runVectorForce10 + _moveDir), ForceMode.VelocityChange);
         _bodyHandler.Hip.PartRigidbody.AddForce((-_runVectorForce5 + -_moveDir), ForceMode.VelocityChange);
@@ -1376,7 +1514,9 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
                 _hips.velocity = _hips.velocity.normalized * MaxSpeed;
         }
     }
+    #endregion
 
+    #region AlingToVector
     public void AlignToVector(Rigidbody part, Vector3 alignmentVector, Vector3 targetVector, float stability, float speed)
     {
         if (part == null)
@@ -1393,7 +1533,9 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             }
         }
     }
+    #endregion
 
+    #region Photon
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
@@ -1413,4 +1555,171 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             this._bodyHandler.LeftLeg.PartInteractable.damageModifier = (InteractableObject.Damage)stream.ReceiveNext();
         }
     }
+    #endregion
+
+    /*  이번주 까지 할거
+        아이템 한손 휘두르기 애니메이션
+        두손 휘두르기 - 제작중
+        포션 마시기 만들기*/
+
+    #region ItemTwoHand
+
+    public void ItemTwoHandTrigger()
+    {
+        StartCoroutine(ItemTwoHandDelay(Side.Right));
+    }
+
+    IEnumerator ItemTwoHandDelay(Side side)
+    {
+        yield return ItemTwoHand(side, 0.07f, 0.1f, 0.3f, 0.1f, ItempSwingPower);
+    }
+
+    public IEnumerator ItemTwoHand(Side side, float duration, float readyTime, float punchTime, float resetTime, float itemPower)
+    {
+        float checkTime = Time.time;
+
+        while (Time.time - checkTime < readyTime)
+        {
+            ItemTwoHandReady(side);
+            yield return new WaitForSeconds(duration);
+        }
+        checkTime = Time.time;
+
+        while (Time.time - checkTime < punchTime)
+        {
+            ItemTwoHandSwing(side, itemPower);
+            yield return new WaitForSeconds(duration);
+        }
+        checkTime = Time.time;
+
+        while (Time.time - checkTime < resetTime)
+        {
+            ItemTwoHandReSet(side);
+            yield return new WaitForSeconds(duration);
+        }
+    }
+    #endregion
+
+    #region ItemTwoHandAnimation
+
+    public void ItemTwoHandReady(Side side)
+    {
+        //upperArm 2 chest1 up right 0.01 20 foreArm chest up back 
+        //TestRready 오른쪽 왼쪽 구별해서 좌우로 휘두룰수 있음
+        AniAngleData[] itemTwoHands = (side == Side.Right) ? ItemTwoHandAngleData : ItemTwoHandAngleData;
+        for (int i = 0; i < itemTwoHands.Length; i++)
+        {
+            AniAngleForce(itemTwoHands, i);
+        }
+    }
+
+    public void ItemTwoHandSwing(Side side, float itemPower)
+    {
+        if (target)
+            return;
+
+        Transform partTransform = _bodyHandler.Chest.transform;
+        AniFrameData[] itemTwoHands = ItemTwoHandAniData;
+        Transform transform2 = _bodyHandler.LeftHand.transform;
+        _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+        _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+        _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+
+        if (side == Side.Right)
+        {
+            itemTwoHands = ItemTwoHandAniData;
+            transform2 = _bodyHandler.RightHand.transform;
+            _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+            _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+            _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+        }
+
+        for (int i = 0; i < itemTwoHands.Length; i++)
+        {
+            Vector3 dir = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
+            AniForce(itemTwoHands, i, dir , itemPower);
+        }
+    }
+
+    public void ItemTwoHandReSet(Side side)
+    {
+        Transform partTransform = _bodyHandler.Chest.transform;
+
+        AniAngleData[] itemTwoHands = ItemTwoHandAngleData;
+        _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+        _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+        _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+
+        if (side == Side.Right)
+        {
+            itemTwoHands = ItemTwoHandAngleData;
+            _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+            _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+            _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+        }
+
+        for (int i = 0; i < itemTwoHands.Length; i++)
+        {
+            Vector3 dir = partTransform.transform.right / 2f;
+            AniAngleForce(itemTwoHands, i, dir);
+        }
+    }
+
+    #endregion
+
+    public IEnumerator ItemOwnHand(Side side, float duration, float readyTime, float punchTime, float resetTime)
+    {
+        float checkTime = Time.time;
+
+        while (Time.time - checkTime < readyTime)
+        {
+            ItemOneHandReady(side);
+            yield return new WaitForSeconds(duration);
+        }
+        checkTime = Time.time;
+
+        while (Time.time - checkTime < punchTime)
+        {
+            ItemOneHandSwing(side);
+            yield return new WaitForSeconds(duration);
+        }
+        checkTime = Time.time;
+
+        while (Time.time - checkTime < resetTime)
+        {
+            ItemOneHandReSet(side);
+            yield return new WaitForSeconds(duration);
+        }
+    }
+
+    public void ItemOneHandReady(Side side)
+    {
+        AniAngleData[] itemTwoHands = (side == Side.Right) ? TestRready2 : TestRready2;
+        for (int i = 0; i < itemTwoHands.Length; i++)
+        {
+            AniAngleForce(itemTwoHands, i);
+        }
+    }
+
+    public void ItemOneHandSwing(Side side)
+    {
+        AniFrameData[] itemOneHands = TestRready1;
+
+        for (int i = 0; i < itemOneHands.Length; i++)
+        {
+            AniForce(itemOneHands, i);
+        }
+    }
+
+    public void ItemOneHandReSet(Side side)
+    {
+        AniAngleData[] itemOneHands = TestRready2;
+
+        for (int i = 0; i < itemOneHands.Length; i++)
+        {
+            
+            AniAngleForce(itemOneHands, i);
+        }
+    }
+
 }

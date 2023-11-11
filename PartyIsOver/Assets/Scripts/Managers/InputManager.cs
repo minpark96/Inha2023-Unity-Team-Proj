@@ -38,8 +38,6 @@ public class InputManager
     bool _dkeyPressed = false;
     bool _lshiftKeyPressed = false;
 
-    Define.KeyboardEvent a;
-
     public void OnUpdate()
     {
         // UI를 클릭할 때는 캐릭터가 움직이지 않게 함
@@ -230,11 +228,11 @@ public class InputManager
             {
                 if (_rkeyPressed)
                 {
-                    if (Time.time < _rkeyPressedTime + 0.7f)
+                    if (Time.time < _rkeyPressedTime + 2f)
                     {
                         KeyboardAction.Invoke(Define.KeyboardEvent.Click);
                     }
-                    else if(Time.time > _rkeyPressedTime + 2f)
+                    else 
                     {
                         KeyboardAction.Invoke(Define.KeyboardEvent.Charge);
                     }

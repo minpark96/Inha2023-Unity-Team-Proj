@@ -10914,8 +10914,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 219c787728d3c4a48bbd6535e6eceb5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CollisionObjectType: 0
-  CollisionObject: {fileID: 0}
+  isCheck: 0
 --- !u!114 &5793545070783210249
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11389,7 +11388,7 @@ GameObject:
   - component: {fileID: 1602883286494261838}
   - component: {fileID: 4655386519301525991}
   m_Layer: 7
-  m_Name: Ragdoll2
+  m_Name: Ragdoll2SDJ
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11928,13 +11927,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8d2732e4766ccf4fba1c58f524e0dae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isRightGrab: 0
-  _isLeftGrab: 0
-  EqupItem: {fileID: 0}
-  LeftGrabObject: {fileID: 0}
-  RightGrabObject: {fileID: 0}
+  GrabItem: {fileID: 0}
   RangeWeaponSkin: {fileID: 2087769795625165002}
-  CollisionObject: {fileID: 0}
+  GrabObjectType: 0
   _turnForce: 0
 --- !u!114 &5878509405600198233
 MonoBehaviour:
@@ -11948,6 +11943,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50d5428a52f424042a9db0e6cb88f27b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  detectionRadius: 3
   layerMask:
     serializedVersion: 2
     m_Bits: 1344
@@ -12686,8 +12682,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 219c787728d3c4a48bbd6535e6eceb5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CollisionObjectType: 0
-  CollisionObject: {fileID: 0}
+  isCheck: 0
 --- !u!114 &5793437608505534346
 MonoBehaviour:
   m_ObjectHideFlags: 0
