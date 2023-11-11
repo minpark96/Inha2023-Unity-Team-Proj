@@ -106,10 +106,19 @@ public class PlayerController : MonoBehaviourPun
     public AniAngleData[] ItemTwoHandAngleData;
 
     [SerializeField]
+    public AniAngleData[] ItemOneHandAngleAniData;
+
+    [SerializeField]
+    public AniFrameData[] ItemOneHandReadyAniData;
+
+    [SerializeField]
+    public AniFrameData[] ItemOneHandSwingAniData;
+
+    [SerializeField]
     public AniFrameData[] TestRready1;
 
     [SerializeField]
-    public AniFrameData[] TestRreadySwing;
+    public AniFrameData[] TestDrinking;
 
     [SerializeField]
     public AniAngleData[] TestRready2;
@@ -186,6 +195,7 @@ public class PlayerController : MonoBehaviourPun
 
     private List<float> _xPosSpringAry = new List<float>();
     private List<float> _yzPosSpringAry = new List<float>();
+    private BalloonState _balloonState;
 
     [Header("Dummy")]
     public bool isAI = false;
@@ -604,8 +614,6 @@ public class PlayerController : MonoBehaviourPun
     }
 
     #endregion
-
-    private BalloonState _balloonState;
 
     #region FixedUpdate
     private void FixedUpdate()
@@ -1562,11 +1570,6 @@ public class PlayerController : MonoBehaviourPun
     }
     #endregion
 
-    /*  이번주 까지 할거
-        아이템 한손 휘두르기 애니메이션
-        두손 휘두르기 - 제작중
-        포션 마시기 만들기*/
-
     #region ItemTwoHand
 
     public void ItemTwoHandTrigger()
@@ -1672,7 +1675,8 @@ public class PlayerController : MonoBehaviourPun
 
     #endregion
 
-    public IEnumerator ItemOwnHand(Side side, float duration, float readyTime, float punchTime, float retime,float resetTime)
+    #region ItemOneHand
+    public IEnumerator ItemOwnHand(Side side, float duration, float readyTime, float punchTime, float retime, float resetTime)
     {
         float checkTime = Time.time;
 
@@ -1703,10 +1707,12 @@ public class PlayerController : MonoBehaviourPun
             yield return new WaitForSeconds(duration);
         }
     }
+    #endregion
 
+    #region ItemOneHandAni
     public void ItemOneHandReady(Side side)
     {
-        AniAngleData[] itemTwoHands = (side == Side.Right) ? TestRready2 : TestRready2;
+        AniAngleData[] itemTwoHands = (side == Side.Right) ? ItemOneHandAngleAniData : ItemOneHandAngleAniData;
         for (int i = 0; i < itemTwoHands.Length; i++)
         {
             AniAngleForce(itemTwoHands, i);
@@ -1714,7 +1720,7 @@ public class PlayerController : MonoBehaviourPun
     }
     public void ItemOneHandSwingReady(Side side)
     {
-        AniFrameData[] itemOneHands = TestRreadySwing;
+        AniFrameData[] itemOneHands = ItemOneHandReadyAniData;
         for (int i = 0; i < itemOneHands.Length; i++)
         {
             AniForce(itemOneHands, i);
@@ -1722,7 +1728,7 @@ public class PlayerController : MonoBehaviourPun
     }
     public void ItemOneHandSwing(Side side)
     {
-        AniFrameData[] itemOneHands = TestRready1;
+        AniFrameData[] itemOneHands = ItemOneHandSwingAniData;
 
         for (int i = 0; i < itemOneHands.Length; i++)
         {
@@ -1732,12 +1738,81 @@ public class PlayerController : MonoBehaviourPun
 
     public void ItemOneHandReSet(Side side)
     {
-        AniAngleData[] itemOneHands = TestRready2;
+        AniAngleData[] itemOneHands = ItemOneHandAngleAniData;
 
         for (int i = 0; i < itemOneHands.Length; i++)
         {
-            
+
             AniAngleForce(itemOneHands, i);
+        }
+    }
+    #endregion
+
+    public IEnumerator Potion(Side side,float duration, float ready, float start, float drinking, float end)
+    {
+        float checkTime = Time.time;
+
+        while (Time.time - checkTime < ready)
+        {
+            PotionReady(side);
+            yield return new WaitForSeconds(duration);
+        }
+        checkTime = Time.time;
+
+        while (Time.time - checkTime < start)
+        {
+            PotionStart(side);
+            yield return new WaitForSeconds(duration);
+        }
+        checkTime = Time.time;
+
+        while (Time.time - checkTime < drinking)
+        {
+            PotionDrinking(side);
+            yield return new WaitForSeconds(duration);
+        }
+        checkTime = Time.time;
+
+        while (Time.time - checkTime < end)
+        {
+            PotionEnd(side);
+            yield return new WaitForSeconds(duration);
+        }
+    }
+
+    void PotionReady(Side side)
+    {
+        AniAngleData[] potionReadys = (side == Side.Right) ? TestRready2 : TestRready2;
+        for (int i = 0; i < potionReadys.Length; i++)
+        {
+            AniAngleForce(potionReadys, i);
+        }
+    }
+
+    void PotionStart(Side side)
+    {
+        AniFrameData[] potionStarts = TestRready1;
+        for (int i = 0; i < potionStarts.Length; i++)
+        {
+            AniForce(potionStarts, i);
+        }
+    }
+
+    void PotionDrinking(Side side)
+    {
+        AniFrameData[] PotionDrinkings = TestDrinking;
+        for (int i = 0; i < PotionDrinkings.Length; i++)
+        {
+            AniForce(PotionDrinkings, i);
+        }
+    }
+
+    void PotionEnd(Side side)
+    {
+        AniAngleData[] potionReadys = TestRready2;
+        for (int i = 0; i < potionReadys.Length; i++)
+        {
+            AniAngleForce(potionReadys, i);
         }
     }
 
