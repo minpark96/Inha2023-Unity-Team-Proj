@@ -6,14 +6,15 @@ using static Define;
 
 public class HandChecker : MonoBehaviourPun
 {
-    public bool isCheck = false;
-
-    Grab _grab;
+    private Actor _actor;
+    public GrabObjectType CollisionObjectType = GrabObjectType.None;
+    public GameObject CollisionObject = null;
 
     // Start is called before the first frame update
     void Start()
     {
-        _grab = transform.root.GetComponent<Grab>();
+        _actor = transform.root.GetComponent<Actor>();
+
     }
 
     // Update is called once per frame
@@ -22,23 +23,41 @@ public class HandChecker : MonoBehaviourPun
         
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionStay(Collision collision)
     {
         if (!photonView.IsMine) return;
-        if (other.tag == "ItemHandle" && _grab._isGrabbing)
-        {
-            _grab.GrabObjectType = Define.GrabObjectType.Item;
-            isCheck = true;
-        }
-    }
+        if(collision.collider == null) return;
 
-    private void OnTriggerExit(Collider other)
+
+        if(_actor.Grab._isGrabbingInProgress && collision.gameObject.GetComponent<InteractableObject>() != null)
+        {
+            CollisionObject = collision.gameObject;
+
+            if (collision.collider.tag == "ItemHandle")
+            {
+                CollisionObjectType = Define.GrabObjectType.Item;
+                return;
+            }
+            if (collision.gameObject.GetComponent<BodyPart>())
+            {
+                CollisionObjectType = Define.GrabObjectType.Player;
+                return;
+            }
+            CollisionObjectType = Define.GrabObjectType.Object;
+        }
+
+
+    }
+    private void OnCollisionExit(Collision collision)
     {
         if (!photonView.IsMine) return;
-        if (other.tag == "ItemHandle")
+        if (collision.collider == null) return;
+
+        if (collision.gameObject.GetComponent<InteractableObject>() != null)
         {
-            _grab.GrabObjectType = Define.GrabObjectType.None;
-            isCheck = false;
+            CollisionObjectType = Define.GrabObjectType.None;
+            CollisionObject = null;
+
         }
     }
 }
