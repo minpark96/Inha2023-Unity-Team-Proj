@@ -1109,6 +1109,8 @@ MonoBehaviour:
   HeadingAngleAniData: []
   RSkillAniData: []
   RSkillAngleAniData: []
+  ItemTwoHandAniData: []
+  ItemTwoHandAngleData: []
   TestRready1: []
   TestRready2: []
   RunSpeed: 35000
@@ -12283,6 +12285,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CameraArm: {fileID: 969570400}
+  BalloonDuration: 30
+  RotateAngle: 20
 --- !u!1 &1383863477
 GameObject:
   m_ObjectHideFlags: 0
