@@ -115,6 +115,15 @@ public class PlayerController : MonoBehaviourPun
     public AniFrameData[] ItemOneHandSwingAniData;
 
     [SerializeField]
+    public AniFrameData[] PotionReadyAniData;
+
+    [SerializeField]
+    public AniFrameData[] PotionDrinkingAniData;
+
+    [SerializeField]
+    public AniAngleData[] PotionAngleAniData;
+
+    [SerializeField]
     public AniFrameData[] TestRready1;
 
     [SerializeField]
@@ -1782,7 +1791,7 @@ public class PlayerController : MonoBehaviourPun
 
     void PotionReady(Side side)
     {
-        AniAngleData[] potionReadys = (side == Side.Right) ? TestRready2 : TestRready2;
+        AniAngleData[] potionReadys = (side == Side.Right) ? PotionAngleAniData : PotionAngleAniData;
         for (int i = 0; i < potionReadys.Length; i++)
         {
             AniAngleForce(potionReadys, i);
@@ -1791,7 +1800,7 @@ public class PlayerController : MonoBehaviourPun
 
     void PotionStart(Side side)
     {
-        AniFrameData[] potionStarts = TestRready1;
+        AniFrameData[] potionStarts = PotionReadyAniData;
         for (int i = 0; i < potionStarts.Length; i++)
         {
             AniForce(potionStarts, i);
@@ -1800,7 +1809,7 @@ public class PlayerController : MonoBehaviourPun
 
     void PotionDrinking(Side side)
     {
-        AniFrameData[] PotionDrinkings = TestDrinking;
+        AniFrameData[] PotionDrinkings = PotionDrinkingAniData;
         for (int i = 0; i < PotionDrinkings.Length; i++)
         {
             AniForce(PotionDrinkings, i);
@@ -1809,7 +1818,7 @@ public class PlayerController : MonoBehaviourPun
 
     void PotionEnd(Side side)
     {
-        AniAngleData[] potionReadys = TestRready2;
+        AniAngleData[] potionReadys = PotionAngleAniData;
         for (int i = 0; i < potionReadys.Length; i++)
         {
             AniAngleForce(potionReadys, i);

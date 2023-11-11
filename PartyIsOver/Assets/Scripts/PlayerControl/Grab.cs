@@ -461,6 +461,9 @@ public class Grab : MonoBehaviourPun
             if (EquipItem != null && EquipItem.GetComponent<Item>().ItemData.ItemType == ItemType.OneHanded)
                 return;
 
+            if (EquipItem != null && EquipItem.GetComponent<Item>().ItemData.ItemType == ItemType.Potion)
+                return;
+
             if (_rightSearchTarget.GetComponent<Item>() != null)
             {
                 _jointRight.angularYMotion = ConfigurableJointMotion.Locked;
