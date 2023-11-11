@@ -36,20 +36,20 @@ public class BalloonState : MonoBehaviour
 
         //}
 
-
-        for (int i = 0; i < _actor.BodyHandler.BodyParts.Count - 1; i++)
+        //456 789 101112 131415
+        for (int i = 4; i < 7; i++)
         {
-            _actor.BodyHandler.BodyParts[i].PartRigidbody.useGravity = true;
-            if (i >= 0 && i <= 3) 
-                continue;
-            _actor.BodyHandler.BodyParts[i].PartRigidbody.freezeRotation = false;
+            _actor.BodyHandler.BodyParts[i].PartRigidbody.freezeRotation = true;
+        }
+        for (int i = 10; i < 13; i++)
+        {
+            _actor.BodyHandler.BodyParts[i].PartRigidbody.freezeRotation = true;
         }
 
         for (int i = 0; i < _actor.BodyHandler.BodyParts.Count - 1; i++)
         {
             _actor.BodyHandler.BodyParts[i].PartRigidbody.angularVelocity = Vector3.zero;
             _actor.BodyHandler.BodyParts[i].PartRigidbody.velocity = Vector3.zero;
-
             _actor.BodyHandler.BodyParts[i].PartRigidbody.useGravity = false;
         }
 
@@ -77,12 +77,14 @@ public class BalloonState : MonoBehaviour
         _actor.BodyHandler.BodyParts[1].transform.localScale = new Vector3(1, 1, 1);
         _actor.BodyHandler.BodyParts[2].transform.localScale = new Vector3(1, 1, 1);
 
+
+        for (int i = 4; i < _actor.BodyHandler.BodyParts.Count - 1; i++)
+        {
+            _actor.BodyHandler.BodyParts[i].PartRigidbody.freezeRotation = false;
+        }
         for (int i = 0; i < _actor.BodyHandler.BodyParts.Count - 1; i++)
         {
             _actor.BodyHandler.BodyParts[i].PartRigidbody.useGravity = true;
-            if (i >= 0 && i <= 3) 
-                continue;
-            _actor.BodyHandler.BodyParts[i].PartRigidbody.freezeRotation = false;
         }
       
 
