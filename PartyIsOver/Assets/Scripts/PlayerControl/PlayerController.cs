@@ -348,7 +348,15 @@ public class PlayerController : MonoBehaviourPun
                 break;
             case Define.KeyboardEvent.Press:
                 {
-                    if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
+                    if (Input.GetKey(KeyCode.W))
+                    {
+                        MoveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+                    }
+
+                    if (_actor.debuffState == Actor.DebuffState.Balloon)
+                        return;
+
+                    if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
                     {
                         MoveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
                     }

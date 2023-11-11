@@ -28,15 +28,21 @@ public class BalloonState : MonoBehaviour
             _initialRotations.Add(_actor.BodyHandler.BodyParts[i].PartTransform.localRotation);
         }
 
-        _actor.BodyHandler.Head.transform.localScale = new Vector3(2f, 2f, 0.8f);
-        _actor.BodyHandler.Chest.transform.localScale = new Vector3(2.5f, 2.5f, 3.3f);
-        _actor.BodyHandler.Waist.transform.localScale = new Vector3(2.5f, 2.5f, 3.3f);
+        float startTime = Time.time;
+        float duration = 2f;
+        while (Time.time - startTime < duration)
+        {
+            float t = (Time.time - startTime) / duration;
+            float scaleValue1 = Mathf.Lerp(1f, 2f, t);
+            float scaleValue2 = Mathf.Lerp(1f, 2.5f, t);
+            float scaleValue3 = Mathf.Lerp(1f, 3.3f, t);
 
-        //float startTime = Time.time;
-        //while(Time.time + startTime < 2f)
-        //{
+            _actor.BodyHandler.Head.transform.localScale = new Vector3(scaleValue1, scaleValue1, 0.8f);
+            _actor.BodyHandler.Chest.transform.localScale = new Vector3(scaleValue2, scaleValue2, scaleValue3);
+            _actor.BodyHandler.Waist.transform.localScale = new Vector3(scaleValue2, scaleValue2, scaleValue3);
 
-        //}
+            yield return null;
+        }
 
         for (int i = 4; i < 13; i++)
         {
@@ -63,10 +69,14 @@ public class BalloonState : MonoBehaviour
 
         for (int i = 0; i < _actor.BodyHandler.BodyParts.Count - 1; i++)
         {
+            _actor.BodyHandler.BodyParts[i].PartTransform.localRotation = _initialRotations[i];
+        }
+
+        for (int i = 0; i < _actor.BodyHandler.BodyParts.Count - 1; i++)
+        {
             _actor.BodyHandler.BodyParts[i].PartRigidbody.angularVelocity = Vector3.zero;
             _actor.BodyHandler.BodyParts[i].PartRigidbody.velocity = Vector3.zero;
             _actor.BodyHandler.BodyParts[i].PartRigidbody.useGravity = true;
-            _actor.BodyHandler.BodyParts[i].PartTransform.localRotation = _initialRotations[i];
         }
 
 
@@ -97,9 +107,8 @@ public class BalloonState : MonoBehaviour
         Vector3 moveDir = lookForward * _actor.PlayerController.MoveInput.z + lookRight * _actor.PlayerController.MoveInput.x;
         Vector3 rotateDir = new Vector3(moveDir.x, 0, 0);
 
-        _actor.BodyHandler.Hip.PartRigidbody.AddForce(moveDir.normalized * 100f * 350f * Time.deltaTime);
+        _actor.BodyHandler.Hip.PartRigidbody.AddForce(lookForward * 350f * Time.deltaTime);
         _actor.BodyHandler.Hip.PartTransform.Rotate(rotateDir, RotateAngle);
-
 
     }
 

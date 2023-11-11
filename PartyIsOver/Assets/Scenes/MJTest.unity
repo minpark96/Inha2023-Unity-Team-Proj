@@ -1077,7 +1077,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50d5428a52f424042a9db0e6cb88f27b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  detectionRadius: 3
   layerMask:
     serializedVersion: 2
     m_Bits: 64
@@ -1178,6 +1177,7 @@ MonoBehaviour:
   LeftHand: {fileID: 573083520}
   RightHand: {fileID: 668244677}
   Ball: {fileID: 723357614}
+  CurrentBodyPart: {fileID: 0}
 --- !u!4 &83486399
 Transform:
   m_ObjectHideFlags: 0
@@ -16408,6 +16408,10 @@ PrefabInstance:
     - target: {fileID: 5845029302382654086, guid: 763a199fa1132cc4688fb4fcfd0b05ef, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5873236424662451676, guid: 763a199fa1132cc4688fb4fcfd0b05ef, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5875873347556913874, guid: 763a199fa1132cc4688fb4fcfd0b05ef, type: 3}
       propertyPath: m_LocalScale.x
