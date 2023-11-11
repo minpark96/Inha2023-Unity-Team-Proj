@@ -12,22 +12,26 @@ using static UnityEditor.Progress;
 public class Grab : MonoBehaviourPun
 {
     private TargetingHandler _targetingHandler;
-    private BodyHandler _bodyHandler;
     private InteractableObject _leftSearchTarget;
     private InteractableObject _rightSearchTarget;
 
 
     private Actor _actor;
 
+    [SerializeField]
     bool _isRightGrab = false;
+    [SerializeField]
     bool _isLeftGrab = false;
 
     float _grabDelayTimer = 0.5f;
 
-    public bool _isGrabbing {get; private set;}
+    public bool _isGrabbingInProgress {get; private set;}
 
 
     public GameObject EqupItem;
+    public GameObject LeftGrabObject;
+    public GameObject RightGrabObject;
+
     public Transform RangeWeaponSkin;
 
     private Rigidbody _leftHandRigid;
@@ -64,25 +68,25 @@ public class Grab : MonoBehaviourPun
     
     void Start()
     {
-        _bodyHandler = transform.root.GetComponent<BodyHandler>();
-        _targetingHandler = GetComponent<TargetingHandler>();
         _actor = GetComponent<Actor>();
-        _bodyHandler.BodySetup();
+        _actor.BodyHandler = transform.root.GetComponent<BodyHandler>();
+        _targetingHandler = GetComponent<TargetingHandler>();
+        _actor.BodyHandler.BodySetup();
 
 
-        _leftHandRigid = _bodyHandler.LeftHand.PartRigidbody;
-        _rightHandRigid = _bodyHandler.RightHand.PartRigidbody;
+        _leftHandRigid = _actor.BodyHandler.LeftHand.PartRigidbody;
+        _rightHandRigid = _actor.BodyHandler.RightHand.PartRigidbody;
 
-        _jointLeft = _bodyHandler.LeftHand.PartJoint;
-        _jointRight = _bodyHandler.RightHand.PartJoint;
+        _jointLeft = _actor.BodyHandler.LeftHand.PartJoint;
+        _jointRight = _actor.BodyHandler.RightHand.PartJoint;
 
-        _jointLeftForeArm = _bodyHandler.LeftForearm.PartJoint;
-        _jointRightForeArm = _bodyHandler.RightForearm.PartJoint;
+        _jointLeftForeArm = _actor.BodyHandler.LeftForearm.PartJoint;
+        _jointRightForeArm = _actor.BodyHandler.RightForearm.PartJoint;
 
-        _jointLeftUpperArm = _bodyHandler.LeftArm.PartJoint;
-        _jointRightUpperArm = _bodyHandler.RightArm.PartJoint;
+        _jointLeftUpperArm = _actor.BodyHandler.LeftArm.PartJoint;
+        _jointRightUpperArm = _actor.BodyHandler.RightArm.PartJoint;
 
-        _jointChest = _bodyHandler.Chest.PartJoint;
+        _jointChest = _actor.BodyHandler.Chest.PartJoint;
     }
 
     void Update()
@@ -106,15 +110,13 @@ public class Grab : MonoBehaviourPun
                 break;
             case Define.MouseEvent.PointerUp:
                 {
+
                 }
                 break;
             case Define.MouseEvent.Click:
                 {
                     if (Input.GetMouseButtonUp(0))
                     {
-                        //if(GrabItem.GetComponent<Item>().ItemType == ItemType.TwoHanded ||
-                        //    GrabItem.GetComponent<Item>().ItemType == ItemType.OneHanded)
-                        //    _actor.PlayerController.PunchAndGrab();
                         if (EqupItem.GetComponent<Item>().ItemData.ItemType == ItemType.TwoHanded)
                             StartCoroutine(HorizontalAttack());
                         else if (EqupItem.GetComponent<Item>().ItemData.ItemType == ItemType.OneHanded)
@@ -158,7 +160,7 @@ public class Grab : MonoBehaviourPun
 
     public void GrabReset()
     {
-        _isGrabbing = false;
+        _isGrabbingInProgress = false;
         if(EqupItem != null)
         {
             EqupItem.gameObject.layer = LayerMask.NameToLayer("Item");
@@ -166,15 +168,16 @@ public class Grab : MonoBehaviourPun
             RangeWeaponSkin.gameObject.SetActive(false);
             EqupItem.GetComponent<Item>().Owner = null;
             EqupItem = null;
-            _isRightGrab = false;
-            _isLeftGrab = false;
+
         }
+        _isRightGrab = false;
+        _isLeftGrab = false;
         DestroyJoint();
     }
 
     public void Grabbing()
     {
-        if (_grabDelayTimer > 0f || _isRightGrab)
+        if (_grabDelayTimer > 0f)
             return;
 
         //타겟서치 태그설정 주의할것
@@ -186,13 +189,13 @@ public class Grab : MonoBehaviourPun
         if (_leftSearchTarget == null && _rightSearchTarget == null)
             return;
 
-        _isGrabbing = true;
+        _isGrabbingInProgress = true;
 
-        //타겟이 정면에 있을때
-        if(_leftSearchTarget == _rightSearchTarget)
+        //타겟이 정면에 있을고 양손이 비어있을때
+        if(_leftSearchTarget == _rightSearchTarget && !_isRightGrab && !_isLeftGrab)
         {
             //아이템이면서 일정 거리 이내에 있을때
-            if (Vector3.Distance(_leftSearchTarget.transform.position, _bodyHandler.Chest.transform.position) <= 1.5f
+            if (Vector3.Distance(_leftSearchTarget.transform.position, _actor.BodyHandler.Chest.transform.position) <= 1.5f
                  && _leftSearchTarget.GetComponent<Item>() != null)
             {
                 Item item = _leftSearchTarget.GetComponent<Item>();
@@ -206,28 +209,36 @@ public class Grab : MonoBehaviourPun
         {
             //타겟이 정면이 아닐때
 
-
-            //여기 하는중 이제 손은 뻗으니 아이템 함수들 최대한 재활용해서  잡기판정 하면 됌
-
-            if(!(_leftSearchTarget == null))
+            if(_leftSearchTarget != null && !_isLeftGrab)
             {
                 Vector3 dir = _targetingHandler.
                     FindClosestCollisionPoint(_leftSearchTarget.GetComponent<Collider>()) - _leftHandRigid.transform.position;
 
                 _leftHandRigid.AddForce(dir * 80f);
+                if(HandCollisionCheck(Side.Left))
+                {
+                    JointFix(Side.Left);
+                    _grabDelayTimer = 0.5f;
+                }
+
             }
 
-            if(!(_rightSearchTarget == null))
+            if(_rightSearchTarget != null && !_isRightGrab)
             {
+                Debug.Log(_rightSearchTarget);
+
+
                 Vector3 dir = _targetingHandler.
                     FindClosestCollisionPoint(_rightSearchTarget.GetComponent<Collider>()) - _rightHandRigid.transform.position;
+                
 
                 _rightHandRigid.AddForce(dir * 80f);
+                if (HandCollisionCheck(Side.Right))
+                {
+                    JointFix(Side.Right);
+                    _grabDelayTimer = 0.5f;
+                }
             }
-
-
-            //타겟의 가장 가까운 지점으로 손을 뻗어서 접촉시 그랩상태로 들어감
-            //타겟의 위치와 거리에 따라 양손그랩, 한손그랩이 들어감
         }
     }
 
@@ -243,7 +254,7 @@ public class Grab : MonoBehaviourPun
                     Vector3 dir = item.OneHandedPos.position - _rightHandRigid.transform.position;
                     _rightHandRigid.AddForce(dir * 80f);
 
-                    if (IsHoldingObject(item, Side.Right))
+                    if (IsHoldingItem(item, Side.Right))
                         ItemRotate(item.transform, false);
                     else
                         return;
@@ -276,7 +287,7 @@ public class Grab : MonoBehaviourPun
             dir = item.TwoHandedPos.position - _leftHandRigid.transform.position;
             _leftHandRigid.AddForce(dir * 90f);
 
-            if (IsHoldingObject(item, Side.Both))
+            if (IsHoldingItem(item, Side.Both))
                 ItemRotate(item.transform, true);
             else
                 return;
@@ -289,7 +300,7 @@ public class Grab : MonoBehaviourPun
             dir = item.OneHandedPos.position - _leftHandRigid.transform.position;
             _leftHandRigid.AddForce(dir * 90f);
 
-            if (IsHoldingObject(item, Side.Both))
+            if (IsHoldingItem(item, Side.Both))
                 ItemRotate(item.transform, false);
             else
                 return;
@@ -303,9 +314,8 @@ public class Grab : MonoBehaviourPun
     /// <summary>
     /// 손이 아이템에 제대로 접촉했는지 체크 후 관절생성
     /// </summary>
-    bool IsHoldingObject(Item item,Side side)
+    bool IsHoldingItem(Item item,Side side)
     {
-
         //HandChecker 스크립트에서 양손 다 아이템의 손잡이와 접촉중인지 판정
         if (HandCollisionCheck(side))
         {
@@ -324,26 +334,30 @@ public class Grab : MonoBehaviourPun
         switch (side)
         {
             case Side.Left:
-                if (_leftHandRigid.GetComponent<HandChecker>().CollisionObject == _leftSearchTarget.gameObject)
+                if (_leftHandRigid.GetComponent<HandChecker>().CollisionObject != null &&
+                    _leftHandRigid.GetComponent<HandChecker>().CollisionObject == _leftSearchTarget.gameObject)
                 {
                     _isLeftGrab = true;
                     return true;
                 }
                 break;
             case Side.Right:
-                if (_rightHandRigid.GetComponent<HandChecker>().CollisionObject == _leftSearchTarget.gameObject)
+                if (_rightHandRigid.GetComponent<HandChecker>().CollisionObject != null && 
+                    _rightHandRigid.GetComponent<HandChecker>().CollisionObject == _rightSearchTarget.gameObject)
                 {
                     _isRightGrab = true;
                     return true;
                 }
                 break;
             case Side.Both:
-                if (_rightHandRigid.GetComponent<HandChecker>().CollisionObject == _leftSearchTarget.gameObject &&
-                    _leftHandRigid.GetComponent<HandChecker>().CollisionObject == _leftSearchTarget.gameObject)
+                if (HandCollisionCheck(Side.Right) && HandCollisionCheck(Side.Left))   
                 {
-                    _isRightGrab = true;
-                    _isLeftGrab = true;
                     return true;
+                }
+                else
+                {
+                    _isRightGrab = false;
+                    _isLeftGrab = false;
                 }
                 break;
         }
