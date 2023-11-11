@@ -7,7 +7,6 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using static Define;
-using static UnityEditor.Progress;
 
 public class Grab : MonoBehaviourPun
 {
@@ -93,6 +92,7 @@ public class Grab : MonoBehaviourPun
     {
         _grabDelayTimer -= Time.deltaTime;
 
+        
     }
 
     public void OnMouseEvent_EquipItem(Define.MouseEvent evt)
@@ -190,25 +190,22 @@ public class Grab : MonoBehaviourPun
 
         _isGrabbingInProgress = true;
 
-        //타겟이 정면에 있을고 양손이 비어있을때
-        if(_leftSearchTarget == _rightSearchTarget && !_isRightGrab && !_isLeftGrab)
+        //타겟이 정면에 있고 아이템일때
+        if (_leftSearchTarget == _rightSearchTarget && _leftSearchTarget.GetComponent<Item>() != null)
         {
-            //아이템이면서 일정 거리 이내에 있을때
+            //일정 거리 이내에 있을때 양손이 비어있을때
             if (Vector3.Distance(_leftSearchTarget.transform.position, _actor.BodyHandler.Chest.transform.position) <= 1.5f
-                 && _leftSearchTarget.GetComponent<Item>() != null)
+                  && !_isRightGrab && !_isLeftGrab)
             {
                 Item item = _leftSearchTarget.GetComponent<Item>();
                 HandleItemGrabbing(item);
                 return;
             }
-
-            //아이템이 아닐때
         }
-        else
+        else//아이템이 아닐때
         {
             //타겟이 정면이 아닐때
-
-            if(_leftSearchTarget != null && !_isLeftGrab)
+            if (_leftSearchTarget != null && !_isLeftGrab)
             {
                 Vector3 dir = _targetingHandler.
                     FindClosestCollisionPoint(_leftSearchTarget.GetComponent<Collider>()) - _leftHandRigid.transform.position;
@@ -219,14 +216,10 @@ public class Grab : MonoBehaviourPun
                     JointFix(Side.Left);
                     _grabDelayTimer = 0.5f;
                 }
-
             }
 
             if(_rightSearchTarget != null && !_isRightGrab)
             {
-                Debug.Log(_rightSearchTarget);
-
-
                 Vector3 dir = _targetingHandler.
                     FindClosestCollisionPoint(_rightSearchTarget.GetComponent<Collider>()) - _rightHandRigid.transform.position;
                 
@@ -271,6 +264,20 @@ public class Grab : MonoBehaviourPun
             case ItemType.Ranged:
                 {
                     TwoHandedGrab(item);
+                }
+                break;
+            case ItemType.Potion:
+                {
+                    Vector3 dir = item.OneHandedPos.position - _rightHandRigid.transform.position;
+                    _rightHandRigid.AddForce(dir * 80f);
+
+                    if (IsHoldingItem(item, Side.Right))
+                        ItemRotate(item.transform, false);
+                    else
+                        return;
+                    //아이템에 맞게 관절조정 함수 추가해야함
+
+                    JointFix(Side.Right);
                 }
                 break;
         }
@@ -428,6 +435,9 @@ public class Grab : MonoBehaviourPun
             _grabJointLeft.connectedBody = _leftHandRigid;
             _grabJointLeft.breakForce = 9001;
 
+            if (EquipItem == null)
+                return;
+
             if (_leftSearchTarget.GetComponent<Item>() != null)
             {
                 _jointLeft.angularYMotion = ConfigurableJointMotion.Locked;
@@ -445,7 +455,9 @@ public class Grab : MonoBehaviourPun
             _grabJointRight.connectedBody = _rightHandRigid;
             _grabJointRight.breakForce = 9001;
 
-            if (EquipItem != null && EquipItem.GetComponent<Item>().ItemData.ItemType == ItemType.OneHanded)
+            if (EquipItem == null)
+                return;
+            if (EquipItem.GetComponent<Item>().ItemData.ItemType == ItemType.OneHanded)
                 return;
 
             if (_rightSearchTarget.GetComponent<Item>() != null)
@@ -512,41 +524,16 @@ public class Grab : MonoBehaviourPun
 
     IEnumerator HorizontalAttack()
     {
-        int forcingCount = 5000;
-
         _jointLeft.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce*3, 0, 0));
         _jointRight.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce*3, 0, 0));
 
-        Debug.Log("horizontalAttack");
-        while (forcingCount > 0)
-        {
-            AlignToVector(_jointLeft.GetComponent<Rigidbody>(), _jointLeft.transform.position, new Vector3(0.2f, 0f, 0f), 0.1f, 2f);
-            AlignToVector(_jointLeftForeArm.GetComponent<Rigidbody>(), _jointLeftForeArm.transform.position, new Vector3(0.2f, 0f, 0f), 0.1f, 2f);
-            AlignToVector(_jointLeftUpperArm.GetComponent<Rigidbody>(), _jointLeftUpperArm.transform.position, new Vector3(0.2f, 0f, 0f), 0.1f, 2f);
-
-            AlignToVector(_jointRight.GetComponent<Rigidbody>(), _jointRight.transform.position, _jointLeft.transform.position, 0.1f, 2f);
-            AlignToVector(_jointRightForeArm.GetComponent<Rigidbody>(), _jointRightForeArm.transform.position, _jointLeftForeArm.transform.position, 0.1f, 2f);
-            AlignToVector(_jointRightUpperArm.GetComponent<Rigidbody>(), _jointRightUpperArm.transform.position, _jointLeftUpperArm.transform.position, 0.1f, 2f);
-
-            AlignToVector(_jointChest.GetComponent<Rigidbody>(), _jointChest.transform.position, _jointLeft.transform.position, 0.1f, 2f);
-
-            //AlignToVector(_jointRight.GetComponent<Rigidbody>(), _jointRight.transform.position, new Vector3(0.2f, 0f, 0f), 0.1f, 0.1f);
-            //AlignToVector(_jointRightForeArm.GetComponent<Rigidbody>(), _jointRightForeArm.transform.position, new Vector3(0.2f, 0f, 0f), 0.1f, 0.1f);
-            //AlignToVector(_jointRightUpperArm.GetComponent<Rigidbody>(), _jointRightUpperArm.transform.position, new Vector3(0.2f, 0f, 0f), 0.1f, 0.1f);
-
-            forcingCount--;
-        }
-        Debug.Log("코루틴 끝");
-
-        yield return 0;
+        yield return _actor.PlayerController.ItemTwoHand(PlayerController.Side.Right, 0.07f, 0.1f, 0.5f, 0.1f, 3f);
     }
 
     IEnumerator UsePotionAnim()
     {
         _jointLeft.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 3, 0, 0));
         _jointRight.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 3, 0, 0));
-
-        Debug.Log("h");
 
         AlignToVector(_jointLeft.GetComponent<Rigidbody>(), _jointLeft.transform.position, new Vector3(0.2f, 0f, 0f), 0.1f, 2f);
         AlignToVector(_jointLeftForeArm.GetComponent<Rigidbody>(), _jointLeftForeArm.transform.position, new Vector3(0.2f, 0f, 0f), 0.1f, 2f);

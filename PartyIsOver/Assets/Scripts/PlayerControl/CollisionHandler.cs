@@ -36,6 +36,7 @@ public class CollisionHandler : MonoBehaviourPun
 
         float num = 0f;
         float damage = 0f;
+        
 
         for (int i = 0; i < collision.contactCount; i++)
         {
@@ -52,6 +53,9 @@ public class CollisionHandler : MonoBehaviourPun
             {
                 damage = 0f - damage;
             }
+
+
+
 
             // 물리적 공격을 받을 때
             if (collisionInteractable.damageModifier <= InteractableObject.Damage.Special)
@@ -156,7 +160,7 @@ public class CollisionHandler : MonoBehaviourPun
     private void OnCollisionEnter(Collision collision)
     {
         if (!PhotonNetwork.IsMasterClient) return;
-
+       
         if (collision.collider.gameObject.layer != LayerMask.NameToLayer("Ground"))
             DamageCheck(collision);
     }
