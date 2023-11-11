@@ -155,10 +155,8 @@ public class StatusHandler : MonoBehaviourPun
         {
             case Damage.Ice: // 빙결
                 actor.debuffState |= Actor.DebuffState.Ice;
-                // 다른 디버프 체크
                 foreach (Actor.DebuffState state in System.Enum.GetValues(typeof(Actor.DebuffState)))
                 {
-                    // 빙결 이외의 상태가 켜지면 끄기
                     if (state != Actor.DebuffState.Ice && (actor.debuffState & state) != 0)
                     {
                         actor.debuffState &= ~state;
@@ -167,10 +165,8 @@ public class StatusHandler : MonoBehaviourPun
                 break;
             case Damage.Balloon: // 풍선
                 actor.debuffState |= Actor.DebuffState.Balloon;
-                // 다른 디버프 체크
                 foreach (Actor.DebuffState state in System.Enum.GetValues(typeof(Actor.DebuffState)))
                 {
-                    // 풍선 이외의 상태가 켜지면 끄기
                     if (state != Actor.DebuffState.Balloon && (actor.debuffState & state) != 0)
                     {
                         actor.debuffState &= ~state;
@@ -529,7 +525,7 @@ public class StatusHandler : MonoBehaviourPun
         actor.BodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
     }
 
-    IEnumerator ResetBodySpring()
+    public IEnumerator ResetBodySpring()
     {
         JointDrive angularXDrive;
         JointDrive angularYZDrive;
@@ -551,7 +547,7 @@ public class StatusHandler : MonoBehaviourPun
         yield return null;
     }
 
-    IEnumerator RestoreBodySpring()
+    public IEnumerator RestoreBodySpring()
     {
         JointDrive angularXDrive;
         JointDrive angularYZDrive;

@@ -17,6 +17,7 @@ public class Actor : MonoBehaviourPun
     public BodyHandler BodyHandler;
     public PlayerController PlayerController;
     public Grab Grab;
+    public BalloonState BalloonState;
 
     public enum ActorState
     {
@@ -30,7 +31,8 @@ public class Actor : MonoBehaviourPun
         Fall = 0x80,
         Climb = 0x100,
         Debuff = 0x200,
-        Balloon = 0x400,
+        BalloonWalk = 0x400,
+
     }
 
     public enum DebuffState
@@ -107,6 +109,7 @@ public class Actor : MonoBehaviourPun
         StatusHandler = GetComponent<StatusHandler>();
         PlayerController = GetComponent<PlayerController>();
         Grab = GetComponent<Grab>();
+        BalloonState = GetComponent<BalloonState>();
 
         ChangeLayerRecursively(gameObject, LayerCnt++);
 
@@ -168,8 +171,8 @@ public class Actor : MonoBehaviourPun
                 break;
             case ActorState.Roll:
                 break;
-            case ActorState.Balloon:
-                PlayerController.BalloonMove();
+            case ActorState.BalloonWalk:
+                BalloonState.BalloonMove();
                 break;
         }
 
