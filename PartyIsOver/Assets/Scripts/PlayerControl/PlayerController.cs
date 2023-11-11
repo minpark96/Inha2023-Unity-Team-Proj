@@ -100,6 +100,12 @@ public class PlayerController : MonoBehaviourPun
     public AniAngleData[] RSkillAngleAniData;
 
     [SerializeField]
+    public AniFrameData[] ItemTwoHandAniData;
+
+    [SerializeField]
+    public AniAngleData[] ItemTwoHandAngleData;
+
+    [SerializeField]
     public AniFrameData[] TestRready1;
 
     [SerializeField]
@@ -334,6 +340,12 @@ public class PlayerController : MonoBehaviourPun
 
         switch (evt)
         {
+            case Define.KeyboardEvent.PointerDown:
+                {
+                    if (Input.GetKeyDown(KeyCode.Space))
+                        _actor.actorState = Actor.ActorState.Jump;
+                }
+                break;
             case Define.KeyboardEvent.Press:
                 {
                     if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
@@ -375,6 +387,8 @@ public class PlayerController : MonoBehaviourPun
                             StartCoroutine(ChargeReady());
                         }
                     }
+
+                    
                 }
                 break;
             case Define.KeyboardEvent.Press:
@@ -396,8 +410,7 @@ public class PlayerController : MonoBehaviourPun
 
                     if (Input.GetKeyUp(KeyCode.H))
                         Heading();
-                    if (Input.GetKeyUp(KeyCode.Space))
-                        _actor.actorState = Actor.ActorState.Jump;
+                    
 
                     if (Input.GetKeyUp(KeyCode.R))
                     {
@@ -630,11 +643,13 @@ public class PlayerController : MonoBehaviourPun
     {
         if (!_isCoroutineRoll)
         {
+            //자식들의 오브젝터 rotation을 뛰기 전에 저장
             Transform[] childTransforms = GetComponentsInChildren<Transform>();
             foreach (Transform childTransform in childTransforms)
             {
                 _initialRotations[childTransform] = childTransform.localRotation;
             }
+            //점프를 해야 잘 굴러서 점프를 한번 한 다음에 구르기 시작
             _actor.actorState = Actor.ActorState.Jump;
             StartCoroutine(ForwardRollDelay(3f));
         }
@@ -650,16 +665,21 @@ public class PlayerController : MonoBehaviourPun
 
     IEnumerator ForwardRoll(float duration, float readyRoll)
     {
+        //최고 속도를 구를 때 마다 일정하게 값을 넣을려고
         _hips.velocity = -_hips.transform.up.normalized * MaxSpeed * 1.5f;
+        //연산이 너무 빨라서 잠깐 멈춰줘야함
         yield return new WaitForSeconds(0.08f);
+        //상태를 Roll 상태로 전환
         _actor.actorState = ActorState.Roll;
 
+        //spring을 풀어서 구르기가 자연스럽게 할 수 있게 한다.
         _actor.StatusHandler.StartCoroutine("ResetBodySpring");
+        //hip의 잠겨 있는 FreezeRotationX 축을 풀음
         _hipRB.constraints &= ~RigidbodyConstraints.FreezeRotationX;
 
         float rollTime = Time.time;
-        float startRollTime = Time.time;
 
+        //실제로 회전 하는 것
         while (Time.time - rollTime < readyRoll)
         {
             AniAngleForce(RollAngleAniData, 0);
@@ -668,10 +688,20 @@ public class PlayerController : MonoBehaviourPun
         }
 
         //힘은 0, Rotation 복구 하기
-        RestoreRotations();
+        foreach (Transform child in _children)
+        {
+            yield return RestoreRotations(child);
+        }
+        //yield return StartSlerp(duration);
 
-        //디버그가 안찍힘 확인 해봐야 할거 같음
-        while (Time.time - startRollTime < 0.1f)
+        _actor.actorState = Actor.ActorState.Stand;
+    }
+
+    IEnumerator StartSlerp(float duration)
+    {
+        float startRollTime = Time.time;
+
+        while (Time.time - startRollTime < 0.07f)
         {
             foreach (Transform child in _children)
             {
@@ -684,7 +714,6 @@ public class PlayerController : MonoBehaviourPun
             }
             yield return new WaitForSeconds(duration);
         }
-        _actor.actorState = Actor.ActorState.Stand;
     }
 
     IEnumerator ForwardRollOld(float duration, float readyRoll)
@@ -706,12 +735,44 @@ public class PlayerController : MonoBehaviourPun
             yield return new WaitForSeconds(duration);
         }
 
-        //힘은 0, Rotation 복구 하기
-        RestoreRotations();
+        //힘은 0, Rotation, 스프링 복구 하기
+        //RestoreRotations();
         _actor.actorState = Actor.ActorState.Stand;
     }
 
-    public void RestoreRotations()
+    IEnumerator RestoreRotations(Transform child)
+    {
+        _childRigidbody = child.GetComponent<Rigidbody>();
+        if (_childRigidbody != null)
+        {
+            //Debug.Log(_initialRotations[child]);
+            // 초기 회전값 복원 Dictionary에서 특정 키의 존재 여부를 확인
+            if (_initialRotations.ContainsKey(child))
+            {
+                //회전 힘과 AddForce 힘을 벡터 0으로 해서 값 빼기
+                _childRigidbody.velocity = Vector3.zero;
+                _childRigidbody.angularVelocity = Vector3.zero;
+                child.localRotation = _initialRotations[child];
+                //int count= 0;
+                //while (Quaternion.Angle(child.localRotation, _initialRotations[child]) > 1f)
+                /*while(count <10)
+                {
+                    //_initialRotations[child] 목표값
+                    //child.localRotation 시작 값
+                    child.localRotation = Quaternion.Slerp(child.localRotation, _initialRotations[child], 0.4f);
+                    Debug.Log(string.Format("{0}     :  {1:N2}", child.name, Quaternion.Angle(child.localRotation, _initialRotations[child])));
+                    count++;
+                    yield return new WaitForSeconds(0.07f);
+                }*/
+            }
+            //다시 잠금
+            if (_childRigidbody.name == "GreenHip")
+                _hipRB.constraints |= RigidbodyConstraints.FreezeRotationX;
+        }
+        yield return _actor.StatusHandler.RestoreBodySpring(0.07f);
+    }
+
+    public void RestoreRotationsOld()
     {
         _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
 
@@ -729,6 +790,7 @@ public class PlayerController : MonoBehaviourPun
                     child.localRotation = _initialRotations[child];
                 }
 
+                //다시 잠금
                 if (_childRigidbody.name == "GreenHip")
                     _hipRB.constraints |= RigidbodyConstraints.FreezeRotationX;
             }
@@ -1541,8 +1603,6 @@ public class PlayerController : MonoBehaviourPun
             yield return new WaitForSeconds(duration);
         }
     }
-
-
     #endregion
 
     #region ItemTwoHandAnimation
@@ -1551,7 +1611,7 @@ public class PlayerController : MonoBehaviourPun
     {
         //upperArm 2 chest1 up right 0.01 20 foreArm chest up back 
         //TestRready 오른쪽 왼쪽 구별해서 좌우로 휘두룰수 있음
-        AniAngleData[] itemTwoHands = (side == Side.Right) ? TestRready2 : TestRready2;
+        AniAngleData[] itemTwoHands = (side == Side.Right) ? ItemTwoHandAngleData : ItemTwoHandAngleData;
         for (int i = 0; i < itemTwoHands.Length; i++)
         {
             AniAngleForce(itemTwoHands, i);
@@ -1564,7 +1624,7 @@ public class PlayerController : MonoBehaviourPun
             return;
 
         Transform partTransform = _bodyHandler.Chest.transform;
-        AniFrameData[] itemTwoHands = TestRready1;
+        AniFrameData[] itemTwoHands = ItemTwoHandAniData;
         Transform transform2 = _bodyHandler.LeftHand.transform;
         _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
         _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
@@ -1572,7 +1632,7 @@ public class PlayerController : MonoBehaviourPun
 
         if (side == Side.Right)
         {
-            itemTwoHands = TestRready1;
+            itemTwoHands = ItemTwoHandAniData;
             transform2 = _bodyHandler.RightHand.transform;
             _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
             _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
@@ -1590,14 +1650,14 @@ public class PlayerController : MonoBehaviourPun
     {
         Transform partTransform = _bodyHandler.Chest.transform;
 
-        AniAngleData[] itemTwoHands = TestRready2;
+        AniAngleData[] itemTwoHands = ItemTwoHandAngleData;
         _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
         _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
         _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
 
         if (side == Side.Right)
         {
-            itemTwoHands = TestRready2;
+            itemTwoHands = ItemTwoHandAngleData;
             _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
             _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
             _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
@@ -1611,5 +1671,60 @@ public class PlayerController : MonoBehaviourPun
     }
 
     #endregion
+
+    public IEnumerator ItemOwnHand(Side side, float duration, float readyTime, float punchTime, float resetTime)
+    {
+        float checkTime = Time.time;
+
+        while (Time.time - checkTime < readyTime)
+        {
+            ItemOneHandReady(side);
+            yield return new WaitForSeconds(duration);
+        }
+        checkTime = Time.time;
+
+        while (Time.time - checkTime < punchTime)
+        {
+            ItemOneHandSwing(side);
+            yield return new WaitForSeconds(duration);
+        }
+        checkTime = Time.time;
+
+        while (Time.time - checkTime < resetTime)
+        {
+            ItemOneHandReSet(side);
+            yield return new WaitForSeconds(duration);
+        }
+    }
+
+    public void ItemOneHandReady(Side side)
+    {
+        AniAngleData[] itemTwoHands = (side == Side.Right) ? TestRready2 : TestRready2;
+        for (int i = 0; i < itemTwoHands.Length; i++)
+        {
+            AniAngleForce(itemTwoHands, i);
+        }
+    }
+
+    public void ItemOneHandSwing(Side side)
+    {
+        AniFrameData[] itemOneHands = TestRready1;
+
+        for (int i = 0; i < itemOneHands.Length; i++)
+        {
+            AniForce(itemOneHands, i);
+        }
+    }
+
+    public void ItemOneHandReSet(Side side)
+    {
+        AniAngleData[] itemOneHands = TestRready2;
+
+        for (int i = 0; i < itemOneHands.Length; i++)
+        {
+            
+            AniAngleForce(itemOneHands, i);
+        }
+    }
 
 }

@@ -11388,7 +11388,7 @@ GameObject:
   - component: {fileID: 1602883286494261838}
   - component: {fileID: 4655386519301525991}
   m_Layer: 7
-  m_Name: Ragdoll2
+  m_Name: Ragdoll2SDJ
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11478,7 +11478,6 @@ MonoBehaviour:
   LeftHand: {fileID: 5793545070783210249}
   RightHand: {fileID: 5793437608505534346}
   Ball: {fileID: 6027670702515666106}
-  CurrentBodyPart: {fileID: 0}
 --- !u!114 &5878509405600198232
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11974,7 +11973,7 @@ MonoBehaviour:
   PlayerAttackPoint: 1
   _health: 0
   _maxHealth: 200
-  _stamina: 100
+  _stamina: 0
   _maxStamina: 100
   actorState: 4
   lastActorState: 8
@@ -12033,7 +12032,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
-  - {fileID: 5878509405600198235}
+  - {fileID: 5878509405600198232}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
