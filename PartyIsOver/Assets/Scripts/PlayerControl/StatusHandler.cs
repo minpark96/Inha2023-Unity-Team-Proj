@@ -557,9 +557,44 @@ public class StatusHandler : MonoBehaviourPun
         JointDrive angularYZDrive;
 
         float startTime = Time.time;
-        float springLerpDuration = 2f;
+        float springLerpDuration = 0.07f;
 
         while (Time.time < startTime + springLerpDuration)
+        {
+            float elapsed = Time.time - startTime;
+            float percentage = elapsed / springLerpDuration;
+            int j = 0;
+
+            for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
+            {
+                if (i == 3)
+                {
+                    continue;
+                }
+                angularXDrive = actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive;
+                angularXDrive.positionSpring = _xPosSpringAry[j] * percentage;
+
+                actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive = angularXDrive;
+
+                angularYZDrive = actor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive;
+                angularYZDrive.positionSpring = _yzPosSpringAry[j] * percentage;
+                actor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive = angularYZDrive;
+                j++;
+
+                yield return null;
+            }
+        }
+    }
+
+    public IEnumerator RestoreBodySpring(float _springLerpTime)
+    {
+        JointDrive angularXDrive;
+        JointDrive angularYZDrive;
+
+        float startTime = Time.time;
+        float springLerpDuration = _springLerpTime;
+
+        while (Time.time - startTime < springLerpDuration)
         {
             float elapsed = Time.time - startTime;
             float percentage = elapsed / springLerpDuration;
