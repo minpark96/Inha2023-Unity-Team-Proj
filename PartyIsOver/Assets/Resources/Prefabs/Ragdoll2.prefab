@@ -11915,6 +11915,7 @@ MonoBehaviour:
   NuclearPunching: 0.1
   NuclearPunchResetPunch: 0.1
   ItempSwingPower: 1000
+  MoveInput: {x: 0, y: 0, z: 0}
   isAI: 0
 --- !u!114 &5878509405600198236
 MonoBehaviour:
@@ -11930,7 +11931,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _isRightGrab: 0
   _isLeftGrab: 0
-  EqupItem: {fileID: 0}
+  EquipItem: {fileID: 0}
   LeftGrabObject: {fileID: 0}
   RightGrabObject: {fileID: 0}
   RangeWeaponSkin: {fileID: 2087769795625165002}
@@ -11969,6 +11970,7 @@ MonoBehaviour:
   BodyHandler: {fileID: 0}
   PlayerController: {fileID: 0}
   Grab: {fileID: 0}
+  BalloonState: {fileID: 0}
   HeadMultiple: 1.5
   ArmMultiple: 0.8
   HandMultiple: 0.8

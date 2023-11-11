@@ -28,7 +28,7 @@ public class Grab : MonoBehaviourPun
     public bool _isGrabbingInProgress {get; private set;}
 
 
-    public GameObject EqupItem;
+    public GameObject EquipItem;
     public GameObject LeftGrabObject;
     public GameObject RightGrabObject;
 
@@ -115,15 +115,16 @@ public class Grab : MonoBehaviourPun
                 break;
             case Define.MouseEvent.Click:
                 {
+
                     if (Input.GetMouseButtonUp(0))
                     {
-                        if (EqupItem.GetComponent<Item>().ItemData.ItemType == ItemType.TwoHanded)
+                        if (EquipItem.GetComponent<Item>().ItemData.ItemType == ItemType.TwoHanded)
                             StartCoroutine(HorizontalAttack());
-                        else if (EqupItem.GetComponent<Item>().ItemData.ItemType == ItemType.OneHanded)
-                            StartCoroutine(VerticalAttack());
-                        else if (EqupItem.GetComponent<Item>().ItemData.ItemType == ItemType.Ranged)
+                        else if (EquipItem.GetComponent<Item>().ItemData.ItemType == ItemType.OneHanded)
+                            StartCoroutine(OwnHandAttack());
+                        else if (EquipItem.GetComponent<Item>().ItemData.ItemType == ItemType.Ranged)
                             UseItem();
-                        else if (EqupItem.GetComponent<Item>().ItemData.ItemType == ItemType.Potion)
+                        else if (EquipItem.GetComponent<Item>().ItemData.ItemType == ItemType.Potion)
                             StartCoroutine(UsePotionAnim());
                     }
                     if (Input.GetMouseButtonUp(1))
@@ -135,18 +136,16 @@ public class Grab : MonoBehaviourPun
         }
     }
 
-
-
     public void GrabPose()
     {
-        if(EqupItem.GetComponent<Item>().ItemData.ItemType == ItemType.Ranged)
+        if(EquipItem.GetComponent<Item>().ItemData.ItemType == ItemType.Ranged)
         {
-            _jointLeft.targetPosition = EqupItem.GetComponent<Item>().TwoHandedPos.position;
-            _jointRight.targetPosition = EqupItem.GetComponent<Item>().OneHandedPos.position;
+            _jointLeft.targetPosition = EquipItem.GetComponent<Item>().TwoHandedPos.position;
+            _jointRight.targetPosition = EquipItem.GetComponent<Item>().OneHandedPos.position;
         }
-        else if(EqupItem.GetComponent<Item>().ItemData.ItemType == ItemType.OneHanded)
+        else if(EquipItem.GetComponent<Item>().ItemData.ItemType == ItemType.OneHanded)
         {
-            _jointRight.targetPosition = EqupItem.GetComponent<Item>().OneHandedPos.position;
+            _jointRight.targetPosition = EquipItem.GetComponent<Item>().OneHandedPos.position;
         }
 
         // 기본 잡기 자세
@@ -161,13 +160,13 @@ public class Grab : MonoBehaviourPun
     public void GrabReset()
     {
         _isGrabbingInProgress = false;
-        if(EqupItem != null)
+        if(EquipItem != null)
         {
-            EqupItem.gameObject.layer = LayerMask.NameToLayer("Item");
-            EqupItem.GetComponent<Item>().Body.gameObject.SetActive(true);
+            EquipItem.gameObject.layer = LayerMask.NameToLayer("Item");
+            EquipItem.GetComponent<Item>().Body.gameObject.SetActive(true);
             RangeWeaponSkin.gameObject.SetActive(false);
-            EqupItem.GetComponent<Item>().Owner = null;
-            EqupItem = null;
+            EquipItem.GetComponent<Item>().Owner = null;
+            EquipItem = null;
 
         }
         _isRightGrab = false;
@@ -320,8 +319,8 @@ public class Grab : MonoBehaviourPun
         if (HandCollisionCheck(side))
         {
             _grabDelayTimer = 0.5f;
-            EqupItem = item.transform.root.gameObject;
-            EqupItem.GetComponent<Item>().Owner = GetComponent<Actor>();
+            EquipItem = item.transform.root.gameObject;
+            EquipItem.GetComponent<Item>().Owner = GetComponent<Actor>();
 
             return true;
         }
@@ -446,6 +445,9 @@ public class Grab : MonoBehaviourPun
             _grabJointRight.connectedBody = _rightHandRigid;
             _grabJointRight.breakForce = 9001;
 
+            if (EquipItem != null && EquipItem.GetComponent<Item>().ItemData.ItemType == ItemType.OneHanded)
+                return;
+
             if (_rightSearchTarget.GetComponent<Item>() != null)
             {
                 _jointRight.angularYMotion = ConfigurableJointMotion.Locked;
@@ -500,6 +502,14 @@ public class Grab : MonoBehaviourPun
 
         yield return 0;
     }
+
+    IEnumerator OwnHandAttack()
+    {
+        _jointLeft.GetComponent<Rigidbody>().AddForce(new Vector3(0, _turnForce, 0));
+        _jointRight.GetComponent<Rigidbody>().AddForce(new Vector3(0, _turnForce, 0));
+        yield return _actor.PlayerController.ItemOwnHand(PlayerController.Side.Right, 0.07f, 0.1f, 0.5f, 0.1f);
+    }
+
     IEnumerator HorizontalAttack()
     {
         int forcingCount = 5000;
@@ -557,7 +567,7 @@ public class Grab : MonoBehaviourPun
 
     private void UseItem()
     {
-        EqupItem.GetComponent<Item>().Use();
+        EquipItem.GetComponent<Item>().Use();
     }
 
 
