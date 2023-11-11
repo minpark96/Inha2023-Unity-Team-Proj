@@ -1,7 +1,6 @@
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using UnityEngine;
 
 public class CollisionHandler : MonoBehaviourPun
@@ -109,9 +108,9 @@ public class CollisionHandler : MonoBehaviourPun
         else if (transform == actor.BodyHandler.RightThigh.transform ||
             transform == actor.BodyHandler.LeftThigh.transform)
             damage *= actor.LegMultiple;
-        else if (transform == actor.BodyHandler.RightFoot.transform ||
-            transform == actor.BodyHandler.LeftFoot.transform)
-            damage *= actor.LegMultiple;
+        //else if (transform == actor.BodyHandler.RightFoot.transform ||
+            //transform == actor.BodyHandler.LeftFoot.transform)
+            //damage *= actor.LegMultiple;
         else if (transform == actor.BodyHandler.Head.transform)
             damage *= actor.HeadMultiple;
 
@@ -156,7 +155,7 @@ public class CollisionHandler : MonoBehaviourPun
 
     private void OnCollisionEnter(Collision collision)
     {
-        //if (!PhotonNetwork.IsMasterClient) return;
+        if (!PhotonNetwork.IsMasterClient) return;
 
         if (collision.collider.gameObject.layer != LayerMask.NameToLayer("Ground"))
             DamageCheck(collision);
