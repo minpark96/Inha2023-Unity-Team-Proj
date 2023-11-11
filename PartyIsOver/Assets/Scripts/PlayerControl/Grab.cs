@@ -27,7 +27,7 @@ public class Grab : MonoBehaviourPun
     public bool _isGrabbing {get; private set;}
 
 
-    public GameObject GrabItem;
+    public GameObject EqupItem;
     public Transform RangeWeaponSkin;
 
     private Rigidbody _leftHandRigid;
@@ -48,7 +48,7 @@ public class Grab : MonoBehaviourPun
 
     
 
-    public GrabObjectType GrabObjectType = GrabObjectType.None;
+    public GameObject CollisionObject;
 
     // 아이템 종류
     private int _itemType;
@@ -115,13 +115,13 @@ public class Grab : MonoBehaviourPun
                         //if(GrabItem.GetComponent<Item>().ItemType == ItemType.TwoHanded ||
                         //    GrabItem.GetComponent<Item>().ItemType == ItemType.OneHanded)
                         //    _actor.PlayerController.PunchAndGrab();
-                        if (GrabItem.GetComponent<Item>().ItemData.ItemType == ItemType.TwoHanded)
+                        if (EqupItem.GetComponent<Item>().ItemData.ItemType == ItemType.TwoHanded)
                             StartCoroutine(HorizontalAttack());
-                        else if (GrabItem.GetComponent<Item>().ItemData.ItemType == ItemType.OneHanded)
+                        else if (EqupItem.GetComponent<Item>().ItemData.ItemType == ItemType.OneHanded)
                             StartCoroutine(VerticalAttack());
-                        else if (GrabItem.GetComponent<Item>().ItemData.ItemType == ItemType.Ranged)
+                        else if (EqupItem.GetComponent<Item>().ItemData.ItemType == ItemType.Ranged)
                             UseItem();
-                        else if (GrabItem.GetComponent<Item>().ItemData.ItemType == ItemType.Potion)
+                        else if (EqupItem.GetComponent<Item>().ItemData.ItemType == ItemType.Potion)
                             StartCoroutine(UsePotionAnim());
                     }
                     if (Input.GetMouseButtonUp(1))
@@ -137,14 +137,14 @@ public class Grab : MonoBehaviourPun
 
     public void GrabPose()
     {
-        if(GrabItem.GetComponent<Item>().ItemData.ItemType == ItemType.Ranged)
+        if(EqupItem.GetComponent<Item>().ItemData.ItemType == ItemType.Ranged)
         {
-            _jointLeft.targetPosition = GrabItem.GetComponent<Item>().TwoHandedPos.position;
-            _jointRight.targetPosition = GrabItem.GetComponent<Item>().OneHandedPos.position;
+            _jointLeft.targetPosition = EqupItem.GetComponent<Item>().TwoHandedPos.position;
+            _jointRight.targetPosition = EqupItem.GetComponent<Item>().OneHandedPos.position;
         }
-        else if(GrabItem.GetComponent<Item>().ItemData.ItemType == ItemType.OneHanded)
+        else if(EqupItem.GetComponent<Item>().ItemData.ItemType == ItemType.OneHanded)
         {
-            _jointRight.targetPosition = GrabItem.GetComponent<Item>().OneHandedPos.position;
+            _jointRight.targetPosition = EqupItem.GetComponent<Item>().OneHandedPos.position;
         }
 
         // 기본 잡기 자세
@@ -159,13 +159,13 @@ public class Grab : MonoBehaviourPun
     public void GrabReset()
     {
         _isGrabbing = false;
-        if(GrabItem != null)
+        if(EqupItem != null)
         {
-            GrabItem.gameObject.layer = LayerMask.NameToLayer("Item");
-            GrabItem.GetComponent<Item>().Body.gameObject.SetActive(true);
+            EqupItem.gameObject.layer = LayerMask.NameToLayer("Item");
+            EqupItem.GetComponent<Item>().Body.gameObject.SetActive(true);
             RangeWeaponSkin.gameObject.SetActive(false);
-            GrabItem.GetComponent<Item>().Owner = null;
-            GrabItem = null;
+            EqupItem.GetComponent<Item>().Owner = null;
+            EqupItem = null;
             _isRightGrab = false;
             _isLeftGrab = false;
         }
@@ -211,7 +211,6 @@ public class Grab : MonoBehaviourPun
 
             if(!(_leftSearchTarget == null))
             {
-                Debug.Log(_leftSearchTarget);
                 Vector3 dir = _targetingHandler.
                     FindClosestCollisionPoint(_leftSearchTarget.GetComponent<Collider>()) - _leftHandRigid.transform.position;
 
@@ -244,7 +243,7 @@ public class Grab : MonoBehaviourPun
                     Vector3 dir = item.OneHandedPos.position - _rightHandRigid.transform.position;
                     _rightHandRigid.AddForce(dir * 80f);
 
-                    if (ItemGrabCheck(item, Side.Right))
+                    if (IsHoldingObject(item, Side.Right))
                         ItemRotate(item.transform, false);
                     else
                         return;
@@ -277,7 +276,7 @@ public class Grab : MonoBehaviourPun
             dir = item.TwoHandedPos.position - _leftHandRigid.transform.position;
             _leftHandRigid.AddForce(dir * 90f);
 
-            if (ItemGrabCheck(item, Side.Both))
+            if (IsHoldingObject(item, Side.Both))
                 ItemRotate(item.transform, true);
             else
                 return;
@@ -290,7 +289,7 @@ public class Grab : MonoBehaviourPun
             dir = item.OneHandedPos.position - _leftHandRigid.transform.position;
             _leftHandRigid.AddForce(dir * 90f);
 
-            if (ItemGrabCheck(item, Side.Both))
+            if (IsHoldingObject(item, Side.Both))
                 ItemRotate(item.transform, false);
             else
                 return;
@@ -304,15 +303,15 @@ public class Grab : MonoBehaviourPun
     /// <summary>
     /// 손이 아이템에 제대로 접촉했는지 체크 후 관절생성
     /// </summary>
-    bool ItemGrabCheck(Item item,Side side)
+    bool IsHoldingObject(Item item,Side side)
     {
+
         //HandChecker 스크립트에서 양손 다 아이템의 손잡이와 접촉중인지 판정
-        if (GrabObjectType == GrabObjectType.Item && HandCollisionCheck(side))
+        if (HandCollisionCheck(side))
         {
             _grabDelayTimer = 0.5f;
-            GrabObjectType = GrabObjectType.None; 
-            GrabItem = item.transform.root.gameObject;
-            GrabItem.GetComponent<Item>().Owner = GetComponent<Actor>();
+            EqupItem = item.transform.root.gameObject;
+            EqupItem.GetComponent<Item>().Owner = GetComponent<Actor>();
 
             return true;
         }
@@ -325,21 +324,22 @@ public class Grab : MonoBehaviourPun
         switch (side)
         {
             case Side.Left:
-                if (_leftHandRigid.GetComponent<HandChecker>().isCheck)
+                if (_leftHandRigid.GetComponent<HandChecker>().CollisionObject == _leftSearchTarget.gameObject)
                 {
                     _isLeftGrab = true;
                     return true;
                 }
                 break;
             case Side.Right:
-                if (_rightHandRigid.GetComponent<HandChecker>().isCheck)
+                if (_rightHandRigid.GetComponent<HandChecker>().CollisionObject == _leftSearchTarget.gameObject)
                 {
                     _isRightGrab = true;
                     return true;
                 }
                 break;
             case Side.Both:
-                if (_rightHandRigid.GetComponent<HandChecker>().isCheck && _leftHandRigid.GetComponent<HandChecker>().isCheck)
+                if (_rightHandRigid.GetComponent<HandChecker>().CollisionObject == _leftSearchTarget.gameObject &&
+                    _leftHandRigid.GetComponent<HandChecker>().CollisionObject == _leftSearchTarget.gameObject)
                 {
                     _isRightGrab = true;
                     _isLeftGrab = true;
@@ -543,7 +543,7 @@ public class Grab : MonoBehaviourPun
 
     private void UseItem()
     {
-        GrabItem.GetComponent<Item>().Use();
+        EqupItem.GetComponent<Item>().Use();
     }
 
 

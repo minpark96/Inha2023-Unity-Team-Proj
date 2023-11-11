@@ -34,7 +34,7 @@ public class PlayerInputHandler : MonoBehaviour
 
         _actor.PlayerController.OnKeyboardEvent_Move(evt);
 
-        if (_actor.Grab.GrabItem == null)
+        if (_actor.Grab.EqupItem == null)
         {
             if(_actor.debuffState != DebuffState.Exhausted || _actor.debuffState != DebuffState.Balloon)
                 _actor.PlayerController.OnKeyboardEvent_Skill(evt);
@@ -48,7 +48,7 @@ public class PlayerInputHandler : MonoBehaviour
         if (_actor.debuffState == DebuffState.Shock || _actor.debuffState == DebuffState.Stun)
             return;
 
-        if (_actor.Grab.GrabItem == null)
+        if (_actor.Grab.EqupItem == null)
         {
             _actor.PlayerController.OnMouseEvent_Skill(evt);
 

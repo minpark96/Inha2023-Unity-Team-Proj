@@ -6,8 +6,9 @@ using static Define;
 
 public class HandChecker : MonoBehaviourPun
 {
-    public bool isCheck = false;
-    private Actor _actor; 
+    private Actor _actor;
+    public GrabObjectType CollisionObjectType = GrabObjectType.None;
+    public GameObject CollisionObject;
 
     // Start is called before the first frame update
     void Start()
@@ -27,21 +28,36 @@ public class HandChecker : MonoBehaviourPun
         if (!photonView.IsMine) return;
         if(collision.collider == null) return;
 
-        if (collision.collider.tag == "ItemHandle" && _actor.Grab._isGrabbing)
+
+        if(_actor.Grab._isGrabbing && collision.gameObject.GetComponent<InteractableObject>() != null)
         {
-            _actor.Grab.GrabObjectType = Define.GrabObjectType.Item;
-            isCheck = true;
+            CollisionObject = collision.gameObject;
+
+            if (collision.collider.tag == "ItemHandle")
+            {
+                CollisionObjectType = Define.GrabObjectType.Item;
+                return;
+            }
+            if (collision.gameObject.GetComponent<BodyPart>())
+            {
+                CollisionObjectType = Define.GrabObjectType.Player;
+                return;
+            }
+            CollisionObjectType = Define.GrabObjectType.Object;
         }
+
+
     }
     private void OnCollisionExit(Collision collision)
     {
         if (!photonView.IsMine) return;
         if (collision.collider == null) return;
 
-        if (collision.collider.tag == "ItemHandle")
+        if (collision.gameObject.GetComponent<InteractableObject>() != null)
         {
-            _actor.Grab.GrabObjectType = Define.GrabObjectType.None;
-            isCheck = false;
+            CollisionObjectType = Define.GrabObjectType.None;
+            CollisionObject = null;
+
         }
     }
 }
