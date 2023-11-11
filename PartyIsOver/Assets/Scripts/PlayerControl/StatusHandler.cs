@@ -1,11 +1,9 @@
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
-using System.Net.NetworkInformation;
 using UnityEngine;
 using UnityEngine.UI;
 using static InteractableObject;
-using static UnityEngine.Rendering.VirtualTexturing.Debugging;
 
 public class StatusHandler : MonoBehaviourPun
 {
@@ -134,14 +132,15 @@ public class StatusHandler : MonoBehaviourPun
             _healthDamage += damage;
         }
 
-        // 상태이상 체크
-        DebuffCheck(type);
-        DebuffAction();
-
-        //Debug.Log("[AddDamage()] _healthDamage " + photonView.ViewID + " - " + _healthDamage);
-
         if (_healthDamage != 0f)
             UpdateHealth();
+
+        if (actor.actorState != Actor.ActorState.Dead)
+        {
+            // 상태이상 체크
+            DebuffCheck(type);
+            DebuffAction();
+        }
 
         actor.StatusChangeEventInvoke();
     }
@@ -185,7 +184,6 @@ public class StatusHandler : MonoBehaviourPun
             case Damage.Stun: // 기절
                 actor.debuffState |= Actor.DebuffState.Stun;
                 break;
-
         }
     }
 
@@ -468,39 +466,41 @@ public class StatusHandler : MonoBehaviourPun
 
         float realDamage = actor.Health - tempHealth;
 
-        //기절상태가 아닐때 일정 이상의 데미지를 받으면 기절
-        if (actor.actorState != Actor.ActorState.Unconscious)
-        {
-            if (_unconsciousTime >= 0f)
-                _unconsciousTime = Mathf.Clamp(_unconsciousTime - Time.deltaTime, 0f, _maxUnconsciousTime);
-            
-            if (realDamage >= _knockoutThreshold)
-            {
-                if (actor.debuffState == Actor.DebuffState.Ice)
-                    return;
-
-                _maxUnconsciousTime = Mathf.Clamp(_maxUnconsciousTime + 1.5f, _minUnconsciousTime, 20f);
-                _unconsciousTime = _maxUnconsciousTime;
-                actor.actorState = Actor.ActorState.Unconscious;
-                actor.debuffState = Actor.DebuffState.Stun;
-                EnterUnconsciousState();
-            }
-        }
-
-        // 기절일때
-        if (actor.actorState == Actor.ActorState.Unconscious)
-        {
-            _unconsciousTime = Mathf.Clamp(_unconsciousTime - Time.deltaTime, 0f, _maxUnconsciousTime);
-            StartCoroutine(ResetBodySpring());
-            StartCoroutine(Stun(_unconsciousTime));
-            _unconsciousTime = 0f;
-        }
-
         //계산한 체력이 0보다 작으면 Death로
         if (tempHealth <= 0f)
         {
             KillPlayer();
             EnterUnconsciousState();
+        }
+        else
+        {
+            //기절상태가 아닐때 일정 이상의 데미지를 받으면 기절
+            if (actor.actorState != Actor.ActorState.Unconscious)
+            {
+                if (_unconsciousTime >= 0f)
+                    _unconsciousTime = Mathf.Clamp(_unconsciousTime - Time.deltaTime, 0f, _maxUnconsciousTime);
+            
+                if (realDamage >= _knockoutThreshold)
+                {
+                    if (actor.debuffState == Actor.DebuffState.Ice)
+                        return;
+
+                    _maxUnconsciousTime = Mathf.Clamp(_maxUnconsciousTime + 1.5f, _minUnconsciousTime, 20f);
+                    _unconsciousTime = _maxUnconsciousTime;
+                    actor.actorState = Actor.ActorState.Unconscious;
+                    actor.debuffState = Actor.DebuffState.Stun;
+                    EnterUnconsciousState();
+                }
+            }
+
+            // 기절일때
+            if (actor.actorState == Actor.ActorState.Unconscious)
+            {
+                _unconsciousTime = Mathf.Clamp(_unconsciousTime - Time.deltaTime, 0f, _maxUnconsciousTime);
+                StartCoroutine(ResetBodySpring());
+                StartCoroutine(Stun(_unconsciousTime));
+                _unconsciousTime = 0f;
+            }
         }
 
         actor.Health = Mathf.Clamp(tempHealth, 0f, actor.MaxHealth);
@@ -510,15 +510,16 @@ public class StatusHandler : MonoBehaviourPun
 
     void KillPlayer()
     {
-
+        StartCoroutine(ResetBodySpring());
+        actor.actorState = Actor.ActorState.Dead;
     }
 
     void EnterUnconsciousState()
     {
         //데미지 이펙트나 사운드 추후 추가
 
-        //actor.BodyHandler.ResetLeftGrab();
-        //actor.BodyHandler.ResetRightGrab();
+        //currentPlayer.BodyHandler.ResetLeftGrab();
+        //currentPlayer.BodyHandler.ResetRightGrab();
         actor.BodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
         actor.BodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
         actor.BodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
