@@ -529,9 +529,9 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     #region Balloon
     IEnumerator BalloonShapeOn()
     {
-        _bodyHandler.BodyParts[0].transform.localScale = new Vector3(1.5f, 1.5f, 0.6f); // head
-        _bodyHandler.BodyParts[1].transform.localScale = new Vector3(2f, 2.3f, 2.3f); // chest
-        _bodyHandler.BodyParts[2].transform.localScale = new Vector3(2f, 2f, 2.5f); // waist
+        _bodyHandler.BodyParts[0].transform.localScale = new Vector3(2f, 2f, 0.8f); // head
+        _bodyHandler.BodyParts[1].transform.localScale = new Vector3(2.5f, 2.5f, 3.3f); // chest
+        _bodyHandler.BodyParts[2].transform.localScale = new Vector3(2.5f, 2.5f, 3.3f); // waist
 
         for (int i = 4; i < 13; i++)
         {
@@ -542,9 +542,13 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         for (int i = 0; i < _bodyHandler.BodyParts.Count-1; i++)
         {
             _bodyHandler.BodyParts[i].PartRigidbody.angularVelocity = Vector3.zero;
+            _bodyHandler.BodyParts[i].PartRigidbody.velocity = Vector3.zero;
+
+            _bodyHandler.BodyParts[i].PartRigidbody.useGravity = false;
         }
 
-        yield return new WaitForSeconds(5.0f);
+
+        yield return new WaitForSeconds(30.0f);
 
         BalloonShapeOff();
     }
@@ -558,6 +562,11 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         {
             if (i >= 7 && i <= 9) continue;
             _bodyHandler.BodyParts[i].PartRigidbody.freezeRotation = false;
+        }
+
+        for (int i = 0; i < _bodyHandler.BodyParts.Count - 1; i++)
+        {
+            _bodyHandler.BodyParts[i].PartRigidbody.useGravity = true;
         }
 
         _actor.actorState = Actor.ActorState.Stand;
