@@ -109,6 +109,9 @@ public class PlayerController : MonoBehaviourPun
     public AniFrameData[] TestRready1;
 
     [SerializeField]
+    public AniFrameData[] TestRreadySwing;
+
+    [SerializeField]
     public AniAngleData[] TestRready2;
 
     [Header("Speed")]
@@ -1669,7 +1672,7 @@ public class PlayerController : MonoBehaviourPun
 
     #endregion
 
-    public IEnumerator ItemOwnHand(Side side, float duration, float readyTime, float punchTime, float resetTime)
+    public IEnumerator ItemOwnHand(Side side, float duration, float readyTime, float punchTime, float retime,float resetTime)
     {
         float checkTime = Time.time;
 
@@ -1681,6 +1684,13 @@ public class PlayerController : MonoBehaviourPun
         checkTime = Time.time;
 
         while (Time.time - checkTime < punchTime)
+        {
+            ItemOneHandSwingReady(side);
+            yield return new WaitForSeconds(duration);
+        }
+        checkTime = Time.time;
+
+        while (Time.time - checkTime < retime)
         {
             ItemOneHandSwing(side);
             yield return new WaitForSeconds(duration);
@@ -1702,7 +1712,14 @@ public class PlayerController : MonoBehaviourPun
             AniAngleForce(itemTwoHands, i);
         }
     }
-
+    public void ItemOneHandSwingReady(Side side)
+    {
+        AniFrameData[] itemOneHands = TestRreadySwing;
+        for (int i = 0; i < itemOneHands.Length; i++)
+        {
+            AniForce(itemOneHands, i);
+        }
+    }
     public void ItemOneHandSwing(Side side)
     {
         AniFrameData[] itemOneHands = TestRready1;
