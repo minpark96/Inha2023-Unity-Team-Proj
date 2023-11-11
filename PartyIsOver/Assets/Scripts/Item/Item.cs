@@ -23,7 +23,7 @@ public class Item : MonoBehaviour
         InteractableObject = GetComponent<InteractableObject>();
         InteractableObject.damageModifier = InteractableObject.Damage.Default;
         if(ItemData.ItemType == ItemType.OneHanded || ItemData.ItemType == ItemType.TwoHanded)
-            InteractableObject.damageModifier = InteractableObject.Damage.Object;
+            InteractableObject.damageModifier = InteractableObject.Damage.Default;
 
         Body = transform.GetChild(0);
         Head = transform.GetChild(1);

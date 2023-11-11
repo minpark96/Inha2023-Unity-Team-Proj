@@ -5,7 +5,8 @@ using static Actor;
 using static AniFrameData;
 using static AniAngleData;
 using Photon.Pun;
-using UnityEditor;
+using UnityEngine.UIElements;
+using static Grab;
 
 [System.Serializable]
 public class AniFrameData
@@ -155,6 +156,10 @@ public class PlayerController : MonoBehaviourPun
     public float NuclearPunching = 0.1f;
     public float NuclearPunchResetPunch = 0.3f;
 
+    [Header("ItemControll")]
+    public float ItempSwingPower;
+
+
     private float _runSpeedOffset = 350f;
     private Vector3 _moveInput;
     private Vector3 _moveDir;
@@ -258,6 +263,66 @@ public class PlayerController : MonoBehaviourPun
         }
     }
 
+    #region OnMouseEvent_Grab
+    public void OnMouseEvent_Grab(Define.MouseEvent evt)
+    {
+        if (!photonView.IsMine)
+        {
+            return;
+        }
+
+        switch (evt)
+        {
+            case Define.MouseEvent.Press:
+                {
+                    if (Input.GetMouseButton(0))
+                        _grab.Grabbing();
+                }
+                break;
+            case Define.MouseEvent.PointerUp:
+                {
+                    if (Input.GetMouseButtonUp(0))
+                    {
+                        _grab.GrabReset();
+                    }
+                }
+                break;
+        }
+    }
+    #endregion
+
+    #region OnMouseEvent_Skill
+
+    public void OnMouseEvent_Skill(Define.MouseEvent evt)
+    {
+        if (!photonView.IsMine)
+        {
+            return;
+        }
+
+        switch (evt)
+        {
+            case Define.MouseEvent.PointerDown:
+                {
+
+                }
+                break;
+            case Define.MouseEvent.Click:
+                {
+                    if (Input.GetMouseButtonUp(0))
+                        PunchAndGrab();
+                    if (!isGrounded && Input.GetMouseButtonUp(1))
+                        DropKickTrigger();
+                    if (!_isCoroutineRoll && Input.GetMouseButtonUp(2))
+                        ForwardRollTrigger();
+                }
+                break;
+        }
+    }
+    #endregion
+
+    #region OnKeyboardEvent_Move
+
     public void OnKeyboardEvent_Move(Define.KeyboardEvent evt)
     {
         if (!photonView.IsMine || _actor.actorState == ActorState.Dead)
@@ -269,30 +334,26 @@ public class PlayerController : MonoBehaviourPun
         {
             case Define.KeyboardEvent.Press:
                 {
-                    if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S))
+                    if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
                     {
-                        _moveInput.z = Input.GetAxis("Vertical");
-                    }
-                    if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
-                    {
-                        _moveInput.x = Input.GetAxis("Horizontal");
+                        _moveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
                     }
                 }
                 break;
             case Define.KeyboardEvent.Click:
                 {
-                    if (Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.S))
+                    if (Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.S) || Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
                     {
-                        _moveInput.z = 0;
-                    }
-                    if (Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
-                    {
-                        _moveInput.x = 0;
+                        _moveInput = new Vector3(0, 0, 0);
                     }
                 }
                 break;
         }
     }
+    #endregion
+
+    #region OnKeyboardEvent_Skill
+
     public void OnKeyboardEvent_Skill(Define.KeyboardEvent evt)
     {
         if (!photonView.IsMine || _actor.actorState == ActorState.Dead)
@@ -338,7 +399,6 @@ public class PlayerController : MonoBehaviourPun
 
                     if (Input.GetKeyUp(KeyCode.R))
                     {
-
                         _isRSkillCheck = false;
                         StartCoroutine(ResetCharge());
                     }
@@ -362,6 +422,9 @@ public class PlayerController : MonoBehaviourPun
         }
     }
 
+    #endregion
+
+    #region ChargeSkill
     IEnumerator ChargeReady()
     {
         for (int i = 0; i < childJoints.Length; i++)
@@ -376,6 +439,7 @@ public class PlayerController : MonoBehaviourPun
         }
         yield return ForceRready(ChargeAniHoldTime);
     }
+
     IEnumerator ForceRready(float _delay)
     {
         startChargeTime = Time.time;
@@ -422,59 +486,83 @@ public class PlayerController : MonoBehaviourPun
         RestoreOriginalMotions();
         yield return new WaitForSeconds(0.5f);
     }
+    #endregion
 
-    public void OnMouseEvent_Grab(Define.MouseEvent evt)
+    #region ChargeSkillAnimation
+
+    private void NuclearPunch()
     {
-        if (!photonView.IsMine || _actor.actorState == ActorState.Dead)
-        {
-            return;
-        }
-
-        switch (evt)
-        {
-            case Define.MouseEvent.Press:
-                {
-                    if (Input.GetMouseButton(0))
-                        _grab.Grabbing();
-                }
-                break;
-            case Define.MouseEvent.PointerUp:
-                {
-                    if (Input.GetMouseButtonUp(0))
-                    {
-                        _grab.GrabReset();
-                    }
-                }
-                break;
-        }
-    }
-    public void OnMouseEvent_Skill(Define.MouseEvent evt)
-    {
-        if (!photonView.IsMine || _actor.actorState == ActorState.Dead)
-        {
-            return;
-        }
-
-        switch (evt)
-        {
-            case Define.MouseEvent.PointerDown:
-                {
-
-                }
-                break;
-            case Define.MouseEvent.Click:
-                {
-                    if (Input.GetMouseButtonUp(0))
-                        PunchAndGrab();
-                    if (!isGrounded && Input.GetMouseButtonUp(1))
-                        DropKickTrigger();
-                    if (!_isCoroutineRoll && Input.GetMouseButtonUp(2))
-                        ForwardRollTrigger();
-                }
-                break;
-        }
+        StartCoroutine(NuclearPunchDelay());
+        StartCoroutine(ResetCharge());
     }
 
+    IEnumerator NuclearPunchDelay()
+    {
+        yield return MeowPunch(Side.Right, 0.07f, NuclearPunchReadyPunch, NuclearPunching, NuclearPunchResetPunch);
+        yield return RSkillCoolTimer();
+    }
+
+    private void MeowNyangPunch()
+    {
+        StartCoroutine(MeowNyangPunchDelay());
+        StartCoroutine(ResetCharge());
+    }
+
+    IEnumerator MeowNyangPunchDelay()
+    {
+        int _punchcount = 0;
+        _readySide = Side.Right;
+        while (_punchcount < 5)
+        {
+            if (_readySide == Side.Left)
+            {
+                yield return MeowPunch(Side.Left, 0.07f, MeowPunchReadyPunch, MeowPunchPunching, MeowPunchResetPunch);
+                _readySide = Side.Right;
+            }
+            else
+            {
+                yield return MeowPunch(Side.Right, 0.07f, MeowPunchReadyPunch, MeowPunchPunching, MeowPunchResetPunch);
+                _readySide = Side.Left;
+            }
+            _punchcount++;
+        }
+        yield return RSkillCoolTimer();
+
+    }
+    IEnumerator RSkillCoolTimer()
+    {
+        _isRSkillCheck = false;
+        yield return new WaitForSeconds(RSkillCoolTime);
+    }
+
+    IEnumerator MeowPunch(Side side, float duration, float readyTime, float punchTime, float resettingTime)
+    {
+        float checkTime = Time.time;
+
+        while (Time.time - checkTime < readyTime)
+        {
+            ArmActionReadying(side);
+            yield return new WaitForSeconds(duration);
+        }
+        checkTime = Time.time;
+
+        while (Time.time - checkTime < punchTime)
+        {
+            ArmActionPunching(side);
+            yield return new WaitForSeconds(duration);
+        }
+        checkTime = Time.time;
+
+        while (Time.time - checkTime < resettingTime)
+        {
+            ArmActionPunchResetting(side);
+            yield return new WaitForSeconds(duration);
+        }
+    }
+
+    #endregion
+
+    #region FixedUpdate and Update
     private void FixedUpdate()
     {
         if (!photonView.IsMine || _actor.actorState == ActorState.Dead) return;
@@ -489,7 +577,23 @@ public class PlayerController : MonoBehaviourPun
             StartCoroutine(BalloonShapeOn());
         }
 
-        if (_actor.actorState != Actor.ActorState.Jump && _actor.actorState != Actor.ActorState.Roll && _actor.actorState != Actor.ActorState.Run)
+        if (_actor.actorState == Actor.ActorState.Balloon)
+        {
+            if (_moveInput.magnitude == 0f)
+            {
+                for (int i = 0; i < _bodyHandler.BodyParts.Count; i++)
+                {
+                    _bodyHandler.BodyParts[i].PartRigidbody.angularVelocity = Vector3.zero;
+                }
+                _actor.actorState = Actor.ActorState.Stand;
+            }
+            else
+            {
+                _actor.actorState = Actor.ActorState.Walk;
+                BalloonMove();
+            }
+        }
+        else if (_actor.actorState != Actor.ActorState.Jump && _actor.actorState != Actor.ActorState.Roll && _actor.actorState != Actor.ActorState.Run)
         {
             if (_moveInput.magnitude == 0f)
             {
@@ -503,11 +607,25 @@ public class PlayerController : MonoBehaviourPun
         }
     }
 
+    #endregion
+
+    #region Balloon
     IEnumerator BalloonShapeOn()
     {
-        _bodyHandler.BodyParts[0].transform.localScale = new Vector3(2, 2, 1);
-        _bodyHandler.BodyParts[1].transform.localScale = new Vector3(2, 2, 2);
-        _bodyHandler.BodyParts[2].transform.localScale = new Vector3(2, 2, 2);
+        _bodyHandler.BodyParts[0].transform.localScale = new Vector3(1.5f, 1.5f, 0.6f); // head
+        _bodyHandler.BodyParts[1].transform.localScale = new Vector3(2f, 2.3f, 2.3f); // chest
+        _bodyHandler.BodyParts[2].transform.localScale = new Vector3(2f, 2f, 2.5f); // waist
+
+        for (int i = 4; i < 13; i++)
+        {
+            if (i >= 7 && i <= 9) continue;
+            _bodyHandler.BodyParts[i].PartRigidbody.freezeRotation = true;
+        }
+
+        for (int i = 0; i < _bodyHandler.BodyParts.Count; i++)
+        {
+            _bodyHandler.BodyParts[i].PartRigidbody.angularVelocity = Vector3.zero;
+        }
 
         yield return new WaitForSeconds(5.0f);
 
@@ -519,6 +637,12 @@ public class PlayerController : MonoBehaviourPun
         _bodyHandler.BodyParts[1].transform.localScale = new Vector3(1, 1, 1);
         _bodyHandler.BodyParts[2].transform.localScale = new Vector3(1, 1, 1);
 
+        for (int i = 4; i < 13; i++)
+        {
+            if (i >= 7 && i <= 9) continue;
+            _bodyHandler.BodyParts[i].PartRigidbody.freezeRotation = false;
+        }
+
         _actor.actorState = Actor.ActorState.Stand;
         _actor.debuffState = Actor.DebuffState.Default;
         isBalloon = false;
@@ -526,10 +650,17 @@ public class PlayerController : MonoBehaviourPun
 
     public void BalloonMove()
     {
+        transform.position += _moveInput;
 
-        //balloon.transform.position += _moveInput;
+        for (int i = 0; i < _bodyHandler.BodyParts.Count; i++)
+        {
+            _bodyHandler.BodyParts[i].PartRigidbody.angularVelocity = Vector3.zero;
+        }
     }
 
+    #endregion
+
+    #region ForwardRoll
     private void ForwardRollTrigger()
     {
         if (!_isCoroutineRoll)
@@ -614,8 +745,6 @@ public class PlayerController : MonoBehaviourPun
         RestoreRotations();
         _actor.actorState = Actor.ActorState.Stand;
     }
-    // 진행 순서 구르기 -> 회전하고 남는 힘 0 대입과 구르기 전 Rotation 값 넣기 -> Freeze Rotationx 축 잠금
-    // -> 스프링값 올리기 (스프링 값을 천천히 올려야 누워 있다가 일어서는 것 처럼 보임)
 
     public void RestoreRotations()
     {
@@ -641,30 +770,9 @@ public class PlayerController : MonoBehaviourPun
         }
     }
 
-    public void RestoreRotationsOld()
-    {
-        _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
+    #endregion
 
-        foreach (Transform child in _children)
-        {
-            _childRigidbody = child.GetComponent<Rigidbody>();
-            if (_childRigidbody != null)
-            {
-                //회전 힘과 AddForce 힘을 벡터 0으로 해서 값 빼기
-                _childRigidbody.velocity = Vector3.zero;
-                _childRigidbody.angularVelocity = Vector3.zero;
-                // 초기 회전값 복원 Dictionary에서 특정 키의 존재 여부를 확인
-                if (_initialRotations.ContainsKey(child))
-                {
-                    child.localRotation = _initialRotations[child];
-                }
-
-                if (_childRigidbody.name == "GreenHip")
-                    _hipRB.constraints |= RigidbodyConstraints.FreezeRotationX;
-            }
-        }
-    }
-
+    #region Animation Direction Force Angle
 
     Vector3 GetForceDirection(AniFrameData data, int index)
     {
@@ -806,6 +914,10 @@ public class PlayerController : MonoBehaviourPun
         }
     }
 
+    #endregion
+
+    #region DropKick
+
     private void DropKickTrigger()
     {
         if (!_isCoroutineDrop)
@@ -875,76 +987,9 @@ public class PlayerController : MonoBehaviourPun
         yield return null;
     }
 
-    private void NuclearPunch()
-    {
-        StartCoroutine(NuclearPunchDelay());
-        StartCoroutine(ResetCharge());
-    }
+    #endregion
 
-    IEnumerator NuclearPunchDelay()
-    {
-        yield return MeowPunch(Side.Right, 0.07f, NuclearPunchReadyPunch, NuclearPunching, NuclearPunchResetPunch);
-        yield return RSkillCoolTimer();
-    }
-
-    private void MeowNyangPunch()
-    {
-        StartCoroutine(MeowNyangPunchDelay());
-        StartCoroutine(ResetCharge());
-    }
-
-    IEnumerator MeowNyangPunchDelay()
-    {
-        int _punchcount = 0;
-        _readySide = Side.Right;
-        while (_punchcount < 5)
-        {
-            if (_readySide == Side.Left)
-            {
-                yield return MeowPunch(Side.Left, 0.07f, MeowPunchReadyPunch, MeowPunchPunching, MeowPunchResetPunch);
-                _readySide = Side.Right;
-            }
-            else
-            {
-                yield return MeowPunch(Side.Right, 0.07f, MeowPunchReadyPunch, MeowPunchPunching, MeowPunchResetPunch);
-                _readySide = Side.Left;
-            }
-            _punchcount++;
-        }
-        yield return RSkillCoolTimer();
-
-    }
-    IEnumerator RSkillCoolTimer()
-    {
-        _isRSkillCheck = false;
-        yield return new WaitForSeconds(RSkillCoolTime);
-    }
-
-    IEnumerator MeowPunch(Side side, float duration, float readyTime, float punchTime, float resettingTime)
-    {
-        float checkTime = Time.time;
-
-        while (Time.time - checkTime < readyTime)
-        {
-            ArmActionReadying(side);
-            yield return new WaitForSeconds(duration);
-        }
-        checkTime = Time.time;
-
-        while (Time.time - checkTime < punchTime)
-        {
-            ArmActionPunching(side);
-            yield return new WaitForSeconds(duration);
-        }
-        checkTime = Time.time;
-
-        while (Time.time - checkTime < resettingTime)
-        {
-            ArmActionPunchResetting(side);
-            yield return new WaitForSeconds(duration);
-        }
-    }
-
+    #region Punch
     public void PunchAndGrab()
     {
         targetingHandler.SearchTarget();
@@ -969,17 +1014,9 @@ public class PlayerController : MonoBehaviourPun
         yield return Punch(side, 0.07f, ReadyPunch, Punching, ResetPunch);
         _isCoroutineRunning = false;
     }
-    /*
-    
-    요구 사항 
-    HP 잔량 체크 스테미너 - O
-    키 입력시 스킬 동작 시간 빼기
-
-    주먹 펀치 차징 멈추기
-     */
 
     //값이 들어 오는게 0.01 0.1 0.1 0.3
-    IEnumerator Punch(Side side, float duration, float readyTime, float punchTime, float resetTime)
+    public IEnumerator Punch(Side side, float duration, float readyTime, float punchTime, float resetTime)
     {
         float checkTime = Time.time;
 
@@ -1004,31 +1041,34 @@ public class PlayerController : MonoBehaviourPun
         }
     }
 
-
-    public void Stand()
+    //아이템 때문에 추가
+    public IEnumerator Punch(Side side, float duration, float readyTime, float punchTime, float resetTime, float itemPower)
     {
-        if (isStateChange)
+        float checkTime = Time.time;
+
+        while (Time.time - checkTime < readyTime)
         {
-            _idleTimer = 0f;
+            ArmActionReadying(side);
+            yield return new WaitForSeconds(duration);
         }
-        if (_idleTimer < 30f)
+        checkTime = Time.time;
+
+        while (Time.time - checkTime < punchTime)
         {
-            _idleTimer = Mathf.Clamp(_idleTimer + Time.deltaTime, -60f, 30f);
+            ArmActionPunching(side, itemPower);
+            yield return new WaitForSeconds(duration);
         }
-        if (_actor.actorState == Actor.ActorState.Run && !leftGrab && !rightGrab)
+        checkTime = Time.time;
+
+        while (Time.time - checkTime < resetTime)
         {
-        }
-        else
-        {
-            AlignToVector(_bodyHandler.Head.PartRigidbody, -_bodyHandler.Head.transform.up, _moveDir + new Vector3(0f, 0.2f, 0f), 0.1f, 2.5f * 1);
-            AlignToVector(_bodyHandler.Head.PartRigidbody, _bodyHandler.Head.transform.forward, Vector3.up, 0.1f, 2.5f * 1);
-            AlignToVector(_bodyHandler.Chest.PartRigidbody, -_bodyHandler.Chest.transform.up, _moveDir, 0.1f, 4f * 1);
-            AlignToVector(_bodyHandler.Chest.PartRigidbody, _bodyHandler.Chest.transform.forward, Vector3.up, 0.1f, 4f * 1);
-            AlignToVector(_bodyHandler.Waist.PartRigidbody, -_bodyHandler.Waist.transform.up, _moveDir, 0.1f, 4f * 1);
-            AlignToVector(_bodyHandler.Waist.PartRigidbody, _bodyHandler.Waist.transform.forward, Vector3.up, 0.1f, 4f * 1);
-            AlignToVector(_bodyHandler.Hip.PartRigidbody, _bodyHandler.Hip.transform.forward, Vector3.up, 0.1f, 3f * 1);
+            ArmActionPunchResetting(side);
+            yield return new WaitForSeconds(duration);
         }
     }
+    #endregion
+
+    #region PunchAnimation
 
     public void ArmActionReadying(Side side)
     {
@@ -1046,7 +1086,7 @@ public class PlayerController : MonoBehaviourPun
 
         Transform partTransform = _bodyHandler.Chest.transform;
         AniFrameData[] aniFrameDatas = LeftPunchingAniData;
-        Transform transform2 = _bodyHandler.LeftHand.transform; 
+        Transform transform2 = _bodyHandler.LeftHand.transform;
         _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
         _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
         _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
@@ -1080,6 +1120,35 @@ public class PlayerController : MonoBehaviourPun
         }
     }
 
+    // 아이템 때문에 추가
+    public void ArmActionPunching(Side side, float itemPower)
+    {
+        if (target)
+            return;
+
+        Transform partTransform = _bodyHandler.Chest.transform;
+        AniFrameData[] aniFrameDatas = LeftPunchingAniData;
+        Transform transform2 = _bodyHandler.LeftHand.transform;
+        _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+        _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+        _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+
+        if (side == Side.Right)
+        {
+            aniFrameDatas = RightPunchingAniData;
+            transform2 = _bodyHandler.RightHand.transform;
+            _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+            _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+            _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+        }
+
+        for (int i = 0; i < aniFrameDatas.Length; i++)
+        {
+            Vector3 dir = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
+            AniForce(aniFrameDatas, i, dir, itemPower);
+        }
+    }
+
     public void ArmActionPunchResetting(Side side)
     {
         Transform partTransform = _bodyHandler.Chest.transform;
@@ -1108,6 +1177,36 @@ public class PlayerController : MonoBehaviourPun
         }
     }
 
+    #endregion
+
+    #region Stand
+    public void Stand()
+    {
+        if (isStateChange)
+        {
+            _idleTimer = 0f;
+        }
+        if (_idleTimer < 30f)
+        {
+            _idleTimer = Mathf.Clamp(_idleTimer + Time.deltaTime, -60f, 30f);
+        }
+        if (_actor.actorState == Actor.ActorState.Run && !leftGrab && !rightGrab)
+        {
+        }
+        else
+        {
+            AlignToVector(_bodyHandler.Head.PartRigidbody, -_bodyHandler.Head.transform.up, _moveDir + new Vector3(0f, 0.2f, 0f), 0.1f, 2.5f * 1);
+            AlignToVector(_bodyHandler.Head.PartRigidbody, _bodyHandler.Head.transform.forward, Vector3.up, 0.1f, 2.5f * 1);
+            AlignToVector(_bodyHandler.Chest.PartRigidbody, -_bodyHandler.Chest.transform.up, _moveDir, 0.1f, 4f * 1);
+            AlignToVector(_bodyHandler.Chest.PartRigidbody, _bodyHandler.Chest.transform.forward, Vector3.up, 0.1f, 4f * 1);
+            AlignToVector(_bodyHandler.Waist.PartRigidbody, -_bodyHandler.Waist.transform.up, _moveDir, 0.1f, 4f * 1);
+            AlignToVector(_bodyHandler.Waist.PartRigidbody, _bodyHandler.Waist.transform.forward, Vector3.up, 0.1f, 4f * 1);
+            AlignToVector(_bodyHandler.Hip.PartRigidbody, _bodyHandler.Hip.transform.forward, Vector3.up, 0.1f, 3f * 1);
+        }
+    }
+    #endregion
+
+    #region Jump
     public void Jump()
     {
         if (isStateChange)
@@ -1129,7 +1228,9 @@ public class PlayerController : MonoBehaviourPun
             _actor.actorState = Actor.ActorState.Stand;
         }
     }
+    #endregion
 
+    #region Heading
     private void Heading()
     {
         for (int i = 0; i < HeadingAniData.Length; i++)
@@ -1144,7 +1245,9 @@ public class PlayerController : MonoBehaviourPun
                 AniAngleForce(HeadingAngleAniData, i, _moveDir + new Vector3(0f, 0.2f, 0f));
         }
     }
+    #endregion
 
+    #region MoveAnimation
     public void Move()
     {
         if (_actor.actorState == ActorState.Run)
@@ -1383,7 +1486,9 @@ public class PlayerController : MonoBehaviourPun
                 _hips.velocity = _hips.velocity.normalized * MaxSpeed;
         }
     }
+    #endregion
 
+    #region AlingToVector
     public void AlignToVector(Rigidbody part, Vector3 alignmentVector, Vector3 targetVector, float stability, float speed)
     {
         if (part == null)
@@ -1400,7 +1505,9 @@ public class PlayerController : MonoBehaviourPun
             }
         }
     }
+    #endregion
 
+    #region Photon
     [PunRPC]
     private void UpdateDamageModifier(BodyPart bodyPart, InteractableObject.Damage damageType)
     {
@@ -1410,4 +1517,118 @@ public class PlayerController : MonoBehaviourPun
         this._bodyHandler.CurrentBodyPart.PartInteractable.damageModifier = damageType;
         Debug.Log("[UpdateDamageModifier] After-damageType: " + this._bodyHandler.CurrentBodyPart.PartInteractable.damageModifier);
     }
+    #endregion
+
+    /*  이번주 까지 할거
+        아이템 한손 휘두르기 애니메이션
+        두손 휘두르기 - 제작중
+        포션 마시기 만들기*/
+
+    #region ItemTwoHand
+
+    public void ItemTwoHandTrigger()
+    {
+        StartCoroutine(ItemTwoHandDelay(Side.Right));
+    }
+
+    IEnumerator ItemTwoHandDelay(Side side)
+    {
+        yield return ItemTwoHand(side, 0.07f, 0.1f, 0.3f, 0.1f, ItempSwingPower);
+    }
+
+    public IEnumerator ItemTwoHand(Side side, float duration, float readyTime, float punchTime, float resetTime, float itemPower)
+    {
+        float checkTime = Time.time;
+
+        while (Time.time - checkTime < readyTime)
+        {
+            ItemTwoHandReady(side);
+            yield return new WaitForSeconds(duration);
+        }
+        checkTime = Time.time;
+
+        while (Time.time - checkTime < punchTime)
+        {
+            ItemTwoHandSwing(side, itemPower);
+            yield return new WaitForSeconds(duration);
+        }
+        checkTime = Time.time;
+
+        while (Time.time - checkTime < resetTime)
+        {
+            ItemTwoHandReSet(side);
+            yield return new WaitForSeconds(duration);
+        }
+    }
+
+
+    #endregion
+
+    #region ItemTwoHandAnimation
+
+    public void ItemTwoHandReady(Side side)
+    {
+        //upperArm 2 chest1 up right 0.01 20 foreArm chest up back 
+        //TestRready 오른쪽 왼쪽 구별해서 좌우로 휘두룰수 있음
+        AniAngleData[] itemTwoHands = (side == Side.Right) ? TestRready2 : TestRready2;
+        for (int i = 0; i < itemTwoHands.Length; i++)
+        {
+            AniAngleForce(itemTwoHands, i);
+        }
+    }
+
+    public void ItemTwoHandSwing(Side side, float itemPower)
+    {
+        if (target)
+            return;
+
+        Transform partTransform = _bodyHandler.Chest.transform;
+        AniFrameData[] itemTwoHands = TestRready1;
+        Transform transform2 = _bodyHandler.LeftHand.transform;
+        _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+        _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+        _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+
+        if (side == Side.Right)
+        {
+            itemTwoHands = TestRready1;
+            transform2 = _bodyHandler.RightHand.transform;
+            _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+            _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+            _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+        }
+
+        for (int i = 0; i < itemTwoHands.Length; i++)
+        {
+            Vector3 dir = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
+            AniForce(itemTwoHands, i, dir , itemPower);
+        }
+    }
+
+    public void ItemTwoHandReSet(Side side)
+    {
+        Transform partTransform = _bodyHandler.Chest.transform;
+
+        AniAngleData[] itemTwoHands = TestRready2;
+        _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+        _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+        _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+
+        if (side == Side.Right)
+        {
+            itemTwoHands = TestRready2;
+            _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+            _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+            _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+        }
+
+        for (int i = 0; i < itemTwoHands.Length; i++)
+        {
+            Vector3 dir = partTransform.transform.right / 2f;
+            AniAngleForce(itemTwoHands, i, dir);
+        }
+    }
+
+    #endregion
+
 }
