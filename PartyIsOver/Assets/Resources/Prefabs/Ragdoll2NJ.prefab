@@ -11389,7 +11389,7 @@ GameObject:
   - component: {fileID: 1602883286494261838}
   - component: {fileID: 4655386519301525991}
   m_Layer: 7
-  m_Name: Ragdoll2
+  m_Name: Ragdoll2NJ
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11566,9 +11566,9 @@ MonoBehaviour:
     - 50
   RightPunchAniData:
   - StandardRigidbodies:
-    - {fileID: 5856729462922818502}
+    - {fileID: 5856411775826887216}
     ActionDirection:
-    - {fileID: 5875523848119066616}
+    - {fileID: 5878457040528025866}
     TargetDirection:
     - {fileID: 5875996918003196956}
     ActionAngleDirections: 03000000
@@ -11588,7 +11588,7 @@ MonoBehaviour:
     AngleStability:
     - 0.01
     AnglePowerValues:
-    - 20
+    - 20000
   LeftPunchAniData:
   - StandardRigidbodies:
     - {fileID: 5856411775826887216}
@@ -11613,7 +11613,7 @@ MonoBehaviour:
     AngleStability:
     - 0.01
     AnglePowerValues:
-    - 20
+    - 20000
   RightPunchingAniData:
   - StandardRigidbodies:
     - {fileID: 5856729462922818502}
@@ -11810,40 +11810,28 @@ MonoBehaviour:
     - 0.01
     AnglePowerValues:
     - 100
-  ItemTwoHandAniData:
+  TestRready1:
   - StandardRigidbodies:
     - {fileID: 5855867809452644878}
     - {fileID: 5855867809452644878}
     - {fileID: 5855867809452644878}
-    - {fileID: 5855867809452644878}
     ActionRigidbodies:
-    - {fileID: 5856729462922818502}
-    - {fileID: 5856729462922818502}
-    - {fileID: 5856729462922818502}
     - {fileID: 5856003484643476932}
-    ForceDirections: 06000000030000000400000007000000
+    - {fileID: 5793437608505534348}
+    - {fileID: 5856729462922818502}
+    ForceDirections: 070000000200000003000000
     ForcePowerValues:
-    - 15
-    - 50
-    - 15
-    - 5
+    - 1
+    - 1
+    - 2
   - StandardRigidbodies:
     - {fileID: 5855867809452644878}
-    - {fileID: 5855867809452644878}
-    - {fileID: 5855867809452644878}
-    - {fileID: 5855867809452644878}
     ActionRigidbodies:
-    - {fileID: 5856411775826887216}
-    - {fileID: 5856572161679450355}
     - {fileID: 5793545070783210251}
-    - {fileID: 5855867809452644878}
-    ForceDirections: 02000000020000000200000002000000
+    ForceDirections: 02000000
     ForcePowerValues:
-    - 2
-    - 2
-    - 2
-    - 2
-  ItemTwoHandAngleData:
+    - 1
+  TestRready2:
   - StandardRigidbodies:
     - {fileID: 5793437608505534348}
     ActionDirection:
@@ -11851,33 +11839,6 @@ MonoBehaviour:
     TargetDirection:
     - {fileID: 5875873347556913874}
     ActionAngleDirections: 01000000
-    TargetAngleDirections: 03000000
-    AngleStability:
-    - 0.01
-    AnglePowerValues:
-    - 100
-  TestRready1:
-  - StandardRigidbodies:
-    - {fileID: 5856379624502544924}
-    - {fileID: 5856379624502544924}
-    - {fileID: 5856379624502544924}
-    ActionRigidbodies:
-    - {fileID: 5856729462922818502}
-    - {fileID: 5856003484643476932}
-    - {fileID: 5793437608505534348}
-    ForceDirections: 040000000400000004000000
-    ForcePowerValues:
-    - 15
-    - 50
-    - 50
-  TestRready2:
-  - StandardRigidbodies:
-    - {fileID: 5856729462922818502}
-    ActionDirection:
-    - {fileID: 5875873347556913874}
-    TargetDirection:
-    - {fileID: 5875873347556913874}
-    ActionAngleDirections: 03000000
     TargetAngleDirections: 03000000
     AngleStability:
     - 0.01
@@ -11902,20 +11863,18 @@ MonoBehaviour:
   leftKick: 0
   rightKick: 0
   isStateChange: 0
-  isMeowNyangPunch: 0
+  isMeowNyangPunch: 1
   isBalloon: 0
   RSkillCoolTime: 5
   ChargeAniHoldTime: 0.5
-  MeowPunchPower: 3
-  MeowPunchReadyPunch: 0.05
-  MeowPunchPunching: 0.05
-  MeowPunchResetPunch: 0.05
+  MeowPunchPower: 1
+  MeowPunchReadyPunch: 0.1
+  MeowPunchPunching: 0.1
+  MeowPunchResetPunch: 0.3
   NuclearPunchPower: 5
   NuclearPunchReadyPunch: 0.1
   NuclearPunching: 0.1
   NuclearPunchResetPunch: 0.1
-  ItempSwingPower: 1000
-  MoveInput: {x: 0, y: 0, z: 0}
   isAI: 0
 --- !u!114 &5878509405600198236
 MonoBehaviour:
@@ -11931,7 +11890,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _isRightGrab: 0
   _isLeftGrab: 0
-  EquipItem: {fileID: 0}
+  EqupItem: {fileID: 0}
   LeftGrabObject: {fileID: 0}
   RightGrabObject: {fileID: 0}
   RangeWeaponSkin: {fileID: 2087769795625165002}
@@ -11970,7 +11929,6 @@ MonoBehaviour:
   BodyHandler: {fileID: 0}
   PlayerController: {fileID: 0}
   Grab: {fileID: 0}
-  BalloonState: {fileID: 0}
   HeadMultiple: 1.5
   ArmMultiple: 0.8
   HandMultiple: 0.8
