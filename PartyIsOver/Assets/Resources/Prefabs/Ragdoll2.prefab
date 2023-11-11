@@ -11809,7 +11809,7 @@ MonoBehaviour:
     - 0.01
     AnglePowerValues:
     - 100
-  TestRready1:
+  ItemTwoHandAniData:
   - StandardRigidbodies:
     - {fileID: 5855867809452644878}
     - {fileID: 5855867809452644878}
@@ -11842,7 +11842,7 @@ MonoBehaviour:
     - 2
     - 2
     - 2
-  TestRready2:
+  ItemTwoHandAngleData:
   - StandardRigidbodies:
     - {fileID: 5793437608505534348}
     ActionDirection:
@@ -11850,6 +11850,46 @@ MonoBehaviour:
     TargetDirection:
     - {fileID: 5875873347556913874}
     ActionAngleDirections: 01000000
+    TargetAngleDirections: 03000000
+    AngleStability:
+    - 0.01
+    AnglePowerValues:
+    - 100
+  TestRready1:
+  - StandardRigidbodies:
+    - {fileID: 5856379624502544924}
+    - {fileID: 5856379624502544924}
+    - {fileID: 5856379624502544924}
+    ActionRigidbodies:
+    - {fileID: 5856729462922818502}
+    - {fileID: 5856003484643476932}
+    - {fileID: 5793437608505534348}
+    ForceDirections: 040000000400000004000000
+    ForcePowerValues:
+    - 15
+    - 50
+    - 15
+  - StandardRigidbodies:
+    - {fileID: 5855867809452644878}
+    - {fileID: 5855867809452644878}
+    - {fileID: 5855867809452644878}
+    ActionRigidbodies:
+    - {fileID: 5856411775826887216}
+    - {fileID: 5856572161679450355}
+    - {fileID: 5793545070783210251}
+    ForceDirections: 020000000200000002000000
+    ForcePowerValues:
+    - 30
+    - 30
+    - 30
+  TestRready2:
+  - StandardRigidbodies:
+    - {fileID: 5856729462922818502}
+    ActionDirection:
+    - {fileID: 5875873347556913874}
+    TargetDirection:
+    - {fileID: 5875873347556913874}
+    ActionAngleDirections: 03000000
     TargetAngleDirections: 03000000
     AngleStability:
     - 0.01
@@ -11874,14 +11914,14 @@ MonoBehaviour:
   leftKick: 0
   rightKick: 0
   isStateChange: 0
-  isMeowNyangPunch: 1
+  isMeowNyangPunch: 0
   isBalloon: 0
   RSkillCoolTime: 5
   ChargeAniHoldTime: 0.5
-  MeowPunchPower: 1
-  MeowPunchReadyPunch: 0.1
-  MeowPunchPunching: 0.1
-  MeowPunchResetPunch: 0.3
+  MeowPunchPower: 3
+  MeowPunchReadyPunch: 0.05
+  MeowPunchPunching: 0.05
+  MeowPunchResetPunch: 0.05
   NuclearPunchPower: 5
   NuclearPunchReadyPunch: 0.1
   NuclearPunching: 0.1

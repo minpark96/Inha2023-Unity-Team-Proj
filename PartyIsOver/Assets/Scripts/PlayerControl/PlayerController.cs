@@ -104,6 +104,12 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     public AniAngleData[] RSkillAngleAniData;
 
     [SerializeField]
+    public AniFrameData[] ItemTwoHandAniData;
+
+    [SerializeField]
+    public AniAngleData[] ItemTwoHandAngleData;
+
+    [SerializeField]
     public AniFrameData[] TestRready1;
 
     [SerializeField]
@@ -336,6 +342,12 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
         switch (evt)
         {
+            case Define.KeyboardEvent.PointerDown:
+                {
+                    if (Input.GetKeyDown(KeyCode.Space))
+                        _actor.actorState = Actor.ActorState.Jump;
+                }
+                break;
             case Define.KeyboardEvent.Press:
                 {
                     if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
@@ -377,6 +389,8 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
                             StartCoroutine(ChargeReady());
                         }
                     }
+
+                    
                 }
                 break;
             case Define.KeyboardEvent.Press:
@@ -398,8 +412,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
                     if (Input.GetKeyUp(KeyCode.H))
                         Heading();
-                    if (Input.GetKeyUp(KeyCode.Space))
-                        _actor.actorState = Actor.ActorState.Jump;
+                    
 
                     if (Input.GetKeyUp(KeyCode.R))
                     {
@@ -782,17 +795,17 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         _childRigidbody = child.GetComponent<Rigidbody>();
         if (_childRigidbody != null)
         {
-            Debug.Log(_initialRotations[child]);
+            //Debug.Log(_initialRotations[child]);
             // 초기 회전값 복원 Dictionary에서 특정 키의 존재 여부를 확인
             if (_initialRotations.ContainsKey(child))
             {
                 //회전 힘과 AddForce 힘을 벡터 0으로 해서 값 빼기
                 _childRigidbody.velocity = Vector3.zero;
                 _childRigidbody.angularVelocity = Vector3.zero;
-                //child.localRotation = _initialRotations[child];
-                int count= 0;
+                child.localRotation = _initialRotations[child];
+                //int count= 0;
                 //while (Quaternion.Angle(child.localRotation, _initialRotations[child]) > 1f)
-                while(count <10)
+                /*while(count <10)
                 {
                     //_initialRotations[child] 목표값
                     //child.localRotation 시작 값
@@ -800,15 +813,13 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
                     Debug.Log(string.Format("{0}     :  {1:N2}", child.name, Quaternion.Angle(child.localRotation, _initialRotations[child])));
                     count++;
                     yield return new WaitForSeconds(0.07f);
-                }
+                }*/
             }
-
-            Debug.Log("end While");
             //다시 잠금
             if (_childRigidbody.name == "GreenHip")
                 _hipRB.constraints |= RigidbodyConstraints.FreezeRotationX;
         }
-        yield return _actor.StatusHandler.RestoreBodySpring(0.1f);
+        yield return _actor.StatusHandler.RestoreBodySpring(0.07f);
     }
 
     public void RestoreRotationsOld()
@@ -1617,8 +1628,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             yield return new WaitForSeconds(duration);
         }
     }
-
-
     #endregion
 
     #region ItemTwoHandAnimation
@@ -1627,7 +1636,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     {
         //upperArm 2 chest1 up right 0.01 20 foreArm chest up back 
         //TestRready 오른쪽 왼쪽 구별해서 좌우로 휘두룰수 있음
-        AniAngleData[] itemTwoHands = (side == Side.Right) ? TestRready2 : TestRready2;
+        AniAngleData[] itemTwoHands = (side == Side.Right) ? ItemTwoHandAngleData : ItemTwoHandAngleData;
         for (int i = 0; i < itemTwoHands.Length; i++)
         {
             AniAngleForce(itemTwoHands, i);
@@ -1640,7 +1649,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             return;
 
         Transform partTransform = _bodyHandler.Chest.transform;
-        AniFrameData[] itemTwoHands = TestRready1;
+        AniFrameData[] itemTwoHands = ItemTwoHandAniData;
         Transform transform2 = _bodyHandler.LeftHand.transform;
         _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
         _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
@@ -1648,7 +1657,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
         if (side == Side.Right)
         {
-            itemTwoHands = TestRready1;
+            itemTwoHands = ItemTwoHandAniData;
             transform2 = _bodyHandler.RightHand.transform;
             _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
             _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
@@ -1666,14 +1675,14 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     {
         Transform partTransform = _bodyHandler.Chest.transform;
 
-        AniAngleData[] itemTwoHands = TestRready2;
+        AniAngleData[] itemTwoHands = ItemTwoHandAngleData;
         _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
         _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
         _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
 
         if (side == Side.Right)
         {
-            itemTwoHands = TestRready2;
+            itemTwoHands = ItemTwoHandAngleData;
             _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
             _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
             _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
@@ -1687,5 +1696,73 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     }
 
     #endregion
+
+    public IEnumerator ItemOwnHand(Side side, float duration, float readyTime, float punchTime, float resetTime)
+    {
+        float checkTime = Time.time;
+
+        while (Time.time - checkTime < readyTime)
+        {
+            ItemOneHandReady(side);
+            yield return new WaitForSeconds(duration);
+        }
+        checkTime = Time.time;
+
+        while (Time.time - checkTime < punchTime)
+        {
+            ItemOneHandSwing(side);
+            yield return new WaitForSeconds(duration);
+        }
+        checkTime = Time.time;
+
+        while (Time.time - checkTime < resetTime)
+        {
+            ItemOneHandReSet(side);
+            yield return new WaitForSeconds(duration);
+        }
+    }
+
+    public void ItemOneHandReady(Side side)
+    {
+        AniAngleData[] itemTwoHands = (side == Side.Right) ? TestRready2 : TestRready2;
+        for (int i = 0; i < itemTwoHands.Length; i++)
+        {
+            AniAngleForce(itemTwoHands, i);
+        }
+    }
+
+    public void ItemOneHandSwing(Side side)
+    {
+        AniFrameData[] itemOneHands = TestRready1;
+
+        for (int i = 0; i < itemOneHands.Length; i++)
+        {
+            AniForce(itemOneHands, i);
+        }
+    }
+
+    public void ItemOneHandReSet(Side side)
+    {
+        Transform partTransform = _bodyHandler.Chest.transform;
+
+        AniAngleData[] itemOneHands = TestRready2;
+        _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+        _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+        _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+
+        if (side == Side.Right)
+        {
+            itemOneHands = TestRready2;
+            _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+            _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+            _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+        }
+
+        for (int i = 0; i < itemOneHands.Length; i++)
+        {
+            Vector3 dir = partTransform.transform.right / 2f;
+            AniAngleForce(itemOneHands, i, dir);
+        }
+    }
 
 }
