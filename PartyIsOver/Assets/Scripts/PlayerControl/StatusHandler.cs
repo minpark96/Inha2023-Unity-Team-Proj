@@ -1,11 +1,9 @@
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
-using System.Net.NetworkInformation;
 using UnityEngine;
 using UnityEngine.UI;
 using static InteractableObject;
-using static UnityEngine.Rendering.VirtualTexturing.Debugging;
 
 public class StatusHandler : MonoBehaviourPun
 {
@@ -190,7 +188,6 @@ public class StatusHandler : MonoBehaviourPun
             case Damage.Stun: // 기절
                 actor.debuffState |= Actor.DebuffState.Stun;
                 break;
-
         }
     }
 
@@ -449,19 +446,14 @@ public class StatusHandler : MonoBehaviourPun
     IEnumerator Stun(float delay)
     {
         _hasStun = true;
-        
-        // 사망 상태를 위해서 임시로 999
-        if (delay != 999)
-        {
-            yield return new WaitForSeconds(delay);
-            yield return RestoreBodySpring();
+        yield return new WaitForSeconds(delay);
+        yield return RestoreBodySpring();
 
-            _hasStun = false;
-            actor.actorState = Actor.ActorState.Stand;
-            actor.debuffState &= ~Actor.DebuffState.Stun;
+        _hasStun = false;
+        actor.actorState = Actor.ActorState.Stand;
+        actor.debuffState &= ~Actor.DebuffState.Stun;
 
-            actor.StatusChangeEventInvoke();
-        }
+        actor.StatusChangeEventInvoke();
     }
 
     public void UpdateHealth()
@@ -478,39 +470,41 @@ public class StatusHandler : MonoBehaviourPun
 
         float realDamage = actor.Health - tempHealth;
 
-        //기절상태가 아닐때 일정 이상의 데미지를 받으면 기절
-        if (actor.actorState != Actor.ActorState.Unconscious)
-        {
-            if (_unconsciousTime >= 0f)
-                _unconsciousTime = Mathf.Clamp(_unconsciousTime - Time.deltaTime, 0f, _maxUnconsciousTime);
-            
-            if (realDamage >= _knockoutThreshold)
-            {
-                if (actor.debuffState == Actor.DebuffState.Ice)
-                    return;
-
-                _maxUnconsciousTime = Mathf.Clamp(_maxUnconsciousTime + 1.5f, _minUnconsciousTime, 20f);
-                _unconsciousTime = _maxUnconsciousTime;
-                actor.actorState = Actor.ActorState.Unconscious;
-                actor.debuffState = Actor.DebuffState.Stun;
-                EnterUnconsciousState();
-            }
-        }
-
-        // 기절일때
-        if (actor.actorState == Actor.ActorState.Unconscious)
-        {
-            _unconsciousTime = Mathf.Clamp(_unconsciousTime - Time.deltaTime, 0f, _maxUnconsciousTime);
-            StartCoroutine(ResetBodySpring());
-            StartCoroutine(Stun(_unconsciousTime));
-            _unconsciousTime = 0f;
-        }
-
         //계산한 체력이 0보다 작으면 Death로
         if (tempHealth <= 0f)
         {
             KillPlayer();
             EnterUnconsciousState();
+        }
+        else
+        {
+            //기절상태가 아닐때 일정 이상의 데미지를 받으면 기절
+            if (actor.actorState != Actor.ActorState.Unconscious)
+            {
+                if (_unconsciousTime >= 0f)
+                    _unconsciousTime = Mathf.Clamp(_unconsciousTime - Time.deltaTime, 0f, _maxUnconsciousTime);
+            
+                if (realDamage >= _knockoutThreshold)
+                {
+                    if (actor.debuffState == Actor.DebuffState.Ice)
+                        return;
+
+                    _maxUnconsciousTime = Mathf.Clamp(_maxUnconsciousTime + 1.5f, _minUnconsciousTime, 20f);
+                    _unconsciousTime = _maxUnconsciousTime;
+                    actor.actorState = Actor.ActorState.Unconscious;
+                    actor.debuffState = Actor.DebuffState.Stun;
+                    EnterUnconsciousState();
+                }
+            }
+
+            // 기절일때
+            if (actor.actorState == Actor.ActorState.Unconscious)
+            {
+                _unconsciousTime = Mathf.Clamp(_unconsciousTime - Time.deltaTime, 0f, _maxUnconsciousTime);
+                StartCoroutine(ResetBodySpring());
+                StartCoroutine(Stun(_unconsciousTime));
+                _unconsciousTime = 0f;
+            }
         }
 
         actor.Health = Mathf.Clamp(tempHealth, 0f, actor.MaxHealth);
@@ -520,7 +514,7 @@ public class StatusHandler : MonoBehaviourPun
 
     void KillPlayer()
     {
-        StartCoroutine(Stun(999));
+        StartCoroutine(ResetBodySpring());
         actor.actorState = Actor.ActorState.Dead;
     }
 
@@ -528,8 +522,8 @@ public class StatusHandler : MonoBehaviourPun
     {
         //데미지 이펙트나 사운드 추후 추가
 
-        //actor.BodyHandler.ResetLeftGrab();
-        //actor.BodyHandler.ResetRightGrab();
+        //currentPlayer.BodyHandler.ResetLeftGrab();
+        //currentPlayer.BodyHandler.ResetRightGrab();
         actor.BodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
         actor.BodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
         actor.BodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;

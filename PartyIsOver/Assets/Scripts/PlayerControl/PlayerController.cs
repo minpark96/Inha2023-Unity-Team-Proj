@@ -1,15 +1,11 @@
 using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine.Experimental.GlobalIllumination;
-using System.Runtime.CompilerServices;
-using static PlayerController;
 using static Actor;
 using static AniFrameData;
 using static AniAngleData;
-using Unity.VisualScripting;
 using Photon.Pun;
-using UnityEngine.UIElements;
+using UnityEditor;
 
 [System.Serializable]
 public class AniFrameData
@@ -54,7 +50,7 @@ public class AniAngleData
 
 }
 
-public class PlayerController : MonoBehaviourPun, IPunObservable
+public class PlayerController : MonoBehaviourPun
 {
     [Header("AnimationControll")]
     [SerializeField]
@@ -264,7 +260,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
     public void OnKeyboardEvent_Move(Define.KeyboardEvent evt)
     {
-        if (!photonView.IsMine)
+        if (!photonView.IsMine || _actor.actorState == ActorState.Dead)
         {
             return;
         }
@@ -299,7 +295,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     }
     public void OnKeyboardEvent_Skill(Define.KeyboardEvent evt)
     {
-        if (!photonView.IsMine)
+        if (!photonView.IsMine || _actor.actorState == ActorState.Dead)
         {
             return;
         }
@@ -429,7 +425,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
     public void OnMouseEvent_Grab(Define.MouseEvent evt)
     {
-        if (!photonView.IsMine)
+        if (!photonView.IsMine || _actor.actorState == ActorState.Dead)
         {
             return;
         }
@@ -454,7 +450,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     }
     public void OnMouseEvent_Skill(Define.MouseEvent evt)
     {
-        if (!photonView.IsMine)
+        if (!photonView.IsMine || _actor.actorState == ActorState.Dead)
         {
             return;
         }
@@ -481,7 +477,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
     private void FixedUpdate()
     {
-        if (!photonView.IsMine) return;
+        if (!photonView.IsMine || _actor.actorState == ActorState.Dead) return;
 
         if (isAI)
             return;
@@ -830,7 +826,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     IEnumerator DropKick()
     {
         Transform partTransform = _bodyHandler.Hip.transform;
-
+        BodyPart currentBodyPart;
         if (!isGrounded)
         {
             for (int i = 0; i < DropAniData.Length; i++)
@@ -844,7 +840,9 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
                     _bodyHandler.RightThigh.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
                     _bodyHandler.RightLeg.PartInteractable.damageModifier = InteractableObject.Damage.DropKick; //데미지
                     Vector3 dir = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
+                    currentBodyPart = _bodyHandler.RightLeg;
                     AniForce(DropAniData, i, dir);
+                    //photonView.RPC("UpdateDamageModifier", RpcTarget.Others, currentBodyPart, currentBodyPart.PartInteractable.damageModifier);
                 }
                 else if (i == 1)
                 {
@@ -853,17 +851,26 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
                     _bodyHandler.LeftThigh.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
                     _bodyHandler.LeftLeg.PartInteractable.damageModifier = InteractableObject.Damage.DropKick; //데미지
                     Vector3 dir = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
+                    currentBodyPart = _bodyHandler.LeftLeg;
                     AniForce(DropAniData, i, dir);
+                    //photonView.RPC("UpdateDamageModifier", RpcTarget.Others, currentBodyPart, currentBodyPart.PartInteractable.damageModifier);
                 }
                 else
                 {
                     AniForce(DropAniData, i);
                 }
             }
+
+            
+
             yield return new WaitForSeconds(2);
             _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
             _bodyHandler.LeftLeg.PartInteractable.damageModifier = InteractableObject.Damage.Default;
             _bodyHandler.RightLeg.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+            currentBodyPart = _bodyHandler.LeftLeg;
+            //photonView.RPC("UpdateDamageModifier", RpcTarget.Others, currentBodyPart, currentBodyPart.PartInteractable.damageModifier);
+            currentBodyPart = _bodyHandler.RightLeg;
+            //photonView.RPC("UpdateDamageModifier", RpcTarget.Others, currentBodyPart, currentBodyPart.PartInteractable.damageModifier);
         }
         yield return null;
     }
@@ -1043,6 +1050,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
         _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
         _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+        BodyPart currentBodyPart = _bodyHandler.LeftHand;
 
         if (side == Side.Right)
         {
@@ -1051,7 +1059,10 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
             _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
             _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+            currentBodyPart = _bodyHandler.RightHand;
         }
+
+        //photonView.RPC("UpdateDamageModifier", RpcTarget.Others, currentBodyPart, currentBodyPart.PartInteractable.damageModifier);
 
         for (int i = 0; i < aniFrameDatas.Length; i++)
         {
@@ -1077,6 +1088,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
         _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
         _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+        BodyPart currentBodyPart = _bodyHandler.LeftHand;
 
         if (side == Side.Right)
         {
@@ -1084,7 +1096,10 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
             _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
             _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+            currentBodyPart = _bodyHandler.RightHand;
         }
+
+        //photonView.RPC("UpdateDamageModifier", RpcTarget.Others, currentBodyPart, currentBodyPart.PartInteractable.damageModifier);
 
         for (int i = 0; i < aniAngleDatas.Length; i++)
         {
@@ -1229,7 +1244,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
                 if (!isDuck)
                 {
                     thighRigid.AddForce(-_moveDir / 2f, ForceMode.VelocityChange);
-                    footRigid.AddForce(_moveDir / 2f, ForceMode.VelocityChange);
+                    legRigid.AddForce(_moveDir / 2f, ForceMode.VelocityChange);
                 }
                 break;
             case Pose.Straight:
@@ -1238,8 +1253,8 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
                 if (!isDuck)
                 {
                     thighRigid.AddForce(hip.up * 2f * _applyedForce);
-                    footRigid.AddForce(-hip.up * 2f * _applyedForce);
-                    footRigid.AddForce(-_runVectorForce2, ForceMode.VelocityChange);
+                    legRigid.AddForce(-hip.up * 2f * _applyedForce);
+                    legRigid.AddForce(-_runVectorForce2, ForceMode.VelocityChange);
                 }
                 break;
             case Pose.Behind:
@@ -1249,7 +1264,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
                 {
                     _bodyHandler.Hip.PartRigidbody.AddForce(_runVectorForce2, ForceMode.VelocityChange);
                     _bodyHandler.Ball.PartRigidbody.AddForce(-_runVectorForce2, ForceMode.VelocityChange);
-                    footRigid.AddForce(-_runVectorForce2, ForceMode.VelocityChange);
+                    legRigid.AddForce(-_runVectorForce2, ForceMode.VelocityChange);
                 }
                 break;
         }
@@ -1386,23 +1401,13 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         }
     }
 
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    [PunRPC]
+    private void UpdateDamageModifier(BodyPart bodyPart, InteractableObject.Damage damageType)
     {
-        if (stream.IsWriting)
-        {
-            // We own this player: send the others our data
-            stream.SendNext(_bodyHandler.RightHand.PartInteractable.damageModifier);
-            stream.SendNext(_bodyHandler.LeftHand.PartInteractable.damageModifier);
-            stream.SendNext(_bodyHandler.RightLeg.PartInteractable.damageModifier);
-            stream.SendNext(_bodyHandler.LeftLeg.PartInteractable.damageModifier);
-        }
-        else
-        {
-            // Network player, receive data
-            this._bodyHandler.RightHand.PartInteractable.damageModifier = (InteractableObject.Damage)stream.ReceiveNext();
-            this._bodyHandler.LeftHand.PartInteractable.damageModifier = (InteractableObject.Damage)stream.ReceiveNext();
-            this._bodyHandler.RightLeg.PartInteractable.damageModifier = (InteractableObject.Damage)stream.ReceiveNext();
-            this._bodyHandler.LeftLeg.PartInteractable.damageModifier = (InteractableObject.Damage)stream.ReceiveNext();
-        }
+        Debug.Log("[UpdateDamageModifier] Input-bodyPart: " + bodyPart);
+        this._bodyHandler.CurrentBodyPart = bodyPart;
+        Debug.Log("[UpdateDamageModifier] Before-damageType: " + this._bodyHandler.CurrentBodyPart.PartInteractable.damageModifier);
+        this._bodyHandler.CurrentBodyPart.PartInteractable.damageModifier = damageType;
+        Debug.Log("[UpdateDamageModifier] After-damageType: " + this._bodyHandler.CurrentBodyPart.PartInteractable.damageModifier);
     }
 }

@@ -1,15 +1,12 @@
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
-public class Actor : MonoBehaviourPun
+public class Actor : MonoBehaviourPun, IPunObservable
 {
-    public delegate void PlayerHurt(float HP, ActorState actorState, DebuffState debuffstate, int viewID);
-    public event PlayerHurt OnPlayerHurt;
-    public delegate void PlayerExhaust(float Stamina, int viewID);
-    public event PlayerExhaust OnPlayerExhaust;
+    public delegate void PlayerStatusChanges(float HP, float Stamina, ActorState actorState, DebuffState debuffstate, int viewID);
+    public event PlayerStatusChanges OnPlayerStatusChanges;
 
     public Transform CameraArm;
 
@@ -83,10 +80,11 @@ public class Actor : MonoBehaviourPun
     {
         Debug.Log("StatusChangeEventInvoke()");
 
-        if (OnPlayerHurt == null)
+        if (OnPlayerStatusChanges == null)
             Debug.Log(photonView.ViewID + " ¿Ã∫•∆Æ null");
 
-        OnPlayerHurt(_health, actorState, debuffState, photonView.ViewID);
+        //Debug.Log("_health: " + _health + " debuffState: " + debuffState + " photonView.ViewID: " + photonView.ViewID);
+        OnPlayerStatusChanges(_health, _stamina, actorState, debuffState, photonView.ViewID);
     }
 
     private void Awake()
@@ -125,7 +123,7 @@ public class Actor : MonoBehaviourPun
 
     private void Update()
     {
-        if (!photonView.IsMine) return;
+        if (!photonView.IsMine || actorState == ActorState.Dead) return;
 
         LookAround();
         CursorControl();
@@ -133,7 +131,7 @@ public class Actor : MonoBehaviourPun
 
     private void FixedUpdate()
     {
-        if (!photonView.IsMine) return;
+        if (!photonView.IsMine || actorState == ActorState.Dead) return;
         
         if (actorState != lastActorState)
         {
@@ -208,6 +206,26 @@ public class Actor : MonoBehaviourPun
         {
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
+        }
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        Debug.Log("OnPhotonSerializeView");
+        if (stream.IsWriting)
+        {
+            Debug.Log("Writing");
+            // We own this player: send the others our data
+            Debug.Log("Writing actorState: " + actorState);
+            stream.SendNext(actorState);
+        }
+        else
+        {
+            Debug.Log("Receiving");
+            // Network player, receive data
+            Debug.Log("Receiving B actorState: " + actorState);
+            this.actorState = (ActorState)stream.ReceiveNext();
+            Debug.Log("Receiving A actorState: " + actorState);
         }
     }
 }

@@ -1,4 +1,3 @@
-using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 using System;
@@ -120,7 +119,7 @@ public class GameCenter : MonoBehaviourPunCallbacks
             GUI.contentColor = Color.black;
             GUI.Label(new Rect(0, 140 + i * 40, 200, 200), "Actor View ID: " + ActorViewIDs[i] + " / HP: " + Actors[i].Health);
             GUI.contentColor = Color.red;
-            GUI.Label(new Rect(0, 160 + i * 40, 200, 200), "Debuff: " + Actors[i].debuffState);
+            GUI.Label(new Rect(0, 160 + i * 40, 200, 200), "Status: " + Actors[i].actorState + " / Debuff: " + Actors[i].debuffState);
         }
     }
 
@@ -129,22 +128,22 @@ public class GameCenter : MonoBehaviourPunCallbacks
         if (actor != null)
         {
             Debug.Log("구독 부분 " + actor.photonView.ViewID);
-            actor.OnPlayerHurt -= SendInfo;
-            actor.OnPlayerHurt += SendInfo;
+            actor.OnPlayerStatusChanges -= SendInfo;
+            actor.OnPlayerStatusChanges += SendInfo;
             //actor.OnPlayerExhaust -= DecreaseStamina;
             //actor.OnPlayerExhaust += DecreaseStamina;
         }
     }
    
-    void SendInfo(float HP, Actor.ActorState actorState, Actor.DebuffState debuffstate, int viewID)
+    void SendInfo(float hp, float stamina, Actor.ActorState actorState, Actor.DebuffState debuffstate, int viewID)
     {
         Debug.Log("[master Event] SendInfo()");
 
-        photonView.RPC("SyncInfo", RpcTarget.Others, HP, actorState, debuffstate, viewID);
+        photonView.RPC("SyncInfo", RpcTarget.Others, hp, debuffstate, viewID);
     }
 
     [PunRPC]
-    void SyncInfo(float hp, Actor.ActorState actorState, Actor.DebuffState debuffstate, int viewID)
+    void SyncInfo(float hp, Actor.DebuffState debuffstate, int viewID)
     {
         Debug.Log("[except master received] SyncInfo()");
 
@@ -153,7 +152,6 @@ public class GameCenter : MonoBehaviourPunCallbacks
             if (Actors[i].photonView.ViewID == viewID)
             {
                 Actors[i].Health = hp;
-                Actors[i].actorState = actorState;
                 Actors[i].debuffState = debuffstate;
                 break;
             }
