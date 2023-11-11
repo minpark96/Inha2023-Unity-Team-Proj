@@ -161,7 +161,7 @@ public class PlayerController : MonoBehaviourPun
 
 
     private float _runSpeedOffset = 350f;
-    private Vector3 _moveInput;
+    public Vector3 MoveInput;
     private Vector3 _moveDir;
     private bool _isCoroutineRunning = false;
     private bool _isCoroutineDrop = false;
@@ -251,6 +251,8 @@ public class PlayerController : MonoBehaviourPun
             originalZMotions[i] = childJoints[i].angularZMotion;
         }
         _grab = GetComponent<Grab>();
+
+        _balloonState = GetComponent<BalloonState>();
     }
 
     void RestoreOriginalMotions()
@@ -336,7 +338,7 @@ public class PlayerController : MonoBehaviourPun
                 {
                     if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
                     {
-                        _moveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+                        MoveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
                     }
                 }
                 break;
@@ -344,7 +346,7 @@ public class PlayerController : MonoBehaviourPun
                 {
                     if (Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.S) || Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
                     {
-                        _moveInput = new Vector3(0, 0, 0);
+                        MoveInput = new Vector3(0, 0, 0);
                     }
                 }
                 break;
@@ -423,6 +425,31 @@ public class PlayerController : MonoBehaviourPun
     }
 
     #endregion
+
+    public void OnKeyboardEvent_BalloonSkill(Define.KeyboardEvent evt)
+    {
+        if (!photonView.IsMine)
+        {
+            return;
+        }
+
+        switch(evt)
+        {
+            case Define.KeyboardEvent.PointerUp:
+                {
+                    if (Input.GetKeyUp(KeyCode.Space))
+                        _actor.actorState = Actor.ActorState.Jump;
+                }
+                break;
+            case Define.KeyboardEvent.Click:
+                {
+                    if (Input.GetKeyUp(KeyCode.Space))
+                        _actor.actorState = Actor.ActorState.Jump;
+                }
+                break;
+        }
+    }
+
 
     #region ChargeSkill
     IEnumerator ChargeReady()
@@ -562,7 +589,9 @@ public class PlayerController : MonoBehaviourPun
 
     #endregion
 
-    #region FixedUpdate and Update
+    private BalloonState _balloonState;
+
+    #region FixedUpdate
     private void FixedUpdate()
     {
         if (!photonView.IsMine || _actor.actorState == ActorState.Dead) return;
@@ -573,88 +602,24 @@ public class PlayerController : MonoBehaviourPun
         if (_actor.debuffState == Actor.DebuffState.Balloon && isBalloon == false)
         {
             isBalloon = true;
-            _actor.actorState = Actor.ActorState.Balloon;
-            StartCoroutine(BalloonShapeOn());
+            StartCoroutine(_balloonState.BalloonShapeOn());
         }
 
-        if (_actor.actorState == Actor.ActorState.Balloon)
+        if (_actor.actorState != Actor.ActorState.Jump && _actor.actorState != Actor.ActorState.Roll && _actor.actorState != Actor.ActorState.Run)
         {
-            if (_moveInput.magnitude == 0f)
-            {
-                for (int i = 0; i < _bodyHandler.BodyParts.Count; i++)
-                {
-                    _bodyHandler.BodyParts[i].PartRigidbody.angularVelocity = Vector3.zero;
-                }
-                _actor.actorState = Actor.ActorState.Stand;
-            }
-            else
-            {
-                _actor.actorState = Actor.ActorState.Walk;
-                BalloonMove();
-            }
-        }
-        else if (_actor.actorState != Actor.ActorState.Jump && _actor.actorState != Actor.ActorState.Roll && _actor.actorState != Actor.ActorState.Run)
-        {
-            if (_moveInput.magnitude == 0f)
+            if (MoveInput.magnitude == 0f)
             {
                 _actor.actorState = Actor.ActorState.Stand;
             }
             else
             {
-                _actor.actorState = Actor.ActorState.Walk;
+                if (_actor.debuffState == Actor.DebuffState.Balloon)
+                    _actor.actorState = Actor.ActorState.BalloonWalk;
+                else
+                    _actor.actorState = Actor.ActorState.Walk;
+
                 Stand();
             }
-        }
-    }
-
-    #endregion
-
-    #region Balloon
-    IEnumerator BalloonShapeOn()
-    {
-        _bodyHandler.BodyParts[0].transform.localScale = new Vector3(1.5f, 1.5f, 0.6f); // head
-        _bodyHandler.BodyParts[1].transform.localScale = new Vector3(2f, 2.3f, 2.3f); // chest
-        _bodyHandler.BodyParts[2].transform.localScale = new Vector3(2f, 2f, 2.5f); // waist
-
-        for (int i = 4; i < 13; i++)
-        {
-            if (i >= 7 && i <= 9) continue;
-            _bodyHandler.BodyParts[i].PartRigidbody.freezeRotation = true;
-        }
-
-        for (int i = 0; i < _bodyHandler.BodyParts.Count; i++)
-        {
-            _bodyHandler.BodyParts[i].PartRigidbody.angularVelocity = Vector3.zero;
-        }
-
-        yield return new WaitForSeconds(5.0f);
-
-        BalloonShapeOff();
-    }
-    private void BalloonShapeOff()
-    {
-        _bodyHandler.BodyParts[0].transform.localScale = new Vector3(1, 1, 1);
-        _bodyHandler.BodyParts[1].transform.localScale = new Vector3(1, 1, 1);
-        _bodyHandler.BodyParts[2].transform.localScale = new Vector3(1, 1, 1);
-
-        for (int i = 4; i < 13; i++)
-        {
-            if (i >= 7 && i <= 9) continue;
-            _bodyHandler.BodyParts[i].PartRigidbody.freezeRotation = false;
-        }
-
-        _actor.actorState = Actor.ActorState.Stand;
-        _actor.debuffState = Actor.DebuffState.Default;
-        isBalloon = false;
-    }
-
-    public void BalloonMove()
-    {
-        transform.position += _moveInput;
-
-        for (int i = 0; i < _bodyHandler.BodyParts.Count; i++)
-        {
-            _bodyHandler.BodyParts[i].PartRigidbody.angularVelocity = Vector3.zero;
         }
     }
 
@@ -1223,6 +1188,22 @@ public class PlayerController : MonoBehaviourPun
                 AniAngleForce(MoveAngleJumpAniData, i, _moveDir + new Vector3(0, 0.2f, 0f));
             }
         }
+       
+        if(_actor.debuffState == DebuffState.Balloon)
+        {
+            isGrounded = false;
+            for (int i = 0; i < MoveForceJumpAniData.Length; i++)
+            {
+                AniForce(MoveForceJumpAniData, i, Vector3.up);
+                if (i == 2)
+                    AniForce(MoveForceJumpAniData, i, Vector3.down);
+            }
+            for (int i = 0; i < MoveAngleJumpAniData.Length; i++)
+            {
+                AniAngleForce(MoveAngleJumpAniData, i, _moveDir + new Vector3(0, 0.2f, 0f));
+            }
+        }
+
         if (isGrounded)
         {
             _actor.actorState = Actor.ActorState.Stand;
@@ -1461,7 +1442,7 @@ public class PlayerController : MonoBehaviourPun
     {
         Vector3 lookForward = new Vector3(_cameraArm.forward.x, 0f, _cameraArm.forward.z).normalized;
         Vector3 lookRight = new Vector3(_cameraArm.right.x, 0f, _cameraArm.right.z).normalized;
-        _moveDir = lookForward * _moveInput.z + lookRight * _moveInput.x;
+        _moveDir = lookForward * MoveInput.z + lookRight * MoveInput.x;
 
         _bodyHandler.Chest.PartRigidbody.AddForce((_runVectorForce10 + _moveDir), ForceMode.VelocityChange);
         _bodyHandler.Hip.PartRigidbody.AddForce((-_runVectorForce5 + -_moveDir), ForceMode.VelocityChange);
