@@ -525,7 +525,7 @@ public class StatusHandler : MonoBehaviourPun
         actor.BodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
     }
 
-    IEnumerator ResetBodySpring()
+    public IEnumerator ResetBodySpring()
     {
         JointDrive angularXDrive;
         JointDrive angularYZDrive;
@@ -547,7 +547,7 @@ public class StatusHandler : MonoBehaviourPun
         yield return null;
     }
 
-    IEnumerator RestoreBodySpring()
+    public IEnumerator RestoreBodySpring()
     {
         JointDrive angularXDrive;
         JointDrive angularYZDrive;
