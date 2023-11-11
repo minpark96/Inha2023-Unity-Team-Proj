@@ -11388,7 +11388,7 @@ GameObject:
   - component: {fileID: 1602883286494261838}
   - component: {fileID: 4655386519301525991}
   m_Layer: 7
-  m_Name: Ragdoll2
+  m_Name: Ragdoll2SDJ
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

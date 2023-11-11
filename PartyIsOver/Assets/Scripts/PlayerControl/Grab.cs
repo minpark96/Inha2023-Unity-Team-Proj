@@ -395,6 +395,9 @@ public class Grab : MonoBehaviourPun
             _grabJointRight.connectedBody = _rightHandRigid;
             _grabJointRight.breakForce = 9001;
 
+            if (GrabItem.GetComponent<Item>().ItemData.ItemType == ItemType.OneHanded)
+                return;
+            
             _jointRight.angularYMotion = ConfigurableJointMotion.Locked;
             _jointRightForeArm.angularYMotion = ConfigurableJointMotion.Locked;
             _jointRightUpperArm.angularYMotion = ConfigurableJointMotion.Locked;

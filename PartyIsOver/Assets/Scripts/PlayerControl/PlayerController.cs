@@ -1743,25 +1743,12 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
     public void ItemOneHandReSet(Side side)
     {
-        Transform partTransform = _bodyHandler.Chest.transform;
-
         AniAngleData[] itemOneHands = TestRready2;
-        _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
-        _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
-        _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
-
-        if (side == Side.Right)
-        {
-            itemOneHands = TestRready2;
-            _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
-            _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
-            _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
-        }
 
         for (int i = 0; i < itemOneHands.Length; i++)
         {
-            Vector3 dir = partTransform.transform.right / 2f;
-            AniAngleForce(itemOneHands, i, dir);
+            
+            AniAngleForce(itemOneHands, i);
         }
     }
 
