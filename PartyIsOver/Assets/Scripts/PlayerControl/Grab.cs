@@ -50,8 +50,6 @@ public class Grab : MonoBehaviourPun
 
     Vector3 targetPosition;
 
-    
-
     public GameObject CollisionObject;
 
     // 아이템 종류

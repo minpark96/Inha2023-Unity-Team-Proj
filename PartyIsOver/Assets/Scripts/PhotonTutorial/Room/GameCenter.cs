@@ -19,7 +19,7 @@ public class GameCenter : MonoBehaviourPunCallbacks
 
     #region Private Fields
 
-    string _arenaName = "SDJTest";
+    string _arenaName = "PO_Map_SDJ";
     // ÇÁ¸®ÆÕ °æ·Î
     string _playerPath = "Ragdoll2";
 
