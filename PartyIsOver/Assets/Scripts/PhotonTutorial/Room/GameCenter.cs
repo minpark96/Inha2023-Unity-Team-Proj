@@ -19,7 +19,7 @@ public class GameCenter : MonoBehaviourPunCallbacks
 
     #region Private Fields
 
-    string _arenaName = "PO_Map_SDJ";
+    string _arenaName = "HMTest";
     // 프리팹 경로
     string _playerPath = "Ragdoll2";
 
@@ -29,16 +29,12 @@ public class GameCenter : MonoBehaviourPunCallbacks
 
     public static GameObject LocalGameCenterInstance = null;
 
+    public float SpawnPointX = 517.5f;
+    public float SpawnPointY = 17f;
+    public float SpawnPointZ = 420f;
+
     // 스폰 포인트 6인 기준
-    public List<Vector3> SpawnPoints = new List<Vector3>
-    {
-        new Vector3(5f, 5f, 0f),
-        new Vector3(2.5f, 5f, 4.33f),
-        new Vector3(-2.5f, 5f, 4.33f),
-        new Vector3(-5f, 5f, 0f),
-        new Vector3(-2.5f, 5f, -4.33f),
-        new Vector3(2.5f, 5f, -4.33f)
-    };
+    public List<Vector3> SpawnPoints = new List<Vector3>();
 
     public List<int> ActorViewIDs = new List<int>();
     public List<Actor> Actors = new List<Actor>();
@@ -49,6 +45,13 @@ public class GameCenter : MonoBehaviourPunCallbacks
 
     void Awake()
     {
+        SpawnPoints.Add(new Vector3(SpawnPointX + 5f, SpawnPointY, SpawnPointZ + 0f));
+        SpawnPoints.Add(new Vector3(SpawnPointX + 2.5f, SpawnPointY, SpawnPointZ + 4.33f));
+        SpawnPoints.Add(new Vector3(SpawnPointX + -2.5f, SpawnPointY, SpawnPointZ + 4.33f));
+        SpawnPoints.Add(new Vector3(SpawnPointX + -5f, SpawnPointY, SpawnPointZ + 0f));
+        SpawnPoints.Add(new Vector3(SpawnPointX + -2.5f, SpawnPointY, SpawnPointZ + -4.33f));
+        SpawnPoints.Add(new Vector3(SpawnPointX + 2.5f, SpawnPointY, SpawnPointZ + -4.33f));
+
         if (photonView.IsMine)
         {
             LocalGameCenterInstance = this.gameObject;
