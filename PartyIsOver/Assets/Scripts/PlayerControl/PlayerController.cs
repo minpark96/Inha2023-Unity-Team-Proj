@@ -168,7 +168,7 @@ public class PlayerController : MonoBehaviourPun
     public bool isStateChange;
     public bool isMeowNyangPunch = false;
     private bool _isRSkillCheck;
-    public bool isBalloon = false;
+    public bool isBalloon;
 
     [Header("SkillControll")]
     public float RSkillCoolTime = 10;
@@ -182,6 +182,10 @@ public class PlayerController : MonoBehaviourPun
     public float NuclearPunchReadyPunch = 0.1f;
     public float NuclearPunching = 0.1f;
     public float NuclearPunchResetPunch = 0.3f;
+
+    public int BalloonJump;
+    public bool BalloonDrop;
+
 
     [Header("ItemControll")]
     public float ItempSwingPower;
@@ -340,7 +344,18 @@ public class PlayerController : MonoBehaviourPun
             case Define.MouseEvent.Click:
                 {
                     if (Input.GetMouseButtonUp(0))
-                        PunchAndGrab();
+                    {
+                        if(_actor.debuffState == DebuffState.Balloon)
+                        {
+                            if(BalloonJump > 5 && !BalloonDrop)
+                            {
+                                BalloonDrop = true;
+                                _bodyHandler.Hip.PartRigidbody.AddForce(Vector3.down * 200000f);
+                            }
+                        }
+                        else
+                            PunchAndGrab();
+                    }
                     if (!isGrounded && Input.GetMouseButtonUp(1))
                         DropKickTrigger();
                     if (!_isCoroutineRoll && Input.GetMouseButtonUp(2))
@@ -365,7 +380,9 @@ public class PlayerController : MonoBehaviourPun
             case Define.KeyboardEvent.PointerDown:
                 {
                     if (Input.GetKeyDown(KeyCode.Space))
+                    {
                         _actor.actorState = Actor.ActorState.Jump;
+                    }
                 }
                 break;
             case Define.KeyboardEvent.Press:
@@ -375,13 +392,31 @@ public class PlayerController : MonoBehaviourPun
                         MoveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
                     }
 
-                    if (_actor.debuffState == Actor.DebuffState.Balloon)
-                        return;
-
-                    if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
+                    if (Input.GetKeyDown(KeyCode.Space))
                     {
-                        MoveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+                        _actor.actorState = Actor.ActorState.Jump;
                     }
+
+                    if (_actor.debuffState == Actor.DebuffState.Balloon)
+                    {
+                        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S))
+                        {
+                            MoveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+                        }
+                        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
+                        {
+                            MoveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+                        }
+                    }
+                    else
+                    {
+                        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
+                        {
+                            MoveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+                        }
+                    }
+
+                    
                 }
                 break;
             case Define.KeyboardEvent.Click:
@@ -392,6 +427,7 @@ public class PlayerController : MonoBehaviourPun
                     }
                 }
                 break;
+            
         }
     }
     #endregion
@@ -468,31 +504,6 @@ public class PlayerController : MonoBehaviourPun
     }
 
     #endregion
-
-    public void OnKeyboardEvent_BalloonSkill(Define.KeyboardEvent evt)
-    {
-        if (!photonView.IsMine)
-        {
-            return;
-        }
-
-        switch(evt)
-        {
-            case Define.KeyboardEvent.PointerUp:
-                {
-                    if (Input.GetKeyUp(KeyCode.Space))
-                        _actor.actorState = Actor.ActorState.Jump;
-                }
-                break;
-            case Define.KeyboardEvent.Click:
-                {
-                    if (Input.GetKeyUp(KeyCode.Space))
-                        _actor.actorState = Actor.ActorState.Jump;
-                }
-                break;
-        }
-    }
-
 
     #region ChargeSkill
     IEnumerator ChargeReady()
@@ -1261,21 +1272,41 @@ public class PlayerController : MonoBehaviourPun
     #region Jump
     public void Jump()
     {
-        if (isStateChange)
+        if(_actor.debuffState == Actor.DebuffState.Balloon)
         {
-            isGrounded = false;
-            for (int i = 0; i < MoveForceJumpAniData.Length; i++)
+            if(_actor.actorState == Actor.ActorState.Jump)
             {
-                AniForce(MoveForceJumpAniData, i, Vector3.up);
-                if (i == 2)
-                    AniForce(MoveForceJumpAniData, i, Vector3.down);
-            }
-            for (int i = 0; i < MoveAngleJumpAniData.Length; i++)
-            {
-                AniAngleForce(MoveAngleJumpAniData, i, _moveDir + new Vector3(0, 0.2f, 0f));
+                BalloonJump++;
+                for (int i = 0; i < MoveForceJumpAniData.Length; i++)
+                {
+                    AniForce(MoveForceJumpAniData, i, Vector3.up);
+                    if (i == 2)
+                        AniForce(MoveForceJumpAniData, i, Vector3.down);
+                }
+                for (int i = 0; i < MoveAngleJumpAniData.Length; i++)
+                {
+                    AniAngleForce(MoveAngleJumpAniData, i, _moveDir + new Vector3(0, 0.2f, 0f));
+                }
             }
         }
-
+        else
+        {
+            if (isStateChange)
+            {
+                isGrounded = false;
+                for (int i = 0; i < MoveForceJumpAniData.Length; i++)
+                {
+                    AniForce(MoveForceJumpAniData, i, Vector3.up);
+                    if (i == 2)
+                        AniForce(MoveForceJumpAniData, i, Vector3.down);
+                }
+                for (int i = 0; i < MoveAngleJumpAniData.Length; i++)
+                {
+                    AniAngleForce(MoveAngleJumpAniData, i, _moveDir + new Vector3(0, 0.2f, 0f));
+                }
+            }
+        }
+      
         if (isGrounded)
         {
             _actor.actorState = Actor.ActorState.Stand;
