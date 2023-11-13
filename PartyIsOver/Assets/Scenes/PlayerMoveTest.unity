@@ -1319,9 +1319,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8d2732e4766ccf4fba1c58f524e0dae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GrabItem: {fileID: 0}
+  _isRightGrab: 0
+  _isLeftGrab: 0
+  EquipItem: {fileID: 0}
+  LeftGrabObject: {fileID: 0}
+  RightGrabObject: {fileID: 0}
   RangeWeaponSkin: {fileID: 0}
-  GrabObjectType: 0
+  CollisionObject: {fileID: 0}
   _turnForce: 0
 --- !u!114 &120528309
 MonoBehaviour:
@@ -1363,6 +1367,7 @@ MonoBehaviour:
   BodyHandler: {fileID: 0}
   PlayerController: {fileID: 0}
   Grab: {fileID: 0}
+  BalloonState: {fileID: 0}
   HeadMultiple: 1.5
   ArmMultiple: 0.8
   HandMultiple: 0.8
@@ -1388,7 +1393,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50d5428a52f424042a9db0e6cb88f27b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  detectionRadius: 3
   layerMask:
     serializedVersion: 2
     m_Bits: 1280
@@ -1699,7 +1703,16 @@ MonoBehaviour:
     - 0.1
   RSkillAniData: []
   RSkillAngleAniData: []
+  ItemTwoHandAniData: []
+  ItemTwoHandAngleData: []
+  ItemOneHandAngleAniData: []
+  ItemOneHandReadyAniData: []
+  ItemOneHandSwingAniData: []
+  PotionReadyAniData: []
+  PotionDrinkingAniData: []
+  PotionAngleAniData: []
   TestRready1: []
+  TestDrinking: []
   TestRready2: []
   RunSpeed: 100
   MaxSpeed: 10
@@ -1732,6 +1745,8 @@ MonoBehaviour:
   NuclearPunchReadyPunch: 0.1
   NuclearPunching: 0.1
   NuclearPunchResetPunch: 0.3
+  ItempSwingPower: 0
+  MoveInput: {x: 0, y: 0, z: 0}
   isAI: 1
 --- !u!114 &120528313
 MonoBehaviour:
@@ -1764,6 +1779,7 @@ MonoBehaviour:
   LeftHand: {fileID: 1024141798}
   RightHand: {fileID: 1732790221}
   Ball: {fileID: 173018500}
+  CurrentBodyPart: {fileID: 0}
 --- !u!95 &120528314
 Animator:
   serializedVersion: 5
@@ -8498,7 +8514,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -9839,7 +9855,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 219c787728d3c4a48bbd6535e6eceb5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isCheck: 0
+  CollisionObjectType: 0
+  CollisionObject: {fileID: 0}
 --- !u!114 &1024141798
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11078,7 +11095,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -12787,7 +12804,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -13379,7 +13396,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -14695,7 +14712,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -14789,7 +14806,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 219c787728d3c4a48bbd6535e6eceb5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isCheck: 0
+  CollisionObjectType: 0
+  CollisionObject: {fileID: 0}
 --- !u!153 &1732790220
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -19990,6 +20008,7 @@ MonoBehaviour:
   BodyHandler: {fileID: 0}
   PlayerController: {fileID: 0}
   Grab: {fileID: 0}
+  BalloonState: {fileID: 0}
   HeadMultiple: 1.5
   ArmMultiple: 0.8
   HandMultiple: 0.8
@@ -20330,11 +20349,20 @@ MonoBehaviour:
     - 0.1
   RSkillAniData: []
   RSkillAngleAniData: []
+  ItemTwoHandAniData: []
+  ItemTwoHandAngleData: []
+  ItemOneHandAngleAniData: []
+  ItemOneHandReadyAniData: []
+  ItemOneHandSwingAniData: []
+  PotionReadyAniData: []
+  PotionDrinkingAniData: []
+  PotionAngleAniData: []
   TestRready1:
   - StandardRigidbodies: []
     ActionRigidbodies: []
     ForceDirections: 
     ForcePowerValues: []
+  TestDrinking: []
   TestRready2:
   - StandardRigidbodies:
     - {fileID: 0}
@@ -20379,6 +20407,8 @@ MonoBehaviour:
   NuclearPunchReadyPunch: 0.1
   NuclearPunching: 0.1
   NuclearPunchResetPunch: 0.3
+  ItempSwingPower: 0
+  MoveInput: {x: 0, y: 0, z: 0}
   isAI: 0
 --- !u!114 &206444035059181519
 MonoBehaviour:
@@ -20392,7 +20422,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50d5428a52f424042a9db0e6cb88f27b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  detectionRadius: 3
   layerMask:
     serializedVersion: 2
     m_Bits: 1280
@@ -20428,6 +20457,7 @@ MonoBehaviour:
   LeftHand: {fileID: 229411327047330463}
   RightHand: {fileID: 229589188175506972}
   Ball: {fileID: 67360996974228780}
+  CurrentBodyPart: {fileID: 0}
 --- !u!4 &206444035059181554
 Transform:
   m_ObjectHideFlags: 0
@@ -20493,9 +20523,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8d2732e4766ccf4fba1c58f524e0dae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GrabItem: {fileID: 0}
+  _isRightGrab: 0
+  _isLeftGrab: 0
+  EquipItem: {fileID: 0}
+  LeftGrabObject: {fileID: 0}
+  RightGrabObject: {fileID: 0}
   RangeWeaponSkin: {fileID: 0}
-  GrabObjectType: 0
+  CollisionObject: {fileID: 0}
   _turnForce: 0
 --- !u!114 &206444035059181557
 MonoBehaviour:
@@ -20941,7 +20975,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 219c787728d3c4a48bbd6535e6eceb5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isCheck: 0
+  CollisionObjectType: 0
+  CollisionObject: {fileID: 0}
 --- !u!54 &229589188175506970
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -21095,7 +21130,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 219c787728d3c4a48bbd6535e6eceb5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isCheck: 0
+  CollisionObjectType: 0
+  CollisionObject: {fileID: 0}
 --- !u!4 &232254117805089762
 Transform:
   m_ObjectHideFlags: 0

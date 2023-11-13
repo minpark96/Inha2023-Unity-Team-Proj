@@ -734,6 +734,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5069286716462779985, guid: f050928a905712b48b9e21994e696b8b, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
     - target: {fileID: 5069286716462779987, guid: f050928a905712b48b9e21994e696b8b, type: 3}
       propertyPath: m_Name
       value: Wall
@@ -892,6 +896,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9077571435316281000, guid: 8d45189db53382f46b803101110ebf30, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
     - target: {fileID: 9077571435316281002, guid: 8d45189db53382f46b803101110ebf30, type: 3}
       propertyPath: m_Name
       value: Wall
