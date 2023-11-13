@@ -79,3 +79,4 @@ crashlytics-build.properties
 # Settings-minpark96
 PartyIsOver/Assets/Photon/PhotonUnityNetworking/Resources/PhotonServerSettings.asset
 PartyIsOver/ProjectSettings/EditorBuildSettings.asset
+PartyIsOver/Assets/ExternAssets/
