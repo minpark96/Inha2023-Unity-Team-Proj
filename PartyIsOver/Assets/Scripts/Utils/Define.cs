@@ -88,6 +88,14 @@ public class Define
     {
 
     }
+
+    public enum AIState
+    {
+        Idle,
+        Move,
+        Find,
+        Attack,
+    }
 }
 
 
