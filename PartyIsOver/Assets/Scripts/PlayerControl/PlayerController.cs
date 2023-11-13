@@ -1842,7 +1842,6 @@ public class PlayerController : MonoBehaviourPun
 
     public IEnumerator DropRip(Side side, float duration, float readyTime, float punchTime, float retime, float resetTime)
     {
-        Debug.Log("start DropRip");
         float checkTime = Time.time;
 
         while (Time.time - checkTime < readyTime)
@@ -1871,11 +1870,12 @@ public class PlayerController : MonoBehaviourPun
             DropRipReSet(side);
             yield return new WaitForSeconds(duration);
         }
-        Debug.Log("end DropRip");
 
     }
 
     #endregion
+
+    #region RipAni
 
     void DropRipReady(Side side)
     {
@@ -1913,5 +1913,7 @@ public class PlayerController : MonoBehaviourPun
             AniAngleForce(itemOneHands, i);
         }
     }
+    #endregion
+
 
 }
