@@ -51,14 +51,23 @@ public class PlayerInputHandler : MonoBehaviour
 
         if (_actor.Grab.EquipItem == null)
         {
+            if (_actor.debuffState != DebuffState.Burn)
+            {
+                if (_actor.Grab.isLiftPlayer)
+                {
+                    _actor.Grab.OnMouseEvent_LiftPlayer(evt);
+                    return;
+                }
+                else
+                    _actor.PlayerController.OnMouseEvent_Grab(evt);
+            }
+
             _actor.PlayerController.OnMouseEvent_Skill(evt);
 
-            if (_actor.debuffState != DebuffState.Burn)
-                _actor.PlayerController.OnMouseEvent_Grab(evt);
         }
         else
         {
-            _actor.Grab.OnMouseEvent_EquipItem(evt);
+                _actor.Grab.OnMouseEvent_EquipItem(evt);
         }
     }
 }

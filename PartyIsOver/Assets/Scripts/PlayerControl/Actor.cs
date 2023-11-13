@@ -80,7 +80,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
     public void StatusChangeEventInvoke()
     {
-        Debug.Log("StatusChangeEventInvoke()");
+        //Debug.Log("StatusChangeEventInvoke()");
 
         if (OnPlayerStatusChanges == null)
             Debug.Log(photonView.ViewID + " ¿Ã∫•∆Æ null");

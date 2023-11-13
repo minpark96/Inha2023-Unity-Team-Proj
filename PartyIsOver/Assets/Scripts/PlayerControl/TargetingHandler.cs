@@ -1,8 +1,9 @@
+using UnityEditor;
 using UnityEngine;
 
 public class TargetingHandler : MonoBehaviour
 {
-    private float detectionRadius = 1.2f;
+    private float detectionRadius = 1.5f;
     public LayerMask layerMask;
     public float maxAngle = 90f; // 180도의 절반 (90도)으로 설정
 
@@ -68,7 +69,30 @@ public class TargetingHandler : MonoBehaviour
 
             if (angle <= maxAngle && angle2 <= 110f && colliders[i].GetComponent<InteractableObject>())
             {
-                if (_nearestObject == null || toCollider.magnitude < (_nearestObject.transform.position - chestTransform.position).magnitude)
+                float distanceWithPriority = toCollider.magnitude;
+                bool lowPriorityPart = true;
+
+                //서치타겟이 래그돌일경우 중요도가 낮은 몸 부위에 값을 곱해서 최종타겟이 될 가능성을 낮춤
+                if (colliders[i].GetComponent<BodyPart>() !=null)
+                {
+                    for (int j = 0; j < 4; j++)
+                    {
+                        if (colliders[i].gameObject == colliders[i].transform.root.GetComponent<BodyHandler>().BodyParts[j].gameObject)
+                        {
+                            lowPriorityPart = false;
+                        }
+                    }
+
+                    if (lowPriorityPart)
+                    {
+                        distanceWithPriority *= 20f;
+                    }
+                }
+
+              
+
+                //가장가까운 타겟 갱신
+                if (_nearestObject == null || distanceWithPriority < (_nearestObject.transform.position - chestTransform.position).magnitude)
                 {
                     _nearestCollider = colliders[i];
                     _nearestObject = colliders[i].GetComponent<InteractableObject>();
@@ -83,7 +107,7 @@ public class TargetingHandler : MonoBehaviour
             return null;
         }
 
-
+       // Debug.Log(_nearestObject.gameObject + "최우선순위");
         return _nearestObject;
     }
 

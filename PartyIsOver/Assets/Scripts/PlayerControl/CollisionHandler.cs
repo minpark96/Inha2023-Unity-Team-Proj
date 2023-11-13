@@ -28,6 +28,8 @@ public class CollisionHandler : MonoBehaviourPun
     private void DamageCheck(Collision collision)
     {
         InteractableObject collisionInteractable = collision.transform.GetComponent<InteractableObject>();
+        if (collisionInteractable == null)
+            return;
         Transform collisionTransform = collision.transform;
         Rigidbody collisionRigidbody = collision.rigidbody;
         Collider collisionCollider = collision.collider;
@@ -159,7 +161,7 @@ public class CollisionHandler : MonoBehaviourPun
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (!PhotonNetwork.IsMasterClient) return;
+       // if (!PhotonNetwork.IsMasterClient) return;
        
         if (collision.collider.gameObject.layer != LayerMask.NameToLayer("Ground"))
             DamageCheck(collision);

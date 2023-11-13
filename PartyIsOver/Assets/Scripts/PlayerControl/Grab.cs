@@ -21,6 +21,11 @@ public class Grab : MonoBehaviourPun
     bool _isRightGrab = false;
     [SerializeField]
     bool _isLeftGrab = false;
+    [SerializeField]
+    public bool isLiftPlayer = false;
+
+    [SerializeField]
+    private float _throwingForce = 40f;
 
     float _grabDelayTimer = 0.5f;
 
@@ -94,17 +99,24 @@ public class Grab : MonoBehaviourPun
 
         if(_isRightGrab && _isLeftGrab && LeftGrabObject!=null && RightGrabObject!=null)
         {
-            if(LeftGrabObject.GetComponent<CollisionHandler>() != null &&
+            if (LeftGrabObject.GetComponent<CollisionHandler>() != null &&
                 RightGrabObject.GetComponent<CollisionHandler>() != null)
             {
-                Debug.Log("Player Lift");
+                isLiftPlayer = true;
 
-                AlignToVector(_actor.BodyHandler.LeftArm.PartRigidbody, _actor.BodyHandler.LeftArm.PartTransform.up, -_actor.BodyHandler.Waist.PartTransform.up + _actor.BodyHandler.Chest.PartTransform.right / 2f + -_actor.PlayerController.MoveInput / 8f, 0.01f, 8f);
-                AlignToVector(_actor.BodyHandler.LeftForearm.PartRigidbody, _actor.BodyHandler.LeftForearm.PartTransform.up, -_actor.BodyHandler.Waist.PartTransform.up, 0.01f, 8f);
+                AlignToVector(_actor.BodyHandler.LeftArm.PartRigidbody, _actor.BodyHandler.LeftArm.PartTransform.forward, -_actor.BodyHandler.Waist.PartTransform.forward + _actor.BodyHandler.Chest.PartTransform.right / 2f + -_actor.PlayerController.MoveInput / 8f, 0.01f, 8f);
+                AlignToVector(_actor.BodyHandler.LeftForearm.PartRigidbody, _actor.BodyHandler.LeftForearm.PartTransform.forward, -_actor.BodyHandler.Waist.PartTransform.forward, 0.01f, 8f);
+                //_leftHandRigid.AddForce(Vector3.up*500);
+                _leftHandRigid.AddForce(Vector3.up * 4,ForceMode.VelocityChange);
 
-                AlignToVector(_actor.BodyHandler.RightArm.PartRigidbody, _actor.BodyHandler.RightArm.PartTransform.up, -_actor.BodyHandler.Waist.PartTransform.up + -_actor.BodyHandler.Chest.PartTransform.right / 2f + -_actor.PlayerController.MoveInput / 8f, 0.01f, 8f);
-                AlignToVector(_actor.BodyHandler.RightForearm.PartRigidbody, _actor.BodyHandler.RightForearm.PartTransform.up, -_actor.BodyHandler.Waist.PartTransform.up, 0.01f, 8f);
+                //_actor.BodyHandler.Chest.PartRigidbody.AddForce(Vector3.down * 900);
+                _actor.BodyHandler.Chest.PartRigidbody.AddForce(Vector3.down * 3, ForceMode.VelocityChange);
 
+
+                AlignToVector(_actor.BodyHandler.RightArm.PartRigidbody, _actor.BodyHandler.RightArm.PartTransform.forward, -_actor.BodyHandler.Waist.PartTransform.forward + -_actor.BodyHandler.Chest.PartTransform.right / 2f + -_actor.PlayerController.MoveInput / 8f, 0.01f, 8f);
+                AlignToVector(_actor.BodyHandler.RightForearm.PartRigidbody, _actor.BodyHandler.RightForearm.PartTransform.forward, -_actor.BodyHandler.Waist.PartTransform.forward, 0.01f, 8f);
+                //_rightHandRigid.AddForce(Vector3.up*500);
+                _rightHandRigid.AddForce(Vector3.up * 4, ForceMode.VelocityChange);
 
             }
         }
@@ -151,6 +163,37 @@ public class Grab : MonoBehaviourPun
         }
     }
 
+    public void OnMouseEvent_LiftPlayer(Define.MouseEvent evt)
+    {
+        switch (evt)
+        {
+            case Define.MouseEvent.PointerUp:
+                {
+                    if (Input.GetMouseButtonUp(0))
+                    {
+                        GrabReset();
+                    }
+                }
+                break;
+            case Define.MouseEvent.PointerDown:
+                {
+                    if (Input.GetMouseButtonDown(1))
+                    {
+                        Rigidbody rb1 = RightGrabObject.GetComponent<Rigidbody>();
+                        Rigidbody rb2 = LeftGrabObject.GetComponent<Rigidbody>();
+                        GrabReset();
+
+                        rb1.AddForce(-_actor.BodyHandler.Chest.PartTransform.up * _throwingForce,ForceMode.VelocityChange);
+                        rb2.AddForce(-_actor.BodyHandler.Chest.PartTransform.up * _throwingForce,ForceMode.VelocityChange);
+
+                        rb1.AddForce(Vector3.up * _throwingForce * 1.5f, ForceMode.VelocityChange);
+                        rb2.AddForce(Vector3.up * _throwingForce * 1.5f, ForceMode.VelocityChange);
+                    }
+                }
+                break;
+        }
+    }
+
     public void GrabPose()
     {
         if(EquipItem.GetComponent<Item>().ItemData.ItemType == ItemType.Ranged)
@@ -184,10 +227,12 @@ public class Grab : MonoBehaviourPun
             EquipItem = null;
 
         }
+        _grabDelayTimer = 0.5f;
         _isRightGrab = false;
         _isLeftGrab = false;
         RightGrabObject = null;
         LeftGrabObject = null;
+        isLiftPlayer = false;
 
         DestroyJoint();
     }
@@ -453,6 +498,8 @@ public class Grab : MonoBehaviourPun
             _grabJointLeft.connectedBody = _leftHandRigid;
             _grabJointLeft.breakForce = 9001;
 
+            if(_rightSearchTarget != null)
+                RightGrabObject = _rightSearchTarget.gameObject;
             return;
 
             if (_leftSearchTarget.GetComponent<Item>() != null)
@@ -471,7 +518,8 @@ public class Grab : MonoBehaviourPun
             _grabJointRight = _rightSearchTarget.AddComponent<FixedJoint>();
             _grabJointRight.connectedBody = _rightHandRigid;
             _grabJointRight.breakForce = 9001;
-
+            if (_leftSearchTarget != null)
+                LeftGrabObject = _leftSearchTarget.gameObject;
             return;
 
 
@@ -519,8 +567,7 @@ public class Grab : MonoBehaviourPun
 
     IEnumerator VerticalAttack()
     {
-        //yield return _actor.PlayerController.DropRip(PlayerController.Side.Right, 0.07f, 0.1f, 0.5f, 0.5f, 0.1f);
-        yield return null;
+        yield return _actor.PlayerController.DropRip(PlayerController.Side.Right, 0.07f, 0.1f, 0.5f, 0.5f, 0.1f);
     }
 
     IEnumerator OwnHandAttack()
