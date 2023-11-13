@@ -124,6 +124,15 @@ public class PlayerController : MonoBehaviourPun
     public AniAngleData[] PotionAngleAniData;
 
     [SerializeField]
+    public AniFrameData[] PickUpRipAniData;
+
+    [SerializeField]
+    public AniFrameData[] ShootDownRipAniData;
+
+    [SerializeField]
+    public AniAngleData[] RipAngleAniData;
+
+    [SerializeField]
     public AniFrameData[] TestRready1;
 
     [SerializeField]
@@ -1833,6 +1842,7 @@ public class PlayerController : MonoBehaviourPun
 
     public IEnumerator DropRip(Side side, float duration, float readyTime, float punchTime, float retime, float resetTime)
     {
+        Debug.Log("start DropRip");
         float checkTime = Time.time;
 
         while (Time.time - checkTime < readyTime)
@@ -1861,29 +1871,47 @@ public class PlayerController : MonoBehaviourPun
             DropRipReSet(side);
             yield return new WaitForSeconds(duration);
         }
+        Debug.Log("end DropRip");
+
     }
 
     #endregion
 
     void DropRipReady(Side side)
     {
-
+        AniAngleData[] DropRips = (side == Side.Right) ? RipAngleAniData : RipAngleAniData;
+        for (int i = 0; i < DropRips.Length; i++)
+        {
+            AniAngleForce(DropRips, i);
+        }
     }
 
     void DropRipUp(Side side)
     {
-
+        AniFrameData[] DropRips = PickUpRipAniData;
+        for (int i = 0; i < DropRips.Length; i++)
+        {
+            AniForce(DropRips, i);
+        }
     }
 
     void DropRipDown(Side side)
     {
-
+        AniFrameData[] DropRips = ShootDownRipAniData;
+        for (int i = 0; i < DropRips.Length; i++)
+        {
+            AniForce(DropRips, i);
+        }
     }
 
     void DropRipReSet(Side side)
     {
+        AniAngleData[] itemOneHands = RipAngleAniData;
 
-
+        for (int i = 0; i < itemOneHands.Length; i++)
+        {
+            AniAngleForce(itemOneHands, i);
+        }
     }
 
 }

@@ -6049,9 +6049,8 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents:
-  - {fileID: 5451060134193603439}
+  observableSearch: 0
+  ObservedComponents: []
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -6068,8 +6067,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
-  m_SynchronizeAngularVelocity: 1
-  m_TeleportEnabled: 1
+  m_SynchronizeAngularVelocity: 0
+  m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &4079676963295954034
 GameObject:
@@ -9615,9 +9614,8 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents:
-  - {fileID: 6706346238743341448}
+  observableSearch: 0
+  ObservedComponents: []
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -9634,8 +9632,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
-  m_SynchronizeAngularVelocity: 1
-  m_TeleportEnabled: 1
+  m_SynchronizeAngularVelocity: 0
+  m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &5872744384527281748
 GameObject:
@@ -9835,9 +9833,8 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents:
-  - {fileID: 7672130860161884258}
+  observableSearch: 0
+  ObservedComponents: []
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -9854,8 +9851,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
-  m_SynchronizeAngularVelocity: 1
-  m_TeleportEnabled: 1
+  m_SynchronizeAngularVelocity: 0
+  m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &5872885639250099560
 GameObject:
@@ -10055,9 +10052,8 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents:
-  - {fileID: 5569654652666352210}
+  observableSearch: 0
+  ObservedComponents: []
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -10074,8 +10070,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
-  m_SynchronizeAngularVelocity: 1
-  m_TeleportEnabled: 1
+  m_SynchronizeAngularVelocity: 0
+  m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &5872887850269044028
 GameObject:
@@ -10278,9 +10274,8 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents:
-  - {fileID: 7867780434797775828}
+  observableSearch: 0
+  ObservedComponents: []
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -10297,8 +10292,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
-  m_SynchronizeAngularVelocity: 1
-  m_TeleportEnabled: 1
+  m_SynchronizeAngularVelocity: 0
+  m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &5872890308614417419
 GameObject:
@@ -10497,9 +10492,8 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents:
-  - {fileID: 7802933727859954386}
+  observableSearch: 0
+  ObservedComponents: []
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -10516,8 +10510,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
-  m_SynchronizeAngularVelocity: 1
-  m_TeleportEnabled: 1
+  m_SynchronizeAngularVelocity: 0
+  m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &5872902124750677369
 GameObject:
@@ -10717,9 +10711,8 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents:
-  - {fileID: 1226834160551697771}
+  observableSearch: 0
+  ObservedComponents: []
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -10736,8 +10729,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
-  m_SynchronizeAngularVelocity: 1
-  m_TeleportEnabled: 1
+  m_SynchronizeAngularVelocity: 0
+  m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &5873095133704470180
 GameObject:
@@ -10949,9 +10942,8 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents:
-  - {fileID: 6137194865686085762}
+  observableSearch: 0
+  ObservedComponents: []
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -10968,8 +10960,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
-  m_SynchronizeAngularVelocity: 1
-  m_TeleportEnabled: 1
+  m_SynchronizeAngularVelocity: 0
+  m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &5873141076263050922
 GameObject:
@@ -11348,9 +11340,8 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents:
-  - {fileID: 7959255869608218939}
+  observableSearch: 0
+  ObservedComponents: []
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -11367,8 +11358,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
-  m_SynchronizeAngularVelocity: 1
-  m_TeleportEnabled: 1
+  m_SynchronizeAngularVelocity: 0
+  m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &5873236424662451676
 GameObject:
@@ -11996,6 +11987,114 @@ MonoBehaviour:
     - 0.01
     AnglePowerValues:
     - 100
+  PickUpRipAniData:
+  - StandardRigidbodies:
+    - {fileID: 5856379624502544924}
+    - {fileID: 5856379624502544924}
+    - {fileID: 5856379624502544924}
+    - {fileID: 5856379624502544924}
+    - {fileID: 5856379624502544924}
+    - {fileID: 5856379624502544924}
+    ActionRigidbodies:
+    - {fileID: 5856729462922818502}
+    - {fileID: 5856003484643476932}
+    - {fileID: 5793437608505534348}
+    - {fileID: 5856411775826887216}
+    - {fileID: 5856572161679450355}
+    - {fileID: 5793545070783210251}
+    ForceDirections: 020000000200000002000000020000000200000002000000
+    ForcePowerValues:
+    - 2
+    - 2
+    - 2
+    - 2
+    - 2
+    - 2
+  - StandardRigidbodies:
+    - {fileID: 5856379624502544924}
+    - {fileID: 5856379624502544924}
+    - {fileID: 5856379624502544924}
+    - {fileID: 5856379624502544924}
+    - {fileID: 5856379624502544924}
+    - {fileID: 5856379624502544924}
+    ActionRigidbodies:
+    - {fileID: 5856729462922818502}
+    - {fileID: 5856003484643476932}
+    - {fileID: 5793437608505534348}
+    - {fileID: 5856411775826887216}
+    - {fileID: 5856572161679450355}
+    - {fileID: 5793545070783210251}
+    ForceDirections: 040000000400000004000000040000000400000004000000
+    ForcePowerValues:
+    - 10
+    - 10
+    - 10
+    - 10
+    - 10
+    - 10
+  ShootDownRipAniData:
+  - StandardRigidbodies:
+    - {fileID: 5856379624502544924}
+    - {fileID: 5856379624502544924}
+    - {fileID: 5856379624502544924}
+    - {fileID: 5856379624502544924}
+    - {fileID: 5856379624502544924}
+    - {fileID: 5856379624502544924}
+    ActionRigidbodies:
+    - {fileID: 5856729462922818502}
+    - {fileID: 5856003484643476932}
+    - {fileID: 5793437608505534348}
+    - {fileID: 5856411775826887216}
+    - {fileID: 5856572161679450355}
+    - {fileID: 5793545070783210251}
+    ForceDirections: 020000000200000002000000020000000200000002000000
+    ForcePowerValues:
+    - 4
+    - 4
+    - 4
+    - 4
+    - 4
+    - 4
+  - StandardRigidbodies:
+    - {fileID: 5856379624502544924}
+    - {fileID: 5856379624502544924}
+    - {fileID: 5856379624502544924}
+    - {fileID: 5856379624502544924}
+    - {fileID: 5856379624502544924}
+    - {fileID: 5856379624502544924}
+    ActionRigidbodies:
+    - {fileID: 5856729462922818502}
+    - {fileID: 5856003484643476932}
+    - {fileID: 5793437608505534348}
+    - {fileID: 5856411775826887216}
+    - {fileID: 5856572161679450355}
+    - {fileID: 5793545070783210251}
+    ForceDirections: 050000000500000005000000050000000500000005000000
+    ForcePowerValues:
+    - 10
+    - 10
+    - 10
+    - 10
+    - 10
+    - 10
+  RipAngleAniData:
+  - StandardRigidbodies:
+    - {fileID: 5856729462922818502}
+    - {fileID: 5856411775826887216}
+    ActionDirection:
+    - {fileID: 5875873347556913874}
+    - {fileID: 5875873347556913874}
+    TargetDirection:
+    - {fileID: 5875873347556913874}
+    - {fileID: 5875873347556913874}
+    ActionAngleDirections: 0300000003000000
+    TargetAngleDirections: 0300000003000000
+    AngleStability:
+    - 0.01
+    - 0.01
+    AnglePowerValues:
+    - 100
+    - 100
   TestRready1:
   - StandardRigidbodies:
     - {fileID: 5856379624502544924}
@@ -12013,12 +12112,12 @@ MonoBehaviour:
     - {fileID: 5793545070783210251}
     ForceDirections: 020000000200000002000000020000000200000002000000
     ForcePowerValues:
-    - 10
-    - 10
-    - 10
-    - 10
-    - 10
-    - 10
+    - 2
+    - 2
+    - 2
+    - 2
+    - 2
+    - 2
   - StandardRigidbodies:
     - {fileID: 5856379624502544924}
     - {fileID: 5856379624502544924}
@@ -12035,12 +12134,12 @@ MonoBehaviour:
     - {fileID: 5793545070783210251}
     ForceDirections: 040000000400000004000000040000000400000004000000
     ForcePowerValues:
-    - 20
-    - 20
-    - 20
-    - 20
-    - 20
-    - 20
+    - 10
+    - 10
+    - 10
+    - 10
+    - 10
+    - 10
   TestDrinking:
   - StandardRigidbodies:
     - {fileID: 5856379624502544924}
@@ -12235,9 +12334,9 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 2
+  observableSearch: 0
   ObservedComponents:
-  - {fileID: 5878509405600198235}
+  - {fileID: 0}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -12439,9 +12538,8 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents:
-  - {fileID: 6560688065065609915}
+  observableSearch: 0
+  ObservedComponents: []
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -12458,8 +12556,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
-  m_SynchronizeAngularVelocity: 1
-  m_TeleportEnabled: 1
+  m_SynchronizeAngularVelocity: 0
+  m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &5873444913946251791
 GameObject:
@@ -12659,9 +12757,8 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents:
-  - {fileID: 7171560928597104090}
+  observableSearch: 0
+  ObservedComponents: []
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -12678,8 +12775,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
-  m_SynchronizeAngularVelocity: 1
-  m_TeleportEnabled: 1
+  m_SynchronizeAngularVelocity: 0
+  m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &5873470747961206354
 GameObject:
@@ -12922,9 +13019,8 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents:
-  - {fileID: 4021812878608315955}
+  observableSearch: 0
+  ObservedComponents: []
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -12941,8 +13037,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
-  m_SynchronizeAngularVelocity: 1
-  m_TeleportEnabled: 1
+  m_SynchronizeAngularVelocity: 0
+  m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &5874826447258498099
 GameObject:
@@ -13142,9 +13238,8 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents:
-  - {fileID: 4873579785586039899}
+  observableSearch: 0
+  ObservedComponents: []
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -13161,8 +13256,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
-  m_SynchronizeAngularVelocity: 1
-  m_TeleportEnabled: 1
+  m_SynchronizeAngularVelocity: 0
+  m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &5874850600557812348
 GameObject:
@@ -13361,9 +13456,8 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents:
-  - {fileID: 5135886312606451583}
+  observableSearch: 0
+  ObservedComponents: []
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -13380,8 +13474,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
-  m_SynchronizeAngularVelocity: 1
-  m_TeleportEnabled: 1
+  m_SynchronizeAngularVelocity: 0
+  m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &5874908293440662316
 GameObject:
@@ -13486,9 +13580,8 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents:
-  - {fileID: 6171916692297960098}
+  observableSearch: 0
+  ObservedComponents: []
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -13505,8 +13598,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
-  m_SynchronizeAngularVelocity: 1
-  m_TeleportEnabled: 1
+  m_SynchronizeAngularVelocity: 0
+  m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &6025580318637575997
 GameObject:
@@ -17704,9 +17797,8 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents:
-  - {fileID: 852741585128017009}
+  observableSearch: 0
+  ObservedComponents: []
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -17723,8 +17815,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
-  m_SynchronizeAngularVelocity: 1
-  m_TeleportEnabled: 1
+  m_SynchronizeAngularVelocity: 0
+  m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
 --- !u!1 &9076212734007854866
 GameObject:

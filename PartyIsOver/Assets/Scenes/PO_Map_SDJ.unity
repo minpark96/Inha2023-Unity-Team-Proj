@@ -3666,7 +3666,7 @@ GameObject:
   - component: {fileID: 247626507}
   - component: {fileID: 247626506}
   - component: {fileID: 247626505}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: icyRoad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4774,7 +4774,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!81 &330585544
 AudioListener:
   m_ObjectHideFlags: 0
@@ -8636,6 +8636,63 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4837908191393752140, guid: 3ccf3f7e3a998f44a8e3fbddfaf2c4f3, type: 3}
   m_PrefabInstance: {fileID: 546357584}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &558360532
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 7066956456343087048, guid: da320d57a6643e3479003d4664c324b0, type: 3}
+      propertyPath: m_RootOrder
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 7066956456343087048, guid: da320d57a6643e3479003d4664c324b0, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 520.87
+      objectReference: {fileID: 0}
+    - target: {fileID: 7066956456343087048, guid: da320d57a6643e3479003d4664c324b0, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 12.779
+      objectReference: {fileID: 0}
+    - target: {fileID: 7066956456343087048, guid: da320d57a6643e3479003d4664c324b0, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 414.7518
+      objectReference: {fileID: 0}
+    - target: {fileID: 7066956456343087048, guid: da320d57a6643e3479003d4664c324b0, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7066956456343087048, guid: da320d57a6643e3479003d4664c324b0, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7066956456343087048, guid: da320d57a6643e3479003d4664c324b0, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7066956456343087048, guid: da320d57a6643e3479003d4664c324b0, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7066956456343087048, guid: da320d57a6643e3479003d4664c324b0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7066956456343087048, guid: da320d57a6643e3479003d4664c324b0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7066956456343087048, guid: da320d57a6643e3479003d4664c324b0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7066956456343087049, guid: da320d57a6643e3479003d4664c324b0, type: 3}
+      propertyPath: m_Name
+      value: TwoHandedWeapon
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: da320d57a6643e3479003d4664c324b0, type: 3}
 --- !u!1001 &559176638
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8956,6 +9013,18 @@ PrefabInstance:
     - target: {fileID: 1990670539293966726, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
       propertyPath: m_Name
       value: Barrier_LOD2_SnowPrefab (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1990670539293966726, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2675017080937915701, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2982426018840360080, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 5912711252796259183, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
       propertyPath: m_RootOrder
@@ -11111,6 +11180,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1042675775}
     m_Modifications:
+    - target: {fileID: 84520675208848638, guid: 5582bd0b2592b2d47ae0ef2e4ef206c0, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 639247019946773269, guid: 5582bd0b2592b2d47ae0ef2e4ef206c0, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -11167,9 +11240,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6836957696224239550, guid: 5582bd0b2592b2d47ae0ef2e4ef206c0, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 8835030867758628962, guid: 5582bd0b2592b2d47ae0ef2e4ef206c0, type: 3}
       propertyPath: m_Name
       value: MountainRock_09_LOD1_SnowPrefab (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8835030867758628962, guid: 5582bd0b2592b2d47ae0ef2e4ef206c0, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5582bd0b2592b2d47ae0ef2e4ef206c0, type: 3}
@@ -11250,6 +11331,18 @@ PrefabInstance:
     - target: {fileID: 1990670539293966726, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
       propertyPath: m_Name
       value: Barrier_LOD2_SnowPrefab (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1990670539293966726, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2675017080937915701, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2982426018840360080, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 5912711252796259183, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
       propertyPath: m_RootOrder
@@ -12258,6 +12351,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1042675775}
     m_Modifications:
+    - target: {fileID: 84520675208848638, guid: 5582bd0b2592b2d47ae0ef2e4ef206c0, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 639247019946773269, guid: 5582bd0b2592b2d47ae0ef2e4ef206c0, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -12314,9 +12411,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6836957696224239550, guid: 5582bd0b2592b2d47ae0ef2e4ef206c0, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 8835030867758628962, guid: 5582bd0b2592b2d47ae0ef2e4ef206c0, type: 3}
       propertyPath: m_Name
       value: MountainRock_09_LOD1_SnowPrefab (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8835030867758628962, guid: 5582bd0b2592b2d47ae0ef2e4ef206c0, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5582bd0b2592b2d47ae0ef2e4ef206c0, type: 3}
@@ -16267,7 +16372,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1042675775}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: twinRocks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -18207,7 +18312,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1211047715
 Transform:
   m_ObjectHideFlags: 0
@@ -20452,6 +20557,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DWE_Cliff_02A [Area 1]
       objectReference: {fileID: 0}
+    - target: {fileID: 8313644808024193223, guid: 31efd31e36109674c94aaf895eab0d31, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 8652592784760185469, guid: 31efd31e36109674c94aaf895eab0d31, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -20908,6 +21017,18 @@ PrefabInstance:
     - target: {fileID: 1990670539293966726, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
       propertyPath: m_Name
       value: Barrier_LOD2_SnowPrefab (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1990670539293966726, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2675017080937915701, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2982426018840360080, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 5912711252796259183, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
       propertyPath: m_RootOrder
@@ -30692,6 +30813,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Barrier_LOD2_SnowPrefab
       objectReference: {fileID: 0}
+    - target: {fileID: 1990670539293966726, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2675017080937915701, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2982426018840360080, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 5912711252796259183, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -31761,6 +31894,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 323595985}
     m_Modifications:
+    - target: {fileID: -7958542777323083118, guid: c61a5aceb994434419fa106711b7ea8b, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: -4998900103803481793, guid: c61a5aceb994434419fa106711b7ea8b, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: c61a5aceb994434419fa106711b7ea8b, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -31820,6 +31961,10 @@ PrefabInstance:
     - target: {fileID: -927199367670048503, guid: c61a5aceb994434419fa106711b7ea8b, type: 3}
       propertyPath: m_Name
       value: CampFire_LOD1
+      objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: c61a5aceb994434419fa106711b7ea8b, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c61a5aceb994434419fa106711b7ea8b, type: 3}
