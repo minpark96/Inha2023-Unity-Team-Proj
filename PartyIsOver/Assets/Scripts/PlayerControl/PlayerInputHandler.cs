@@ -45,15 +45,12 @@ public class PlayerInputHandler : MonoBehaviour
         if (_actor.debuffState == DebuffState.Ice || _actor.debuffState == DebuffState.Shock || _actor.debuffState == DebuffState.Stun)
             return;
 
-        if(_actor.debuffState==DebuffState.Balloon)
-        {
-            _actor.PlayerController.OnMouseEvent_Skill(evt);
-            return;
-        }
-
         if (_actor.Grab.EquipItem == null)
         {
             _actor.PlayerController.OnMouseEvent_Skill(evt);
+
+            if (_actor.debuffState == DebuffState.Balloon)
+                return;
 
             if (_actor.debuffState != DebuffState.Burn)
                 _actor.PlayerController.OnMouseEvent_Grab(evt);

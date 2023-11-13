@@ -365,8 +365,21 @@ public class PlayerController : MonoBehaviourPun
                         else
                             PunchAndGrab();
                     }
-                    if (!isGrounded && Input.GetMouseButtonUp(1))
-                        DropKickTrigger();
+
+                    if (Input.GetMouseButtonUp(1))
+                    {
+                        if (_actor.debuffState == DebuffState.Balloon)
+                        {
+                            _balloonState.BalloonSpin();
+                        }
+                        else if(!isGrounded)
+                             DropKickTrigger();
+                    }
+
+                    if (_actor.debuffState == DebuffState.Balloon)
+                        return;
+
+
                     if (!_isCoroutineRoll && Input.GetMouseButtonUp(2))
                         ForwardRollTrigger();
                 }
@@ -396,11 +409,6 @@ public class PlayerController : MonoBehaviourPun
                 break;
             case Define.KeyboardEvent.Press:
                 {
-                    if (Input.GetKey(KeyCode.W))
-                    {
-                        MoveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-                    }
-
                     if (Input.GetKeyDown(KeyCode.Space))
                     {
                         _actor.actorState = Actor.ActorState.Jump;
@@ -663,7 +671,7 @@ public class PlayerController : MonoBehaviourPun
         if (_actor.debuffState == Actor.DebuffState.Balloon && isBalloon == false)
         {
             isBalloon = true;
-            StartCoroutine(_balloonState.BalloonShapeOn());
+            //StartCoroutine(_balloonState.BalloonShapeOn());
         }
 
         if (_actor.actorState != Actor.ActorState.Jump && _actor.actorState != Actor.ActorState.Roll && _actor.actorState != Actor.ActorState.Run)
@@ -1939,6 +1947,26 @@ public class PlayerController : MonoBehaviourPun
         }
     }
     #endregion
+    public IEnumerator balloon(Side side)
+    {
+        float checkTime = Time.time;
+        checkTime = Time.time;
 
+        while (Time.time - checkTime < 5f)
+        {
+            BalloonSpin(side);
+            yield return new WaitForSeconds(0.01f);
+        }
+        
+    }
+
+    void BalloonSpin(Side side)
+    {
+        AniFrameData[] spins = TestRready1;
+        for (int i = 0; i < spins.Length; i++)
+        {
+            AniForce(spins, i);
+        }
+    }
 
 }

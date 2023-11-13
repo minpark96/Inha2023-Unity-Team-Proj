@@ -171,6 +171,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
                 break;
             case ActorState.BalloonWalk:
                 BalloonState.BalloonMove();
+                //PlayerController.Move();
                 break;
         }
 

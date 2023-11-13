@@ -10,7 +10,6 @@ public class BodyPart : MonoBehaviour
     public InteractableObject PartInteractable;
     public ConfigurableJoint PartJoint;
     public Transform PartTransform;
-    public RigidbodyConstraints PartRigidbodyConstraints;
 
     private void Awake()
     {
@@ -20,13 +19,5 @@ public class BodyPart : MonoBehaviour
         PartInteractable = gameObject.AddComponent<InteractableObject>();
         PartJoint = GetComponent<ConfigurableJoint>();
         PartTransform = GetComponent<Transform>();
-        PartRigidbodyConstraints = PartRigidbody.constraints;
-    }
-
-
-
-    void PartSetup()
-    {
-            
     }
 }
