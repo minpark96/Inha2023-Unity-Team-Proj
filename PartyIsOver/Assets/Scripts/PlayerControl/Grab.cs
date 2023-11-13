@@ -94,7 +94,19 @@ public class Grab : MonoBehaviourPun
 
         if(_isRightGrab && _isLeftGrab)
         {
-            if()
+            if(LeftGrabObject.GetComponent<CollisionHandler>() != null &&
+                RightGrabObject.GetComponent<CollisionHandler>() != null)
+            {
+                Debug.Log("Player Lift");
+
+                AlignToVector(_actor.BodyHandler.LeftArm.PartRigidbody, _actor.BodyHandler.LeftArm.PartTransform.up, -_actor.BodyHandler.Waist.PartTransform.up + _actor.BodyHandler.Chest.PartTransform.right / 2f + -_actor.PlayerController.MoveInput / 8f, 0.01f, 8f);
+                AlignToVector(_actor.BodyHandler.LeftForearm.PartRigidbody, _actor.BodyHandler.LeftForearm.PartTransform.up, -_actor.BodyHandler.Waist.PartTransform.up, 0.01f, 8f);
+
+                AlignToVector(_actor.BodyHandler.RightArm.PartRigidbody, _actor.BodyHandler.RightArm.PartTransform.up, -_actor.BodyHandler.Waist.PartTransform.up + -_actor.BodyHandler.Chest.PartTransform.right / 2f + -_actor.PlayerController.MoveInput / 8f, 0.01f, 8f);
+                AlignToVector(_actor.BodyHandler.RightForearm.PartRigidbody, _actor.BodyHandler.RightForearm.PartTransform.up, -_actor.BodyHandler.Waist.PartTransform.up, 0.01f, 8f);
+
+
+            }
         }
     }
 
@@ -174,6 +186,9 @@ public class Grab : MonoBehaviourPun
         }
         _isRightGrab = false;
         _isLeftGrab = false;
+        RightGrabObject = null;
+        LeftGrabObject = null;
+
         DestroyJoint();
     }
 
@@ -437,6 +452,8 @@ public class Grab : MonoBehaviourPun
             _grabJointLeft = _leftSearchTarget.AddComponent<FixedJoint>();
             _grabJointLeft.connectedBody = _leftHandRigid;
             _grabJointLeft.breakForce = 9001;
+            LeftGrabObject = _leftSearchTarget.gameObject;
+
 
             if (EquipItem == null)
                 return;
@@ -450,7 +467,6 @@ public class Grab : MonoBehaviourPun
                 _jointLeftForeArm.angularZMotion = ConfigurableJointMotion.Locked;
                 _jointLeftUpperArm.angularZMotion = ConfigurableJointMotion.Locked;
             }
-
         }
         else if (side == Side.Right )
         {
