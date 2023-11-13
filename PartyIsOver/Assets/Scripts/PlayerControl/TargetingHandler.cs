@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
@@ -8,6 +9,7 @@ public class TargetingHandler : MonoBehaviour
     public float maxAngle = 90f; // 180도의 절반 (90도)으로 설정
 
     Collider _nearestCollider;
+    private float _nearestDistance;
 
     BodyHandler _bodyHandler;
     InteractableObject[] _interactableObjects = new InteractableObject[30];
@@ -32,7 +34,7 @@ public class TargetingHandler : MonoBehaviour
         Collider[] colliders = new Collider[40];
         _nearestCollider = null;
         _nearestObject = null;
-
+        _nearestDistance = Mathf.Infinity;
         Transform chestTransform = _bodyHandler.Chest.transform;
         
         
@@ -69,7 +71,9 @@ public class TargetingHandler : MonoBehaviour
 
             if (angle <= maxAngle && angle2 <= 110f && colliders[i].GetComponent<InteractableObject>())
             {
-                float distanceWithPriority = toCollider.magnitude;
+
+                float distanceWithPriority = Vector3.Distance(FindClosestCollisionPoint(colliders[i]),chestTransform.position);
+  
                 bool lowPriorityPart = true;
 
                 //서치타겟이 래그돌일경우 중요도가 낮은 몸 부위에 값을 곱해서 최종타겟이 될 가능성을 낮춤
@@ -85,17 +89,18 @@ public class TargetingHandler : MonoBehaviour
 
                     if (lowPriorityPart)
                     {
-                        distanceWithPriority *= 20f;
+                        distanceWithPriority *= 10f;
                     }
                 }
 
-              
+                
 
                 //가장가까운 타겟 갱신
-                if (_nearestObject == null || distanceWithPriority < (_nearestObject.transform.position - chestTransform.position).magnitude)
+                if (_nearestObject == null || distanceWithPriority < _nearestDistance)
                 {
                     _nearestCollider = colliders[i];
                     _nearestObject = colliders[i].GetComponent<InteractableObject>();
+                    _nearestDistance = Vector3.Distance(FindClosestCollisionPoint(_nearestCollider), chestTransform.position);
                 }
 
             }
@@ -107,7 +112,7 @@ public class TargetingHandler : MonoBehaviour
             return null;
         }
 
-       // Debug.Log(_nearestObject.gameObject + "최우선순위");
+        Debug.Log(_nearestObject.gameObject + "최우선순위");
         return _nearestObject;
     }
 
