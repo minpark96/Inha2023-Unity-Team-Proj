@@ -92,7 +92,10 @@ public class Grab : MonoBehaviourPun
     {
         _grabDelayTimer -= Time.deltaTime;
 
-        
+        if(_isRightGrab && _isLeftGrab)
+        {
+            if()
+        }
     }
 
     public void OnMouseEvent_EquipItem(Define.MouseEvent evt)
@@ -454,6 +457,8 @@ public class Grab : MonoBehaviourPun
             _grabJointRight = _rightSearchTarget.AddComponent<FixedJoint>();
             _grabJointRight.connectedBody = _rightHandRigid;
             _grabJointRight.breakForce = 9001;
+            RightGrabObject = _rightSearchTarget.gameObject;
+
 
             if (EquipItem == null)
                 return;
