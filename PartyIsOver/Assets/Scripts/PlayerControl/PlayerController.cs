@@ -485,7 +485,6 @@ public class PlayerController : MonoBehaviourPun
         }
     }
 
-
     #region ChargeSkill
     IEnumerator ChargeReady()
     {
@@ -1757,7 +1756,8 @@ public class PlayerController : MonoBehaviourPun
     }
     #endregion
 
-    public IEnumerator Potion(Side side,float duration, float ready, float start, float drinking, float end)
+    #region Potion
+    public IEnumerator Potion(Side side, float duration, float ready, float start, float drinking, float end)
     {
         float checkTime = Time.time;
 
@@ -1789,6 +1789,9 @@ public class PlayerController : MonoBehaviourPun
         }
     }
 
+    #endregion
+
+    #region PotionAni
     void PotionReady(Side side)
     {
         AniAngleData[] potionReadys = (side == Side.Right) ? PotionAngleAniData : PotionAngleAniData;
@@ -1823,6 +1826,64 @@ public class PlayerController : MonoBehaviourPun
         {
             AniAngleForce(potionReadys, i);
         }
+    }
+    #endregion
+
+    #region RIP
+
+    public IEnumerator DropRip(Side side, float duration, float readyTime, float punchTime, float retime, float resetTime)
+    {
+        float checkTime = Time.time;
+
+        while (Time.time - checkTime < readyTime)
+        {
+            DropRipReady(side);
+            yield return new WaitForSeconds(duration);
+        }
+        checkTime = Time.time;
+
+        while (Time.time - checkTime < punchTime)
+        {
+            DropRipUp(side);
+            yield return new WaitForSeconds(duration);
+        }
+        checkTime = Time.time;
+
+        while (Time.time - checkTime < retime)
+        {
+            DropRipDown(side);
+            yield return new WaitForSeconds(duration);
+        }
+        checkTime = Time.time;
+
+        while (Time.time - checkTime < resetTime)
+        {
+            DropRipReSet(side);
+            yield return new WaitForSeconds(duration);
+        }
+    }
+
+    #endregion
+
+    void DropRipReady(Side side)
+    {
+
+    }
+
+    void DropRipUp(Side side)
+    {
+
+    }
+
+    void DropRipDown(Side side)
+    {
+
+    }
+
+    void DropRipReSet(Side side)
+    {
+
+
     }
 
 }

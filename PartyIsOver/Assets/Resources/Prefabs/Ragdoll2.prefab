@@ -12005,20 +12005,42 @@ MonoBehaviour:
     - {fileID: 5856379624502544924}
     - {fileID: 5856379624502544924}
     ActionRigidbodies:
-    - {fileID: 5856379624502544924}
     - {fileID: 5856729462922818502}
     - {fileID: 5856003484643476932}
-    - {fileID: 5856003484643476932}
     - {fileID: 5793437608505534348}
-    - {fileID: 5793437608505534348}
-    ForceDirections: 020000000200000002000000070000000400000003000000
+    - {fileID: 5856411775826887216}
+    - {fileID: 5856572161679450355}
+    - {fileID: 5793545070783210251}
+    ForceDirections: 020000000200000002000000020000000200000002000000
     ForcePowerValues:
     - 10
     - 10
     - 10
     - 10
-    - 5
-    - 5
+    - 10
+    - 10
+  - StandardRigidbodies:
+    - {fileID: 5856379624502544924}
+    - {fileID: 5856379624502544924}
+    - {fileID: 5856379624502544924}
+    - {fileID: 5856379624502544924}
+    - {fileID: 5856379624502544924}
+    - {fileID: 5856379624502544924}
+    ActionRigidbodies:
+    - {fileID: 5856729462922818502}
+    - {fileID: 5856003484643476932}
+    - {fileID: 5793437608505534348}
+    - {fileID: 5856411775826887216}
+    - {fileID: 5856572161679450355}
+    - {fileID: 5793545070783210251}
+    ForceDirections: 040000000400000004000000040000000400000004000000
+    ForcePowerValues:
+    - 20
+    - 20
+    - 20
+    - 20
+    - 20
+    - 20
   TestDrinking:
   - StandardRigidbodies:
     - {fileID: 5856379624502544924}
@@ -12028,32 +12050,37 @@ MonoBehaviour:
     - {fileID: 5856379624502544924}
     - {fileID: 5856379624502544924}
     ActionRigidbodies:
-    - {fileID: 5856379624502544924}
     - {fileID: 5856729462922818502}
     - {fileID: 5856003484643476932}
-    - {fileID: 5856003484643476932}
     - {fileID: 5793437608505534348}
-    - {fileID: 5793437608505534348}
-    ForceDirections: 030000000200000002000000070000000400000003000000
+    - {fileID: 5856411775826887216}
+    - {fileID: 5856572161679450355}
+    - {fileID: 5793545070783210251}
+    ForceDirections: 050000000500000005000000050000000500000005000000
     ForcePowerValues:
     - 10
     - 10
     - 10
     - 10
-    - 5
-    - 5
+    - 10
+    - 10
   TestRready2:
   - StandardRigidbodies:
     - {fileID: 5856729462922818502}
+    - {fileID: 5856411775826887216}
     ActionDirection:
+    - {fileID: 5875873347556913874}
     - {fileID: 5875873347556913874}
     TargetDirection:
     - {fileID: 5875873347556913874}
-    ActionAngleDirections: 03000000
-    TargetAngleDirections: 03000000
+    - {fileID: 5875873347556913874}
+    ActionAngleDirections: 0300000003000000
+    TargetAngleDirections: 0300000003000000
     AngleStability:
     - 0.01
+    - 0.01
     AnglePowerValues:
+    - 100
     - 100
   RunSpeed: 100
   MaxSpeed: 10

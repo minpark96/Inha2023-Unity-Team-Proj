@@ -119,13 +119,15 @@ public class Grab : MonoBehaviourPun
                     if (Input.GetMouseButtonUp(0))
                     {
                         if (EquipItem.GetComponent<Item>().ItemData.ItemType == ItemType.TwoHanded)
-                            StartCoroutine(HorizontalAttack());
+                            //StartCoroutine(HorizontalAttack());
+                            StartCoroutine(VerticalAttack());
                         else if (EquipItem.GetComponent<Item>().ItemData.ItemType == ItemType.OneHanded)
                             StartCoroutine(OwnHandAttack());
                         else if (EquipItem.GetComponent<Item>().ItemData.ItemType == ItemType.Ranged)
                             UseItem();
                         else if (EquipItem.GetComponent<Item>().ItemData.ItemType == ItemType.Potion)
                             StartCoroutine(UsePotionAnim());
+
                     }
                     if (Input.GetMouseButtonUp(1))
                     {
@@ -441,6 +443,8 @@ public class Grab : MonoBehaviourPun
             _grabJointLeft.connectedBody = _leftHandRigid;
             _grabJointLeft.breakForce = 9001;
 
+            return;
+
             if (_leftSearchTarget.GetComponent<Item>() != null)
             {
                 _jointLeft.angularYMotion = ConfigurableJointMotion.Locked;
@@ -458,11 +462,16 @@ public class Grab : MonoBehaviourPun
             _grabJointRight.connectedBody = _rightHandRigid;
             _grabJointRight.breakForce = 9001;
 
+            return;
+
+
             if (EquipItem != null && EquipItem.GetComponent<Item>().ItemData.ItemType == ItemType.OneHanded)
                 return;
 
             if (EquipItem != null && EquipItem.GetComponent<Item>().ItemData.ItemType == ItemType.Potion)
                 return;
+
+            
 
             if (_rightSearchTarget.GetComponent<Item>() != null)
             {
@@ -500,23 +509,7 @@ public class Grab : MonoBehaviourPun
 
     IEnumerator VerticalAttack()
     {
-        int forcingCount = 2000;
-
-        _jointLeft.GetComponent<Rigidbody>().AddForce(new Vector3(0, _turnForce, 0));
-        _jointRight.GetComponent<Rigidbody>().AddForce(new Vector3(0, _turnForce, 0));
-
-        Debug.Log("VerticalAttack");
-
-
-        while (forcingCount > 0)
-        {
-            AlignToVector(_jointLeft.GetComponent<Rigidbody>(), _jointLeft.transform.position, new Vector3(0f, 0.2f, 0f), 0.1f, 6f);
-            AlignToVector(_jointRight.GetComponent<Rigidbody>(), _jointRight.transform.position, new Vector3(0f, 0.2f, 0f), 0.1f, 6f);
-            forcingCount--;
-        }
-        Debug.Log("코루틴 끝");
-
-        yield return 0;
+        yield return _actor.PlayerController.DropRip(PlayerController.Side.Right, 0.07f, 0.1f, 0.5f, 0.5f, 0.1f);
     }
 
     IEnumerator OwnHandAttack()
