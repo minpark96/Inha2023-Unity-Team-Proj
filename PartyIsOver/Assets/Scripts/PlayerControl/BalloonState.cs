@@ -5,19 +5,22 @@ using UnityEngine;
 
 public class BalloonState : MonoBehaviour
 {
+    public PlayerController PlayerController;
     public Transform CameraArm;
     private Actor _actor;
     private List<Quaternion> _initialRotations = new List<Quaternion>();
 
     public float BalloonDuration;
     public float RotateAngle;
+    public bool  IsGrounded;
+    private Vector3 _moveDir;
 
     void Start()
     {
-        _actor = transform.root.GetComponent<Actor>();
+        PlayerController = GetComponentInParent<PlayerController>();
+        _actor = GetComponentInParent<Actor>();
         CameraArm = transform.GetChild(0).GetChild(0);
-
-    }
+}
 
 
     public IEnumerator BalloonShapeOn()
@@ -56,7 +59,8 @@ public class BalloonState : MonoBehaviour
             _actor.BodyHandler.BodyParts[i].PartRigidbody.useGravity = false;
         }
 
-        _actor.BodyHandler.BodyParts[2].AddComponent<LimbCollision>();
+        _actor.BodyHandler.BodyParts[2].AddComponent<BalloonCollision>();
+        _actor.BodyHandler.BodyParts[2].GetComponent<Collider>().isTrigger = true;
 
         yield return new WaitForSeconds(BalloonDuration);
 
@@ -91,7 +95,8 @@ public class BalloonState : MonoBehaviour
             _actor.BodyHandler.BodyParts[i].PartRigidbody.freezeRotation = false;
         }
 
-        Destroy(_actor.BodyHandler.BodyParts[2].GetComponent<LimbCollision>());
+        Destroy(_actor.BodyHandler.BodyParts[2].GetComponent<BalloonCollision>());
+        _actor.BodyHandler.BodyParts[2].GetComponent<Collider>().isTrigger = false;
         _actor.PlayerController.isBalloon = false;
     }
 
@@ -104,24 +109,25 @@ public class BalloonState : MonoBehaviour
 
         Vector3 lookForward = new Vector3(CameraArm.forward.x, 0f, CameraArm.forward.z).normalized;
         Vector3 lookRight = new Vector3(CameraArm.right.x, 0f, CameraArm.right.z).normalized;
-        Vector3 moveDir = lookForward * _actor.PlayerController.MoveInput.z + lookRight * _actor.PlayerController.MoveInput.x;
-        Vector3 rotateDir = new Vector3(moveDir.x, 0, 0);
+        _moveDir = lookForward * PlayerController.MoveInput.z + lookRight * PlayerController.MoveInput.x;
+        Vector3 rotateDir = new Vector3(_moveDir.x, 0, 0);
 
         _actor.BodyHandler.Hip.PartRigidbody.AddForce(lookForward * 350f * Time.deltaTime);
         _actor.BodyHandler.Hip.PartTransform.Rotate(rotateDir, RotateAngle);
-
     }
 
-    //public void BalloonJump()
-    //{
-    //    float startTime = Time.time;
-    //    float balloonDuration = 2f;
-
-    //    while (startTime - Time.time < balloonDuration)
-    //    {
-
-    //    }
-    //    //ÄÚ·çÆ¾
-    //    Jump();
-    //}
+    public void BalloonJump()
+    {
+        IsGrounded = false;
+        for (int i = 0; i < PlayerController.MoveForceJumpAniData.Length; i++)
+        {
+            PlayerController.AniForce(PlayerController.MoveForceJumpAniData, i, Vector3.up);
+            if (i == 2)
+                PlayerController.AniForce(PlayerController.MoveForceJumpAniData, i, Vector3.down);
+        }
+        for (int i = 0; i < PlayerController.MoveAngleJumpAniData.Length; i++)
+        {
+            PlayerController.AniAngleForce(PlayerController.MoveAngleJumpAniData, i, _moveDir + new Vector3(0, 0.2f, 0f));
+        }
+    }
 }

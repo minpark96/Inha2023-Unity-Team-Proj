@@ -876,7 +876,7 @@ public class PlayerController : MonoBehaviourPun
         }
     }
 
-    void AniForce(AniFrameData[] _forceSpeed, int _elementCount, Vector3 _dir)
+    public void AniForce(AniFrameData[] _forceSpeed, int _elementCount, Vector3 _dir)
     {
         for (int i = 0; i < _forceSpeed[_elementCount].StandardRigidbodies.Length; i++)
         {
@@ -955,7 +955,7 @@ public class PlayerController : MonoBehaviourPun
         }
     }
 
-    void AniAngleForce(AniAngleData[] _aniAngleData, int _elementCount, Vector3 _vector)
+    public void AniAngleForce(AniAngleData[] _aniAngleData, int _elementCount, Vector3 _vector)
     {
         for (int i = 0; i < _aniAngleData[_elementCount].StandardRigidbodies.Length; i++)
         {
@@ -1262,21 +1262,6 @@ public class PlayerController : MonoBehaviourPun
     public void Jump()
     {
         if (isStateChange)
-        {
-            isGrounded = false;
-            for (int i = 0; i < MoveForceJumpAniData.Length; i++)
-            {
-                AniForce(MoveForceJumpAniData, i, Vector3.up);
-                if (i == 2)
-                    AniForce(MoveForceJumpAniData, i, Vector3.down);
-            }
-            for (int i = 0; i < MoveAngleJumpAniData.Length; i++)
-            {
-                AniAngleForce(MoveAngleJumpAniData, i, _moveDir + new Vector3(0, 0.2f, 0f));
-            }
-        }
-       
-        if(_actor.debuffState == DebuffState.Balloon)
         {
             isGrounded = false;
             for (int i = 0; i < MoveForceJumpAniData.Length; i++)

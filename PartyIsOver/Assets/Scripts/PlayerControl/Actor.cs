@@ -29,7 +29,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
         Climb = 0x100,
         Debuff = 0x200,
         BalloonWalk = 0x400,
-
+        BalloonJump = 0x800,
     }
 
     public enum DebuffState
@@ -171,6 +171,9 @@ public class Actor : MonoBehaviourPun, IPunObservable
                 break;
             case ActorState.BalloonWalk:
                 BalloonState.BalloonMove();
+                break;
+            case ActorState.BalloonJump:
+                BalloonState.BalloonJump();
                 break;
         }
 
