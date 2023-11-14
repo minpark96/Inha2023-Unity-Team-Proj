@@ -217,6 +217,8 @@ public class PlayerController : MonoBehaviourPun
 
     private List<float> _xPosSpringAry = new List<float>();
     private List<float> _yzPosSpringAry = new List<float>();
+
+    public List<Quaternion> RotationsForBalloon = new List<Quaternion>();
     private BalloonState _balloonState;
 
     [Header("Dummy")]
@@ -266,6 +268,14 @@ public class PlayerController : MonoBehaviourPun
     void Start()
     {
         _bodyHandler.BodySetup();
+        for (int i = 0; i < _bodyHandler.BodyParts.Count - 1; i++)
+        {
+            if (i == 3)
+                RotationsForBalloon.Add(Quaternion.Euler(-90, 0, 0));
+            else
+                RotationsForBalloon.Add(_bodyHandler.BodyParts[i].PartTransform.localRotation);
+
+        }
     }
 
     private ConfigurableJoint[] childJoints;
@@ -370,7 +380,7 @@ public class PlayerController : MonoBehaviourPun
                     {
                         if (_actor.debuffState == DebuffState.Balloon)
                         {
-                            _balloonState.BalloonSpin();
+                            StartCoroutine(_balloonState.BalloonSpin());
                         }
                         else if(!isGrounded)
                              DropKickTrigger();
@@ -416,13 +426,12 @@ public class PlayerController : MonoBehaviourPun
 
                     if (_actor.debuffState == Actor.DebuffState.Balloon)
                     {
-                        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S))
+                        if (isBalloon)
                         {
-                            MoveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-                        }
-                        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
-                        {
-                            MoveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+                            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.D))
+                            {
+                                MoveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+                            }
                         }
                     }
                     else
@@ -433,7 +442,6 @@ public class PlayerController : MonoBehaviourPun
                         }
                     }
 
-                    
                 }
                 break;
             case Define.KeyboardEvent.Click:
@@ -670,8 +678,7 @@ public class PlayerController : MonoBehaviourPun
 
         if (_actor.debuffState == Actor.DebuffState.Balloon && isBalloon == false)
         {
-            isBalloon = true;
-            //StartCoroutine(_balloonState.BalloonShapeOn());
+            StartCoroutine(_balloonState.BalloonShapeOn());
         }
 
         if (_actor.actorState != Actor.ActorState.Jump && _actor.actorState != Actor.ActorState.Roll && _actor.actorState != Actor.ActorState.Run)
