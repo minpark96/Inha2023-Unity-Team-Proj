@@ -178,6 +178,7 @@ public class PlayerController : MonoBehaviourPun
     public bool isMeowNyangPunch = false;
     private bool _isRSkillCheck;
     public bool isBalloon;
+    public bool isDrunk;
 
     [Header("SkillControll")]
     public float RSkillCoolTime = 10;
@@ -199,7 +200,7 @@ public class PlayerController : MonoBehaviourPun
     [Header("ItemControll")]
     public float ItempSwingPower;
 
-
+    [Header("MoveControll")]
     private float _runSpeedOffset = 350f;
     public Vector3 MoveInput;
     private Vector3 _moveDir;
@@ -220,6 +221,8 @@ public class PlayerController : MonoBehaviourPun
 
     public List<Quaternion> RotationsForBalloon = new List<Quaternion>();
     private BalloonState _balloonState;
+    private DrunkState _drunkState;
+
 
     [Header("Dummy")]
     public bool isAI = false;
@@ -304,6 +307,7 @@ public class PlayerController : MonoBehaviourPun
         _grab = GetComponent<Grab>();
 
         _balloonState = GetComponent<BalloonState>();
+        _drunkState = GetComponent<DrunkState>();
     }
 
     void RestoreOriginalMotions()
@@ -409,14 +413,6 @@ public class PlayerController : MonoBehaviourPun
 
         switch (evt)
         {
-            case Define.KeyboardEvent.PointerDown:
-                {
-                    if (Input.GetKeyDown(KeyCode.Space))
-                    {
-                        _actor.actorState = Actor.ActorState.Jump;
-                    }
-                }
-                break;
             case Define.KeyboardEvent.Press:
                 {
                     if (Input.GetKeyDown(KeyCode.Space))
@@ -434,6 +430,13 @@ public class PlayerController : MonoBehaviourPun
                             }
                         }
                     }
+                    else if(_actor.debuffState == Actor.DebuffState.Drunk)
+                    {
+                        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
+                        {
+                            MoveInput = new Vector3(-Input.GetAxis("Horizontal"), 0, -Input.GetAxis("Vertical"));
+                        }
+                    }
                     else
                     {
                         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
@@ -441,7 +444,6 @@ public class PlayerController : MonoBehaviourPun
                             MoveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
                         }
                     }
-
                 }
                 break;
             case Define.KeyboardEvent.Click:
@@ -472,14 +474,15 @@ public class PlayerController : MonoBehaviourPun
                 {
                     if (Input.GetKeyDown(KeyCode.R))
                     {
-                        if (!_isRSkillCheck)
+                        if(_actor.debuffState != DebuffState.Drunk)
                         {
-                            _isRSkillCheck = true;
-                            StartCoroutine(ChargeReady());
+                            if (!_isRSkillCheck)
+                            {
+                                _isRSkillCheck = true;
+                                StartCoroutine(ChargeReady());
+                            }
                         }
                     }
-
-                    
                 }
                 break;
             case Define.KeyboardEvent.Press:
@@ -507,20 +510,35 @@ public class PlayerController : MonoBehaviourPun
                     {
                         _isRSkillCheck = false;
                         StartCoroutine(ResetCharge());
+                       
                     }
                 }
                 break;
             case Define.KeyboardEvent.Charge:
                 {
-                    RestoreOriginalMotions();
-                    if (Input.GetKeyUp(KeyCode.R) && !isMeowNyangPunch)
-                        MeowNyangPunch();
+                    if (_actor.debuffState == DebuffState.Drunk)
+                    {
+                        StartCoroutine(_drunkState.DrunkAction());
+                    }
                     else
-                        NuclearPunch();
+                    {
+                        RestoreOriginalMotions();
+                        if (Input.GetKeyUp(KeyCode.R) && !isMeowNyangPunch)
+                            MeowNyangPunch();
+                        else
+                            NuclearPunch();
+                    }
                 }
                 break;
             case Define.KeyboardEvent.Hold:
                 {
+                    if (Input.GetKey(KeyCode.R))
+                    {
+                        if (_actor.debuffState == DebuffState.Drunk)
+                        {
+                            StartCoroutine(_drunkState.DrunkActionReady());
+                        }
+                    }
                     //중일때 확인 ex 이펙트 출현하는 코드를 넣어주면 기모아지는 것 첨 될듯
 
                 }
@@ -680,6 +698,13 @@ public class PlayerController : MonoBehaviourPun
         {
             StartCoroutine(_balloonState.BalloonShapeOn());
         }
+
+        if (_actor.debuffState == Actor.DebuffState.Drunk && isDrunk == false)
+        {
+            isDrunk = true;
+            StartCoroutine(_drunkState.DrunkOff());
+        }
+
 
         if (_actor.actorState != Actor.ActorState.Jump && _actor.actorState != Actor.ActorState.Roll && _actor.actorState != Actor.ActorState.Run)
         {

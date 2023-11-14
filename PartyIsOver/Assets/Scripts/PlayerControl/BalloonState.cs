@@ -10,9 +10,9 @@ public class BalloonState : MonoBehaviour
     private Actor _actor;
 
     public float BalloonDuration;
-    public float RotateAngle;
+    public float RotateAngle = 8f;
     public bool IsGrounded;
-    public float Force;
+    public float Force = 10000f;
 
     private Vector3 _moveDir;
 
@@ -64,9 +64,9 @@ public class BalloonState : MonoBehaviour
             _actor.BodyHandler.BodyParts[i].PartRigidbody.velocity = Vector3.zero;
         }
 
-        _actor.BodyHandler.BodyParts[2].AddComponent<LimbCollision>();
-        _actor.BodyHandler.BodyParts[2].GetComponent<CapsuleCollider>().radius = 0.3f;
-        _actor.BodyHandler.BodyParts[2].GetComponent<Collider>().isTrigger = true;
+        _actor.BodyHandler.Waist.AddComponent<LimbCollision>();
+        _actor.BodyHandler.Waist.GetComponent<CapsuleCollider>().radius = 0.3f;
+        _actor.BodyHandler.Waist.GetComponent<Collider>().isTrigger = true;
 
         yield return new WaitForSeconds(BalloonDuration);
 
@@ -87,9 +87,9 @@ public class BalloonState : MonoBehaviour
             _actor.BodyHandler.BodyParts[i].PartRigidbody.angularVelocity = Vector3.zero;
             _actor.BodyHandler.BodyParts[i].PartRigidbody.velocity = Vector3.zero;
         }
-        _actor.BodyHandler.BodyParts[0].transform.localScale = new Vector3(1, 1, 1);
-        _actor.BodyHandler.BodyParts[1].transform.localScale = new Vector3(1, 1, 1);
-        _actor.BodyHandler.BodyParts[2].transform.localScale = new Vector3(1, 1, 1);
+        _actor.BodyHandler.Head.transform.localScale = new Vector3(1, 1, 1);
+        _actor.BodyHandler.Chest.transform.localScale = new Vector3(1, 1, 1);
+        _actor.BodyHandler.Waist.transform.localScale = new Vector3(1, 1, 1);
 
         for (int i = 0; i < 3; i++)
         {
@@ -104,9 +104,9 @@ public class BalloonState : MonoBehaviour
             _actor.BodyHandler.BodyParts[i].PartRigidbody.freezeRotation = false;
         }
 
-        Destroy(_actor.BodyHandler.BodyParts[2].GetComponent<LimbCollision>());
-        _actor.BodyHandler.BodyParts[2].GetComponent<CapsuleCollider>().radius = 0.25f;
-        _actor.BodyHandler.BodyParts[2].GetComponent<Collider>().isTrigger = false;
+        Destroy(_actor.BodyHandler.Waist.GetComponent<LimbCollision>());
+        _actor.BodyHandler.Waist.GetComponent<CapsuleCollider>().radius = 0.25f;
+        _actor.BodyHandler.Waist.GetComponent<Collider>().isTrigger = false;
         _actor.PlayerController.isBalloon = false;
     }
 
@@ -181,7 +181,7 @@ public class BalloonState : MonoBehaviour
             yield return new WaitForSeconds(0.02f);
         }
 
-        // force : 3∏∏¿œ∂ß ¿Ãª›
+        // Force : 3∏∏¿œ∂ß ¿Ãª›
         _actor.BodyHandler.Hip.PartRigidbody.AddForce(lookForward * 1000f * Force * Time.deltaTime);
 
     }

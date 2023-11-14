@@ -677,7 +677,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &27072820
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -18426,7 +18426,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1211047715
 Transform:
   m_ObjectHideFlags: 0
@@ -18450,7 +18450,7 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1211047714}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
@@ -25372,7 +25372,7 @@ GameObject:
   - component: {fileID: 1616166103}
   - component: {fileID: 1616166102}
   m_Layer: 0
-  m_Name: Balloon
+  m_Name: Drunk
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -25390,7 +25390,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 015abfabc52bdf8489d8523bc44d3a3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damageModifier: 15
+  damageModifier: 14
 --- !u!65 &1616166103
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -25462,7 +25462,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1616166101}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 529.82, y: 13.3, z: 416.49}
+  m_LocalPosition: {x: 527.44, y: 13.3, z: 418.12}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -29176,7 +29176,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -3116543834385216606, guid: 763a199fa1132cc4688fb4fcfd0b05ef, type: 3}
       propertyPath: BalloonDuration
-      value: 30
+      value: 300
       objectReference: {fileID: 0}
     - target: {fileID: 265781454872046630, guid: 763a199fa1132cc4688fb4fcfd0b05ef, type: 3}
       propertyPath: sceneViewId
@@ -29360,15 +29360,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5878509405600198244, guid: 763a199fa1132cc4688fb4fcfd0b05ef, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 523.9157
+      value: 526.03
       objectReference: {fileID: 0}
     - target: {fileID: 5878509405600198244, guid: 763a199fa1132cc4688fb4fcfd0b05ef, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 14.8
+      value: 13.99
       objectReference: {fileID: 0}
     - target: {fileID: 5878509405600198244, guid: 763a199fa1132cc4688fb4fcfd0b05ef, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 416.43
+      value: 419.8
       objectReference: {fileID: 0}
     - target: {fileID: 5878509405600198244, guid: 763a199fa1132cc4688fb4fcfd0b05ef, type: 3}
       propertyPath: m_LocalRotation.w
@@ -31685,6 +31685,25 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3184951293783882206, guid: 26ca7ccacbb830a489a2b7e3d9df9c0d, type: 3}
   m_PrefabInstance: {fileID: 2050881070}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2051677768 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5873236424662451676, guid: 763a199fa1132cc4688fb4fcfd0b05ef, type: 3}
+  m_PrefabInstance: {fileID: 1866862682}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2051677780
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2051677768}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7ef0f788d273cb4d846a856aad6af3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PlayerController: {fileID: 0}
+  DrunkDuration: 10
 --- !u!1001 &2058826300
 PrefabInstance:
   m_ObjectHideFlags: 0
