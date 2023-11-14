@@ -596,6 +596,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DWE_Cliff_03A
       objectReference: {fileID: 0}
+    - target: {fileID: 4793419814975700103, guid: 66c93d5e3e9aa4f4d9e338944da94c20, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 5318317128921753149, guid: 66c93d5e3e9aa4f4d9e338944da94c20, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -3666,7 +3670,7 @@ GameObject:
   - component: {fileID: 247626507}
   - component: {fileID: 247626506}
   - component: {fileID: 247626505}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: icyRoad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3759,6 +3763,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 515075213}
     m_Modifications:
+    - target: {fileID: 3905441624114129186, guid: beb08c5386083a54189ce16c4e73f330, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 5424230473415521231, guid: beb08c5386083a54189ce16c4e73f330, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 8182653341203152686, guid: beb08c5386083a54189ce16c4e73f330, type: 3}
       propertyPath: m_RootOrder
       value: 4
@@ -3818,6 +3830,10 @@ PrefabInstance:
     - target: {fileID: 8412081946934099261, guid: beb08c5386083a54189ce16c4e73f330, type: 3}
       propertyPath: m_Name
       value: EmptyCart_LOD2_SnowPrefab
+      objectReference: {fileID: 0}
+    - target: {fileID: 8412081946934099261, guid: beb08c5386083a54189ce16c4e73f330, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: beb08c5386083a54189ce16c4e73f330, type: 3}
@@ -6432,6 +6448,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Barrier_LOD2_SnowPrefab (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 1990670539293966726, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2675017080937915701, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2982426018840360080, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 5912711252796259183, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -8965,6 +8993,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Barrier_LOD2_SnowPrefab (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 1990670539293966726, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2675017080937915701, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2982426018840360080, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 5912711252796259183, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
       propertyPath: m_RootOrder
       value: 4
@@ -10868,6 +10908,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Barrier_LOD2_SnowPrefab (5)
       objectReference: {fileID: 0}
+    - target: {fileID: 1990670539293966726, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2675017080937915701, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2982426018840360080, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 5912711252796259183, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -11119,6 +11171,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1042675775}
     m_Modifications:
+    - target: {fileID: 84520675208848638, guid: 5582bd0b2592b2d47ae0ef2e4ef206c0, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 639247019946773269, guid: 5582bd0b2592b2d47ae0ef2e4ef206c0, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -11175,9 +11231,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6836957696224239550, guid: 5582bd0b2592b2d47ae0ef2e4ef206c0, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 8835030867758628962, guid: 5582bd0b2592b2d47ae0ef2e4ef206c0, type: 3}
       propertyPath: m_Name
       value: MountainRock_09_LOD1_SnowPrefab (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8835030867758628962, guid: 5582bd0b2592b2d47ae0ef2e4ef206c0, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5582bd0b2592b2d47ae0ef2e4ef206c0, type: 3}
@@ -11258,6 +11322,18 @@ PrefabInstance:
     - target: {fileID: 1990670539293966726, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
       propertyPath: m_Name
       value: Barrier_LOD2_SnowPrefab (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1990670539293966726, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2675017080937915701, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2982426018840360080, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 5912711252796259183, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
       propertyPath: m_RootOrder
@@ -12266,6 +12342,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1042675775}
     m_Modifications:
+    - target: {fileID: 84520675208848638, guid: 5582bd0b2592b2d47ae0ef2e4ef206c0, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 639247019946773269, guid: 5582bd0b2592b2d47ae0ef2e4ef206c0, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -12322,9 +12402,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6836957696224239550, guid: 5582bd0b2592b2d47ae0ef2e4ef206c0, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 8835030867758628962, guid: 5582bd0b2592b2d47ae0ef2e4ef206c0, type: 3}
       propertyPath: m_Name
       value: MountainRock_09_LOD1_SnowPrefab (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8835030867758628962, guid: 5582bd0b2592b2d47ae0ef2e4ef206c0, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5582bd0b2592b2d47ae0ef2e4ef206c0, type: 3}
@@ -13662,6 +13750,10 @@ PrefabInstance:
     - target: {fileID: 562903316588226470, guid: 9bcd353199c8eca4e85cbd9759059b0d, type: 3}
       propertyPath: m_Name
       value: DWE_Cliff_01A [Area 3]
+      objectReference: {fileID: 0}
+    - target: {fileID: 562903316588226470, guid: 9bcd353199c8eca4e85cbd9759059b0d, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 901851568265051420, guid: 9bcd353199c8eca4e85cbd9759059b0d, type: 3}
       propertyPath: m_RootOrder
@@ -15316,6 +15408,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: LogPile_LOD2_SnowPrefab (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 2919835374094274169, guid: 6d6aa79be4006b44faaea385ccb8f200, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 3331458011999905413, guid: 6d6aa79be4006b44faaea385ccb8f200, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 8151307730304254872, guid: 6d6aa79be4006b44faaea385ccb8f200, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -15371,6 +15471,10 @@ PrefabInstance:
     - target: {fileID: 8151307730304254872, guid: 6d6aa79be4006b44faaea385ccb8f200, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: -8.449
+      objectReference: {fileID: 0}
+    - target: {fileID: 8475564074925504978, guid: 6d6aa79be4006b44faaea385ccb8f200, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6d6aa79be4006b44faaea385ccb8f200, type: 3}
@@ -16275,7 +16379,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1042675775}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: twinRocks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -16818,6 +16922,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: House_3x2_Variant_03_LOD1_SnowPrefab
       objectReference: {fileID: 0}
+    - target: {fileID: 120776725425834719, guid: d422411a85b37dc45b4f0fb03edc7c60, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4149352757049267308, guid: d422411a85b37dc45b4f0fb03edc7c60, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 6243344196282281507, guid: d422411a85b37dc45b4f0fb03edc7c60, type: 3}
       propertyPath: m_RootOrder
       value: 5
@@ -16873,6 +16985,10 @@ PrefabInstance:
     - target: {fileID: 6243344196282281507, guid: d422411a85b37dc45b4f0fb03edc7c60, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7577928753129545430, guid: d422411a85b37dc45b4f0fb03edc7c60, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d422411a85b37dc45b4f0fb03edc7c60, type: 3}
@@ -17260,6 +17376,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1107330030}
     m_Modifications:
+    - target: {fileID: 1185551624022007683, guid: f2017f50984cfc443bab2579d57216cc, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 3474799874714474315, guid: f2017f50984cfc443bab2579d57216cc, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 4588650003736406708, guid: f2017f50984cfc443bab2579d57216cc, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -17319,6 +17443,10 @@ PrefabInstance:
     - target: {fileID: 5876583867246220617, guid: f2017f50984cfc443bab2579d57216cc, type: 3}
       propertyPath: m_Name
       value: Window_LOD1_SnowPrefab
+      objectReference: {fileID: 0}
+    - target: {fileID: 5876583867246220617, guid: f2017f50984cfc443bab2579d57216cc, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f2017f50984cfc443bab2579d57216cc, type: 3}
@@ -18209,7 +18337,7 @@ GameObject:
   - component: {fileID: 1211047718}
   - component: {fileID: 1211047717}
   - component: {fileID: 1211047716}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: ceiling
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19331,7 +19459,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1254549134}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -20460,6 +20588,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DWE_Cliff_02A [Area 1]
       objectReference: {fileID: 0}
+    - target: {fileID: 8313644808024193223, guid: 31efd31e36109674c94aaf895eab0d31, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 8652592784760185469, guid: 31efd31e36109674c94aaf895eab0d31, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -20917,6 +21049,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Barrier_LOD2_SnowPrefab (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 1990670539293966726, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2675017080937915701, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2982426018840360080, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 5912711252796259183, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
       propertyPath: m_RootOrder
       value: 5
@@ -21359,7 +21503,7 @@ GameObject:
   - component: {fileID: 1388204728}
   - component: {fileID: 1388204727}
   - component: {fileID: 1388204726}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: mainFloor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -21663,7 +21807,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1402456979}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: '[Area 4]'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -22387,6 +22531,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2096061908703067571, guid: a0742bead672cdb44b684a847da3aae3, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 3120410614001815456, guid: a0742bead672cdb44b684a847da3aae3, type: 3}
       propertyPath: m_LocalScale.y
       value: 1.0648638
@@ -22470,6 +22618,14 @@ PrefabInstance:
     - target: {fileID: 7899666811635415974, guid: a0742bead672cdb44b684a847da3aae3, type: 3}
       propertyPath: m_Name
       value: BridgeStraightV2_LOD2_SnowPrefab [Area 4-2]
+      objectReference: {fileID: 0}
+    - target: {fileID: 7899666811635415974, guid: a0742bead672cdb44b684a847da3aae3, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 8099164707216984416, guid: a0742bead672cdb44b684a847da3aae3, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a0742bead672cdb44b684a847da3aae3, type: 3}
@@ -24818,6 +24974,10 @@ PrefabInstance:
     - target: {fileID: 562903316588226470, guid: 9bcd353199c8eca4e85cbd9759059b0d, type: 3}
       propertyPath: m_Name
       value: DWE_Cliff_01A [Area 2]
+      objectReference: {fileID: 0}
+    - target: {fileID: 562903316588226470, guid: 9bcd353199c8eca4e85cbd9759059b0d, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 901851568265051420, guid: 9bcd353199c8eca4e85cbd9759059b0d, type: 3}
       propertyPath: m_RootOrder
@@ -27639,6 +27799,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1402456979}
     m_Modifications:
+    - target: {fileID: 2096061908703067571, guid: a0742bead672cdb44b684a847da3aae3, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 3120410614001815456, guid: a0742bead672cdb44b684a847da3aae3, type: 3}
       propertyPath: m_LocalScale.y
       value: 1.0648638
@@ -27722,6 +27886,14 @@ PrefabInstance:
     - target: {fileID: 7899666811635415974, guid: a0742bead672cdb44b684a847da3aae3, type: 3}
       propertyPath: m_Name
       value: BridgeStraightV2_LOD2_SnowPrefab [Area 4-1]
+      objectReference: {fileID: 0}
+    - target: {fileID: 7899666811635415974, guid: a0742bead672cdb44b684a847da3aae3, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 8099164707216984416, guid: a0742bead672cdb44b684a847da3aae3, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a0742bead672cdb44b684a847da3aae3, type: 3}
@@ -28125,6 +28297,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: LogPile_LOD2_SnowPrefab
       objectReference: {fileID: 0}
+    - target: {fileID: 2919835374094274169, guid: 6d6aa79be4006b44faaea385ccb8f200, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 3331458011999905413, guid: 6d6aa79be4006b44faaea385ccb8f200, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 8151307730304254872, guid: 6d6aa79be4006b44faaea385ccb8f200, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -28180,6 +28360,10 @@ PrefabInstance:
     - target: {fileID: 8151307730304254872, guid: 6d6aa79be4006b44faaea385ccb8f200, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: -8.449
+      objectReference: {fileID: 0}
+    - target: {fileID: 8475564074925504978, guid: 6d6aa79be4006b44faaea385ccb8f200, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6d6aa79be4006b44faaea385ccb8f200, type: 3}
@@ -30700,6 +30884,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Barrier_LOD2_SnowPrefab
       objectReference: {fileID: 0}
+    - target: {fileID: 1990670539293966726, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2675017080937915701, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2982426018840360080, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 5912711252796259183, guid: 61c7f79890dd3ad4a9814d89d85ed44c, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -31769,6 +31965,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 323595985}
     m_Modifications:
+    - target: {fileID: -7958542777323083118, guid: c61a5aceb994434419fa106711b7ea8b, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: -4998900103803481793, guid: c61a5aceb994434419fa106711b7ea8b, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: c61a5aceb994434419fa106711b7ea8b, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -31829,6 +32033,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: CampFire_LOD1
       objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: c61a5aceb994434419fa106711b7ea8b, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c61a5aceb994434419fa106711b7ea8b, type: 3}
 --- !u!1001 &2103870570
@@ -31838,9 +32046,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1107330030}
     m_Modifications:
+    - target: {fileID: 1872427229091229099, guid: 5442ec5506fc95845b24be081c62bafe, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2119322773053701203, guid: 5442ec5506fc95845b24be081c62bafe, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 3783705613641087114, guid: 5442ec5506fc95845b24be081c62bafe, type: 3}
       propertyPath: m_Name
       value: Door_LOD1_SnowPrefab
+      objectReference: {fileID: 0}
+    - target: {fileID: 3783705613641087114, guid: 5442ec5506fc95845b24be081c62bafe, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 8006865774974224741, guid: 5442ec5506fc95845b24be081c62bafe, type: 3}
       propertyPath: m_RootOrder

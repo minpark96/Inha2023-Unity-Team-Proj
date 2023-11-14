@@ -29,7 +29,6 @@ public class Define
         Object,
     }
 
-
     public enum ItemType
     {
         OneHanded,
@@ -83,10 +82,29 @@ public class Define
         Charge,
     }
 
-
     public enum CameraMode
     {
 
+    }
+
+    public enum BodyPart
+    {
+        LeftFoot,
+        RightFoot,
+        LeftLeg,
+        RightLeg,
+        LeftThigh,
+        RightThigh,
+        Hip,
+        Waist,
+        Chest,
+        Head,
+        LeftArm,
+        RightArm,
+        LeftForeArm,
+        RightForeArm,
+        LeftHand,
+        RightHand,
     }
 }
 
