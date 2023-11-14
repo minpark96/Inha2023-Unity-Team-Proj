@@ -49,17 +49,13 @@ public class TargetingHandler : MonoBehaviour
             detectionDirection = chestTransform.right;
 
 
-
         // 원 안에 콜라이더 검출
         int colliderCount = Physics.OverlapSphereNonAlloc(chestTransform.position, detectionRadius, colliders, layerMask);
-
 
         if (colliderCount <= 0 )
         {
             return null;
         }
-
-
 
         // 바라보는 방향 180도 이내에 콜라이더 중 interatableObject 보유중인지 확인
         for (int i = 0; i < colliderCount; i++)
@@ -68,12 +64,10 @@ public class TargetingHandler : MonoBehaviour
             float angle = Vector3.Angle(chestForward, toCollider);
             float angle2 = Vector3.Angle(detectionDirection, toCollider);
 
-
             if (angle <= maxAngle && angle2 <= 110f && colliders[i].GetComponent<InteractableObject>())
             {
 
                 float distanceWithPriority = Vector3.Distance(FindClosestCollisionPoint(colliders[i]),chestTransform.position);
-  
                 bool lowPriorityPart = true;
 
                 //서치타겟이 래그돌일경우 중요도가 낮은 몸 부위에 값을 곱해서 최종타겟이 될 가능성을 낮춤
@@ -93,8 +87,6 @@ public class TargetingHandler : MonoBehaviour
                     }
                 }
 
-                
-
                 //가장가까운 타겟 갱신
                 if (_nearestObject == null || distanceWithPriority < _nearestDistance)
                 {
@@ -102,7 +94,6 @@ public class TargetingHandler : MonoBehaviour
                     _nearestObject = colliders[i].GetComponent<InteractableObject>();
                     _nearestDistance = Vector3.Distance(FindClosestCollisionPoint(_nearestCollider), chestTransform.position);
                 }
-
             }
         }
 
@@ -112,7 +103,7 @@ public class TargetingHandler : MonoBehaviour
             return null;
         }
 
-        Debug.Log(_nearestObject.gameObject + "최우선순위");
+        //Debug.Log(_nearestObject.gameObject + "최우선순위");
         return _nearestObject;
     }
 

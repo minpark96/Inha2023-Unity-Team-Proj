@@ -32,8 +32,10 @@ public class Define
 
     public enum ItemType
     {
+        None,
         OneHanded,
         TwoHanded,
+        Gravestone,
         Ranged,
         Potion,
     }

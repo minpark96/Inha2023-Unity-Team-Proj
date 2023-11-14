@@ -50,7 +50,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7066956455017843065}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Head
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -281,7 +281,7 @@ GameObject:
   - component: {fileID: 7066956456343087047}
   - component: {fileID: 7066956456343087043}
   m_Layer: 10
-  m_Name: TwoHandedWeapon
+  m_Name: FrozenMeat
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
