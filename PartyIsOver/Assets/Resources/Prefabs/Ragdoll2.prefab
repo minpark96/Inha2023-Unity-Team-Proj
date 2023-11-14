@@ -11388,6 +11388,7 @@ GameObject:
   - component: {fileID: 5878509405600198234}
   - component: {fileID: 1602883286494261838}
   - component: {fileID: 4655386519301525991}
+  - component: {fileID: -3116543834385216606}
   m_Layer: 7
   m_Name: Ragdoll2
   m_TagString: Untagged
@@ -12348,6 +12349,21 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &-3116543834385216606
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5873236424662451676}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 168a9945a6afc8143a29851274a40341, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CameraArm: {fileID: 3110579752506030532}
+  BalloonDuration: 30
+  RotateAngle: 10
 --- !u!1 &5873269987166717472
 GameObject:
   m_ObjectHideFlags: 0
