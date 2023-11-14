@@ -39,7 +39,7 @@ public class StatusHandler : MonoBehaviourPun
     private bool _hasBurn;
     private bool _hasExhausted;
     private bool _hasSlow;
-    private bool _hasFreeze;
+    public bool _hasFreeze;
     private bool _hasShock;
     private bool _hasStun;
     private bool _hasDrunk;

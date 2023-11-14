@@ -11,6 +11,8 @@ public class TaskAttack : Node
     private Transform _lastTarget;
     //이친구도 바꿔야함
     private PlayerController playerController;
+    StatusHandler playerstatu;
+
 
     private float _attackTime = 1f;
     private float _attackCounter = 0f;
@@ -33,8 +35,8 @@ public class TaskAttack : Node
         _attackCounter += Time.deltaTime;
         if(_attackCounter >= _attackTime)
         {
-
-            //bool playerIsDead = playerController.TakeHit();
+            playerstatu = playerController.GetComponent<StatusHandler>();
+            bool playerIsDead = playerstatu._hasFreeze;
             // hip 하는 스크립트 추가
 
             //bool playerIsDead 가 참이면은

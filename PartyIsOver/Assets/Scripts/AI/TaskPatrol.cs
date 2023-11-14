@@ -44,7 +44,7 @@ public class TaskPatrol : Node
                 _waitCounter = 0f;
                 _waiting = true;
 
-                _currentWaypointIndex = (_currentWaypointIndex +1 )% _wayPoints.Length;
+                _currentWaypointIndex = (_currentWaypointIndex + 1) % _wayPoints.Length;
                 _animator.SetBool("Walking", false);
 
             }
