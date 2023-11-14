@@ -5,57 +5,70 @@ using UnityEngine;
 
 public class BalloonState : MonoBehaviour
 {
+    public PlayerController PlayerController;
     public Transform CameraArm;
     private Actor _actor;
-    private List<Quaternion> _initialRotations = new List<Quaternion>();
 
+    public float BalloonDuration;
+    public float RotateAngle = 8f;
+    public bool IsGrounded;
+    public float Force = 10000f;
+
+    private Vector3 _moveDir;
 
     void Start()
     {
-        _actor = transform.root.GetComponent<Actor>();
+        PlayerController = GetComponentInParent<PlayerController>();
+        _actor = GetComponentInParent<Actor>();
         CameraArm = transform.GetChild(0).GetChild(0);
-
     }
-
 
     public IEnumerator BalloonShapeOn()
     {
-        // 전 hip 각도 저장
-        for (int i = 0; i < _actor.BodyHandler.BodyParts.Count - 1; i++)
+        float startTime = Time.time;
+        float duration = 2f;
+        while (Time.time - startTime < duration)
         {
-            _initialRotations.Add(_actor.BodyHandler.BodyParts[i].PartTransform.localRotation);
+            float t = (Time.time - startTime) / duration;
+            float scaleValue1 = Mathf.Lerp(1f, 2f, t);
+            float scaleValue2 = Mathf.Lerp(1f, 3f, t);
+            float scaleValue3 = Mathf.Lerp(1f, 4f, t);
+            float scaleValue4 = Mathf.Lerp(1f, 5f, t);
+            float scaleValue5 = Mathf.Lerp(1f, 7f, t);
+
+            _actor.BodyHandler.Head.transform.localScale = new Vector3(scaleValue2, scaleValue1, scaleValue2);
+            _actor.BodyHandler.Chest.transform.localScale = new Vector3(scaleValue3, scaleValue4, scaleValue5);
+            _actor.BodyHandler.Waist.transform.localScale = new Vector3(scaleValue2, scaleValue1, scaleValue4);
+
+            yield return null;
         }
 
-        _actor.BodyHandler.Head.transform.localScale = new Vector3(2f, 2f, 0.8f);
-        _actor.BodyHandler.Chest.transform.localScale = new Vector3(2.5f, 2.5f, 3.3f);
-        _actor.BodyHandler.Waist.transform.localScale = new Vector3(2.5f, 2.5f, 3.3f);
+        PlayerController.isBalloon = true;
 
-        //float startTime = Time.time;
-        //while(Time.time + startTime < 2f)
-        //{
-
-        //}
-
-
-        for (int i = 0; i < _actor.BodyHandler.BodyParts.Count - 1; i++)
+        for (int i = 0; i < 3; i++)
         {
-            _actor.BodyHandler.BodyParts[i].PartRigidbody.useGravity = true;
-            if (i >= 0 && i <= 3) 
-                continue;
-            _actor.BodyHandler.BodyParts[i].PartRigidbody.freezeRotation = false;
+            RigidbodyConstraints constraints = _actor.BodyHandler.BodyParts[i].PartRigidbody.constraints;
+            constraints |= RigidbodyConstraints.FreezeRotationY;
+            constraints |= RigidbodyConstraints.FreezeRotationZ;
+            _actor.BodyHandler.BodyParts[i].PartRigidbody.constraints = constraints;
+        }
+        for (int i = 4; i < 13; i++)
+        {
+            if (i >= 7 && i <= 9) continue;
+            _actor.BodyHandler.BodyParts[i].PartRigidbody.freezeRotation = true;
         }
 
         for (int i = 0; i < _actor.BodyHandler.BodyParts.Count - 1; i++)
         {
             _actor.BodyHandler.BodyParts[i].PartRigidbody.angularVelocity = Vector3.zero;
             _actor.BodyHandler.BodyParts[i].PartRigidbody.velocity = Vector3.zero;
-
-            _actor.BodyHandler.BodyParts[i].PartRigidbody.useGravity = false;
         }
 
-        _actor.BodyHandler.BodyParts[2].AddComponent<LimbCollision>();
+        _actor.BodyHandler.Waist.AddComponent<LimbCollision>();
+        _actor.BodyHandler.Waist.GetComponent<CapsuleCollider>().radius = 0.3f;
+        _actor.BodyHandler.Waist.GetComponent<Collider>().isTrigger = true;
 
-        yield return new WaitForSeconds(5.0f);
+        yield return new WaitForSeconds(BalloonDuration);
 
         BalloonShapeOff();
     }
@@ -66,32 +79,44 @@ public class BalloonState : MonoBehaviour
 
         for (int i = 0; i < _actor.BodyHandler.BodyParts.Count - 1; i++)
         {
-            _actor.BodyHandler.BodyParts[i].PartRigidbody.angularVelocity = Vector3.zero;
-            _actor.BodyHandler.BodyParts[i].PartRigidbody.velocity = Vector3.zero;
-
-            _actor.BodyHandler.BodyParts[i].PartTransform.localRotation = _initialRotations[i];
+            _actor.BodyHandler.BodyParts[i].PartTransform.localRotation = PlayerController.RotationsForBalloon[i];
         }
-
-
-        _actor.BodyHandler.BodyParts[0].transform.localScale = new Vector3(1, 1, 1);
-        _actor.BodyHandler.BodyParts[1].transform.localScale = new Vector3(1, 1, 1);
-        _actor.BodyHandler.BodyParts[2].transform.localScale = new Vector3(1, 1, 1);
 
         for (int i = 0; i < _actor.BodyHandler.BodyParts.Count - 1; i++)
         {
-            _actor.BodyHandler.BodyParts[i].PartRigidbody.useGravity = true;
-            if (i >= 0 && i <= 3) 
-                continue;
+            _actor.BodyHandler.BodyParts[i].PartRigidbody.angularVelocity = Vector3.zero;
+            _actor.BodyHandler.BodyParts[i].PartRigidbody.velocity = Vector3.zero;
+        }
+        _actor.BodyHandler.Head.transform.localScale = new Vector3(1, 1, 1);
+        _actor.BodyHandler.Chest.transform.localScale = new Vector3(1, 1, 1);
+        _actor.BodyHandler.Waist.transform.localScale = new Vector3(1, 1, 1);
+
+        for (int i = 0; i < 3; i++)
+        {
+            RigidbodyConstraints constraints = _actor.BodyHandler.BodyParts[i].PartRigidbody.constraints;
+            constraints &= ~RigidbodyConstraints.FreezeRotationY;
+            constraints &= ~RigidbodyConstraints.FreezeRotationZ;
+            _actor.BodyHandler.BodyParts[i].PartRigidbody.constraints = constraints;
+        }
+        for (int i = 4; i < 13; i++)
+        {
+            if (i >= 7 && i <= 9) continue;
             _actor.BodyHandler.BodyParts[i].PartRigidbody.freezeRotation = false;
         }
-      
 
-        Destroy(_actor.BodyHandler.BodyParts[2].GetComponent<LimbCollision>());
+        Destroy(_actor.BodyHandler.Waist.GetComponent<LimbCollision>());
+        _actor.BodyHandler.Waist.GetComponent<CapsuleCollider>().radius = 0.25f;
+        _actor.BodyHandler.Waist.GetComponent<Collider>().isTrigger = false;
         _actor.PlayerController.isBalloon = false;
     }
 
+    private float _totalAngle = 0f;
+
     public void BalloonMove()
     {
+        PlayerController.BalloonJump = 0;
+        PlayerController.BalloonDrop = false;
+
         for (int i = 0; i < _actor.BodyHandler.BodyParts.Count; i++)
         {
             _actor.BodyHandler.BodyParts[i].PartRigidbody.angularVelocity = Vector3.zero;
@@ -99,25 +124,65 @@ public class BalloonState : MonoBehaviour
 
         Vector3 lookForward = new Vector3(CameraArm.forward.x, 0f, CameraArm.forward.z).normalized;
         Vector3 lookRight = new Vector3(CameraArm.right.x, 0f, CameraArm.right.z).normalized;
-        Vector3 _moveDir = lookForward * _actor.PlayerController.MoveInput.z + lookRight * _actor.PlayerController.MoveInput.x;
+        _moveDir = lookForward * PlayerController.MoveInput.z + lookRight * PlayerController.MoveInput.x;
 
-        _actor.BodyHandler.Hip.PartRigidbody.AddForce(_moveDir.normalized * 100f * 350f * Time.deltaTime);
+        if (PlayerController.MoveInput.z == 1)
+        {
+            _actor.BodyHandler.Hip.PartRigidbody.AddForce(_moveDir * 350f * Time.deltaTime);
+            Vector3 rotateDirX = new Vector3(_moveDir.x, 0, 0);
+            _actor.BodyHandler.Hip.PartTransform.Rotate(rotateDirX, RotateAngle);
+        }
 
-        _actor.BodyHandler.Hip.PartTransform.Rotate(lookForward, 50f);
 
+        if (PlayerController.MoveInput.x == 1)
+        {
+            Vector3 rotateDirZ = new Vector3(0, 0, _moveDir.z);
 
+            if (_totalAngle <= 360f)
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    _actor.BodyHandler.BodyParts[i].PartTransform.Rotate(rotateDirZ, RotateAngle * 0.5f);
+                }
+
+                _totalAngle += RotateAngle;
+            }
+        }
+        else
+            _totalAngle = 0;
     }
 
-    //public void BalloonJump()
-    //{
-    //    float startTime = Time.time;
-    //    float balloonDuration = 2f;
+    public IEnumerator BalloonSpin()
+    {
+        Vector3 lookForward = new Vector3(CameraArm.forward.x, 0f, CameraArm.forward.z).normalized;
+        Vector3 rotateDirZ = new Vector3(0, 0, 1);
+        float startTime = Time.time;
+        float totalAngle = 0f;
 
-    //    while (startTime - Time.time < balloonDuration)
-    //    {
+        while (Time.time - startTime < 2f)
+        {
+            for (int i = 0; i < _actor.BodyHandler.BodyParts.Count; i++)
+            {
+                _actor.BodyHandler.BodyParts[i].PartRigidbody.angularVelocity = Vector3.zero;
+            }
 
-    //    }
-    //    //코루틴
-    //    Jump();
-    //}
+            if (totalAngle <= 360)
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    _actor.BodyHandler.BodyParts[i].PartTransform.Rotate(rotateDirZ, RotateAngle);
+                }
+
+                totalAngle += RotateAngle;
+            }
+            else
+                break;
+
+            yield return new WaitForSeconds(0.02f);
+        }
+
+        // Force : 3만일때 이쁨
+        _actor.BodyHandler.Hip.PartRigidbody.AddForce(lookForward * 1000f * Force * Time.deltaTime);
+
+    }
 }

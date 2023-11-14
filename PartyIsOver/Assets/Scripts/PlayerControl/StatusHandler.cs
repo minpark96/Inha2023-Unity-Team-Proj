@@ -42,9 +42,6 @@ public class StatusHandler : MonoBehaviourPun
     public bool _hasFreeze;
     private bool _hasShock;
     private bool _hasStun;
-    private bool _hasDrunk;
-    private bool _hasBalloon;
-    private bool _hasGhost;
 
    
     [Header("Debuff Duration")]
@@ -184,6 +181,9 @@ public class StatusHandler : MonoBehaviourPun
             case Damage.Stun: // ±âÀý
                 actor.debuffState |= Actor.DebuffState.Stun;
                 break;
+            case Damage.Drunk:
+                actor.debuffState |= Actor.DebuffState.Drunk;
+                break;
         }
     }
 
@@ -224,10 +224,6 @@ public class StatusHandler : MonoBehaviourPun
                         StartCoroutine(Stun(_stunTime));
                     }
                     break;
-                case Actor.DebuffState.Drunk:
-                    break;
-                //case Actor.DebuffState.Balloon:
-                    //break;
                 case Actor.DebuffState.Ghost:
                     break;
             }
