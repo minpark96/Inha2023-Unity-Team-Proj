@@ -7,7 +7,7 @@ using UnityEditor.U2D;
 
 public class CheckEnemyInAttackRange : Node
 {
-    private static int _enemyLayerMask = 1 << 6;
+    private static int _enemyLayerMask = (1 << 26) | (1 << 27) | (1 << 28) | (1 << 29) | (1 << 30) | (1 << 31);
 
     private Transform _transform;
     private Animator _animator;
