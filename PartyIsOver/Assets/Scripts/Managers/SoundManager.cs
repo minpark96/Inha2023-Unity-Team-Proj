@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.Rendering.VirtualTexturing;
 using UnityEngine.SceneManagement;
 
@@ -10,13 +11,21 @@ public class SoundManager
     AudioSource[] _audioSources = new AudioSource[(int)Define.Sound.Maxcount];
     //캐싱 역할
     Dictionary<string,AudioClip> _audioClip = new Dictionary<string, AudioClip>();
+    public AudioMixer audioMixer;
 
     //사운드 오브젝트 생성
     public void Init()
     {
         GameObject root = GameObject.Find("@Sound");
-        if(root == null) 
+
+        SceneManagerEx sceneManagerEx = new SceneManagerEx();
+        string currentSceneName = sceneManagerEx.GetCurrentSceneName();
+        Debug.Log("현재 씬 이름 : " + currentSceneName);
+
+        AudioClip audioClip = null;
+        if (root == null) 
         {
+
             root = new GameObject { name = "@Sound" };
             Object.DontDestroyOnLoad(root);
 
@@ -30,10 +39,17 @@ public class SoundManager
             }
 
             _audioSources[(int)Define.Sound.Bgm].loop = true;
+
+            if (currentSceneName == "Launcher")
+            {
+
+                audioClip = Managers.Resource.Load<AudioClip>("Sounds/Bgm/BongoBoogieMenuLOOPING");
+                _audioSources[(int)Define.Sound.Bgm].clip = audioClip;
+                _audioSources[(int)Define.Sound.Bgm].outputAudioMixerGroup = audioMixer.FindMatchingGroups("Bgm")[0];
+                Debug.Log(audioClip);
+            }
         }
-        SceneManagerEx sceneManagerEx = new SceneManagerEx();
-        string currentSceneName = sceneManagerEx.GetCurrentSceneName();
-        Debug.Log("현재 씬 이름 : " + currentSceneName);
+        
     }
     
     public void Clear()
