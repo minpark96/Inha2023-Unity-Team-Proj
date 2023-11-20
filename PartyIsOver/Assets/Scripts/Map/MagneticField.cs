@@ -53,7 +53,6 @@ public class MagneticField : MonoBehaviour
         }
     }
 
-    [PunRPC]
     IEnumerator FirstPhase()
     {
         yield return new WaitForSeconds(FirstPhaseStartTime);
@@ -73,7 +72,6 @@ public class MagneticField : MonoBehaviour
         StartCoroutine(SecondPhase());
     }
 
-    [PunRPC]
     IEnumerator SecondPhase()
     {
         float startTime = Time.time;
@@ -88,7 +86,7 @@ public class MagneticField : MonoBehaviour
         }
     }
 
-    [PunRPC]
+
     IEnumerator MagneticDamage()
     {
         float startTime = Time.time;
