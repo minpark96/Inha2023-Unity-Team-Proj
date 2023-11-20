@@ -15,34 +15,19 @@ public class BalloonState : MonoBehaviour
     public float Force = 10000f;
 
     private Vector3 _moveDir;
+    private float _originalMass;
 
     void Start()
     {
         PlayerController = GetComponentInParent<PlayerController>();
         _actor = GetComponentInParent<Actor>();
         CameraArm = transform.GetChild(0).GetChild(0);
+
+        _originalMass = _actor.BodyHandler.Hip.PartRigidbody.mass;
     }
 
     public IEnumerator BalloonShapeOn()
     {
-        float startTime = Time.time;
-        float duration = 2f;
-        while (Time.time - startTime < duration)
-        {
-            float t = (Time.time - startTime) / duration;
-            float scaleValue1 = Mathf.Lerp(1f, 2f, t);
-            float scaleValue2 = Mathf.Lerp(1f, 3f, t);
-            float scaleValue3 = Mathf.Lerp(1f, 4f, t);
-            float scaleValue4 = Mathf.Lerp(1f, 5f, t);
-            float scaleValue5 = Mathf.Lerp(1f, 7f, t);
-
-            _actor.BodyHandler.Head.transform.localScale = new Vector3(scaleValue2, scaleValue1, scaleValue2);
-            _actor.BodyHandler.Chest.transform.localScale = new Vector3(scaleValue3, scaleValue4, scaleValue5);
-            _actor.BodyHandler.Waist.transform.localScale = new Vector3(scaleValue2, scaleValue1, scaleValue4);
-
-            yield return null;
-        }
-
         PlayerController.isBalloon = true;
 
         for (int i = 0; i < 3; i++)
@@ -67,6 +52,24 @@ public class BalloonState : MonoBehaviour
         _actor.BodyHandler.Waist.AddComponent<LimbCollision>();
         _actor.BodyHandler.Waist.GetComponent<CapsuleCollider>().radius = 0.3f;
         _actor.BodyHandler.Waist.GetComponent<Collider>().isTrigger = true;
+
+        float startTime = Time.time;
+        float duration = 1f;
+        while (Time.time - startTime < duration)
+        {
+            float t = (Time.time - startTime) / duration;
+            float scaleValue1 = Mathf.Lerp(1f, 2f, t);
+            float scaleValue2 = Mathf.Lerp(1f, 3f, t);
+            float scaleValue3 = Mathf.Lerp(1f, 4f, t);
+            float scaleValue4 = Mathf.Lerp(1f, 5f, t);
+            float scaleValue5 = Mathf.Lerp(1f, 7f, t);
+
+            _actor.BodyHandler.Head.transform.localScale = new Vector3(scaleValue2, scaleValue1, scaleValue2);
+            _actor.BodyHandler.Chest.transform.localScale = new Vector3(scaleValue3, scaleValue4, scaleValue5);
+            _actor.BodyHandler.Waist.transform.localScale = new Vector3(scaleValue2, scaleValue1, scaleValue4);
+
+            yield return null;
+        }
 
         yield return new WaitForSeconds(BalloonDuration);
 
@@ -114,9 +117,6 @@ public class BalloonState : MonoBehaviour
 
     public void BalloonMove()
     {
-        PlayerController.BalloonJump = 0;
-        PlayerController.BalloonDrop = false;
-
         for (int i = 0; i < _actor.BodyHandler.BodyParts.Count; i++)
         {
             _actor.BodyHandler.BodyParts[i].PartRigidbody.angularVelocity = Vector3.zero;
@@ -126,19 +126,21 @@ public class BalloonState : MonoBehaviour
         Vector3 lookRight = new Vector3(CameraArm.right.x, 0f, CameraArm.right.z).normalized;
         _moveDir = lookForward * PlayerController.MoveInput.z + lookRight * PlayerController.MoveInput.x;
 
+
         if (PlayerController.MoveInput.z == 1)
         {
             _actor.BodyHandler.Hip.PartRigidbody.AddForce(_moveDir * 350f * Time.deltaTime);
             Vector3 rotateDirX = new Vector3(_moveDir.x, 0, 0);
-            _actor.BodyHandler.Hip.PartTransform.Rotate(rotateDirX, RotateAngle);
+            _actor.BodyHandler.Hip.PartTransform.Rotate(rotateDirX, 6);
         }
 
-
-        if (PlayerController.MoveInput.x == 1)
+        if (PlayerController.MoveInput.x == 1 || PlayerController.MoveInput.x == -1)
         {
+            _actor.BodyHandler.Hip.PartRigidbody.mass = 18;
+
             Vector3 rotateDirZ = new Vector3(0, 0, _moveDir.z);
 
-            if (_totalAngle <= 360f)
+            if (_totalAngle <= 180f)
             {
                 for (int i = 0; i < 4; i++)
                 {
@@ -149,7 +151,10 @@ public class BalloonState : MonoBehaviour
             }
         }
         else
+        {
             _totalAngle = 0;
+            _actor.BodyHandler.Hip.PartRigidbody.mass = _originalMass;
+        }
     }
 
     public IEnumerator BalloonSpin()
@@ -166,7 +171,7 @@ public class BalloonState : MonoBehaviour
                 _actor.BodyHandler.BodyParts[i].PartRigidbody.angularVelocity = Vector3.zero;
             }
 
-            if (totalAngle <= 360)
+            if (totalAngle <= 180)
             {
                 for (int i = 0; i < 4; i++)
                 {

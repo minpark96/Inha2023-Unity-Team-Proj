@@ -176,13 +176,22 @@ public class StatusHandler : MonoBehaviourPun
                 actor.debuffState |= Actor.DebuffState.Burn;
                 break;
             case Damage.Shock: // 감전
-                actor.debuffState |= Actor.DebuffState.Shock;
+                if (actor.debuffState == Actor.DebuffState.Stun || actor.debuffState == Actor.DebuffState.Drunk)
+                    break;
+                else
+                    actor.debuffState |= Actor.DebuffState.Shock;
                 break;
             case Damage.Stun: // 기절
-                actor.debuffState |= Actor.DebuffState.Stun;
+                if (actor.debuffState == Actor.DebuffState.Shock || actor.debuffState == Actor.DebuffState.Drunk)
+                    break;
+                else
+                    actor.debuffState |= Actor.DebuffState.Stun;
                 break;
-            case Damage.Drunk:
-                actor.debuffState |= Actor.DebuffState.Drunk;
+            case Damage.Drunk: // 취함
+                if (actor.debuffState == Actor.DebuffState.Stun || actor.debuffState == Actor.DebuffState.Shock)
+                    break;
+                else
+                    actor.debuffState |= Actor.DebuffState.Drunk;
                 break;
         }
     }
@@ -204,6 +213,10 @@ public class StatusHandler : MonoBehaviourPun
                 case Actor.DebuffState.Burn:
                     if (!_hasBurn)
                         StartCoroutine(Burn(_burnTime));
+                    else
+                    {
+                       
+                    }
                     break;
                 case Actor.DebuffState.Slow:
                     if(!_hasSlow)
@@ -269,8 +282,8 @@ public class StatusHandler : MonoBehaviourPun
             if (Time.time - lastBurnTime >= 1.0f) // 1초간 데미지+액션
             {
                 actor.Health -= _burnDamage;
-                actor.BodyHandler.BodyParts[2].PartRigidbody.AddForce((actor.BodyHandler.Hip.transform.right) * 25, ForceMode.VelocityChange);
-                actor.BodyHandler.BodyParts[3].PartRigidbody.AddForce((actor.BodyHandler.Hip.transform.right) * 25, ForceMode.VelocityChange);
+                actor.BodyHandler.Waist.PartRigidbody.AddForce((actor.BodyHandler.Hip.transform.right) * 25, ForceMode.VelocityChange);
+                actor.BodyHandler.Hip.PartRigidbody.AddForce((actor.BodyHandler.Hip.transform.right) * 25, ForceMode.VelocityChange);
                 lastBurnTime = Time.time;
             }
 

@@ -193,7 +193,7 @@ public class PlayerController : MonoBehaviourPun
     public float NuclearPunching = 0.1f;
     public float NuclearPunchResetPunch = 0.3f;
 
-    public int BalloonJump;
+    public bool BalloonJump;
     public bool BalloonDrop;
 
 
@@ -370,8 +370,11 @@ public class PlayerController : MonoBehaviourPun
                     {
                         if(_actor.debuffState == DebuffState.Balloon)
                         {
-                            if(BalloonJump > 5 && !BalloonDrop)
+                            BalloonDrop = false;
+
+                            if (BalloonJump == true && BalloonDrop == false)
                             {
+                                BalloonJump = false;
                                 BalloonDrop = true;
                                 _bodyHandler.Hip.PartRigidbody.AddForce(Vector3.down * 200000f);
                             }
@@ -418,13 +421,18 @@ public class PlayerController : MonoBehaviourPun
                     if (Input.GetKeyDown(KeyCode.Space))
                     {
                         _actor.actorState = Actor.ActorState.Jump;
+
+                        if (_actor.debuffState == Actor.DebuffState.Balloon)
+                        {
+                            BalloonJump = true;
+                        }
                     }
 
                     if (_actor.debuffState == Actor.DebuffState.Balloon)
                     {
                         if (isBalloon)
                         {
-                            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.D))
+                            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
                             {
                                 MoveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
                             }
@@ -1325,12 +1333,15 @@ public class PlayerController : MonoBehaviourPun
         {
             if(_actor.actorState == Actor.ActorState.Jump)
             {
-                BalloonJump++;
                 for (int i = 0; i < MoveForceJumpAniData.Length; i++)
                 {
                     AniForce(MoveForceJumpAniData, i, Vector3.up);
+                    
                     if (i == 2)
                         AniForce(MoveForceJumpAniData, i, Vector3.down);
+                    else
+                        MoveForceJumpAniData[i].ForcePowerValues[0] = 500f;
+
                 }
                 for (int i = 0; i < MoveAngleJumpAniData.Length; i++)
                 {
@@ -1979,26 +1990,4 @@ public class PlayerController : MonoBehaviourPun
         }
     }
     #endregion
-    public IEnumerator balloon(Side side)
-    {
-        float checkTime = Time.time;
-        checkTime = Time.time;
-
-        while (Time.time - checkTime < 5f)
-        {
-            BalloonSpin(side);
-            yield return new WaitForSeconds(0.01f);
-        }
-        
-    }
-
-    void BalloonSpin(Side side)
-    {
-        AniFrameData[] spins = TestRready1;
-        for (int i = 0; i < spins.Length; i++)
-        {
-            AniForce(spins, i);
-        }
-    }
-
 }
