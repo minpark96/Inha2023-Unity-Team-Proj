@@ -378,13 +378,13 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1904178407}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
+      - m_Target: {fileID: 1695438143}
+        m_TargetAssemblyTypeName: LauncherUI, Assembly-CSharp
+        m_MethodName: LauncherCancel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -907,8 +907,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.39041138, y: 0.39041138}
-  m_SizeDelta: {x: -10.1498, y: -11.7112}
+  m_AnchoredPosition: {x: 1.1795044, y: 67.9483}
+  m_SizeDelta: {x: -114.179, y: -345.6174}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &881147534
 MonoBehaviour:
@@ -958,15 +958,15 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 25
-  m_fontSizeBase: 25
+  m_fontSize: 50
+  m_fontSizeBase: 50
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 1
-  m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -1265,6 +1265,7 @@ GameObject:
   - component: {fileID: 1695438137}
   - component: {fileID: 1695438142}
   - component: {fileID: 1695438141}
+  - component: {fileID: 1695438143}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -1393,6 +1394,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1695438136}
   m_CullTransparentMesh: 1
+--- !u!114 &1695438143
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1695438136}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d89a537f8ffd696409e3e47b4e76bbd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1777593562
 GameObject:
   m_ObjectHideFlags: 0
@@ -1475,7 +1488,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1777593565}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1695438143}
+        m_TargetAssemblyTypeName: LauncherUI, Assembly-CSharp
+        m_MethodName: LauncherQuit
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1777593565
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1755,7 +1780,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1945441098}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1695438143}
+        m_TargetAssemblyTypeName: LauncherUI, Assembly-CSharp
+        m_MethodName: LauncherPopUpCancel
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1945441098
 MonoBehaviour:
   m_ObjectHideFlags: 0

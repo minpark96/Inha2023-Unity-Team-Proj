@@ -21,9 +21,6 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     bool _isConnecting;
     const byte MAX_PLAYERS_PER_ROOM = 6;
 
-    // 일단 넣어 놓은 것, LaucherUI 로 분리해야 함
-    Button _buttonStart;
-    GameObject _controlPanel;
 
     // 프리팹 경로
     string _gameCenterPath = "GameCenter";
@@ -51,8 +48,6 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     public void Connect()
     {
-        _controlPanel.SetActive(false);
-
         if (PhotonNetwork.IsConnected)
         {
             Debug.Log("PUN Basics Tutorial/Launcher: JoinRandomRoom() was called by PUN");
@@ -99,12 +94,6 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
             Screen.SetResolution(800, 480, false);
             PhotonNetwork.AutomaticallySyncScene = true;
-
-            _controlPanel = GameObject.Find("Control Panel");
-            _buttonStart = GameObject.Find("Start Button").transform.GetComponent<Button>();
-
-            _controlPanel.SetActive(true);
-            _buttonStart.onClick.AddListener(Connect);
 
             PhotonNetwork.SerializationRate = 20;
             PhotonNetwork.SendRate = 20;
@@ -162,8 +151,6 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     public override void OnDisconnected(DisconnectCause cause)
     {
-        _controlPanel.SetActive(true);
-
         Debug.LogWarningFormat("PUN Basics Tutorial/Launcher: OnDisconnected() was called by PUN with reason {0}", cause);
         _isConnecting = false;
     }
