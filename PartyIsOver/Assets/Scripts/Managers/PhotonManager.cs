@@ -24,7 +24,6 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     // 일단 넣어 놓은 것, LaucherUI 로 분리해야 함
     Button _buttonStart;
     GameObject _controlPanel;
-    GameObject _progressLabel;
 
     // 프리팹 경로
     string _gameCenterPath = "GameCenter";
@@ -52,7 +51,6 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     public void Connect()
     {
-        _progressLabel.SetActive(true);
         _controlPanel.SetActive(false);
 
         if (PhotonNetwork.IsConnected)
@@ -103,10 +101,8 @@ public class PhotonManager : MonoBehaviourPunCallbacks
             PhotonNetwork.AutomaticallySyncScene = true;
 
             _controlPanel = GameObject.Find("Control Panel");
-            _progressLabel = GameObject.Find("Progress Label");
             _buttonStart = GameObject.Find("Start Button").transform.GetComponent<Button>();
 
-            _progressLabel.SetActive(false);
             _controlPanel.SetActive(true);
             _buttonStart.onClick.AddListener(Connect);
 
@@ -166,7 +162,6 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     public override void OnDisconnected(DisconnectCause cause)
     {
-        _progressLabel.SetActive(false);
         _controlPanel.SetActive(true);
 
         Debug.LogWarningFormat("PUN Basics Tutorial/Launcher: OnDisconnected() was called by PUN with reason {0}", cause);
