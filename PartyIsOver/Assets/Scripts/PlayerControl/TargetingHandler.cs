@@ -4,21 +4,21 @@ using UnityEngine;
 
 public class TargetingHandler : MonoBehaviour
 {
-    private float detectionRadius = 1.5f;
+    private float _detectionRadius = 1.5f;
     public LayerMask layerMask;
     public float maxAngle = 90f; // 180도의 절반 (90도)으로 설정
 
     Collider _nearestCollider;
     private float _nearestDistance;
 
-    BodyHandler _bodyHandler;
+    Actor _actor;
     InteractableObject[] _interactableObjects = new InteractableObject[30];
     InteractableObject _nearestObject;
 
     // Start is called before the first frame update
     void Start()
     {
-        _bodyHandler = GetComponent<BodyHandler>();
+        _actor = GetComponent<Actor>();
     }
 
     // Update is called once per frame
@@ -35,7 +35,7 @@ public class TargetingHandler : MonoBehaviour
         _nearestCollider = null;
         _nearestObject = null;
         _nearestDistance = Mathf.Infinity;
-        Transform chestTransform = _bodyHandler.Chest.transform;
+        Transform chestTransform = _actor.BodyHandler.Chest.transform;
         
         
         //정면벡터
@@ -48,6 +48,11 @@ public class TargetingHandler : MonoBehaviour
         else
             detectionDirection = chestTransform.right;
 
+        float detectionRadius = _detectionRadius;
+        if (_actor.actorState == Actor.ActorState.Jump || _actor.actorState == Actor.ActorState.Fall)
+        {
+            detectionRadius += 1f;
+        }
 
         // 원 안에 콜라이더 검출
         int colliderCount = Physics.OverlapSphereNonAlloc(chestTransform.position, detectionRadius, colliders, layerMask);
@@ -115,7 +120,7 @@ public class TargetingHandler : MonoBehaviour
             return Vector3.zero;
         }
 
-        Vector3 start = _bodyHandler.Chest.transform.position; 
+        Vector3 start = _actor.BodyHandler.Chest.transform.position; 
         Vector3 direction = (collider.transform.position - start).normalized;
         float distance = Vector3.Distance(start, collider.transform.position);
 

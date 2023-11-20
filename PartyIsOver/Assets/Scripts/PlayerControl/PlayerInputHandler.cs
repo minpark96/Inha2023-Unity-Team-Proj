@@ -33,7 +33,7 @@ public class PlayerInputHandler : MonoBehaviour
 
         _actor.PlayerController.OnKeyboardEvent_Move(evt);
 
-        if (_actor.Grab.EquipItem == null)
+        if (_actor.GrabState != Define.GrabState.EquipItem)
         {
             if (_actor.debuffState == DebuffState.Balloon)
                 _actor.PlayerController.OnKeyboardEvent_BalloonSkill(evt);
@@ -49,11 +49,11 @@ public class PlayerInputHandler : MonoBehaviour
         if (_actor.debuffState == DebuffState.Shock || _actor.debuffState == DebuffState.Stun)
             return;
 
-        if (_actor.Grab.EquipItem == null)
+        if (_actor.GrabState != Define.GrabState.EquipItem)
         {
             if (_actor.debuffState != DebuffState.Burn)
             {
-                if (_actor.Grab.isLiftPlayer)
+                if (_actor.GrabState == Define.GrabState.PlayerLift)
                 {
                     _actor.Grab.OnMouseEvent_LiftPlayer(evt);
                     return;

@@ -29,6 +29,14 @@ public class Define
         Object,
     }
 
+    public enum GrabState
+    {
+        None,
+        EquipItem,
+        PlayerLift,
+        Climb,
+    }
+
 
     public enum ItemType
     {
@@ -40,14 +48,7 @@ public class Define
         Potion,
     }
 
-    public enum State
-    {
-        Idle,
-        Move,
-        Roll,
-        Punch,
-        Kick,
-    }
+
 
     public enum Layer
     {
