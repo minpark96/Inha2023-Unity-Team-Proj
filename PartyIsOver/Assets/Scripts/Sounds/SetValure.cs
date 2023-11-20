@@ -13,8 +13,8 @@ public class SetValure : MonoBehaviour
     {
         float sound = audioSlider.value;
 
-        if (sound == -40f) mixer.SetFloat("masterVol", -80);
-        else mixer.SetFloat("masterVol", sound);
+        if (sound == -40f) mixer.SetFloat("MasterVol", -80);
+        else mixer.SetFloat("MasterVol", sound);
     }
 
     public void ToggleAudioVolume()
