@@ -13,12 +13,14 @@ public class Managers : MonoBehaviourPun
     InputManager _input = new InputManager();
     ResourceManager _resource = new ResourceManager();
     SceneManagerEx _scene = new SceneManagerEx();
+    SoundManager _sound = new SoundManager();
     UIManager _ui = new UIManager();
 
     public static DataManager Data { get { return Instance._data; } }
     public static InputManager Input { get { return Instance._input; } }
     public static ResourceManager Resource { get { return Instance._resource; } }
     public static SceneManagerEx Scene { get { return Instance._scene; } }
+    public static SoundManager Sound { get { return Instance._sound; } }
     public static UIManager UI { get { return Instance._ui; } }
 
     private void Awake()
@@ -49,12 +51,16 @@ public class Managers : MonoBehaviourPun
 
             //_instance._data.Init();
             _instance = _go.GetComponent<Managers>();
+            _instance._sound.Init();
         }
     }
 
     public static void Clear()
     {
-        //Scene.Clear();
+        Input.Clear();
+        Sound.Clear();
+        Scene.Clear();
+        UI.Clear();
     }
 
 }
