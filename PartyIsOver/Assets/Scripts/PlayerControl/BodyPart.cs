@@ -4,28 +4,20 @@ using UnityEngine;
 
 public class BodyPart : MonoBehaviour
 {
+    private CollisionHandler _partCollisionHandler;
 
     public Rigidbody PartRigidbody;
-    private CollisionHandler _partCollisionHandler;
     public InteractableObject PartInteractable;
     public ConfigurableJoint PartJoint;
-
     public Transform PartTransform;
 
     private void Awake()
     {
+        _partCollisionHandler = gameObject.AddComponent<CollisionHandler>();
+
         PartRigidbody = GetComponent<Rigidbody>();
         PartInteractable = gameObject.AddComponent<InteractableObject>();
-        _partCollisionHandler = gameObject.AddComponent<CollisionHandler>();
-        PartJoint = gameObject.GetComponent<ConfigurableJoint>();
-
-        PartTransform = gameObject.GetComponent<Transform>();
-    }
-
-
-
-    void PartSetup()
-    {
-            
+        PartJoint = GetComponent<ConfigurableJoint>();
+        PartTransform = GetComponent<Transform>();
     }
 }
