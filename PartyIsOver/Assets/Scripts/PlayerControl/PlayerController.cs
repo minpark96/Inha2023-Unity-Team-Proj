@@ -216,9 +216,6 @@ public class PlayerController : MonoBehaviourPun
     private Vector3 _runVectorForce5 = new Vector3(0f, 0f, 0.4f);
     private Vector3 _runVectorForce10 = new Vector3(0f, 0f, 0.8f);
 
-    private List<float> _xPosSpringAry = new List<float>();
-    private List<float> _yzPosSpringAry = new List<float>();
-
     public List<Quaternion> RotationsForBalloon = new List<Quaternion>();
     private BalloonState _balloonState;
     private DrunkState _drunkState;
@@ -237,10 +234,6 @@ public class PlayerController : MonoBehaviourPun
     Side _readySide = Side.Left;
 
     InteractableObject target;
-    Vector3 _direction;
-    Vector3 _angleDirection;
-    Vector3 _targetDirection;
-
     Rigidbody _childRigidbody;
     Transform[] _children;
     private Dictionary<Transform, Quaternion> _initialRotations = new Dictionary<Transform, Quaternion>();
