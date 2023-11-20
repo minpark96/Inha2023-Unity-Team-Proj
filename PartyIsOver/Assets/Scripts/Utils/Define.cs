@@ -5,6 +5,13 @@ using UnityEngine;
 
 public class Define
 {
+    public enum Effect
+    {
+        Punch,
+        Ice,
+        
+    }
+
     public enum Scene
     {
         Unknown,

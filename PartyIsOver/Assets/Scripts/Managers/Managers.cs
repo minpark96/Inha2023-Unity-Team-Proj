@@ -10,6 +10,7 @@ public class Managers : MonoBehaviourPun
      static Managers Instance { get { return _instance; } }
 
     DataManager _data = new DataManager();
+    EffectManager _effect = new EffectManager();
     InputManager _input = new InputManager();
     ResourceManager _resource = new ResourceManager();
     SceneManagerEx _scene = new SceneManagerEx();
@@ -17,6 +18,7 @@ public class Managers : MonoBehaviourPun
     UIManager _ui = new UIManager();
 
     public static DataManager Data { get { return Instance._data; } }
+    public static EffectManager Effect { get { return Instance._effect; } }
     public static InputManager Input { get { return Instance._input; } }
     public static ResourceManager Resource { get { return Instance._resource; } }
     public static SceneManagerEx Scene { get { return Instance._scene; } }
