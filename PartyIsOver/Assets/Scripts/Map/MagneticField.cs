@@ -13,11 +13,15 @@ public class MagneticField : MonoBehaviour
     public float SecondPhaseDuration = 15f;
     public float FirstPhaseStartTime = 3f;
     public float SecondPhaseStartTime = 3f;
+    public float MagneticFieldDamage = 0.1f;
 
     private float _firstRadius = 35f;
     private float _secondRadius = 22f;
     private float _thirdRadius = 11f;
     private float _radius;
+    private double _distance;
+    private bool _isInside;
+    private bool _repeatFlag = false;
 
     private void Start()
     {
@@ -34,10 +38,19 @@ public class MagneticField : MonoBehaviour
         Vector2 player = new Vector2(Actor.BodyHandler.Hip.transform.position.x, Actor.BodyHandler.Hip.transform.position.z);
         Vector2 map = new Vector2(transform.position.x, transform.position.z);
 
-        double distance = Math.Sqrt(Math.Pow((player.x - map.x), 2) + Math.Pow((player.y - map.y), 2));
+        _distance = Math.Sqrt(Math.Pow((player.x - map.x), 2) + Math.Pow((player.y - map.y), 2));
 
-        if (distance < _radius)
-            Debug.Log("in");
+        if (_distance >= _radius && _repeatFlag == false)
+        {
+            _isInside = false;
+            _repeatFlag = true;
+            StartCoroutine(MagneticDamage());
+        }
+        else if(_distance < _radius)
+        {
+            _isInside = true;
+            _repeatFlag = false;
+        }
     }
 
     [PunRPC]
@@ -75,6 +88,17 @@ public class MagneticField : MonoBehaviour
         }
     }
 
+    [PunRPC]
+    IEnumerator MagneticDamage()
+    {
+        float startTime = Time.time;
 
+        while (!_isInside)
+        {
+            Actor.Health -= MagneticFieldDamage;
+            
+            yield return new WaitForSeconds(1.0f);
+        }
+    }
 
 }

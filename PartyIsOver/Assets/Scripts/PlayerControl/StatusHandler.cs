@@ -213,10 +213,6 @@ public class StatusHandler : MonoBehaviourPun
                 case Actor.DebuffState.Burn:
                     if (!_hasBurn)
                         StartCoroutine(Burn(_burnTime));
-                    else
-                    {
-                       
-                    }
                     break;
                 case Actor.DebuffState.Slow:
                     if(!_hasSlow)
