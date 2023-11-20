@@ -7,7 +7,7 @@ public class TestSound : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        Managers.Sound.Play(audioClip, Define.Sound.Bgm);
     }
 
     // Update is called once per frame
