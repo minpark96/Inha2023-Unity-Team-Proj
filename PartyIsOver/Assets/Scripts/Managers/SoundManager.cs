@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.Rendering.VirtualTexturing;
+using UnityEngine.SceneManagement;
 
 public class SoundManager 
 {
@@ -30,7 +31,9 @@ public class SoundManager
 
             _audioSources[(int)Define.Sound.Bgm].loop = true;
         }
-
+        SceneManagerEx sceneManagerEx = new SceneManagerEx();
+        string currentSceneName = sceneManagerEx.GetCurrentSceneName();
+        Debug.Log("ÇöÀç ¾À ÀÌ¸§ : " + currentSceneName);
     }
     
     public void Clear()
