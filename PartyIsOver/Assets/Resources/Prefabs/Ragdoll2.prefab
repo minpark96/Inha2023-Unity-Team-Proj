@@ -12296,6 +12296,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   actor: {fileID: 0}
   invulnerable: 0
+  _hasFreeze: 0
   _powerUpTime: 3
   _burnTime: 3
   _exhaustedTime: 5
