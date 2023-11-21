@@ -157,7 +157,6 @@ public class Grab : MonoBehaviourPun
         _actor.BodyHandler.Hip.PartRigidbody.AddForce(Vector3.up * 100f, ForceMode.VelocityChange);
         _grabDelayTimer = 0.7f;
 
-        Debug.Log("climbJump");
     }
 
     public void OnMouseEvent_EquipItem(Define.MouseEvent evt)
@@ -272,8 +271,11 @@ public class Grab : MonoBehaviourPun
             EquipItem.GetComponent<Item>().Body.gameObject.SetActive(true);
             RangeWeaponSkin.gameObject.SetActive(false);
             EquipItem.GetComponent<Item>().Owner = null;
+            if (EquipItem.GetComponent<Item>().ItemData.ItemType == ItemType.OneHanded ||
+                EquipItem.GetComponent<Item>().ItemData.ItemType == ItemType.TwoHanded)
+                EquipItem.GetComponent<InteractableObject>().damageModifier = InteractableObject.Damage.Default;
+            EquipItem.GetComponent<Rigidbody>().mass = 10f;
             EquipItem = null;
-
         }
         _grabDelayTimer = 0.5f;
         _isRightGrab = false;
@@ -320,13 +322,12 @@ public class Grab : MonoBehaviourPun
         else//æ∆¿Ã≈€¿Ã æ∆¥“∂ß
         {
             Vector3 dir;
-
             //≈∏∞Ÿ¿Ã ¡§∏È¿Ã æ∆¥“∂ß
             if (_leftSearchTarget != null && !_isLeftGrab)
             {
                 if (_actor.actorState == Actor.ActorState.Jump || _actor.actorState == Actor.ActorState.Fall)
                 {
-                    dir = ((_targetingHandler.FindClosestCollisionPoint(_leftSearchTarget.GetComponent<Collider>()) + Vector3.up)
+                    dir = ((_targetingHandler.FindClosestCollisionPoint(_leftSearchTarget.GetComponent<Collider>()) + Vector3.up*2)
                         - _leftHandRigid.transform.position).normalized;
                 }
                 else
@@ -347,7 +348,7 @@ public class Grab : MonoBehaviourPun
             {
                 if (_actor.actorState == Actor.ActorState.Jump || _actor.actorState == Actor.ActorState.Fall)
                 {
-                    dir = ((_targetingHandler. FindClosestCollisionPoint(_rightSearchTarget.GetComponent<Collider>()) + Vector3.up)
+                    dir = ((_targetingHandler. FindClosestCollisionPoint(_rightSearchTarget.GetComponent<Collider>()) + Vector3.up*2)
                         - _rightHandRigid.transform.position).normalized;
                 }
                 else
@@ -465,6 +466,10 @@ public class Grab : MonoBehaviourPun
             _grabDelayTimer = 0.5f;
             EquipItem = item.transform.root.gameObject;
             EquipItem.GetComponent<Item>().Owner = GetComponent<Actor>();
+            if (EquipItem.GetComponent<Item>().ItemData.ItemType == ItemType.OneHanded || 
+                EquipItem.GetComponent<Item>().ItemData.ItemType == ItemType.TwoHanded)
+                EquipItem.GetComponent<InteractableObject>().damageModifier = EquipItem.GetComponent<Item>().ItemData.UseDamageType;
+            EquipItem.GetComponent<Rigidbody>().mass = 0.1f;
 
             return true;
         }
