@@ -5,8 +5,6 @@ using static Actor;
 using static AniFrameData;
 using static AniAngleData;
 using Photon.Pun;
-using UnityEngine.UIElements;
-using static Grab;
 
 [System.Serializable]
 public class AniFrameData
@@ -1055,7 +1053,6 @@ public class PlayerController : MonoBehaviourPun
     IEnumerator DropKick()
     {
         Transform partTransform = _bodyHandler.Hip.transform;
-        BodyPart currentBodyPart;
         if (!isGrounded)
         {
             for (int i = 0; i < DropAniData.Length; i++)
@@ -1069,9 +1066,8 @@ public class PlayerController : MonoBehaviourPun
                     _bodyHandler.RightThigh.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
                     _bodyHandler.RightLeg.PartInteractable.damageModifier = InteractableObject.Damage.DropKick; //데미지
                     Vector3 dir = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
-                    currentBodyPart = _bodyHandler.RightLeg;
                     AniForce(DropAniData, i, dir);
-                    //photonView.RPC("UpdateDamageModifier", RpcTarget.Others, currentBodyPart, currentBodyPart.PartInteractable.damageModifier);
+                    photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.RightLeg, true);
                 }
                 else if (i == 1)
                 {
@@ -1080,9 +1076,8 @@ public class PlayerController : MonoBehaviourPun
                     _bodyHandler.LeftThigh.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
                     _bodyHandler.LeftLeg.PartInteractable.damageModifier = InteractableObject.Damage.DropKick; //데미지
                     Vector3 dir = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
-                    currentBodyPart = _bodyHandler.LeftLeg;
                     AniForce(DropAniData, i, dir);
-                    //photonView.RPC("UpdateDamageModifier", RpcTarget.Others, currentBodyPart, currentBodyPart.PartInteractable.damageModifier);
+                    photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LeftLeg, true);
                 }
                 else
                 {
@@ -1093,13 +1088,11 @@ public class PlayerController : MonoBehaviourPun
             
 
             yield return new WaitForSeconds(2);
-            _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
+            _actor.StatusHandler.StartCoroutine("RestoreBodySpring", 1);
             _bodyHandler.LeftLeg.PartInteractable.damageModifier = InteractableObject.Damage.Default;
             _bodyHandler.RightLeg.PartInteractable.damageModifier = InteractableObject.Damage.Default;
-            currentBodyPart = _bodyHandler.LeftLeg;
-            //photonView.RPC("UpdateDamageModifier", RpcTarget.Others, currentBodyPart, currentBodyPart.PartInteractable.damageModifier);
-            currentBodyPart = _bodyHandler.RightLeg;
-            //photonView.RPC("UpdateDamageModifier", RpcTarget.Others, currentBodyPart, currentBodyPart.PartInteractable.damageModifier);
+            photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LeftLeg, false);
+            photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.RightLeg, false);
         }
         yield return null;
     }
@@ -1199,24 +1192,29 @@ public class PlayerController : MonoBehaviourPun
     {
 
         Transform partTransform = _bodyHandler.Chest.transform;
-        AniFrameData[] aniFrameDatas = LeftPunchingAniData;
-        Transform transform2 = _bodyHandler.LeftHand.transform;
-        _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
-        _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-        _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-        BodyPart currentBodyPart = _bodyHandler.LeftHand;
+        AniFrameData[] aniFrameDatas;
+        Transform transform2;
 
-        if (side == Side.Right)
+        if (side == Side.Left)
+        {
+            aniFrameDatas = LeftPunchingAniData;
+            transform2 = _bodyHandler.LeftHand.transform;
+            _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+            _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+            _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+
+            photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LeftHand, true);
+        }
+        else
         {
             aniFrameDatas = RightPunchingAniData;
             transform2 = _bodyHandler.RightHand.transform;
             _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
             _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
             _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-            currentBodyPart = _bodyHandler.RightHand;
-        }
 
-        //photonView.RPC("UpdateDamageModifier", RpcTarget.Others, currentBodyPart, currentBodyPart.PartInteractable.damageModifier);
+            photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.RightHand, true);
+        }
 
         for (int i = 0; i < aniFrameDatas.Length; i++)
         {
@@ -1268,21 +1266,24 @@ public class PlayerController : MonoBehaviourPun
         Transform partTransform = _bodyHandler.Chest.transform;
 
         AniAngleData[] aniAngleDatas = LeftPunchResettingAniData;
-        _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
-        _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
-        _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
-        BodyPart currentBodyPart = _bodyHandler.LeftHand;
+        
+        if (side == Side.Left)
+        {
+            _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+            _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+            _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
 
-        if (side == Side.Right)
+            photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LeftHand, false);
+        }
+        else
         {
             aniAngleDatas = RightPunchResettingAniData;
             _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
             _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
             _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
-            currentBodyPart = _bodyHandler.RightHand;
-        }
 
-        //photonView.RPC("UpdateDamageModifier", RpcTarget.Others, currentBodyPart, currentBodyPart.PartInteractable.damageModifier);
+            photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.RightHand, false);
+        }
 
         for (int i = 0; i < aniAngleDatas.Length; i++)
         {
@@ -1662,15 +1663,73 @@ public class PlayerController : MonoBehaviourPun
     #endregion
 
     #region Photon
+
     [PunRPC]
-    private void UpdateDamageModifier(BodyPart bodyPart, InteractableObject.Damage damageType)
+    private void UpdateDamageModifier(int bodyPart, bool isAttack)
     {
-        Debug.Log("[UpdateDamageModifier] Input-bodyPart: " + bodyPart);
-        this._bodyHandler.CurrentBodyPart = bodyPart;
-        Debug.Log("[UpdateDamageModifier] Before-damageType: " + this._bodyHandler.CurrentBodyPart.PartInteractable.damageModifier);
-        this._bodyHandler.CurrentBodyPart.PartInteractable.damageModifier = damageType;
-        Debug.Log("[UpdateDamageModifier] After-damageType: " + this._bodyHandler.CurrentBodyPart.PartInteractable.damageModifier);
+        Debug.Log("[UpdateDamageModifier] isAttack: " + isAttack + ", bodyPart: " + bodyPart);
+
+        switch((Define.BodyPart)bodyPart)
+        {
+            case Define.BodyPart.LeftFoot:
+                if (isAttack)
+                    this._bodyHandler.LeftFoot.PartInteractable.damageModifier = InteractableObject.Damage.DropKick;
+                else
+                    this._bodyHandler.LeftFoot.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+                break;
+            case Define.BodyPart.RightFoot:
+                if (isAttack)
+                    this._bodyHandler.RightFoot.PartInteractable.damageModifier = InteractableObject.Damage.DropKick;
+                else
+                    this._bodyHandler.RightFoot.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+                break;
+            case Define.BodyPart.LeftLeg:
+                if (isAttack)
+                    this._bodyHandler.LeftLeg.PartInteractable.damageModifier = InteractableObject.Damage.DropKick;
+                else
+                    this._bodyHandler.LeftLeg.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+                break;
+            case Define.BodyPart.RightLeg: 
+                if (isAttack)
+                    this._bodyHandler.RightLeg.PartInteractable.damageModifier = InteractableObject.Damage.DropKick;
+                else
+                    this._bodyHandler.RightLeg.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+                break;
+            case Define.BodyPart.LeftThigh: 
+                break;
+            case Define.BodyPart.RightThigh: 
+                break;
+            case Define.BodyPart.Hip: 
+                break;
+            case Define.BodyPart.Waist: 
+                break;
+            case Define.BodyPart.Chest: 
+                break;
+            case Define.BodyPart.Head: 
+                break;
+            case Define.BodyPart.LeftArm: 
+                break;
+            case Define.BodyPart.RightArm: 
+                break;
+            case Define.BodyPart.LeftForeArm: 
+                break;
+            case Define.BodyPart.RightForeArm: 
+                break;
+            case Define.BodyPart.LeftHand:
+                if (isAttack)
+                    this._bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+                else
+                    this._bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+                break;
+            case Define.BodyPart.RightHand:
+                if (isAttack)
+                    this._bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+                else
+                    this._bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+                break;
+        }
     }
+
     #endregion
 
     #region ItemTwoHand
