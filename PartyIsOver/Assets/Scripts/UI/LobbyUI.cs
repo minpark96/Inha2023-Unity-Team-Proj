@@ -5,7 +5,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
 
-public class LobbyManager : MonoBehaviourPunCallbacks
+public class LobbyUI : MonoBehaviourPunCallbacks
 {
     // : Start
     public Text RoomName;
@@ -37,30 +37,43 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
 
 
-    // Lobby Panel
+    
 
 
     // Room Panel
 
 
 
-    // Create Room Panel
     public GameObject CreateRoomPanel;
-    public void OnClickOK()
-    {
-        CreateRoomPanel.SetActive(false);
-        // 방만들기
-    }
-
-    public void OnClickCancel()
-    {
-        CreateRoomPanel.SetActive(false);
-    }
-
+    public Sprite PrivateOn;
+    public Sprite PrivateOff;
+    public Image PrivateButton;
     public InputField RoomInputField;
 
+    private bool _isClicked;
+
+    // Lobby Panel
+    public void OnClickCreatePopup()
+    {
+        CreateRoomPanel.SetActive(true);
+    }
+
+    public void OnClickRandomJoin()
+    {
+        PhotonNetwork.JoinRandomRoom();
+    }
+
+
+    
+
+
+
+
+    #region Create Room Panel
     public void OnClickCreate()
     {
+        CreateRoomPanel.SetActive(false);
+
         if (RoomInputField.text.Length >= 1)
         {
             PhotonNetwork.CreateRoom(RoomInputField.text, new RoomOptions() { MaxPlayers = 6 });
@@ -68,11 +81,10 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         }
     }
 
-
-    public Sprite PrivateOn;
-    public Sprite PrivateOff;
-    public Image PrivateButton;
-    private bool _isClicked;
+    public void OnClickCancel()
+    {
+        CreateRoomPanel.SetActive(false);
+    }
 
     public void OnClickPrivate()
     {
@@ -84,14 +96,18 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             PrivateButton.sprite = PrivateOff;
     }
 
+    #endregion
+
+
+
+
+
 
 
     private void Start()
     {
-        PhotonNetwork.JoinLobby();
+        //PhotonNetwork.JoinLobby();
         LobbyPanel.SetActive(true);
-        RoomPanel.SetActive(false);
-
     }
 
    
@@ -141,7 +157,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
                 continue;
 
             RoomItem newRoom = Instantiate(RoomItemPrefab, ContentObject);
-            newRoom.SetRoomName(room.Name);
+            newRoom.SetRoomName(room.Name); 
             RoomItemsList.Add(newRoom);
         }
     }

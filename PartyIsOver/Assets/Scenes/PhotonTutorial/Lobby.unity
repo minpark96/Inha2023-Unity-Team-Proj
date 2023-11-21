@@ -160,8 +160,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 18.543013, y: -3.1315}
-  m_SizeDelta: {x: 71.583, y: 28.947}
+  m_AnchoredPosition: {x: 18.543013, y: -0.998}
+  m_SizeDelta: {x: 71.583, y: 24.68}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &38851138
 MonoBehaviour:
@@ -801,7 +801,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &472970091
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1114,7 +1114,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -80.091, y: -36.7}
+  m_AnchoredPosition: {x: -71.19, y: -36.7}
   m_SizeDelta: {x: 113.91, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &594752580
@@ -1550,7 +1550,7 @@ GameObject:
   - component: {fileID: 798856091}
   - component: {fileID: 798856090}
   m_Layer: 0
-  m_Name: LobbyManager
+  m_Name: LobbyUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1577,11 +1577,11 @@ MonoBehaviour:
   PlayerItemPrefab: {fileID: 5657058903822321688, guid: e67e2728ce7aed842bb9dc2021594fc2, type: 3}
   PlayerItemParent: {fileID: 1908237692}
   PlayButton: {fileID: 586851172}
-  CreateRoomPanel: {fileID: 0}
-  RoomInputField: {fileID: 1324513375}
+  CreateRoomPanel: {fileID: 472970090}
   PrivateOn: {fileID: 21300000, guid: 1e45412e224bec74b99e9e3d2be3383e, type: 3}
   PrivateOff: {fileID: 21300000, guid: 0622c765a8d55254fb561f5abd6ad978, type: 3}
   PrivateButton: {fileID: 1589663758}
+  RoomInputField: {fileID: 1324513375}
 --- !u!4 &798856091
 Transform:
   m_ObjectHideFlags: 0
@@ -1632,7 +1632,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -80.091, y: 36}
+  m_AnchoredPosition: {x: -71.19, y: 36}
   m_SizeDelta: {x: 113.91, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &816324624
@@ -2562,7 +2562,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1377758350}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 798856090}
+        m_TargetAssemblyTypeName: LobbyManager, Assembly-CSharp
+        m_MethodName: OnClickRandomJoin
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1377758350
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2683,7 +2695,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1428641766}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 798856090}
+        m_TargetAssemblyTypeName: LobbyManager, Assembly-CSharp
+        m_MethodName: OnClickCreatePopup
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1428641766
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2825,7 +2849,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -80.092, y: 0}
+  m_AnchoredPosition: {x: -71.19, y: 0}
   m_SizeDelta: {x: 113.909, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1450971883
@@ -2932,7 +2956,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!65 &1550028759
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3095,7 +3119,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1216588443}
   m_Direction: 2
   m_Value: 0
-  m_Size: 1
+  m_Size: 0.99965674
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3253,7 +3277,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 29.2, y: -15.68}
+  m_AnchoredPosition: {x: 29.2, y: -17.813}
   m_SizeDelta: {x: 142.64, y: 60.306}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1589663758
@@ -3482,7 +3506,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 798856090}
         m_TargetAssemblyTypeName: LobbyManager, Assembly-CSharp
-        m_MethodName: OnClickOK
+        m_MethodName: OnClickCreate
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3692,7 +3716,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8230766273605467533, guid: 413a1d22819f431ebb3ff91a05364000, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8751161469425723191, guid: 413a1d22819f431ebb3ff91a05364000, type: 3}
       propertyPath: m_RootOrder
@@ -3817,7 +3841,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.0002569668}
+  m_AnchoredPosition: {x: 0, y: 0.000024949048}
   m_SizeDelta: {x: -13.855, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1794223502

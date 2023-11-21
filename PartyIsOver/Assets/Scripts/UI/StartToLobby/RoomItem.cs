@@ -6,11 +6,11 @@ using UnityEngine.UI;
 public class RoomItem : MonoBehaviour
 {
     public Text RoomName;
-    LobbyManager Manager;
+    LobbyUI Lobby;
 
     private void Start()
     {
-        Manager = FindObjectOfType<LobbyManager>();
+        Lobby = FindObjectOfType<LobbyUI>();
     }
 
     public void SetRoomName(string roomName)
@@ -20,7 +20,7 @@ public class RoomItem : MonoBehaviour
 
     public void OnClickItem()
     {
-        Manager.JoinRoom(RoomName.text);
+        Lobby.JoinRoom(RoomName.text);
     }
 
 

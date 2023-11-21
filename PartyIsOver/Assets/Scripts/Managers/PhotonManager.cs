@@ -17,15 +17,14 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     static PhotonManager p_instance;
 
-    string _gameVersion = "1";
-    bool _isConnecting;
     const byte MAX_PLAYERS_PER_ROOM = 6;
 
+    protected bool _isConnecting;
 
     // 프리팹 경로
     string _gameCenterPath = "GameCenter";
 
-    string _roomSceneName = "Room";
+    protected string _roomSceneName = "Main";
 
     #endregion
 
@@ -46,32 +45,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     #region Public Methods
 
-    public void Connect()
-    {
-        if (PhotonNetwork.IsConnected)
-        {
-            Debug.Log("PUN Basics Tutorial/Launcher: JoinRandomRoom() was called by PUN");
-
-            // 일단 Room, Join Lobby가 맞는듯
-            //PhotonNetwork.JoinRandomRoom();
-             PhotonNetwork.JoinLobby();
-        }
-        else
-        {
-            _isConnecting = PhotonNetwork.ConnectUsingSettings();
-            PhotonNetwork.GameVersion = _gameVersion;
-        }
-
-        SceneManagerEx sceneManagerEx = new SceneManagerEx();
-        string currentSceneName = sceneManagerEx.GetCurrentSceneName();
-        if (currentSceneName == "Room")
-        {
-            AudioSource[] _audioSources = new AudioSource[(int)Define.Sound.Maxcount];
-            AudioClip audioClip = Managers.Resource.Load<AudioClip>("Sounds/Bgm/BongoBoogieMenuLOOPING");
-            _audioSources[(int)Define.Sound.Bgm].clip = audioClip;
-            Managers.Sound.Play(audioClip, Define.Sound.Bgm);
-        }
-    }
+   
 
     public void LeaveRoom()
     {
@@ -118,11 +92,20 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         }
     }
 
-    void JoinLobby()
+
+    protected IEnumerator LoadAsyncScene(string sceneName)
     {
-        Debug.Log("[JoinLobby()] Load Lobby Scene");
-        SceneManager.LoadScene(1);
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
+
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
+
+        //Debug.LogFormat("[LoadAsyncScene()] Scene {0} Loaded", SceneManagerHelper.ActiveSceneName);
+        InstantiateGameCenter();
     }
+
 
     void InstantiateGameCenter()
     {
@@ -133,19 +116,6 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         }
     }
 
-    IEnumerator LoadAsyncScene(string sceneName)
-    {
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
-
-        while (!asyncLoad.isDone)
-        {
-            yield return null;
-        }
-
-        //Debug.LogFormat("[LoadAsyncScene()] Scene {0} Loaded", SceneManagerHelper.ActiveSceneName);
-
-        InstantiateGameCenter();
-    }
 
     #endregion
 
@@ -155,7 +125,8 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     {
         if (_isConnecting)
         {
-            PhotonNetwork.JoinRandomRoom();
+            //PhotonNetwork.JoinRandomRoom();
+            PhotonNetwork.JoinLobby();
             _isConnecting = false;
         }
     }
