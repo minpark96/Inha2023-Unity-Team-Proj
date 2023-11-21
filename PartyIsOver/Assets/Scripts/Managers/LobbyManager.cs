@@ -71,7 +71,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     public Sprite PrivateOn;
     public Sprite PrivateOff;
-    public Sprite PrivateButton;
+    public Image PrivateButton;
     private bool _isClicked;
 
     public void OnClickPrivate()
@@ -79,9 +79,9 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         _isClicked = !_isClicked;
 
         if(_isClicked)
-            PrivateButton = PrivateOn;
+            PrivateButton.sprite = PrivateOn;
         else
-            PrivateButton = PrivateOff;
+            PrivateButton.sprite = PrivateOff;
     }
 
 
