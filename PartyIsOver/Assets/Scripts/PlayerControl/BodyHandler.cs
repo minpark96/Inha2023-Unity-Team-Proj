@@ -30,9 +30,6 @@ public class BodyHandler : MonoBehaviour
 
     public BodyPart Ball;
 
-    // PunRPC¿ë
-    public BodyPart CurrentBodyPart;
-
     //public Transform Spring;
 
     private bool _isSetting = false;
