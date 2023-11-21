@@ -29,23 +29,26 @@ public class Define
         Object,
     }
 
+    public enum GrabState
+    {
+        None,
+        EquipItem,
+        PlayerLift,
+        Climb,
+    }
+
 
     public enum ItemType
     {
+        None,
         OneHanded,
         TwoHanded,
+        Gravestone,
         Ranged,
         Potion,
     }
 
-    public enum State
-    {
-        Idle,
-        Move,
-        Roll,
-        Punch,
-        Kick,
-    }
+
 
     public enum Layer
     {

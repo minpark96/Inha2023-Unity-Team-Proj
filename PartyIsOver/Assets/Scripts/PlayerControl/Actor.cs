@@ -2,6 +2,7 @@ using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Define;
 
 public class Actor : MonoBehaviourPun, IPunObservable
 {
@@ -47,6 +48,8 @@ public class Actor : MonoBehaviourPun, IPunObservable
         Ghost =     0x200,
     }
 
+    public GrabState GrabState = GrabState.None; 
+
     public float HeadMultiple = 1.5f;
     public float ArmMultiple = 0.8f;
     public float HandMultiple = 0.8f;
@@ -80,13 +83,13 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
     public void StatusChangeEventInvoke()
     {
-        Debug.Log("StatusChangeEventInvoke()");
+        //Debug.Log("StatusChangeEventInvoke()");
 
         if (OnPlayerStatusChanges == null)
             Debug.Log(photonView.ViewID + " ¿Ã∫•∆Æ null");
 
         //Debug.Log("_health: " + _health + " debuffState: " + debuffState + " photonView.ViewID: " + photonView.ViewID);
-        OnPlayerStatusChanges(_health, _stamina, actorState, debuffState, photonView.ViewID);
+        //OnPlayerStatusChanges(_health, _stamina, actorState, debuffState, photonView.ViewID);
     }
 
     private void Awake()
