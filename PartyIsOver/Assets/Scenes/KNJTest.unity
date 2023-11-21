@@ -1336,6 +1336,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ragdoll2
       objectReference: {fileID: 0}
+    - target: {fileID: 5873236424662451676, guid: a9a6ccdf5d9f8b74093632604d2ad297, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5878509405600198233, guid: a9a6ccdf5d9f8b74093632604d2ad297, type: 3}
       propertyPath: layerMask.m_Bits
       value: 67110208
@@ -4434,6 +4438,10 @@ PrefabInstance:
     - target: {fileID: 5873236424662451676, guid: a9a6ccdf5d9f8b74093632604d2ad297, type: 3}
       propertyPath: m_Name
       value: Ragdoll2 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5873236424662451676, guid: a9a6ccdf5d9f8b74093632604d2ad297, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5878509405600198232, guid: a9a6ccdf5d9f8b74093632604d2ad297, type: 3}
       propertyPath: isAI
@@ -9172,7 +9180,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 639247019946773269, guid: 5582bd0b2592b2d47ae0ef2e4ef206c0, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 639247019946773269, guid: 5582bd0b2592b2d47ae0ef2e4ef206c0, type: 3}
       propertyPath: m_LocalScale.x
@@ -26939,7 +26947,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Params:
     maxConvexHulls: 128
-    resolution: 6400000
+    resolution: 4000000
     concavity: 0
     planeDownsampling: 4
     convexhullApproximation: 4
@@ -33400,6 +33408,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -8107050665031353251, guid: da320d57a6643e3479003d4664c324b0, type: 3}
+      propertyPath: sceneViewId
+      value: 35
+      objectReference: {fileID: 0}
     - target: {fileID: 7066956456343087048, guid: da320d57a6643e3479003d4664c324b0, type: 3}
       propertyPath: m_RootOrder
       value: 5
@@ -33410,11 +33422,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7066956456343087048, guid: da320d57a6643e3479003d4664c324b0, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 13.7
+      value: 9.89
       objectReference: {fileID: 0}
     - target: {fileID: 7066956456343087048, guid: da320d57a6643e3479003d4664c324b0, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 416.34198
+      value: 422.251
       objectReference: {fileID: 0}
     - target: {fileID: 7066956456343087048, guid: da320d57a6643e3479003d4664c324b0, type: 3}
       propertyPath: m_LocalRotation.w
