@@ -2,6 +2,7 @@ using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Define;
 
 public class Actor : MonoBehaviourPun, IPunObservable
 {
@@ -46,6 +47,8 @@ public class Actor : MonoBehaviourPun, IPunObservable
         Balloon =   0x100, 
         Ghost =     0x200,
     }
+
+    public GrabState GrabState = GrabState.None; 
 
     public float HeadMultiple = 1.5f;
     public float ArmMultiple = 0.8f;

@@ -21,8 +21,7 @@ public class Grab : MonoBehaviourPun
     bool _isRightGrab = false;
     [SerializeField]
     bool _isLeftGrab = false;
-    [SerializeField]
-    public bool isLiftPlayer = false;
+
 
     [SerializeField]
     private float _throwingForce = 40f;
@@ -52,9 +51,6 @@ public class Grab : MonoBehaviourPun
     private ConfigurableJoint _jointRightUpperArm;
     private ConfigurableJoint _jointChest;
 
-    Vector3 targetPosition;
-
-    
 
     public GameObject CollisionObject;
 
@@ -96,18 +92,44 @@ public class Grab : MonoBehaviourPun
     void Update()
     {
         _grabDelayTimer -= Time.deltaTime;
-        PlayerLift();
-
+        GrabStateCheck();
 
     }
-    void PlayerLift()
+
+    void GrabStateCheck()
+    {
+        PlayerLiftCheck();
+        
+        if(EquipItem != null)
+        {
+            _actor.GrabState = GrabState.EquipItem;
+            return;
+        }
+        ClimbCheck();
+    }
+
+
+    void ClimbCheck()
+    {
+        if (_isRightGrab && _isLeftGrab && LeftGrabObject != null && RightGrabObject != null)
+        {
+            //나중에 아이템이나 플레이어가 아닌 오브젝트의 Layer를 ClimbLayer 등으로 통일하고 밑의 조건 바꿀 수 있음
+            if(LeftGrabObject.GetComponent<CollisionHandler>() == null && RightGrabObject.GetComponent<CollisionHandler>() == null
+                && LeftGrabObject.GetComponent<Item>() == null && RightGrabObject.GetComponent<Item>() == null)
+            {
+                _actor.GrabState = GrabState.Climb;
+            }
+        }
+    }
+
+    void PlayerLiftCheck()
     {
         if (_isRightGrab && _isLeftGrab && LeftGrabObject != null && RightGrabObject != null)
         {
             if (LeftGrabObject.GetComponent<CollisionHandler>() != null &&
                 RightGrabObject.GetComponent<CollisionHandler>() != null)
             {
-                isLiftPlayer = true;
+                _actor.GrabState = GrabState.PlayerLift;
 
                 AlignToVector(_actor.BodyHandler.LeftArm.PartRigidbody, _actor.BodyHandler.LeftArm.PartTransform.forward, -_actor.BodyHandler.Waist.PartTransform.forward + _actor.BodyHandler.Chest.PartTransform.right / 2f + -_actor.PlayerController.MoveInput / 8f, 0.01f, 8f);
                 AlignToVector(_actor.BodyHandler.LeftForearm.PartRigidbody, _actor.BodyHandler.LeftForearm.PartTransform.forward, -_actor.BodyHandler.Waist.PartTransform.forward, 0.01f, 8f);
@@ -125,6 +147,18 @@ public class Grab : MonoBehaviourPun
         }
     }
 
+    public void Climb()
+    {
+        GrabReset();
+        //_rightHandRigid.AddForce(_rightHandRigid.transform.position + Vector3.down * 80f);
+        //_leftHandRigid.AddForce(_rightHandRigid.transform.position + Vector3.down * 80f);
+
+        
+        _actor.BodyHandler.Hip.PartRigidbody.AddForce(Vector3.up * 100f, ForceMode.VelocityChange);
+        _grabDelayTimer = 0.7f;
+
+        Debug.Log("climbJump");
+    }
 
     public void OnMouseEvent_EquipItem(Define.MouseEvent evt)
     {
@@ -246,7 +280,8 @@ public class Grab : MonoBehaviourPun
         _isLeftGrab = false;
         RightGrabObject = null;
         LeftGrabObject = null;
-        isLiftPlayer = false;
+        _actor.GrabState = GrabState.None;
+
 
         DestroyJoint();
     }
@@ -284,11 +319,21 @@ public class Grab : MonoBehaviourPun
         }
         else//아이템이 아닐때
         {
+            Vector3 dir;
+
             //타겟이 정면이 아닐때
             if (_leftSearchTarget != null && !_isLeftGrab)
             {
-                Vector3 dir = _targetingHandler.
-                    FindClosestCollisionPoint(_leftSearchTarget.GetComponent<Collider>()) - _leftHandRigid.transform.position;
+                if (_actor.actorState == Actor.ActorState.Jump || _actor.actorState == Actor.ActorState.Fall)
+                {
+                    dir = ((_targetingHandler.FindClosestCollisionPoint(_leftSearchTarget.GetComponent<Collider>()) + Vector3.up)
+                        - _leftHandRigid.transform.position).normalized;
+                }
+                else
+                {
+                    dir = (_targetingHandler.FindClosestCollisionPoint(_leftSearchTarget.GetComponent<Collider>())
+                        - _leftHandRigid.transform.position).normalized;
+                }
 
                 _leftHandRigid.AddForce(dir * 80f);
                 if(HandCollisionCheck(Side.Left))
@@ -300,9 +345,16 @@ public class Grab : MonoBehaviourPun
 
             if(_rightSearchTarget != null && !_isRightGrab)
             {
-                Vector3 dir = _targetingHandler.
-                    FindClosestCollisionPoint(_rightSearchTarget.GetComponent<Collider>()) - _rightHandRigid.transform.position;
-                
+                if (_actor.actorState == Actor.ActorState.Jump || _actor.actorState == Actor.ActorState.Fall)
+                {
+                    dir = ((_targetingHandler. FindClosestCollisionPoint(_rightSearchTarget.GetComponent<Collider>()) + Vector3.up)
+                        - _rightHandRigid.transform.position).normalized;
+                }
+                else
+                {
+                    dir = (_targetingHandler.FindClosestCollisionPoint(_rightSearchTarget.GetComponent<Collider>())
+                        - _rightHandRigid.transform.position).normalized;
+                }
 
                 _rightHandRigid.AddForce(dir * 80f);
                 if (HandCollisionCheck(Side.Right))
@@ -324,7 +376,7 @@ public class Grab : MonoBehaviourPun
             case ItemType.OneHanded:
                 {
                     Vector3 dir = item.OneHandedPos.position - _rightHandRigid.transform.position;
-                    _rightHandRigid.AddForce(dir * 80f);
+                    _rightHandRigid.AddForce(dir.normalized * 80f);
 
                     if (IsHoldingItem(item, Side.Right))
                         ItemRotate(item.transform, false);
@@ -353,7 +405,7 @@ public class Grab : MonoBehaviourPun
             case ItemType.Potion:
                 {
                     Vector3 dir = item.OneHandedPos.position - _rightHandRigid.transform.position;
-                    _rightHandRigid.AddForce(dir * 80f);
+                    _rightHandRigid.AddForce(dir.normalized * 80f);
 
                     if (IsHoldingItem(item, Side.Right))
                         ItemRotate(item.transform, false);
@@ -373,10 +425,10 @@ public class Grab : MonoBehaviourPun
         if (ItemDirCheck(item))
         {
             Vector3 dir = item.OneHandedPos.position - _rightHandRigid.transform.position;
-            _rightHandRigid.AddForce(dir * 90f);
+            _rightHandRigid.AddForce(dir.normalized * 90f);
 
             dir = item.TwoHandedPos.position - _leftHandRigid.transform.position;
-            _leftHandRigid.AddForce(dir * 90f);
+            _leftHandRigid.AddForce(dir.normalized * 90f);
 
             if (IsHoldingItem(item, Side.Both))
                 ItemRotate(item.transform, true);
@@ -386,10 +438,10 @@ public class Grab : MonoBehaviourPun
         else
         {
             Vector3 dir = item.TwoHandedPos.position - _rightHandRigid.transform.position;
-            _rightHandRigid.AddForce(dir * 90f);
+            _rightHandRigid.AddForce(dir.normalized * 90f);
 
             dir = item.OneHandedPos.position - _leftHandRigid.transform.position;
-            _leftHandRigid.AddForce(dir * 90f);
+            _leftHandRigid.AddForce(dir.normalized * 90f);
 
             if (IsHoldingItem(item, Side.Both))
                 ItemRotate(item.transform, false);
