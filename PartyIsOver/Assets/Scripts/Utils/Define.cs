@@ -5,6 +5,25 @@ using UnityEngine;
 
 public class Define
 {
+    public enum BodyPart
+    {
+        LeftFoot,
+        RightFoot,
+        LeftLeg,
+        RightLeg,
+        LeftThigh,
+        RightThigh,
+        Hip,
+        Waist,
+        Chest,
+        Head,
+        LeftArm,
+        RightArm,
+        LeftForeArm,
+        RightForeArm,
+        LeftHand,
+        RightHand,
+    }
     public enum Effect
     {
         Punch,
