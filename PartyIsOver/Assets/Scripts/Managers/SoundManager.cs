@@ -36,7 +36,6 @@ public class SoundManager
                 _audioSources[i] = go.AddComponent<AudioSource>();
                 go.transform.parent = root.transform;
             }
-
             _audioSources[(int)Define.Sound.Bgm].loop = true;
         }
 
@@ -46,7 +45,6 @@ public class SoundManager
             _audioSources[(int)Define.Sound.Bgm].clip = audioClip;
             Managers.Sound.Play(audioClip, Define.Sound.Bgm);
         }
-
     }
     public AudioSource GetBgmAudioSource()
     {
@@ -93,7 +91,7 @@ public class SoundManager
     }
 
     //방금 전에 사용한 내용이 중복되면 Resource로 찾지 않고 캐싱을 하여 사용하여 더 빠르게 사용한다.
-    AudioClip GetOrAddAudioClip(string path , Define.Sound type = Define.Sound.Effect)
+    public AudioClip GetOrAddAudioClip(string path , Define.Sound type = Define.Sound.Effect)
     {
         if (path.Contains("Sounds/") == false)
             path = $"Sounds/{path}";

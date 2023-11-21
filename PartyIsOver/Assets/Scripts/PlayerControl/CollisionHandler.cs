@@ -1,6 +1,7 @@
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using static InteractableObject;
 
@@ -76,6 +77,9 @@ public class CollisionHandler : MonoBehaviourPun
                     if (collisionInteractable != null)
                     {
                         actor.StatusHandler.AddDamage(collisionInteractable.damageModifier, damage, collisionCollider.gameObject);
+                        string path = "Sounds/Effect/SFX_ArrowShot_Hit";
+                        AudioClip audioClip = Managers.Sound.GetOrAddAudioClip(path, Define.Sound.Effect);
+                        Managers.Sound.Play(audioClip);
                     }
                     else
                     {
