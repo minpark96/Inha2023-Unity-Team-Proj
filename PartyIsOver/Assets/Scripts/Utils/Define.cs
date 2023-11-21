@@ -5,6 +5,13 @@ using UnityEngine;
 
 public class Define
 {
+    public enum Effect
+    {
+        Punch,
+        Ice,
+        
+    }
+
     public enum Scene
     {
         Unknown,
@@ -12,6 +19,13 @@ public class Define
         Start,
         Lobby,
         Game,
+    }
+
+    public enum Sound
+    {
+        Bgm,
+        Effect,
+        Maxcount,
     }
 
     public enum WorldObject
@@ -55,13 +69,6 @@ public class Define
 
     }
 
-    public enum Sound
-    {
-        Bgm,
-        Effect,
-        MaxCount,
-    }
-
     public enum UIEvent
     {
         Click,
@@ -90,6 +97,14 @@ public class Define
     public enum CameraMode
     {
 
+    }
+
+    public enum AIState
+    {
+        Idle,
+        Move,
+        Find,
+        Attack,
     }
 }
 
