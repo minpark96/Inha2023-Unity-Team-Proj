@@ -30,7 +30,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
         Climb = 0x100,
         Debuff = 0x200,
         BalloonWalk = 0x400,
-
+     
     }
 
     public enum DebuffState

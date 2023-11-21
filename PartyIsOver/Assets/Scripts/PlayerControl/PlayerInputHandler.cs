@@ -33,41 +33,31 @@ public class PlayerInputHandler : MonoBehaviour
 
         _actor.PlayerController.OnKeyboardEvent_Move(evt);
 
-        if (_actor.GrabState != Define.GrabState.EquipItem)
+        if (_actor.Grab.EquipItem == null)
         {
-            if (_actor.debuffState == DebuffState.Balloon)
-                _actor.PlayerController.OnKeyboardEvent_BalloonSkill(evt);
-            else if(_actor.debuffState != DebuffState.Exhausted)
+            if(_actor.debuffState != DebuffState.Exhausted)
                 _actor.PlayerController.OnKeyboardEvent_Skill(evt);
         }
     }
 
     void OnMouseEvent(Define.MouseEvent evt)
     {
-        if (_actor.debuffState == DebuffState.Ice || _actor.debuffState == DebuffState.Balloon)
-            return;
-        if (_actor.debuffState == DebuffState.Shock || _actor.debuffState == DebuffState.Stun)
+        if (_actor.debuffState == DebuffState.Ice || _actor.debuffState == DebuffState.Shock || _actor.debuffState == DebuffState.Stun)
             return;
 
-        if (_actor.GrabState != Define.GrabState.EquipItem)
+        if (_actor.Grab.EquipItem == null)
         {
-            if (_actor.debuffState != DebuffState.Burn)
-            {
-                if (_actor.GrabState == Define.GrabState.PlayerLift)
-                {
-                    _actor.Grab.OnMouseEvent_LiftPlayer(evt);
-                    return;
-                }
-                else
-                    _actor.PlayerController.OnMouseEvent_Grab(evt);
-            }
-
             _actor.PlayerController.OnMouseEvent_Skill(evt);
 
+            if (_actor.debuffState == DebuffState.Balloon)
+                return;
+
+            if (_actor.debuffState != DebuffState.Burn)
+                _actor.PlayerController.OnMouseEvent_Grab(evt);
         }
         else
         {
-                _actor.Grab.OnMouseEvent_EquipItem(evt);
+            _actor.Grab.OnMouseEvent_EquipItem(evt);
         }
     }
 }

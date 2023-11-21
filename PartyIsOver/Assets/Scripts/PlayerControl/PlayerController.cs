@@ -177,7 +177,8 @@ public class PlayerController : MonoBehaviourPun
     public bool isStateChange;
     public bool isMeowNyangPunch = false;
     private bool _isRSkillCheck;
-    public bool isBalloon = false;
+    public bool isBalloon;
+    public bool isDrunk;
 
     [Header("SkillControll")]
     public float RSkillCoolTime = 10;
@@ -192,10 +193,14 @@ public class PlayerController : MonoBehaviourPun
     public float NuclearPunching = 0.1f;
     public float NuclearPunchResetPunch = 0.3f;
 
+    public int BalloonJump;
+    public bool BalloonDrop;
+
+
     [Header("ItemControll")]
     public float ItempSwingPower;
 
-
+    [Header("MoveControll")]
     private float _runSpeedOffset = 350f;
     public Vector3 MoveInput;
     private Vector3 _moveDir;
@@ -213,7 +218,11 @@ public class PlayerController : MonoBehaviourPun
 
     private List<float> _xPosSpringAry = new List<float>();
     private List<float> _yzPosSpringAry = new List<float>();
+
+    public List<Quaternion> RotationsForBalloon = new List<Quaternion>();
     private BalloonState _balloonState;
+    private DrunkState _drunkState;
+
 
     [Header("Dummy")]
     public bool isAI = false;
@@ -262,6 +271,14 @@ public class PlayerController : MonoBehaviourPun
     void Start()
     {
         _bodyHandler.BodySetup();
+        for (int i = 0; i < _bodyHandler.BodyParts.Count - 1; i++)
+        {
+            if (i == 3)
+                RotationsForBalloon.Add(Quaternion.Euler(-90, 0, 0));
+            else
+                RotationsForBalloon.Add(_bodyHandler.BodyParts[i].PartTransform.localRotation);
+
+        }
     }
 
     private ConfigurableJoint[] childJoints;
@@ -290,6 +307,7 @@ public class PlayerController : MonoBehaviourPun
         _grab = GetComponent<Grab>();
 
         _balloonState = GetComponent<BalloonState>();
+        _drunkState = GetComponent<DrunkState>();
     }
 
     void RestoreOriginalMotions()
@@ -349,9 +367,33 @@ public class PlayerController : MonoBehaviourPun
             case Define.MouseEvent.Click:
                 {
                     if (Input.GetMouseButtonUp(0))
-                        PunchAndGrab();
-                    if (!isGrounded && Input.GetMouseButtonUp(1))
-                        DropKickTrigger();
+                    {
+                        if(_actor.debuffState == DebuffState.Balloon)
+                        {
+                            if(BalloonJump > 5 && !BalloonDrop)
+                            {
+                                BalloonDrop = true;
+                                _bodyHandler.Hip.PartRigidbody.AddForce(Vector3.down * 200000f);
+                            }
+                        }
+                        else
+                            PunchAndGrab();
+                    }
+
+                    if (Input.GetMouseButtonUp(1))
+                    {
+                        if (_actor.debuffState == DebuffState.Balloon)
+                        {
+                            StartCoroutine(_balloonState.BalloonSpin());
+                        }
+                        else if(!isGrounded)
+                             DropKickTrigger();
+                    }
+
+                    if (_actor.debuffState == DebuffState.Balloon)
+                        return;
+
+
                     if (!_isCoroutineRoll && Input.GetMouseButtonUp(2))
                         ForwardRollTrigger();
                 }
@@ -371,21 +413,36 @@ public class PlayerController : MonoBehaviourPun
 
         switch (evt)
         {
-            case Define.KeyboardEvent.PointerDown:
+            case Define.KeyboardEvent.Press:
                 {
                     if (Input.GetKeyDown(KeyCode.Space))
                     {
-                        if (_actor.GrabState == Define.GrabState.Climb)
-                            _actor.Grab.Climb();
                         _actor.actorState = Actor.ActorState.Jump;
                     }
-                }
-                break;
-            case Define.KeyboardEvent.Press:
-                {
-                    if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
+
+                    if (_actor.debuffState == Actor.DebuffState.Balloon)
                     {
-                        MoveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+                        if (isBalloon)
+                        {
+                            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.D))
+                            {
+                                MoveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+                            }
+                        }
+                    }
+                    else if(_actor.debuffState == Actor.DebuffState.Drunk)
+                    {
+                        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
+                        {
+                            MoveInput = new Vector3(-Input.GetAxis("Horizontal"), 0, -Input.GetAxis("Vertical"));
+                        }
+                    }
+                    else
+                    {
+                        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
+                        {
+                            MoveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+                        }
                     }
                 }
                 break;
@@ -397,6 +454,7 @@ public class PlayerController : MonoBehaviourPun
                     }
                 }
                 break;
+            
         }
     }
     #endregion
@@ -416,14 +474,15 @@ public class PlayerController : MonoBehaviourPun
                 {
                     if (Input.GetKeyDown(KeyCode.R))
                     {
-                        if (!_isRSkillCheck)
+                        if(_actor.debuffState != DebuffState.Drunk)
                         {
-                            _isRSkillCheck = true;
-                            StartCoroutine(ChargeReady());
+                            if (!_isRSkillCheck)
+                            {
+                                _isRSkillCheck = true;
+                                StartCoroutine(ChargeReady());
+                            }
                         }
                     }
-
-                    
                 }
                 break;
             case Define.KeyboardEvent.Press:
@@ -451,20 +510,35 @@ public class PlayerController : MonoBehaviourPun
                     {
                         _isRSkillCheck = false;
                         StartCoroutine(ResetCharge());
+                       
                     }
                 }
                 break;
             case Define.KeyboardEvent.Charge:
                 {
-                    RestoreOriginalMotions();
-                    if (Input.GetKeyUp(KeyCode.R) && !isMeowNyangPunch)
-                        MeowNyangPunch();
+                    if (_actor.debuffState == DebuffState.Drunk)
+                    {
+                        StartCoroutine(_drunkState.DrunkAction());
+                    }
                     else
-                        NuclearPunch();
+                    {
+                        RestoreOriginalMotions();
+                        if (Input.GetKeyUp(KeyCode.R) && !isMeowNyangPunch)
+                            MeowNyangPunch();
+                        else
+                            NuclearPunch();
+                    }
                 }
                 break;
             case Define.KeyboardEvent.Hold:
                 {
+                    if (Input.GetKey(KeyCode.R))
+                    {
+                        if (_actor.debuffState == DebuffState.Drunk)
+                        {
+                            StartCoroutine(_drunkState.DrunkActionReady());
+                        }
+                    }
                     //중일때 확인 ex 이펙트 출현하는 코드를 넣어주면 기모아지는 것 첨 될듯
 
                 }
@@ -473,30 +547,6 @@ public class PlayerController : MonoBehaviourPun
     }
 
     #endregion
-
-    public void OnKeyboardEvent_BalloonSkill(Define.KeyboardEvent evt)
-    {
-        if (!photonView.IsMine)
-        {
-            return;
-        }
-
-        switch(evt)
-        {
-            case Define.KeyboardEvent.PointerUp:
-                {
-                    if (Input.GetKeyUp(KeyCode.Space))
-                        _actor.actorState = Actor.ActorState.Jump;
-                }
-                break;
-            case Define.KeyboardEvent.Click:
-                {
-                    if (Input.GetKeyUp(KeyCode.Space))
-                        _actor.actorState = Actor.ActorState.Jump;
-                }
-                break;
-        }
-    }
 
     #region ChargeSkill
     IEnumerator ChargeReady()
@@ -646,9 +696,15 @@ public class PlayerController : MonoBehaviourPun
 
         if (_actor.debuffState == Actor.DebuffState.Balloon && isBalloon == false)
         {
-            isBalloon = true;
             StartCoroutine(_balloonState.BalloonShapeOn());
         }
+
+        if (_actor.debuffState == Actor.DebuffState.Drunk && isDrunk == false)
+        {
+            isDrunk = true;
+            StartCoroutine(_drunkState.DrunkOff());
+        }
+
 
         if (_actor.actorState != Actor.ActorState.Jump && _actor.actorState != Actor.ActorState.Roll && _actor.actorState != Actor.ActorState.Run)
         {
@@ -880,7 +936,7 @@ public class PlayerController : MonoBehaviourPun
         }
     }
 
-    void AniForce(AniFrameData[] _forceSpeed, int _elementCount, Vector3 _dir)
+    public void AniForce(AniFrameData[] _forceSpeed, int _elementCount, Vector3 _dir)
     {
         for (int i = 0; i < _forceSpeed[_elementCount].StandardRigidbodies.Length; i++)
         {
@@ -959,7 +1015,7 @@ public class PlayerController : MonoBehaviourPun
         }
     }
 
-    void AniAngleForce(AniAngleData[] _aniAngleData, int _elementCount, Vector3 _vector)
+    public void AniAngleForce(AniAngleData[] _aniAngleData, int _elementCount, Vector3 _vector)
     {
         for (int i = 0; i < _aniAngleData[_elementCount].StandardRigidbodies.Length; i++)
         {
@@ -1265,56 +1321,41 @@ public class PlayerController : MonoBehaviourPun
     #region Jump
     public void Jump()
     {
-        if (isStateChange)
+        if(_actor.debuffState == Actor.DebuffState.Balloon)
         {
-            isGrounded = false;
-            for (int i = 0; i < MoveForceJumpAniData.Length; i++)
+            if(_actor.actorState == Actor.ActorState.Jump)
             {
-                AniForce(MoveForceJumpAniData, i, Vector3.up);
-                if (i == 2)
-                    AniForce(MoveForceJumpAniData, i, Vector3.down);
-            }
-            for (int i = 0; i < MoveAngleJumpAniData.Length; i++)
-            {
-                AniAngleForce(MoveAngleJumpAniData, i, _moveDir + new Vector3(0, 0.2f, 0f));
+                BalloonJump++;
+                for (int i = 0; i < MoveForceJumpAniData.Length; i++)
+                {
+                    AniForce(MoveForceJumpAniData, i, Vector3.up);
+                    if (i == 2)
+                        AniForce(MoveForceJumpAniData, i, Vector3.down);
+                }
+                for (int i = 0; i < MoveAngleJumpAniData.Length; i++)
+                {
+                    AniAngleForce(MoveAngleJumpAniData, i, _moveDir + new Vector3(0, 0.2f, 0f));
+                }
             }
         }
-       
-        if(_actor.debuffState == DebuffState.Balloon)
+        else
         {
-            isGrounded = false;
-            for (int i = 0; i < MoveForceJumpAniData.Length; i++)
+            if (isStateChange)
             {
-                AniForce(MoveForceJumpAniData, i, Vector3.up);
-                if (i == 2)
-                    AniForce(MoveForceJumpAniData, i, Vector3.down);
-            }
-            for (int i = 0; i < MoveAngleJumpAniData.Length; i++)
-            {
-                AniAngleForce(MoveAngleJumpAniData, i, _moveDir + new Vector3(0, 0.2f, 0f));
+                isGrounded = false;
+                for (int i = 0; i < MoveForceJumpAniData.Length; i++)
+                {
+                    AniForce(MoveForceJumpAniData, i, Vector3.up);
+                    if (i == 2)
+                        AniForce(MoveForceJumpAniData, i, Vector3.down);
+                }
+                for (int i = 0; i < MoveAngleJumpAniData.Length; i++)
+                {
+                    AniAngleForce(MoveAngleJumpAniData, i, _moveDir + new Vector3(0, 0.2f, 0f));
+                }
             }
         }
-
-        Vector3 lookForward = new Vector3(_cameraArm.forward.x, 0f, _cameraArm.forward.z).normalized;
-        Vector3 lookRight = new Vector3(_cameraArm.right.x, 0f, _cameraArm.right.z).normalized;
-        _moveDir = lookForward * MoveInput.z + lookRight * MoveInput.x;
-
-        _bodyHandler.Chest.PartRigidbody.AddForce((_runVectorForce10 + _moveDir), ForceMode.VelocityChange);
-        _bodyHandler.Hip.PartRigidbody.AddForce((-_runVectorForce5 + -_moveDir), ForceMode.VelocityChange);
-
-        AlignToVector(_bodyHandler.Chest.PartRigidbody, -_bodyHandler.Chest.transform.up, _moveDir / 4f + -Vector3.up, 0.1f, 4f * _applyedForce);
-        AlignToVector(_bodyHandler.Chest.PartRigidbody, _bodyHandler.Chest.transform.forward, Vector3.up, 0.1f, 8f * _applyedForce);
-        AlignToVector(_bodyHandler.Waist.PartRigidbody, -_bodyHandler.Waist.transform.up, _moveDir / 4f + -Vector3.up, 0.1f, 4f * _applyedForce);
-        AlignToVector(_bodyHandler.Waist.PartRigidbody, _bodyHandler.Chest.transform.forward, Vector3.up, 0.1f, 8f * _applyedForce);
-        AlignToVector(_bodyHandler.Hip.PartRigidbody, -_bodyHandler.Hip.transform.up, _moveDir, 0.1f, 8f * _applyedForce);
-        AlignToVector(_bodyHandler.Hip.PartRigidbody, _bodyHandler.Hip.transform.forward, Vector3.up, 0.1f, 8f * _applyedForce);
-
-
-        _hips.AddForce(_moveDir.normalized * RunSpeed * _runSpeedOffset * Time.deltaTime * 0.5f);
-        if (_hips.velocity.magnitude > MaxSpeed)
-            _hips.velocity = _hips.velocity.normalized * MaxSpeed;
-
-
+      
         if (isGrounded)
         {
             _actor.actorState = Actor.ActorState.Stand;
@@ -1938,6 +1979,26 @@ public class PlayerController : MonoBehaviourPun
         }
     }
     #endregion
+    public IEnumerator balloon(Side side)
+    {
+        float checkTime = Time.time;
+        checkTime = Time.time;
 
+        while (Time.time - checkTime < 5f)
+        {
+            BalloonSpin(side);
+            yield return new WaitForSeconds(0.01f);
+        }
+        
+    }
+
+    void BalloonSpin(Side side)
+    {
+        AniFrameData[] spins = TestRready1;
+        for (int i = 0; i < spins.Length; i++)
+        {
+            AniForce(spins, i);
+        }
+    }
 
 }
