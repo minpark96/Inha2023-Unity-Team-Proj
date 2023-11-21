@@ -61,6 +61,16 @@ public class PhotonManager : MonoBehaviourPunCallbacks
             _isConnecting = PhotonNetwork.ConnectUsingSettings();
             PhotonNetwork.GameVersion = _gameVersion;
         }
+
+        SceneManagerEx sceneManagerEx = new SceneManagerEx();
+        string currentSceneName = sceneManagerEx.GetCurrentSceneName();
+        if (currentSceneName == "Room")
+        {
+            AudioSource[] _audioSources = new AudioSource[(int)Define.Sound.Maxcount];
+            AudioClip audioClip = Managers.Resource.Load<AudioClip>("Sounds/Bgm/BongoBoogieMenuLOOPING");
+            _audioSources[(int)Define.Sound.Bgm].clip = audioClip;
+            Managers.Sound.Play(audioClip, Define.Sound.Bgm);
+        }
     }
 
     public void LeaveRoom()

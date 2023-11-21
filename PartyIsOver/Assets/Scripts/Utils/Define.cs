@@ -5,6 +5,13 @@ using UnityEngine;
 
 public class Define
 {
+    public enum Effect
+    {
+        Punch,
+        Ice,
+        
+    }
+
     public enum Scene
     {
         Unknown,
@@ -12,6 +19,13 @@ public class Define
         Start,
         Lobby,
         Game,
+    }
+
+    public enum Sound
+    {
+        Bgm,
+        Effect,
+        Maxcount,
     }
 
     public enum WorldObject
@@ -29,34 +43,30 @@ public class Define
         Object,
     }
 
+    public enum GrabState
+    {
+        None,
+        EquipItem,
+        PlayerLift,
+        Climb,
+    }
+
 
     public enum ItemType
     {
+        None,
         OneHanded,
         TwoHanded,
+        Gravestone,
         Ranged,
         Potion,
     }
 
-    public enum State
-    {
-        Idle,
-        Move,
-        Roll,
-        Punch,
-        Kick,
-    }
+
 
     public enum Layer
     {
 
-    }
-
-    public enum Sound
-    {
-        Bgm,
-        Effect,
-        MaxCount,
     }
 
     public enum UIEvent
@@ -87,6 +97,14 @@ public class Define
     public enum CameraMode
     {
 
+    }
+
+    public enum AIState
+    {
+        Idle,
+        Move,
+        Find,
+        Attack,
     }
 }
 

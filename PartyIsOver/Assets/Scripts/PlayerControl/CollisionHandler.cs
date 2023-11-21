@@ -2,6 +2,7 @@ using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static InteractableObject;
 
 public class CollisionHandler : MonoBehaviourPun
 {
@@ -28,6 +29,14 @@ public class CollisionHandler : MonoBehaviourPun
     private void DamageCheck(Collision collision)
     {
         InteractableObject collisionInteractable = collision.transform.GetComponent<InteractableObject>();
+        if (collisionInteractable == null)
+            return;
+        if (collision.gameObject.GetComponent<Item>() != null)
+        {
+            if (collision.gameObject.GetComponent<Item>().Owner == actor)
+                return;
+        }
+
         Transform collisionTransform = collision.transform;
         Rigidbody collisionRigidbody = collision.rigidbody;
         Collider collisionCollider = collision.collider;
@@ -118,6 +127,17 @@ public class CollisionHandler : MonoBehaviourPun
     }
     private float PhysicalDamage(InteractableObject collisionInteractable, float damage, ContactPoint contact)
     {
+        int thisViewID = contact.thisCollider.gameObject.GetComponent<PhotonView>().ViewID;
+        photonView.RPC("AddForceAttackedTarget", RpcTarget.All, thisViewID, contact.normal, collisionInteractable.damageModifier);
+        
+        float itemDamage = 1f;
+        if (collisionInteractable.GetComponent<Item>() != null)
+        {
+            itemDamage = collisionInteractable.GetComponent<Item>().ItemData.Damage / 10f;
+            if (itemDamage < 1f)
+                itemDamage = 1f;
+        }
+
         switch (collisionInteractable.damageModifier)
         {
             case InteractableObject.Damage.Ignore:
@@ -125,25 +145,18 @@ public class CollisionHandler : MonoBehaviourPun
                 break;
             case InteractableObject.Damage.Object:
                 damage *= 20f;
-                contact.thisCollider.attachedRigidbody.AddForce(contact.normal * 5f, ForceMode.VelocityChange);
                 break;
             case InteractableObject.Damage.Punch:
                 damage *= 700f;
-                contact.thisCollider.attachedRigidbody.AddForce(contact.normal * 3f + Vector3.up * 2f, ForceMode.VelocityChange);
                 break;
             case InteractableObject.Damage.DropKick:
                 damage *= 1004f;
-                contact.thisCollider.attachedRigidbody.AddForce(contact.normal * 25f, ForceMode.VelocityChange);
-                contact.thisCollider.attachedRigidbody.AddForce(Vector3.up * 10f, ForceMode.VelocityChange);
                 break;
             case InteractableObject.Damage.Headbutt:
                 damage *= 80f;
-                contact.thisCollider.attachedRigidbody.AddForce(contact.normal * 20f, ForceMode.VelocityChange);
-                contact.thisCollider.attachedRigidbody.AddForce(Vector3.up * 10f, ForceMode.VelocityChange);
                 break;
             case InteractableObject.Damage.Knockout:
                 damage = 1000000f;
-                contact.thisCollider.attachedRigidbody.AddForce(contact.normal * 10f, ForceMode.VelocityChange);
                 break;
             default:
                 break;
@@ -152,12 +165,43 @@ public class CollisionHandler : MonoBehaviourPun
         return damage;
     }
 
-
     private void OnCollisionEnter(Collision collision)
     {
-        //if (!PhotonNetwork.IsMasterClient) return;
+        if (!PhotonNetwork.IsMasterClient) return;
 
         if (collision.collider.gameObject.layer != LayerMask.NameToLayer("Ground"))
             DamageCheck(collision);
+    }
+    
+    [PunRPC]
+    void AddForceAttackedTarget(int objViewId, Vector3 normal, int damageModifier)
+    {
+        Debug.Log("[AddForceAttackedTarget] id: " + objViewId);
+        Rigidbody thisRb = PhotonNetwork.GetPhotonView(objViewId).transform.GetComponent<Rigidbody>();
+
+        switch ((InteractableObject.Damage)damageModifier)
+        {
+            case InteractableObject.Damage.Ignore:
+                break;
+            case InteractableObject.Damage.Object:
+                thisRb.AddForce(normal * 5f, ForceMode.VelocityChange);
+                break;
+            case InteractableObject.Damage.Punch:
+                thisRb.AddForce(normal * 3f + Vector3.up * 2f, ForceMode.VelocityChange);
+                break;
+            case InteractableObject.Damage.DropKick:
+                thisRb.AddForce(normal * 25f, ForceMode.VelocityChange);
+                thisRb.AddForce(Vector3.up * 10f, ForceMode.VelocityChange);
+                break;
+            case InteractableObject.Damage.Headbutt:
+                thisRb.AddForce(normal * 20f, ForceMode.VelocityChange);
+                thisRb.AddForce(Vector3.up * 10f, ForceMode.VelocityChange);
+                break;
+            case InteractableObject.Damage.Knockout:
+                thisRb.AddForce(normal * 10f, ForceMode.VelocityChange);
+                break;
+            default:
+                break;
+        }
     }
 }

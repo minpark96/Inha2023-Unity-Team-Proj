@@ -19,7 +19,7 @@ public class GameCenter : MonoBehaviourPunCallbacks
 
     #region Private Fields
 
-    string _arenaName = "MJTest";
+    string _arenaName = "KNJTest";
     // ÇÁ¸®ÆÕ °æ·Î
     string _playerPath = "Ragdoll2";
 
@@ -64,6 +64,26 @@ public class GameCenter : MonoBehaviourPunCallbacks
         if (scene.name == _arenaName)
         {
             InstantiatePlayer();
+        }
+
+        if(scene.name == _arenaName)
+        {
+            GameObject root = GameObject.Find("@Sound");
+            if (root != null)
+            {
+                AudioSource _audioSources = Managers.Sound.GetBgmAudioSource();
+
+                SceneManagerEx sceneManagerEx = new SceneManagerEx();
+                string currentSceneName = sceneManagerEx.GetCurrentSceneName();
+
+                if (_arenaName == currentSceneName)
+                {
+                    _audioSources.Stop();
+                    AudioClip audioClip = Managers.Resource.Load<AudioClip>("Sounds/Bgm/BigBangBattleLOOPING");
+                    _audioSources.clip = audioClip;
+                    Managers.Sound.Play(audioClip, Define.Sound.Bgm);
+                }
+            }
         }
     }
 
