@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.Rendering.VirtualTexturing;
@@ -11,7 +12,7 @@ public class SoundManager
     AudioSource[] _audioSources = new AudioSource[(int)Define.Sound.Maxcount];
     //캐싱 역할
     Dictionary<string,AudioClip> _audioClip = new Dictionary<string, AudioClip>();
-    public AudioMixer audioMixer;
+    AudioMixer audioMixer;
 
     //사운드 오브젝트 생성
     public void Init()
@@ -21,17 +22,22 @@ public class SoundManager
         SceneManagerEx sceneManagerEx = new SceneManagerEx();
         string currentSceneName = sceneManagerEx.GetCurrentSceneName();
         Debug.Log("현재 씬 이름 : " + currentSceneName);
-
         AudioClip audioClip = null;
+        audioMixer = null;
         if (root == null) 
         {
 
             root = new GameObject { name = "@Sound" };
             Object.DontDestroyOnLoad(root);
 
+         /*   AudioSource _audioSource = root.AddComponent<AudioSource>();
+            audioClip = Managers.Resource.Load<AudioClip>("Sounds/Bgm/BongoBoogieMenuLOOPING");
+            _audioSource.clip = audioClip;
+            _audioSource.loop = true;
+*/
             string[] soundNames = System.Enum.GetNames(typeof(Define.Sound));
             //맥스 카운트라는 애가 있으니 빼줌
-            for(int i = 0; i < soundNames.Length - 1; i++)
+            for (int i = 0; i < soundNames.Length - 1; i++)
             {
                 GameObject go = new GameObject { name = soundNames[i] };
                 _audioSources[i] = go.AddComponent<AudioSource>();
@@ -42,12 +48,18 @@ public class SoundManager
 
             if (currentSceneName == "Launcher")
             {
-
                 audioClip = Managers.Resource.Load<AudioClip>("Sounds/Bgm/BongoBoogieMenuLOOPING");
                 _audioSources[(int)Define.Sound.Bgm].clip = audioClip;
-                _audioSources[(int)Define.Sound.Bgm].outputAudioMixerGroup = audioMixer.FindMatchingGroups("Bgm")[0];
-                Debug.Log(audioClip);
+                Managers.Sound.Play(audioClip, Define.Sound.Bgm);
             }
+
+            if (currentSceneName == "Launcher")
+            {
+                audioClip = Managers.Resource.Load<AudioClip>("Sounds/Bgm/BongoBoogieMenuLOOPING");
+                _audioSources[(int)Define.Sound.Bgm].clip = audioClip;
+                Managers.Sound.Play(audioClip, Define.Sound.Bgm);
+            }
+
         }
         
     }
