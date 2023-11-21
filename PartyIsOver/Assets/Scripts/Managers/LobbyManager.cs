@@ -8,10 +8,10 @@ using UnityEngine.UI;
 public class LobbyManager : MonoBehaviourPunCallbacks
 {
     // : Start
-    public InputField RoomInputField;
+    public Text RoomName;
+
     public GameObject LobbyPanel;
     public GameObject RoomPanel;
-    public Text RoomName;
 
     // : RoomItem
     // RoomItem(방 제목) 리스트
@@ -37,24 +37,64 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
 
 
-    // : Start
-    // 로비 입장
+    // Lobby Panel
+
+
+    // Room Panel
+
+
+
+    // Create Room Panel
+    public GameObject CreateRoomPanel;
+    public void OnClickOK()
+    {
+        CreateRoomPanel.SetActive(false);
+        // 방만들기
+    }
+
+    public void OnClickCancel()
+    {
+        CreateRoomPanel.SetActive(false);
+    }
+
+    public InputField RoomInputField;
+
+    public void OnClickCreate()
+    {
+        if (RoomInputField.text.Length >= 1)
+        {
+            PhotonNetwork.CreateRoom(RoomInputField.text, new RoomOptions() { MaxPlayers = 6 });
+
+        }
+    }
+
+
+    public Sprite PrivateOn;
+    public Sprite PrivateOff;
+    public Sprite PrivateButton;
+    private bool _isClicked;
+
+    public void OnClickPrivate()
+    {
+        _isClicked = !_isClicked;
+
+        if(_isClicked)
+            PrivateButton = PrivateOn;
+        else
+            PrivateButton = PrivateOff;
+    }
+
+
+
     private void Start()
     {
         PhotonNetwork.JoinLobby();
         LobbyPanel.SetActive(true);
         RoomPanel.SetActive(false);
+
     }
 
-    // 방이름을 적고 버튼 클릭시 방생성
-    public void OnClickCreate()
-    {
-        if(RoomInputField.text.Length >= 1)
-        {
-            PhotonNetwork.CreateRoom(RoomInputField.text, new RoomOptions() { MaxPlayers = 3 });
-            
-        }
-    }
+   
 
     // 룸에 입장한 후 호출되는 콜백 함수
     public override void OnJoinedRoom()

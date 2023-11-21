@@ -53,7 +53,8 @@ public class PhotonManager : MonoBehaviourPunCallbacks
             Debug.Log("PUN Basics Tutorial/Launcher: JoinRandomRoom() was called by PUN");
 
             // 일단 Room, Join Lobby가 맞는듯
-            PhotonNetwork.JoinRandomRoom();
+            //PhotonNetwork.JoinRandomRoom();
+             PhotonNetwork.JoinLobby();
         }
         else
         {
