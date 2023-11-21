@@ -5084,7 +5084,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e539510f87df7a04c943a34884b79797, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerController: {fileID: 0}
+  PlayerController: {fileID: 0}
 --- !u!1 &3847900017708582759
 GameObject:
   m_ObjectHideFlags: 0
@@ -7348,7 +7348,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e539510f87df7a04c943a34884b79797, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerController: {fileID: 0}
+  PlayerController: {fileID: 0}
 --- !u!1 &4690650132527620493
 GameObject:
   m_ObjectHideFlags: 0
@@ -12211,6 +12211,7 @@ MonoBehaviour:
   isStateChange: 0
   isMeowNyangPunch: 0
   isBalloon: 0
+  isDrunk: 0
   RSkillCoolTime: 5
   ChargeAniHoldTime: 0.5
   MeowPunchPower: 3
@@ -12221,8 +12222,11 @@ MonoBehaviour:
   NuclearPunchReadyPunch: 0.1
   NuclearPunching: 0.1
   NuclearPunchResetPunch: 0.1
+  BalloonJump: 0
+  BalloonDrop: 0
   ItempSwingPower: 1000
   MoveInput: {x: 0, y: 0, z: 0}
+  RotationsForBalloon: []
   isAI: 0
 --- !u!114 &5878509405600198236
 MonoBehaviour:
@@ -12361,9 +12365,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 168a9945a6afc8143a29851274a40341, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PlayerController: {fileID: 0}
   CameraArm: {fileID: 3110579752506030532}
   BalloonDuration: 30
   RotateAngle: 10
+  IsGrounded: 0
+  Force: 10000
 --- !u!1 &5873269987166717472
 GameObject:
   m_ObjectHideFlags: 0

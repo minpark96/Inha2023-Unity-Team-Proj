@@ -1086,7 +1086,7 @@ public class PlayerController : MonoBehaviourPun
             
 
             yield return new WaitForSeconds(2);
-            _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
+            _actor.StatusHandler.StartCoroutine("RestoreBodySpring", 1);
             _bodyHandler.LeftLeg.PartInteractable.damageModifier = InteractableObject.Damage.Default;
             _bodyHandler.RightLeg.PartInteractable.damageModifier = InteractableObject.Damage.Default;
             photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LeftLeg, false);
@@ -1646,7 +1646,7 @@ public class PlayerController : MonoBehaviourPun
     [PunRPC]
     private void UpdateDamageModifier(int bodyPart, bool isAttack)
     {
-        Debug.Log("[UpdateDamageModifier] isAttack: " + isAttack);
+        Debug.Log("[UpdateDamageModifier] isAttack: " + isAttack + ", bodyPart: " + bodyPart);
 
         switch((Define.BodyPart)bodyPart)
         {
