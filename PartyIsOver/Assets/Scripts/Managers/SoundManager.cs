@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.Rendering.VirtualTexturing;
 using UnityEngine.SceneManagement;
-
+ 
 public class SoundManager 
 {
     AudioSource[] _audioSources = new AudioSource[(int)Define.Sound.Maxcount];
@@ -21,20 +21,14 @@ public class SoundManager
 
         SceneManagerEx sceneManagerEx = new SceneManagerEx();
         string currentSceneName = sceneManagerEx.GetCurrentSceneName();
-        Debug.Log("ÇöÀç ¾À ÀÌ¸§ : " + currentSceneName);
+
         AudioClip audioClip = null;
         audioMixer = null;
         if (root == null) 
         {
-
             root = new GameObject { name = "@Sound" };
             Object.DontDestroyOnLoad(root);
 
-         /*   AudioSource _audioSource = root.AddComponent<AudioSource>();
-            audioClip = Managers.Resource.Load<AudioClip>("Sounds/Bgm/BongoBoogieMenuLOOPING");
-            _audioSource.clip = audioClip;
-            _audioSource.loop = true;
-*/
             string[] soundNames = System.Enum.GetNames(typeof(Define.Sound));
             //¸Æ½º Ä«¿îÆ®¶ó´Â ¾Ö°¡ ÀÖÀ¸´Ï »©ÁÜ
             for (int i = 0; i < soundNames.Length - 1; i++)
@@ -45,25 +39,21 @@ public class SoundManager
             }
 
             _audioSources[(int)Define.Sound.Bgm].loop = true;
-
-            if (currentSceneName == "Launcher")
-            {
-                audioClip = Managers.Resource.Load<AudioClip>("Sounds/Bgm/BongoBoogieMenuLOOPING");
-                _audioSources[(int)Define.Sound.Bgm].clip = audioClip;
-                Managers.Sound.Play(audioClip, Define.Sound.Bgm);
-            }
-
-            if (currentSceneName == "Launcher")
-            {
-                audioClip = Managers.Resource.Load<AudioClip>("Sounds/Bgm/BongoBoogieMenuLOOPING");
-                _audioSources[(int)Define.Sound.Bgm].clip = audioClip;
-                Managers.Sound.Play(audioClip, Define.Sound.Bgm);
-            }
-
         }
-        
+
+        if (currentSceneName == "Launcher")
+        {
+            audioClip = Managers.Resource.Load<AudioClip>("Sounds/Bgm/BongoBoogieMenuLOOPING");
+            _audioSources[(int)Define.Sound.Bgm].clip = audioClip;
+            Managers.Sound.Play(audioClip, Define.Sound.Bgm);
+        }
+
     }
-    
+    public AudioSource GetBgmAudioSource()
+    {
+        return _audioSources[(int)Define.Sound.Bgm];
+    }
+
     public void Clear()
     {
         foreach(AudioSource audioSource in _audioSources)

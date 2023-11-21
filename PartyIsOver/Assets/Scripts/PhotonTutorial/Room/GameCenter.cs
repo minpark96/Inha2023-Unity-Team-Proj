@@ -65,6 +65,26 @@ public class GameCenter : MonoBehaviourPunCallbacks
         {
             InstantiatePlayer();
         }
+
+        if(scene.name == _arenaName)
+        {
+            GameObject root = GameObject.Find("@Sound");
+            if (root != null)
+            {
+                AudioSource _audioSources = Managers.Sound.GetBgmAudioSource();
+
+                SceneManagerEx sceneManagerEx = new SceneManagerEx();
+                string currentSceneName = sceneManagerEx.GetCurrentSceneName();
+
+                if (_arenaName == currentSceneName)
+                {
+                    _audioSources.Stop();
+                    AudioClip audioClip = Managers.Resource.Load<AudioClip>("Sounds/Bgm/BigBangBattleLOOPING");
+                    _audioSources.clip = audioClip;
+                    Managers.Sound.Play(audioClip, Define.Sound.Bgm);
+                }
+            }
+        }
     }
 
     void InstantiatePlayer()
