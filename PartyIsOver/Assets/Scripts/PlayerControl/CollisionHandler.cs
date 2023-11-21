@@ -29,6 +29,14 @@ public class CollisionHandler : MonoBehaviourPun
     private void DamageCheck(Collision collision)
     {
         InteractableObject collisionInteractable = collision.transform.GetComponent<InteractableObject>();
+        if (collisionInteractable == null)
+            return;
+        if (collision.gameObject.GetComponent<Item>() != null)
+        {
+            if (collision.gameObject.GetComponent<Item>().Owner == actor)
+                return;
+        }
+
         Transform collisionTransform = collision.transform;
         Rigidbody collisionRigidbody = collision.rigidbody;
         Collider collisionCollider = collision.collider;
@@ -121,6 +129,14 @@ public class CollisionHandler : MonoBehaviourPun
     {
         int thisViewID = contact.thisCollider.gameObject.GetComponent<PhotonView>().ViewID;
         photonView.RPC("AddForceAttackedTarget", RpcTarget.All, thisViewID, contact.normal, collisionInteractable.damageModifier);
+        
+        float itemDamage = 1f;
+        if (collisionInteractable.GetComponent<Item>() != null)
+        {
+            itemDamage = collisionInteractable.GetComponent<Item>().ItemData.Damage / 10f;
+            if (itemDamage < 1f)
+                itemDamage = 1f;
+        }
 
         switch (collisionInteractable.damageModifier)
         {
