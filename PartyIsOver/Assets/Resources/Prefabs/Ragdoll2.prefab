@@ -11471,7 +11471,6 @@ MonoBehaviour:
   LeftHand: {fileID: 5793545070783210249}
   RightHand: {fileID: 5793437608505534346}
   Ball: {fileID: 6027670702515666106}
-  CurrentBodyPart: {fileID: 0}
 --- !u!114 &5878509405600198232
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12234,6 +12233,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _isRightGrab: 0
   _isLeftGrab: 0
+  _throwingForce: 40
   EquipItem: {fileID: 0}
   LeftGrabObject: {fileID: 0}
   RightGrabObject: {fileID: 0}
@@ -12274,6 +12274,7 @@ MonoBehaviour:
   PlayerController: {fileID: 0}
   Grab: {fileID: 0}
   BalloonState: {fileID: 0}
+  GrabState: 0
   HeadMultiple: 1.5
   ArmMultiple: 0.8
   HandMultiple: 0.8
