@@ -87,6 +87,7 @@ public class GameCenter : MonoBehaviourPunCallbacks
                 _audioSources.Stop();
                 AudioClip audioClip = Managers.Resource.Load<AudioClip>($"Sounds/Bgm/{path}");
                 _audioSources.clip = audioClip;
+                _audioSources.volume = 0.1f;
                 Managers.Sound.Play(audioClip, Define.Sound.Bgm);
             }
 
@@ -95,6 +96,7 @@ public class GameCenter : MonoBehaviourPunCallbacks
                 _audioSources.Stop();
                 AudioClip audioClip = Managers.Resource.Load<AudioClip>($"Sounds/Bgm/{path}");
                 _audioSources.clip = audioClip;
+                _audioSources.volume = 0.1f;
                 Managers.Sound.Play(audioClip, Define.Sound.Bgm);
             }
 

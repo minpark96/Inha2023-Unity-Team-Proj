@@ -43,6 +43,7 @@ public class SoundManager
         {
             audioClip = Managers.Resource.Load<AudioClip>("Sounds/Bgm/BongoBoogieMenuLOOPING");
             _audioSources[(int)Define.Sound.Bgm].clip = audioClip;
+            _audioSources[(int)Define.Sound.Bgm].volume = 0.1f;
             Managers.Sound.Play(audioClip, Define.Sound.Bgm);
         }
     }
