@@ -21,6 +21,13 @@ namespace Photon.Tutorial
 
         #endregion
 
+        #region Public Constants
+
+        public Sprite FirstImage;
+        public Sprite ChangedImage;
+
+        #endregion
+
         #region MonoBehaviour CallBacks
 
         /// <summary>
@@ -52,12 +59,19 @@ namespace Photon.Tutorial
         /// <param name="value">The name of the Player</param>
         public void SetPlayerName(string value)
         {
+            if (value.Length > 0)
+                GetComponent<Image>().sprite = ChangedImage;
+            else
+                GetComponent<Image>().sprite = FirstImage;
+
+
             // #Important
             if (string.IsNullOrEmpty(value))
             {
                 Debug.LogError("Player Name is null or empty");
                 return;
             }
+
             PhotonNetwork.NickName = value;
 
             PlayerPrefs.SetString(PLAYER_NAME_PREF_KEY, value);

@@ -17,19 +17,14 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     static PhotonManager p_instance;
 
-    string _gameVersion = "1";
-    bool _isConnecting;
     const byte MAX_PLAYERS_PER_ROOM = 6;
 
-    // 일단 넣어 놓은 것, LaucherUI 로 분리해야 함
-    Button _buttonStart;
-    GameObject _controlPanel;
-    GameObject _progressLabel;
+    protected bool _isConnecting;
 
     // 프리팹 경로
     string _gameCenterPath = "GameCenter";
 
-    string _roomSceneName = "Room";
+    protected string _roomSceneName = "Main";
 
     #endregion
 
@@ -50,24 +45,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     #region Public Methods
 
-    public void Connect()
-    {
-        _progressLabel.SetActive(true);
-        _controlPanel.SetActive(false);
-
-        if (PhotonNetwork.IsConnected)
-        {
-            Debug.Log("PUN Basics Tutorial/Launcher: JoinRandomRoom() was called by PUN");
-
-            // 일단 Room, Join Lobby가 맞는듯
-            PhotonNetwork.JoinRandomRoom();
-        }
-        else
-        {
-            _isConnecting = PhotonNetwork.ConnectUsingSettings();
-            PhotonNetwork.GameVersion = _gameVersion;
-        }
-    }
+   
 
     public void LeaveRoom()
     {
@@ -77,17 +55,9 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        GameCenter gameCenter = new GameCenter();
-
         if (scene.name == _roomSceneName)
         {
         }
-
-        if(scene.name == "Room")
-        {
-            gameCenter.SceneBgmSound("LaxLayoverLOOPING");
-        }
-
     }
 
     #endregion
@@ -110,14 +80,6 @@ public class PhotonManager : MonoBehaviourPunCallbacks
             Screen.SetResolution(800, 480, false);
             PhotonNetwork.AutomaticallySyncScene = true;
 
-            _controlPanel = GameObject.Find("Control Panel");
-            _progressLabel = GameObject.Find("Progress Label");
-            _buttonStart = GameObject.Find("Start Button").transform.GetComponent<Button>();
-
-            _progressLabel.SetActive(false);
-            _controlPanel.SetActive(true);
-            _buttonStart.onClick.AddListener(Connect);
-
             PhotonNetwork.SerializationRate = 20;
             PhotonNetwork.SendRate = 20;
 
@@ -130,11 +92,20 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         }
     }
 
-    void JoinLobby()
+
+    protected IEnumerator LoadAsyncScene(string sceneName)
     {
-        Debug.Log("[JoinLobby()] Load Lobby Scene");
-        SceneManager.LoadScene(1);
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
+
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
+
+        //Debug.LogFormat("[LoadAsyncScene()] Scene {0} Loaded", SceneManagerHelper.ActiveSceneName);
+        InstantiateGameCenter();
     }
+
 
     void InstantiateGameCenter()
     {
@@ -145,19 +116,6 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         }
     }
 
-    IEnumerator LoadAsyncScene(string sceneName)
-    {
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
-
-        while (!asyncLoad.isDone)
-        {
-            yield return null;
-        }
-
-        //Debug.LogFormat("[LoadAsyncScene()] Scene {0} Loaded", SceneManagerHelper.ActiveSceneName);
-
-        InstantiateGameCenter();
-    }
 
     #endregion
 
@@ -167,16 +125,14 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     {
         if (_isConnecting)
         {
-            PhotonNetwork.JoinRandomRoom();
+            //PhotonNetwork.JoinRandomRoom();
+            PhotonNetwork.JoinLobby();
             _isConnecting = false;
         }
     }
 
     public override void OnDisconnected(DisconnectCause cause)
     {
-        _progressLabel.SetActive(false);
-        _controlPanel.SetActive(true);
-
         Debug.LogWarningFormat("PUN Basics Tutorial/Launcher: OnDisconnected() was called by PUN with reason {0}", cause);
         _isConnecting = false;
     }
