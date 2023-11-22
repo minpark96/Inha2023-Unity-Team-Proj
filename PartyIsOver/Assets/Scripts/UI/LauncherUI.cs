@@ -37,41 +37,37 @@ public class LauncherUI : PhotonManager
         _loadingPanel.SetActive(false);
     }
 
-    public void Connect()
-    {
-        _loadingPanel.SetActive(true);
-        flag = true;
+    //public void Connect()
+    //{
+    //    //_loadingPanel.SetActive(true);
+    //    //flag = true;
 
-        if (PhotonNetwork.IsConnected)
-        {
-            Debug.Log("PUN Basics Tutorial/Launcher: JoinRandomRoom() was called by PUN");
+    //    if (PhotonNetwork.IsConnected)
+    //    {
+    //        Debug.Log("PUN Basics Tutorial/Launcher: JoinRandomRoom() was called by PUN");
 
-            // 일단 Room, Join Lobby가 맞는듯
-            //PhotonNetwork.JoinRandomRoom();
+    //        // 일단 Room, Join Lobby가 맞는듯
+    //        PhotonNetwork.JoinRandomRoom();
 
-            //_controlPanel.SetActive(false);
-            //_cancelPanel.SetActive(false);
+    //        //if(!flag)
+    //        //    PhotonNetwork.JoinLobby();
+    //    }
+    //    else
+    //    {
+    //        _isConnecting = PhotonNetwork.ConnectUsingSettings();
+    //        PhotonNetwork.GameVersion = _gameVersion;
+    //    }
 
-
-            if(!flag)
-                PhotonNetwork.JoinLobby();
-        }
-        else
-        {
-            _isConnecting = PhotonNetwork.ConnectUsingSettings();
-            PhotonNetwork.GameVersion = _gameVersion;
-        }
-
-        SceneManagerEx sceneManagerEx = new SceneManagerEx();
-        string currentSceneName = sceneManagerEx.GetCurrentSceneName();
-        if (currentSceneName == _roomSceneName)
-        {
-            AudioSource[] _audioSources = new AudioSource[(int)Define.Sound.Maxcount];
-            AudioClip audioClip = Managers.Resource.Load<AudioClip>("Sounds/Bgm/BongoBoogieMenuLOOPING");
-            _audioSources[(int)Define.Sound.Bgm].clip = audioClip;
-            Managers.Sound.Play(audioClip, Define.Sound.Bgm);
-        }
-    }
+    //    SceneManagerEx sceneManagerEx = new SceneManagerEx();
+    //    string currentSceneName = sceneManagerEx.GetCurrentSceneName();
+    //    if (currentSceneName == _roomSceneName)
+    //    {
+    //        AudioSource[] _audioSources = new AudioSource[(int)Define.Sound.Maxcount];
+    //        AudioClip audioClip = Managers.Resource.Load<AudioClip>("Sounds/Bgm/BongoBoogieMenuLOOPING");
+    //        _audioSources[(int)Define.Sound.Bgm].clip = audioClip;
+    //        Managers.Sound.Play(audioClip, Define.Sound.Bgm);
+    //    }
+    //}
 
     public override void OnJoinedLobby()
     {
@@ -79,10 +75,10 @@ public class LauncherUI : PhotonManager
         //SceneManager.LoadScene(2);
         //InstantiateGameCenter();
 
-        //if (PhotonNetwork.IsMasterClient)
-        //{
-        StartCoroutine(LoadAsyncScene(_roomSceneName));
-        //}
+        if (PhotonNetwork.IsMasterClient)
+        {
+            StartCoroutine(LoadAsyncScene(_roomSceneName));
+        }
     }
 
 
@@ -93,8 +89,6 @@ public class LauncherUI : PhotonManager
             DelayTime();
     }
 
-    
-
     void DelayTime()
     {
         delayTime += Time.deltaTime;
@@ -103,8 +97,27 @@ public class LauncherUI : PhotonManager
         if (delayTime == 5)
             flag = false;
     }
+    //IEnumerator LoadingNextScene(string sceneName)
+    //{
+    //    // LoadSceneAsync: 바로 씬을 전환하지 않고, 동기화를 한 후 씬을 넘길지 말지 결정함
+    //    async = SceneManager.LoadSceneAsync(sceneName);
+    //    async.allowSceneActivation = false;
 
-   
+    //    while (async.progress < 0.9f) // 0~1
+    //    {
+    //        yield return true;
+    //    }
+
+    //    while (async.progress >= 0.9f)
+    //    {
+    //        yield return new WaitForSeconds(0.1f);
+    //        if (delayTime > 5.0f) // 5초의 delay를 건 후
+    //            break;
+    //    }
+
+    //    // 씬을 바꿔줌
+    //    async.allowSceneActivation = true;
+    //}
 
 
 
