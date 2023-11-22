@@ -1089,7 +1089,7 @@ public class PlayerController : MonoBehaviourPun
             
 
             yield return new WaitForSeconds(2);
-            _actor.StatusHandler.StartCoroutine("RestoreBodySpring", 1);
+            _actor.StatusHandler.StartCoroutine("RestoreBodySpring", 1f);
             _bodyHandler.LeftLeg.PartInteractable.damageModifier = InteractableObject.Damage.Default;
             _bodyHandler.RightLeg.PartInteractable.damageModifier = InteractableObject.Damage.Default;
             photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LeftLeg, false);

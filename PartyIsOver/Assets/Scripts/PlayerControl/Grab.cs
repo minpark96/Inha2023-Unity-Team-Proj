@@ -339,7 +339,7 @@ public class Grab : MonoBehaviourPun
                 _leftHandRigid.AddForce(dir * 80f);
                 if(HandCollisionCheck(Side.Left))
                 {
-                    JointFix(Side.Left);
+                    photonView.RPC("JointFix", RpcTarget.All, (int)Side.Left);
                     _grabDelayTimer = 0.5f;
                 }
             }
@@ -360,7 +360,7 @@ public class Grab : MonoBehaviourPun
                 _rightHandRigid.AddForce(dir * 80f);
                 if (HandCollisionCheck(Side.Right))
                 {
-                    JointFix(Side.Right);
+                    photonView.RPC("JointFix", RpcTarget.All, (int)Side.Right);
                     _grabDelayTimer = 0.5f;
                 }
             }
@@ -385,7 +385,7 @@ public class Grab : MonoBehaviourPun
                         return;
                     //아이템에 맞게 관절조정 함수 추가해야함
 
-                    JointFix(Side.Right);
+                    photonView.RPC("JointFix", RpcTarget.All, (int)Side.Right);
                 }
                 break;
             case ItemType.TwoHanded:
@@ -414,7 +414,7 @@ public class Grab : MonoBehaviourPun
                         return;
                     //아이템에 맞게 관절조정 함수 추가해야함
 
-                    JointFix(Side.Right);
+                    photonView.RPC("JointFix", RpcTarget.All, (int)Side.Right);
                 }
                 break;
         }
@@ -450,8 +450,8 @@ public class Grab : MonoBehaviourPun
                 return;
         }
 
-        JointFix(Side.Left);
-        JointFix(Side.Right);
+        photonView.RPC("JointFix", RpcTarget.All, (int)Side.Left);
+        photonView.RPC("JointFix", RpcTarget.All, (int)Side.Right);
     }
 
 
@@ -577,8 +577,13 @@ public class Grab : MonoBehaviourPun
         GrabPose();
     }
 
+    [PunRPC]
+    void JointFix(int side)
+    {
+        JointFixInLocal((Side)side);
+    }
 
-    void JointFix(Side side)
+    void JointFixInLocal(Side side)
     {
         ItemType type = ItemType.None;
         if (EquipItem != null)
@@ -631,7 +636,6 @@ public class Grab : MonoBehaviourPun
     }
 
 
-    
     void DestroyJoint()
     {
         Destroy(_grabJointLeft);
