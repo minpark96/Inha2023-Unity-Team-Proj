@@ -24,7 +24,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     // ÇÁ¸®ÆÕ °æ·Î
     string _gameCenterPath = "GameCenter";
 
-    protected string _roomSceneName = "Main";
+    protected string _roomSceneName = "Room";
 
     #endregion
 
@@ -125,8 +125,8 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     {
         if (_isConnecting)
         {
-            //PhotonNetwork.JoinRandomRoom();
-            PhotonNetwork.JoinLobby();
+            PhotonNetwork.JoinRandomRoom();
+            //PhotonNetwork.JoinLobby();
             _isConnecting = false;
         }
     }
