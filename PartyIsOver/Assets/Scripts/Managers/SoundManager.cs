@@ -30,7 +30,7 @@ public class SoundManager
 
             string[] soundNames = System.Enum.GetNames(typeof(Define.Sound));
             //¸Æ½º Ä«¿îÆ®¶ó´Â ¾Ö°¡ ÀÖÀ¸´Ï »©ÁÜ
-            for (int i = 0; i < soundNames.Length - 1; i++)
+            for (int i = 0; i < soundNames.Length - 2; i++)
             {
                 GameObject go = new GameObject { name = soundNames[i] };
                 _audioSources[i] = go.AddComponent<AudioSource>();
@@ -44,6 +44,7 @@ public class SoundManager
             audioClip = Managers.Resource.Load<AudioClip>("Sounds/Bgm/BongoBoogieMenuLOOPING");
             _audioSources[(int)Define.Sound.Bgm].clip = audioClip;
             _audioSources[(int)Define.Sound.Bgm].volume = 0.1f;
+            _audioSources[(int)Define.Sound.Effect].volume = 0.3f;
             Managers.Sound.Play(audioClip, Define.Sound.Bgm);
         }
     }

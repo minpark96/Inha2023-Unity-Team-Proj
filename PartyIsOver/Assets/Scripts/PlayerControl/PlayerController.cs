@@ -5,6 +5,7 @@ using static Actor;
 using static AniFrameData;
 using static AniAngleData;
 using Photon.Pun;
+using Photon.Realtime;
 
 [System.Serializable]
 public class AniFrameData
@@ -218,6 +219,8 @@ public class PlayerController : MonoBehaviourPun
     private BalloonState _balloonState;
     private DrunkState _drunkState;
 
+    AudioSource _audioSource;
+    AudioClip _audioClip;
 
     [Header("Dummy")]
     public bool isAI = false;
@@ -282,6 +285,8 @@ public class PlayerController : MonoBehaviourPun
         targetingHandler = GetComponent<TargetingHandler>();
         _actor = GetComponent<Actor>();
         _hipRB = transform.Find("GreenHip").GetComponent<Rigidbody>();
+        Transform childTransform = transform.Find("GreenHip");
+        _audioSource = childTransform.GetComponent<AudioSource>();
 
         childJoints = GetComponentsInChildren<ConfigurableJoint>();
         originalYMotions = new ConfigurableJointMotion[childJoints.Length];
@@ -309,6 +314,15 @@ public class PlayerController : MonoBehaviourPun
             childJoints[i].angularYMotion = originalYMotions[i];
             childJoints[i].angularZMotion = originalZMotions[i];
         }
+    }
+
+    [PunRPC]
+    void PlayerEffectSound(string path)
+    {
+        _audioClip = Managers.Sound.GetOrAddAudioClip(path);
+        _audioSource.clip = _audioClip;
+        _audioSource.spatialBlend = 1;
+        Managers.Sound.Play(_audioClip);
     }
 
     #region OnMouseEvent_Grab
@@ -479,6 +493,7 @@ public class PlayerController : MonoBehaviourPun
                         {
                             if (!_isRSkillCheck)
                             {
+                                photonView.RPC("PlayerEffectSound",RpcTarget.All, "Sounds/PlayerEffect/ACTION_Changing_Smoke");
                                 _isRSkillCheck = true;
                                 StartCoroutine(ChargeReady());
                             }
@@ -623,6 +638,7 @@ public class PlayerController : MonoBehaviourPun
 
     IEnumerator NuclearPunchDelay()
     {
+        photonView.RPC("PlayerEffectSound", RpcTarget.All, "Sounds/PlayerEffect/SUPERMODE_Punch_Hit_03");
         yield return MeowPunch(Side.Right, 0.07f, NuclearPunchReadyPunch, NuclearPunching, NuclearPunchResetPunch);
         yield return RSkillCoolTimer();
     }
@@ -639,6 +655,7 @@ public class PlayerController : MonoBehaviourPun
         _readySide = Side.Right;
         while (_punchcount < 5)
         {
+            photonView.RPC("PlayerEffectSound", RpcTarget.All, "Sounds/Effect/SFX_ArrowShot_Hit");
             if (_readySide == Side.Left)
             {
                 yield return MeowPunch(Side.Left, 0.07f, MeowPunchReadyPunch, MeowPunchPunching, MeowPunchResetPunch);
@@ -1671,7 +1688,7 @@ public class PlayerController : MonoBehaviourPun
     [PunRPC]
     private void UpdateDamageModifier(int bodyPart, bool isAttack)
     {
-        Debug.Log("[UpdateDamageModifier] isAttack: " + isAttack + ", bodyPart: " + bodyPart);
+        //Debug.Log("[UpdateDamageModifier] isAttack: " + isAttack + ", bodyPart: " + bodyPart);
 
         switch((Define.BodyPart)bodyPart)
         {

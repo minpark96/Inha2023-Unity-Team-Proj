@@ -10,6 +10,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
     public event PlayerStatusChanges OnPlayerStatusChanges;
 
     public Transform CameraArm;
+    AudioListener _audioListener;
 
     public StatusHandler StatusHandler;
     public BodyHandler BodyHandler;
@@ -97,11 +98,15 @@ public class Actor : MonoBehaviourPun, IPunObservable
         if (photonView.IsMine)
         {
             LocalPlayerInstance = this.gameObject;
+            gameObject.AddComponent<AudioListener>();
         }
         else
         {
+            _audioListener = GetComponentInChildren<AudioListener>();
             // 다른 클라이언트 카메라 끄기
             transform.GetChild(0).gameObject.SetActive(false);
+            // 사운드 끄기
+            _audioListener.enabled = false;
         }
         DontDestroyOnLoad(this.gameObject);
 
@@ -217,21 +222,21 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        Debug.Log("OnPhotonSerializeView");
+        //Debug.Log("OnPhotonSerializeView");
         if (stream.IsWriting)
         {
-            Debug.Log("Writing");
+            //Debug.Log("Writing");
             // We own this player: send the others our data
-            Debug.Log("Writing actorState: " + actorState);
+            //Debug.Log("Writing actorState: " + actorState);
             stream.SendNext(actorState);
         }
         else
         {
-            Debug.Log("Receiving");
+            //Debug.Log("Receiving");
             // Network player, receive data
-            Debug.Log("Receiving B actorState: " + actorState);
+            //Debug.Log("Receiving B actorState: " + actorState);
             this.actorState = (ActorState)stream.ReceiveNext();
-            Debug.Log("Receiving A actorState: " + actorState);
+            //Debug.Log("Receiving A actorState: " + actorState);
         }
     }
 }

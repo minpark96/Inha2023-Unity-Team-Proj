@@ -26,8 +26,8 @@ public class Define
     }
     public enum Effect
     {
-        Punch,
-        Ice,
+        UIEffect,
+        PlayerEffect,
         
     }
 
@@ -44,6 +44,7 @@ public class Define
     {
         Bgm,
         Effect,
+        PlayerEffect,
         Maxcount,
     }
 

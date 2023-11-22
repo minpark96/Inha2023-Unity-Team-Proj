@@ -5124,7 +5124,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!20 &330585545
 Camera:
   m_ObjectHideFlags: 0
@@ -9018,6 +9018,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -8107050665031353251, guid: da320d57a6643e3479003d4664c324b0, type: 3}
+      propertyPath: sceneViewId
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7066956456343087048, guid: da320d57a6643e3479003d4664c324b0, type: 3}
       propertyPath: m_RootOrder
       value: 9
@@ -11627,7 +11631,8 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 9
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 0}
   m_SourcePrefab: {fileID: 100100000, guid: 5582bd0b2592b2d47ae0ef2e4ef206c0, type: 3}
 --- !u!4 &728277531 stripped
 Transform:
@@ -12899,25 +12904,9 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1042675775}
     m_Modifications:
-    - target: {fileID: 84520675208848638, guid: 5582bd0b2592b2d47ae0ef2e4ef206c0, type: 3}
-      propertyPath: m_Layer
-      value: 9
-      objectReference: {fileID: 0}
     - target: {fileID: 639247019946773269, guid: 5582bd0b2592b2d47ae0ef2e4ef206c0, type: 3}
       propertyPath: m_RootOrder
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 639247019946773269, guid: 5582bd0b2592b2d47ae0ef2e4ef206c0, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.31433016
-      objectReference: {fileID: 0}
-    - target: {fileID: 639247019946773269, guid: 5582bd0b2592b2d47ae0ef2e4ef206c0, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.8915948
-      objectReference: {fileID: 0}
-    - target: {fileID: 639247019946773269, guid: 5582bd0b2592b2d47ae0ef2e4ef206c0, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0.3119376
       objectReference: {fileID: 0}
     - target: {fileID: 639247019946773269, guid: 5582bd0b2592b2d47ae0ef2e4ef206c0, type: 3}
       propertyPath: m_LocalPosition.x
@@ -12959,17 +12948,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6836957696224239550, guid: 5582bd0b2592b2d47ae0ef2e4ef206c0, type: 3}
-      propertyPath: m_Layer
-      value: 9
-      objectReference: {fileID: 0}
     - target: {fileID: 8835030867758628962, guid: 5582bd0b2592b2d47ae0ef2e4ef206c0, type: 3}
       propertyPath: m_Name
       value: MountainRock_09_LOD1_SnowPrefab (2)
-      objectReference: {fileID: 0}
-    - target: {fileID: 8835030867758628962, guid: 5582bd0b2592b2d47ae0ef2e4ef206c0, type: 3}
-      propertyPath: m_Layer
-      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5582bd0b2592b2d47ae0ef2e4ef206c0, type: 3}

@@ -143,7 +143,7 @@ public class CollisionHandler : MonoBehaviourPun
             case InteractableObject.Damage.Punch:
                 {
                     damage = 7f;
-                    string path = "Sounds/Effect/SFX_ArrowShot_Hit";
+                    string path = "Sounds/PlayerEffect/SFX_ArrowShot_Hit";
                     AudioClip audioClip = Managers.Sound.GetOrAddAudioClip(path, Define.Sound.Effect);
                     Managers.Sound.Play(audioClip);
                 }
@@ -190,7 +190,7 @@ public class CollisionHandler : MonoBehaviourPun
     [PunRPC]
     void AddForceAttackedTarget(int objViewId, Vector3 normal, int damageModifier,float itemDamage)
     {
-        Debug.Log("[AddForceAttackedTarget] id: " + objViewId);
+        //Debug.Log("[AddForceAttackedTarget] id: " + objViewId);
         Rigidbody thisRb = PhotonNetwork.GetPhotonView(objViewId).transform.GetComponent<Rigidbody>();
 
         switch ((InteractableObject.Damage)damageModifier)
