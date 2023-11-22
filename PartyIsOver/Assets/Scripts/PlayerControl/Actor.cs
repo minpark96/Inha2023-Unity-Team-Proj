@@ -89,7 +89,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
             Debug.Log(photonView.ViewID + " ¿Ã∫•∆Æ null");
 
         //Debug.Log("_health: " + _health + " debuffState: " + debuffState + " photonView.ViewID: " + photonView.ViewID);
-        //OnPlayerStatusChanges(_health, _stamina, actorState, debuffState, photonView.ViewID);
+        OnPlayerStatusChanges(_health, _stamina, actorState, debuffState, photonView.ViewID);
     }
 
     private void Awake()
