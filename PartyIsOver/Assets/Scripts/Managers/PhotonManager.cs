@@ -164,6 +164,9 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         {
             StartCoroutine(LoadNextScene(_sceneLobby));
             InstantiateGameCenter();
+
+            //RoomName.text = "Room Name: " + PhotonNetwork.CurrentRoom.Name;
+            //UpdatePlayerList();
         }
     }
 
@@ -176,11 +179,13 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     public override void OnPlayerEnteredRoom(Player other)
     {
         //Debug.LogFormat("[OnPlayerEnteredRoom()] {0}", other.NickName);
+        //UpdatePlayerList();
     }
 
     public override void OnPlayerLeftRoom(Player other)
     {
         //Debug.LogFormat("[OnPlayerLeftRoom()] {0}", other.NickName);
+        //UpdatePlayerList();
 
     }
 

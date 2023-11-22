@@ -5,11 +5,10 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
 
-public class LobbyUI : MonoBehaviourPunCallbacks
+public class LobbyUI : MonoBehaviour
 {
     // : Start
     public Text RoomName;
-
     public GameObject LobbyPanel;
     public GameObject RoomPanel;
 
@@ -21,7 +20,6 @@ public class LobbyUI : MonoBehaviourPunCallbacks
 
     //OnRoomListUpdate가 2번 이상 불리는 것을 방지할 타이머
     public float TimeBetweenUpdate = 1.5f;
-    float NextUpdateTime;
 
 
     // : PlayerItem
@@ -37,13 +35,9 @@ public class LobbyUI : MonoBehaviourPunCallbacks
 
 
 
-    
 
 
-    // Room Panel
-
-
-
+    // Lobby Panel
     public GameObject CreateRoomPanel;
     public Sprite PrivateOn;
     public Sprite PrivateOff;
@@ -52,93 +46,25 @@ public class LobbyUI : MonoBehaviourPunCallbacks
 
     private bool _isClicked;
 
-    // Lobby Panel
-    public void OnClickCreatePopup()
-    {
-        CreateRoomPanel.SetActive(true);
-    }
 
-    public void OnClickRandomJoin()
-    {
-        PhotonNetwork.JoinRandomRoom();
-    }
-
-
-    
-
-
-
-
-    #region Create Room Panel
-    public void OnClickCreate()
-    {
-        CreateRoomPanel.SetActive(false);
-
-        if (RoomInputField.text.Length >= 1)
-        {
-            PhotonNetwork.CreateRoom(RoomInputField.text, new RoomOptions() { MaxPlayers = 6 });
-
-        }
-    }
-
-    public void OnClickCancel()
-    {
-        CreateRoomPanel.SetActive(false);
-    }
-
-    public void OnClickPrivate()
-    {
-        _isClicked = !_isClicked;
-
-        if(_isClicked)
-            PrivateButton.sprite = PrivateOn;
-        else
-            PrivateButton.sprite = PrivateOff;
-    }
-
-    #endregion
-
-
-
-
-
-
-
-    private void Start()
-    {
-        //PhotonNetwork.JoinLobby();
-        LobbyPanel.SetActive(true);
-    }
-
-   
-
-    // 룸에 입장한 후 호출되는 콜백 함수
-    public override void OnJoinedRoom()
-    {
-        LobbyPanel.SetActive(false);
-        RoomPanel.SetActive(true);
-        RoomName.text = "Room Name: " + PhotonNetwork.CurrentRoom.Name;
-
-        UpdatePlayerList();
-    }
 
     // : RoomItem
     // 로비에 방 목록 업데이트
-    public override void OnRoomListUpdate(List<RoomInfo> roomList)
-    {
-        //UpdateRoomList(roomList); // > 2번 이상 불러올 경우가 생김
+    //public override void OnRoomListUpdate(List<RoomInfo> roomList)
+    //{
+    //    //UpdateRoomList(roomList); // > 2번 이상 불러올 경우가 생김
 
-        if (Time.time >= NextUpdateTime)
-        {
-            UpdateRoomList(roomList);
-            NextUpdateTime = Time.time + TimeBetweenUpdate;
-        }
+    //    if (Time.time >= NextUpdateTime)
+    //    {
+    //        UpdateRoomList(roomList);
+    //        NextUpdateTime = Time.time + TimeBetweenUpdate;
+    //    }
 
-        if (roomList.Count == 0 && PhotonNetwork.InLobby)
-        {
-            RoomItemsList.Clear();
-        }
-    }
+    //    if (roomList.Count == 0 && PhotonNetwork.InLobby)
+    //    {
+    //        RoomItemsList.Clear();
+    //    }
+    //}
 
     void UpdateRoomList(List<RoomInfo> list)
     {
@@ -172,17 +98,6 @@ public class LobbyUI : MonoBehaviourPunCallbacks
     public void OnClickLeaveRoom()
     {
         PhotonNetwork.LeaveRoom();
-    }
-
-    public override void OnLeftRoom()
-    {
-        RoomPanel.SetActive(false);
-        LobbyPanel.SetActive(true);
-    }
-
-    public override void OnConnectedToMaster()
-    {
-        PhotonNetwork.JoinLobby();
     }
 
 
@@ -220,16 +135,6 @@ public class LobbyUI : MonoBehaviourPunCallbacks
         }
     }
 
-    public override void OnPlayerEnteredRoom(Player newPlayer)
-    {
-        UpdatePlayerList();
-    }
-
-    public override void OnPlayerLeftRoom(Player otherPlayer)
-    {
-        UpdatePlayerList();
-    }
-
 
     // : Game Start
     private void Update()
@@ -244,5 +149,50 @@ public class LobbyUI : MonoBehaviourPunCallbacks
             PlayButton.SetActive(false);
         }
     }
-    
+
+
+
+
+
+
+    private void Start()
+    {
+        CreateRoomPanel.SetActive(false);
+    }
+
+
+    public void OnClickRandomJoin()
+    {
+        PhotonNetwork.JoinRandomRoom();
+    }
+
+
+    public void OnClickCreatePopup()
+    {
+        CreateRoomPanel.SetActive(true);
+    }
+    public void OnClickCreate()
+    {
+        CreateRoomPanel.SetActive(false);
+
+        if (RoomInputField.text.Length >= 1)
+        {
+            PhotonNetwork.CreateRoom(RoomInputField.text, new RoomOptions() { MaxPlayers = 6 });
+
+        }
+    }
+    public void OnClickCancel()
+    {
+        CreateRoomPanel.SetActive(false);
+    }
+    public void OnClickPrivate()
+    {
+        _isClicked = !_isClicked;
+
+        if (_isClicked)
+            PrivateButton.sprite = PrivateOn;
+        else
+            PrivateButton.sprite = PrivateOff;
+    }
+
 }

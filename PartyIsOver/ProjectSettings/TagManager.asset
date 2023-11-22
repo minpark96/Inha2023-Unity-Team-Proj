@@ -56,6 +56,6 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: LoadingBar
+  - name: PopUp
     uniqueID: 53548671
     locked: 0
