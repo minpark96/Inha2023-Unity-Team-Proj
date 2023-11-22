@@ -131,16 +131,9 @@ public class CollisionHandler : MonoBehaviourPun
     }
     private float PhysicalDamage(InteractableObject collisionInteractable, float damage, ContactPoint contact)
     {
-        int thisViewID = contact.thisCollider.gameObject.GetComponent<PhotonView>().ViewID;
-        photonView.RPC("AddForceAttackedTarget", RpcTarget.All, thisViewID, contact.normal, collisionInteractable.damageModifier);
-        
         float itemDamage = 1f;
         if (collisionInteractable.GetComponent<Item>() != null)
-        {
-            itemDamage = collisionInteractable.GetComponent<Item>().ItemData.Damage / 10f;
-            if (itemDamage < 1f)
-                itemDamage = 1f;
-        }
+            itemDamage = collisionInteractable.GetComponent<Item>().ItemData.Damage;
 
         switch (collisionInteractable.damageModifier)
         {
@@ -148,13 +141,13 @@ public class CollisionHandler : MonoBehaviourPun
                 damage = 0f;
                 break;
             case InteractableObject.Damage.Object:
-                damage *= 20f;
+                damage = 20f *itemDamage;
                 break;
             case InteractableObject.Damage.Punch:
-                damage *= 700f;
+                damage = 7f;
                 break;
             case InteractableObject.Damage.DropKick:
-                damage *= 1004f;
+                damage = 1f;
                 break;
             case InteractableObject.Damage.Headbutt:
                 damage *= 80f;
@@ -164,6 +157,21 @@ public class CollisionHandler : MonoBehaviourPun
                 break;
             default:
                 break;
+        }
+
+        itemDamage = 1f;
+        if (collisionInteractable.GetComponent<Item>() != null)
+        {
+            itemDamage = collisionInteractable.GetComponent<Item>().ItemData.Damage / 10f;
+            if (itemDamage < 1f)
+                itemDamage = 1f;
+        }
+
+        int thisViewID;
+        if (contact.thisCollider.gameObject.GetComponent<PhotonView>() != null)
+        {
+            thisViewID = contact.thisCollider.gameObject.GetComponent<PhotonView>().ViewID;
+            photonView.RPC("AddForceAttackedTarget", RpcTarget.All, thisViewID, contact.normal, (int)collisionInteractable.damageModifier, itemDamage);
         }
 
         return damage;
@@ -178,7 +186,7 @@ public class CollisionHandler : MonoBehaviourPun
     }
     
     [PunRPC]
-    void AddForceAttackedTarget(int objViewId, Vector3 normal, int damageModifier)
+    void AddForceAttackedTarget(int objViewId, Vector3 normal, int damageModifier,float itemDamage)
     {
         Debug.Log("[AddForceAttackedTarget] id: " + objViewId);
         Rigidbody thisRb = PhotonNetwork.GetPhotonView(objViewId).transform.GetComponent<Rigidbody>();
@@ -188,7 +196,7 @@ public class CollisionHandler : MonoBehaviourPun
             case InteractableObject.Damage.Ignore:
                 break;
             case InteractableObject.Damage.Object:
-                thisRb.AddForce(normal * 5f, ForceMode.VelocityChange);
+                thisRb.AddForce(normal * 5f* itemDamage, ForceMode.VelocityChange);
                 break;
             case InteractableObject.Damage.Punch:
                 thisRb.AddForce(normal * 3f + Vector3.up * 2f, ForceMode.VelocityChange);
