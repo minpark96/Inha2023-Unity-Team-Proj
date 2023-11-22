@@ -77,9 +77,6 @@ public class CollisionHandler : MonoBehaviourPun
                     if (collisionInteractable != null)
                     {
                         actor.StatusHandler.AddDamage(collisionInteractable.damageModifier, damage, collisionCollider.gameObject);
-                        string path = "Sounds/Effect/SFX_ArrowShot_Hit";
-                        AudioClip audioClip = Managers.Sound.GetOrAddAudioClip(path, Define.Sound.Effect);
-                        Managers.Sound.Play(audioClip);
                     }
                     else
                     {
@@ -144,7 +141,12 @@ public class CollisionHandler : MonoBehaviourPun
                 damage = 20f *itemDamage;
                 break;
             case InteractableObject.Damage.Punch:
-                damage = 7f;
+                {
+                    damage = 7f;
+                    string path = "Sounds/Effect/SFX_ArrowShot_Hit";
+                    AudioClip audioClip = Managers.Sound.GetOrAddAudioClip(path, Define.Sound.Effect);
+                    Managers.Sound.Play(audioClip);
+                }
                 break;
             case InteractableObject.Damage.DropKick:
                 damage = 1f;
