@@ -12404,6 +12404,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerController: {fileID: 0}
   CameraArm: {fileID: 3110579752506030532}
+  Actor: {fileID: 0}
   BalloonDuration: 30
   RotateAngle: 10
   IsGrounded: 0

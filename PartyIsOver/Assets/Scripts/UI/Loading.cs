@@ -48,7 +48,6 @@ public class Loading : MonoBehaviour
     {
         delayTime += Time.deltaTime;
         ImageHPBar.fillAmount = delayTime / 5;
-
     }
 
     // hp¹Ù
