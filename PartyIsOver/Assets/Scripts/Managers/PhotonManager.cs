@@ -9,45 +9,47 @@ using System;
 
 public class PhotonManager : MonoBehaviourPunCallbacks 
 {
-    #region Private Serializable Fields
-
-    #endregion
-
-    #region Private Fields
-
     static PhotonManager p_instance;
 
     const byte MAX_PLAYERS_PER_ROOM = 6;
 
-    protected bool _isConnecting;
-    string _gameVersion = "1";
-
-
-    // 프리팹 경로
+    bool IsConnecting;
+    string GameVersion = "1";
     string _gameCenterPath = "GameCenter";
+    string _sceneLobby = "Lobby";
 
-    protected string _roomSceneName = "Room"; // "Main";
-
-    #endregion
-
-    #region Public Fields
 
     public static PhotonManager Instance { get { return p_instance; } }
-
-    #endregion
-
-    #region MonoBehaviour CallBacks
 
     void Awake()
     {
         Init();
     }
 
-    #endregion
-
     #region Public Methods
 
+    public void Connect()
+    {
+        if (PhotonNetwork.IsConnected)
+        {
+            PhotonNetwork.JoinLobby();
+        }
+        else
+        {
+            IsConnecting = PhotonNetwork.ConnectUsingSettings();
+            PhotonNetwork.GameVersion = GameVersion;
+        }
 
+        SceneManagerEx sceneManagerEx = new SceneManagerEx();
+        string currentSceneName = sceneManagerEx.GetCurrentSceneName();
+        if (currentSceneName == _sceneLobby)
+        {
+            AudioSource[] _audioSources = new AudioSource[(int)Define.Sound.Maxcount];
+            AudioClip audioClip = Managers.Resource.Load<AudioClip>("Sounds/Bgm/BongoBoogieMenuLOOPING");
+            _audioSources[(int)Define.Sound.Bgm].clip = audioClip;
+            Managers.Sound.Play(audioClip, Define.Sound.Bgm);
+        }
+    }
 
     public void LeaveRoom()
     {
@@ -57,7 +59,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name == _roomSceneName)
+        if (scene.name == _sceneLobby)
         {
         }
     }
@@ -79,7 +81,6 @@ public class PhotonManager : MonoBehaviourPunCallbacks
             DontDestroyOnLoad(_go);
             p_instance = _go.GetComponent<PhotonManager>();
 
-            Screen.SetResolution(800, 480, false);
             PhotonNetwork.AutomaticallySyncScene = true;
 
             PhotonNetwork.SerializationRate = 20;
@@ -94,49 +95,25 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         }
     }
 
-    public void Connect()
-    {
-        //_loadingPanel.SetActive(true);
-        //flag = true;
+   
 
-        if (PhotonNetwork.IsConnected)
-        {
-            Debug.Log("PUN Basics Tutorial/Launcher: JoinRandomRoom() was called by PUN");
-
-            // 일단 Room, Join Lobby가 맞는듯
-            PhotonNetwork.JoinRandomRoom();
-
-            //if(!flag)
-            //    PhotonNetwork.JoinLobby();
-        }
-        else
-        {
-            _isConnecting = PhotonNetwork.ConnectUsingSettings();
-            PhotonNetwork.GameVersion = _gameVersion;
-        }
-
-        SceneManagerEx sceneManagerEx = new SceneManagerEx();
-        string currentSceneName = sceneManagerEx.GetCurrentSceneName();
-        if (currentSceneName == _roomSceneName)
-        {
-            AudioSource[] _audioSources = new AudioSource[(int)Define.Sound.Maxcount];
-            AudioClip audioClip = Managers.Resource.Load<AudioClip>("Sounds/Bgm/BongoBoogieMenuLOOPING");
-            _audioSources[(int)Define.Sound.Bgm].clip = audioClip;
-            Managers.Sound.Play(audioClip, Define.Sound.Bgm);
-        }
-    }
-
-    protected IEnumerator LoadAsyncScene(string sceneName)
+    IEnumerator LoadNextScene(string sceneName)
     {
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
+        asyncLoad.allowSceneActivation = false;
 
         while (!asyncLoad.isDone)
         {
-            yield return null;
+            if (asyncLoad.progress >= 0.9f)
+            {
+                yield return new WaitForSeconds(0.1f);
+                break;
+            }
+            else
+                yield return null;
         }
-
-        //Debug.LogFormat("[LoadAsyncScene()] Scene {0} Loaded", SceneManagerHelper.ActiveSceneName);
-        InstantiateGameCenter();
+        
+        asyncLoad.allowSceneActivation = true;
     }
 
 
@@ -149,25 +126,22 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         }
     }
 
-
     #endregion
 
     #region Photon Callbacks
 
     public override void OnConnectedToMaster()
     {
-        if (_isConnecting)
+        if (IsConnecting)
         {
-            PhotonNetwork.JoinRandomRoom();
-            //PhotonNetwork.JoinLobby();
-            _isConnecting = false;
+            IsConnecting = false;
         }
     }
 
     public override void OnDisconnected(DisconnectCause cause)
     {
         Debug.LogWarningFormat("PUN Basics Tutorial/Launcher: OnDisconnected() was called by PUN with reason {0}", cause);
-        _isConnecting = false;
+        IsConnecting = false;
     }
 
     public override void OnJoinRandomFailed(short returnCode, string message)
@@ -177,11 +151,19 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = MAX_PLAYERS_PER_ROOM });
     }
 
+    public override void OnJoinedLobby()
+    {
+        Debug.Log("[JoinLobby()] Load Lobby Scene");
+
+        StartCoroutine(LoadNextScene(_sceneLobby));
+    }
+
     public override void OnJoinedRoom()
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            StartCoroutine(LoadAsyncScene(_roomSceneName));
+            StartCoroutine(LoadNextScene(_sceneLobby));
+            InstantiateGameCenter();
         }
     }
 
