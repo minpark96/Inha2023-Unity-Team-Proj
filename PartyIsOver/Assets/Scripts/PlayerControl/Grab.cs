@@ -297,8 +297,8 @@ public class Grab : MonoBehaviourPun
         _leftSearchTarget = _targetingHandler.SearchTarget(Side.Left);
         _rightSearchTarget = _targetingHandler.SearchTarget(Side.Right);
 
-        Debug.Log(_leftSearchTarget);
-        Debug.Log(_rightSearchTarget);
+        //Debug.Log(_leftSearchTarget);
+        //Debug.Log(_rightSearchTarget);
 
         //발견한 오브젝트가 없으면 리턴
         if (_leftSearchTarget == null && _rightSearchTarget == null)
