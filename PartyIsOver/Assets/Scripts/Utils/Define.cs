@@ -28,7 +28,6 @@ public class Define
     {
         UIEffect,
         PlayerEffect,
-        
     }
 
     public enum Scene
