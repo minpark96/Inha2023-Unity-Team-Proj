@@ -5,13 +5,13 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
 
-public class LobbyManager : MonoBehaviourPunCallbacks
+public class LobbyUI : MonoBehaviourPunCallbacks
 {
     // : Start
-    public InputField RoomInputField;
+    public Text RoomName;
+
     public GameObject LobbyPanel;
     public GameObject RoomPanel;
-    public Text RoomName;
 
     // : RoomItem
     // RoomItem(방 제목) 리스트
@@ -37,24 +37,80 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
 
 
-    // : Start
-    // 로비 입장
-    private void Start()
+    
+
+
+    // Room Panel
+
+
+
+    public GameObject CreateRoomPanel;
+    public Sprite PrivateOn;
+    public Sprite PrivateOff;
+    public Image PrivateButton;
+    public InputField RoomInputField;
+
+    private bool _isClicked;
+
+    // Lobby Panel
+    public void OnClickCreatePopup()
     {
-        PhotonNetwork.JoinLobby();
-        LobbyPanel.SetActive(true);
-        RoomPanel.SetActive(false);
+        CreateRoomPanel.SetActive(true);
     }
 
-    // 방이름을 적고 버튼 클릭시 방생성
+    public void OnClickRandomJoin()
+    {
+        PhotonNetwork.JoinRandomRoom();
+    }
+
+
+    
+
+
+
+
+    #region Create Room Panel
     public void OnClickCreate()
     {
-        if(RoomInputField.text.Length >= 1)
+        CreateRoomPanel.SetActive(false);
+
+        if (RoomInputField.text.Length >= 1)
         {
-            PhotonNetwork.CreateRoom(RoomInputField.text, new RoomOptions() { MaxPlayers = 3 });
-            
+            PhotonNetwork.CreateRoom(RoomInputField.text, new RoomOptions() { MaxPlayers = 6 });
+
         }
     }
+
+    public void OnClickCancel()
+    {
+        CreateRoomPanel.SetActive(false);
+    }
+
+    public void OnClickPrivate()
+    {
+        _isClicked = !_isClicked;
+
+        if(_isClicked)
+            PrivateButton.sprite = PrivateOn;
+        else
+            PrivateButton.sprite = PrivateOff;
+    }
+
+    #endregion
+
+
+
+
+
+
+
+    private void Start()
+    {
+        //PhotonNetwork.JoinLobby();
+        LobbyPanel.SetActive(true);
+    }
+
+   
 
     // 룸에 입장한 후 호출되는 콜백 함수
     public override void OnJoinedRoom()
@@ -101,7 +157,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
                 continue;
 
             RoomItem newRoom = Instantiate(RoomItemPrefab, ContentObject);
-            newRoom.SetRoomName(room.Name);
+            newRoom.SetRoomName(room.Name); 
             RoomItemsList.Add(newRoom);
         }
     }

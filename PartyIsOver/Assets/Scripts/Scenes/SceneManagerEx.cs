@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class SceneManagerEx 
 {
-    public BaseScene CurrentScene{ get { return GameObject.FindObjectOfType<BaseScene>(); } }
+    //public BaseScene CurrentScene{ get { return GameObject.FindObjectOfType<BaseScene>(); } }
 
     public void LoadScene(Define.Scene type)
     {
@@ -29,7 +29,7 @@ public class SceneManagerEx
 
     public void Clear()
     {
-        CurrentScene.Clear();
+        //CurrentScene.Clear();
     }
 
 }
