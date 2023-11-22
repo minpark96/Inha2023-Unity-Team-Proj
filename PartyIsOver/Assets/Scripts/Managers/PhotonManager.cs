@@ -20,11 +20,13 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     const byte MAX_PLAYERS_PER_ROOM = 6;
 
     protected bool _isConnecting;
+    string _gameVersion = "1";
+
 
     // 프리팹 경로
     string _gameCenterPath = "GameCenter";
 
-    protected string _roomSceneName = "Main";
+    protected string _roomSceneName = "Room"; // "Main";
 
     #endregion
 
@@ -45,7 +47,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     #region Public Methods
 
-   
+
 
     public void LeaveRoom()
     {
@@ -92,6 +94,37 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         }
     }
 
+    public void Connect()
+    {
+        //_loadingPanel.SetActive(true);
+        //flag = true;
+
+        if (PhotonNetwork.IsConnected)
+        {
+            Debug.Log("PUN Basics Tutorial/Launcher: JoinRandomRoom() was called by PUN");
+
+            // 일단 Room, Join Lobby가 맞는듯
+            PhotonNetwork.JoinRandomRoom();
+
+            //if(!flag)
+            //    PhotonNetwork.JoinLobby();
+        }
+        else
+        {
+            _isConnecting = PhotonNetwork.ConnectUsingSettings();
+            PhotonNetwork.GameVersion = _gameVersion;
+        }
+
+        SceneManagerEx sceneManagerEx = new SceneManagerEx();
+        string currentSceneName = sceneManagerEx.GetCurrentSceneName();
+        if (currentSceneName == _roomSceneName)
+        {
+            AudioSource[] _audioSources = new AudioSource[(int)Define.Sound.Maxcount];
+            AudioClip audioClip = Managers.Resource.Load<AudioClip>("Sounds/Bgm/BongoBoogieMenuLOOPING");
+            _audioSources[(int)Define.Sound.Bgm].clip = audioClip;
+            Managers.Sound.Play(audioClip, Define.Sound.Bgm);
+        }
+    }
 
     protected IEnumerator LoadAsyncScene(string sceneName)
     {
@@ -125,8 +158,8 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     {
         if (_isConnecting)
         {
-            //PhotonNetwork.JoinRandomRoom();
-            PhotonNetwork.JoinLobby();
+            PhotonNetwork.JoinRandomRoom();
+            //PhotonNetwork.JoinLobby();
             _isConnecting = false;
         }
     }
