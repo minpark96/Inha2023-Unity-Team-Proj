@@ -7,6 +7,7 @@ using Photon.Realtime;
 using UnityEngine.SceneManagement;
 using System;
 
+
 public class PhotonManager : MonoBehaviourPunCallbacks 
 {
     static PhotonManager p_instance;
@@ -16,10 +17,16 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     bool IsConnecting;
     string GameVersion = "1";
     string _gameCenterPath = "GameCenter";
-    string _sceneLobby = "Lobby";
+    string _sceneLobby = "[3]Lobby";
+    string _sceneRoom = "[4]Room";
 
+    LobbyUI LobbyUI;
+    List<RoomItem> RoomItemsList = new List<RoomItem>();
+    float _nextUpdateTime = 1f;
+    float _timeBetweenUpdate = 1.5f;
 
     public static PhotonManager Instance { get { return p_instance; } }
+  
 
     void Awake()
     {
@@ -61,6 +68,26 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     {
         if (scene.name == _sceneLobby)
         {
+            LobbyUI = GameObject.Find("Lobby UI").GetComponent<LobbyUI>();
+        }
+    }
+
+    public void UpdateRoomList(List<RoomInfo> list)
+    {
+        foreach (RoomItem item in RoomItemsList)
+        {
+            Destroy(item.gameObject);
+        }
+        RoomItemsList.Clear();
+
+        foreach (RoomInfo room in list)
+        {
+            if (room.PlayerCount == 0)
+                continue;
+
+            RoomItem newRoom = Instantiate(LobbyUI.RoomItemPrefab, LobbyUI.ContentObject);
+            newRoom.SetRoomName(room.Name, room.PlayerCount);
+            RoomItemsList.Add(newRoom);
         }
     }
 
@@ -100,6 +127,8 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     IEnumerator LoadNextScene(string sceneName)
     {
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
+        
+
         asyncLoad.allowSceneActivation = false;
 
         while (!asyncLoad.isDone)
@@ -112,8 +141,11 @@ public class PhotonManager : MonoBehaviourPunCallbacks
             else
                 yield return null;
         }
-        
+
         asyncLoad.allowSceneActivation = true;
+
+        if (sceneName == _sceneRoom)
+            InstantiateGameCenter();
     }
 
 
@@ -154,7 +186,6 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     public override void OnJoinedLobby()
     {
         Debug.Log("[JoinLobby()] Load Lobby Scene");
-
         StartCoroutine(LoadNextScene(_sceneLobby));
     }
 
@@ -162,32 +193,45 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            StartCoroutine(LoadNextScene(_sceneLobby));
-            InstantiateGameCenter();
-
-            //RoomName.text = "Room Name: " + PhotonNetwork.CurrentRoom.Name;
-            //UpdatePlayerList();
+            StartCoroutine(LoadNextScene(_sceneRoom));
         }
     }
 
     public override void OnLeftRoom()
     {
-        Debug.Log("[OnLeftRoom()] LoadScene(0)");
-        SceneManager.LoadScene(0);
+        Debug.Log("[OnLeftRoom()] LoadScene(2)");
+        SceneManager.LoadScene(2);
+    }
+    public override void OnRoomListUpdate(List<RoomInfo> roomList)
+    {
+        //UpdateRoomList(roomList); // > 2번 이상 불러올 경우가 생김
+
+        if (Time.time >= _nextUpdateTime)
+        {
+            UpdateRoomList(roomList);
+            _nextUpdateTime = Time.time + _timeBetweenUpdate;
+        }
+
+        if (roomList.Count == 0 && PhotonNetwork.InLobby)
+        {
+            RoomItemsList.Clear();
+        }
     }
 
     public override void OnPlayerEnteredRoom(Player other)
     {
         //Debug.LogFormat("[OnPlayerEnteredRoom()] {0}", other.NickName);
-        //UpdatePlayerList();
     }
 
     public override void OnPlayerLeftRoom(Player other)
     {
         //Debug.LogFormat("[OnPlayerLeftRoom()] {0}", other.NickName);
-        //UpdatePlayerList();
-
     }
+
+   
+  
+
+
 
     #endregion
 }

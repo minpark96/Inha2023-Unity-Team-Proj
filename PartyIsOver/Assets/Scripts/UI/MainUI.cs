@@ -19,6 +19,7 @@ public class MainUI : MonoBehaviour
     private bool _loadingDelayFlag;
     private float _angle = 0f;
     private float _delayTime = 0.0f;
+    private float _loadingTime = 2f;
 
 
     private void Start()
@@ -56,9 +57,9 @@ public class MainUI : MonoBehaviour
             _loadingDelayFlag = true;
         }
 
-        ImageHPBar.fillAmount = (_delayTime - 1) / 3;
+        ImageHPBar.fillAmount = (_delayTime - 1) / _loadingTime;
 
-        if ((_delayTime - 1) >= 3)
+        if ((_delayTime - 1) >= _loadingTime)
         {
             _delayTime = 0;
             _gameStartFlag = false;

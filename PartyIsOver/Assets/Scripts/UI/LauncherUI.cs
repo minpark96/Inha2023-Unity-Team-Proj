@@ -28,7 +28,7 @@ public class LauncherUI : MonoBehaviour
     public void OnClickGameStart()
     {
         PhotonManager.Instance.Connect();
-        SceneManager.LoadSceneAsync("Main");
+        SceneManager.LoadSceneAsync("[2]Main");
     }
     public void OnClickPopup()
     {

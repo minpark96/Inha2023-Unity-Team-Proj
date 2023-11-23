@@ -243,6 +243,7 @@ public class GameCenter : MonoBehaviourPunCallbacks
 
     void InitRoomUI()
     {
+        Debug.Log("IsRoom: " + PhotonNetwork.InRoom + ", Scene: " + SceneManager.GetActiveScene().name);
         _roomUI = GameObject.Find("Control Panel").transform.GetComponent<RoomUI>();
 
         if (PhotonNetwork.IsMasterClient)
