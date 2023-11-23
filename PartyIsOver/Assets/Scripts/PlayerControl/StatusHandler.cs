@@ -471,8 +471,8 @@ public class StatusHandler : MonoBehaviourPun
         //계산한 체력이 0보다 작으면 Death로
         if (tempHealth <= 0f)
         {
-            KillPlayer();
             EnterUnconsciousState();
+            KillPlayer();
         }
         else
         {
@@ -484,6 +484,7 @@ public class StatusHandler : MonoBehaviourPun
                     if (actor.debuffState == Actor.DebuffState.Ice) //상태이상 후에 추가
                         return;
 
+                    actor.actorState = Actor.ActorState.Unconscious;
                     EnterUnconsciousState();
                 }
             }
@@ -503,10 +504,9 @@ public class StatusHandler : MonoBehaviourPun
     void EnterUnconsciousState()
     {
         //데미지 이펙트나 사운드 추후 추가
-        actor.actorState = Actor.ActorState.Unconscious;
+
         actor.debuffState = Actor.DebuffState.Stun;
         StartCoroutine(ResetBodySpring());
-
         actor.Grab.GrabReset();
         actor.BodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
         actor.BodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
