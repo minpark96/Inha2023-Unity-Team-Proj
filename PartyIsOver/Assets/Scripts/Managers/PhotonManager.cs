@@ -60,6 +60,8 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         GameCenter gameCenter = new GameCenter();
         if (scene.name == _roomSceneName)
         {
+            for (int i = 0; i < 2; i++)
+                Managers.Resource.Instantiate("Effects/Stun_loop");
         }
 
         if (scene.name == "Room")
