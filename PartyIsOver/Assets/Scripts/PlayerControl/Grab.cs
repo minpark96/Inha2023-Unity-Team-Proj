@@ -264,6 +264,9 @@ public class Grab : MonoBehaviourPun
 
     public void GrabReset()
     {
+        int leftObjViewID = 0;
+        int rightObjViewID = 0;
+
         _isGrabbingInProgress = false;
         if(EquipItem != null)
         {
@@ -277,15 +280,26 @@ public class Grab : MonoBehaviourPun
             EquipItem.GetComponent<Rigidbody>().mass = 10f;
             EquipItem = null;
         }
+
+
+        if (_leftSearchTarget != null)
+        {
+            leftObjViewID = _leftSearchTarget.transform.GetComponent<PhotonView>().ViewID;
+        }
+        
+        if (_leftSearchTarget != null)
+        {
+            rightObjViewID = _rightSearchTarget.transform.GetComponent<PhotonView>().ViewID;
+        }
+
+        photonView.RPC("DestroyJoint", RpcTarget.All, leftObjViewID, rightObjViewID);
+
         _grabDelayTimer = 0.5f;
         _isRightGrab = false;
         _isLeftGrab = false;
         RightGrabObject = null;
         LeftGrabObject = null;
         _actor.GrabState = GrabState.None;
-
-
-        DestroyJoint();
     }
 
     public void Grabbing()
@@ -337,9 +351,10 @@ public class Grab : MonoBehaviourPun
                 }
 
                 _leftHandRigid.AddForce(dir * 80f);
-                if(HandCollisionCheck(Side.Left))
+                if (HandCollisionCheck(Side.Left))
                 {
-                    photonView.RPC("JointFix", RpcTarget.All, (int)Side.Left);
+                    int leftObjViewID = _leftSearchTarget.transform.GetComponent<PhotonView>().ViewID;
+                    photonView.RPC("JointFix", RpcTarget.All, (int)Side.Left, leftObjViewID);
                     _grabDelayTimer = 0.5f;
                 }
             }
@@ -360,7 +375,8 @@ public class Grab : MonoBehaviourPun
                 _rightHandRigid.AddForce(dir * 80f);
                 if (HandCollisionCheck(Side.Right))
                 {
-                    photonView.RPC("JointFix", RpcTarget.All, (int)Side.Right);
+                    int rightObjViewID = _rightSearchTarget.transform.GetComponent<PhotonView>().ViewID;
+                    photonView.RPC("JointFix", RpcTarget.All, (int)Side.Right, rightObjViewID);
                     _grabDelayTimer = 0.5f;
                 }
             }
@@ -385,7 +401,8 @@ public class Grab : MonoBehaviourPun
                         return;
                     //아이템에 맞게 관절조정 함수 추가해야함
 
-                    photonView.RPC("JointFix", RpcTarget.All, (int)Side.Right);
+                    int rightObjViewID = _rightSearchTarget.transform.GetComponent<PhotonView>().ViewID;
+                    photonView.RPC("JointFix", RpcTarget.All, (int)Side.Right, rightObjViewID);
                 }
                 break;
             case ItemType.TwoHanded:
@@ -414,7 +431,8 @@ public class Grab : MonoBehaviourPun
                         return;
                     //아이템에 맞게 관절조정 함수 추가해야함
 
-                    photonView.RPC("JointFix", RpcTarget.All, (int)Side.Right);
+                    int rightObjViewID = _rightSearchTarget.transform.GetComponent<PhotonView>().ViewID;
+                    photonView.RPC("JointFix", RpcTarget.All, (int)Side.Right, rightObjViewID);
                 }
                 break;
         }
@@ -450,8 +468,10 @@ public class Grab : MonoBehaviourPun
                 return;
         }
 
-        photonView.RPC("JointFix", RpcTarget.All, (int)Side.Left);
-        photonView.RPC("JointFix", RpcTarget.All, (int)Side.Right);
+        int leftObjViewID = _leftSearchTarget.transform.GetComponent<PhotonView>().ViewID;
+        photonView.RPC("JointFix", RpcTarget.All, (int)Side.Left, leftObjViewID);
+        int rightObjViewID = _rightSearchTarget.transform.GetComponent<PhotonView>().ViewID;
+        photonView.RPC("JointFix", RpcTarget.All, (int)Side.Right, rightObjViewID);
     }
 
 
@@ -578,12 +598,7 @@ public class Grab : MonoBehaviourPun
     }
 
     [PunRPC]
-    void JointFix(int side)
-    {
-        JointFixInLocal((Side)side);
-    }
-
-    void JointFixInLocal(Side side)
+    void JointFix(int side, int objViewID)
     {
         ItemType type = ItemType.None;
         if (EquipItem != null)
@@ -592,10 +607,17 @@ public class Grab : MonoBehaviourPun
             EquipItem.gameObject.layer = gameObject.layer;
         }
 
+        PhotonView pv = PhotonNetwork.GetPhotonView(objViewID);
+        if (photonView.IsMine)
+        {
+            int playerID = PhotonNetwork.LocalPlayer.ActorNumber;
+            pv.TransferOwnership(playerID);
+        }
 
         //잡기에 성공했을경우 관절 생성 및 일부 고정
-        if (side == Side.Left)
+        if ((Side)side == Side.Left)
         {
+            _leftSearchTarget = pv.transform.GetComponent<InteractableObject>();
             _grabJointLeft = _leftSearchTarget.AddComponent<FixedJoint>();
             _grabJointLeft.connectedBody = _leftHandRigid;
             _grabJointLeft.breakForce = 9001;
@@ -614,8 +636,9 @@ public class Grab : MonoBehaviourPun
             }
 
         }
-        else if (side == Side.Right)
+        else if ((Side)side == Side.Right)
         {
+            _rightSearchTarget = pv.transform.GetComponent<InteractableObject>();
             _grabJointRight = _rightSearchTarget.AddComponent<FixedJoint>();
             _grabJointRight.connectedBody = _rightHandRigid;
             _grabJointRight.breakForce = 9001;
@@ -636,8 +659,23 @@ public class Grab : MonoBehaviourPun
     }
 
 
-    void DestroyJoint()
+    void DestroyJoint(int leftObjViewID, int rightObjViewID)
     {
+        PhotonView leftPV = PhotonNetwork.GetPhotonView(leftObjViewID);
+        PhotonView rightPV = PhotonNetwork.GetPhotonView(rightObjViewID);
+        if (photonView.IsMine)
+        {
+
+            int playerID = PhotonNetwork.MasterClient.ActorNumber;
+            if (leftPV == rightPV)
+                leftPV.TransferOwnership(playerID);
+            else
+            {
+                leftPV
+                rightPV
+            }
+        }
+
         Destroy(_grabJointLeft);
         Destroy(_grabJointRight);
 

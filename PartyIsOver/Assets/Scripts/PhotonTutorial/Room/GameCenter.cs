@@ -205,7 +205,7 @@ public class GameCenter : MonoBehaviourPunCallbacks
 
     void AddActor(int id)
     {
-        PhotonView targetPV = PhotonView.Find(id);
+        PhotonView targetPV = PhotonNetwork.GetPhotonView(id);
 
         if (targetPV != null)
         {
