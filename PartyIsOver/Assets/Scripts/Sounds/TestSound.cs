@@ -7,7 +7,7 @@ public class TestSound : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Managers.Sound.Play(audioClip, Define.Sound.Bgm);
+        //Managers.Sound.Play(audioClip, Define.Sound.Bgm);
     }
 
     // Update is called once per frame
@@ -28,7 +28,7 @@ public class TestSound : MonoBehaviour
         float lifeTime = Mathf.Max(audioClip.length, 0.5f);
         GameObject.Destroy(gameObject, lifeTime);*/
 
-        Managers.Sound.Play(audioClip, Define.Sound.Bgm);
+        //Managers.Sound.Play(audioClip, Define.Sound.Bgm);
 
     }
 
