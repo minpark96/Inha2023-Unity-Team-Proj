@@ -87,7 +87,10 @@ public class Actor : MonoBehaviourPun, IPunObservable
         //Debug.Log("StatusChangeEventInvoke()");
 
         if (OnPlayerStatusChanges == null)
+        {
             Debug.Log(photonView.ViewID + " ¿Ã∫•∆Æ null");
+            return;
+        }
 
         //Debug.Log("_health: " + _health + " debuffState: " + debuffState + " photonView.ViewID: " + photonView.ViewID);
         OnPlayerStatusChanges(_health, _stamina, actorState, debuffState, photonView.ViewID);

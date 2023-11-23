@@ -1,4 +1,5 @@
 using Photon.Pun;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,12 +17,8 @@ public class StatusHandler : MonoBehaviourPun
     private float _healthDamage;
     private bool _isDead;
 
-    // 기절 시간
-    private float _maxUnconsciousTime=5f;
-    private float _minUnconsciousTime=3f;
-    private float _unconsciousTime = 0f;
 
-    private float _knockoutThreshold=20f;
+    private float _knockoutThreshold=5f;
 
     // 초기 관절값
     private List<float> _xPosSpringAry = new List<float>();
@@ -416,7 +413,7 @@ public class StatusHandler : MonoBehaviourPun
                 StopCoroutine(Shock(delay));
             }
 
-            if (Random.Range(0, 20) > 17)
+            if (UnityEngine.Random.Range(0, 20) > 17)
             {
                 for (int i = 4; i < 14; i++)
                 {
@@ -474,37 +471,22 @@ public class StatusHandler : MonoBehaviourPun
         //계산한 체력이 0보다 작으면 Death로
         if (tempHealth <= 0f)
         {
-            KillPlayer();
             EnterUnconsciousState();
+            KillPlayer();
         }
         else
         {
             //기절상태가 아닐때 일정 이상의 데미지를 받으면 기절
             if (actor.actorState != Actor.ActorState.Unconscious)
             {
-                if (_unconsciousTime >= 0f)
-                    _unconsciousTime = Mathf.Clamp(_unconsciousTime - Time.deltaTime, 0f, _maxUnconsciousTime);
-            
                 if (realDamage >= _knockoutThreshold)
                 {
-                    if (actor.debuffState == Actor.DebuffState.Ice)
+                    if (actor.debuffState == Actor.DebuffState.Ice) //상태이상 후에 추가
                         return;
 
-                    _maxUnconsciousTime = Mathf.Clamp(_maxUnconsciousTime + 1.5f, _minUnconsciousTime, 20f);
-                    _unconsciousTime = _maxUnconsciousTime;
                     actor.actorState = Actor.ActorState.Unconscious;
-                    actor.debuffState = Actor.DebuffState.Stun;
                     EnterUnconsciousState();
                 }
-            }
-
-            // 기절일때
-            if (actor.actorState == Actor.ActorState.Unconscious)
-            {
-                _unconsciousTime = Mathf.Clamp(_unconsciousTime - Time.deltaTime, 0f, _maxUnconsciousTime);
-                StartCoroutine(ResetBodySpring());
-                StartCoroutine(Stun(_unconsciousTime));
-                _unconsciousTime = 0f;
             }
         }
 
@@ -523,41 +505,49 @@ public class StatusHandler : MonoBehaviourPun
     {
         //데미지 이펙트나 사운드 추후 추가
 
-        //currentPlayer.BodyHandler.ResetLeftGrab();
-        //currentPlayer.BodyHandler.ResetRightGrab();
+        actor.debuffState = Actor.DebuffState.Stun;
+        StartCoroutine(ResetBodySpring());
+        actor.Grab.GrabReset();
         actor.BodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
         actor.BodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
         actor.BodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
         actor.BodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
     }
 
-    public IEnumerator ResetBodySpring()
+    [PunRPC]
+    void SetJointSpring(float percentage)
     {
         JointDrive angularXDrive;
         JointDrive angularYZDrive;
+        int j = 0;
 
+        //기절과 회복에 모두 관여 기절시엔 퍼센티지를 0으로해서 사용
         for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
         {
             if (i == 3)
                 continue;
 
             angularXDrive = actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive;
-            angularXDrive.positionSpring = 0f;
+            angularXDrive.positionSpring = _xPosSpringAry[j] * percentage;
             actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive = angularXDrive;
 
             angularYZDrive = actor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive;
-            angularYZDrive.positionSpring = 0f;
+            angularYZDrive.positionSpring = _yzPosSpringAry[j] * percentage;
             actor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive = angularYZDrive;
+
+            j++;
         }
 
+    }
+
+    public IEnumerator ResetBodySpring()
+    {
+        photonView.RPC("SetJointSpring", RpcTarget.All, 0f);
         yield return null;
     }
 
     public IEnumerator RestoreBodySpring()
     {
-        JointDrive angularXDrive;
-        JointDrive angularYZDrive;
-
         float startTime = Time.time;
         float springLerpDuration = 0.07f;
 
@@ -565,34 +555,13 @@ public class StatusHandler : MonoBehaviourPun
         {
             float elapsed = Time.time - startTime;
             float percentage = elapsed / springLerpDuration;
-            int j = 0;
-
-            for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
-            {
-                if (i == 3)
-                {
-                    continue;
-                }
-                angularXDrive = actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive;
-                angularXDrive.positionSpring = _xPosSpringAry[j] * percentage;
-
-                actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive = angularXDrive;
-
-                angularYZDrive = actor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive;
-                angularYZDrive.positionSpring = _yzPosSpringAry[j] * percentage;
-                actor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive = angularYZDrive;
-                j++;
-
-                yield return null;
-            }
+            photonView.RPC("SetJointSpring", RpcTarget.All, percentage);
+            yield return null;
         }
     }
 
-    public IEnumerator RestoreBodySpring(float _springLerpTime)
+    public IEnumerator RestoreBodySpring(float _springLerpTime=1f)
     {
-        JointDrive angularXDrive;
-        JointDrive angularYZDrive;
-
         float startTime = Time.time;
         float springLerpDuration = _springLerpTime;
 
@@ -600,26 +569,8 @@ public class StatusHandler : MonoBehaviourPun
         {
             float elapsed = Time.time - startTime;
             float percentage = elapsed / springLerpDuration;
-            int j = 0;
-
-            for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
-            {
-                if (i == 3)
-                {
-                    continue;
-                }
-                angularXDrive = actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive;
-                angularXDrive.positionSpring = _xPosSpringAry[j] * percentage;
-
-                actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive = angularXDrive;
-
-                angularYZDrive = actor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive;
-                angularYZDrive.positionSpring = _yzPosSpringAry[j] * percentage;
-                actor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive = angularYZDrive;
-                j++;
-
-                yield return null;
-            }
+            photonView.RPC("SetJointSpring", RpcTarget.All, percentage);
+            yield return null;
         }
     }
 }

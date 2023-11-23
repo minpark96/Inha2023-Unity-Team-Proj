@@ -729,7 +729,8 @@ public class PlayerController : MonoBehaviourPun
         }
 
 
-        if (_actor.actorState != Actor.ActorState.Jump && _actor.actorState != Actor.ActorState.Roll && _actor.actorState != Actor.ActorState.Run)
+        if (_actor.actorState != Actor.ActorState.Jump && _actor.actorState != Actor.ActorState.Roll 
+            && _actor.actorState != Actor.ActorState.Run && _actor.actorState != ActorState.Unconscious)
         {
             if (MoveInput.magnitude == 0f)
             {
@@ -1111,7 +1112,7 @@ public class PlayerController : MonoBehaviourPun
             
 
             yield return new WaitForSeconds(2);
-            _actor.StatusHandler.StartCoroutine("RestoreBodySpring", 1);
+            _actor.StatusHandler.StartCoroutine("RestoreBodySpring",1f);
             _bodyHandler.LeftLeg.PartInteractable.damageModifier = InteractableObject.Damage.Default;
             _bodyHandler.RightLeg.PartInteractable.damageModifier = InteractableObject.Damage.Default;
             photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LeftLeg, false);

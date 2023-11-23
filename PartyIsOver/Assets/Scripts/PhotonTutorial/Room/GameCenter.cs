@@ -19,7 +19,7 @@ public class GameCenter : MonoBehaviourPunCallbacks
 
     #region Private Fields
 
-    string _arenaName = "PO_Map_SDJ";
+    string _arenaName = "KNJTest";
     // ÇÁ¸®ÆÕ °æ·Î
     string _playerPath = "Ragdoll2";
 
@@ -66,40 +66,24 @@ public class GameCenter : MonoBehaviourPunCallbacks
             InstantiatePlayer();
         }
 
-        if (scene.name == _arenaName)
+        if(scene.name == _arenaName)
         {
-            SceneBgmSound("BigBangBattleLOOPING");
-        }
-    }
-
-    public void SceneBgmSound(string path)
-    {
-        GameObject root = GameObject.Find("@Sound");
-        if (root != null)
-        {
-            AudioSource _audioSources = Managers.Sound.GetBgmAudioSource();
-
-            SceneManagerEx sceneManagerEx = new SceneManagerEx();
-            string currentSceneName = sceneManagerEx.GetCurrentSceneName();
-
-            if (_arenaName == currentSceneName)
+            GameObject root = GameObject.Find("@Sound");
+            if (root != null)
             {
-                _audioSources.Stop();
-                AudioClip audioClip = Managers.Resource.Load<AudioClip>($"Sounds/Bgm/{path}");
-                _audioSources.clip = audioClip;
-                _audioSources.volume = 0.1f;
-                Managers.Sound.Play(audioClip, Define.Sound.Bgm);
-            }
+                AudioSource _audioSources = Managers.Sound.GetBgmAudioSource();
 
-            if("Room" == currentSceneName)
-            {
-                _audioSources.Stop();
-                AudioClip audioClip = Managers.Resource.Load<AudioClip>($"Sounds/Bgm/{path}");
-                _audioSources.clip = audioClip;
-                _audioSources.volume = 0.1f;
-                Managers.Sound.Play(audioClip, Define.Sound.Bgm);
-            }
+                SceneManagerEx sceneManagerEx = new SceneManagerEx();
+                string currentSceneName = sceneManagerEx.GetCurrentSceneName();
 
+                if (_arenaName == currentSceneName)
+                {
+                    _audioSources.Stop();
+                    AudioClip audioClip = Managers.Resource.Load<AudioClip>("Sounds/Bgm/BigBangBattleLOOPING");
+                    _audioSources.clip = audioClip;
+                    Managers.Sound.Play(audioClip, Define.Sound.Bgm);
+                }
+            }
         }
     }
 
@@ -178,11 +162,11 @@ public class GameCenter : MonoBehaviourPunCallbacks
     {
         Debug.Log("[master Event] SendInfo()");
 
-        photonView.RPC("SyncInfo", RpcTarget.Others, hp, debuffstate, viewID);
+        photonView.RPC("SyncInfo", RpcTarget.Others, hp, actorState, debuffstate, viewID);
     }
 
     [PunRPC]
-    void SyncInfo(float hp, Actor.DebuffState debuffstate, int viewID)
+    void SyncInfo(float hp, Actor.ActorState actorState,Actor.DebuffState debuffstate, int viewID)
     {
         Debug.Log("[except master received] SyncInfo()");
 
@@ -191,6 +175,7 @@ public class GameCenter : MonoBehaviourPunCallbacks
             if (Actors[i].photonView.ViewID == viewID)
             {
                 Actors[i].Health = hp;
+                Actors[i].actorState = actorState;
                 Actors[i].debuffState = debuffstate;
                 break;
             }
