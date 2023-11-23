@@ -31,13 +31,9 @@ public class CollisionHandler : MonoBehaviourPun
         InteractableObject collisionInteractable = collision.transform.GetComponent<InteractableObject>();
         if (collisionInteractable == null)
             return;
-        if (collision.gameObject.GetComponent<Item>() != null)
-        {
-            if (collision.gameObject.GetComponent<Item>().Owner == actor)
-                return;
-        }
+        if (collision.gameObject.GetComponent<Item>() != null && collision.gameObject.GetComponent<Item>().Owner == actor)
+            return;
 
-        Transform collisionTransform = collision.transform;
         Rigidbody collisionRigidbody = collision.rigidbody;
         Collider collisionCollider = collision.collider;
         Vector3 relativeVelocity = collision.relativeVelocity;
@@ -77,24 +73,15 @@ public class CollisionHandler : MonoBehaviourPun
                     {
                         actor.StatusHandler.AddDamage(collisionInteractable.damageModifier, damage, collisionCollider.gameObject);
                     }
-                    else
-                    {
-                        actor.StatusHandler.AddDamage(InteractableObject.Damage.Default, damage, collisionCollider.gameObject);
-                    }
                 }
             }
             // 버프형 공격을 받을 때
             else
             {
                 damage = 0;
-
                 if (collisionInteractable != null)
                 {
                     actor.StatusHandler.AddDamage(collisionInteractable.damageModifier, damage, collisionCollider.gameObject);
-                }
-                else
-                {
-                    actor.StatusHandler.AddDamage(InteractableObject.Damage.Default, damage, collisionCollider.gameObject);
                 }
             }
         }
@@ -143,7 +130,7 @@ public class CollisionHandler : MonoBehaviourPun
                 damage = 7f;
                 break;
             case InteractableObject.Damage.DropKick:
-                damage = 1f;
+                damage = 5f;
                 break;
             case InteractableObject.Damage.Headbutt:
                 damage *= 80f;
@@ -184,7 +171,7 @@ public class CollisionHandler : MonoBehaviourPun
     [PunRPC]
     void AddForceAttackedTarget(int objViewId, Vector3 normal, int damageModifier,float itemDamage)
     {
-        Debug.Log("[AddForceAttackedTarget] id: " + objViewId);
+        //Debug.Log("[AddForceAttackedTarget] id: " + objViewId);
         Rigidbody thisRb = PhotonNetwork.GetPhotonView(objViewId).transform.GetComponent<Rigidbody>();
 
         switch ((InteractableObject.Damage)damageModifier)

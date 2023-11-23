@@ -86,7 +86,10 @@ public class Actor : MonoBehaviourPun, IPunObservable
         //Debug.Log("StatusChangeEventInvoke()");
 
         if (OnPlayerStatusChanges == null)
+        {
             Debug.Log(photonView.ViewID + " ¿Ã∫•∆Æ null");
+            return;
+        }
 
         //Debug.Log("_health: " + _health + " debuffState: " + debuffState + " photonView.ViewID: " + photonView.ViewID);
         OnPlayerStatusChanges(_health, _stamina, actorState, debuffState, photonView.ViewID);
@@ -217,21 +220,21 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        Debug.Log("OnPhotonSerializeView");
+        //Debug.Log("OnPhotonSerializeView");
         if (stream.IsWriting)
         {
-            Debug.Log("Writing");
+            //Debug.Log("Writing");
             // We own this player: send the others our data
-            Debug.Log("Writing actorState: " + actorState);
+            //Debug.Log("Writing actorState: " + actorState);
             stream.SendNext(actorState);
         }
         else
         {
-            Debug.Log("Receiving");
+            //Debug.Log("Receiving");
             // Network player, receive data
-            Debug.Log("Receiving B actorState: " + actorState);
+            //Debug.Log("Receiving B actorState: " + actorState);
             this.actorState = (ActorState)stream.ReceiveNext();
-            Debug.Log("Receiving A actorState: " + actorState);
+            //Debug.Log("Receiving A actorState: " + actorState);
         }
     }
 }
