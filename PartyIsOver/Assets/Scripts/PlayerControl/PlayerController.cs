@@ -6,6 +6,7 @@ using static AniFrameData;
 using static AniAngleData;
 using Photon.Pun;
 using Photon.Realtime;
+using Unity.VisualScripting;
 
 [System.Serializable]
 public class AniFrameData
@@ -508,7 +509,7 @@ public class PlayerController : MonoBehaviourPun
                 break;
             case Define.KeyboardEvent.Press:
                 {
-                    if (Input.GetKey(KeyCode.LeftShift))
+                    if (Input.GetKey(KeyCode.LeftShift) && _actor.actorState!=ActorState.Jump)
                     {
                         _actor.actorState = Actor.ActorState.Run;
                         isRun = true;
@@ -517,7 +518,7 @@ public class PlayerController : MonoBehaviourPun
                 break;
             case Define.KeyboardEvent.Click:
                 {
-                    if (Input.GetKeyUp(KeyCode.LeftShift))
+                    if (Input.GetKeyUp(KeyCode.LeftShift) && isRun == true)
                     {
                         _actor.actorState = Actor.ActorState.Stand;
                         isRun = false;
@@ -951,6 +952,20 @@ public class PlayerController : MonoBehaviourPun
         return _direction;
     }
 
+    void AniForceVelocityChange(AniFrameData[] _forceSpeed, int _elementCount, Vector3 _dir)
+    {
+        for (int i = 0; i < _forceSpeed[_elementCount].StandardRigidbodies.Length; i++)
+        {
+            if (_forceSpeed[_elementCount].ForceDirections[i] == RollForce.Zero || _forceSpeed[_elementCount].ForceDirections[i] == RollForce.ZeroReverse)
+                _forceSpeed[_elementCount].ActionRigidbodies[i].AddForce(_dir * _forceSpeed[_elementCount].ForcePowerValues[i], ForceMode.Impulse);
+            else
+            {
+                Vector3 _direction = GetForceDirection(_forceSpeed[_elementCount], i);
+                _forceSpeed[_elementCount].ActionRigidbodies[i].AddForce(_direction * _forceSpeed[_elementCount].ForcePowerValues[i], ForceMode.Impulse);
+            }
+        }
+    }
+
     void AniForce(AniFrameData[] _forceSpeed, int _elementCount)
     {
         for (int i = 0; i < _forceSpeed[_elementCount].StandardRigidbodies.Length; i++)
@@ -1375,7 +1390,7 @@ public class PlayerController : MonoBehaviourPun
                 isGrounded = false;
                 for (int i = 0; i < MoveForceJumpAniData.Length; i++)
                 {
-                    AniForce(MoveForceJumpAniData, i, Vector3.up);
+                    AniForceVelocityChange(MoveForceJumpAniData, i, Vector3.up);
                     if (i == 2)
                         AniForce(MoveForceJumpAniData, i, Vector3.down);
                 }

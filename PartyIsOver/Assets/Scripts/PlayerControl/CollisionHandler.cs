@@ -159,7 +159,16 @@ public class CollisionHandler : MonoBehaviourPun
                 damage = 0f;
                 break;
             case InteractableObject.Damage.Object:
-                damage *= _objectDamage *itemDamage;
+                {
+                    //Rigidbody rb;
+                    //if (collisionInteractable.GetComponent<Item>() != null)
+                    //{
+                    //    rb = collisionInteractable.GetComponent<Rigidbody>();
+                    //    rb.velocity = Vector3.zero;
+                    //    rb.angularVelocity = Vector3.zero;
+                    //}
+                    damage *= _objectDamage *itemDamage;
+                }
                 break;
             case InteractableObject.Damage.Punch:
                 damage *= _punchDamage;
@@ -226,15 +235,17 @@ public class CollisionHandler : MonoBehaviourPun
             case InteractableObject.Damage.Object:
                 if(hip != null)
                 {
-                    hip.AddForce(normal * _objectForceNormal* itemDamage, ForceMode.VelocityChange);
                     hip.AddForce(Vector3.up * _objectForceUp, ForceMode.VelocityChange);
+                    hip.AddForce(normal * _objectForceNormal* itemDamage, ForceMode.VelocityChange);
                     Debug.Log("Item HipAddForce");
                 }
                 else
                 {
-                    thisRb.AddForce(normal * _objectForceNormal * itemDamage, ForceMode.VelocityChange);
                     thisRb.AddForce(Vector3.up * _objectForceUp, ForceMode.VelocityChange);
+                    thisRb.AddForce(normal * _objectForceNormal * itemDamage, ForceMode.VelocityChange);
+                    Debug.Log("Item AddForce");
                 }
+
                 break;
             case InteractableObject.Damage.Punch:
                 thisRb.AddForce(normal * _punchForceNormal , ForceMode.VelocityChange);

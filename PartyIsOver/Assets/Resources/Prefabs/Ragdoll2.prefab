@@ -11414,7 +11414,6 @@ GameObject:
   - component: {fileID: 1602883286494261838}
   - component: {fileID: 4655386519301525991}
   - component: {fileID: -3116543834385216606}
-  - component: {fileID: 7360321710029543076}
   m_Layer: 7
   m_Name: Ragdoll2
   m_TagString: Untagged
@@ -12401,14 +12400,6 @@ MonoBehaviour:
   RotateAngle: 10
   IsGrounded: 0
   Force: 10000
---- !u!81 &7360321710029543076
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5873236424662451676}
-  m_Enabled: 1
 --- !u!1 &5873269987166717472
 GameObject:
   m_ObjectHideFlags: 0
