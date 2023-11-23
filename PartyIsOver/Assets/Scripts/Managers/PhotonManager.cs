@@ -17,16 +17,17 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     bool IsConnecting;
     string GameVersion = "1";
     string _gameCenterPath = "GameCenter";
+    string _sceneMain = "[2]Main";
     string _sceneLobby = "[3]Lobby";
     string _sceneRoom = "[4]Room";
 
-    LobbyUI LobbyUI;
     List<RoomItem> RoomItemsList = new List<RoomItem>();
     float _nextUpdateTime = 1f;
     float _timeBetweenUpdate = 1.5f;
 
     public static PhotonManager Instance { get { return p_instance; } }
-  
+    public LobbyUI LobbyUI;
+
 
     void Awake()
     {
@@ -58,36 +59,44 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         }
     }
 
+    public void LeaveLobby()
+    {
+        PhotonNetwork.LeaveLobby();
+        StartCoroutine(LoadNextScene(_sceneMain));
+    }
+
     public void LeaveRoom()
     {
-        Debug.Log("[LeaveRoom()] Call PhotonNetwork.LeaveRoom()");
         PhotonNetwork.LeaveRoom();
+        StartCoroutine(LoadNextScene(_sceneLobby));
     }
 
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name == _sceneLobby)
-        {
-            LobbyUI = GameObject.Find("Lobby UI").GetComponent<LobbyUI>();
-        }
+       
     }
 
     public void UpdateRoomList(List<RoomInfo> list)
     {
-        foreach (RoomItem item in RoomItemsList)
-        {
-            Destroy(item.gameObject);
-        }
-        RoomItemsList.Clear();
+        Debug.Log("UpdateRoomList] IsLobby: " + PhotonNetwork.InLobby + ", Scene: " + SceneManager.GetActiveScene().name);
 
-        foreach (RoomInfo room in list)
+        if (SceneManager.GetActiveScene().name == _sceneLobby)
         {
-            if (room.PlayerCount == 0)
-                continue;
+            foreach (RoomItem item in RoomItemsList)
+            {
+                Destroy(item.gameObject);
+            }
+            RoomItemsList.Clear();
 
-            RoomItem newRoom = Instantiate(LobbyUI.RoomItemPrefab, LobbyUI.ContentObject);
-            newRoom.SetRoomName(room.Name, room.PlayerCount);
-            RoomItemsList.Add(newRoom);
+            foreach (RoomInfo room in list)
+            {
+                if (room.PlayerCount == 0)
+                    continue;
+
+                RoomItem newRoom = Instantiate(LobbyUI.RoomItemPrefab, LobbyUI.ContentObject);
+                newRoom.SetRoomName(room.Name, room.PlayerCount);
+                RoomItemsList.Add(newRoom);
+            }
         }
     }
 
@@ -122,30 +131,22 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         }
     }
 
-   
+
+
 
     IEnumerator LoadNextScene(string sceneName)
     {
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
-        
 
-        asyncLoad.allowSceneActivation = false;
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
 
         while (!asyncLoad.isDone)
         {
-            if (asyncLoad.progress >= 0.9f)
-            {
-                yield return new WaitForSeconds(0.1f);
-                break;
-            }
-            else
-                yield return null;
+            yield return null;
         }
-
-        asyncLoad.allowSceneActivation = true;
 
         if (sceneName == _sceneRoom)
             InstantiateGameCenter();
+
     }
 
 
@@ -153,7 +154,6 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     {
         if (GameCenter.LocalGameCenterInstance == null)
         {
-            //Debug.LogFormat("PhotonManager.cs => We are Instantiating LocalGameCenter from {0}", SceneManagerHelper.ActiveSceneName);
             Managers.Resource.PhotonNetworkInstantiate(_gameCenterPath);
         }
     }
@@ -172,14 +172,11 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     public override void OnDisconnected(DisconnectCause cause)
     {
-        Debug.LogWarningFormat("PUN Basics Tutorial/Launcher: OnDisconnected() was called by PUN with reason {0}", cause);
         IsConnecting = false;
     }
 
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
-        Debug.Log("PUN Basics Tutorial/Launcher: OnJoinRandomFailed() was called by PUN. No random room available, so we create one.\nCalling: PhotonNetwork.CreateRoom");
-
         PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = MAX_PLAYERS_PER_ROOM });
     }
 
@@ -200,12 +197,10 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     public override void OnLeftRoom()
     {
         Debug.Log("[OnLeftRoom()] LoadScene(2)");
-        SceneManager.LoadScene(2);
+        //SceneManager.LoadScene(2);
     }
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
-        //UpdateRoomList(roomList); // > 2번 이상 불러올 경우가 생김
-
         if (Time.time >= _nextUpdateTime)
         {
             UpdateRoomList(roomList);
@@ -227,11 +222,6 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     {
         //Debug.LogFormat("[OnPlayerLeftRoom()] {0}", other.NickName);
     }
-
-   
-  
-
-
 
     #endregion
 }

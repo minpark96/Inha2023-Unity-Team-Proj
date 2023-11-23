@@ -18,14 +18,14 @@ public class LobbyUI : MonoBehaviour
     public RoomItem RoomItemPrefab;
     public Transform ContentObject;
 
-
     private bool _isClicked;
 
 
 
     private void Start()
     {
-        CreateRoomPanel.SetActive(false);
+       CreateRoomPanel.SetActive(false);
+       PhotonManager.Instance.LobbyUI = GameObject.Find("Canvas_Lobby").GetComponent<LobbyUI>();
     }
 
 
@@ -33,13 +33,14 @@ public class LobbyUI : MonoBehaviour
     {
         PhotonNetwork.JoinRoom(roomName);
     }
-    public void OnClickLeaveRoom()
-    {
-        PhotonManager.Instance.LeaveRoom();
-    }
+   
     public void OnClickRandomJoin()
     {
         PhotonNetwork.JoinRandomRoom();
+    }
+    public void OnClickLeaveLobby()
+    {
+        PhotonManager.Instance.LeaveLobby();
     }
 
 
@@ -69,5 +70,4 @@ public class LobbyUI : MonoBehaviour
         else
             PrivateButton.sprite = PrivateOff;
     }
-
 }

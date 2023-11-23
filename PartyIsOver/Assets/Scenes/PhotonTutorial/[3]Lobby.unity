@@ -208,7 +208,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 603414685}
+      - m_Target: {fileID: 1611580045}
         m_TargetAssemblyTypeName: LobbyUI, Assembly-CSharp
         m_MethodName: OnClickPrivate
         m_Mode: 1
@@ -595,7 +595,7 @@ MonoBehaviour:
     m_MaxSize: 40
     m_Alignment: 3
     m_AlignByGeometry: 1
-    m_RichText: 1
+    m_RichText: 0
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
@@ -608,57 +608,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 594752578}
   m_CullTransparentMesh: 1
---- !u!1 &603414684
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 603414686}
-  - component: {fileID: 603414685}
-  m_Layer: 0
-  m_Name: Lobby UI
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &603414685
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 603414684}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dd523cbd14c253b47b86136b49282907, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CreateRoomPanel: {fileID: 472970090}
-  PrivateOn: {fileID: 21300000, guid: 1e45412e224bec74b99e9e3d2be3383e, type: 3}
-  PrivateOff: {fileID: 21300000, guid: 0622c765a8d55254fb561f5abd6ad978, type: 3}
-  PrivateButton: {fileID: 1589663758}
-  RoomInputField: {fileID: 1324513375}
-  RoomItemPrefab: {fileID: 9077898108244867235, guid: 3a55b57e9bf4a6240ab54f9590bc2410, type: 3}
-  ContentObject: {fileID: 1794223501}
---- !u!4 &603414686
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 603414684}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -14.31186, y: 1.5520782, z: 90.90874}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 7
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &652491782
 GameObject:
   m_ObjectHideFlags: 0
@@ -942,7 +891,7 @@ MonoBehaviour:
     m_MaxSize: 40
     m_Alignment: 3
     m_AlignByGeometry: 1
-    m_RichText: 1
+    m_RichText: 0
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
@@ -1324,7 +1273,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 603414685}
+      - m_Target: {fileID: 1611580045}
         m_TargetAssemblyTypeName: LobbyUI, Assembly-CSharp
         m_MethodName: OnClickCancel
         m_Mode: 1
@@ -1760,7 +1709,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 603414685}
+      - m_Target: {fileID: 1611580045}
         m_TargetAssemblyTypeName: LobbyUI, Assembly-CSharp
         m_MethodName: OnClickRandomJoin
         m_Mode: 1
@@ -1893,7 +1842,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 603414685}
+      - m_Target: {fileID: 1611580045}
         m_TargetAssemblyTypeName: LobbyUI, Assembly-CSharp
         m_MethodName: OnClickCreatePopup
         m_Mode: 1
@@ -2078,7 +2027,7 @@ MonoBehaviour:
     m_MaxSize: 40
     m_Alignment: 3
     m_AlignByGeometry: 1
-    m_RichText: 1
+    m_RichText: 0
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
@@ -2483,6 +2432,7 @@ GameObject:
   - component: {fileID: 1611580044}
   - component: {fileID: 1611580043}
   - component: {fileID: 1611580042}
+  - component: {fileID: 1611580045}
   m_Layer: 5
   m_Name: Canvas_Lobby
   m_TagString: Untagged
@@ -2572,6 +2522,25 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &1611580045
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1611580040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd523cbd14c253b47b86136b49282907, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CreateRoomPanel: {fileID: 472970090}
+  PrivateOn: {fileID: 21300000, guid: 1e45412e224bec74b99e9e3d2be3383e, type: 3}
+  PrivateOff: {fileID: 21300000, guid: 0622c765a8d55254fb561f5abd6ad978, type: 3}
+  PrivateButton: {fileID: 1589663758}
+  RoomInputField: {fileID: 1324513375}
+  RoomItemPrefab: {fileID: 9077898108244867235, guid: 3a55b57e9bf4a6240ab54f9590bc2410, type: 3}
+  ContentObject: {fileID: 1794223501}
 --- !u!1 &1641432564
 GameObject:
   m_ObjectHideFlags: 0
@@ -2655,7 +2624,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 603414685}
+      - m_Target: {fileID: 1611580045}
         m_TargetAssemblyTypeName: LobbyUI, Assembly-CSharp
         m_MethodName: OnClickCreate
         m_Mode: 1
@@ -2787,7 +2756,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1646149569}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1611580045}
+        m_TargetAssemblyTypeName: LobbyUI, Assembly-CSharp
+        m_MethodName: OnClickLeaveLobby
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1646149569
 MonoBehaviour:
   m_ObjectHideFlags: 0

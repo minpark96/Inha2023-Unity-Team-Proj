@@ -151,5 +151,10 @@ public class RoomUI : MonoBehaviour
         _playerReadyCountText.text = PlayerReadyCount.ToString() + "/" + PhotonNetwork.CurrentRoom.PlayerCount.ToString();
     }
 
+    public void OnClickLeaveRoom()
+    {
+        PhotonManager.Instance.LeaveRoom();
+    }
+   
     #endregion
 }
