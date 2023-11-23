@@ -10,7 +10,6 @@ public class CollisionHandler : MonoBehaviourPun
     public float damageMinimumVelocity = 0.25f;
 
     public Actor actor;
-    AudioSource[] _audioSource;
     private Transform rootTransform;
 
     void Start()

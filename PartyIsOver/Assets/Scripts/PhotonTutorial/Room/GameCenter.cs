@@ -66,26 +66,43 @@ public class GameCenter : MonoBehaviourPunCallbacks
             InstantiatePlayer();
         }
 
-        if(scene.name == _arenaName)
+        if (scene.name == _arenaName)
         {
-            GameObject root = GameObject.Find("@Sound");
-            if (root != null)
-            {
-                AudioSource _audioSources = Managers.Sound.GetBgmAudioSource();
-
-                SceneManagerEx sceneManagerEx = new SceneManagerEx();
-                string currentSceneName = sceneManagerEx.GetCurrentSceneName();
-
-                if (_arenaName == currentSceneName)
-                {
-                    _audioSources.Stop();
-                    AudioClip audioClip = Managers.Resource.Load<AudioClip>("Sounds/Bgm/BigBangBattleLOOPING");
-                    _audioSources.clip = audioClip;
-                    Managers.Sound.Play(audioClip, Define.Sound.Bgm);
-                }
-            }
+            SceneBgmSound("BigBangBattleLOOPING");
         }
     }
+
+    public void SceneBgmSound(string path)
+    {
+        GameObject root = GameObject.Find("@Sound");
+        if (root != null)
+        {
+            AudioSource _audioSources = Managers.Sound.GetBgmAudioSource();
+
+            SceneManagerEx sceneManagerEx = new SceneManagerEx();
+            string currentSceneName = sceneManagerEx.GetCurrentSceneName();
+
+            if (_arenaName == currentSceneName)
+            {
+                _audioSources.Stop();
+                AudioClip audioClip = Managers.Resource.Load<AudioClip>($"Sounds/Bgm/{path}");
+                _audioSources.clip = audioClip;
+                _audioSources.volume = 0.1f;
+                Managers.Sound.Play(audioClip, Define.Sound.Bgm);
+            }
+
+            if ("Room" == currentSceneName)
+            {
+                _audioSources.Stop();
+                AudioClip audioClip = Managers.Resource.Load<AudioClip>($"Sounds/Bgm/{path}");
+                _audioSources.clip = audioClip;
+                _audioSources.volume = 0.1f;
+                Managers.Sound.Play(audioClip, Define.Sound.Bgm);
+            }
+
+        }
+    }
+
 
     void InstantiatePlayer()
     {
