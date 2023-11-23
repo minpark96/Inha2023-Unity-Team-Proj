@@ -10,6 +10,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
     public event PlayerStatusChanges OnPlayerStatusChanges;
 
     public Transform CameraArm;
+    AudioListener _audioListener;
 
     public StatusHandler StatusHandler;
     public BodyHandler BodyHandler;
@@ -99,12 +100,17 @@ public class Actor : MonoBehaviourPun, IPunObservable
     {
         if (photonView.IsMine)
         {
-            LocalPlayerInstance = this.gameObject;
+            LocalPlayerInstance = this.gameObject; 
+            Transform SoundListenerTransform = transform.Find("GreenHead");
+            _audioListener = SoundListenerTransform.gameObject.AddComponent<AudioListener>();
         }
         else
         {
+            _audioListener = GetComponentInChildren<AudioListener>();
             // 다른 클라이언트 카메라 끄기
             transform.GetChild(0).gameObject.SetActive(false);
+            // 사운드 끄기
+            _audioListener.enabled = false;
         }
         DontDestroyOnLoad(this.gameObject);
 

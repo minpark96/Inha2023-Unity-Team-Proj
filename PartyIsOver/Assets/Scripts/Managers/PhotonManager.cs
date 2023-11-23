@@ -57,9 +57,13 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        GameCenter gameCenter = new GameCenter();
         if (scene.name == _roomSceneName)
         {
         }
+
+        if (scene.name == "Room")
+            gameCenter.SceneBgmSound("LaxLayoverLOOPING");
     }
 
     #endregion

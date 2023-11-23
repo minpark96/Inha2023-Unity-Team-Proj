@@ -1,6 +1,7 @@
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using static InteractableObject;
 
@@ -9,7 +10,6 @@ public class CollisionHandler : MonoBehaviourPun
     public float damageMinimumVelocity = 0.25f;
 
     public Actor actor;
-
     private Transform rootTransform;
 
     void Start()
@@ -127,7 +127,12 @@ public class CollisionHandler : MonoBehaviourPun
                 damage = 20f *itemDamage;
                 break;
             case InteractableObject.Damage.Punch:
-                damage = 7f;
+                {
+                    damage = 7f;
+                    string path = "Sounds/PlayerEffect/SFX_ArrowShot_Hit";
+                    AudioClip audioClip = Managers.Sound.GetOrAddAudioClip(path, Define.Sound.PlayerEffect);
+                    Managers.Sound.Play(audioClip, Define.Sound.PlayerEffect);
+                }
                 break;
             case InteractableObject.Damage.DropKick:
                 damage = 5f;
