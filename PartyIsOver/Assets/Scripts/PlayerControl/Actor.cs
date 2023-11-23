@@ -97,8 +97,9 @@ public class Actor : MonoBehaviourPun, IPunObservable
     {
         if (photonView.IsMine)
         {
-            LocalPlayerInstance = this.gameObject;
-            gameObject.AddComponent<AudioListener>();
+            LocalPlayerInstance = this.gameObject; 
+            Transform SoundListenerTransform = transform.Find("GreenHead");
+            _audioListener = SoundListenerTransform.gameObject.AddComponent<AudioListener>();
         }
         else
         {

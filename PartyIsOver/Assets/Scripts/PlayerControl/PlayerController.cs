@@ -219,7 +219,8 @@ public class PlayerController : MonoBehaviourPun
     private BalloonState _balloonState;
     private DrunkState _drunkState;
 
-    AudioSource _audioSource;
+    public static PlayerController Instance;
+    public AudioSource _audioSource;
     AudioClip _audioClip;
 
     [Header("Dummy")]
@@ -285,8 +286,8 @@ public class PlayerController : MonoBehaviourPun
         targetingHandler = GetComponent<TargetingHandler>();
         _actor = GetComponent<Actor>();
         _hipRB = transform.Find("GreenHip").GetComponent<Rigidbody>();
-        Transform childTransform = transform.Find("GreenHip");
-        _audioSource = childTransform.GetComponent<AudioSource>();
+        Transform SoundSourceTransform = transform.Find("GreenHip");
+        _audioSource = SoundSourceTransform.GetComponent<AudioSource>();
 
         childJoints = GetComponentsInChildren<ConfigurableJoint>();
         originalYMotions = new ConfigurableJointMotion[childJoints.Length];
@@ -304,6 +305,8 @@ public class PlayerController : MonoBehaviourPun
 
         _balloonState = GetComponent<BalloonState>();
         _drunkState = GetComponent<DrunkState>();
+
+        Instance = this;
     }
 
     void RestoreOriginalMotions()
@@ -321,8 +324,10 @@ public class PlayerController : MonoBehaviourPun
     {
         _audioClip = Managers.Sound.GetOrAddAudioClip(path);
         _audioSource.clip = _audioClip;
+        _audioSource.volume = 0.2f;
         _audioSource.spatialBlend = 1;
-        Managers.Sound.Play(_audioClip);
+        Managers.Sound.Play(_audioClip, Define.Sound.PlayerEffect);
+
     }
 
     #region OnMouseEvent_Grab

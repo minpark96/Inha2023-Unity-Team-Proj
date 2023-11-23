@@ -42,7 +42,8 @@ public class Define
     public enum Sound
     {
         Bgm,
-        Effect,
+        UISound,
+        UIInGameSound,
         PlayerEffect,
         Maxcount,
     }

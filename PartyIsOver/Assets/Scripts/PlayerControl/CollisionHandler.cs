@@ -10,7 +10,7 @@ public class CollisionHandler : MonoBehaviourPun
     public float damageMinimumVelocity = 0.25f;
 
     public Actor actor;
-
+    AudioSource[] _audioSource;
     private Transform rootTransform;
 
     void Start()
@@ -144,8 +144,8 @@ public class CollisionHandler : MonoBehaviourPun
                 {
                     damage = 7f;
                     string path = "Sounds/PlayerEffect/SFX_ArrowShot_Hit";
-                    AudioClip audioClip = Managers.Sound.GetOrAddAudioClip(path, Define.Sound.Effect);
-                    Managers.Sound.Play(audioClip);
+                    AudioClip audioClip = Managers.Sound.GetOrAddAudioClip(path, Define.Sound.PlayerEffect);
+                    Managers.Sound.Play(audioClip, Define.Sound.PlayerEffect);
                 }
                 break;
             case InteractableObject.Damage.DropKick:

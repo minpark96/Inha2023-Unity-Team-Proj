@@ -5,6 +5,18 @@ using UnityEngine;
 
 public class EffectManager
 {
+/*    ParticleSystem[] _
+    Dictionary<string, ParticleSystem> _particleSystem = new Dictionary<string, ParticleSystem>();
+
+    public void Clear()
+    {
+        foreach (ParticleSystem particleSystem in _particleSystem)
+        {
+            particleSystem.Stop();
+        }
+        _particleSystem.Clear();
+    }*/
+
     public GameObject Instantiate(ParticleSystem path, Vector3 pos, Quaternion rotation , Transform parent = null)
     {
         GameObject prefab = Managers.Resource.Load<GameObject>($"{path}");
