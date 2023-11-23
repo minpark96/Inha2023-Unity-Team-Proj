@@ -504,7 +504,7 @@ public class PlayerController : MonoBehaviourPun
                     }
 
                     if (Input.GetKeyUp(KeyCode.H))
-                        Heading();
+                        StartCoroutine(Heading());
                     
 
                     if (Input.GetKeyUp(KeyCode.R))
@@ -1391,8 +1391,11 @@ public class PlayerController : MonoBehaviourPun
     #endregion
 
     #region Heading
-    private void Heading()
+    IEnumerator Heading()
     {
+        this._bodyHandler.Head.PartInteractable.damageModifier = InteractableObject.Damage.Headbutt;
+        photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.Head, true);
+
         for (int i = 0; i < HeadingAniData.Length; i++)
         {
             AniForce(HeadingAniData, i);
@@ -1404,6 +1407,10 @@ public class PlayerController : MonoBehaviourPun
             if (i == 1)
                 AniAngleForce(HeadingAngleAniData, i, _moveDir + new Vector3(0f, 0.2f, 0f));
         }
+
+        yield return new WaitForSeconds(1);
+        this._bodyHandler.Head.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+        photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.Head, false);
     }
     #endregion
 
@@ -1710,7 +1717,11 @@ public class PlayerController : MonoBehaviourPun
                 break;
             case Define.BodyPart.Chest: 
                 break;
-            case Define.BodyPart.Head: 
+            case Define.BodyPart.Head:
+                if (isAttack)
+                    this._bodyHandler.Head.PartInteractable.damageModifier = InteractableObject.Damage.Headbutt;
+                else
+                    this._bodyHandler.Head.PartInteractable.damageModifier = InteractableObject.Damage.Default;
                 break;
             case Define.BodyPart.LeftArm: 
                 break;

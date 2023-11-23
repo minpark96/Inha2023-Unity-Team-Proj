@@ -124,16 +124,16 @@ public class CollisionHandler : MonoBehaviourPun
                 damage = 0f;
                 break;
             case InteractableObject.Damage.Object:
-                damage = 20f *itemDamage;
+                damage *= 800f *itemDamage;
                 break;
             case InteractableObject.Damage.Punch:
-                damage = 7f;
+                damage *= 1000f;
                 break;
             case InteractableObject.Damage.DropKick:
-                damage = 5f;
+                damage *= 700f;
                 break;
             case InteractableObject.Damage.Headbutt:
-                damage *= 80f;
+                damage *= 2300f;
                 break;
             case InteractableObject.Damage.Knockout:
                 damage = 1000000f;
@@ -174,18 +174,29 @@ public class CollisionHandler : MonoBehaviourPun
         //Debug.Log("[AddForceAttackedTarget] id: " + objViewId);
         Rigidbody thisRb = PhotonNetwork.GetPhotonView(objViewId).transform.GetComponent<Rigidbody>();
 
+        Rigidbody hip = null;
+        if (thisRb.gameObject.GetComponent<BodyHandler>() != null)
+            hip = thisRb.gameObject.GetComponent<BodyHandler>().Hip.PartRigidbody;
+
+
         switch ((InteractableObject.Damage)damageModifier)
         {
             case InteractableObject.Damage.Ignore:
                 break;
             case InteractableObject.Damage.Object:
-                thisRb.AddForce(normal * 5f* itemDamage, ForceMode.VelocityChange);
+                if(hip != null)
+                {
+                    hip.AddForce(normal * 10f* itemDamage, ForceMode.VelocityChange);
+                    Debug.Log("Item HipAddForce");
+                }
+                else
+                    thisRb.AddForce(normal * 10f * itemDamage, ForceMode.VelocityChange);
                 break;
             case InteractableObject.Damage.Punch:
-                thisRb.AddForce(normal * 3f + Vector3.up * 2f, ForceMode.VelocityChange);
+                thisRb.AddForce(normal * 4f + Vector3.up * 2f, ForceMode.VelocityChange);
                 break;
             case InteractableObject.Damage.DropKick:
-                thisRb.AddForce(normal * 25f, ForceMode.VelocityChange);
+                thisRb.AddForce(normal * 20f, ForceMode.VelocityChange);
                 thisRb.AddForce(Vector3.up * 10f, ForceMode.VelocityChange);
                 break;
             case InteractableObject.Damage.Headbutt:
