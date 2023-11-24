@@ -11,7 +11,6 @@ public class SoundManager
     AudioSource[] _audioSources = new AudioSource[(int)Define.Sound.Maxcount];
     //캐싱 역할
     Dictionary<string,AudioClip> _audioClip = new Dictionary<string, AudioClip>();
-    AudioMixer audioMixer;
 
     //사운드 오브젝트 생성
     public void Init()
@@ -20,9 +19,8 @@ public class SoundManager
 
         SceneManagerEx sceneManagerEx = new SceneManagerEx();
         string currentSceneName = sceneManagerEx.GetCurrentSceneName();
-
         AudioClip audioClip = null;
-        audioMixer = null;
+
         if (root == null) 
         {
             root = new GameObject { name = "@Sound" };
@@ -36,7 +34,6 @@ public class SoundManager
                 _audioSources[i] = go.AddComponent<AudioSource>();
                 go.transform.parent = root.transform;
             }
-
             _audioSources[(int)Define.Sound.Bgm].loop = true;
         }
 
@@ -44,9 +41,9 @@ public class SoundManager
         {
             audioClip = Managers.Resource.Load<AudioClip>("Sounds/Bgm/BongoBoogieMenuLOOPING");
             _audioSources[(int)Define.Sound.Bgm].clip = audioClip;
+            _audioSources[(int)Define.Sound.Bgm].volume = 0.1f;
             Managers.Sound.Play(audioClip, Define.Sound.Bgm);
         }
-
     }
     public AudioSource GetBgmAudioSource()
     {
@@ -63,19 +60,18 @@ public class SoundManager
         _audioClip.Clear();
     }
 
-    public void Play( string path, Define.Sound type = Define.Sound.Effect, float pitch =1.0f)
+    public void Play( string path, Define.Sound type = Define.Sound.PlayerEffect, float pitch =1.0f)
     {
         AudioClip audioClip = GetOrAddAudioClip(path, type);
         Play(audioClip, type, pitch);
     }
-    public void Play(AudioClip audioClip, Define.Sound type = Define.Sound.Effect, float pitch = 1.0f)
+    public void Play(AudioClip audioClip,  Define.Sound type = Define.Sound.PlayerEffect, float pitch = 1.0f)
     {
         if (audioClip == null)
             return;
 
         if (type == Define.Sound.Bgm)
         {
-
             AudioSource audioSource = _audioSources[(int)Define.Sound.Bgm];
 
             if (audioSource.isPlaying)
@@ -84,16 +80,28 @@ public class SoundManager
             audioSource.clip = audioClip;
             audioSource.Play();
         }
-        else
+        else if(type == Define.Sound.UISound)
         {
-            AudioSource audioSource = _audioSources[(int)Define.Sound.Effect];
+            AudioSource audioSource = _audioSources[(int)Define.Sound.UISound];
+            audioSource.pitch = pitch;
+            audioSource.PlayOneShot(audioClip);
+        }
+        else if (type == Define.Sound.UIInGameSound)
+        {
+            AudioSource audioSource = PlayerController.Instance._audioSource;
+            audioSource.pitch = pitch;
+            audioSource.PlayOneShot(audioClip);
+        }
+        else if((type == Define.Sound.PlayerEffect))
+        {
+            AudioSource audioSource = PlayerController.Instance._audioSource;
             audioSource.pitch = pitch;
             audioSource.PlayOneShot(audioClip);
         }
     }
 
     //방금 전에 사용한 내용이 중복되면 Resource로 찾지 않고 캐싱을 하여 사용하여 더 빠르게 사용한다.
-    AudioClip GetOrAddAudioClip(string path , Define.Sound type = Define.Sound.Effect)
+    public AudioClip GetOrAddAudioClip(string path , Define.Sound type = Define.Sound.PlayerEffect)
     {
         if (path.Contains("Sounds/") == false)
             path = $"Sounds/{path}";
@@ -105,9 +113,25 @@ public class SoundManager
             //.Bgm만 관련한 사운드 제어
             audioClip = Managers.Resource.Load<AudioClip>(path);
         }
-        else
+        else if(type == Define.Sound.UISound) 
         {
             //effect 관련한 사운드 제어
+            if (_audioClip.TryGetValue(path, out audioClip) == false)
+            {
+                audioClip = Managers.Resource.Load<AudioClip>(path);
+                _audioClip.Add(path, audioClip);
+            }
+        }
+        else if(type == Define.Sound.UIInGameSound)
+        {
+            if (_audioClip.TryGetValue(path, out audioClip) == false)
+            {
+                audioClip = Managers.Resource.Load<AudioClip>(path);
+                _audioClip.Add(path, audioClip);
+            }
+        }
+        else
+        {
             if (_audioClip.TryGetValue(path, out audioClip) == false)
             {
                 audioClip = Managers.Resource.Load<AudioClip>(path);
@@ -117,7 +141,6 @@ public class SoundManager
         if (audioClip == null)
             Debug.Log($"AudioClip Missing : {path}");
         
-
         return audioClip;
     }
 }

@@ -26,9 +26,8 @@ public class Define
     }
     public enum Effect
     {
-        Punch,
-        Ice,
-        
+        UIEffect,
+        PlayerEffect,
     }
 
     public enum Scene
@@ -43,7 +42,9 @@ public class Define
     public enum Sound
     {
         Bgm,
-        Effect,
+        UISound,
+        UIInGameSound,
+        PlayerEffect,
         Maxcount,
     }
 
