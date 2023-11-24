@@ -7,7 +7,7 @@ using Photon.Realtime;
 using UnityEngine.SceneManagement;
 using System;
 
-public class PhotonManager : MonoBehaviourPunCallbacks 
+public class PhotonManager : BaseScene 
 {
     #region Private Serializable Fields
 
@@ -58,12 +58,21 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         GameCenter gameCenter = new GameCenter();
+
         if (scene.name == _roomSceneName)
         {
-        }
-
-        if (scene.name == "Room")
             gameCenter.SceneBgmSound("LaxLayoverLOOPING");
+        }
+        if (scene.name == "Room")
+        {
+            SceneType = Define.Scene.Lobby;
+
+            List<GameObject> list = new List<GameObject>();
+            for (int i = 0; i < 1; i++)
+                list.Add(Managers.Resource.Instantiate("Effects/Stun_loop"));
+
+            
+        }
     }
 
     #endregion
@@ -207,4 +216,10 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     }
 
     #endregion
+
+    public override void Clear()
+    {
+
+    }
+
 }
