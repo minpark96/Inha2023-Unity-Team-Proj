@@ -95,6 +95,12 @@ public class StatusHandler : MonoBehaviourPun
         }
     }
 
+
+    private void LateUpdate()
+    {
+        //if( )
+    }
+
     private void OnGUI()
     {
         if (this.name == "Ragdoll2" && photonView.IsMine)

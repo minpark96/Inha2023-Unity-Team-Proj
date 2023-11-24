@@ -276,6 +276,7 @@ public class PlayerController : MonoBehaviourPun
         }
     }
 
+
     private ConfigurableJoint[] childJoints;
     private ConfigurableJointMotion[] originalYMotions;
     private ConfigurableJointMotion[] originalZMotions;

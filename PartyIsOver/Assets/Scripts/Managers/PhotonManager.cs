@@ -67,11 +67,8 @@ public class PhotonManager : BaseScene
         {
             SceneType = Define.Scene.Lobby;
 
-            List<GameObject> list = new List<GameObject>();
             for (int i = 0; i < 1; i++)
-                list.Add(Managers.Resource.Instantiate("Effects/Stun_loop"));
-
-            
+                Managers.Resource.Instantiate("Effects/Stun_loop");
         }
     }
 

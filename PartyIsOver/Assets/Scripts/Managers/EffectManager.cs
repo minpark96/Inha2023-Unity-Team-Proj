@@ -66,6 +66,15 @@ public class EffectManager
         playEffect.Play();
     }
 
+    public void Play(string path, Vector3 pos, Vector3 normal, Transform parent = null)
+    {
+        GameObject instantiatedObject = Managers.Resource.Instantiate($"{pos}");
 
+        Transform objectTransform = instantiatedObject.transform;
+
+        objectTransform.position = pos;
+        objectTransform.rotation = Quaternion.LookRotation(normal);
+
+    }
 
 }

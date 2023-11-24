@@ -162,6 +162,9 @@ public class Actor : MonoBehaviourPun, IPunObservable
             case ActorState.Dead:
                 break;
             case ActorState.Unconscious:
+                {
+                    Managers.Resource.Instantiate("Effects/Stun_loop");
+                }
                 break;
             case ActorState.Stand:
                 PlayerController.Stand();
