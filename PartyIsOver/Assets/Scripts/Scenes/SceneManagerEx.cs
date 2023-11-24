@@ -33,6 +33,12 @@ public class SceneManagerEx
         return currentScene;
     }
 
+    public GameObject GetCurrentSceneRootGameObject()
+    {
+        GameObject currentScene = GetCurrentScene().GetRootGameObjects()[0];
+        return currentScene;
+    }
+
     public void Clear()
     {
         CurrentScene.Clear();
