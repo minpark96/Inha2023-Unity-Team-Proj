@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class GameCenter : MonoBehaviourPunCallbacks
+public class GameCenter : BaseScene
 {
     #region Private Serializable Fields
 
@@ -68,6 +68,7 @@ public class GameCenter : MonoBehaviourPunCallbacks
 
         if (scene.name == _arenaName)
         {
+            
             SceneBgmSound("BigBangBattleLOOPING");
         }
     }
@@ -344,4 +345,9 @@ public class GameCenter : MonoBehaviourPunCallbacks
     }
 
     #endregion
+
+    public override void Clear()
+    {
+
+    }
 }
