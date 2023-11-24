@@ -11415,7 +11415,7 @@ GameObject:
   - component: {fileID: 4655386519301525991}
   - component: {fileID: -3116543834385216606}
   m_Layer: 7
-  m_Name: Ragdoll2
+  m_Name: Ragdoll2_Room
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12234,7 +12234,7 @@ MonoBehaviour:
   leftKick: 0
   rightKick: 0
   isStateChange: 0
-  isMeowNyangPunch: 0
+  isMeowNyangPunch: 1
   isBalloon: 0
   isDrunk: 0
   RSkillCoolTime: 5
@@ -16731,7 +16731,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8450994886955330515
 Transform:
   m_ObjectHideFlags: 0

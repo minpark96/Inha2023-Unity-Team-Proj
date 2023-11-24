@@ -68,7 +68,8 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     public void LeaveRoom()
     {
         PhotonNetwork.LeaveRoom();
-        StartCoroutine(LoadNextScene(_sceneLobby));
+
+
     }
 
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -78,8 +79,6 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     public void UpdateRoomList(List<RoomInfo> list)
     {
-        Debug.Log("UpdateRoomList] IsLobby: " + PhotonNetwork.InLobby + ", Scene: " + SceneManager.GetActiveScene().name);
-
         if (SceneManager.GetActiveScene().name == _sceneLobby)
         {
             foreach (RoomItem item in RoomItemsList)
@@ -136,7 +135,6 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     IEnumerator LoadNextScene(string sceneName)
     {
-
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
 
         while (!asyncLoad.isDone)
@@ -146,7 +144,6 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
         if (sceneName == _sceneRoom)
             InstantiateGameCenter();
-
     }
 
 
@@ -183,7 +180,11 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     public override void OnJoinedLobby()
     {
         Debug.Log("[JoinLobby()] Load Lobby Scene");
-        StartCoroutine(LoadNextScene(_sceneLobby));
+
+        Debug.Log("is room: " + PhotonNetwork.InRoom + " is lobby: " + PhotonNetwork.InLobby + " scene: " + SceneManager.GetActiveScene().name);
+
+        //if (SceneManager.GetActiveScene().name != _sceneLobby)
+            StartCoroutine(LoadNextScene(_sceneLobby));
     }
 
     public override void OnJoinedRoom()
@@ -196,8 +197,17 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     public override void OnLeftRoom()
     {
-        Debug.Log("[OnLeftRoom()] LoadScene(2)");
-        //SceneManager.LoadScene(2);
+        Debug.Log("[OnLeftRoom()]");
+
+        Debug.Log("is room: " + PhotonNetwork.InRoom + " is lobby: " + PhotonNetwork.InLobby + " scene: " + SceneManager.GetActiveScene().name);
+
+        base.OnLeftRoom();
+
+        Connect();
+
+        StartCoroutine(LoadNextScene(_sceneLobby));
+
+        //SceneManager.LoadScene(_sceneLobby);
     }
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {

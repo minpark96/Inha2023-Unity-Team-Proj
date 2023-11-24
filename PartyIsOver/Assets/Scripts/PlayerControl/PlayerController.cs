@@ -544,7 +544,7 @@ public class PlayerController : MonoBehaviourPun
                     else
                     {
                         RestoreOriginalMotions();
-                        if (Input.GetKeyUp(KeyCode.R) && !isMeowNyangPunch)
+                        if (Input.GetKeyUp(KeyCode.R) && isMeowNyangPunch)
                             MeowNyangPunch();
                         else
                             NuclearPunch();
@@ -1246,7 +1246,7 @@ public class PlayerController : MonoBehaviourPun
 
             if (_isRSkillCheck)
             {
-                if (!isMeowNyangPunch)
+                if (isMeowNyangPunch)
                     AniForce(aniFrameDatas, i, dir, MeowPunchPower);
                 else
                     AniForce(aniFrameDatas, i, dir, NuclearPunchPower);
