@@ -618,8 +618,8 @@ public class Grab : MonoBehaviourPun
         if ((Side)side == Side.Left)
         {
             _leftSearchTarget = pv.transform.GetComponent<InteractableObject>();
-            _grabJointLeft = _leftSearchTarget.AddComponent<FixedJoint>();
-            _grabJointLeft.connectedBody = _leftHandRigid;
+            _grabJointLeft = _leftHandRigid.AddComponent<FixedJoint>();
+            _grabJointLeft.connectedBody = _leftSearchTarget.GetComponent<Rigidbody>();
             _grabJointLeft.breakForce = 9001;
 
             if (_leftSearchTarget != null)
@@ -639,8 +639,8 @@ public class Grab : MonoBehaviourPun
         else if ((Side)side == Side.Right)
         {
             _rightSearchTarget = pv.transform.GetComponent<InteractableObject>();
-            _grabJointRight = _rightSearchTarget.AddComponent<FixedJoint>();
-            _grabJointRight.connectedBody = _rightHandRigid;
+            _grabJointRight = _rightHandRigid.AddComponent<FixedJoint>();
+            _grabJointRight.connectedBody = _rightSearchTarget.GetComponent<Rigidbody>();
             _grabJointRight.breakForce = 9001;
 
             if (_rightSearchTarget != null)
@@ -663,17 +663,14 @@ public class Grab : MonoBehaviourPun
     {
         PhotonView leftPV = PhotonNetwork.GetPhotonView(leftObjViewID);
         PhotonView rightPV = PhotonNetwork.GetPhotonView(rightObjViewID);
+
         if (photonView.IsMine)
         {
-
             int playerID = PhotonNetwork.MasterClient.ActorNumber;
-            if (leftPV == rightPV)
+            if (leftPV != null)
                 leftPV.TransferOwnership(playerID);
-            else
-            {
-                leftPV
-                rightPV
-            }
+            if (rightPV != null)
+                rightPV.TransferOwnership(playerID);
         }
 
         Destroy(_grabJointLeft);
