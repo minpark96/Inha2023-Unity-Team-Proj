@@ -68,7 +68,7 @@ public class GameCenter : BaseScene
 
         if (scene.name == _arenaName)
         {
-            
+            SceneType = Define.Scene.Game;
             SceneBgmSound("BigBangBattleLOOPING");
         }
     }
