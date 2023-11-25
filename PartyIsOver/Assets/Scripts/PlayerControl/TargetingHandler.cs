@@ -6,7 +6,7 @@ public class TargetingHandler : MonoBehaviour
 {
     private float _detectionRadius = 1.5f;
     public LayerMask layerMask;
-    public float maxAngle = 90f; // 180도의 절반 (90도)으로 설정
+    private float maxAngle = 110f; // 정면에서 좌우로 해당 각도만큼 서치
 
     Collider _nearestCollider;
     private float _nearestDistance;
@@ -69,7 +69,7 @@ public class TargetingHandler : MonoBehaviour
             float angle = Vector3.Angle(chestForward, toCollider);
             float angle2 = Vector3.Angle(detectionDirection, toCollider);
 
-            if (angle <= maxAngle && angle2 <= 110f && colliders[i].GetComponent<InteractableObject>())
+            if (angle <= maxAngle && angle2 <= 150f && colliders[i].GetComponent<InteractableObject>())
             {
 
                 float distanceWithPriority = Vector3.Distance(FindClosestCollisionPoint(colliders[i]),chestTransform.position);

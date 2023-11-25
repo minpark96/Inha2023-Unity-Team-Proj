@@ -10,6 +10,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
     public event PlayerStatusChanges OnPlayerStatusChanges;
 
     public Transform CameraArm;
+    AudioListener _audioListener;
 
     public StatusHandler StatusHandler;
     public BodyHandler BodyHandler;
@@ -30,7 +31,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
         Climb = 0x100,
         Debuff = 0x200,
         BalloonWalk = 0x400,
-
+     
     }
 
     public enum DebuffState
@@ -86,22 +87,31 @@ public class Actor : MonoBehaviourPun, IPunObservable
         //Debug.Log("StatusChangeEventInvoke()");
 
         if (OnPlayerStatusChanges == null)
+        {
             Debug.Log(photonView.ViewID + " 이벤트 null");
+            return;
+        }
 
         //Debug.Log("_health: " + _health + " debuffState: " + debuffState + " photonView.ViewID: " + photonView.ViewID);
-        //OnPlayerStatusChanges(_health, _stamina, actorState, debuffState, photonView.ViewID);
+        OnPlayerStatusChanges(_health, _stamina, actorState, debuffState, photonView.ViewID);
     }
 
     private void Awake()
     {
+        Transform SoundListenerTransform = transform.Find("GreenHead");
+        _audioListener = SoundListenerTransform.gameObject.AddComponent<AudioListener>();
+
         if (photonView.IsMine)
         {
-            LocalPlayerInstance = this.gameObject;
+            LocalPlayerInstance = this.gameObject; 
         }
         else
         {
+            _audioListener = GetComponentInChildren<AudioListener>();
             // 다른 클라이언트 카메라 끄기
             transform.GetChild(0).gameObject.SetActive(false);
+            // 사운드 끄기
+            _audioListener.enabled = false;
         }
         DontDestroyOnLoad(this.gameObject);
 
@@ -217,21 +227,21 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        Debug.Log("OnPhotonSerializeView");
+        //Debug.Log("OnPhotonSerializeView");
         if (stream.IsWriting)
         {
-            Debug.Log("Writing");
+            //Debug.Log("Writing");
             // We own this player: send the others our data
-            Debug.Log("Writing actorState: " + actorState);
+            //Debug.Log("Writing actorState: " + actorState);
             stream.SendNext(actorState);
         }
         else
         {
-            Debug.Log("Receiving");
+            //Debug.Log("Receiving");
             // Network player, receive data
-            Debug.Log("Receiving B actorState: " + actorState);
+            //Debug.Log("Receiving B actorState: " + actorState);
             this.actorState = (ActorState)stream.ReceiveNext();
-            Debug.Log("Receiving A actorState: " + actorState);
+            //Debug.Log("Receiving A actorState: " + actorState);
         }
     }
 }

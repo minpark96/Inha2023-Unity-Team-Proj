@@ -4289,7 +4289,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3110579750783755480}
   - component: {fileID: 3110579750783755487}
-  - component: {fileID: 3110579750783755486}
+  - component: {fileID: 7317898781349452104}
   m_Layer: 7
   m_Name: MainCamera
   m_TagString: MainCamera
@@ -4355,14 +4355,39 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!81 &3110579750783755486
-AudioListener:
+--- !u!114 &7317898781349452104
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3110579750783755485}
   m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_Version: 2
 --- !u!1 &3110579751996142692
 GameObject:
   m_ObjectHideFlags: 0
@@ -5084,7 +5109,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e539510f87df7a04c943a34884b79797, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerController: {fileID: 0}
+  PlayerController: {fileID: 0}
 --- !u!1 &3847900017708582759
 GameObject:
   m_ObjectHideFlags: 0
@@ -6049,8 +6074,9 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 0
-  ObservedComponents: []
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 5451060134193603439}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -7347,7 +7373,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e539510f87df7a04c943a34884b79797, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerController: {fileID: 0}
+  PlayerController: {fileID: 0}
 --- !u!1 &4690650132527620493
 GameObject:
   m_ObjectHideFlags: 0
@@ -9614,8 +9640,9 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 0
-  ObservedComponents: []
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 6706346238743341448}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -9833,8 +9860,9 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 0
-  ObservedComponents: []
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 7672130860161884258}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -10052,8 +10080,9 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 0
-  ObservedComponents: []
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 5569654652666352210}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -10274,8 +10303,9 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 0
-  ObservedComponents: []
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 7867780434797775828}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -10492,8 +10522,9 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 0
-  ObservedComponents: []
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 7802933727859954386}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -10711,8 +10742,9 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 0
-  ObservedComponents: []
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 1226834160551697771}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -10942,8 +10974,9 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 0
-  ObservedComponents: []
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 6137194865686085762}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -11340,8 +11373,9 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 0
-  ObservedComponents: []
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 7959255869608218939}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -11379,6 +11413,7 @@ GameObject:
   - component: {fileID: 5878509405600198234}
   - component: {fileID: 1602883286494261838}
   - component: {fileID: 4655386519301525991}
+  - component: {fileID: -3116543834385216606}
   m_Layer: 7
   m_Name: Ragdoll2
   m_TagString: Untagged
@@ -11470,7 +11505,6 @@ MonoBehaviour:
   LeftHand: {fileID: 5793545070783210249}
   RightHand: {fileID: 5793437608505534346}
   Ball: {fileID: 6027670702515666106}
-  CurrentBodyPart: {fileID: 0}
 --- !u!114 &5878509405600198232
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11732,14 +11766,14 @@ MonoBehaviour:
     - {fileID: 5856379624502544924}
     ForceDirections: 02000000
     ForcePowerValues:
-    - 50
+    - 100
   - StandardRigidbodies:
     - {fileID: 5856379624502544924}
     ActionRigidbodies:
     - {fileID: 5855867809452644878}
     ForceDirections: 02000000
     ForcePowerValues:
-    - 50
+    - 100
   HeadingAngleAniData:
   - StandardRigidbodies:
     - {fileID: 5856379624502544924}
@@ -12200,8 +12234,9 @@ MonoBehaviour:
   leftKick: 0
   rightKick: 0
   isStateChange: 0
-  isMeowNyangPunch: 0
+  isMeowNyangPunch: 1
   isBalloon: 0
+  isDrunk: 0
   RSkillCoolTime: 5
   ChargeAniHoldTime: 0.5
   MeowPunchPower: 3
@@ -12212,8 +12247,12 @@ MonoBehaviour:
   NuclearPunchReadyPunch: 0.1
   NuclearPunching: 0.1
   NuclearPunchResetPunch: 0.1
+  BalloonJump: 0
+  BalloonDrop: 0
   ItempSwingPower: 1000
   MoveInput: {x: 0, y: 0, z: 0}
+  RotationsForBalloon: []
+  _audioSource: {fileID: 0}
   isAI: 0
 --- !u!114 &5878509405600198236
 MonoBehaviour:
@@ -12229,6 +12268,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _isRightGrab: 0
   _isLeftGrab: 0
+  _throwingForce: 40
   EquipItem: {fileID: 0}
   LeftGrabObject: {fileID: 0}
   RightGrabObject: {fileID: 0}
@@ -12250,7 +12290,6 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 1344
-  maxAngle: 90
 --- !u!114 &5878509405600198235
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12269,6 +12308,7 @@ MonoBehaviour:
   PlayerController: {fileID: 0}
   Grab: {fileID: 0}
   BalloonState: {fileID: 0}
+  GrabState: 0
   HeadMultiple: 1.5
   ArmMultiple: 0.8
   HandMultiple: 0.8
@@ -12296,6 +12336,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   actor: {fileID: 0}
   invulnerable: 0
+  _hasFreeze: 0
   _powerUpTime: 3
   _burnTime: 3
   _exhaustedTime: 5
@@ -12334,12 +12375,31 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 0
+  observableSearch: 2
   ObservedComponents:
-  - {fileID: 0}
+  - {fileID: 5878509405600198235}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &-3116543834385216606
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5873236424662451676}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 168a9945a6afc8143a29851274a40341, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PlayerController: {fileID: 0}
+  CameraArm: {fileID: 3110579752506030532}
+  Actor: {fileID: 0}
+  BalloonDuration: 30
+  RotateAngle: 10
+  IsGrounded: 0
+  Force: 10000
 --- !u!1 &5873269987166717472
 GameObject:
   m_ObjectHideFlags: 0
@@ -12538,8 +12598,9 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 0
-  ObservedComponents: []
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 6560688065065609915}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -12757,8 +12818,9 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 0
-  ObservedComponents: []
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 7171560928597104090}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -13019,8 +13081,9 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 0
-  ObservedComponents: []
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 4021812878608315955}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -13238,8 +13301,9 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 0
-  ObservedComponents: []
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 4873579785586039899}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -13456,8 +13520,9 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 0
-  ObservedComponents: []
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 5135886312606451583}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -13491,6 +13556,7 @@ GameObject:
   - component: {fileID: 5791695438189561170}
   - component: {fileID: 8529604685999625205}
   - component: {fileID: 6171916692297960098}
+  - component: {fileID: 6599667278689527785}
   m_Layer: 7
   m_Name: GreenHip
   m_TagString: CharacterHip
@@ -13580,8 +13646,9 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 0
-  ObservedComponents: []
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 6171916692297960098}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -13601,6 +13668,120 @@ MonoBehaviour:
   m_SynchronizeAngularVelocity: 0
   m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
+--- !u!82 &6599667278689527785
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5874908293440662316}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 6
+  Pan2D: 0
+  rolloffMode: 2
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0.16666667
+      value: 1
+      inSlope: -6.002399
+      outSlope: -6.002399
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.33333334
+      value: 0.5
+      inSlope: -1.5005997
+      outSlope: -1.5005997
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.6666667
+      value: 0.25
+      inSlope: -0.37514994
+      outSlope: -0.37514994
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: -0.16673319
+      outSlope: -0.16673319
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &6025580318637575997
 GameObject:
   m_ObjectHideFlags: 0
@@ -17797,8 +17978,9 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 0
-  ObservedComponents: []
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 852741585128017009}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0

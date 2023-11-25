@@ -4,7 +4,7 @@ using UnityEngine;
 using static Define;
 
 
-[CreateAssetMenu(fileName = "Itam Data", menuName = "Scriptable Object/Item Data", order = int.MaxValue)]
+[CreateAssetMenu(fileName = "Item Data", menuName = "Scriptable Object/Item Data", order = int.MaxValue)]
 public class ItemData : ScriptableObject
 {
     [SerializeField]

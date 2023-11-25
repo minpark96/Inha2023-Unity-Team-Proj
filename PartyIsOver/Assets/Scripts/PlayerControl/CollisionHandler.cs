@@ -1,15 +1,32 @@
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
+using static InteractableObject;
 
 public class CollisionHandler : MonoBehaviourPun
 {
     public float damageMinimumVelocity = 0.25f;
 
     public Actor actor;
-
     private Transform rootTransform;
+
+    [SerializeField] private float _objectDamage;
+    [SerializeField] private float _punchDamage;
+    [SerializeField] private float _dropkickDamage;
+    [SerializeField] private float _headbuttDamage;
+
+    [SerializeField] private float _objectForceNormal;
+    [SerializeField] private float _punchForceNormal;
+    [SerializeField] private float _dropkickForceNormal;
+    [SerializeField] private float _headbuttForceNormal;
+
+    [SerializeField] private float _objectForceUp;
+    [SerializeField] private float _punchForceUp;
+    [SerializeField] private float _headbuttForceUp;
+    [SerializeField] private float _dropkickForceUp;
+
 
     void Start()
     {
@@ -22,15 +39,36 @@ public class CollisionHandler : MonoBehaviourPun
         {
             rootTransform = actor.transform;
         }
+        Init();
     }
 
+    void Init()
+    {
+        CollisionData data = Managers.Resource.Load<CollisionData>("ScriptableObject/CollisionData");
+        _objectDamage = data._ObjectDamage;
+        _punchDamage = data.PunchDamage;
+        _dropkickDamage = data.DropkickDamage;
+        _headbuttDamage = data.HeadbuttDamage;
+
+        _objectForceNormal = data.ObjectForceNormal;
+        _punchForceNormal = data.PunchForceNormal;
+        _dropkickForceNormal = data.DropkickForceNormal;
+        _headbuttForceNormal = data.HeadbuttForceNormal;
+
+        _objectForceUp = data.ObjectForceUp;
+        _punchForceUp = data.PunchForceUp;
+        _headbuttForceUp = data.HeadbuttForceUp;
+        _dropkickForceUp = data.DropkickForceUp;
+    }
 
     private void DamageCheck(Collision collision)
     {
         InteractableObject collisionInteractable = collision.transform.GetComponent<InteractableObject>();
         if (collisionInteractable == null)
             return;
-        Transform collisionTransform = collision.transform;
+        if (collision.gameObject.GetComponent<Item>() != null && collision.gameObject.GetComponent<Item>().Owner == actor)
+            return;
+
         Rigidbody collisionRigidbody = collision.rigidbody;
         Collider collisionCollider = collision.collider;
         Vector3 relativeVelocity = collision.relativeVelocity;
@@ -38,7 +76,6 @@ public class CollisionHandler : MonoBehaviourPun
 
         float num = 0f;
         float damage = 0f;
-        
 
         for (int i = 0; i < collision.contactCount; i++)
         {
@@ -56,9 +93,6 @@ public class CollisionHandler : MonoBehaviourPun
                 damage = 0f - damage;
             }
 
-
-
-
             // 물리적 공격을 받을 때
             if (collisionInteractable.damageModifier <= InteractableObject.Damage.Special)
             {
@@ -74,24 +108,15 @@ public class CollisionHandler : MonoBehaviourPun
                     {
                         actor.StatusHandler.AddDamage(collisionInteractable.damageModifier, damage, collisionCollider.gameObject);
                     }
-                    else
-                    {
-                        actor.StatusHandler.AddDamage(InteractableObject.Damage.Default, damage, collisionCollider.gameObject);
-                    }
                 }
             }
             // 버프형 공격을 받을 때
             else
             {
                 damage = 0;
-
                 if (collisionInteractable != null)
                 {
                     actor.StatusHandler.AddDamage(collisionInteractable.damageModifier, damage, collisionCollider.gameObject);
-                }
-                else
-                {
-                    actor.StatusHandler.AddDamage(InteractableObject.Damage.Default, damage, collisionCollider.gameObject);
                 }
             }
         }
@@ -124,46 +149,121 @@ public class CollisionHandler : MonoBehaviourPun
     }
     private float PhysicalDamage(InteractableObject collisionInteractable, float damage, ContactPoint contact)
     {
+        float itemDamage = 1f;
+        if (collisionInteractable.GetComponent<Item>() != null)
+            itemDamage = collisionInteractable.GetComponent<Item>().ItemData.Damage;
+
         switch (collisionInteractable.damageModifier)
         {
             case InteractableObject.Damage.Ignore:
                 damage = 0f;
                 break;
             case InteractableObject.Damage.Object:
-                damage *= 20f;
-                contact.thisCollider.attachedRigidbody.AddForce(contact.normal * 5f, ForceMode.VelocityChange);
+                {
+                    //Rigidbody rb;
+                    //if (collisionInteractable.GetComponent<Item>() != null)
+                    //{
+                    //    rb = collisionInteractable.GetComponent<Rigidbody>();
+                    //    rb.velocity = Vector3.zero;
+                    //    rb.angularVelocity = Vector3.zero;
+                    //}
+                    damage *= _objectDamage *itemDamage;
+                }
                 break;
             case InteractableObject.Damage.Punch:
-                damage *= 700f;
-                contact.thisCollider.attachedRigidbody.AddForce(contact.normal * 3f + Vector3.up * 2f, ForceMode.VelocityChange);
+                damage *= _punchDamage;
+                {
+                    string path = "Sounds/PlayerEffect/SFX_ArrowShot_Hit";
+                    AudioClip audioClip = Managers.Sound.GetOrAddAudioClip(path, Define.Sound.PlayerEffect);
+                    Managers.Sound.Play(audioClip, Define.Sound.PlayerEffect);
+                }
                 break;
             case InteractableObject.Damage.DropKick:
-                damage *= 1004f;
-                contact.thisCollider.attachedRigidbody.AddForce(contact.normal * 25f, ForceMode.VelocityChange);
-                contact.thisCollider.attachedRigidbody.AddForce(Vector3.up * 10f, ForceMode.VelocityChange);
+                damage *= _dropkickDamage;
                 break;
             case InteractableObject.Damage.Headbutt:
-                damage *= 80f;
-                contact.thisCollider.attachedRigidbody.AddForce(contact.normal * 20f, ForceMode.VelocityChange);
-                contact.thisCollider.attachedRigidbody.AddForce(Vector3.up * 10f, ForceMode.VelocityChange);
+                damage *= _headbuttDamage;
                 break;
             case InteractableObject.Damage.Knockout:
                 damage = 1000000f;
-                contact.thisCollider.attachedRigidbody.AddForce(contact.normal * 10f, ForceMode.VelocityChange);
                 break;
             default:
                 break;
         }
 
+        itemDamage = 1f;
+        if (collisionInteractable.GetComponent<Item>() != null)
+        {
+            itemDamage = collisionInteractable.GetComponent<Item>().ItemData.Damage / 10f;
+            if (itemDamage < 1f)
+                itemDamage = 1f;
+        }
+
+        int thisViewID;
+        if (contact.thisCollider.gameObject.GetComponent<PhotonView>() != null)
+        {
+            thisViewID = contact.thisCollider.gameObject.GetComponent<PhotonView>().ViewID;
+            photonView.RPC("AddForceAttackedTarget", RpcTarget.All, thisViewID, contact.normal, (int)collisionInteractable.damageModifier, itemDamage);
+        }
+
         return damage;
     }
 
-
     private void OnCollisionEnter(Collision collision)
     {
-       // if (!PhotonNetwork.IsMasterClient) return;
-       
+        if (!PhotonNetwork.IsMasterClient) return;
+
         if (collision.collider.gameObject.layer != LayerMask.NameToLayer("Ground"))
             DamageCheck(collision);
+    }
+    
+    [PunRPC]
+    void AddForceAttackedTarget(int objViewId, Vector3 normal, int damageModifier,float itemDamage)
+    {
+        //Debug.Log("[AddForceAttackedTarget] id: " + objViewId);
+        Rigidbody thisRb = PhotonNetwork.GetPhotonView(objViewId).transform.GetComponent<Rigidbody>();
+
+        Rigidbody hip = null;
+        if (thisRb.gameObject.GetComponent<BodyHandler>() != null)
+            hip = thisRb.gameObject.GetComponent<BodyHandler>().Hip.PartRigidbody;
+
+
+        switch ((InteractableObject.Damage)damageModifier)
+        {
+            case InteractableObject.Damage.Ignore:
+                break;
+            case InteractableObject.Damage.Object:
+                if(hip != null)
+                {
+                    hip.AddForce(Vector3.up * _objectForceUp, ForceMode.VelocityChange);
+                    hip.AddForce(normal * _objectForceNormal* itemDamage, ForceMode.VelocityChange);
+                    Debug.Log("Item HipAddForce");
+                }
+                else
+                {
+                    thisRb.AddForce(Vector3.up * _objectForceUp, ForceMode.VelocityChange);
+                    thisRb.AddForce(normal * _objectForceNormal * itemDamage, ForceMode.VelocityChange);
+                    Debug.Log("Item AddForce");
+                }
+
+                break;
+            case InteractableObject.Damage.Punch:
+                thisRb.AddForce(normal * _punchForceNormal , ForceMode.VelocityChange);
+                thisRb.AddForce(Vector3.up * _punchForceUp, ForceMode.VelocityChange);
+                break;
+            case InteractableObject.Damage.DropKick:
+                thisRb.AddForce(normal * _dropkickForceNormal, ForceMode.VelocityChange);
+                thisRb.AddForce(Vector3.up * _dropkickForceUp, ForceMode.VelocityChange);
+                break;
+            case InteractableObject.Damage.Headbutt:
+                thisRb.AddForce(normal * _headbuttForceNormal, ForceMode.VelocityChange);
+                thisRb.AddForce(Vector3.up * _headbuttForceUp, ForceMode.VelocityChange);
+                break;
+            case InteractableObject.Damage.Knockout:
+                thisRb.AddForce(normal * 10f, ForceMode.VelocityChange);
+                break;
+            default:
+                break;
+        }
     }
 }

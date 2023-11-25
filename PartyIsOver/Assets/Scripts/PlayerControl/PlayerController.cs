@@ -5,8 +5,8 @@ using static Actor;
 using static AniFrameData;
 using static AniAngleData;
 using Photon.Pun;
-using UnityEngine.UIElements;
-using static Grab;
+using Photon.Realtime;
+using Unity.VisualScripting;
 
 [System.Serializable]
 public class AniFrameData
@@ -177,7 +177,8 @@ public class PlayerController : MonoBehaviourPun
     public bool isStateChange;
     public bool isMeowNyangPunch = false;
     private bool _isRSkillCheck;
-    public bool isBalloon = false;
+    public bool isBalloon;
+    public bool isDrunk;
 
     [Header("SkillControll")]
     public float RSkillCoolTime = 10;
@@ -192,10 +193,14 @@ public class PlayerController : MonoBehaviourPun
     public float NuclearPunching = 0.1f;
     public float NuclearPunchResetPunch = 0.3f;
 
+    public bool BalloonJump;
+    public bool BalloonDrop;
+
+
     [Header("ItemControll")]
     public float ItempSwingPower;
 
-
+    [Header("MoveControll")]
     private float _runSpeedOffset = 350f;
     public Vector3 MoveInput;
     private Vector3 _moveDir;
@@ -211,9 +216,13 @@ public class PlayerController : MonoBehaviourPun
     private Vector3 _runVectorForce5 = new Vector3(0f, 0f, 0.4f);
     private Vector3 _runVectorForce10 = new Vector3(0f, 0f, 0.8f);
 
-    private List<float> _xPosSpringAry = new List<float>();
-    private List<float> _yzPosSpringAry = new List<float>();
+    public List<Quaternion> RotationsForBalloon = new List<Quaternion>();
     private BalloonState _balloonState;
+    private DrunkState _drunkState;
+
+    public static PlayerController Instance;
+    public AudioSource _audioSource;
+    AudioClip _audioClip;
 
     [Header("Dummy")]
     public bool isAI = false;
@@ -228,10 +237,6 @@ public class PlayerController : MonoBehaviourPun
     Side _readySide = Side.Left;
 
     InteractableObject target;
-    Vector3 _direction;
-    Vector3 _angleDirection;
-    Vector3 _targetDirection;
-
     Rigidbody _childRigidbody;
     Transform[] _children;
     private Dictionary<Transform, Quaternion> _initialRotations = new Dictionary<Transform, Quaternion>();
@@ -262,6 +267,14 @@ public class PlayerController : MonoBehaviourPun
     void Start()
     {
         _bodyHandler.BodySetup();
+        for (int i = 0; i < _bodyHandler.BodyParts.Count - 1; i++)
+        {
+            if (i == 3)
+                RotationsForBalloon.Add(Quaternion.Euler(-90, 0, 0));
+            else
+                RotationsForBalloon.Add(_bodyHandler.BodyParts[i].PartTransform.localRotation);
+
+        }
     }
 
     private ConfigurableJoint[] childJoints;
@@ -274,6 +287,8 @@ public class PlayerController : MonoBehaviourPun
         targetingHandler = GetComponent<TargetingHandler>();
         _actor = GetComponent<Actor>();
         _hipRB = transform.Find("GreenHip").GetComponent<Rigidbody>();
+        Transform SoundSourceTransform = transform.Find("GreenHip");
+        _audioSource = SoundSourceTransform.GetComponent<AudioSource>();
 
         childJoints = GetComponentsInChildren<ConfigurableJoint>();
         originalYMotions = new ConfigurableJointMotion[childJoints.Length];
@@ -290,6 +305,9 @@ public class PlayerController : MonoBehaviourPun
         _grab = GetComponent<Grab>();
 
         _balloonState = GetComponent<BalloonState>();
+        _drunkState = GetComponent<DrunkState>();
+
+        Instance = this;
     }
 
     void RestoreOriginalMotions()
@@ -300,6 +318,17 @@ public class PlayerController : MonoBehaviourPun
             childJoints[i].angularYMotion = originalYMotions[i];
             childJoints[i].angularZMotion = originalZMotions[i];
         }
+    }
+
+    [PunRPC]
+    void PlayerEffectSound(string path)
+    {
+        _audioClip = Managers.Sound.GetOrAddAudioClip(path);
+        _audioSource.clip = _audioClip;
+        _audioSource.volume = 0.2f;
+        _audioSource.spatialBlend = 1;
+        Managers.Sound.Play(_audioClip, Define.Sound.PlayerEffect);
+
     }
 
     #region OnMouseEvent_Grab
@@ -349,9 +378,36 @@ public class PlayerController : MonoBehaviourPun
             case Define.MouseEvent.Click:
                 {
                     if (Input.GetMouseButtonUp(0))
-                        PunchAndGrab();
-                    if (!isGrounded && Input.GetMouseButtonUp(1))
-                        DropKickTrigger();
+                    {
+                        if(_actor.debuffState == DebuffState.Balloon)
+                        {
+                            BalloonDrop = false;
+
+                            if (BalloonJump == true && BalloonDrop == false)
+                            {
+                                BalloonJump = false;
+                                BalloonDrop = true;
+                                _bodyHandler.Hip.PartRigidbody.AddForce(Vector3.down * 200000f);
+                            }
+                        }
+                        else
+                            PunchAndGrab();
+                    }
+
+                    if (Input.GetMouseButtonUp(1))
+                    {
+                        if (_actor.debuffState == DebuffState.Balloon)
+                        {
+                            StartCoroutine(_balloonState.BalloonSpin());
+                        }
+                        else if(!isGrounded)
+                             DropKickTrigger();
+                    }
+
+                    if (_actor.debuffState == DebuffState.Balloon)
+                        return;
+
+
                     if (!_isCoroutineRoll && Input.GetMouseButtonUp(2))
                         ForwardRollTrigger();
                 }
@@ -371,21 +427,43 @@ public class PlayerController : MonoBehaviourPun
 
         switch (evt)
         {
-            case Define.KeyboardEvent.PointerDown:
+            case Define.KeyboardEvent.Press:
                 {
                     if (Input.GetKeyDown(KeyCode.Space))
                     {
                         if (_actor.GrabState == Define.GrabState.Climb)
                             _actor.Grab.Climb();
                         _actor.actorState = Actor.ActorState.Jump;
+
+                        if (_actor.debuffState == Actor.DebuffState.Balloon)
+                        {
+                            BalloonJump = true;
+                        }
                     }
-                }
-                break;
-            case Define.KeyboardEvent.Press:
-                {
-                    if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
+
+                    if (_actor.debuffState == Actor.DebuffState.Balloon)
                     {
-                        MoveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+                        if (isBalloon)
+                        {
+                            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
+                            {
+                                MoveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+                            }
+                        }
+                    }
+                    else if(_actor.debuffState == Actor.DebuffState.Drunk)
+                    {
+                        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
+                        {
+                            MoveInput = new Vector3(-Input.GetAxis("Horizontal"), 0, -Input.GetAxis("Vertical"));
+                        }
+                    }
+                    else
+                    {
+                        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
+                        {
+                            MoveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+                        }
                     }
                 }
                 break;
@@ -397,6 +475,7 @@ public class PlayerController : MonoBehaviourPun
                     }
                 }
                 break;
+            
         }
     }
     #endregion
@@ -416,19 +495,21 @@ public class PlayerController : MonoBehaviourPun
                 {
                     if (Input.GetKeyDown(KeyCode.R))
                     {
-                        if (!_isRSkillCheck)
+                        if(_actor.debuffState != DebuffState.Drunk)
                         {
-                            _isRSkillCheck = true;
-                            StartCoroutine(ChargeReady());
+                            if (!_isRSkillCheck)
+                            {
+                                photonView.RPC("PlayerEffectSound",RpcTarget.All, "Sounds/PlayerEffect/ACTION_Changing_Smoke");
+                                _isRSkillCheck = true;
+                                StartCoroutine(ChargeReady());
+                            }
                         }
                     }
-
-                    
                 }
                 break;
             case Define.KeyboardEvent.Press:
                 {
-                    if (Input.GetKey(KeyCode.LeftShift))
+                    if (Input.GetKey(KeyCode.LeftShift) && _actor.actorState!=ActorState.Jump)
                     {
                         _actor.actorState = Actor.ActorState.Run;
                         isRun = true;
@@ -437,34 +518,49 @@ public class PlayerController : MonoBehaviourPun
                 break;
             case Define.KeyboardEvent.Click:
                 {
-                    if (Input.GetKeyUp(KeyCode.LeftShift))
+                    if (Input.GetKeyUp(KeyCode.LeftShift) && isRun == true)
                     {
                         _actor.actorState = Actor.ActorState.Stand;
                         isRun = false;
                     }
 
                     if (Input.GetKeyUp(KeyCode.H))
-                        Heading();
+                        StartCoroutine(Heading());
                     
 
                     if (Input.GetKeyUp(KeyCode.R))
                     {
                         _isRSkillCheck = false;
                         StartCoroutine(ResetCharge());
+                       
                     }
                 }
                 break;
             case Define.KeyboardEvent.Charge:
                 {
-                    RestoreOriginalMotions();
-                    if (Input.GetKeyUp(KeyCode.R) && !isMeowNyangPunch)
-                        MeowNyangPunch();
+                    if (_actor.debuffState == DebuffState.Drunk)
+                    {
+                        StartCoroutine(_drunkState.DrunkAction());
+                    }
                     else
-                        NuclearPunch();
+                    {
+                        RestoreOriginalMotions();
+                        if (Input.GetKeyUp(KeyCode.R) && !isMeowNyangPunch)
+                            MeowNyangPunch();
+                        else
+                            NuclearPunch();
+                    }
                 }
                 break;
             case Define.KeyboardEvent.Hold:
                 {
+                    if (Input.GetKey(KeyCode.R))
+                    {
+                        if (_actor.debuffState == DebuffState.Drunk)
+                        {
+                            StartCoroutine(_drunkState.DrunkActionReady());
+                        }
+                    }
                     //중일때 확인 ex 이펙트 출현하는 코드를 넣어주면 기모아지는 것 첨 될듯
 
                 }
@@ -473,30 +569,6 @@ public class PlayerController : MonoBehaviourPun
     }
 
     #endregion
-
-    public void OnKeyboardEvent_BalloonSkill(Define.KeyboardEvent evt)
-    {
-        if (!photonView.IsMine)
-        {
-            return;
-        }
-
-        switch(evt)
-        {
-            case Define.KeyboardEvent.PointerUp:
-                {
-                    if (Input.GetKeyUp(KeyCode.Space))
-                        _actor.actorState = Actor.ActorState.Jump;
-                }
-                break;
-            case Define.KeyboardEvent.Click:
-                {
-                    if (Input.GetKeyUp(KeyCode.Space))
-                        _actor.actorState = Actor.ActorState.Jump;
-                }
-                break;
-        }
-    }
 
     #region ChargeSkill
     IEnumerator ChargeReady()
@@ -572,6 +644,7 @@ public class PlayerController : MonoBehaviourPun
 
     IEnumerator NuclearPunchDelay()
     {
+        photonView.RPC("PlayerEffectSound", RpcTarget.All, "Sounds/PlayerEffect/SUPERMODE_Punch_Hit_03");
         yield return MeowPunch(Side.Right, 0.07f, NuclearPunchReadyPunch, NuclearPunching, NuclearPunchResetPunch);
         yield return RSkillCoolTimer();
     }
@@ -588,6 +661,7 @@ public class PlayerController : MonoBehaviourPun
         _readySide = Side.Right;
         while (_punchcount < 5)
         {
+            photonView.RPC("PlayerEffectSound", RpcTarget.All, "Sounds/Effect/SFX_ArrowShot_Hit");
             if (_readySide == Side.Left)
             {
                 yield return MeowPunch(Side.Left, 0.07f, MeowPunchReadyPunch, MeowPunchPunching, MeowPunchResetPunch);
@@ -646,11 +720,18 @@ public class PlayerController : MonoBehaviourPun
 
         if (_actor.debuffState == Actor.DebuffState.Balloon && isBalloon == false)
         {
-            isBalloon = true;
             StartCoroutine(_balloonState.BalloonShapeOn());
         }
 
-        if (_actor.actorState != Actor.ActorState.Jump && _actor.actorState != Actor.ActorState.Roll && _actor.actorState != Actor.ActorState.Run)
+        if (_actor.debuffState == Actor.DebuffState.Drunk && isDrunk == false)
+        {
+            isDrunk = true;
+            StartCoroutine(_drunkState.DrunkOff());
+        }
+
+
+        if (_actor.actorState != Actor.ActorState.Jump && _actor.actorState != Actor.ActorState.Roll 
+            && _actor.actorState != Actor.ActorState.Run && _actor.actorState != ActorState.Unconscious)
         {
             if (MoveInput.magnitude == 0f)
             {
@@ -871,6 +952,20 @@ public class PlayerController : MonoBehaviourPun
         return _direction;
     }
 
+    void AniForceVelocityChange(AniFrameData[] _forceSpeed, int _elementCount, Vector3 _dir)
+    {
+        for (int i = 0; i < _forceSpeed[_elementCount].StandardRigidbodies.Length; i++)
+        {
+            if (_forceSpeed[_elementCount].ForceDirections[i] == RollForce.Zero || _forceSpeed[_elementCount].ForceDirections[i] == RollForce.ZeroReverse)
+                _forceSpeed[_elementCount].ActionRigidbodies[i].AddForce(_dir * _forceSpeed[_elementCount].ForcePowerValues[i], ForceMode.Impulse);
+            else
+            {
+                Vector3 _direction = GetForceDirection(_forceSpeed[_elementCount], i);
+                _forceSpeed[_elementCount].ActionRigidbodies[i].AddForce(_direction * _forceSpeed[_elementCount].ForcePowerValues[i], ForceMode.Impulse);
+            }
+        }
+    }
+
     void AniForce(AniFrameData[] _forceSpeed, int _elementCount)
     {
         for (int i = 0; i < _forceSpeed[_elementCount].StandardRigidbodies.Length; i++)
@@ -880,7 +975,7 @@ public class PlayerController : MonoBehaviourPun
         }
     }
 
-    void AniForce(AniFrameData[] _forceSpeed, int _elementCount, Vector3 _dir)
+    public void AniForce(AniFrameData[] _forceSpeed, int _elementCount, Vector3 _dir)
     {
         for (int i = 0; i < _forceSpeed[_elementCount].StandardRigidbodies.Length; i++)
         {
@@ -959,7 +1054,7 @@ public class PlayerController : MonoBehaviourPun
         }
     }
 
-    void AniAngleForce(AniAngleData[] _aniAngleData, int _elementCount, Vector3 _vector)
+    public void AniAngleForce(AniAngleData[] _aniAngleData, int _elementCount, Vector3 _vector)
     {
         for (int i = 0; i < _aniAngleData[_elementCount].StandardRigidbodies.Length; i++)
         {
@@ -997,7 +1092,6 @@ public class PlayerController : MonoBehaviourPun
     IEnumerator DropKick()
     {
         Transform partTransform = _bodyHandler.Hip.transform;
-        BodyPart currentBodyPart;
         if (!isGrounded)
         {
             for (int i = 0; i < DropAniData.Length; i++)
@@ -1011,9 +1105,8 @@ public class PlayerController : MonoBehaviourPun
                     _bodyHandler.RightThigh.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
                     _bodyHandler.RightLeg.PartInteractable.damageModifier = InteractableObject.Damage.DropKick; //데미지
                     Vector3 dir = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
-                    currentBodyPart = _bodyHandler.RightLeg;
                     AniForce(DropAniData, i, dir);
-                    //photonView.RPC("UpdateDamageModifier", RpcTarget.Others, currentBodyPart, currentBodyPart.PartInteractable.damageModifier);
+                    photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.RightLeg, true);
                 }
                 else if (i == 1)
                 {
@@ -1022,9 +1115,8 @@ public class PlayerController : MonoBehaviourPun
                     _bodyHandler.LeftThigh.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
                     _bodyHandler.LeftLeg.PartInteractable.damageModifier = InteractableObject.Damage.DropKick; //데미지
                     Vector3 dir = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
-                    currentBodyPart = _bodyHandler.LeftLeg;
                     AniForce(DropAniData, i, dir);
-                    //photonView.RPC("UpdateDamageModifier", RpcTarget.Others, currentBodyPart, currentBodyPart.PartInteractable.damageModifier);
+                    photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LeftLeg, true);
                 }
                 else
                 {
@@ -1035,13 +1127,11 @@ public class PlayerController : MonoBehaviourPun
             
 
             yield return new WaitForSeconds(2);
-            _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
+            _actor.StatusHandler.StartCoroutine("RestoreBodySpring",1f);
             _bodyHandler.LeftLeg.PartInteractable.damageModifier = InteractableObject.Damage.Default;
             _bodyHandler.RightLeg.PartInteractable.damageModifier = InteractableObject.Damage.Default;
-            currentBodyPart = _bodyHandler.LeftLeg;
-            //photonView.RPC("UpdateDamageModifier", RpcTarget.Others, currentBodyPart, currentBodyPart.PartInteractable.damageModifier);
-            currentBodyPart = _bodyHandler.RightLeg;
-            //photonView.RPC("UpdateDamageModifier", RpcTarget.Others, currentBodyPart, currentBodyPart.PartInteractable.damageModifier);
+            photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LeftLeg, false);
+            photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.RightLeg, false);
         }
         yield return null;
     }
@@ -1141,24 +1231,29 @@ public class PlayerController : MonoBehaviourPun
     {
 
         Transform partTransform = _bodyHandler.Chest.transform;
-        AniFrameData[] aniFrameDatas = LeftPunchingAniData;
-        Transform transform2 = _bodyHandler.LeftHand.transform;
-        _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
-        _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-        _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-        BodyPart currentBodyPart = _bodyHandler.LeftHand;
+        AniFrameData[] aniFrameDatas;
+        Transform transform2;
 
-        if (side == Side.Right)
+        if (side == Side.Left)
+        {
+            aniFrameDatas = LeftPunchingAniData;
+            transform2 = _bodyHandler.LeftHand.transform;
+            _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+            _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+            _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+
+            photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LeftHand, true);
+        }
+        else
         {
             aniFrameDatas = RightPunchingAniData;
             transform2 = _bodyHandler.RightHand.transform;
             _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
             _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
             _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-            currentBodyPart = _bodyHandler.RightHand;
-        }
 
-        //photonView.RPC("UpdateDamageModifier", RpcTarget.Others, currentBodyPart, currentBodyPart.PartInteractable.damageModifier);
+            photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.RightHand, true);
+        }
 
         for (int i = 0; i < aniFrameDatas.Length; i++)
         {
@@ -1210,21 +1305,24 @@ public class PlayerController : MonoBehaviourPun
         Transform partTransform = _bodyHandler.Chest.transform;
 
         AniAngleData[] aniAngleDatas = LeftPunchResettingAniData;
-        _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
-        _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
-        _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
-        BodyPart currentBodyPart = _bodyHandler.LeftHand;
+        
+        if (side == Side.Left)
+        {
+            _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+            _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+            _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
 
-        if (side == Side.Right)
+            photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LeftHand, false);
+        }
+        else
         {
             aniAngleDatas = RightPunchResettingAniData;
             _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
             _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
             _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
-            currentBodyPart = _bodyHandler.RightHand;
-        }
 
-        //photonView.RPC("UpdateDamageModifier", RpcTarget.Others, currentBodyPart, currentBodyPart.PartInteractable.damageModifier);
+            photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.RightHand, false);
+        }
 
         for (int i = 0; i < aniAngleDatas.Length; i++)
         {
@@ -1265,36 +1363,45 @@ public class PlayerController : MonoBehaviourPun
     #region Jump
     public void Jump()
     {
-        if (isStateChange)
+        if(_actor.debuffState == Actor.DebuffState.Balloon)
         {
-            isGrounded = false;
-            for (int i = 0; i < MoveForceJumpAniData.Length; i++)
+            if(_actor.actorState == Actor.ActorState.Jump)
             {
-                AniForce(MoveForceJumpAniData, i, Vector3.up);
-                if (i == 2)
-                    AniForce(MoveForceJumpAniData, i, Vector3.down);
-            }
-            for (int i = 0; i < MoveAngleJumpAniData.Length; i++)
-            {
-                AniAngleForce(MoveAngleJumpAniData, i, _moveDir + new Vector3(0, 0.2f, 0f));
-            }
-        }
-       
-        if(_actor.debuffState == DebuffState.Balloon)
-        {
-            isGrounded = false;
-            for (int i = 0; i < MoveForceJumpAniData.Length; i++)
-            {
-                AniForce(MoveForceJumpAniData, i, Vector3.up);
-                if (i == 2)
-                    AniForce(MoveForceJumpAniData, i, Vector3.down);
-            }
-            for (int i = 0; i < MoveAngleJumpAniData.Length; i++)
-            {
-                AniAngleForce(MoveAngleJumpAniData, i, _moveDir + new Vector3(0, 0.2f, 0f));
-            }
-        }
+                for (int i = 0; i < MoveForceJumpAniData.Length; i++)
+                {
+                    AniForce(MoveForceJumpAniData, i, Vector3.up);
+                    
+                    if (i == 2)
+                        AniForce(MoveForceJumpAniData, i, Vector3.down);
+                    else
+                        MoveForceJumpAniData[i].ForcePowerValues[0] = 500f;
 
+                }
+                for (int i = 0; i < MoveAngleJumpAniData.Length; i++)
+                {
+                    AniAngleForce(MoveAngleJumpAniData, i, _moveDir + new Vector3(0, 0.2f, 0f));
+                }
+            }
+        }
+        else
+        {
+            if (isStateChange)
+            {
+                isGrounded = false;
+                for (int i = 0; i < MoveForceJumpAniData.Length; i++)
+                {
+                    AniForceVelocityChange(MoveForceJumpAniData, i, Vector3.up);
+                    if (i == 2)
+                        AniForce(MoveForceJumpAniData, i, Vector3.down);
+                }
+                for (int i = 0; i < MoveAngleJumpAniData.Length; i++)
+                {
+                    AniAngleForce(MoveAngleJumpAniData, i, _moveDir + new Vector3(0, 0.2f, 0f));
+                }
+
+               
+            }
+        }
         Vector3 lookForward = new Vector3(_cameraArm.forward.x, 0f, _cameraArm.forward.z).normalized;
         Vector3 lookRight = new Vector3(_cameraArm.right.x, 0f, _cameraArm.right.z).normalized;
         _moveDir = lookForward * MoveInput.z + lookRight * MoveInput.x;
@@ -1313,8 +1420,6 @@ public class PlayerController : MonoBehaviourPun
         _hips.AddForce(_moveDir.normalized * RunSpeed * _runSpeedOffset * Time.deltaTime * 0.5f);
         if (_hips.velocity.magnitude > MaxSpeed)
             _hips.velocity = _hips.velocity.normalized * MaxSpeed;
-
-
         if (isGrounded)
         {
             _actor.actorState = Actor.ActorState.Stand;
@@ -1323,8 +1428,11 @@ public class PlayerController : MonoBehaviourPun
     #endregion
 
     #region Heading
-    private void Heading()
+    IEnumerator Heading()
     {
+        this._bodyHandler.Head.PartInteractable.damageModifier = InteractableObject.Damage.Headbutt;
+        photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.Head, true);
+
         for (int i = 0; i < HeadingAniData.Length; i++)
         {
             AniForce(HeadingAniData, i);
@@ -1336,6 +1444,10 @@ public class PlayerController : MonoBehaviourPun
             if (i == 1)
                 AniAngleForce(HeadingAngleAniData, i, _moveDir + new Vector3(0f, 0.2f, 0f));
         }
+
+        yield return new WaitForSeconds(1);
+        this._bodyHandler.Head.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+        photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.Head, false);
     }
     #endregion
 
@@ -1600,15 +1712,77 @@ public class PlayerController : MonoBehaviourPun
     #endregion
 
     #region Photon
+
     [PunRPC]
-    private void UpdateDamageModifier(BodyPart bodyPart, InteractableObject.Damage damageType)
+    private void UpdateDamageModifier(int bodyPart, bool isAttack)
     {
-        Debug.Log("[UpdateDamageModifier] Input-bodyPart: " + bodyPart);
-        this._bodyHandler.CurrentBodyPart = bodyPart;
-        Debug.Log("[UpdateDamageModifier] Before-damageType: " + this._bodyHandler.CurrentBodyPart.PartInteractable.damageModifier);
-        this._bodyHandler.CurrentBodyPart.PartInteractable.damageModifier = damageType;
-        Debug.Log("[UpdateDamageModifier] After-damageType: " + this._bodyHandler.CurrentBodyPart.PartInteractable.damageModifier);
+        //Debug.Log("[UpdateDamageModifier] isAttack: " + isAttack + ", bodyPart: " + bodyPart);
+
+        switch((Define.BodyPart)bodyPart)
+        {
+            case Define.BodyPart.LeftFoot:
+                if (isAttack)
+                    this._bodyHandler.LeftFoot.PartInteractable.damageModifier = InteractableObject.Damage.DropKick;
+                else
+                    this._bodyHandler.LeftFoot.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+                break;
+            case Define.BodyPart.RightFoot:
+                if (isAttack)
+                    this._bodyHandler.RightFoot.PartInteractable.damageModifier = InteractableObject.Damage.DropKick;
+                else
+                    this._bodyHandler.RightFoot.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+                break;
+            case Define.BodyPart.LeftLeg:
+                if (isAttack)
+                    this._bodyHandler.LeftLeg.PartInteractable.damageModifier = InteractableObject.Damage.DropKick;
+                else
+                    this._bodyHandler.LeftLeg.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+                break;
+            case Define.BodyPart.RightLeg: 
+                if (isAttack)
+                    this._bodyHandler.RightLeg.PartInteractable.damageModifier = InteractableObject.Damage.DropKick;
+                else
+                    this._bodyHandler.RightLeg.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+                break;
+            case Define.BodyPart.LeftThigh: 
+                break;
+            case Define.BodyPart.RightThigh: 
+                break;
+            case Define.BodyPart.Hip: 
+                break;
+            case Define.BodyPart.Waist: 
+                break;
+            case Define.BodyPart.Chest: 
+                break;
+            case Define.BodyPart.Head:
+                if (isAttack)
+                    this._bodyHandler.Head.PartInteractable.damageModifier = InteractableObject.Damage.Headbutt;
+                else
+                    this._bodyHandler.Head.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+                break;
+            case Define.BodyPart.LeftArm: 
+                break;
+            case Define.BodyPart.RightArm: 
+                break;
+            case Define.BodyPart.LeftForeArm: 
+                break;
+            case Define.BodyPart.RightForeArm: 
+                break;
+            case Define.BodyPart.LeftHand:
+                if (isAttack)
+                    this._bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+                else
+                    this._bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+                break;
+            case Define.BodyPart.RightHand:
+                if (isAttack)
+                    this._bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+                else
+                    this._bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+                break;
+        }
     }
+
     #endregion
 
     #region ItemTwoHand
@@ -1938,6 +2112,4 @@ public class PlayerController : MonoBehaviourPun
         }
     }
     #endregion
-
-
 }

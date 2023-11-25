@@ -5,6 +5,31 @@ using UnityEngine;
 
 public class Define
 {
+    public enum BodyPart
+    {
+        LeftFoot,
+        RightFoot,
+        LeftLeg,
+        RightLeg,
+        LeftThigh,
+        RightThigh,
+        Hip,
+        Waist,
+        Chest,
+        Head,
+        LeftArm,
+        RightArm,
+        LeftForeArm,
+        RightForeArm,
+        LeftHand,
+        RightHand,
+    }
+    public enum Effect
+    {
+        UIEffect,
+        PlayerEffect,
+    }
+
     public enum Scene
     {
         Unknown,
@@ -12,6 +37,15 @@ public class Define
         Start,
         Lobby,
         Game,
+    }
+
+    public enum Sound
+    {
+        Bgm,
+        UISound,
+        UIInGameSound,
+        PlayerEffect,
+        Maxcount,
     }
 
     public enum WorldObject
@@ -55,13 +89,6 @@ public class Define
 
     }
 
-    public enum Sound
-    {
-        Bgm,
-        Effect,
-        MaxCount,
-    }
-
     public enum UIEvent
     {
         Click,
@@ -90,6 +117,14 @@ public class Define
     public enum CameraMode
     {
 
+    }
+
+    public enum AIState
+    {
+        Idle,
+        Move,
+        Find,
+        Attack,
     }
 }
 
