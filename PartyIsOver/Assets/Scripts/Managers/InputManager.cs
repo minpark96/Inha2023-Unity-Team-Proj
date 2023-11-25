@@ -242,6 +242,42 @@ public class InputManager
             }
         }
 
+        // UI
+        if (KeyboardAction != null)
+        {
+            if (Input.GetKeyDown(KeyCode.F5))
+            {
+                KeyboardAction.Invoke(Define.KeyboardEvent.Click);
+            }
+            else
+            {
+                KeyboardAction.Invoke(Define.KeyboardEvent.PointerUp);
+            }
+        }
+        if (KeyboardAction != null)
+        {
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                KeyboardAction.Invoke(Define.KeyboardEvent.Click);
+            }
+            else
+            {
+                KeyboardAction.Invoke(Define.KeyboardEvent.PointerUp);
+            }
+        }
+        if (KeyboardAction != null)
+        {
+            if (Input.GetKeyDown(KeyCode.F6))
+            {
+                KeyboardAction.Invoke(Define.KeyboardEvent.Click);
+            }
+            else
+            {
+                KeyboardAction.Invoke(Define.KeyboardEvent.PointerUp);
+            }
+        }
+
+        // ¸¶¿ì½º
         if (MouseAction != null)
         {
             if (Input.GetMouseButton(0))

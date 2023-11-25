@@ -7,71 +7,100 @@ using Photon.Realtime;
 using UnityEngine.SceneManagement;
 using System;
 
+
 public class PhotonManager : BaseScene 
 {
-    #region Private Serializable Fields
-
-    #endregion
-
-    #region Private Fields
-
     static PhotonManager p_instance;
 
     const byte MAX_PLAYERS_PER_ROOM = 6;
 
-    protected bool _isConnecting;
-    string _gameVersion = "1";
-
-
-    // 프리팹 경로
+    bool IsConnecting;
+    string GameVersion = "1";
     string _gameCenterPath = "GameCenter";
+    string _sceneMain = "[2]Main";
+    string _sceneLobby = "[3]Lobby";
+    string _sceneRoom = "[4]Room";
 
-    protected string _roomSceneName = "Room"; // "Main";
-
-    #endregion
-
-    #region Public Fields
+    List<RoomItem> RoomItemsList = new List<RoomItem>();
+    float _nextUpdateTime = 1f;
+    float _timeBetweenUpdate = 1.5f;
 
     public static PhotonManager Instance { get { return p_instance; } }
+    public LobbyUI LobbyUI;
 
-    #endregion
-
-    #region MonoBehaviour CallBacks
 
     void Awake()
     {
         Init();
     }
 
-    #endregion
-
     #region Public Methods
 
+    public void Connect()
+    {
+        if (PhotonNetwork.IsConnected)
+        {
+            PhotonNetwork.JoinLobby();
+        }
+        else
+        {
+            IsConnecting = PhotonNetwork.ConnectUsingSettings();
+            PhotonNetwork.GameVersion = GameVersion;
+        }
 
+        SceneManagerEx sceneManagerEx = new SceneManagerEx();
+        string currentSceneName = sceneManagerEx.GetCurrentSceneName();
+        if (currentSceneName == _sceneLobby)
+        {
+            AudioSource[] _audioSources = new AudioSource[(int)Define.Sound.Maxcount];
+            AudioClip audioClip = Managers.Resource.Load<AudioClip>("Sounds/Bgm/BongoBoogieMenuLOOPING");
+            _audioSources[(int)Define.Sound.Bgm].clip = audioClip;
+            Managers.Sound.Play(audioClip, Define.Sound.Bgm);
+        }
+    }
+
+    public void LeaveLobby()
+    {
+        PhotonNetwork.LeaveLobby();
+        StartCoroutine(LoadNextScene(_sceneMain));
+    }
 
     public void LeaveRoom()
     {
-        Debug.Log("[LeaveRoom()] Call PhotonNetwork.LeaveRoom()");
         PhotonNetwork.LeaveRoom();
+
+
     }
 
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        GameCenter gameCenter = new GameCenter();
-
-        if (scene.name == _roomSceneName)
-        {
-            gameCenter.SceneBgmSound("LaxLayoverLOOPING");
-        }
-        if (scene.name == "Room")
+       GameCenter gameCenter = new GameCenter();
+        if(scene.name == "[4]Room")
         {
             SceneType = Define.Scene.Lobby;
+            gameCenter.SceneBgmSound("LaxLayoverLOOPING");
+        }
+    }
 
-            List<GameObject> list = new List<GameObject>();
-            for (int i = 0; i < 1; i++)
-                list.Add(Managers.Resource.Instantiate("Effects/Stun_loop"));
+    public void UpdateRoomList(List<RoomInfo> list)
+    {
+        if (SceneManager.GetActiveScene().name == _sceneLobby)
+        {
+            foreach (RoomItem item in RoomItemsList)
+            {
+                Destroy(item.gameObject);
+            }
+            RoomItemsList.Clear();
 
-            
+            foreach (RoomInfo room in list)
+            {
+                if (room.PlayerCount == 0)
+                    continue;
+
+                RoomItem newRoom = Instantiate(LobbyUI.RoomItemPrefab, LobbyUI.ContentObject);
+                newRoom.SetRoomName(room.Name, room.PlayerCount);
+                RoomItemsList.Add(newRoom);
+            }
         }
     }
 
@@ -92,7 +121,6 @@ public class PhotonManager : BaseScene
             DontDestroyOnLoad(_go);
             p_instance = _go.GetComponent<PhotonManager>();
 
-            Screen.SetResolution(800, 480, false);
             PhotonNetwork.AutomaticallySyncScene = true;
 
             PhotonNetwork.SerializationRate = 20;
@@ -107,39 +135,10 @@ public class PhotonManager : BaseScene
         }
     }
 
-    public void Connect()
-    {
-        //_loadingPanel.SetActive(true);
-        //flag = true;
 
-        if (PhotonNetwork.IsConnected)
-        {
-            Debug.Log("PUN Basics Tutorial/Launcher: JoinRandomRoom() was called by PUN");
 
-            // 일단 Room, Join Lobby가 맞는듯
-            PhotonNetwork.JoinRandomRoom();
 
-            //if(!flag)
-            //    PhotonNetwork.JoinLobby();
-        }
-        else
-        {
-            _isConnecting = PhotonNetwork.ConnectUsingSettings();
-            PhotonNetwork.GameVersion = _gameVersion;
-        }
-
-        SceneManagerEx sceneManagerEx = new SceneManagerEx();
-        string currentSceneName = sceneManagerEx.GetCurrentSceneName();
-        if (currentSceneName == _roomSceneName)
-        {
-            AudioSource[] _audioSources = new AudioSource[(int)Define.Sound.Maxcount];
-            AudioClip audioClip = Managers.Resource.Load<AudioClip>("Sounds/Bgm/BongoBoogieMenuLOOPING");
-            _audioSources[(int)Define.Sound.Bgm].clip = audioClip;
-            Managers.Sound.Play(audioClip, Define.Sound.Bgm);
-        }
-    }
-
-    protected IEnumerator LoadAsyncScene(string sceneName)
+    IEnumerator LoadNextScene(string sceneName)
     {
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
 
@@ -148,20 +147,21 @@ public class PhotonManager : BaseScene
             yield return null;
         }
 
-        //Debug.LogFormat("[LoadAsyncScene()] Scene {0} Loaded", SceneManagerHelper.ActiveSceneName);
-        InstantiateGameCenter();
+        if (sceneName == _sceneRoom)
+        {
+            InstantiateGameCenter();
+        }
+
+        
     }
-
-
+    
     void InstantiateGameCenter()
     {
         if (GameCenter.LocalGameCenterInstance == null)
         {
-            //Debug.LogFormat("PhotonManager.cs => We are Instantiating LocalGameCenter from {0}", SceneManagerHelper.ActiveSceneName);
             Managers.Resource.PhotonNetworkInstantiate(_gameCenterPath);
         }
     }
-
 
     #endregion
 
@@ -169,39 +169,61 @@ public class PhotonManager : BaseScene
 
     public override void OnConnectedToMaster()
     {
-        if (_isConnecting)
+        if (IsConnecting)
         {
-            PhotonNetwork.JoinRandomRoom();
-            //PhotonNetwork.JoinLobby();
-            _isConnecting = false;
+            IsConnecting = false;
         }
     }
 
     public override void OnDisconnected(DisconnectCause cause)
     {
-        Debug.LogWarningFormat("PUN Basics Tutorial/Launcher: OnDisconnected() was called by PUN with reason {0}", cause);
-        _isConnecting = false;
+        IsConnecting = false;
     }
 
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
-        Debug.Log("PUN Basics Tutorial/Launcher: OnJoinRandomFailed() was called by PUN. No random room available, so we create one.\nCalling: PhotonNetwork.CreateRoom");
-
         PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = MAX_PLAYERS_PER_ROOM });
+    }
+
+    public override void OnJoinedLobby()
+    {
+        Debug.Log("[JoinLobby()] Load Lobby Scene");
+
+        //if (SceneManager.GetActiveScene().name != _sceneLobby)
+            StartCoroutine(LoadNextScene(_sceneLobby));
     }
 
     public override void OnJoinedRoom()
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            StartCoroutine(LoadAsyncScene(_roomSceneName));
+            StartCoroutine(LoadNextScene(_sceneRoom));
         }
     }
 
     public override void OnLeftRoom()
     {
-        Debug.Log("[OnLeftRoom()] LoadScene(0)");
-        SceneManager.LoadScene(0);
+        Debug.Log("[OnLeftRoom()]");
+
+        base.OnLeftRoom();
+
+        Connect();
+
+        StartCoroutine(LoadNextScene(_sceneLobby));
+        //SceneManager.LoadScene(_sceneLobby);
+    }
+    public override void OnRoomListUpdate(List<RoomInfo> roomList)
+    {
+        if (Time.time >= _nextUpdateTime)
+        {
+            UpdateRoomList(roomList);
+            _nextUpdateTime = Time.time + _timeBetweenUpdate;
+        }
+
+        if (roomList.Count == 0 && PhotonNetwork.InLobby)
+        {
+            RoomItemsList.Clear();
+        }
     }
 
     public override void OnPlayerEnteredRoom(Player other)
@@ -212,14 +234,12 @@ public class PhotonManager : BaseScene
     public override void OnPlayerLeftRoom(Player other)
     {
         //Debug.LogFormat("[OnPlayerLeftRoom()] {0}", other.NickName);
-
     }
 
     #endregion
 
     public override void Clear()
     {
-
     }
 
 }

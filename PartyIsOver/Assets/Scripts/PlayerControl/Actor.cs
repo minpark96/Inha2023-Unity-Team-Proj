@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static Define;
+using UnityEngine.SceneManagement;
+
 
 public class Actor : MonoBehaviourPun, IPunObservable
 {
@@ -106,13 +108,14 @@ public class Actor : MonoBehaviourPun, IPunObservable
         }
         else
         {
-            _audioListener = GetComponentInChildren<AudioListener>();
             // 다른 클라이언트 카메라 끄기
             transform.GetChild(0).gameObject.SetActive(false);
             // 사운드 끄기
             _audioListener.enabled = false;
         }
-        DontDestroyOnLoad(this.gameObject);
+
+        if(SceneManager.GetActiveScene().name != "[4]Room")
+            DontDestroyOnLoad(this.gameObject);
 
         CameraArm = transform.GetChild(0).GetChild(0);
         BodyHandler = GetComponent<BodyHandler>();
@@ -124,6 +127,8 @@ public class Actor : MonoBehaviourPun, IPunObservable
         ChangeLayerRecursively(gameObject, LayerCnt++);
 
         _health = _maxHealth;
+
+        Debug.Log("PlayerController: " + PlayerController);
     }
 
     private void ChangeLayerRecursively(GameObject obj, int layer)
@@ -156,12 +161,12 @@ public class Actor : MonoBehaviourPun, IPunObservable
         {
             PlayerController.isStateChange = false;
         }
-
         switch (actorState)
         {
             case ActorState.Dead:
                 break;
             case ActorState.Unconscious:
+                //PlayerController.Stun();
                 break;
             case ActorState.Stand:
                 PlayerController.Stand();

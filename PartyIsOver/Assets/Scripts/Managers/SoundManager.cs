@@ -8,6 +8,8 @@ using UnityEngine.SceneManagement;
  
 public class SoundManager 
 {
+    string _launcher = "[1]Launcher";
+
     AudioSource[] _audioSources = new AudioSource[(int)Define.Sound.Maxcount];
     //Ä³½Ì ¿ªÇÒ
     Dictionary<string,AudioClip> _audioClip = new Dictionary<string, AudioClip>();
@@ -37,7 +39,7 @@ public class SoundManager
             _audioSources[(int)Define.Sound.Bgm].loop = true;
         }
 
-        if (currentSceneName == "Launcher")
+        if (currentSceneName == _launcher)
         {
             audioClip = Managers.Resource.Load<AudioClip>("Sounds/Bgm/BongoBoogieMenuLOOPING");
             _audioSources[(int)Define.Sound.Bgm].clip = audioClip;
