@@ -28,7 +28,7 @@ public class Grab : MonoBehaviourPun
 
     float _grabDelayTimer = 0.5f;
 
-    public bool _isGrabbingInProgress {get; private set;}
+    public bool _isGrabbingInProgress { get; private set; }
 
 
     public GameObject EquipItem;
@@ -58,6 +58,10 @@ public class Grab : MonoBehaviourPun
     private int _itemType;
     public float _turnForce;
 
+    private List<ConfigurableJoint> _configurableJoints = new List<ConfigurableJoint>();
+    private FixedJoint[] _armJoints = new FixedJoint[6];
+
+
     public enum Side
     {
         Left = 0,
@@ -65,8 +69,20 @@ public class Grab : MonoBehaviourPun
         Both = 2,
     }
 
-    
+
     void Start()
+    {
+        Init();
+    }
+
+    void Update()
+    {
+        _grabDelayTimer -= Time.deltaTime;
+        GrabStateCheck();
+
+    }
+
+    void Init()
     {
         _actor = GetComponent<Actor>();
         _actor.BodyHandler = transform.root.GetComponent<BodyHandler>();
@@ -77,30 +93,23 @@ public class Grab : MonoBehaviourPun
         _leftHandRigid = _actor.BodyHandler.LeftHand.PartRigidbody;
         _rightHandRigid = _actor.BodyHandler.RightHand.PartRigidbody;
 
-        _jointLeft = _actor.BodyHandler.LeftHand.PartJoint;
-        _jointRight = _actor.BodyHandler.RightHand.PartJoint;
 
-        _jointLeftForeArm = _actor.BodyHandler.LeftForearm.PartJoint;
-        _jointRightForeArm = _actor.BodyHandler.RightForearm.PartJoint;
+        _configurableJoints.Add(_jointChest = _actor.BodyHandler.Chest.PartJoint);
 
-        _jointLeftUpperArm = _actor.BodyHandler.LeftArm.PartJoint;
-        _jointRightUpperArm = _actor.BodyHandler.RightArm.PartJoint;
+        _configurableJoints.Add(_jointLeftUpperArm = _actor.BodyHandler.LeftArm.PartJoint);
+        _configurableJoints.Add(_jointLeftForeArm = _actor.BodyHandler.LeftForearm.PartJoint);
+        _configurableJoints.Add(_jointLeft = _actor.BodyHandler.LeftHand.PartJoint);
 
-        _jointChest = _actor.BodyHandler.Chest.PartJoint;
-    }
-
-    void Update()
-    {
-        _grabDelayTimer -= Time.deltaTime;
-        GrabStateCheck();
-
+        _configurableJoints.Add(_jointRightUpperArm = _actor.BodyHandler.RightArm.PartJoint);
+        _configurableJoints.Add(_jointRightForeArm = _actor.BodyHandler.RightForearm.PartJoint);
+        _configurableJoints.Add(_jointRight = _actor.BodyHandler.RightHand.PartJoint);
     }
 
     void GrabStateCheck()
     {
         PlayerLiftCheck();
-        
-        if(EquipItem != null)
+
+        if (EquipItem != null)
         {
             _actor.GrabState = GrabState.EquipItem;
             return;
@@ -114,7 +123,7 @@ public class Grab : MonoBehaviourPun
         if (_isRightGrab && _isLeftGrab && LeftGrabObject != null && RightGrabObject != null)
         {
             //나중에 아이템이나 플레이어가 아닌 오브젝트의 Layer를 ClimbLayer 등으로 통일하고 밑의 조건 바꿀 수 있음
-            if(LeftGrabObject.GetComponent<CollisionHandler>() == null && RightGrabObject.GetComponent<CollisionHandler>() == null
+            if (LeftGrabObject.GetComponent<CollisionHandler>() == null && RightGrabObject.GetComponent<CollisionHandler>() == null
                 && LeftGrabObject.GetComponent<Item>() == null && RightGrabObject.GetComponent<Item>() == null)
             {
                 _actor.GrabState = GrabState.Climb;
@@ -153,7 +162,7 @@ public class Grab : MonoBehaviourPun
         //_rightHandRigid.AddForce(_rightHandRigid.transform.position + Vector3.down * 80f);
         //_leftHandRigid.AddForce(_rightHandRigid.transform.position + Vector3.down * 80f);
 
-        
+
         _actor.BodyHandler.Hip.PartRigidbody.AddForce(Vector3.up * 100f, ForceMode.VelocityChange);
         _grabDelayTimer = 0.7f;
 
@@ -182,17 +191,22 @@ public class Grab : MonoBehaviourPun
 
                     if (Input.GetMouseButtonUp(0))
                     {
-                        switch(type)
+                        switch (type)
                         {
-                            case ItemType.OneHanded: StartCoroutine(OwnHandAttack());
+                            case ItemType.OneHanded:
+                                StartCoroutine(OwnHandAttack());
                                 break;
-                            case ItemType.TwoHanded: StartCoroutine(HorizontalAttack());
+                            case ItemType.TwoHanded:
+                                StartCoroutine(HorizontalAttack());
                                 break;
-                            case ItemType.Gravestone: StartCoroutine(VerticalAttack());
+                            case ItemType.Gravestone:
+                                StartCoroutine(VerticalAttack());
                                 break;
-                            case ItemType.Ranged: UseItem();    
+                            case ItemType.Ranged:
+                                UseItem();
                                 break;
-                            case ItemType.Potion: StartCoroutine(UsePotionAnim());
+                            case ItemType.Potion:
+                                StartCoroutine(UsePotionAnim());
                                 break;
                         }
                     }
@@ -225,8 +239,8 @@ public class Grab : MonoBehaviourPun
                         Rigidbody rb2 = LeftGrabObject.GetComponent<Rigidbody>();
                         GrabReset();
 
-                        rb1.AddForce(-_actor.BodyHandler.Chest.PartTransform.up * _throwingForce,ForceMode.VelocityChange);
-                        rb2.AddForce(-_actor.BodyHandler.Chest.PartTransform.up * _throwingForce,ForceMode.VelocityChange);
+                        rb1.AddForce(-_actor.BodyHandler.Chest.PartTransform.up * _throwingForce, ForceMode.VelocityChange);
+                        rb2.AddForce(-_actor.BodyHandler.Chest.PartTransform.up * _throwingForce, ForceMode.VelocityChange);
 
                         rb1.AddForce(Vector3.up * _throwingForce * 1.5f, ForceMode.VelocityChange);
                         rb2.AddForce(Vector3.up * _throwingForce * 1.5f, ForceMode.VelocityChange);
@@ -239,16 +253,16 @@ public class Grab : MonoBehaviourPun
     [PunRPC]
     public void GrabPose()
     {
-        if(EquipItem.GetComponent<Item>().ItemData.ItemType == ItemType.Ranged)
+        if (EquipItem.GetComponent<Item>().ItemData.ItemType == ItemType.Ranged)
         {
             _jointLeft.targetPosition = EquipItem.GetComponent<Item>().TwoHandedPos.position;
             _jointRight.targetPosition = EquipItem.GetComponent<Item>().OneHandedPos.position;
         }
-        else if(EquipItem.GetComponent<Item>().ItemData.ItemType == ItemType.OneHanded)
+        else if (EquipItem.GetComponent<Item>().ItemData.ItemType == ItemType.OneHanded)
         {
             _jointRight.targetPosition = EquipItem.GetComponent<Item>().OneHandedPos.position;
         }
-        else if(EquipItem.GetComponent<Item>().ItemData.ItemType == ItemType.Gravestone)
+        else if (EquipItem.GetComponent<Item>().ItemData.ItemType == ItemType.Gravestone)
         {
             _jointLeft.targetPosition = EquipItem.GetComponent<Item>().TwoHandedPos.position;
             _jointRight.targetPosition = EquipItem.GetComponent<Item>().OneHandedPos.position;
@@ -269,7 +283,7 @@ public class Grab : MonoBehaviourPun
         int rightObjViewID = 0;
 
         _isGrabbingInProgress = false;
-        if(EquipItem != null)
+        if (EquipItem != null)
         {
             EquipItem.gameObject.layer = LayerMask.NameToLayer("Item");
             EquipItem.GetComponent<Item>().Body.gameObject.SetActive(true);
@@ -342,7 +356,7 @@ public class Grab : MonoBehaviourPun
             {
                 if (_actor.actorState == Actor.ActorState.Jump || _actor.actorState == Actor.ActorState.Fall)
                 {
-                    dir = ((_targetingHandler.FindClosestCollisionPoint(_leftSearchTarget.GetComponent<Collider>()) + Vector3.up*2)
+                    dir = ((_targetingHandler.FindClosestCollisionPoint(_leftSearchTarget.GetComponent<Collider>()) + Vector3.up * 2)
                         - _leftHandRigid.transform.position).normalized;
                 }
                 else
@@ -360,11 +374,11 @@ public class Grab : MonoBehaviourPun
                 }
             }
 
-            if(_rightSearchTarget != null && !_isRightGrab)
+            if (_rightSearchTarget != null && !_isRightGrab)
             {
                 if (_actor.actorState == Actor.ActorState.Jump || _actor.actorState == Actor.ActorState.Fall)
                 {
-                    dir = ((_targetingHandler. FindClosestCollisionPoint(_rightSearchTarget.GetComponent<Collider>()) + Vector3.up*2)
+                    dir = ((_targetingHandler.FindClosestCollisionPoint(_rightSearchTarget.GetComponent<Collider>()) + Vector3.up * 2)
                         - _rightHandRigid.transform.position).normalized;
                 }
                 else
@@ -384,7 +398,7 @@ public class Grab : MonoBehaviourPun
         }
     }
 
- 
+
 
 
     void HandleItemGrabbing(Item item)
@@ -479,7 +493,7 @@ public class Grab : MonoBehaviourPun
     /// <summary>
     /// 손이 아이템에 제대로 접촉했는지 체크 후 관절생성
     /// </summary>
-    bool IsHoldingItem(Item item,Side side)
+    bool IsHoldingItem(Item item, Side side)
     {
         //HandChecker 스크립트에서 양손 다 아이템의 손잡이와 접촉중인지 판정
         if (HandCollisionCheck(side))
@@ -487,7 +501,7 @@ public class Grab : MonoBehaviourPun
             _grabDelayTimer = 0.5f;
             EquipItem = item.transform.root.gameObject;
             EquipItem.GetComponent<Item>().Owner = GetComponent<Actor>();
-            if (EquipItem.GetComponent<Item>().ItemData.ItemType == ItemType.OneHanded || 
+            if (EquipItem.GetComponent<Item>().ItemData.ItemType == ItemType.OneHanded ||
                 EquipItem.GetComponent<Item>().ItemData.ItemType == ItemType.TwoHanded)
                 EquipItem.GetComponent<InteractableObject>().damageModifier = EquipItem.GetComponent<Item>().ItemData.UseDamageType;
             EquipItem.GetComponent<Rigidbody>().mass = 0.1f;
@@ -511,7 +525,7 @@ public class Grab : MonoBehaviourPun
                 }
                 break;
             case Side.Right:
-                if (_rightHandRigid.GetComponent<HandChecker>().CollisionObject != null && 
+                if (_rightHandRigid.GetComponent<HandChecker>().CollisionObject != null &&
                     _rightHandRigid.GetComponent<HandChecker>().CollisionObject == _rightSearchTarget.gameObject)
                 {
                     _isRightGrab = true;
@@ -519,7 +533,7 @@ public class Grab : MonoBehaviourPun
                 }
                 break;
             case Side.Both:
-                if (HandCollisionCheck(Side.Right) && HandCollisionCheck(Side.Left))   
+                if (HandCollisionCheck(Side.Right) && HandCollisionCheck(Side.Left))
                 {
                     return true;
                 }
@@ -541,7 +555,7 @@ public class Grab : MonoBehaviourPun
         Vector3 toOneHandedHandle = (item.OneHandedPos.position - _jointChest.transform.position).normalized; // 오른손이 잡아야할 oneHanded 손잡이 벡터
         Vector3 crossProduct = Vector3.Cross(toItem, toOneHandedHandle);
 
-        if (crossProduct.y > 0) 
+        if (crossProduct.y > 0)
             return true;// 원핸드 손잡이가 오른쪽
         else
             return false;// 원핸드 손잡이가 왼쪽
@@ -562,14 +576,14 @@ public class Grab : MonoBehaviourPun
         switch (item.GetComponent<Item>().ItemData.ItemType)
         {
             case ItemType.TwoHanded:
-                        //아이템의 헤드부분이 해당 방향벡터를 바라보게
-                    if (isHeadLeft)
-                        targetPosition = -_jointChest.transform.right;
-                    else
-                        targetPosition = _jointChest.transform.right;
+                //아이템의 헤드부분이 해당 방향벡터를 바라보게
+                if (isHeadLeft)
+                    targetPosition = -_jointChest.transform.right;
+                else
+                    targetPosition = _jointChest.transform.right;
                 break;
             case ItemType.OneHanded:
-                    targetPosition = _jointChest.transform.forward;
+                targetPosition = _jointChest.transform.forward;
                 break;
             case ItemType.Gravestone:
                 {
@@ -589,7 +603,7 @@ public class Grab : MonoBehaviourPun
                 }
                 break;
             case ItemType.Potion:
-                    targetPosition = _jointChest.transform.forward;
+                targetPosition = _jointChest.transform.forward;
                 break;
         }
 
@@ -605,6 +619,28 @@ public class Grab : MonoBehaviourPun
         Transform item = PhotonNetwork.GetPhotonView(itemViewID).transform;
         item.transform.right = -targetPosition.normalized;
         Debug.Log("SyncGrapItemPosition");
+    }
+
+    void LockArmPosition()
+    {
+        for (int i = 0; i < _armJoints.Length; i++)
+        {
+            _armJoints[i] = _configurableJoints[i + 1].AddComponent<FixedJoint>();
+
+            if (i == 3)
+                _armJoints[i].connectedBody = _configurableJoints[0].GetComponent<Rigidbody>();
+            else
+                _armJoints[i].connectedBody = _configurableJoints[i].GetComponent<Rigidbody>();
+        }
+    }
+
+    void UnlockArmPosition()
+    {
+        for (int i = 0; i < 6; i++)
+        {
+            Destroy(_armJoints[i]);
+            _armJoints[i] = null;
+        }
     }
 
     [PunRPC]
@@ -632,6 +668,7 @@ public class Grab : MonoBehaviourPun
             _grabJointLeft.connectedBody = _leftSearchTarget.GetComponent<Rigidbody>();
             _grabJointLeft.breakForce = 9001;
 
+
             if (_leftSearchTarget != null)
                 LeftGrabObject = _leftSearchTarget.gameObject;
 
@@ -643,6 +680,7 @@ public class Grab : MonoBehaviourPun
                 _jointLeft.angularZMotion = ConfigurableJointMotion.Locked;
                 _jointLeftForeArm.angularZMotion = ConfigurableJointMotion.Locked;
                 _jointLeftUpperArm.angularZMotion = ConfigurableJointMotion.Locked;
+                LockArmPosition();
             }
 
         }
@@ -668,7 +706,6 @@ public class Grab : MonoBehaviourPun
         }
     }
 
-
     void DestroyJoint(int leftObjViewID, int rightObjViewID)
     {
         PhotonView leftPV = PhotonNetwork.GetPhotonView(leftObjViewID);
@@ -685,6 +722,7 @@ public class Grab : MonoBehaviourPun
 
         Destroy(_grabJointLeft);
         Destroy(_grabJointRight);
+        UnlockArmPosition();
 
         // 관절 복구
         _jointLeft.angularYMotion = ConfigurableJointMotion.Limited;

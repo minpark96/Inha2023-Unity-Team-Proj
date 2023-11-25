@@ -46,9 +46,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _roomUI: {fileID: 0}
-  SpawnPointX: 517.5
-  SpawnPointY: 17
-  SpawnPointZ: 420
   SpawnPoints: []
   ActorViewIDs: 
   Actors: []
@@ -70,7 +67,8 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 0
-  ObservedComponents: []
+  ObservedComponents:
+  - {fileID: 0}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0

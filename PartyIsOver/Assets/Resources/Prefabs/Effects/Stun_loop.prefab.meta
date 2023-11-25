@@ -1,6 +1,11 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:PartyIsOver/Assets/Plawius-NonConvexCollider/RuntimeDemo/RuntimeTestAssembly.asmdef.meta
+guid: af853d9d03884f64393e37ae29cc62e5
+AssemblyDefinitionImporter:
+========
 guid: 3c7f2d7e4b488bc459945dc2dfdab296
 PrefabImporter:
+>>>>>>>> d7e064f5662243d28353b20e517b8fd4f42c1cfb:PartyIsOver/Assets/Resources/Effects/Stun_loop.prefab.meta
   externalObjects: {}
   userData: 
   assetBundleName: 
