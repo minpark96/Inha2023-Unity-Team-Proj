@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static Define;
+using UnityEngine.SceneManagement;
+
 
 public class Actor : MonoBehaviourPun, IPunObservable
 {
@@ -112,7 +114,9 @@ public class Actor : MonoBehaviourPun, IPunObservable
             // »ç¿îµå ²ô±â
             _audioListener.enabled = false;
         }
-        DontDestroyOnLoad(this.gameObject);
+
+        if(SceneManager.GetActiveScene().name != "[4]Room")
+            DontDestroyOnLoad(this.gameObject);
 
         CameraArm = transform.GetChild(0).GetChild(0);
         BodyHandler = GetComponent<BodyHandler>();
@@ -124,6 +128,8 @@ public class Actor : MonoBehaviourPun, IPunObservable
         ChangeLayerRecursively(gameObject, LayerCnt++);
 
         _health = _maxHealth;
+
+        Debug.Log("PlayerController: " + PlayerController);
     }
 
     private void ChangeLayerRecursively(GameObject obj, int layer)
