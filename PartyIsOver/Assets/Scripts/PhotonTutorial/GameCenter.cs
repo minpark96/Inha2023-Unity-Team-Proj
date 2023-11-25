@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class GameCenter : BaseScene
+public class GameCenter : MonoBehaviourPunCallbacks
 {
     #region Private Serializable Fields
 
@@ -19,9 +19,13 @@ public class GameCenter : BaseScene
 
     #region Private Fields
 
-    string _arenaName = "PO_Map_KYH";
-    // 프리팹 경로
+    string _arenaName = "MJTest";
+    
     string _playerPath = "Ragdoll2";
+
+    string _roomPlayerPath = "Ragdoll2_Room";
+
+    bool _isChecked;
 
     #endregion
 
@@ -29,9 +33,9 @@ public class GameCenter : BaseScene
 
     public static GameObject LocalGameCenterInstance = null;
 
-    private float SpawnPointX = 484.604f;
-    private float SpawnPointY = 17f;
-    private float SpawnPointZ = 402.4796f;
+    public float SpawnPointX = 517.5f;
+    public float SpawnPointY = 17f;
+    public float SpawnPointZ = 420f;
 
     // 스폰 포인트 6인 기준
     public List<Vector3> SpawnPoints = new List<Vector3>();
@@ -52,10 +56,14 @@ public class GameCenter : BaseScene
         SpawnPoints.Add(new Vector3(SpawnPointX + -2.5f, SpawnPointY, SpawnPointZ + -4.33f));
         SpawnPoints.Add(new Vector3(SpawnPointX + 2.5f, SpawnPointY, SpawnPointZ + -4.33f));
 
+        SpawnPoints.Add(new Vector3(0f,0f,0f));
+
+
         if (photonView.IsMine)
         {
             LocalGameCenterInstance = this.gameObject;
         }
+
         DontDestroyOnLoad(this.gameObject);
     }
 
@@ -68,7 +76,6 @@ public class GameCenter : BaseScene
 
         if (scene.name == _arenaName)
         {
-            SceneType = Define.Scene.Game;
             SceneBgmSound("BigBangBattleLOOPING");
         }
     }
@@ -104,6 +111,32 @@ public class GameCenter : BaseScene
         }
     }
 
+    void InstantiatePlayerInRoom()
+    {
+        GameObject go = null;
+
+        switch (PhotonNetwork.LocalPlayer.ActorNumber)
+        {
+            case 1:
+                go = Managers.Resource.PhotonNetworkInstantiate(_roomPlayerPath, pos: SpawnPoints[6]);
+                break;
+            case 2:
+                go = Managers.Resource.PhotonNetworkInstantiate(_roomPlayerPath, pos: SpawnPoints[6]);
+                break;
+            case 3:
+                go = Managers.Resource.PhotonNetworkInstantiate(_roomPlayerPath, pos: SpawnPoints[6]);
+                break;
+            case 4:
+                go = Managers.Resource.PhotonNetworkInstantiate(_roomPlayerPath, pos: SpawnPoints[6]);
+                break;
+            case 5:
+                go = Managers.Resource.PhotonNetworkInstantiate(_roomPlayerPath, pos: SpawnPoints[6]);
+                break;
+            case 6:
+                go = Managers.Resource.PhotonNetworkInstantiate(_roomPlayerPath, pos: SpawnPoints[6]);
+                break;
+        }
+    }
 
     void InstantiatePlayer()
     {
@@ -140,15 +173,15 @@ public class GameCenter : BaseScene
 
             if (PhotonNetwork.IsMasterClient)
             {
-                Actor actor = go.GetComponent<Actor>();
                 ActorViewIDs.Add(viewID);
-                Actors.Add(actor);
-                SubscribeActorEvent(actor);
+                AddActor(viewID);
             }
             else
             {
                 photonView.RPC("RegisterActorInfo", RpcTarget.MasterClient, viewID);
             }
+
+            Debug.Log("ActorViewIDs.Count: " + ActorViewIDs.Count);
         }
     }
 
@@ -230,6 +263,13 @@ public class GameCenter : BaseScene
         {
             Actor actor = targetPV.transform.GetComponent<Actor>();
             Actors.Add(actor);
+
+            if (_roomUI.SkillChange)
+                actor.PlayerController.isMeowNyangPunch = true;
+            else
+                actor.PlayerController.isMeowNyangPunch = false;
+
+
             if (PhotonNetwork.IsMasterClient)
             {
                 SubscribeActorEvent(actor);
@@ -237,23 +277,6 @@ public class GameCenter : BaseScene
         }
     }
 
-    void DecreaseStamina(int amount)
-    {
-
-    }
-
-    void LoadArena()
-    {
-        if (PhotonNetwork.IsMasterClient)
-        {
-            PhotonNetwork.LoadLevel(_arenaName);
-        }
-        else
-        {
-            Debug.LogError("PhotonNetwork : Trying to Load a level but we are not the master Client");
-            return;
-        }
-    }
 
     void Start()
     {
@@ -265,42 +288,61 @@ public class GameCenter : BaseScene
         _roomUI = GameObject.Find("Control Panel").transform.GetComponent<RoomUI>();
 
         if (PhotonNetwork.IsMasterClient)
-        {
-            _roomUI.IsReady = true;
-            _roomUI.SetButtonActive("ready", false);
-            _roomUI.AddButtonEvent("play", LoadArena);
-            _roomUI.UpdateReadyCountText(_roomUI.IsReady);
-            _roomUI.SetButtonInteractable("play", true);
-            _roomUI.SetPlayerStatus("Wait for Other Players...");
-        }
+            _roomUI.ReadyButton.SetActive(false);
         else
+            _roomUI.PlayButton.SetActive(false);
+    }
+
+    void Update()
+    {
+        if(SceneManager.GetActiveScene().name == "[4]Room")
         {
-            _roomUI.SetButtonActive("play", false);
-            _roomUI.AddButtonEvent("ready", Ready);
-            _roomUI.SetPlayerStatus("Unready");
-            photonView.RPC("EnteredRoom", RpcTarget.MasterClient);
+            if (PhotonNetwork.IsMasterClient)
+            {
+                UpdateMasterStatus();
+            }
+            else
+            {
+                if (_roomUI.Ready == true)
+                {
+                    if (_isChecked == false)
+                    {
+                        PlayerReady();
+                        _isChecked = true;
+                    }
+                }
+                else
+                {
+                    if (_isChecked == true)
+                    {
+                        PlayerReady();
+                        _isChecked = false;
+                    }
+                }
+            }
         }
+    }
+
+    void PlayerReady()
+    {
+        photonView.RPC("UpdateCount", RpcTarget.MasterClient, _roomUI.Ready);
     }
 
     void UpdateMasterStatus()
     {
         if (_roomUI.PlayerReadyCount == PhotonNetwork.CurrentRoom.PlayerCount)
-        {
-            _roomUI.SetPlayerStatus("All Players Ready!");
-            _roomUI.SetButtonInteractable("play", true);
-        }
+            _roomUI.CanPlay = true;
         else
-        {
-            _roomUI.SetPlayerStatus("Wait for Other Players...");
-            _roomUI.SetButtonInteractable("play", false);
-        }
+            _roomUI.CanPlay = false;
     }
 
-    void Ready()
+    [PunRPC]
+    void UpdateCount(bool isReady)
     {
-        _roomUI.IsReady = !_roomUI.IsReady;
-        _roomUI.SetPlayerStatus();
-        photonView.RPC("PlayerReady", RpcTarget.MasterClient, _roomUI.IsReady);
+        if (isReady)
+            _roomUI.PlayerReadyCount++;
+        else
+            _roomUI.PlayerReadyCount--;
     }
 
     #endregion
@@ -319,35 +361,4 @@ public class GameCenter : BaseScene
 
     #endregion
 
-    #region PunRPC Methods
-
-    [PunRPC]
-    void EnteredRoom()
-    {
-        _roomUI.UpdateReadyCountText(_roomUI.PlayerReadyCount);
-        UpdateMasterStatus();
-
-        photonView.RPC("UpdateCount", RpcTarget.Others, _roomUI.PlayerReadyCount);
-    }
-
-    [PunRPC]
-    void UpdateCount(int count)
-    {
-        _roomUI.UpdateReadyCountText(count);
-    }
-
-    [PunRPC]
-    void PlayerReady(bool isReady)
-    {
-        _roomUI.UpdateReadyCountText(isReady);
-        UpdateMasterStatus();
-        photonView.RPC("UpdateCount", RpcTarget.Others, _roomUI.PlayerReadyCount);
-    }
-
-    #endregion
-
-    public override void Clear()
-    {
-
-    }
 }
