@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 using System;
 
 
-public class PhotonManager : MonoBehaviourPunCallbacks 
+public class PhotonManager : BaseScene 
 {
     static PhotonManager p_instance;
 
@@ -74,7 +74,12 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-       
+       GameCenter gameCenter = new GameCenter();
+        if(scene.name == "[4]Room")
+        {
+            SceneType = Define.Scene.Lobby;
+            gameCenter.SceneBgmSound("LaxLayoverLOOPING");
+        }
     }
 
     public void UpdateRoomList(List<RoomInfo> list)
@@ -232,4 +237,9 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     }
 
     #endregion
+
+    public override void Clear()
+    {
+    }
+
 }

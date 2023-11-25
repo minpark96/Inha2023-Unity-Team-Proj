@@ -37,7 +37,7 @@ public class SoundManager
             _audioSources[(int)Define.Sound.Bgm].loop = true;
         }
 
-        if (currentSceneName == "Launcher")
+        if (currentSceneName == "[1]Launcher")
         {
             audioClip = Managers.Resource.Load<AudioClip>("Sounds/Bgm/BongoBoogieMenuLOOPING");
             _audioSources[(int)Define.Sound.Bgm].clip = audioClip;

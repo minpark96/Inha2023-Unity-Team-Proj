@@ -33,7 +33,7 @@ public class RoomUI : MonoBehaviour
     public bool ReadyIsClicked;
 
 
-    string _arenaName = "MJTest";
+    string _arenaName = "KNJTest";
 
 
     void Start()
