@@ -47,4 +47,9 @@ public class LauncherUI : MonoBehaviour
         #endif
     }
 
+    public void OnClickShortCut()
+    {
+        PhotonManager.Instance.Connect();
+        SceneManager.LoadSceneAsync("[3]Lobby");
+    }
 }

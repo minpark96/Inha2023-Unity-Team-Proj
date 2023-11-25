@@ -246,6 +246,7 @@ public class PlayerController : MonoBehaviourPun
     float startChargeTime;
     float endChargeTime = 0f;
 
+    float selfDamage = 2000f;
 
     public enum Side
     {
@@ -535,9 +536,12 @@ public class PlayerController : MonoBehaviourPun
 
                     if (Input.GetKeyUp(KeyCode.R))
                     {
+                        Debug.Log("C");
+                        Collider collider = new Collider();
+                        collider = this.GetComponent<Collider>();
+                        _actor.StatusHandler.AddDamage(InteractableObject.Damage.Punch, selfDamage, collider.gameObject);
                         _isRSkillCheck = false;
                         StartCoroutine(ResetCharge());
-                       
                     }
                 }
                 break;
@@ -1354,7 +1358,7 @@ public class PlayerController : MonoBehaviourPun
     public void Stun(Transform pos = null)
     {
         //StatusHandler에서 Stun을 변환을 하면 
-        if (_actor.actorState != Actor.ActorState.Unconscious && pos == null)
+        if (_actor.actorState != Actor.ActorState.Unconscious)
         {
             Debug.Log("Unconscious");
             //한번만 생성하도록 하게 한다.
@@ -1363,7 +1367,7 @@ public class PlayerController : MonoBehaviourPun
             effectObject.transform.position = playerTransform.position;
         }
 
-        effectObject.transform.position = pos.position;
+        //effectObject.transform.position = pos.position;
     }
 
     #endregion
