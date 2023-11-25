@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class GameCenter : MonoBehaviourPunCallbacks
+public class GameCenter : BaseScene
 {
     #region Private Serializable Fields
 
@@ -19,7 +19,7 @@ public class GameCenter : MonoBehaviourPunCallbacks
 
     #region Private Fields
 
-    string _arenaName = "MJTest";
+    string _arenaName = "KNJTest";
     
     string _playerPath = "Ragdoll2";
 
@@ -76,6 +76,7 @@ public class GameCenter : MonoBehaviourPunCallbacks
 
         if (scene.name == _arenaName)
         {
+            SceneType = Define.Scene.Game;
             SceneBgmSound("BigBangBattleLOOPING");
         }
     }
@@ -99,7 +100,7 @@ public class GameCenter : MonoBehaviourPunCallbacks
                 Managers.Sound.Play(audioClip, Define.Sound.Bgm);
             }
 
-            if ("Room" == currentSceneName)
+            if ("[4]Room" == currentSceneName)
             {
                 _audioSources.Stop();
                 AudioClip audioClip = Managers.Resource.Load<AudioClip>($"Sounds/Bgm/{path}");
@@ -360,5 +361,9 @@ public class GameCenter : MonoBehaviourPunCallbacks
     }
 
     #endregion
+
+    public override void Clear()
+    {
+    }
 
 }
