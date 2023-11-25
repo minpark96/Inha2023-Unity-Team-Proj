@@ -6,6 +6,7 @@ using static AniFrameData;
 using static AniAngleData;
 using Photon.Pun;
 using Photon.Realtime;
+using Unity.VisualScripting;
 
 [System.Serializable]
 public class AniFrameData
@@ -513,7 +514,7 @@ public class PlayerController : MonoBehaviourPun
                 break;
             case Define.KeyboardEvent.Press:
                 {
-                    if (Input.GetKey(KeyCode.LeftShift))
+                    if (Input.GetKey(KeyCode.LeftShift) && _actor.actorState!=ActorState.Jump)
                     {
                         _actor.actorState = Actor.ActorState.Run;
                         isRun = true;
@@ -522,14 +523,14 @@ public class PlayerController : MonoBehaviourPun
                 break;
             case Define.KeyboardEvent.Click:
                 {
-                    if (Input.GetKeyUp(KeyCode.LeftShift))
+                    if (Input.GetKeyUp(KeyCode.LeftShift) && isRun == true)
                     {
                         _actor.actorState = Actor.ActorState.Stand;
                         isRun = false;
                     }
 
                     if (Input.GetKeyUp(KeyCode.H))
-                        Heading();
+                        StartCoroutine(Heading());
                     
 
                     if (Input.GetKeyUp(KeyCode.R))
@@ -954,6 +955,20 @@ public class PlayerController : MonoBehaviourPun
                 break;
         }
         return _direction;
+    }
+
+    void AniForceVelocityChange(AniFrameData[] _forceSpeed, int _elementCount, Vector3 _dir)
+    {
+        for (int i = 0; i < _forceSpeed[_elementCount].StandardRigidbodies.Length; i++)
+        {
+            if (_forceSpeed[_elementCount].ForceDirections[i] == RollForce.Zero || _forceSpeed[_elementCount].ForceDirections[i] == RollForce.ZeroReverse)
+                _forceSpeed[_elementCount].ActionRigidbodies[i].AddForce(_dir * _forceSpeed[_elementCount].ForcePowerValues[i], ForceMode.Impulse);
+            else
+            {
+                Vector3 _direction = GetForceDirection(_forceSpeed[_elementCount], i);
+                _forceSpeed[_elementCount].ActionRigidbodies[i].AddForce(_direction * _forceSpeed[_elementCount].ForcePowerValues[i], ForceMode.Impulse);
+            }
+        }
     }
 
     void AniForce(AniFrameData[] _forceSpeed, int _elementCount)
@@ -1412,7 +1427,7 @@ public class PlayerController : MonoBehaviourPun
                 isGrounded = false;
                 for (int i = 0; i < MoveForceJumpAniData.Length; i++)
                 {
-                    AniForce(MoveForceJumpAniData, i, Vector3.up);
+                    AniForceVelocityChange(MoveForceJumpAniData, i, Vector3.up);
                     if (i == 2)
                         AniForce(MoveForceJumpAniData, i, Vector3.down);
                 }
@@ -1450,8 +1465,11 @@ public class PlayerController : MonoBehaviourPun
     #endregion
 
     #region Heading
-    private void Heading()
+    IEnumerator Heading()
     {
+        this._bodyHandler.Head.PartInteractable.damageModifier = InteractableObject.Damage.Headbutt;
+        photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.Head, true);
+
         for (int i = 0; i < HeadingAniData.Length; i++)
         {
             AniForce(HeadingAniData, i);
@@ -1463,6 +1481,10 @@ public class PlayerController : MonoBehaviourPun
             if (i == 1)
                 AniAngleForce(HeadingAngleAniData, i, _moveDir + new Vector3(0f, 0.2f, 0f));
         }
+
+        yield return new WaitForSeconds(1);
+        this._bodyHandler.Head.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+        photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.Head, false);
     }
     #endregion
 
@@ -1769,7 +1791,11 @@ public class PlayerController : MonoBehaviourPun
                 break;
             case Define.BodyPart.Chest: 
                 break;
-            case Define.BodyPart.Head: 
+            case Define.BodyPart.Head:
+                if (isAttack)
+                    this._bodyHandler.Head.PartInteractable.damageModifier = InteractableObject.Damage.Headbutt;
+                else
+                    this._bodyHandler.Head.PartInteractable.damageModifier = InteractableObject.Damage.Default;
                 break;
             case Define.BodyPart.LeftArm: 
                 break;
