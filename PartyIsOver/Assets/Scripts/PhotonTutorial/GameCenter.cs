@@ -17,17 +17,17 @@ public class GameCenter : MonoBehaviourPunCallbacks
 
     #endregion
 
-    #region Private Fields
-
+    string _roomName = "[4]Room";
+   
     string _arenaName = "MJTest";
     
     string _playerPath = "Ragdoll2";
 
     string _roomPlayerPath = "Ragdoll2_Room";
 
+
     bool _isChecked;
 
-    #endregion
 
     #region Public Fields
 
@@ -74,7 +74,7 @@ public class GameCenter : MonoBehaviourPunCallbacks
             InstantiatePlayer();
         }
 
-        if (scene.name == _arenaName)
+        if (scene.name == _roomName)
         {
             SceneBgmSound("BigBangBattleLOOPING");
         }
@@ -99,7 +99,7 @@ public class GameCenter : MonoBehaviourPunCallbacks
                 Managers.Sound.Play(audioClip, Define.Sound.Bgm);
             }
 
-            if ("Room" == currentSceneName)
+            if (_roomName == currentSceneName)
             {
                 _audioSources.Stop();
                 AudioClip audioClip = Managers.Resource.Load<AudioClip>($"Sounds/Bgm/{path}");
@@ -295,7 +295,7 @@ public class GameCenter : MonoBehaviourPunCallbacks
 
     void Update()
     {
-        if(SceneManager.GetActiveScene().name == "[4]Room")
+        if(SceneManager.GetActiveScene().name == _roomName)
         {
             if (PhotonNetwork.IsMasterClient)
             {
