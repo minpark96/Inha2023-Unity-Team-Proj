@@ -489,8 +489,8 @@ public class StatusHandler : MonoBehaviourPun
                 {
                     if (actor.debuffState == Actor.DebuffState.Ice) //상태이상 후에 추가
                         return;
-
-                    actor.actorState = Actor.ActorState.Unconscious;
+                    //맞은애 위치에서 이펙트가 발생해야함
+                    actor.PlayerController.Stun(actor.PlayerController.playerTransform);
                     EnterUnconsciousState();
                 }
             }

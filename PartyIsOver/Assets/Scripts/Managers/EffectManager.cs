@@ -68,10 +68,12 @@ public class EffectManager
 
     public void Play(string path, Vector3 pos, Vector3 normal, Transform parent = null)
     {
-        GameObject instantiatedObject = Managers.Resource.Instantiate($"{pos}");
+        //생성
+        GameObject instantiatedObject = Managers.Resource.Instantiate($"Effects/{path}");
 
         Transform objectTransform = instantiatedObject.transform;
 
+        //로테이션이랑 회전 값 넣어주기
         objectTransform.position = pos;
         objectTransform.rotation = Quaternion.LookRotation(normal);
 

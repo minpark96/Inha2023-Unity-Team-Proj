@@ -106,7 +106,6 @@ public class Actor : MonoBehaviourPun, IPunObservable
         }
         else
         {
-            _audioListener = GetComponentInChildren<AudioListener>();
             // 다른 클라이언트 카메라 끄기
             transform.GetChild(0).gameObject.SetActive(false);
             // 사운드 끄기
@@ -156,15 +155,12 @@ public class Actor : MonoBehaviourPun, IPunObservable
         {
             PlayerController.isStateChange = false;
         }
-
         switch (actorState)
         {
             case ActorState.Dead:
                 break;
             case ActorState.Unconscious:
-                {
-                    Managers.Resource.Instantiate("Effects/Stun_loop");
-                }
+                //PlayerController.Stun();
                 break;
             case ActorState.Stand:
                 PlayerController.Stand();
