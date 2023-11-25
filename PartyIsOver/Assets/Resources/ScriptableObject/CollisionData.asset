@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2ab01b60a65a2504994f63f3a0d91838, type: 3}
+  m_Script: {fileID: 11500000, guid: 2780a7de32341fd4998b5e9002ddade8, type: 3}
   m_Name: CollisionData
   m_EditorClassIdentifier: 
   _objectDamage: 800
