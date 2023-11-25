@@ -29,7 +29,7 @@ public class GameCenter : BaseScene
 
     public static GameObject LocalGameCenterInstance = null;
 
-    private float SpawnPointX = 474.604f;
+    private float SpawnPointX = 484.604f;
     private float SpawnPointY = 17f;
     private float SpawnPointZ = 402.4796f;
 
