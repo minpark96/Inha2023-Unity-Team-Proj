@@ -593,7 +593,6 @@ public class Grab : MonoBehaviourPun
                 break;
         }
 
-
         //item.gameObject.layer = gameObject.layer;
         int itemViewID = item.GetComponent<PhotonView>().ViewID;
         photonView.RPC("SyncGrapItemPosition", RpcTarget.All, itemViewID, targetPosition);
