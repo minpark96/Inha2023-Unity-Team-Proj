@@ -145,37 +145,11 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         if (sceneName == _sceneRoom)
         {
             InstantiateGameCenter();
-            InstantiatePlayerInRoom();
         }
 
         
     }
-    string _roomPlayerPath = "Ragdoll2_Room"; //  "Ragdoll2_Room";
-    void InstantiatePlayerInRoom()
-    {
-        switch (PhotonNetwork.LocalPlayer.ActorNumber)
-        {
-            case 1:
-                Managers.Resource.PhotonNetworkInstantiate(_roomPlayerPath, pos: new Vector3(0f, 0f, 0f));
-                break;
-            case 2:
-                Managers.Resource.PhotonNetworkInstantiate(_roomPlayerPath, pos: new Vector3(0f, 0f, 0f));
-                break;
-            case 3:
-                Managers.Resource.PhotonNetworkInstantiate(_roomPlayerPath, pos: new Vector3(0f, 0f, 0f));
-                break;
-            case 4:
-                Managers.Resource.PhotonNetworkInstantiate(_roomPlayerPath, pos: new Vector3(0f, 0f, 0f));
-                break;
-            case 5:
-                Managers.Resource.PhotonNetworkInstantiate(_roomPlayerPath, pos: new Vector3(0f, 0f, 0f));
-                break;
-            case 6:
-                Managers.Resource.PhotonNetworkInstantiate(_roomPlayerPath, pos: new Vector3(0f, 0f, 0f));
-                break;
-        }
-    }
-
+    
     void InstantiateGameCenter()
     {
         if (GameCenter.LocalGameCenterInstance == null)
