@@ -19,7 +19,7 @@ public class GameCenter : BaseScene
 
     #region Private Fields
 
-    string _arenaName = "PO_Map_SDJ";
+    string _arenaName = "PO_Map_KYH";
     // 프리팹 경로
     string _playerPath = "Ragdoll2";
 
@@ -29,9 +29,9 @@ public class GameCenter : BaseScene
 
     public static GameObject LocalGameCenterInstance = null;
 
-    public float SpawnPointX = 517.5f;
-    public float SpawnPointY = 17f;
-    public float SpawnPointZ = 420f;
+    private float SpawnPointX = 484.604f;
+    private float SpawnPointY = 17f;
+    private float SpawnPointZ = 402.4796f;
 
     // 스폰 포인트 6인 기준
     public List<Vector3> SpawnPoints = new List<Vector3>();

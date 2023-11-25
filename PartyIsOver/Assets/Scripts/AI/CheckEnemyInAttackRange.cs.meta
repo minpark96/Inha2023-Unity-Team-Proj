@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:PartyIsOver/Assets/Plawius-NonConvexCollider/Editor/NonConvexColliderMenus.cs.meta
+guid: 456b9f42496c446889b242039ec8e2bb
+========
 guid: f6ffa43695db6e14f80dd49855770941
+>>>>>>>> d7e064f5662243d28353b20e517b8fd4f42c1cfb:PartyIsOver/Assets/Scripts/AI/CheckEnemyInAttackRange.cs.meta
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
