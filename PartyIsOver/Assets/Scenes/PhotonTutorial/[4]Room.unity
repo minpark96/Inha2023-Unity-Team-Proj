@@ -447,10 +447,12 @@ MonoBehaviour:
   PlayButton: {fileID: 27030158}
   GamePlayOff: {fileID: 21300000, guid: 0ce0be1bdfce1394da992329fafa563f, type: 3}
   GamePlayOn: {fileID: 21300000, guid: ca2f80ad1ba69374f99a88e7883ea493, type: 3}
+  CanPlay: 0
   ReadyButton: {fileID: 664352075}
   ReadyOff: {fileID: 21300000, guid: c1524f6a9f7c2964b8cda08e33c0f881, type: 3}
   ReadyOn: {fileID: 21300000, guid: b60d0f00adefe1d408507f4848bf05a8, type: 3}
   Ready: 0
+  ReadyIsClicked: 0
 --- !u!1 &406684655
 GameObject:
   m_ObjectHideFlags: 0
@@ -698,7 +700,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 620737884}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!20 &620737886
 Camera:
   m_ObjectHideFlags: 0

@@ -68,8 +68,6 @@ public class PhotonManager : BaseScene
     public void LeaveRoom()
     {
         PhotonNetwork.LeaveRoom();
-
-
     }
 
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -195,6 +193,8 @@ public class PhotonManager : BaseScene
 
     public override void OnJoinedRoom()
     {
+        Debug.Log("[OnJoinedRoom]");
+
         if (PhotonNetwork.IsMasterClient)
         {
             StartCoroutine(LoadNextScene(_sceneRoom));

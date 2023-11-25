@@ -67,10 +67,15 @@ public class GameCenter : BaseScene
         }
 
         DontDestroyOnLoad(this.gameObject);
+
+        if (SceneManager.GetActiveScene().name == _roomName)
+            InstantiatePlayerInRoom();
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        //InstantiatePlayerInRoom();
+
         if (scene.name == _arenaName)
         {
             InstantiatePlayer();
@@ -135,6 +140,21 @@ public class GameCenter : BaseScene
                 go = Managers.Resource.PhotonNetworkInstantiate(_roomPlayerPath, pos: SpawnPoints[6]);
                 break;
         }
+
+        PhotonView pv = go.GetComponent<PhotonView>();
+        int viewID = pv.ViewID;
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            ActorViewIDs.Add(viewID);
+            AddActor(viewID);
+        }
+        else
+        {
+            photonView.RPC("RegisterActorInfo", RpcTarget.MasterClient, viewID);
+        }
+
+        Debug.Log("ActorViewIDs.Count: " + ActorViewIDs.Count);
     }
 
     void InstantiatePlayer()
@@ -296,6 +316,8 @@ public class GameCenter : BaseScene
     {
         if(SceneManager.GetActiveScene().name == _roomName)
         {
+            Debug.Log("CurrentRoom PlayerCount : " + PhotonNetwork.CurrentRoom.PlayerCount);
+
             if (PhotonNetwork.IsMasterClient)
             {
                 UpdateMasterStatus();

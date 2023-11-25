@@ -114,7 +114,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
             _audioListener.enabled = false;
         }
 
-        if(SceneManager.GetActiveScene().name != "[4]Room")
+        //if(SceneManager.GetActiveScene().name != "[4]Room")
             DontDestroyOnLoad(this.gameObject);
 
         CameraArm = transform.GetChild(0).GetChild(0);
@@ -127,8 +127,6 @@ public class Actor : MonoBehaviourPun, IPunObservable
         ChangeLayerRecursively(gameObject, LayerCnt++);
 
         _health = _maxHealth;
-
-        Debug.Log("PlayerController: " + PlayerController);
     }
 
     private void ChangeLayerRecursively(GameObject obj, int layer)

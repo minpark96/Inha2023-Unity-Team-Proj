@@ -12254,6 +12254,7 @@ MonoBehaviour:
   RotationsForBalloon: []
   _audioSource: {fileID: 0}
   isAI: 0
+  playerTransform: {fileID: 0}
 --- !u!114 &5878509405600198236
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12290,7 +12291,6 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 1344
-  maxAngle: 90
 --- !u!114 &5878509405600198235
 MonoBehaviour:
   m_ObjectHideFlags: 0
