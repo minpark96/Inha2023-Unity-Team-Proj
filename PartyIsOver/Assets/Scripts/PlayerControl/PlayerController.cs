@@ -1344,7 +1344,7 @@ public class PlayerController : MonoBehaviourPun
     {
         if (playerTransform != null)
         {
-            Stun(playerTransform);
+            //Stun(playerTransform);
             //transform.position = playerTransform.position;
         }
         else

@@ -17,25 +17,27 @@ public class GameCenter : BaseScene
 
     #endregion
 
+    string _roomName = "[4]Room";
+   
     #region Private Fields
 
-    string _arenaName = "KNJTest";
+    string _arenaName = "PO_Map_KYH";
     
     string _playerPath = "Ragdoll2";
 
     string _roomPlayerPath = "Ragdoll2_Room";
 
+
     bool _isChecked;
 
-    #endregion
 
     #region Public Fields
 
     public static GameObject LocalGameCenterInstance = null;
 
-    public float SpawnPointX = 517.5f;
+    public float SpawnPointX = 484.604f;
     public float SpawnPointY = 17f;
-    public float SpawnPointZ = 420f;
+    public float SpawnPointZ = 402.4796f;
 
     // 스폰 포인트 6인 기준
     public List<Vector3> SpawnPoints = new List<Vector3>();
@@ -72,10 +74,6 @@ public class GameCenter : BaseScene
         if (scene.name == _arenaName)
         {
             InstantiatePlayer();
-        }
-
-        if (scene.name == _arenaName)
-        {
             SceneType = Define.Scene.Game;
             SceneBgmSound("BigBangBattleLOOPING");
         }
@@ -100,7 +98,7 @@ public class GameCenter : BaseScene
                 Managers.Sound.Play(audioClip, Define.Sound.Bgm);
             }
 
-            if ("[4]Room" == currentSceneName)
+            if (_roomName == currentSceneName)
             {
                 _audioSources.Stop();
                 AudioClip audioClip = Managers.Resource.Load<AudioClip>($"Sounds/Bgm/{path}");
@@ -296,7 +294,7 @@ public class GameCenter : BaseScene
 
     void Update()
     {
-        if(SceneManager.GetActiveScene().name == "[4]Room")
+        if(SceneManager.GetActiveScene().name == _roomName)
         {
             if (PhotonNetwork.IsMasterClient)
             {
@@ -365,5 +363,7 @@ public class GameCenter : BaseScene
     public override void Clear()
     {
     }
+
+    #endregion
 
 }
