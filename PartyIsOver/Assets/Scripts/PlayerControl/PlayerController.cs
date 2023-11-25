@@ -1344,8 +1344,7 @@ public class PlayerController : MonoBehaviourPun
     {
         if (playerTransform != null)
         {
-            Debug.Log(playerTransform);
-            Stun(playerTransform);
+            //Stun(playerTransform);
             //transform.position = playerTransform.position;
         }
         else
@@ -1365,7 +1364,6 @@ public class PlayerController : MonoBehaviourPun
         }
 
         effectObject.transform.position = pos.position;
-        Debug.Log("!pos");
     }
 
     #endregion

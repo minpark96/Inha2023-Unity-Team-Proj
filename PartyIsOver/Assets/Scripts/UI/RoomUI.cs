@@ -33,7 +33,7 @@ public class RoomUI : MonoBehaviour
     public bool ReadyIsClicked;
 
 
-    string _arenaName = "PO_Map_SDJ";
+    string _arenaName = "PO_Map_KYH";
 
 
     void Start()
