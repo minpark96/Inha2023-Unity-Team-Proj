@@ -24,11 +24,13 @@ public class RoomUI : MonoBehaviour
     public GameObject PlayButton;
     public Sprite GamePlayOff;
     public Sprite GamePlayOn;
+    public bool CanPlay;
 
     public GameObject ReadyButton;
     public Sprite ReadyOff;
     public Sprite ReadyOn;
     public bool Ready;
+    public bool ReadyIsClicked;
 
 
     string _arenaName = "MJTest";
@@ -37,57 +39,71 @@ public class RoomUI : MonoBehaviour
     void Start()
     {
         Init();
+        Managers.Input.KeyboardAction -= OnKeyboardEvent;
+        Managers.Input.KeyboardAction += OnKeyboardEvent;
+    }
+
+    void OnKeyboardEvent(Define.KeyboardEvent evt)
+    {
+        switch (evt)
+        {
+            case Define.KeyboardEvent.Click:
+                {
+                    if (Input.GetKeyDown(KeyCode.F5))
+                    {
+                        OnClickReady();
+                    }
+
+                    if(Input.GetKeyDown(KeyCode.Tab))
+                    {
+                        OnClickSkillChange();
+                    }
+
+                    if (Input.GetKeyDown(KeyCode.F6))
+                    {
+                        OnClickLeaveRoom();
+                    }
+                }
+                break;
+
+            case Define.KeyboardEvent.PointerUp:
+                break;
+        }
     }
 
     void Update()
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            if (PlayerReadyCount == PhotonNetwork.CurrentRoom.PlayerCount)
-            {
+            if (CanPlay)
                 PlayButton.GetComponentInChildren<Image>().sprite = GamePlayOn;
-
-                if (Input.GetKeyDown(KeyCode.F5))
-                {
-                    PhotonNetwork.LoadLevel(_arenaName);
-                }
-            }
             else
                 PlayButton.GetComponentInChildren<Image>().sprite = GamePlayOff;
         }
-        else
-        {
-            if (Input.GetKeyDown(KeyCode.F5))
-            {
-                Ready = !Ready;
-
-                if (Ready)
-                    ReadyButton.GetComponentInChildren<Image>().sprite = ReadyOn;
-                else
-                    ReadyButton.GetComponentInChildren<Image>().sprite = ReadyOff;
-
-                if (Ready)
-                    PlayerReadyCount++;
-                else
-                    PlayerReadyCount--;
-            }
-        }
-
-        if(Input.GetKeyDown(KeyCode.Tab))
-        {
-            OnClickSkillChange();
-        }
-
-        if(Input.GetKeyDown(KeyCode.Escape))
-        {
-            OnClickLeaveRoom();
-        }
-
     }
 
     void Init()
     {
         _playerNameText.text = PhotonNetwork.NickName;
+    }
+
+
+    public void OnClickReady()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            if(CanPlay)
+                PhotonNetwork.LoadLevel(_arenaName);
+        }
+        else
+        {
+            Ready = !Ready;
+
+            if (Ready)
+                ReadyButton.GetComponentInChildren<Image>().sprite = ReadyOn;
+            else
+                ReadyButton.GetComponentInChildren<Image>().sprite = ReadyOff;
+        }
     }
 
 

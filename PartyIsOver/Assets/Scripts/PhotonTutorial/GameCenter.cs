@@ -25,6 +25,8 @@ public class GameCenter : MonoBehaviourPunCallbacks
 
     string _roomPlayerPath = "Ragdoll2_Room";
 
+    bool _isChecked;
+
     #endregion
 
     #region Public Fields
@@ -54,19 +56,15 @@ public class GameCenter : MonoBehaviourPunCallbacks
         SpawnPoints.Add(new Vector3(SpawnPointX + -2.5f, SpawnPointY, SpawnPointZ + -4.33f));
         SpawnPoints.Add(new Vector3(SpawnPointX + 2.5f, SpawnPointY, SpawnPointZ + -4.33f));
 
-
         SpawnPoints.Add(new Vector3(0f,0f,0f));
 
-        
 
         if (photonView.IsMine)
         {
             LocalGameCenterInstance = this.gameObject;
         }
+
         DontDestroyOnLoad(this.gameObject);
-
-
-        //InstantiatePlayer();
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -113,6 +111,32 @@ public class GameCenter : MonoBehaviourPunCallbacks
         }
     }
 
+    void InstantiatePlayerInRoom()
+    {
+        GameObject go = null;
+
+        switch (PhotonNetwork.LocalPlayer.ActorNumber)
+        {
+            case 1:
+                go = Managers.Resource.PhotonNetworkInstantiate(_roomPlayerPath, pos: SpawnPoints[6]);
+                break;
+            case 2:
+                go = Managers.Resource.PhotonNetworkInstantiate(_roomPlayerPath, pos: SpawnPoints[6]);
+                break;
+            case 3:
+                go = Managers.Resource.PhotonNetworkInstantiate(_roomPlayerPath, pos: SpawnPoints[6]);
+                break;
+            case 4:
+                go = Managers.Resource.PhotonNetworkInstantiate(_roomPlayerPath, pos: SpawnPoints[6]);
+                break;
+            case 5:
+                go = Managers.Resource.PhotonNetworkInstantiate(_roomPlayerPath, pos: SpawnPoints[6]);
+                break;
+            case 6:
+                go = Managers.Resource.PhotonNetworkInstantiate(_roomPlayerPath, pos: SpawnPoints[6]);
+                break;
+        }
+    }
 
     void InstantiatePlayer()
     {
@@ -126,11 +150,9 @@ public class GameCenter : MonoBehaviourPunCallbacks
             {
                 case 1:
                     go = Managers.Resource.PhotonNetworkInstantiate(_playerPath, pos: SpawnPoints[0]);
-                    //go = Managers.Resource.PhotonNetworkInstantiate(_roomPlayerPath, pos: SpawnPoints[6]);
                     break;
                 case 2:
                     go = Managers.Resource.PhotonNetworkInstantiate(_playerPath, pos: SpawnPoints[1]);
-                    //go = Managers.Resource.PhotonNetworkInstantiate(_roomPlayerPath, pos: SpawnPoints[6]);
                     break;
                 case 3:
                     go = Managers.Resource.PhotonNetworkInstantiate(_playerPath, pos: SpawnPoints[2]);
@@ -158,6 +180,8 @@ public class GameCenter : MonoBehaviourPunCallbacks
             {
                 photonView.RPC("RegisterActorInfo", RpcTarget.MasterClient, viewID);
             }
+
+            Debug.Log("ActorViewIDs.Count: " + ActorViewIDs.Count);
         }
     }
 
@@ -240,7 +264,6 @@ public class GameCenter : MonoBehaviourPunCallbacks
             Actor actor = targetPV.transform.GetComponent<Actor>();
             Actors.Add(actor);
 
-
             if (_roomUI.SkillChange)
                 actor.PlayerController.isMeowNyangPunch = true;
             else
@@ -265,23 +288,62 @@ public class GameCenter : MonoBehaviourPunCallbacks
         _roomUI = GameObject.Find("Control Panel").transform.GetComponent<RoomUI>();
 
         if (PhotonNetwork.IsMasterClient)
-        {
-            Debug.Log("Master 입장");
             _roomUI.ReadyButton.SetActive(false);
-        }
         else
-        {
-            Debug.Log("Client 입장");
             _roomUI.PlayButton.SetActive(false);
-        }
     }
 
     void Update()
     {
-        Debug.Log("GameCenter : " + _roomUI.PlayerReadyCount);
+        if(SceneManager.GetActiveScene().name == "[4]Room")
+        {
+            if (PhotonNetwork.IsMasterClient)
+            {
+                UpdateMasterStatus();
+            }
+            else
+            {
+                if (_roomUI.Ready == true)
+                {
+                    if (_isChecked == false)
+                    {
+                        PlayerReady();
+                        _isChecked = true;
+                    }
+                }
+                else
+                {
+                    if (_isChecked == true)
+                    {
+                        PlayerReady();
+                        _isChecked = false;
+                    }
+                }
+            }
+        }
     }
 
+    void PlayerReady()
+    {
+        photonView.RPC("UpdateCount", RpcTarget.MasterClient, _roomUI.Ready);
+    }
 
+    void UpdateMasterStatus()
+    {
+        if (_roomUI.PlayerReadyCount == PhotonNetwork.CurrentRoom.PlayerCount)
+            _roomUI.CanPlay = true;
+        else
+            _roomUI.CanPlay = false;
+    }
+
+    [PunRPC]
+    void UpdateCount(bool isReady)
+    {
+        if (isReady)
+            _roomUI.PlayerReadyCount++;
+        else
+            _roomUI.PlayerReadyCount--;
+    }
 
     #endregion
 
