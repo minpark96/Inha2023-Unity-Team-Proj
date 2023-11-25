@@ -74,11 +74,14 @@ public class GameCenter : BaseScene
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        //InstantiatePlayerInRoom();
-
         if (scene.name == _arenaName)
         {
             InstantiatePlayer();
+            
+            Debug.Log("InstantiatePlayer");
+            PhotonNetwork.Destroy(temp[0]);
+            Debug.Log(temp.Count);
+
             SceneType = Define.Scene.Game;
             SceneBgmSound("BigBangBattleLOOPING");
         }
@@ -115,6 +118,8 @@ public class GameCenter : BaseScene
         }
     }
 
+    List<GameObject> temp = new List<GameObject>();
+
     void InstantiatePlayerInRoom()
     {
         GameObject go = null;
@@ -123,6 +128,7 @@ public class GameCenter : BaseScene
         {
             case 1:
                 go = Managers.Resource.PhotonNetworkInstantiate(_roomPlayerPath, pos: SpawnPoints[6]);
+                temp.Add(go);
                 break;
             case 2:
                 go = Managers.Resource.PhotonNetworkInstantiate(_roomPlayerPath, pos: SpawnPoints[6]);
@@ -140,21 +146,6 @@ public class GameCenter : BaseScene
                 go = Managers.Resource.PhotonNetworkInstantiate(_roomPlayerPath, pos: SpawnPoints[6]);
                 break;
         }
-
-        PhotonView pv = go.GetComponent<PhotonView>();
-        int viewID = pv.ViewID;
-
-        if (PhotonNetwork.IsMasterClient)
-        {
-            ActorViewIDs.Add(viewID);
-            AddActor(viewID);
-        }
-        else
-        {
-            photonView.RPC("RegisterActorInfo", RpcTarget.MasterClient, viewID);
-        }
-
-        Debug.Log("ActorViewIDs.Count: " + ActorViewIDs.Count);
     }
 
     void InstantiatePlayer()
