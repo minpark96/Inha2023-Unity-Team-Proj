@@ -21,7 +21,7 @@ public class GameCenter : BaseScene
    
     #region Private Fields
 
-    string _arenaName = "KNJTest";
+    string _arenaName = "PO_Map_KYH";
     
     string _playerPath = "Ragdoll2";
 
@@ -35,9 +35,9 @@ public class GameCenter : BaseScene
 
     public static GameObject LocalGameCenterInstance = null;
 
-    public float SpawnPointX = 517.5f;
+    public float SpawnPointX = 484.604f;
     public float SpawnPointY = 17f;
-    public float SpawnPointZ = 420f;
+    public float SpawnPointZ = 402.4796f;
 
     // 스폰 포인트 6인 기준
     public List<Vector3> SpawnPoints = new List<Vector3>();
@@ -74,10 +74,6 @@ public class GameCenter : BaseScene
         if (scene.name == _arenaName)
         {
             InstantiatePlayer();
-        }
-
-        if (scene.name == _roomName)
-        {
             SceneType = Define.Scene.Game;
             SceneBgmSound("BigBangBattleLOOPING");
         }
