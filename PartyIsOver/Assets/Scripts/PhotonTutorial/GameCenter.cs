@@ -19,7 +19,7 @@ public class GameCenter : BaseScene
 
     #region Private Fields
 
-    string _arenaName = "KNJTest";
+    string _arenaName = "PO_Map_SDJ";
     
     string _playerPath = "Ragdoll2";
 
