@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:PartyIsOver/Assets/Plawius-NonConvexCollider/API/NonConvexColliderInterop.cs.meta
+guid: 17c2334c23990d64babab6148a612402
+========
 guid: f7ef0f788d273cb4d846a856aad6af3f
+>>>>>>>> d7e064f5662243d28353b20e517b8fd4f42c1cfb:PartyIsOver/Assets/Scripts/PlayerControl/DrunkState.cs.meta
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2

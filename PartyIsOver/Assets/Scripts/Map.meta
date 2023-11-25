@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:PartyIsOver/Assets/Plawius-NonConvexCollider.meta
+guid: e2f885cbbfd372f47880abaf15a0b71a
+========
 guid: 28266af602116a345a44c81ce93b635d
+>>>>>>>> d7e064f5662243d28353b20e517b8fd4f42c1cfb:PartyIsOver/Assets/Scripts/Map.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

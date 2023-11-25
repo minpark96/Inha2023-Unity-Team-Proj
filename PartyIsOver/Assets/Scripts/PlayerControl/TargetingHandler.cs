@@ -6,7 +6,7 @@ public class TargetingHandler : MonoBehaviour
 {
     private float _detectionRadius = 1.5f;
     public LayerMask layerMask;
-    public float maxAngle = 130f; // 정면에서 좌우로 해당 각도만큼 서치
+    private float maxAngle = 110f; // 정면에서 좌우로 해당 각도만큼 서치
 
     Collider _nearestCollider;
     private float _nearestDistance;

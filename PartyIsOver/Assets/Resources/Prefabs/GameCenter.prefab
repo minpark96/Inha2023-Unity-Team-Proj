@@ -46,9 +46,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _roomUI: {fileID: 0}
-  SpawnPointX: 517.5
-  SpawnPointY: 17
-  SpawnPointZ: 420
   SpawnPoints: []
   ActorViewIDs: 
   Actors: []

@@ -17,8 +17,8 @@ public class StatusHandler : MonoBehaviourPun
     private float _healthDamage;
     private bool _isDead;
 
-
-    private float _knockoutThreshold=5f;
+    
+    private float _knockoutThreshold=15f;
 
     // 초기 관절값
     private List<float> _xPosSpringAry = new List<float>();
@@ -489,16 +489,24 @@ public class StatusHandler : MonoBehaviourPun
                 }
             }
         }
-
+        photonView.RPC("InvulnerableState", RpcTarget.All, 0.5f);
         actor.Health = Mathf.Clamp(tempHealth, 0f, actor.MaxHealth);
 
         _healthDamage = 0f;
+    }
+    [PunRPC]
+    IEnumerator InvulnerableState(float time)
+    {
+        invulnerable = true;
+        yield return new WaitForSeconds(time);
+        invulnerable = false;
     }
 
     void KillPlayer()
     {
         StartCoroutine(ResetBodySpring());
         actor.actorState = Actor.ActorState.Dead;
+        _isDead = true;
     }
 
     void EnterUnconsciousState()

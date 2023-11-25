@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:PartyIsOver/Assets/GeneratedConvexColliders.meta
+guid: 237c43ff12cc9f043bf542808eab20b2
+========
 guid: a125c9d82d24e154fa4173a463b6fec4
+>>>>>>>> d7e064f5662243d28353b20e517b8fd4f42c1cfb:PartyIsOver/Assets/Scripts/AI.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

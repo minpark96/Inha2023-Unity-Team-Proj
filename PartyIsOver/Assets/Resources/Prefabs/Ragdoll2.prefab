@@ -11766,14 +11766,14 @@ MonoBehaviour:
     - {fileID: 5856379624502544924}
     ForceDirections: 02000000
     ForcePowerValues:
-    - 50
+    - 100
   - StandardRigidbodies:
     - {fileID: 5856379624502544924}
     ActionRigidbodies:
     - {fileID: 5855867809452644878}
     ForceDirections: 02000000
     ForcePowerValues:
-    - 50
+    - 100
   HeadingAngleAniData:
   - StandardRigidbodies:
     - {fileID: 5856379624502544924}
@@ -12289,8 +12289,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   layerMask:
     serializedVersion: 2
-    m_Bits: 1344
-  maxAngle: 90
+    m_Bits: 3328
 --- !u!114 &5878509405600198235
 MonoBehaviour:
   m_ObjectHideFlags: 0
