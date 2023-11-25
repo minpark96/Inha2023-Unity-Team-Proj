@@ -106,7 +106,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
         }
         else
         {
-            _audioListener = GetComponentInChildren<AudioListener>();
+            //_audioListener = GetComponentInChildren<AudioListener>();
             // 다른 클라이언트 카메라 끄기
             transform.GetChild(0).gameObject.SetActive(false);
             // 사운드 끄기

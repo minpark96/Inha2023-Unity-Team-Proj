@@ -236,6 +236,7 @@ public class Grab : MonoBehaviourPun
         }
     }
 
+    [PunRPC]
     public void GrabPose()
     {
         if(EquipItem.GetComponent<Item>().ItemData.ItemType == ItemType.Ranged)
@@ -282,14 +283,14 @@ public class Grab : MonoBehaviourPun
         }
 
 
-        if (_leftSearchTarget != null)
+        if (LeftGrabObject != null)
         {
-            leftObjViewID = _leftSearchTarget.transform.GetComponent<PhotonView>().ViewID;
+            leftObjViewID = LeftGrabObject.transform.GetComponent<PhotonView>().ViewID;
         }
         
-        if (_leftSearchTarget != null)
+        if (RightGrabObject != null)
         {
-            rightObjViewID = _rightSearchTarget.transform.GetComponent<PhotonView>().ViewID;
+            rightObjViewID = RightGrabObject.transform.GetComponent<PhotonView>().ViewID;
         }
 
         photonView.RPC("DestroyJoint", RpcTarget.All, leftObjViewID, rightObjViewID);
@@ -591,10 +592,20 @@ public class Grab : MonoBehaviourPun
                     targetPosition = _jointChest.transform.forward;
                 break;
         }
-        //item.gameObject.layer = gameObject.layer;
-        item.transform.right = -targetPosition.normalized;
 
-        GrabPose();
+
+        //item.gameObject.layer = gameObject.layer;
+        int itemViewID = item.GetComponent<PhotonView>().ViewID;
+        photonView.RPC("SyncGrapItemPosition", RpcTarget.All, itemViewID, targetPosition);
+        photonView.RPC("GrabPose", RpcTarget.All);
+    }
+
+    [PunRPC]
+    void SyncGrapItemPosition(int itemViewID, Vector3 targetPosition)
+    {
+        Transform item = PhotonNetwork.GetPhotonView(itemViewID).transform;
+        item.transform.right = -targetPosition.normalized;
+        Debug.Log("SyncGrapItemPosition");
     }
 
     [PunRPC]
