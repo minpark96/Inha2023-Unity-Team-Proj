@@ -67,6 +67,9 @@ public class GameCenter : BaseScene
         }
 
         DontDestroyOnLoad(this.gameObject);
+
+        if (SceneManager.GetActiveScene().name == _roomName)
+            InstantiatePlayerInRoom();
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -74,6 +77,11 @@ public class GameCenter : BaseScene
         if (scene.name == _arenaName)
         {
             InstantiatePlayer();
+            
+            Debug.Log("InstantiatePlayer");
+            PhotonNetwork.Destroy(temp[0]);
+            Debug.Log(temp.Count);
+
             SceneType = Define.Scene.Game;
             SceneBgmSound("BigBangBattleLOOPING");
         }
@@ -110,6 +118,8 @@ public class GameCenter : BaseScene
         }
     }
 
+    List<GameObject> temp = new List<GameObject>();
+
     void InstantiatePlayerInRoom()
     {
         GameObject go = null;
@@ -118,6 +128,7 @@ public class GameCenter : BaseScene
         {
             case 1:
                 go = Managers.Resource.PhotonNetworkInstantiate(_roomPlayerPath, pos: SpawnPoints[6]);
+                temp.Add(go);
                 break;
             case 2:
                 go = Managers.Resource.PhotonNetworkInstantiate(_roomPlayerPath, pos: SpawnPoints[6]);
@@ -296,6 +307,8 @@ public class GameCenter : BaseScene
     {
         if(SceneManager.GetActiveScene().name == _roomName)
         {
+            Debug.Log("CurrentRoom PlayerCount : " + PhotonNetwork.CurrentRoom.PlayerCount);
+
             if (PhotonNetwork.IsMasterClient)
             {
                 UpdateMasterStatus();
