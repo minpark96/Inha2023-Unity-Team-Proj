@@ -128,7 +128,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
         _health = _maxHealth;
 
-        Debug.Log("PlayerController: " + PlayerController);
+        //Debug.Log("PlayerController: " + PlayerController);
     }
 
     private void ChangeLayerRecursively(GameObject obj, int layer)

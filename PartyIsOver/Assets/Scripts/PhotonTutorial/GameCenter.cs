@@ -180,7 +180,7 @@ public class GameCenter : BaseScene
                 photonView.RPC("RegisterActorInfo", RpcTarget.MasterClient, viewID);
             }
 
-            Debug.Log("ActorViewIDs.Count: " + ActorViewIDs.Count);
+            //Debug.Log("ActorViewIDs.Count: " + ActorViewIDs.Count);
         }
     }
 

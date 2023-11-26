@@ -139,7 +139,7 @@ public class StatusHandler : MonoBehaviourPun
         {
             // 상태이상 체크
             DebuffCheck(type);
-            DebuffAction();
+            DebuffAction(); 
         }
 
         actor.StatusChangeEventInvoke();
@@ -447,17 +447,30 @@ public class StatusHandler : MonoBehaviourPun
 
         actor.StatusChangeEventInvoke();
     }
+    Transform playerTransform;
+    GameObject effectObject;
+
     IEnumerator Stun(float delay)
     {
         _hasStun = true;
         yield return new WaitForSeconds(delay);
         yield return RestoreBodySpring();
 
+        GameObject go = GameObject.Find("Stun_loop");
+        Managers.Resource.Destroy(go);
+
         _hasStun = false;
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Stun;
 
         actor.StatusChangeEventInvoke();
+    }
+
+    void Stun(Transform pos = null)
+    {
+        playerTransform = transform.Find("GreenHip").GetComponent<Transform>();
+        effectObject = Managers.Resource.Instantiate("Effects/Stun_loop");
+        effectObject.transform.position = playerTransform.position;
     }
 
     public void UpdateHealth()
@@ -489,8 +502,9 @@ public class StatusHandler : MonoBehaviourPun
                 {
                     if (actor.debuffState == Actor.DebuffState.Ice) //상태이상 후에 추가
                         return;
+                    actor.actorState = Actor.ActorState.Unconscious;
+                    Stun(playerTransform);
                     //맞은애 위치에서 이펙트가 발생해야함
-                    actor.PlayerController.Stun(actor.PlayerController.playerTransform);
                     EnterUnconsciousState();
                 }
             }

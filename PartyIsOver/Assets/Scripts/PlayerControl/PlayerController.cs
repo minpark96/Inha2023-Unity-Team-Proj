@@ -241,7 +241,6 @@ public class PlayerController : MonoBehaviourPun
     Transform[] _children;
     private Dictionary<Transform, Quaternion> _initialRotations = new Dictionary<Transform, Quaternion>();
 
-    public Transform playerTransform;
 
     float startChargeTime;
     float endChargeTime = 0f;
@@ -287,7 +286,6 @@ public class PlayerController : MonoBehaviourPun
 
     void Init()
     {
-        playerTransform = transform.Find("GreenHip").GetComponent<Transform>();
 
         _bodyHandler = GetComponent<BodyHandler>();
         targetingHandler = GetComponent<TargetingHandler>();
@@ -536,10 +534,6 @@ public class PlayerController : MonoBehaviourPun
 
                     if (Input.GetKeyUp(KeyCode.R))
                     {
-                        Debug.Log("C");
-                        Collider collider = new Collider();
-                        collider = this.GetComponent<Collider>();
-                        _actor.StatusHandler.AddDamage(InteractableObject.Damage.Punch, selfDamage, collider.gameObject);
                         _isRSkillCheck = false;
                         StartCoroutine(ResetCharge());
                     }
@@ -1346,30 +1340,14 @@ public class PlayerController : MonoBehaviourPun
     
     private void LateUpdate()
     {
-        if (playerTransform != null)
+        /*if (playerTransform != null)
         {
             //Stun(playerTransform);
             //transform.position = playerTransform.position;
         }
         else
-            Debug.Log("LateUpdate : null");
+            Debug.Log("LateUpdate : null");*/
     }
-    GameObject effectObject;
-    public void Stun(Transform pos = null)
-    {
-        //StatusHandler에서 Stun을 변환을 하면 
-        if (_actor.actorState != Actor.ActorState.Unconscious)
-        {
-            Debug.Log("Unconscious");
-            //한번만 생성하도록 하게 한다.
-            _actor.actorState = Actor.ActorState.Unconscious;
-            effectObject = Managers.Resource.Instantiate("Stun_loop");
-            effectObject.transform.position = playerTransform.position;
-        }
-
-        //effectObject.transform.position = pos.position;
-    }
-
     #endregion
 
     #region Stand
@@ -1396,8 +1374,6 @@ public class PlayerController : MonoBehaviourPun
             AlignToVector(_bodyHandler.Waist.PartRigidbody, _bodyHandler.Waist.transform.forward, Vector3.up, 0.1f, 4f * 1);
             AlignToVector(_bodyHandler.Hip.PartRigidbody, _bodyHandler.Hip.transform.forward, Vector3.up, 0.1f, 3f * 1);
         }
-        GameObject go = GameObject.Find("Stun_loop");
-        Managers.Resource.Destroy(go);
     }
     #endregion
 
