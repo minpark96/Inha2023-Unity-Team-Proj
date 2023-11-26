@@ -71,7 +71,7 @@ public class ResourceManager
             return;
         }
 
-        Object.Destroy(go);
+        PhotonNetwork.Destroy(go);
     }
 
 }
