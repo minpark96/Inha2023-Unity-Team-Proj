@@ -1336,20 +1336,6 @@ public class PlayerController : MonoBehaviourPun
 
     #endregion
 
-    #region Stun
-    
-    private void LateUpdate()
-    {
-        /*if (playerTransform != null)
-        {
-            //Stun(playerTransform);
-            //transform.position = playerTransform.position;
-        }
-        else
-            Debug.Log("LateUpdate : null");*/
-    }
-    #endregion
-
     #region Stand
     public void Stand()
     {

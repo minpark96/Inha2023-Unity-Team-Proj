@@ -40,7 +40,9 @@ public class StatusHandler : MonoBehaviourPun
     private bool _hasShock;
     private bool _hasStun;
 
-   
+    Transform playerTransform;
+    GameObject effectObject;
+
     [Header("Debuff Duration")]
     [SerializeField]
     private float _powerUpTime;
@@ -66,6 +68,7 @@ public class StatusHandler : MonoBehaviourPun
 
     void Start()
     {
+        playerTransform = transform.Find("GreenHip").GetComponent<Transform>();
         actor = transform.GetComponent<Actor>();
         _maxSpeed = actor.PlayerController.RunSpeed;
 
@@ -98,7 +101,7 @@ public class StatusHandler : MonoBehaviourPun
 
     private void LateUpdate()
     {
-        //if( )
+        MoveEffect(playerTransform);
     }
 
     private void OnGUI()
@@ -447,8 +450,7 @@ public class StatusHandler : MonoBehaviourPun
 
         actor.StatusChangeEventInvoke();
     }
-    Transform playerTransform;
-    GameObject effectObject;
+    
 
     IEnumerator Stun(float delay)
     {
@@ -466,11 +468,16 @@ public class StatusHandler : MonoBehaviourPun
         actor.StatusChangeEventInvoke();
     }
 
-    void Stun(Transform pos = null)
+    void StunCreate(Transform pos = null)
     {
-        playerTransform = transform.Find("GreenHip").GetComponent<Transform>();
-        effectObject = Managers.Resource.Instantiate("Effects/Stun_loop");
-        effectObject.transform.position = playerTransform.position;
+        //Effects/Stun_loop 생성 
+        effectObject = Managers.Resource.PhotonNetworkInstantiate("Effects/Stun_loop");
+        effectObject.transform.position = pos.position;
+    }
+
+    void MoveEffect(Transform pos)
+    {
+        effectObject.transform.position = pos.position;
     }
 
     public void UpdateHealth()
@@ -503,8 +510,7 @@ public class StatusHandler : MonoBehaviourPun
                     if (actor.debuffState == Actor.DebuffState.Ice) //상태이상 후에 추가
                         return;
                     actor.actorState = Actor.ActorState.Unconscious;
-                    Stun(playerTransform);
-                    //맞은애 위치에서 이펙트가 발생해야함
+                    StunCreate(playerTransform);
                     EnterUnconsciousState();
                 }
             }
