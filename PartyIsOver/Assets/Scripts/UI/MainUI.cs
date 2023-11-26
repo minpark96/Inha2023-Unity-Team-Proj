@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
+using UnityEngine.SceneManagement;
+
 
 
 public class MainUI : MonoBehaviour
@@ -65,6 +67,8 @@ public class MainUI : MonoBehaviour
             _gameStartFlag = false;
             _loadingFlag = false;
             PhotonManager.Instance.Connect();
+            PhotonManager.Instance.LoadNextScene("[3]Lobby");
+            SceneManager.LoadSceneAsync("[3]Lobby");
         }
     }
 

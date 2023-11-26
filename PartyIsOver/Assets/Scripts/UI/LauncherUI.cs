@@ -51,6 +51,8 @@ public class LauncherUI : MonoBehaviour
     public void OnClickShortcut()
     {
         PhotonManager.Instance.Connect();
+        PhotonManager.Instance.LoadNextScene("[3]Lobby");
         SceneManager.LoadSceneAsync("[3]Lobby");
     }
+
 }

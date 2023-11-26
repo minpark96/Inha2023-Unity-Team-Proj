@@ -28,7 +28,11 @@ public class PhotonManager : BaseScene
     public static PhotonManager Instance { get { return p_instance; } }
     public LobbyUI LobbyUI;
 
-
+    private void Update()
+    {
+        Debug.Log("InLobby: " + PhotonNetwork.InLobby);
+        Debug.Log("InRoom: " + PhotonNetwork.InRoom);
+    }
     void Awake()
     {
         Init();
@@ -68,6 +72,10 @@ public class PhotonManager : BaseScene
     public void LeaveRoom()
     {
         PhotonNetwork.LeaveRoom();
+
+        Connect();
+        StartCoroutine(LoadNextScene(_sceneLobby));
+        SceneManager.LoadSceneAsync("[3]Lobby");
     }
 
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -136,7 +144,7 @@ public class PhotonManager : BaseScene
 
 
 
-    IEnumerator LoadNextScene(string sceneName)
+    public IEnumerator LoadNextScene(string sceneName)
     {
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
 
@@ -170,6 +178,7 @@ public class PhotonManager : BaseScene
         if (IsConnecting)
         {
             IsConnecting = false;
+            PhotonNetwork.JoinLobby();
         }
     }
 
@@ -186,9 +195,6 @@ public class PhotonManager : BaseScene
     public override void OnJoinedLobby()
     {
         Debug.Log("[JoinLobby()] Load Lobby Scene");
-
-        //if (SceneManager.GetActiveScene().name != _sceneLobby)
-            StartCoroutine(LoadNextScene(_sceneLobby));
     }
 
     public override void OnJoinedRoom()
@@ -204,14 +210,8 @@ public class PhotonManager : BaseScene
     public override void OnLeftRoom()
     {
         Debug.Log("[OnLeftRoom()]");
-
-        base.OnLeftRoom();
-
-        Connect();
-
-        StartCoroutine(LoadNextScene(_sceneLobby));
-        //SceneManager.LoadScene(_sceneLobby);
     }
+
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
         if (Time.time >= _nextUpdateTime)

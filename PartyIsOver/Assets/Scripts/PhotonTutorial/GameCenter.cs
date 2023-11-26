@@ -68,8 +68,8 @@ public class GameCenter : BaseScene
 
         DontDestroyOnLoad(this.gameObject);
 
-        if (SceneManager.GetActiveScene().name == _roomName)
-            InstantiatePlayerInRoom();
+        //if (SceneManager.GetActiveScene().name == _roomName)
+        //    InstantiatePlayerInRoom();
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)

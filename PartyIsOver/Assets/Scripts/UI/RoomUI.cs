@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class RoomUI : MonoBehaviour
 {
@@ -109,8 +110,15 @@ public class RoomUI : MonoBehaviour
 
     public void OnClickLeaveRoom()
     {
-        PhotonManager.Instance.LeaveRoom();
+        //PhotonManager.Instance.LeaveRoom();
+
+        PhotonNetwork.LeaveRoom();
+
+        PhotonManager.Instance.Connect();
+        PhotonManager.Instance.LoadNextScene("[3]Lobby");
+        SceneManager.LoadSceneAsync("[3]Lobby");
     }
+
     public void OnClickSkillChange()
     {
         SkillChange = !SkillChange;
