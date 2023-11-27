@@ -18,9 +18,9 @@ public class GameCenter : BaseScene
 
     #endregion
 
-    string _roomName = "[4]Room";
-   
     #region Private Fields
+
+    string _roomName = "[4]Room";
 
     string _arenaName = "PO_Map_KYH";
     
@@ -30,9 +30,9 @@ public class GameCenter : BaseScene
 
     string _ghostPath = "Spook";
 
-
     bool _isChecked;
 
+    #endregion
 
     #region Public Fields
 
@@ -41,12 +41,14 @@ public class GameCenter : BaseScene
     public float SpawnPointX = 484.604f;
     public float SpawnPointY = 17f;
     public float SpawnPointZ = 402.4796f;
+    public int AlivePlayerCounts = 1;
 
     // 스폰 포인트 6인 기준
     public List<Vector3> SpawnPoints = new List<Vector3>();
 
     public List<int> ActorViewIDs = new List<int>();
     public List<Actor> Actors = new List<Actor>();
+    public List<int> Scores = new List<int>();
 
     #endregion
 
@@ -76,6 +78,7 @@ public class GameCenter : BaseScene
     {
         if (scene.name == _arenaName)
         {
+            AlivePlayerCounts = PhotonNetwork.CurrentRoom.PlayerCount;
             InstantiatePlayer();
             SceneType = Define.Scene.Game;
             SceneBgmSound("BigBangBattleLOOPING");
@@ -187,6 +190,14 @@ public class GameCenter : BaseScene
         }
     }
 
+    void InitiateGhost()
+    {
+        if (Ghost.LocalGhostInstance == null)
+        {
+            Managers.Resource.PhotonNetworkInstantiate(_ghostPath);
+        }
+    }
+
     private void OnGUI()
     {
         GUI.backgroundColor = Color.white;
@@ -232,18 +243,30 @@ public class GameCenter : BaseScene
                 Actors[i].debuffState = debuffstate;
 
                 if (Actors[i].actorState == ActorState.Dead)
+                {
+                    photonView.RPC("PlayerDead", RpcTarget.MasterClient, viewID);
                     InitiateGhost();
+                }
+
                 break;
             }
         }
     }
 
-    void InitiateGhost()
+    [PunRPC]
+    void PlayerDead(int viewID)
     {
-        if (Ghost.LocalGhostInstance == null)
-        {
-            Managers.Resource.PhotonNetworkInstantiate(_ghostPath);
-        }
+        Debug.Log("[Only Master] " + viewID + " Player is Dead!");
+
+        AlivePlayerCounts--;
+
+        if (AlivePlayerCounts == 1)
+            EndRound();
+    }
+
+    void EndRound()
+    {
+        // To-Do: 라운드 종료
     }
 
     [PunRPC]
@@ -289,7 +312,6 @@ public class GameCenter : BaseScene
             }
         }
     }
-
 
     void Start()
     {
@@ -377,7 +399,4 @@ public class GameCenter : BaseScene
     public override void Clear()
     {
     }
-
-    #endregion
-
 }
