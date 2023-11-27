@@ -61,7 +61,7 @@ public class RoomUI : MonoBehaviour
                         OnClickSkillChange();
                     }
 
-                    if (Input.GetKeyDown(KeyCode.F6))
+                    if (Input.GetKeyDown(KeyCode.Escape))
                     {
                         OnClickLeaveRoom();
                     }
