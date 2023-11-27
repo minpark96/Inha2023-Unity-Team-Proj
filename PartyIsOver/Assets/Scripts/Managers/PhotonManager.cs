@@ -44,6 +44,7 @@ public class PhotonManager : BaseScene
     {
         if (PhotonNetwork.IsConnected)
         {
+            Debug.Log("Joining Lobby");
             PhotonNetwork.JoinLobby();
         }
         else
@@ -71,17 +72,17 @@ public class PhotonManager : BaseScene
 
     public void LeaveRoom()
     {
-        PhotonNetwork.LeaveRoom();
+        //PhotonNetwork.LeaveRoom();
 
-        Connect();
-        StartCoroutine(LoadNextScene(_sceneLobby));
-        SceneManager.LoadSceneAsync("[3]Lobby");
+        //Connect();
+        //StartCoroutine(LoadNextScene(_sceneLobby));
+        //SceneManager.LoadSceneAsync("[3]Lobby");
     }
 
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-       GameCenter gameCenter = new GameCenter();
-        if(scene.name == "[4]Room")
+        GameCenter gameCenter = new GameCenter();
+        if (scene.name == "[4]Room")
         {
             SceneType = Define.Scene.Lobby;
             gameCenter.SceneBgmSound("LaxLayoverLOOPING");
@@ -141,11 +142,10 @@ public class PhotonManager : BaseScene
         }
     }
 
-
-
-
     public IEnumerator LoadNextScene(string sceneName)
     {
+        Debug.Log("LoadNextScene Ω√¿€");
+
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
 
         while (!asyncLoad.isDone)
@@ -158,9 +158,10 @@ public class PhotonManager : BaseScene
             InstantiateGameCenter();
         }
 
-        
+        Debug.Log("LoadNextScene ≥°");
+
     }
-    
+
     void InstantiateGameCenter()
     {
         if (GameCenter.LocalGameCenterInstance == null)
@@ -210,6 +211,21 @@ public class PhotonManager : BaseScene
     public override void OnLeftRoom()
     {
         Debug.Log("[OnLeftRoom()]");
+        StartCoroutine(GiveDelayTime());
+       
+        StartCoroutine(LoadNextScene(_sceneLobby));
+        //SceneManager.LoadSceneAsync("[3]Lobby");
+
+    }
+    IEnumerator GiveDelayTime()
+    {
+        yield return new WaitForSeconds(2.0f);
+        //while (PhotonNetwork.NetworkClientState == ClientState.Leaving)
+        //{
+        //    yield return null;
+        //}
+
+        Connect();
     }
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
