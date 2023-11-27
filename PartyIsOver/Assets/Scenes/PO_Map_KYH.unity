@@ -25046,9 +25046,13 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -8709275139975204617, guid: 64303102515452140bf9f2ac195664bc, type: 3}
+      propertyPath: sceneViewId
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 1553636782888508521, guid: 64303102515452140bf9f2ac195664bc, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1553636782888508521, guid: 64303102515452140bf9f2ac195664bc, type: 3}
       propertyPath: m_LocalPosition.x
@@ -25090,6 +25094,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6349797685045523364, guid: 64303102515452140bf9f2ac195664bc, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
     - target: {fileID: 9010752255653037225, guid: 64303102515452140bf9f2ac195664bc, type: 3}
       propertyPath: m_Name
       value: SpicyOnion
@@ -25351,13 +25359,17 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2372097946050128969, guid: d5691987cfa32b04dac450e0870d0d11, type: 3}
+      propertyPath: sceneViewId
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 8917976831700143184, guid: d5691987cfa32b04dac450e0870d0d11, type: 3}
       propertyPath: m_Name
       value: RangedWeapon
       objectReference: {fileID: 0}
     - target: {fileID: 8917976831700143191, guid: d5691987cfa32b04dac450e0870d0d11, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8917976831700143191, guid: d5691987cfa32b04dac450e0870d0d11, type: 3}
       propertyPath: m_LocalPosition.x
@@ -27459,13 +27471,17 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -4900930815715133218, guid: 93c834fbab4589846b2780d3ba93769d, type: 3}
+      propertyPath: sceneViewId
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 1986696900406862611, guid: 93c834fbab4589846b2780d3ba93769d, type: 3}
       propertyPath: m_Name
       value: GraveStone
       objectReference: {fileID: 0}
     - target: {fileID: 1986696900406862613, guid: 93c834fbab4589846b2780d3ba93769d, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1986696900406862613, guid: 93c834fbab4589846b2780d3ba93769d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -39408,7 +39424,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7066956456343087048, guid: da320d57a6643e3479003d4664c324b0, type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7066956456343087048, guid: da320d57a6643e3479003d4664c324b0, type: 3}
       propertyPath: m_LocalPosition.x
@@ -51112,7 +51128,7 @@ Transform:
   - {fileID: 406592855}
   - {fileID: 514233942}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2104847034
 PrefabInstance:
