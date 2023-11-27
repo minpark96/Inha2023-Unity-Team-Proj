@@ -265,5 +265,16 @@ public class CollisionHandler : MonoBehaviourPun
             default:
                 break;
         }
+
+        if (thisRb.velocity.magnitude > 15f)
+        {
+            thisRb.velocity = thisRb.velocity.normalized * 15f;
+        }
+        if (hip != null && hip.velocity.magnitude > 15f)
+        {
+            hip.velocity = hip.velocity.normalized * 15f;
+            Debug.Log("maxVel");
+
+        }
     }
 }
