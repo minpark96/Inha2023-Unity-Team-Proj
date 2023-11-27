@@ -143,7 +143,7 @@ public class PlayerController : MonoBehaviourPun
 
     [Header("Speed")]
     public float RunSpeed;
-    public float MaxSpeed = 5f;
+    private float MaxSpeed = 5f;
 
     [SerializeField]
     private Rigidbody _hips;
@@ -352,7 +352,7 @@ public class PlayerController : MonoBehaviourPun
                 {
                     if (Input.GetMouseButtonUp(0))
                     {
-                        _grab.GrabReset();
+                        _grab.GrabResetTrigger();
                     }
                 }
                 break;
@@ -1714,7 +1714,6 @@ public class PlayerController : MonoBehaviourPun
             if (_hips.velocity.magnitude > MaxSpeed)
                 _hips.velocity = _hips.velocity.normalized * MaxSpeed;
         }
-
 
     }
     #endregion

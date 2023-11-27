@@ -55,7 +55,9 @@ public class TargetingHandler : MonoBehaviour
         if (_actor.actorState == Actor.ActorState.Jump || _actor.actorState == Actor.ActorState.Fall)
         {
             detectionRadius += 1f;
-            colliderCount = Physics.OverlapSphereNonAlloc(chestTransform.position + Vector3.up * 0.3f, detectionRadius, colliders, layerMask);
+            //colliderCount = Physics.OverlapSphereNonAlloc(chestTransform.position + chestForward, detectionRadius, colliders, layerMask);
+            colliderCount = Physics.OverlapSphereNonAlloc(chestTransform.position + Vector3.up * 0.1f, detectionRadius, colliders, layerMask);
+
         }
         else
         {
@@ -63,8 +65,6 @@ public class TargetingHandler : MonoBehaviour
             colliderCount = Physics.OverlapSphereNonAlloc(chestTransform.position + Vector3.up * 0.1f, detectionRadius, colliders, layerMask);
         }
 
-
-        Debug.Log(detectionRadius);
         if (colliderCount <= 0 )
         {
             return null;
