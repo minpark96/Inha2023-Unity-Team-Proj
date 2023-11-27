@@ -156,7 +156,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6412693219707874335
 Transform:
   m_ObjectHideFlags: 0
@@ -416,7 +416,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &4131110684972124685
 Transform:
   m_ObjectHideFlags: 0
@@ -556,7 +556,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &6330542790484006939
 Transform:
   m_ObjectHideFlags: 0
@@ -1063,7 +1063,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1424551614455701665
 Transform:
   m_ObjectHideFlags: 0
@@ -2440,7 +2440,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &5367598797689144893
 Transform:
   m_ObjectHideFlags: 0
@@ -5406,7 +5406,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &240338209861846494
 Transform:
   m_ObjectHideFlags: 0
@@ -11415,7 +11415,7 @@ GameObject:
   - component: {fileID: 4655386519301525991}
   - component: {fileID: -3116543834385216606}
   m_Layer: 7
-  m_Name: Ragdoll2_Room
+  m_Name: Player2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11766,14 +11766,14 @@ MonoBehaviour:
     - {fileID: 5856379624502544924}
     ForceDirections: 02000000
     ForcePowerValues:
-    - 50
+    - 100
   - StandardRigidbodies:
     - {fileID: 5856379624502544924}
     ActionRigidbodies:
     - {fileID: 5855867809452644878}
     ForceDirections: 02000000
     ForcePowerValues:
-    - 50
+    - 100
   HeadingAngleAniData:
   - StandardRigidbodies:
     - {fileID: 5856379624502544924}
@@ -12234,7 +12234,7 @@ MonoBehaviour:
   leftKick: 0
   rightKick: 0
   isStateChange: 0
-  isMeowNyangPunch: 1
+  isMeowNyangPunch: 0
   isBalloon: 0
   isDrunk: 0
   RSkillCoolTime: 5
@@ -12262,7 +12262,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5873236424662451676}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d8d2732e4766ccf4fba1c58f524e0dae, type: 3}
   m_Name: 
@@ -12283,14 +12283,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5873236424662451676}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 50d5428a52f424042a9db0e6cb88f27b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   layerMask:
     serializedVersion: 2
-    m_Bits: 1344
+    m_Bits: 3328
 --- !u!114 &5878509405600198235
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12330,7 +12330,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5873236424662451676}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c648199d73d269d4c92116a4856076ff, type: 3}
   m_Name: 
@@ -16731,7 +16731,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &8450994886955330515
 Transform:
   m_ObjectHideFlags: 0
@@ -17082,7 +17082,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1666000642673261526
 Transform:
   m_ObjectHideFlags: 0
@@ -17445,7 +17445,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &5260085864944456287
 Transform:
   m_ObjectHideFlags: 0
@@ -17649,7 +17649,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7692309727424470989
 Transform:
   m_ObjectHideFlags: 0

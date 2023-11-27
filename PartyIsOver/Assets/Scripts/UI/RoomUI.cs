@@ -5,6 +5,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using Photon.Realtime;
 
 public class RoomUI : MonoBehaviour
 {
@@ -59,7 +61,7 @@ public class RoomUI : MonoBehaviour
                         OnClickSkillChange();
                     }
 
-                    if (Input.GetKeyDown(KeyCode.F6))
+                    if (Input.GetKeyDown(KeyCode.Escape))
                     {
                         OnClickLeaveRoom();
                     }
@@ -106,11 +108,15 @@ public class RoomUI : MonoBehaviour
         }
     }
 
+   
 
     public void OnClickLeaveRoom()
     {
-        PhotonManager.Instance.LeaveRoom();
+        //PhotonManager.Instance.LeaveRoom();
+
+        PhotonNetwork.LeaveRoom();
     }
+
     public void OnClickSkillChange()
     {
         SkillChange = !SkillChange;
