@@ -251,12 +251,19 @@ public class Grab : MonoBehaviourPun
     }
 
     [PunRPC]
-    public void GrabPose()
+    public void GrabPose(int itemViewID)
     {
+        EquipItem = PhotonNetwork.GetPhotonView(itemViewID).gameObject;
+
         if (EquipItem.GetComponent<Item>().ItemData.ItemType == ItemType.Ranged)
         {
             _jointLeft.targetPosition = EquipItem.GetComponent<Item>().TwoHandedPos.position;
             _jointRight.targetPosition = EquipItem.GetComponent<Item>().OneHandedPos.position;
+        }
+        else if (EquipItem.GetComponent<Item>().ItemData.ItemType == ItemType.TwoHanded)
+        {
+            _jointLeft.targetPosition = EquipItem.GetComponent<Item>().TwoHandedPos.position;
+            _jointRight.targetPosition = EquipItem.GetComponent<Item>().TwoHandedPos.position;
         }
         else if (EquipItem.GetComponent<Item>().ItemData.ItemType == ItemType.OneHanded)
         {
@@ -610,7 +617,7 @@ public class Grab : MonoBehaviourPun
         //item.gameObject.layer = gameObject.layer;
         int itemViewID = item.GetComponent<PhotonView>().ViewID;
         photonView.RPC("SyncGrapItemPosition", RpcTarget.All, itemViewID, targetPosition);
-        photonView.RPC("GrabPose", RpcTarget.All);
+        photonView.RPC("GrabPose", RpcTarget.All, itemViewID);
     }
 
     [PunRPC]
