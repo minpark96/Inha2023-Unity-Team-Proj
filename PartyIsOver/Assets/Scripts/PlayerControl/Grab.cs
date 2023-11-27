@@ -347,7 +347,7 @@ public class Grab : MonoBehaviourPun
         {
             //일정 거리 이내에 있을때 양손이 비어있을때
             if (Vector3.Distance(_targetingHandler.FindClosestCollisionPoint(_leftSearchTarget.GetComponent<Collider>()),
-                _actor.BodyHandler.Chest.transform.position) <= 1.2f
+                _actor.BodyHandler.Chest.transform.position) <= 1f
                   && !_isRightGrab && !_isLeftGrab)
             {
                 Item item = _leftSearchTarget.GetComponent<Item>();
@@ -494,6 +494,8 @@ public class Grab : MonoBehaviourPun
         photonView.RPC("JointFix", RpcTarget.All, (int)Side.Left, leftObjViewID);
         int rightObjViewID = _rightSearchTarget.transform.GetComponent<PhotonView>().ViewID;
         photonView.RPC("JointFix", RpcTarget.All, (int)Side.Right, rightObjViewID);
+
+        StartCoroutine(LockArmPosition());
     }
 
 
@@ -628,8 +630,10 @@ public class Grab : MonoBehaviourPun
         Debug.Log("SyncGrapItemPosition");
     }
 
-    void LockArmPosition()
+    IEnumerator LockArmPosition()
     {
+        yield return new WaitForSeconds(0.5f);
+
         for (int i = 0; i < _armJoints.Length; i++)
         {
             _armJoints[i] = _configurableJoints[i + 1].AddComponent<FixedJoint>();
@@ -660,6 +664,7 @@ public class Grab : MonoBehaviourPun
             EquipItem.gameObject.layer = gameObject.layer;
         }
 
+        //objViewID 는 그랩오브젝트의 ID
         PhotonView pv = PhotonNetwork.GetPhotonView(objViewID);
         if (photonView.IsMine)
         {
@@ -687,7 +692,6 @@ public class Grab : MonoBehaviourPun
                 _jointLeft.angularZMotion = ConfigurableJointMotion.Locked;
                 _jointLeftForeArm.angularZMotion = ConfigurableJointMotion.Locked;
                 _jointLeftUpperArm.angularZMotion = ConfigurableJointMotion.Locked;
-                LockArmPosition();
             }
 
         }
@@ -709,6 +713,8 @@ public class Grab : MonoBehaviourPun
                 _jointRight.angularZMotion = ConfigurableJointMotion.Locked;
                 _jointRightForeArm.angularZMotion = ConfigurableJointMotion.Locked;
                 _jointRightUpperArm.angularZMotion = ConfigurableJointMotion.Locked;
+
+
             }
         }
     }

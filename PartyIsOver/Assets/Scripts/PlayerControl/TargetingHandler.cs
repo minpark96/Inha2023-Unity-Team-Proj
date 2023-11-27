@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TargetingHandler : MonoBehaviour
 {
-    private float _detectionRadius = 1.5f;
+    private float _detectionRadius = 1f;
     public LayerMask layerMask;
     private float maxAngle = 110f; // 정면에서 좌우로 해당 각도만큼 서치
 
@@ -26,7 +26,7 @@ public class TargetingHandler : MonoBehaviour
     {
         
     }
-
+ 
 
     public InteractableObject SearchTarget(Grab.Side side)
     {
@@ -49,14 +49,22 @@ public class TargetingHandler : MonoBehaviour
             detectionDirection = chestTransform.right;
 
         float detectionRadius = _detectionRadius;
+
+        int colliderCount;
+
         if (_actor.actorState == Actor.ActorState.Jump || _actor.actorState == Actor.ActorState.Fall)
         {
             detectionRadius += 1f;
+            colliderCount = Physics.OverlapSphereNonAlloc(chestTransform.position + Vector3.up * 0.3f, detectionRadius, colliders, layerMask);
+        }
+        else
+        {
+            // 원 안에 콜라이더 검출
+            colliderCount = Physics.OverlapSphereNonAlloc(chestTransform.position + Vector3.up * 0.1f, detectionRadius, colliders, layerMask);
         }
 
-        // 원 안에 콜라이더 검출
-        int colliderCount = Physics.OverlapSphereNonAlloc(chestTransform.position, detectionRadius, colliders, layerMask);
 
+        Debug.Log(detectionRadius);
         if (colliderCount <= 0 )
         {
             return null;
