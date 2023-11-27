@@ -41,7 +41,7 @@ public class StatusHandler : MonoBehaviourPun
     private bool _hasStun;
 
     Transform playerTransform;
-    GameObject effectObject;
+    GameObject effectObject = null;
 
     [Header("Debuff Duration")]
     [SerializeField]
@@ -68,7 +68,7 @@ public class StatusHandler : MonoBehaviourPun
 
     void Start()
     {
-        playerTransform = transform.Find("GreenHip").GetComponent<Transform>();
+        playerTransform = this.transform.Find("GreenHip").GetComponent<Transform>();
         actor = transform.GetComponent<Actor>();
         _maxSpeed = actor.PlayerController.RunSpeed;
 
@@ -101,7 +101,8 @@ public class StatusHandler : MonoBehaviourPun
 
     private void LateUpdate()
     {
-        MoveEffect(playerTransform);
+        if (effectObject != null)
+            photonView.RPC("MoveEffect", RpcTarget.All);
     }
 
     private void OnGUI()
@@ -236,7 +237,9 @@ public class StatusHandler : MonoBehaviourPun
                     if (!_hasStun)
                     {
                         StartCoroutine(ResetBodySpring());
-                        StartCoroutine(Stun(_stunTime));
+                        photonView.RPC("Stun", RpcTarget.All, _stunTime);
+
+                        //StartCoroutine(Stun(_stunTime));
                     }
                     break;
                 case Actor.DebuffState.Ghost:
@@ -418,7 +421,9 @@ public class StatusHandler : MonoBehaviourPun
             {
                 _hasShock = false;
                 actor.actorState = Actor.ActorState.Stand;
-                StartCoroutine(Stun(_stunTime));
+                photonView.RPC("Stun", RpcTarget.All, _stunTime);
+
+                //StartCoroutine(Stun(_stunTime));
                 StopCoroutine(Shock(delay));
             }
 
@@ -444,14 +449,15 @@ public class StatusHandler : MonoBehaviourPun
         // 감전 해제
         _hasShock = false;
         StartCoroutine(ResetBodySpring());
-        StartCoroutine(Stun(3));
+        photonView.RPC("Stun", RpcTarget.All, 3);
+        //StartCoroutine(Stun(3));
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Shock;
 
         actor.StatusChangeEventInvoke();
     }
-    
 
+    [PunRPC]
     IEnumerator Stun(float delay)
     {
         _hasStun = true;
@@ -460,6 +466,7 @@ public class StatusHandler : MonoBehaviourPun
 
         GameObject go = GameObject.Find("Stun_loop");
         Managers.Resource.Destroy(go);
+        effectObject = null;
 
         _hasStun = false;
         actor.actorState = Actor.ActorState.Stand;
@@ -468,16 +475,20 @@ public class StatusHandler : MonoBehaviourPun
         actor.StatusChangeEventInvoke();
     }
 
-    void StunCreate(Transform pos = null)
+    [PunRPC]
+    public void StunCreate()
     {
         //Effects/Stun_loop 생성 
         effectObject = Managers.Resource.PhotonNetworkInstantiate("Effects/Stun_loop");
-        effectObject.transform.position = pos.position;
+        effectObject.transform.position = playerTransform.position;
     }
 
-    void MoveEffect(Transform pos)
+    [PunRPC]
+    public void MoveEffect()
     {
-        effectObject.transform.position = pos.position;
+        //LateUpdate여서 늦게 갱신이 되어서 NullReference가 떠서 같은 if 문을 넣어줌
+        if(effectObject != null)
+            effectObject.transform.position = new Vector3(playerTransform.position.x, playerTransform.position.y + 1, playerTransform.position.z);
     }
 
     public void UpdateHealth()
@@ -510,7 +521,7 @@ public class StatusHandler : MonoBehaviourPun
                     if (actor.debuffState == Actor.DebuffState.Ice) //상태이상 후에 추가
                         return;
                     actor.actorState = Actor.ActorState.Unconscious;
-                    StunCreate(playerTransform);
+                    photonView.RPC("StunCreate", RpcTarget.All);
                     EnterUnconsciousState();
                 }
             }
