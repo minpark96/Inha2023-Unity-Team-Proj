@@ -14,7 +14,7 @@ public class MainUI : MonoBehaviour
     public GameObject CancelPanel;
     public GameObject LoadingPanel;
     public Animator Animator;
-    public Image ImageHPBar;
+    public Image LoadingBar;
 
     private bool _gameStartFlag;
     private bool _loadingFlag;
@@ -59,7 +59,7 @@ public class MainUI : MonoBehaviour
             _loadingDelayFlag = true;
         }
 
-        ImageHPBar.fillAmount = (_delayTime - 1) / _loadingTime;
+        LoadingBar.fillAmount = (_delayTime - 1) / _loadingTime;
 
         if ((_delayTime - 1) >= _loadingTime)
         {

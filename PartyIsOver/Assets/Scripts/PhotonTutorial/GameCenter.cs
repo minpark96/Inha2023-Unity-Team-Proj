@@ -23,9 +23,16 @@ public class GameCenter : BaseScene
 
     string _arenaName = "PO_Map_KYH";
     
-    string _playerPath = "Ragdoll2";
 
     string _roomPlayerPath = "Ragdoll2_Room";
+
+    string _playerPath1 = "Players/Player1";
+    string _playerPath2 = "Players/Player2";
+    string _playerPath3 = "Players/Player3";
+    string _playerPath4 = "Players/Player4";
+    string _playerPath5 = "Players/Player5";
+    string _playerPath6 = "Players/Player6";
+
 
 
     bool _isChecked;
@@ -35,15 +42,20 @@ public class GameCenter : BaseScene
 
     public static GameObject LocalGameCenterInstance = null;
 
-    public float SpawnPointX = 484.604f;
-    public float SpawnPointY = 17f;
-    public float SpawnPointZ = 402.4796f;
+    public float SpawnPointX = 485f;
+    public float SpawnPointY = 12f;
+    public float SpawnPointZ = 411f;
 
     // 스폰 포인트 6인 기준
     public List<Vector3> SpawnPoints = new List<Vector3>();
 
     public List<int> ActorViewIDs = new List<int>();
     public List<Actor> Actors = new List<Actor>();
+
+    // Arena UI
+    public Image ImageHPBar;
+    public Image ImageStaminusBar;
+    public Image Portrait;
 
     #endregion
 
@@ -77,13 +89,23 @@ public class GameCenter : BaseScene
         if (scene.name == _arenaName)
         {
             InstantiatePlayer();
-            
-            Debug.Log("InstantiatePlayer");
-            PhotonNetwork.Destroy(temp[0]);
-            Debug.Log(temp.Count);
 
             SceneType = Define.Scene.Game;
             SceneBgmSound("BigBangBattleLOOPING");
+
+            GameObject mainPanel = GameObject.Find("Main Panel");
+            ImageHPBar = mainPanel.transform.GetChild(0).GetChild(1).GetComponent<Image>();
+            ImageStaminusBar = mainPanel.transform.GetChild(0).GetChild(2).GetComponent<Image>();
+
+            GameObject portrait = mainPanel.transform.GetChild(0).GetChild(0).gameObject;
+
+            for (int i = 1; i <= 6; i++)
+            {
+                if (i == PhotonNetwork.LocalPlayer.ActorNumber)
+                    portrait.transform.GetChild(i-1).gameObject.SetActive(true);
+                else
+                    portrait.transform.GetChild(i-1).gameObject.SetActive(false);
+            }
         }
     }
 
@@ -152,29 +174,29 @@ public class GameCenter : BaseScene
     {
         if (Actor.LocalPlayerInstance == null)
         {
-            //Debug.LogFormat("PhotonManager.cs => We are Instantiating LocalPlayer from {0}", SceneManagerHelper.ActiveSceneName);
+            Debug.LogFormat("PhotonManager.cs => We are Instantiating LocalPlayer from {0}", SceneManagerHelper.ActiveSceneName);
 
             GameObject go = null;
 
             switch (PhotonNetwork.LocalPlayer.ActorNumber)
             {
                 case 1:
-                    go = Managers.Resource.PhotonNetworkInstantiate(_playerPath, pos: SpawnPoints[0]);
+                    go = Managers.Resource.PhotonNetworkInstantiate(_playerPath1, pos: SpawnPoints[0]);
                     break;
                 case 2:
-                    go = Managers.Resource.PhotonNetworkInstantiate(_playerPath, pos: SpawnPoints[1]);
+                    go = Managers.Resource.PhotonNetworkInstantiate(_playerPath2, pos: SpawnPoints[1]);
                     break;
                 case 3:
-                    go = Managers.Resource.PhotonNetworkInstantiate(_playerPath, pos: SpawnPoints[2]);
+                    go = Managers.Resource.PhotonNetworkInstantiate(_playerPath3, pos: SpawnPoints[2]);
                     break;
                 case 4:
-                    go = Managers.Resource.PhotonNetworkInstantiate(_playerPath, pos: SpawnPoints[3]);
+                    go = Managers.Resource.PhotonNetworkInstantiate(_playerPath4, pos: SpawnPoints[3]);
                     break;
                 case 5:
-                    go = Managers.Resource.PhotonNetworkInstantiate(_playerPath, pos: SpawnPoints[4]);
+                    go = Managers.Resource.PhotonNetworkInstantiate(_playerPath5, pos: SpawnPoints[4]);
                     break;
                 case 6:
-                    go = Managers.Resource.PhotonNetworkInstantiate(_playerPath, pos: SpawnPoints[5]);
+                    go = Managers.Resource.PhotonNetworkInstantiate(_playerPath6, pos: SpawnPoints[5]);
                     break;
             }
 
@@ -198,7 +220,7 @@ public class GameCenter : BaseScene
     private void OnGUI()
     {
         GUI.backgroundColor = Color.white;
-        for (int i = 0; i <ActorViewIDs.Count; i++)
+        for (int i = 0; i < ActorViewIDs.Count; i++)
         {
             GUI.contentColor = Color.black;
             GUI.Label(new Rect(0, 140 + i * 40, 200, 200), "Actor View ID: " + ActorViewIDs[i] + " / HP: " + Actors[i].Health);
@@ -333,6 +355,18 @@ public class GameCenter : BaseScene
                 }
             }
         }
+
+        if(SceneManager.GetActiveScene().name == _arenaName)
+        {
+            for (int i = 0; i < Actors.Count; i++)
+            {
+                if(Actors[i].photonView.IsMine)
+                {
+                    ImageHPBar.fillAmount = Actors[i].Health / Actors[i].MaxHealth;
+                    ImageStaminusBar.fillAmount = Actors[i].Stamina / Actors[i].MaxStamina;
+                }
+            }
+        }
     }
 
     void PlayerReady()
@@ -358,6 +392,7 @@ public class GameCenter : BaseScene
     }
 
     #endregion
+
 
     #region MonoBehaviourPunCallbacks Methods
 

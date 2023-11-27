@@ -27,6 +27,9 @@ public class LauncherUI : MonoBehaviour
 
     public void OnClickGameStart()
     {
+        if (PhotonNetwork.NickName.Length < 1)
+            return;
+
         PhotonManager.Instance.Connect();
         SceneManager.LoadSceneAsync("[2]Main");
     }

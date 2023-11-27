@@ -144,8 +144,6 @@ public class PhotonManager : BaseScene
 
     public IEnumerator LoadNextScene(string sceneName)
     {
-        Debug.Log("LoadNextScene Ω√¿€");
-
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
 
         while (!asyncLoad.isDone)
@@ -157,9 +155,6 @@ public class PhotonManager : BaseScene
         {
             InstantiateGameCenter();
         }
-
-        Debug.Log("LoadNextScene ≥°");
-
     }
 
     void InstantiateGameCenter()
