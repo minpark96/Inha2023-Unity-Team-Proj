@@ -28,7 +28,11 @@ public class PhotonManager : BaseScene
     public static PhotonManager Instance { get { return p_instance; } }
     public LobbyUI LobbyUI;
 
-
+    private void Update()
+    {
+        Debug.Log("InLobby: " + PhotonNetwork.InLobby);
+        Debug.Log("InRoom: " + PhotonNetwork.InRoom);
+    }
     void Awake()
     {
         Init();
@@ -40,6 +44,7 @@ public class PhotonManager : BaseScene
     {
         if (PhotonNetwork.IsConnected)
         {
+            Debug.Log("Joining Lobby");
             PhotonNetwork.JoinLobby();
         }
         else
@@ -67,15 +72,17 @@ public class PhotonManager : BaseScene
 
     public void LeaveRoom()
     {
-        PhotonNetwork.LeaveRoom();
+        //PhotonNetwork.LeaveRoom();
 
-
+        //Connect();
+        //StartCoroutine(LoadNextScene(_sceneLobby));
+        //SceneManager.LoadSceneAsync("[3]Lobby");
     }
 
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-       GameCenter gameCenter = new GameCenter();
-        if(scene.name == "[4]Room")
+        GameCenter gameCenter = new GameCenter();
+        if (scene.name == "[4]Room")
         {
             SceneType = Define.Scene.Lobby;
             gameCenter.SceneBgmSound("LaxLayoverLOOPING");
@@ -135,10 +142,7 @@ public class PhotonManager : BaseScene
         }
     }
 
-
-
-
-    IEnumerator LoadNextScene(string sceneName)
+    public IEnumerator LoadNextScene(string sceneName)
     {
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
 
@@ -151,10 +155,8 @@ public class PhotonManager : BaseScene
         {
             InstantiateGameCenter();
         }
-
-        
     }
-    
+
     void InstantiateGameCenter()
     {
         if (GameCenter.LocalGameCenterInstance == null)
@@ -172,6 +174,7 @@ public class PhotonManager : BaseScene
         if (IsConnecting)
         {
             IsConnecting = false;
+            PhotonNetwork.JoinLobby();
         }
     }
 
@@ -188,13 +191,12 @@ public class PhotonManager : BaseScene
     public override void OnJoinedLobby()
     {
         Debug.Log("[JoinLobby()] Load Lobby Scene");
-
-        //if (SceneManager.GetActiveScene().name != _sceneLobby)
-            StartCoroutine(LoadNextScene(_sceneLobby));
     }
 
     public override void OnJoinedRoom()
     {
+        Debug.Log("[OnJoinedRoom]");
+
         if (PhotonNetwork.IsMasterClient)
         {
             StartCoroutine(LoadNextScene(_sceneRoom));
@@ -204,14 +206,23 @@ public class PhotonManager : BaseScene
     public override void OnLeftRoom()
     {
         Debug.Log("[OnLeftRoom()]");
+        StartCoroutine(GiveDelayTime());
+       
+        StartCoroutine(LoadNextScene(_sceneLobby));
+        //SceneManager.LoadSceneAsync("[3]Lobby");
 
-        base.OnLeftRoom();
+    }
+    IEnumerator GiveDelayTime()
+    {
+        yield return new WaitForSeconds(2.0f);
+        //while (PhotonNetwork.NetworkClientState == ClientState.Leaving)
+        //{
+        //    yield return null;
+        //}
 
         Connect();
-
-        StartCoroutine(LoadNextScene(_sceneLobby));
-        //SceneManager.LoadScene(_sceneLobby);
     }
+
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
         if (Time.time >= _nextUpdateTime)

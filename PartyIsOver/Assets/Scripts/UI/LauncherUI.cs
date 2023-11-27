@@ -27,6 +27,9 @@ public class LauncherUI : MonoBehaviour
 
     public void OnClickGameStart()
     {
+        if (PhotonNetwork.NickName.Length < 1)
+            return;
+
         PhotonManager.Instance.Connect();
         SceneManager.LoadSceneAsync("[2]Main");
     }
@@ -47,9 +50,12 @@ public class LauncherUI : MonoBehaviour
         #endif
     }
 
-    public void OnClickShortCut()
+
+    public void OnClickShortcut()
     {
         PhotonManager.Instance.Connect();
+        PhotonManager.Instance.LoadNextScene("[3]Lobby");
         SceneManager.LoadSceneAsync("[3]Lobby");
     }
+
 }

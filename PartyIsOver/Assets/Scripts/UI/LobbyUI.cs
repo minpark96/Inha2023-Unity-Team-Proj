@@ -25,7 +25,7 @@ public class LobbyUI : MonoBehaviour
     private void Start()
     {
        CreateRoomPanel.SetActive(false);
-       PhotonManager.Instance.LobbyUI = GameObject.Find("Canvas_Lobby").GetComponent<LobbyUI>();
+        PhotonManager.Instance.LobbyUI = GameObject.Find("Canvas_Lobby").GetComponent<LobbyUI>();
     }
 
 

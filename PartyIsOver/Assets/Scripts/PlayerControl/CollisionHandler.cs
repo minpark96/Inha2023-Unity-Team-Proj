@@ -211,8 +211,8 @@ public class CollisionHandler : MonoBehaviourPun
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (!PhotonNetwork.IsMasterClient) return;
-
+        if (!PhotonNetwork.IsMasterClient && PhotonNetwork.IsConnected == true) return;
+        Debug.Log("나 여기있소");
         if (collision.collider.gameObject.layer != LayerMask.NameToLayer("Ground"))
             DamageCheck(collision);
     }
