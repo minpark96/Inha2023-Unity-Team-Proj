@@ -52,6 +52,9 @@ MonoBehaviour:
   SpawnPoints: []
   ActorViewIDs: 
   Actors: []
+  ImageHPBar: {fileID: 0}
+  ImageStaminusBar: {fileID: 0}
+  Portrait: {fileID: 0}
 --- !u!114 &-6182396937385309685
 MonoBehaviour:
   m_ObjectHideFlags: 0

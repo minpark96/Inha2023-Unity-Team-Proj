@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
+using UnityEngine.SceneManagement;
+
 
 
 public class MainUI : MonoBehaviour
@@ -12,7 +14,7 @@ public class MainUI : MonoBehaviour
     public GameObject CancelPanel;
     public GameObject LoadingPanel;
     public Animator Animator;
-    public Image ImageHPBar;
+    public Image LoadingBar;
 
     private bool _gameStartFlag;
     private bool _loadingFlag;
@@ -57,7 +59,7 @@ public class MainUI : MonoBehaviour
             _loadingDelayFlag = true;
         }
 
-        ImageHPBar.fillAmount = (_delayTime - 1) / _loadingTime;
+        LoadingBar.fillAmount = (_delayTime - 1) / _loadingTime;
 
         if ((_delayTime - 1) >= _loadingTime)
         {
@@ -65,6 +67,8 @@ public class MainUI : MonoBehaviour
             _gameStartFlag = false;
             _loadingFlag = false;
             PhotonManager.Instance.Connect();
+            PhotonManager.Instance.LoadNextScene("[3]Lobby");
+            SceneManager.LoadSceneAsync("[3]Lobby");
         }
     }
 
