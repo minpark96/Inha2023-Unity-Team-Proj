@@ -7,6 +7,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using static Actor;
 
 public class GameCenter : BaseScene
 {
@@ -33,6 +34,7 @@ public class GameCenter : BaseScene
     string _playerPath5 = "Players/Player5";
     string _playerPath6 = "Players/Player6";
 
+    string _ghostPath = "Spook";
 
 
     bool _isChecked;
@@ -260,8 +262,19 @@ public class GameCenter : BaseScene
                 Actors[i].Health = hp;
                 Actors[i].actorState = actorState;
                 Actors[i].debuffState = debuffstate;
+
+                if (Actors[i].actorState == ActorState.Dead)
+                    InitiateGhost();
                 break;
             }
+        }
+    }
+
+    void InitiateGhost()
+    {
+        if (Ghost.LocalGhostInstance == null)
+        {
+            Managers.Resource.PhotonNetworkInstantiate(_ghostPath);
         }
     }
 
