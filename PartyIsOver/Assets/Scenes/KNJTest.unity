@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.09859667, g: 0.14040028, b: 0.19884425, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2602,6 +2602,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6349797685045523364, guid: 64303102515452140bf9f2ac195664bc, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
     - target: {fileID: 9010752255653037225, guid: 64303102515452140bf9f2ac195664bc, type: 3}
       propertyPath: m_Name
       value: SpicyOnion
@@ -26789,21 +26793,11 @@ MonoBehaviour:
     mode: 0
     maxNumVerticesPerCH: 1024
     minVolumePerCH: 0.0001
-  m_colliders:
-  - {fileID: 1593665831}
-  - {fileID: 1593665830}
-  - {fileID: 1593665829}
-  - {fileID: 1593665828}
-  - {fileID: 1593665827}
-  - {fileID: 1593665826}
-  - {fileID: 1593665825}
-  - {fileID: 1593665824}
-  - {fileID: 1593665823}
-  - {fileID: 1593665822}
+  m_colliders: []
   m_isTrigger: 0
   m_material: {fileID: 0}
   m_showColliders: 0
-  m_colliderAsset: {fileID: 11400000, guid: 53c2eb01f7d4cb448bb050e992264efe, type: 2}
+  m_colliderAsset: {fileID: 11400000, guid: 5b2853708aef5084f84e8b64c202fa38, type: 2}
 --- !u!64 &1593665822
 MeshCollider:
   m_ObjectHideFlags: 10
@@ -26813,11 +26807,11 @@ MeshCollider:
   m_GameObject: {fileID: 1593665806}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   m_Convex: 1
   m_CookingOptions: 30
-  m_Mesh: {fileID: -5006809591999799547, guid: 53c2eb01f7d4cb448bb050e992264efe, type: 2}
+  m_Mesh: {fileID: 172898210081835092, guid: 5b2853708aef5084f84e8b64c202fa38, type: 2}
 --- !u!64 &1593665823
 MeshCollider:
   m_ObjectHideFlags: 10
@@ -26827,11 +26821,11 @@ MeshCollider:
   m_GameObject: {fileID: 1593665806}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   m_Convex: 1
   m_CookingOptions: 30
-  m_Mesh: {fileID: 4943903911865351647, guid: 53c2eb01f7d4cb448bb050e992264efe, type: 2}
+  m_Mesh: {fileID: 765856902321825611, guid: 5b2853708aef5084f84e8b64c202fa38, type: 2}
 --- !u!64 &1593665824
 MeshCollider:
   m_ObjectHideFlags: 10
@@ -26841,11 +26835,11 @@ MeshCollider:
   m_GameObject: {fileID: 1593665806}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   m_Convex: 1
   m_CookingOptions: 30
-  m_Mesh: {fileID: -6513217611792462772, guid: 53c2eb01f7d4cb448bb050e992264efe, type: 2}
+  m_Mesh: {fileID: -5960443448065002927, guid: 5b2853708aef5084f84e8b64c202fa38, type: 2}
 --- !u!64 &1593665825
 MeshCollider:
   m_ObjectHideFlags: 10
@@ -26855,11 +26849,11 @@ MeshCollider:
   m_GameObject: {fileID: 1593665806}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   m_Convex: 1
   m_CookingOptions: 30
-  m_Mesh: {fileID: 2169585485865291572, guid: 53c2eb01f7d4cb448bb050e992264efe, type: 2}
+  m_Mesh: {fileID: -2839436443739877372, guid: 5b2853708aef5084f84e8b64c202fa38, type: 2}
 --- !u!64 &1593665826
 MeshCollider:
   m_ObjectHideFlags: 10
@@ -26869,11 +26863,11 @@ MeshCollider:
   m_GameObject: {fileID: 1593665806}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   m_Convex: 1
   m_CookingOptions: 30
-  m_Mesh: {fileID: 8069552047236022905, guid: 53c2eb01f7d4cb448bb050e992264efe, type: 2}
+  m_Mesh: {fileID: 3256912105333551837, guid: 5b2853708aef5084f84e8b64c202fa38, type: 2}
 --- !u!64 &1593665827
 MeshCollider:
   m_ObjectHideFlags: 10
@@ -26883,11 +26877,11 @@ MeshCollider:
   m_GameObject: {fileID: 1593665806}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   m_Convex: 1
   m_CookingOptions: 30
-  m_Mesh: {fileID: 1839235381908657663, guid: 53c2eb01f7d4cb448bb050e992264efe, type: 2}
+  m_Mesh: {fileID: 193884150454445935, guid: 5b2853708aef5084f84e8b64c202fa38, type: 2}
 --- !u!64 &1593665828
 MeshCollider:
   m_ObjectHideFlags: 10
@@ -26897,11 +26891,11 @@ MeshCollider:
   m_GameObject: {fileID: 1593665806}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   m_Convex: 1
   m_CookingOptions: 30
-  m_Mesh: {fileID: 6619694146680456642, guid: 53c2eb01f7d4cb448bb050e992264efe, type: 2}
+  m_Mesh: {fileID: 2709294000969587022, guid: 5b2853708aef5084f84e8b64c202fa38, type: 2}
 --- !u!64 &1593665829
 MeshCollider:
   m_ObjectHideFlags: 10
@@ -26911,11 +26905,11 @@ MeshCollider:
   m_GameObject: {fileID: 1593665806}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   m_Convex: 1
   m_CookingOptions: 30
-  m_Mesh: {fileID: 2142518259954671159, guid: 53c2eb01f7d4cb448bb050e992264efe, type: 2}
+  m_Mesh: {fileID: 8417403756004437704, guid: 5b2853708aef5084f84e8b64c202fa38, type: 2}
 --- !u!64 &1593665830
 MeshCollider:
   m_ObjectHideFlags: 10
@@ -26925,11 +26919,11 @@ MeshCollider:
   m_GameObject: {fileID: 1593665806}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   m_Convex: 1
   m_CookingOptions: 30
-  m_Mesh: {fileID: 1342413417934205937, guid: 53c2eb01f7d4cb448bb050e992264efe, type: 2}
+  m_Mesh: {fileID: 8873120080347460424, guid: 5b2853708aef5084f84e8b64c202fa38, type: 2}
 --- !u!64 &1593665831
 MeshCollider:
   m_ObjectHideFlags: 10
@@ -26939,11 +26933,11 @@ MeshCollider:
   m_GameObject: {fileID: 1593665806}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   m_Convex: 1
   m_CookingOptions: 30
-  m_Mesh: {fileID: 1812285168401554311, guid: 53c2eb01f7d4cb448bb050e992264efe, type: 2}
+  m_Mesh: {fileID: -643000856510265589, guid: 5b2853708aef5084f84e8b64c202fa38, type: 2}
 --- !u!1001 &1606919717
 PrefabInstance:
   m_ObjectHideFlags: 0

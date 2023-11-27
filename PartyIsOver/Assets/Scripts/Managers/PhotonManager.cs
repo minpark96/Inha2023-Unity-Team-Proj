@@ -68,8 +68,6 @@ public class PhotonManager : BaseScene
     public void LeaveRoom()
     {
         PhotonNetwork.LeaveRoom();
-
-
     }
 
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
