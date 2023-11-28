@@ -255,8 +255,8 @@ public class GameCenter : BaseScene
             Debug.Log("구독 부분 " + actor.photonView.ViewID);
             actor.OnChangePlayerStatus -= SendInfo;
             actor.OnChangePlayerStatus += SendInfo;
-            actor.OnKillPlayer -= DealPlayerDeath;
-            actor.OnKillPlayer += DealPlayerDeath;
+            actor.OnKillPlayer -= AnnounceDeath;
+            actor.OnKillPlayer += AnnounceDeath;
         }
     }
 
@@ -265,9 +265,18 @@ public class GameCenter : BaseScene
         photonView.RPC("HandleDeath", RpcTarget.All, viewID);
     }
 
+    [PunRPC]
     void HandleDeath(int viewID)
     {
-
+        for (int i = 0; i < Actors.Count; i++)
+        {
+            if (Actors[i].photonView.ViewID == viewID)
+            {
+                photonView.RPC("ReduceAlivePlayerCounts", RpcTarget.MasterClient, viewID);
+                Vector3 deadPos = Actors[i].BodyHandler.Hip.transform.position;
+                StartCoroutine(InitiateGhost(deadPos));
+            }
+        }
     }
    
     void SendInfo(float hp, float stamina, Actor.ActorState actorState, Actor.DebuffState debuffstate, int viewID)
@@ -290,20 +299,13 @@ public class GameCenter : BaseScene
                 Actors[i].actorState = actorState;
                 Actors[i].debuffState = debuffstate;
 
-                if (Actors[i].actorState == ActorState.Dead)
-                {
-                    photonView.RPC("PlayerDead", RpcTarget.MasterClient, viewID);
-                    Vector3 deadPos = Actors[i].BodyHandler.Hip.transform.position;
-                    StartCoroutine(InitiateGhost(deadPos));
-                }
-
                 break;
             }
         }
     }
 
     [PunRPC]
-    void PlayerDead(int viewID)
+    void ReduceAlivePlayerCounts(int viewID)
     {
         Debug.Log("[Only Master] " + viewID + " Player is Dead!");
 
