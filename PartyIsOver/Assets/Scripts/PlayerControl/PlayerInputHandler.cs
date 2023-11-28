@@ -2,8 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static Actor;
-
-public class PlayerInputHandler : MonoBehaviour
+using Photon.Pun;
+public class PlayerInputHandler : MonoBehaviourPun
 {
     private Actor _actor;
 
@@ -28,6 +28,9 @@ public class PlayerInputHandler : MonoBehaviour
 
     void OnKeyboardEvent(Define.KeyboardEvent evt)
     {
+        if (!photonView.IsMine || _actor.actorState == ActorState.Dead)
+            return;
+
         if (_actor.debuffState == DebuffState.Ice || _actor.debuffState == DebuffState.Shock || _actor.debuffState == DebuffState.Stun)
             return;
 
@@ -42,6 +45,9 @@ public class PlayerInputHandler : MonoBehaviour
 
     void OnMouseEvent(Define.MouseEvent evt)
     {
+        if (!photonView.IsMine || _actor.actorState == ActorState.Dead)
+            return;
+
         if (_actor.debuffState == DebuffState.Ice || _actor.debuffState == DebuffState.Shock || _actor.debuffState == DebuffState.Stun)
             return;
 

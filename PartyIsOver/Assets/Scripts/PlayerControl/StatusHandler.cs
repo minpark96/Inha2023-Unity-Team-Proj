@@ -490,7 +490,8 @@ public class StatusHandler : MonoBehaviourPun
                     if (actor.debuffState == Actor.DebuffState.Ice) //상태이상 후에 추가
                         return;
                     //맞은애 위치에서 이펙트가 발생해야함
-                    actor.PlayerController.Stun(actor.PlayerController.playerTransform);
+                    // actor.PlayerController.Stun(actor.PlayerController.playerTransform);
+                    actor.actorState = Actor.ActorState.Unconscious;
                     EnterUnconsciousState();
                 }
             }
@@ -521,7 +522,7 @@ public class StatusHandler : MonoBehaviourPun
 
         actor.debuffState = Actor.DebuffState.Stun;
         StartCoroutine(ResetBodySpring());
-        actor.Grab.GrabReset();
+        actor.Grab.GrabResetTrigger();
         actor.BodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
         actor.BodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
         actor.BodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
