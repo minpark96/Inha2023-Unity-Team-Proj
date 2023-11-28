@@ -35,6 +35,7 @@ public class GameCenter : BaseScene
     string _playerPath6 = "Players/Player6";
 
     string _ghostPath = "Spook";
+    string _graveStonePath = "Item/GraveStone";
 
     bool _isChecked;
 
@@ -60,6 +61,8 @@ public class GameCenter : BaseScene
     public Image ImageHPBar;
     public Image ImageStaminusBar;
     public Image Portrait;
+
+    public float GhostSpawnDelay = 3f;
 
     #endregion
 
@@ -222,11 +225,14 @@ public class GameCenter : BaseScene
         }
     }
 
-    void InitiateGhost()
+    IEnumerator InitiateGhost(Vector3 spawnPos)
     {
         if (Ghost.LocalGhostInstance == null)
         {
-            Managers.Resource.PhotonNetworkInstantiate(_ghostPath);
+            Vector3 gsPos = spawnPos + new Vector3(0f, 10f, 0f);
+            Managers.Resource.PhotonNetworkInstantiate(_graveStonePath, pos: gsPos);
+            yield return new WaitForSeconds(GhostSpawnDelay);
+            Managers.Resource.PhotonNetworkInstantiate(_ghostPath, pos: spawnPos);
         }
     }
 
@@ -247,11 +253,21 @@ public class GameCenter : BaseScene
         if (actor != null)
         {
             Debug.Log("구독 부분 " + actor.photonView.ViewID);
-            actor.OnPlayerStatusChanges -= SendInfo;
-            actor.OnPlayerStatusChanges += SendInfo;
-            //actor.OnPlayerExhaust -= DecreaseStamina;
-            //actor.OnPlayerExhaust += DecreaseStamina;
+            actor.OnChangePlayerStatus -= SendInfo;
+            actor.OnChangePlayerStatus += SendInfo;
+            actor.OnKillPlayer -= DealPlayerDeath;
+            actor.OnKillPlayer += DealPlayerDeath;
         }
+    }
+
+    void AnnounceDeath(int viewID)
+    {
+        photonView.RPC("HandleDeath", RpcTarget.All, viewID);
+    }
+
+    void HandleDeath(int viewID)
+    {
+
     }
    
     void SendInfo(float hp, float stamina, Actor.ActorState actorState, Actor.DebuffState debuffstate, int viewID)
@@ -277,7 +293,8 @@ public class GameCenter : BaseScene
                 if (Actors[i].actorState == ActorState.Dead)
                 {
                     photonView.RPC("PlayerDead", RpcTarget.MasterClient, viewID);
-                    InitiateGhost();
+                    Vector3 deadPos = Actors[i].BodyHandler.Hip.transform.position;
+                    StartCoroutine(InitiateGhost(deadPos));
                 }
 
                 break;

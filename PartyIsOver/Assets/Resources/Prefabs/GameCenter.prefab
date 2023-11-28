@@ -46,12 +46,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _roomUI: {fileID: 0}
+  AlivePlayerCounts: 1
   SpawnPointX: 470
   SpawnPointY: 17
   SpawnPointZ: 420
   SpawnPoints: []
   ActorViewIDs: 
   Actors: []
+  Scores: 
   ImageHPBar: {fileID: 0}
   ImageStaminusBar: {fileID: 0}
   Portrait: {fileID: 0}

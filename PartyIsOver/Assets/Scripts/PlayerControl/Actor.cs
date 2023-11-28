@@ -8,8 +8,10 @@ using UnityEngine.SceneManagement;
 
 public class Actor : MonoBehaviourPun, IPunObservable
 {
-    public delegate void PlayerStatusChanges(float HP, float Stamina, ActorState actorState, DebuffState debuffstate, int viewID);
-    public event PlayerStatusChanges OnPlayerStatusChanges;
+    public delegate void ChangePlayerStatus(float HP, float Stamina, ActorState actorState, DebuffState debuffstate, int viewID);
+    public event ChangePlayerStatus OnChangePlayerStatus;
+    public delegate void KillPlayer(int viewID);
+    public event KillPlayer OnKillPlayer;
 
     public Transform CameraArm;
     AudioListener _audioListener;
@@ -84,18 +86,26 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
     public static int LayerCnt = 26;
 
-    public void StatusChangeEventInvoke()
+    public void InvokeStatusChangeEvent()
     {
-        //Debug.Log("StatusChangeEventInvoke()");
-
-        if (OnPlayerStatusChanges == null)
+        if (OnChangePlayerStatus == null)
         {
-            Debug.Log(photonView.ViewID + " 이벤트 null");
+            Debug.Log(photonView.ViewID + " OnChangePlayerStatus 이벤트 null");
             return;
         }
 
-        //Debug.Log("_health: " + _health + " debuffState: " + debuffState + " photonView.ViewID: " + photonView.ViewID);
-        OnPlayerStatusChanges(_health, _stamina, actorState, debuffState, photonView.ViewID);
+        OnChangePlayerStatus(_health, _stamina, actorState, debuffState, photonView.ViewID);
+    }
+
+    public void InvokeDeathEvent()
+    {
+        if (OnKillPlayer == null)
+        {
+            Debug.Log(photonView.ViewID + " OnKillPlayer 이벤트 null");
+            return;
+        }
+
+        OnKillPlayer(photonView.ViewID);
     }
 
     private void Awake()
