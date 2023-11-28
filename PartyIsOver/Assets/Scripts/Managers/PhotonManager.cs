@@ -207,19 +207,11 @@ public class PhotonManager : BaseScene
     {
         Debug.Log("[OnLeftRoom()]");
         StartCoroutine(GiveDelayTime());
-       
-        StartCoroutine(LoadNextScene(_sceneLobby));
-        //SceneManager.LoadSceneAsync("[3]Lobby");
-
+        SceneManager.LoadSceneAsync("[3]Lobby");
     }
     IEnumerator GiveDelayTime()
     {
         yield return new WaitForSeconds(2.0f);
-        //while (PhotonNetwork.NetworkClientState == ClientState.Leaving)
-        //{
-        //    yield return null;
-        //}
-
         Connect();
     }
 

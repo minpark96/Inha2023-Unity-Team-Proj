@@ -142,8 +142,6 @@ public class GameCenter : BaseScene
         }
     }
 
-    List<GameObject> temp = new List<GameObject>();
-
     void InstantiatePlayerInRoom()
     {
         GameObject go = null;
@@ -152,7 +150,6 @@ public class GameCenter : BaseScene
         {
             case 1:
                 go = Managers.Resource.PhotonNetworkInstantiate(_roomPlayerPath, pos: SpawnPoints[6]);
-                temp.Add(go);
                 break;
             case 2:
                 go = Managers.Resource.PhotonNetworkInstantiate(_roomPlayerPath, pos: SpawnPoints[6]);
@@ -371,6 +368,8 @@ public class GameCenter : BaseScene
 
         if(SceneManager.GetActiveScene().name == _arenaName)
         {
+            Debug.Log(ImageHPBar.fillAmount);
+
             for (int i = 0; i < Actors.Count; i++)
             {
                 if(Actors[i].photonView.IsMine)
