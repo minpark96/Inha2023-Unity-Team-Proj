@@ -143,7 +143,7 @@ public class PlayerController : MonoBehaviourPun
 
     [Header("Speed")]
     public float RunSpeed;
-    public float MaxSpeed = 10f;
+    private float MaxSpeed = 5f;
 
     [SerializeField]
     private Rigidbody _hips;
@@ -241,11 +241,11 @@ public class PlayerController : MonoBehaviourPun
     Transform[] _children;
     private Dictionary<Transform, Quaternion> _initialRotations = new Dictionary<Transform, Quaternion>();
 
+    public Transform playerTransform;
 
     float startChargeTime;
     float endChargeTime = 0f;
 
-    float selfDamage = 2000f;
 
     public enum Side
     {
@@ -286,6 +286,7 @@ public class PlayerController : MonoBehaviourPun
 
     void Init()
     {
+        playerTransform = transform.Find("GreenHip").GetComponent<Transform>();
 
         _bodyHandler = GetComponent<BodyHandler>();
         targetingHandler = GetComponent<TargetingHandler>();
@@ -338,10 +339,6 @@ public class PlayerController : MonoBehaviourPun
     #region OnMouseEvent_Grab
     public void OnMouseEvent_Grab(Define.MouseEvent evt)
     {
-        if (!photonView.IsMine)
-        {
-            return;
-        }
 
         switch (evt)
         {
@@ -355,7 +352,7 @@ public class PlayerController : MonoBehaviourPun
                 {
                     if (Input.GetMouseButtonUp(0))
                     {
-                        _grab.GrabReset();
+                        _grab.GrabResetTrigger();
                     }
                 }
                 break;
@@ -367,10 +364,7 @@ public class PlayerController : MonoBehaviourPun
 
     public void OnMouseEvent_Skill(Define.MouseEvent evt)
     {
-        if (!photonView.IsMine)
-        {
-            return;
-        }
+
 
         switch (evt)
         {
@@ -424,10 +418,6 @@ public class PlayerController : MonoBehaviourPun
 
     public void OnKeyboardEvent_Move(Define.KeyboardEvent evt)
     {
-        if (!photonView.IsMine || _actor.actorState == ActorState.Dead)
-        {
-            return;
-        }
 
         switch (evt)
         {
@@ -488,10 +478,7 @@ public class PlayerController : MonoBehaviourPun
 
     public void OnKeyboardEvent_Skill(Define.KeyboardEvent evt)
     {
-        if (!photonView.IsMine || _actor.actorState == ActorState.Dead)
-        {
-            return;
-        }
+
 
         switch (evt)
         {
@@ -536,6 +523,7 @@ public class PlayerController : MonoBehaviourPun
                     {
                         _isRSkillCheck = false;
                         StartCoroutine(ResetCharge());
+                       
                     }
                 }
                 break;
@@ -747,7 +735,7 @@ public class PlayerController : MonoBehaviourPun
                 else
                     _actor.actorState = Actor.ActorState.Walk;
 
-                Stand();
+                //Stand();
             }
         }
     }
@@ -1334,6 +1322,36 @@ public class PlayerController : MonoBehaviourPun
 
     #endregion
 
+    #region Stun
+    
+    private void LateUpdate()
+    {
+        if (playerTransform != null)
+        {
+            //Stun(playerTransform);
+            //transform.position = playerTransform.position;
+        }
+        else
+            Debug.Log("LateUpdate : null");
+    }
+    GameObject effectObject;
+    public void Stun(Transform pos = null)
+    {
+        //StatusHandler에서 Stun을 변환을 하면 
+        if (_actor.actorState != Actor.ActorState.Unconscious && pos == null)
+        {
+            Debug.Log("Unconscious");
+            //한번만 생성하도록 하게 한다.
+            _actor.actorState = Actor.ActorState.Unconscious;
+            effectObject = Managers.Resource.Instantiate("Stun_loop");
+            effectObject.transform.position = playerTransform.position;
+        }
+
+        effectObject.transform.position = pos.position;
+    }
+
+    #endregion
+
     #region Stand
     public void Stand()
     {
@@ -1358,6 +1376,13 @@ public class PlayerController : MonoBehaviourPun
             AlignToVector(_bodyHandler.Waist.PartRigidbody, _bodyHandler.Waist.transform.forward, Vector3.up, 0.1f, 4f * 1);
             AlignToVector(_bodyHandler.Hip.PartRigidbody, _bodyHandler.Hip.transform.forward, Vector3.up, 0.1f, 3f * 1);
         }
+        GameObject go = GameObject.Find("Stun_loop");
+        Managers.Resource.Destroy(go);
+
+        
+        //빙판이 아닐때 조건추가해야함
+        if (_hips.velocity.magnitude > 1f)
+            _hips.velocity = _hips.velocity.normalized * _hips.velocity.magnitude* 0.6f;
     }
     #endregion
 
@@ -1480,7 +1505,7 @@ public class PlayerController : MonoBehaviourPun
                 rightArmPose = Pose.Straight;
             }
         }
-        Stand();
+        //Stand();
         RunCycleUpdate();
         RunCyclePoseBody();
         RunCyclePoseArm(Side.Left, leftArmPose);
@@ -1680,9 +1705,9 @@ public class PlayerController : MonoBehaviourPun
 
         if (isRun)
         {
-            _hips.AddForce(_moveDir.normalized * RunSpeed * _runSpeedOffset * Time.deltaTime * 1.5f);
+            _hips.AddForce(_moveDir.normalized * RunSpeed * _runSpeedOffset * Time.deltaTime * 1.35f);
             if (_hips.velocity.magnitude > MaxSpeed)
-                _hips.velocity = _hips.velocity.normalized * MaxSpeed * 1.5f;
+                _hips.velocity = _hips.velocity.normalized * MaxSpeed * 1.15f;
         }
         else
         {
@@ -1690,6 +1715,7 @@ public class PlayerController : MonoBehaviourPun
             if (_hips.velocity.magnitude > MaxSpeed)
                 _hips.velocity = _hips.velocity.normalized * MaxSpeed;
         }
+
     }
     #endregion
 
