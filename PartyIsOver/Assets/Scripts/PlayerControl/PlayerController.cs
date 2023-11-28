@@ -284,7 +284,6 @@ public class PlayerController : MonoBehaviourPun
 
     void Init()
     {
-
         _bodyHandler = GetComponent<BodyHandler>();
         targetingHandler = GetComponent<TargetingHandler>();
         _actor = GetComponent<Actor>();

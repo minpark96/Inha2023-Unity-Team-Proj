@@ -43,6 +43,9 @@ public class StatusHandler : MonoBehaviourPun
     Transform playerTransform;
     GameObject effectObject = null;
 
+    AudioClip _audioClip = null;
+    AudioSource _audioSource;
+
     [Header("Debuff Duration")]
     [SerializeField]
     private float _powerUpTime;
@@ -65,10 +68,15 @@ public class StatusHandler : MonoBehaviourPun
     [SerializeField]
     public float _burnDamage;
 
+    private void Awake()
+    {
+        playerTransform = this.transform.Find("GreenHip").GetComponent<Transform>();
+        Transform SoundSourceTransform = transform.Find("GreenHip");
+        _audioSource = SoundSourceTransform.GetComponent<AudioSource>();
+    }
 
     void Start()
     {
-        playerTransform = this.transform.Find("GreenHip").GetComponent<Transform>();
         actor = transform.GetComponent<Actor>();
         _maxSpeed = actor.PlayerController.RunSpeed;
 
@@ -149,6 +157,23 @@ public class StatusHandler : MonoBehaviourPun
         actor.StatusChangeEventInvoke();
     }
 
+
+
+    [PunRPC]
+    void PlayerDebuffSound(string path)
+    {
+        if(_audioClip == null)
+        {
+            _audioClip = Managers.Sound.GetOrAddAudioClip(path);
+            _audioSource.clip = _audioClip;
+            _audioSource.volume = 0.2f;
+            _audioSource.spatialBlend = 1;
+            Managers.Sound.Play(_audioClip, Define.Sound.PlayerEffect);
+        }
+        
+
+    }
+
     public void DebuffCheck(InteractableObject.Damage type)
     {
         if (actor.debuffState == Actor.DebuffState.Ice) return;
@@ -177,7 +202,7 @@ public class StatusHandler : MonoBehaviourPun
                 }
                 break;
             case Damage.PowerUp: // ºÒ²ö
-                actor.debuffState |= Actor.DebuffState.PowerUp;
+                    actor.debuffState |= Actor.DebuffState.PowerUp;
                 break;
             case Damage.Burn: // È­»ó
                 actor.debuffState |= Actor.DebuffState.Burn;
@@ -198,7 +223,10 @@ public class StatusHandler : MonoBehaviourPun
                 if (actor.debuffState == Actor.DebuffState.Stun || actor.debuffState == Actor.DebuffState.Shock)
                     break;
                 else
+                {
                     actor.debuffState |= Actor.DebuffState.Drunk;
+                    photonView.RPC("PlayerDebuffSound", RpcTarget.All, "PlayerEffect/Cartoon-UI-049");
+                }
                 break;
         }
     }
@@ -237,7 +265,8 @@ public class StatusHandler : MonoBehaviourPun
                     if (!_hasStun)
                     {
                         StartCoroutine(ResetBodySpring());
-                        photonView.RPC("Stun", RpcTarget.All, _stunTime);
+                        StartCoroutine(Stun(_stunTime));
+                        //photonView.RPC("Stun", RpcTarget.All, _stunTime);
                     }
                     break;
                 case Actor.DebuffState.Ghost:
@@ -245,13 +274,15 @@ public class StatusHandler : MonoBehaviourPun
             }
         }
     }
-   
+
     IEnumerator PowerUp(float delay)
     {
+
         // ºÒ²ö
         _hasPowerUp = true;
         actor.actorState = Actor.ActorState.Debuff;
         actor.PlayerController.RunSpeed += _maxSpeed * 0.1f;
+        photonView.RPC("PlayerDebuffSound", RpcTarget.All, "PlayerEffect/Cartoon-UI-037");
 
         yield return new WaitForSeconds(delay);
 
@@ -262,6 +293,7 @@ public class StatusHandler : MonoBehaviourPun
         actor.PlayerController.RunSpeed -= _maxSpeed * 0.1f;
 
         actor.StatusChangeEventInvoke();
+        _audioClip = null;
     }
     IEnumerator Burn(float delay)
     {
@@ -353,6 +385,7 @@ public class StatusHandler : MonoBehaviourPun
     IEnumerator Freeze(float delay)
     {
         yield return new WaitForSeconds(0.2f);
+        photonView.RPC("PlayerDebuffSound", RpcTarget.All, "PlayerEffect/Cartoon-UI-047");
 
         // ºù°á
         _hasFreeze = true;
@@ -388,6 +421,7 @@ public class StatusHandler : MonoBehaviourPun
         {
             actor.BodyHandler.BodyParts[i].PartRigidbody.isKinematic = false;
         }
+        _audioClip = null;
     }
     IEnumerator Shock(float delay)
     {
@@ -396,6 +430,7 @@ public class StatusHandler : MonoBehaviourPun
         // °¨Àü
         _hasShock = true;
         actor.actorState = Actor.ActorState.Debuff;
+        photonView.RPC("PlayerDebuffSound", RpcTarget.All, "PlayerEffect/electronic_02");
 
         JointDrive angularXDrive;
         JointDrive angularYZDrive;
@@ -412,14 +447,15 @@ public class StatusHandler : MonoBehaviourPun
         }
 
         float startTime = Time.time;
-      
+
         while (Time.time - startTime < delay)
         {
             if (actor.debuffState == Actor.DebuffState.Ice)
             {
                 _hasShock = false;
                 actor.actorState = Actor.ActorState.Stand;
-                photonView.RPC("Stun", RpcTarget.All, _stunTime);
+                StartCoroutine(Stun(_stunTime));
+                //photonView.RPC("Stun", RpcTarget.All, _stunTime);
                 StopCoroutine(Shock(delay));
             }
 
@@ -445,29 +481,30 @@ public class StatusHandler : MonoBehaviourPun
         // °¨Àü ÇØÁ¦
         _hasShock = false;
         StartCoroutine(ResetBodySpring());
-        photonView.RPC("Stun", RpcTarget.All, 3);
+        StartCoroutine(Stun(3));
+        //photonView.RPC("Stun", RpcTarget.All, 3);
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Shock;
 
         actor.StatusChangeEventInvoke();
+        _audioClip = null;
     }
 
-    [PunRPC]
     IEnumerator Stun(float delay)
     {
         _hasStun = true;
         yield return new WaitForSeconds(delay);
         yield return RestoreBodySpring();
 
-        GameObject go = GameObject.Find("Stun_loop");
-        Managers.Resource.Destroy(go);
-        effectObject = null;
-
         _hasStun = false;
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Stun;
 
         actor.StatusChangeEventInvoke();
+
+        GameObject go = GameObject.Find("Stun_loop");
+        Managers.Resource.Destroy(go);
+        effectObject = null;
     }
 
     [PunRPC]
