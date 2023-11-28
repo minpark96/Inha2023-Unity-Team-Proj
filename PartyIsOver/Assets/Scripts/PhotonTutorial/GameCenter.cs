@@ -22,7 +22,7 @@ public class GameCenter : BaseScene
    
     #region Private Fields
 
-    string _arenaName = "PO_Map_SDJ";
+    string _arenaName = "PO_Map_KYH";
     
 
     string _roomPlayerPath = "Ragdoll2_Room";
