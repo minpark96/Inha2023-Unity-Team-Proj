@@ -101,15 +101,12 @@ public class CollisionHandler : MonoBehaviourPun
                 damage *= actor.PlayerAttackPoint;
                 damage = Mathf.RoundToInt(damage);
 
-                Debug.Log(transform.root.GetComponent<PhotonView>().ViewID + "collision");
-
                 // 데미지 적용
                 if (damage > 0f && velocityMagnitude > damageMinimumVelocity)
                 {
                     if (collisionInteractable != null)
                     {
                         actor.StatusHandler.AddDamage(collisionInteractable.damageModifier, damage, collisionCollider.gameObject);
-                    Debug.Log(transform.root.GetComponent<PhotonView>().ViewID + "collision 2");
                     }
                 }
             }
@@ -226,11 +223,10 @@ public class CollisionHandler : MonoBehaviourPun
         //Debug.Log("[AddForceAttackedTarget] id: " + objViewId);
         Rigidbody thisRb = PhotonNetwork.GetPhotonView(objViewId).transform.GetComponent<Rigidbody>();
 
-        Rigidbody hip = null;
-        if (PhotonNetwork.GetPhotonView(objViewId).GetComponent<BodyHandler>() != null)
+        Rigidbody body = null;
+        if (thisRb.transform.GetComponent<BodyPart>() != null)
         {
-            Debug.Log("PlayerCheck");
-            hip = PhotonNetwork.GetPhotonView(objViewId).transform.root.GetComponent<BodyHandler>().Hip.PartRigidbody;
+            body = thisRb.transform.root.GetComponent<BodyHandler>().Hip.PartRigidbody;
         }
 
 
@@ -239,11 +235,15 @@ public class CollisionHandler : MonoBehaviourPun
             case InteractableObject.Damage.Ignore:
                 break;
             case InteractableObject.Damage.Object:
-                if(hip != null)
+                if(body != null)
                 {
-                    hip.AddForce(Vector3.up * _objectForceUp, ForceMode.VelocityChange);
-                    hip.AddForce(normal * _objectForceNormal* itemDamage, ForceMode.VelocityChange);
+                    thisRb.transform.root.GetComponent<BodyHandler>().Head.PartRigidbody.
+                         AddForce(normal * _objectForceNormal * itemDamage, ForceMode.VelocityChange);
+                    body.AddForce(Vector3.up * _objectForceUp, ForceMode.VelocityChange);
+                    body.AddForce(normal * _objectForceNormal* itemDamage, ForceMode.VelocityChange);
                     Debug.Log("Item HipAddForce");
+                    Debug.Log(normal.magnitude);
+
                 }
                 else
                 {
@@ -276,9 +276,9 @@ public class CollisionHandler : MonoBehaviourPun
         {
             thisRb.velocity = thisRb.velocity.normalized * 15f;
         }
-        if (hip != null && hip.velocity.magnitude > 15f)
+        if (body != null && body.velocity.magnitude > 15f)
         {
-            hip.velocity = hip.velocity.normalized * 15f;
+            body.velocity = body.velocity.normalized * 15f;
             Debug.Log("maxVel");
 
         }

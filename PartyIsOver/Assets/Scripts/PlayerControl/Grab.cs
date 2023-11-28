@@ -264,8 +264,8 @@ public class Grab : MonoBehaviourPun
         }
         else if (EquipItem.GetComponent<Item>().ItemData.ItemType == ItemType.TwoHanded)
         {
-            _jointLeft.targetPosition = EquipItem.GetComponent<Item>().TwoHandedPos.position;
-            _jointRight.targetPosition = EquipItem.GetComponent<Item>().TwoHandedPos.position;
+            //_jointLeft.targetPosition = EquipItem.GetComponent<Item>().TwoHandedPos.position;
+            //_jointRight.targetPosition = EquipItem.GetComponent<Item>().TwoHandedPos.position;
         }
         else if (EquipItem.GetComponent<Item>().ItemData.ItemType == ItemType.OneHanded)
         {
