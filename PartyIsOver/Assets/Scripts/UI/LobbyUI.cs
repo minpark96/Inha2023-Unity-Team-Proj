@@ -28,7 +28,7 @@ public class LobbyUI : MonoBehaviour
     public Transform ContentObject;
 
     public bool IsClicked;
-
+    public bool IsInviteCodeEntered;
     private string _roomName;
     
 
@@ -40,15 +40,10 @@ public class LobbyUI : MonoBehaviour
         PhotonManager.Instance.LobbyUI = GameObject.Find("Canvas_Lobby").GetComponent<LobbyUI>();
     }
 
-  
-    public void JoinRoom(string roomName)
-    {
-        EnterPasswordPanel.SetActive(true);
-        _roomName = roomName;
-    }
     public void OnClickJoinRoomCancel()
     {
         EnterPasswordPanel.SetActive(false);
+        IsInviteCodeEntered = true;
     }
 
 
@@ -72,13 +67,13 @@ public class LobbyUI : MonoBehaviour
 
         if (RoomInputField.text.Length >= 1)
         {
-            if(IsClicked)
+            if (IsClicked)
             {
                 RoomOptions roomOptions =
                 new RoomOptions()
                 {
                     IsVisible = true,
-                    IsOpen = false,
+                    IsOpen = true,
                     MaxPlayers = 6,
                 };
 
@@ -100,12 +95,15 @@ public class LobbyUI : MonoBehaviour
                 PhotonNetwork.CreateRoom(RoomInputField.text, roomOptions);
             }
         }
+
     }
     public void OnClickJoinRoom()
     {
-        string inviteCode = InviteCode.textComponent.text;
-        object[] invitation = new object[] { inviteCode };
-        PhotonNetwork.JoinRoom(_roomName, (string[])invitation);
+        //string inviteCode = InviteCode.textComponent.text;
+        //object[] invitation = new object[] { inviteCode };
+        //PhotonNetwork.JoinRoom(_roomName, (string[])invitation);
+
+        IsInviteCodeEntered = true;
     }
     public void OnClickCancel()
     {

@@ -33,8 +33,6 @@ public class RoomItem : MonoBehaviour
 
     public void OnClickItem()
     {
-        Lobby.JoinRoom(RoomName.text);
+        PhotonNetwork.JoinRoom(RoomName.text);
     }
-
-
 }

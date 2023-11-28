@@ -21,11 +21,11 @@ public class PhotonManager : BaseScene
     string _sceneLobby = "[3]Lobby";
     string _sceneRoom = "[4]Room";
 
-    List<RoomItem> RoomItemsList = new List<RoomItem>();
     float _nextUpdateTime = 1f;
     float _timeBetweenUpdate = 1.5f;
 
     public static PhotonManager Instance { get { return p_instance; } }
+    public List<RoomItem> RoomItemsList = new List<RoomItem>();
     public LobbyUI LobbyUI;
 
     private void Update()
@@ -197,16 +197,49 @@ public class PhotonManager : BaseScene
     {
         Debug.Log("[OnJoinedRoom]");
 
-        if (PhotonNetwork.IsMasterClient)
+        LobbyUI.EnterPasswordPanel.SetActive(true);
+
+        while(!LobbyUI.IsInviteCodeEntered)
         {
-            StartCoroutine(LoadNextScene(_sceneRoom));
+            Debug.Log("onjoinedroom loop");
+
+            if(PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey("password"))
+            {
+                object customValue = PhotonNetwork.CurrentRoom.CustomProperties["password"];
+                if (LobbyUI.Password.text == (string)customValue)
+                {
+                    if (PhotonNetwork.IsMasterClient)
+                    {
+                        StartCoroutine(LoadNextScene(_sceneRoom));
+                    }
+
+                    LobbyUI.IsInviteCodeEntered = true;
+                }
+            }
+            else
+            {
+                LobbyUI.EnterPasswordPanel.SetActive(false);
+
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    StartCoroutine(LoadNextScene(_sceneRoom));
+                }
+
+                LobbyUI.IsInviteCodeEntered = true;
+            }
         }
+
+        //if (PhotonNetwork.IsMasterClient)
+        //{
+        //    StartCoroutine(LoadNextScene(_sceneRoom));
+        //}
     }
 
     public override void OnLeftRoom()
     {
         Debug.Log("[OnLeftRoom()]");
         StartCoroutine(GiveDelayTime());
+        StartCoroutine(LoadNextScene(_sceneLobby));
         SceneManager.LoadSceneAsync("[3]Lobby");
     }
     IEnumerator GiveDelayTime()
