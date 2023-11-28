@@ -1379,7 +1379,7 @@ public class PlayerController : MonoBehaviourPun
         GameObject go = GameObject.Find("Stun_loop");
         Managers.Resource.Destroy(go);
 
-        return;
+        
         //빙판이 아닐때 조건추가해야함
         if (_hips.velocity.magnitude > 1f)
             _hips.velocity = _hips.velocity.normalized * _hips.velocity.magnitude* 0.6f;
