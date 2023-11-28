@@ -241,8 +241,6 @@ public class PlayerController : MonoBehaviourPun
     Transform[] _children;
     private Dictionary<Transform, Quaternion> _initialRotations = new Dictionary<Transform, Quaternion>();
 
-    public Transform playerTransform;
-
     float startChargeTime;
     float endChargeTime = 0f;
 
@@ -286,7 +284,6 @@ public class PlayerController : MonoBehaviourPun
 
     void Init()
     {
-        playerTransform = transform.Find("GreenHip").GetComponent<Transform>();
 
         _bodyHandler = GetComponent<BodyHandler>();
         targetingHandler = GetComponent<TargetingHandler>();
@@ -1322,36 +1319,6 @@ public class PlayerController : MonoBehaviourPun
 
     #endregion
 
-    #region Stun
-    
-    private void LateUpdate()
-    {
-        if (playerTransform != null)
-        {
-            //Stun(playerTransform);
-            //transform.position = playerTransform.position;
-        }
-        else
-            Debug.Log("LateUpdate : null");
-    }
-    GameObject effectObject;
-    public void Stun(Transform pos = null)
-    {
-        //StatusHandler에서 Stun을 변환을 하면 
-        if (_actor.actorState != Actor.ActorState.Unconscious && pos == null)
-        {
-            Debug.Log("Unconscious");
-            //한번만 생성하도록 하게 한다.
-            _actor.actorState = Actor.ActorState.Unconscious;
-            effectObject = Managers.Resource.Instantiate("Stun_loop");
-            effectObject.transform.position = playerTransform.position;
-        }
-
-        effectObject.transform.position = pos.position;
-    }
-
-    #endregion
-
     #region Stand
     public void Stand()
     {
@@ -1376,9 +1343,6 @@ public class PlayerController : MonoBehaviourPun
             AlignToVector(_bodyHandler.Waist.PartRigidbody, _bodyHandler.Waist.transform.forward, Vector3.up, 0.1f, 4f * 1);
             AlignToVector(_bodyHandler.Hip.PartRigidbody, _bodyHandler.Hip.transform.forward, Vector3.up, 0.1f, 3f * 1);
         }
-        GameObject go = GameObject.Find("Stun_loop");
-        Managers.Resource.Destroy(go);
-
         
         //빙판이 아닐때 조건추가해야함
         if (_hips.velocity.magnitude > 1f)
