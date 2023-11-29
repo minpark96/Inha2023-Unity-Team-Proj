@@ -1259,7 +1259,7 @@ GameObject:
   - component: {fileID: -3620502824956341504}
   - component: {fileID: 5063609859412082236}
   m_Layer: 0
-  m_Name: Spook
+  m_Name: Ghost
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

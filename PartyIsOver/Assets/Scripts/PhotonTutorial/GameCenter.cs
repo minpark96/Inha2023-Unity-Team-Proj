@@ -34,7 +34,7 @@ public class GameCenter : BaseScene
     string _playerPath5 = "Players/Player5";
     string _playerPath6 = "Players/Player6";
 
-    string _ghostPath = "Spook";
+    string _ghostPath = "Players/Ghost";
     string _graveStonePath = "Item/GraveStone";
 
     bool _isChecked;
@@ -218,7 +218,7 @@ public class GameCenter : BaseScene
                 photonView.RPC("RegisterActorInfo", RpcTarget.MasterClient, viewID);
             }
 
-            Debug.Log("ActorViewIDs.Count: " + ActorViewIDs.Count);
+            //Debug.Log("ActorViewIDs.Count: " + ActorViewIDs.Count);
         }
     }
 
