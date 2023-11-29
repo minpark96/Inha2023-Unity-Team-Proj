@@ -62,7 +62,7 @@ public class GameCenter : BaseScene
     public Image ImageStaminusBar;
     public Image Portrait;
 
-    public float GhostSpawnDelay = 3f;
+    public float GhostSpawnDelay = 10f;
 
     #endregion
 
@@ -217,8 +217,6 @@ public class GameCenter : BaseScene
             {
                 photonView.RPC("RegisterActorInfo", RpcTarget.MasterClient, viewID);
             }
-
-            //Debug.Log("ActorViewIDs.Count: " + ActorViewIDs.Count);
         }
     }
 
@@ -228,8 +226,8 @@ public class GameCenter : BaseScene
         Debug.Log("º“»Ø");
         if (Ghost.LocalGhostInstance == null)
         {
-            Vector3 gsPos = spawnPos + new Vector3(0f, 10f, 0f);
-            Managers.Resource.PhotonNetworkInstantiate(_graveStonePath, pos: gsPos);
+            Vector3 spawnAirPos = spawnPos + new Vector3(0f, 10f, 0f);
+            Managers.Resource.PhotonNetworkInstantiate(_graveStonePath, pos: spawnAirPos);
             yield return new WaitForSeconds(GhostSpawnDelay);
             Managers.Resource.PhotonNetworkInstantiate(_ghostPath, pos: spawnPos);
         }
@@ -237,13 +235,17 @@ public class GameCenter : BaseScene
 
     private void OnGUI()
     {
+        GUIStyle style = new GUIStyle();
+
+        style.fontSize = 30;
+
         GUI.backgroundColor = Color.white;
         for (int i = 0; i < ActorViewIDs.Count; i++)
         {
             GUI.contentColor = Color.black;
-            GUI.Label(new Rect(0, 140 + i * 40, 200, 200), "Actor View ID: " + ActorViewIDs[i] + " / HP: " + Actors[i].Health);
+            GUI.Label(new Rect(0, 140 + i * 60, 200, 200), "Actor View ID: " + ActorViewIDs[i] + " / HP: " + Actors[i].Health, style);
             GUI.contentColor = Color.red;
-            GUI.Label(new Rect(0, 160 + i * 40, 200, 200), "Status: " + Actors[i].actorState + " / Debuff: " + Actors[i].debuffState);
+            GUI.Label(new Rect(0, 160 + i * 60, 200, 200), "Status: " + Actors[i].actorState + " / Debuff: " + Actors[i].debuffState, style);
         }
     }
 
@@ -259,20 +261,21 @@ public class GameCenter : BaseScene
         }
     }
 
-    void AnnounceDeath(int viewID, int ActorID)
+    void AnnounceDeath(int viewID)
     {
         if (!PhotonNetwork.IsMasterClient) return;
 
-        photonView.RPC("HandleDeath", RpcTarget.All, viewID, ActorID);
+        photonView.RPC("HandleDeath", RpcTarget.All, viewID);
     }
 
     [PunRPC]
-    void HandleDeath(int viewID, int ActorID)
+    void HandleDeath(int viewID)
     {
         for (int i = 0; i < Actors.Count; i++)
         {
-            if (Actors[i].photonView.ViewID == viewID && PhotonNetwork.LocalPlayer.ActorNumber == ActorID)
+            if (Actors[i].photonView.ViewID == viewID && Actors[i].photonView.IsMine == true)
             {
+                Actors[i].CameraControl.Camera.GetComponent<GameOverEffect>().StartGameOverEffect();
                 photonView.RPC("ReduceAlivePlayerCounts", RpcTarget.MasterClient, viewID);
                 Vector3 deadPos = Actors[i].BodyHandler.Hip.transform.position;
                 Debug.Log("HandleDeath: " + Actors[i].actorState);
@@ -302,7 +305,7 @@ public class GameCenter : BaseScene
     {
         if (!PhotonNetwork.IsMasterClient) return;
 
-        photonView.RPC("SyncInfo", RpcTarget.Others, hp, actorState, debuffstate, viewID);
+        photonView.RPC("SyncInfo", RpcTarget.All, hp, actorState, debuffstate, viewID);
     }
 
     [PunRPC]

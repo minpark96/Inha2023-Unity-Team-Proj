@@ -57,7 +57,7 @@ MonoBehaviour:
   ImageHPBar: {fileID: 0}
   ImageStaminusBar: {fileID: 0}
   Portrait: {fileID: 0}
-  GhostSpawnDelay: 3
+  GhostSpawnDelay: 10
 --- !u!114 &-6182396937385309685
 MonoBehaviour:
   m_ObjectHideFlags: 0
