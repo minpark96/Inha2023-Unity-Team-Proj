@@ -199,7 +199,7 @@ public class InputManager
                 _spaceKeyPressedTime = 0;
             }
         }
-        
+
         if (KeyboardAction != null)
         {
             if (Input.GetKeyDown(KeyCode.R))

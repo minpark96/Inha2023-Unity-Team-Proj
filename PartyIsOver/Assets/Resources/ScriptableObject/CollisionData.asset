@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: CollisionData
   m_EditorClassIdentifier: 
   _objectDamage: 800
-  _punchDamage: 500
-  _dropkickDamage: 800
-  _headbuttDamage: 1000
-  _objectForceNormal: 6
+  _punchDamage: 1000
+  _dropkickDamage: 2000
+  _headbuttDamage: 2300
+  _objectForceNormal: 5
   _punchForceNormal: 4
-  _dropkickForceNormal: 20
+  _dropkickForceNormal: 30
   _headbuttForceNormal: 20
   _objectForceUp: 10
   _punchForceUp: 2

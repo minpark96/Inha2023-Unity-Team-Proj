@@ -101,12 +101,15 @@ public class CollisionHandler : MonoBehaviourPun
                 damage *= actor.PlayerAttackPoint;
                 damage = Mathf.RoundToInt(damage);
 
+                Debug.Log(transform.root.GetComponent<PhotonView>().ViewID + "collision");
+
                 // 데미지 적용
                 if (damage > 0f && velocityMagnitude > damageMinimumVelocity)
                 {
                     if (collisionInteractable != null)
                     {
                         actor.StatusHandler.AddDamage(collisionInteractable.damageModifier, damage, collisionCollider.gameObject);
+                    Debug.Log(transform.root.GetComponent<PhotonView>().ViewID + "collision 2");
                     }
                 }
             }
@@ -224,8 +227,11 @@ public class CollisionHandler : MonoBehaviourPun
         Rigidbody thisRb = PhotonNetwork.GetPhotonView(objViewId).transform.GetComponent<Rigidbody>();
 
         Rigidbody hip = null;
-        if (thisRb.gameObject.GetComponent<BodyHandler>() != null)
-            hip = thisRb.gameObject.GetComponent<BodyHandler>().Hip.PartRigidbody;
+        if (PhotonNetwork.GetPhotonView(objViewId).GetComponent<BodyHandler>() != null)
+        {
+            Debug.Log("PlayerCheck");
+            hip = PhotonNetwork.GetPhotonView(objViewId).transform.root.GetComponent<BodyHandler>().Hip.PartRigidbody;
+        }
 
 
         switch ((InteractableObject.Damage)damageModifier)
@@ -264,6 +270,17 @@ public class CollisionHandler : MonoBehaviourPun
                 break;
             default:
                 break;
+        }
+
+        if (thisRb.velocity.magnitude > 15f)
+        {
+            thisRb.velocity = thisRb.velocity.normalized * 15f;
+        }
+        if (hip != null && hip.velocity.magnitude > 15f)
+        {
+            hip.velocity = hip.velocity.normalized * 15f;
+            Debug.Log("maxVel");
+
         }
     }
 }

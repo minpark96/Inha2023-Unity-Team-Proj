@@ -37,7 +37,6 @@ public class RoomUI : MonoBehaviour
 
     string _arenaName = "PO_Map_KYH";
 
-
     void Start()
     {
         Init();
