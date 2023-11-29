@@ -10,7 +10,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
 {
     public delegate void ChangePlayerStatus(float HP, float Stamina, ActorState actorState, DebuffState debuffstate, int viewID);
     public event ChangePlayerStatus OnChangePlayerStatus;
-    public delegate void KillPlayer(int viewID);
+    public delegate void KillPlayer(int viewID, int ActorID);
     public event KillPlayer OnKillPlayer;
 
     public Transform CameraArm;
@@ -105,7 +105,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
             return;
         }
 
-        OnKillPlayer(photonView.ViewID);
+        OnKillPlayer(photonView.ViewID, PhotonNetwork.LocalPlayer.ActorNumber);
     }
 
     private void Awake()

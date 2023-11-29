@@ -148,8 +148,6 @@ public class GameCenter : BaseScene
         }
     }
 
-    List<GameObject> temp = new List<GameObject>();
-
     void InstantiatePlayerInRoom()
     {
         GameObject go = null;
@@ -158,7 +156,6 @@ public class GameCenter : BaseScene
         {
             case 1:
                 go = Managers.Resource.PhotonNetworkInstantiate(_roomPlayerPath, pos: SpawnPoints[6]);
-                temp.Add(go);
                 break;
             case 2:
                 go = Managers.Resource.PhotonNetworkInstantiate(_roomPlayerPath, pos: SpawnPoints[6]);
@@ -227,6 +224,8 @@ public class GameCenter : BaseScene
 
     IEnumerator InitiateGhost(Vector3 spawnPos)
     {
+        Debug.Log(PhotonNetwork.LocalPlayer.ActorNumber);
+        Debug.Log("소환");
         if (Ghost.LocalGhostInstance == null)
         {
             Vector3 gsPos = spawnPos + new Vector3(0f, 10f, 0f);
@@ -260,28 +259,48 @@ public class GameCenter : BaseScene
         }
     }
 
-    void AnnounceDeath(int viewID)
+    void AnnounceDeath(int viewID, int ActorID)
     {
-        photonView.RPC("HandleDeath", RpcTarget.All, viewID);
+        if (!PhotonNetwork.IsMasterClient) return;
+
+        photonView.RPC("HandleDeath", RpcTarget.All, viewID, ActorID);
     }
 
     [PunRPC]
-    void HandleDeath(int viewID)
+    void HandleDeath(int viewID, int ActorID)
     {
         for (int i = 0; i < Actors.Count; i++)
         {
-            if (Actors[i].photonView.ViewID == viewID)
+            if (Actors[i].photonView.ViewID == viewID && PhotonNetwork.LocalPlayer.ActorNumber == ActorID)
             {
                 photonView.RPC("ReduceAlivePlayerCounts", RpcTarget.MasterClient, viewID);
                 Vector3 deadPos = Actors[i].BodyHandler.Hip.transform.position;
+                Debug.Log("HandleDeath: " + Actors[i].actorState);
                 StartCoroutine(InitiateGhost(deadPos));
             }
         }
     }
-   
+
+    [PunRPC]
+    void ReduceAlivePlayerCounts(int viewID)
+    {
+        Debug.Log("[Only Master] " + viewID + " Player is Dead!");
+
+        AlivePlayerCounts--;
+
+        if (AlivePlayerCounts == 1)
+            EndRound();
+    }
+
+    void EndRound()
+    {
+        // To-Do: 라운드 종료
+    }
+
+
     void SendInfo(float hp, float stamina, Actor.ActorState actorState, Actor.DebuffState debuffstate, int viewID)
     {
-        Debug.Log("[master Event] SendInfo()");
+        if (!PhotonNetwork.IsMasterClient) return;
 
         photonView.RPC("SyncInfo", RpcTarget.Others, hp, actorState, debuffstate, viewID);
     }
@@ -302,22 +321,6 @@ public class GameCenter : BaseScene
                 break;
             }
         }
-    }
-
-    [PunRPC]
-    void ReduceAlivePlayerCounts(int viewID)
-    {
-        Debug.Log("[Only Master] " + viewID + " Player is Dead!");
-
-        AlivePlayerCounts--;
-
-        if (AlivePlayerCounts == 1)
-            EndRound();
-    }
-
-    void EndRound()
-    {
-        // To-Do: 라운드 종료
     }
 
     [PunRPC]
@@ -427,7 +430,6 @@ public class GameCenter : BaseScene
     {
         photonView.RPC("UpdateCount", RpcTarget.MasterClient, _roomUI.Ready);
     }
-
     void UpdateMasterStatus()
     {
         if (_roomUI.PlayerReadyCount == PhotonNetwork.CurrentRoom.PlayerCount)
@@ -447,8 +449,11 @@ public class GameCenter : BaseScene
 
     #endregion
 
-
     #region MonoBehaviourPunCallbacks Methods
+
+    public override void Clear()
+    {
+    }
 
     public override void OnEnable()
     {
@@ -461,8 +466,4 @@ public class GameCenter : BaseScene
     }
 
     #endregion
-
-    public override void Clear()
-    {
-    }
 }
