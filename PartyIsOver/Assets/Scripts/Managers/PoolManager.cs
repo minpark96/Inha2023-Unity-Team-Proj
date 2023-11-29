@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static Define;
 using static UnityEngine.UI.Image;
 
 public class PoolManager 
@@ -19,12 +20,30 @@ public class PoolManager
         public void Init(GameObject original, int count = 6)
         {
             Original = original;
-            //생성하는 오브젝트를 나누기 위한 Root를 또 추가
-            Root = new GameObject().transform;
-            Root.name = $"{original.name}_Root";
+            //생성하는 오브젝트를 나누기 위한 Root를 또 추가 해줌
+            //Stun 이펙트 
+            #region Stun Effect
+            if (original.name == "Stun_loop")
+            {
+                Root = new GameObject().transform;
+                Root.name = $"{original.name}_Root";
 
-            for(int i = 0; i < count; i++)
-                Push(Create());
+                for (int i = 0; i < count; i++)
+                    Push(Create());
+            }
+            #endregion
+            #region 다른 Effect 이름 추가해줘야 함
+            else if (original.name == "")
+            {
+                Root = new GameObject().transform;
+                Root.name = $"{original.name}_Root";
+
+                for (int i = 0; i < count; i++)
+                    Push(Create());
+            }
+            #endregion
+
+            //다른 오브젝트 여러개 생성
 
         }
 
