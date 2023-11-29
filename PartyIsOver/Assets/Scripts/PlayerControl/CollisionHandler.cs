@@ -203,11 +203,19 @@ public class CollisionHandler : MonoBehaviourPun
         if (contact.thisCollider.gameObject.GetComponent<PhotonView>() != null)
         {
             thisViewID = contact.thisCollider.gameObject.GetComponent<PhotonView>().ViewID;
-            photonView.RPC("AddForceAttackedTarget", RpcTarget.All, thisViewID, contact.normal, (int)collisionInteractable.damageModifier, itemDamage);
+            photonView.RPC("AddForceAttackedTarget", RpcTarget.All, thisViewID, NormalChange(contact.normal), (int)collisionInteractable.damageModifier, itemDamage);
         }
 
         return damage;
     }
+
+    Vector3 NormalChange(Vector3 normal)
+    {
+        Vector3 newNormal = new Vector3(normal.x,normal.y/3,normal.z);
+
+        return newNormal.normalized;
+    }
+
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -237,19 +245,16 @@ public class CollisionHandler : MonoBehaviourPun
             case InteractableObject.Damage.Object:
                 if(body != null)
                 {
+                    normal = new Vector3(normal.x, 0f, normal.z);
                     thisRb.transform.root.GetComponent<BodyHandler>().Head.PartRigidbody.
                          AddForce(normal * _objectForceNormal * itemDamage, ForceMode.VelocityChange);
                     body.AddForce(Vector3.up * _objectForceUp, ForceMode.VelocityChange);
                     body.AddForce(normal * _objectForceNormal* itemDamage, ForceMode.VelocityChange);
-                    Debug.Log("Item HipAddForce");
-                    Debug.Log(normal.magnitude);
-
                 }
                 else
                 {
                     thisRb.AddForce(Vector3.up * _objectForceUp, ForceMode.VelocityChange);
                     thisRb.AddForce(normal * _objectForceNormal * itemDamage, ForceMode.VelocityChange);
-                    Debug.Log("Item AddForce");
                 }
 
                 break;
@@ -258,8 +263,18 @@ public class CollisionHandler : MonoBehaviourPun
                 thisRb.AddForce(Vector3.up * _punchForceUp, ForceMode.VelocityChange);
                 break;
             case InteractableObject.Damage.DropKick:
-                thisRb.AddForce(normal * _dropkickForceNormal, ForceMode.VelocityChange);
-                thisRb.AddForce(Vector3.up * _dropkickForceUp, ForceMode.VelocityChange);
+                if (body != null)
+                {
+                    thisRb.transform.root.GetComponent<BodyHandler>().Head.PartRigidbody.
+                         AddForce(normal * _dropkickForceNormal, ForceMode.VelocityChange);
+                    body.AddForce(Vector3.up * _dropkickForceUp, ForceMode.VelocityChange);
+                    body.AddForce(normal * _dropkickForceNormal, ForceMode.VelocityChange);
+                }
+                else
+                {
+                    thisRb.AddForce(normal * _dropkickForceNormal, ForceMode.VelocityChange);
+                    thisRb.AddForce(Vector3.up * _dropkickForceUp, ForceMode.VelocityChange);
+                }
                 break;
             case InteractableObject.Damage.Headbutt:
                 thisRb.AddForce(normal * _headbuttForceNormal, ForceMode.VelocityChange);
