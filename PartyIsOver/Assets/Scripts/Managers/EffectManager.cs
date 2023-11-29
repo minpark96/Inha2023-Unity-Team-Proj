@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
+using static UnityEngine.UI.Image;
 
 public class EffectManager
 {
@@ -76,7 +78,8 @@ public class EffectManager
         //로테이션이랑 회전 값 넣어주기
         objectTransform.position = pos;
         objectTransform.rotation = Quaternion.LookRotation(normal);
-
     }
+
+
 
 }
