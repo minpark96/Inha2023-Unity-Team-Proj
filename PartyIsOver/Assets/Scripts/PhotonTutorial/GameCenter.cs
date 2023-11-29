@@ -15,6 +15,7 @@ public class GameCenter : BaseScene
 
     [SerializeField]
     RoomUI _roomUI;
+    ScoreBoardUI _scoreBoardUI;
 
     #endregion
 
@@ -23,9 +24,6 @@ public class GameCenter : BaseScene
     #region Private Fields
 
     string _arenaName = "PO_Map_KYH";
-    
-
-    string _roomPlayerPath = "Ragdoll2_Room";
 
     string _playerPath1 = "Players/Player1";
     string _playerPath2 = "Players/Player2";
@@ -39,6 +37,7 @@ public class GameCenter : BaseScene
 
     bool _isChecked;
 
+    #endregion
 
     #region Public Fields
 
@@ -58,6 +57,14 @@ public class GameCenter : BaseScene
     public Image ImageHPBar;
     public Image ImageStaminusBar;
     public Image Portrait;
+
+    public struct Ranking
+    {
+        public int score;
+        public string nickName;
+        public int index;
+    };
+    public List<Ranking> Rank = new List<Ranking>();
 
     #endregion
 
@@ -81,9 +88,6 @@ public class GameCenter : BaseScene
         }
 
         DontDestroyOnLoad(this.gameObject);
-
-        //if (SceneManager.GetActiveScene().name == _roomName)
-        //    InstantiatePlayerInRoom();
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -142,32 +146,6 @@ public class GameCenter : BaseScene
         }
     }
 
-    void InstantiatePlayerInRoom()
-    {
-        GameObject go = null;
-
-        switch (PhotonNetwork.LocalPlayer.ActorNumber)
-        {
-            case 1:
-                go = Managers.Resource.PhotonNetworkInstantiate(_roomPlayerPath, pos: SpawnPoints[6]);
-                break;
-            case 2:
-                go = Managers.Resource.PhotonNetworkInstantiate(_roomPlayerPath, pos: SpawnPoints[6]);
-                break;
-            case 3:
-                go = Managers.Resource.PhotonNetworkInstantiate(_roomPlayerPath, pos: SpawnPoints[6]);
-                break;
-            case 4:
-                go = Managers.Resource.PhotonNetworkInstantiate(_roomPlayerPath, pos: SpawnPoints[6]);
-                break;
-            case 5:
-                go = Managers.Resource.PhotonNetworkInstantiate(_roomPlayerPath, pos: SpawnPoints[6]);
-                break;
-            case 6:
-                go = Managers.Resource.PhotonNetworkInstantiate(_roomPlayerPath, pos: SpawnPoints[6]);
-                break;
-        }
-    }
 
     void InstantiatePlayer()
     {
@@ -212,7 +190,7 @@ public class GameCenter : BaseScene
                 photonView.RPC("RegisterActorInfo", RpcTarget.MasterClient, viewID);
             }
 
-            //Debug.Log("ActorViewIDs.Count: " + ActorViewIDs.Count);
+            AddRank();
         }
     }
 
@@ -319,6 +297,33 @@ public class GameCenter : BaseScene
         }
     }
 
+    void AddRank()
+    {
+        Ranking rank = new Ranking();
+        rank.score = 0;
+        rank.nickName = PhotonNetwork.NickName;
+        rank.index = PhotonNetwork.LocalPlayer.ActorNumber;
+        Rank.Add(rank);
+
+    }
+
+    //[PunRPC]
+    //void SyncRankInfo()
+    //{
+    //   for(int i = 0; i < PhotonNetwork.LocalPlayer.ActorNumber; i++)
+    //    {
+    //        AddRank();
+    //    }
+
+    //}
+
+    //[PunRPC]
+    //void AddRankInfo()
+    //{
+    //    AddRank();
+    //    photonView.RPC("SyncActorsList", RpcTarget.Others);
+
+    //}
 
     void Start()
     {
@@ -366,6 +371,45 @@ public class GameCenter : BaseScene
 
         if(SceneManager.GetActiveScene().name == _arenaName)
         {
+            if (PhotonNetwork.IsMasterClient)
+            {
+                for (int i = 0; i < Actors.Count; i++)
+                {
+                    if (Actors[i].photonView.IsMine)
+                    {
+                        if (_scoreBoardUI == null)
+                        {
+                            _scoreBoardUI = GameObject.Find("ScoreBoard Panel").GetComponent<ScoreBoardUI>();
+                            _scoreBoardUI.ScoreBoardSetup();
+                        }
+                        else
+                        {
+                            _scoreBoardUI.ChangeScoreBoard(Rank);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < Actors.Count; i++)
+                {
+                    if (Actors[i].photonView.IsMine)
+                    {
+                        if (_scoreBoardUI == null)
+                        {
+                            _scoreBoardUI = GameObject.Find("ScoreBoard Panel").GetComponent<ScoreBoardUI>();
+                            _scoreBoardUI.ScoreBoardSetup();
+                        }
+                        else
+                        {
+                            _scoreBoardUI.ChangeScoreBoard(Rank);
+                        }
+                    }
+                }
+            }
+                
+
+
             for (int i = 0; i < Actors.Count; i++)
             {
                 if(Actors[i].photonView.IsMine)
@@ -374,6 +418,7 @@ public class GameCenter : BaseScene
                     ImageStaminusBar.fillAmount = Actors[i].Stamina / Actors[i].MaxStamina;
                 }
             }
+
         }
     }
 
@@ -414,12 +459,8 @@ public class GameCenter : BaseScene
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-    #endregion
-
     public override void Clear()
     {
     }
-
     #endregion
-
 }

@@ -55,19 +55,19 @@ public class RoomUI : MonoBehaviour
                         OnClickReady();
                     }
 
-                    if(Input.GetKeyDown(KeyCode.Tab))
-                    {
-                        OnClickSkillChange();
-                    }
-
                     if (Input.GetKeyDown(KeyCode.Escape))
                     {
                         OnClickLeaveRoom();
                     }
                 }
                 break;
-
-            case Define.KeyboardEvent.PointerUp:
+            case Define.KeyboardEvent.PointerDown:
+                {
+                    if (Input.GetKeyDown(KeyCode.Tab))
+                    {
+                        OnClickSkillChange();
+                    }
+                }
                 break;
         }
     }
