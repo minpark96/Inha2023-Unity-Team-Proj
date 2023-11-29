@@ -28,8 +28,7 @@ public class LobbyUI : MonoBehaviour
     public Transform ContentObject;
 
     public bool IsClicked;
-    public bool IsInviteCodeEntered;
-    private string _roomName;
+    public bool hasPassword;
     
 
     private void Start()
@@ -43,7 +42,6 @@ public class LobbyUI : MonoBehaviour
     public void OnClickJoinRoomCancel()
     {
         EnterPasswordPanel.SetActive(false);
-        IsInviteCodeEntered = true;
     }
 
 
@@ -51,6 +49,7 @@ public class LobbyUI : MonoBehaviour
     {
         PhotonNetwork.JoinRandomRoom();
     }
+
     public void OnClickLeaveLobby()
     {
         PhotonManager.Instance.LeaveLobby();
@@ -61,50 +60,30 @@ public class LobbyUI : MonoBehaviour
     {
         CreateRoomPanel.SetActive(true);
     }
+
     public void OnClickCreate()
     {
         CreateRoomPanel.SetActive(false);
 
         if (RoomInputField.text.Length >= 1)
         {
-            if (IsClicked)
-            {
-                RoomOptions roomOptions =
-                new RoomOptions()
-                {
-                    IsVisible = true,
-                    IsOpen = true,
-                    MaxPlayers = 6,
-                };
+            RoomOptions roomOptions =
+              new RoomOptions()
+              {
+                  IsVisible = true,
+                  IsOpen = true,
+                  MaxPlayers = 6,
+              };
 
-                roomOptions.CustomRoomProperties = new Hashtable();
-                roomOptions.CustomRoomProperties.Add("password", Password.textComponent.text);
-
-                PhotonNetwork.CreateRoom(RoomInputField.text, roomOptions);
-            }
-            else
-            {
-                RoomOptions roomOptions =
-                new RoomOptions()
-                {
-                    IsVisible = true,
-                    IsOpen = true,
-                    MaxPlayers = 6,
-                };
-
-                PhotonNetwork.CreateRoom(RoomInputField.text, roomOptions);
-            }
+            PhotonNetwork.CreateRoom(RoomInputField.text, roomOptions);
         }
-
     }
-    public void OnClickJoinRoom()
+
+    public void OnClickJoinRoom(string roomName)
     {
-        //string inviteCode = InviteCode.textComponent.text;
-        //object[] invitation = new object[] { inviteCode };
-        //PhotonNetwork.JoinRoom(_roomName, (string[])invitation);
-
-        IsInviteCodeEntered = true;
+        PhotonNetwork.JoinRoom(roomName);
     }
+
     public void OnClickCancel()
     {
         CreateRoomPanel.SetActive(false);
@@ -130,4 +109,5 @@ public class LobbyUI : MonoBehaviour
             Password.textComponent.text = "";
         }
     }
+
 }

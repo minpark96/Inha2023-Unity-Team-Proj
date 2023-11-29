@@ -221,7 +221,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &38851137
 RectTransform:
   m_ObjectHideFlags: 0
@@ -543,7 +543,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &372744855
 RectTransform:
   m_ObjectHideFlags: 0
@@ -850,7 +850,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &594752579
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1298,7 +1298,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -233.40933, y: 119.453}
+  m_AnchoredPosition: {x: -233.40933, y: 12.2}
   m_SizeDelta: {x: 165.7696, y: 65.7845}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &816324624
@@ -1596,7 +1596,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &960432741
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1811,7 +1811,7 @@ MonoBehaviour:
       - m_Target: {fileID: 1611580045}
         m_TargetAssemblyTypeName: LobbyUI, Assembly-CSharp
         m_MethodName: OnClickJoinRoom
-        m_Mode: 1
+        m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -2476,7 +2476,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 122.19, y: 112.30591}
+  m_AnchoredPosition: {x: 122.19, y: 12.2}
   m_SizeDelta: {x: 398.38, y: 88.1452}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1324513375
@@ -2936,7 +2936,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1450971882
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3430,6 +3430,7 @@ MonoBehaviour:
   RoomItemPrefab: {fileID: 9077898108244867235, guid: 3a55b57e9bf4a6240ab54f9590bc2410, type: 3}
   ContentObject: {fileID: 1794223501}
   IsClicked: 0
+  hasPassword: 0
 --- !u!1 &1641432564
 GameObject:
   m_ObjectHideFlags: 0

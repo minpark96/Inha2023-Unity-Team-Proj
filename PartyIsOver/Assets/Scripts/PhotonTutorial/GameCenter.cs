@@ -339,8 +339,6 @@ public class GameCenter : BaseScene
     {
         if(SceneManager.GetActiveScene().name == _roomName)
         {
-            Debug.Log("CurrentRoom PlayerCount : " + PhotonNetwork.CurrentRoom.PlayerCount);
-
             if (PhotonNetwork.IsMasterClient)
             {
                 UpdateMasterStatus();
@@ -368,8 +366,6 @@ public class GameCenter : BaseScene
 
         if(SceneManager.GetActiveScene().name == _arenaName)
         {
-            Debug.Log(ImageHPBar.fillAmount);
-
             for (int i = 0; i < Actors.Count; i++)
             {
                 if(Actors[i].photonView.IsMine)

@@ -95,7 +95,11 @@ public class RoomUI : MonoBehaviour
         if (PhotonNetwork.IsMasterClient)
         {
             if(CanPlay)
+            {
                 PhotonNetwork.LoadLevel(_arenaName);
+                PhotonNetwork.CurrentRoom.IsOpen = false;
+                Managers.Input.KeyboardAction -= OnKeyboardEvent;
+            }
         }
         else
         {
@@ -118,9 +122,8 @@ public class RoomUI : MonoBehaviour
 
     public void OnClickLeaveRoom()
     {
-        //PhotonManager.Instance.LeaveRoom();
-
-        PhotonNetwork.LeaveRoom();
+        PhotonManager.Instance.LeaveRoom();
+        //PhotonNetwork.LeaveRoom();
     }
 
     public void OnClickSkillChange()

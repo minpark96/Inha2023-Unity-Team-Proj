@@ -23,6 +23,7 @@ public class LauncherUI : MonoBehaviour
     {
         Init();
     }
+
     void Init()
     {
         _controlPanel = GameObject.Find("Control Panel");
@@ -78,6 +79,7 @@ public class LauncherUI : MonoBehaviour
         PhotonManager.Instance.Connect();
         SceneManager.LoadSceneAsync("[2]Main");
     }
+
     public void OnClickFeedbackPanelCancel()
     {
         _feedbackPanel.SetActive(false);
@@ -92,6 +94,7 @@ public class LauncherUI : MonoBehaviour
     {
         _cancelPanel.SetActive(true);
     }
+
     public void OnClickCancelPanelCancel()
     {
         _cancelPanel.SetActive(false);

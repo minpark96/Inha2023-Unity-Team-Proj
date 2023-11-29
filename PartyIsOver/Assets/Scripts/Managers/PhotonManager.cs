@@ -44,7 +44,6 @@ public class PhotonManager : BaseScene
     {
         if (PhotonNetwork.IsConnected)
         {
-            Debug.Log("Joining Lobby");
             PhotonNetwork.JoinLobby();
         }
         else
@@ -72,11 +71,11 @@ public class PhotonManager : BaseScene
 
     public void LeaveRoom()
     {
-        //PhotonNetwork.LeaveRoom();
+        PhotonNetwork.LeaveRoom();
 
-        //Connect();
-        //StartCoroutine(LoadNextScene(_sceneLobby));
-        //SceneManager.LoadSceneAsync("[3]Lobby");
+        Connect();
+        StartCoroutine(LoadNextScene(_sceneLobby));
+        SceneManager.LoadSceneAsync("[3]Lobby");
     }
 
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -197,55 +196,17 @@ public class PhotonManager : BaseScene
     {
         Debug.Log("[OnJoinedRoom]");
 
-        LobbyUI.EnterPasswordPanel.SetActive(true);
-
-        while(!LobbyUI.IsInviteCodeEntered)
+        if (PhotonNetwork.IsMasterClient)
         {
-            Debug.Log("onjoinedroom loop");
-
-            if(PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey("password"))
-            {
-                object customValue = PhotonNetwork.CurrentRoom.CustomProperties["password"];
-                if (LobbyUI.Password.text == (string)customValue)
-                {
-                    if (PhotonNetwork.IsMasterClient)
-                    {
-                        StartCoroutine(LoadNextScene(_sceneRoom));
-                    }
-
-                    LobbyUI.IsInviteCodeEntered = true;
-                }
-            }
-            else
-            {
-                LobbyUI.EnterPasswordPanel.SetActive(false);
-
-                if (PhotonNetwork.IsMasterClient)
-                {
-                    StartCoroutine(LoadNextScene(_sceneRoom));
-                }
-
-                LobbyUI.IsInviteCodeEntered = true;
-            }
+            StartCoroutine(LoadNextScene(_sceneRoom));
         }
-
-        //if (PhotonNetwork.IsMasterClient)
-        //{
-        //    StartCoroutine(LoadNextScene(_sceneRoom));
-        //}
     }
 
     public override void OnLeftRoom()
     {
         Debug.Log("[OnLeftRoom()]");
-        StartCoroutine(GiveDelayTime());
         StartCoroutine(LoadNextScene(_sceneLobby));
         SceneManager.LoadSceneAsync("[3]Lobby");
-    }
-    IEnumerator GiveDelayTime()
-    {
-        yield return new WaitForSeconds(2.0f);
-        Connect();
     }
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)

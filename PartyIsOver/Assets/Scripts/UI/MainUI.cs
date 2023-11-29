@@ -77,14 +77,17 @@ public class MainUI : MonoBehaviour
         _gameStartFlag = true;
         Animator.SetBool("Pose", true);
     }
+
     public void OnClickPopup()
     {
         CancelPanel.SetActive(true);
     }
+
     public void OnClickPopUpCancel()
     {
         CancelPanel.SetActive(false);
     }
+
     public void OnClickPopUpGameQuit()
     {
         #if UNITY_EDITOR

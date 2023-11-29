@@ -267,7 +267,7 @@ public class InputManager
         }
         if (KeyboardAction != null)
         {
-            if (Input.GetKeyDown(KeyCode.F6))
+            if (Input.GetKeyDown(KeyCode.Escape))
             {
                 KeyboardAction.Invoke(Define.KeyboardEvent.Click);
             }
