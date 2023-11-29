@@ -846,8 +846,11 @@ public class Grab : MonoBehaviourPun
 
         yield return _actor.PlayerController.Potion(PlayerController.Side.Right, 0.07f, 0.1f, 0.5f, 0.5f, 0.1f);
 
+        photonView.RPC("UseItem", RpcTarget.All);
+        GrabResetTrigger();
     }
 
+    [PunRPC]
     private void UseItem()
     {
         EquipItem.GetComponent<Item>().Use();

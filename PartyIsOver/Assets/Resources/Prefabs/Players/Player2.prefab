@@ -12260,7 +12260,6 @@ MonoBehaviour:
   _hips: {fileID: 5856347132035830517}
   _cameraArm: {fileID: 3110579752506030532}
   _bodyHandler: {fileID: 0}
-  targetingHandler: {fileID: 0}
   ReadyPunch: 0.1
   Punching: 0.1
   ResetPunch: 0.3

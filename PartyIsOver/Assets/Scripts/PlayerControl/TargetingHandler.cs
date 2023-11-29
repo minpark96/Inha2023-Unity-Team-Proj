@@ -19,6 +19,11 @@ public class TargetingHandler : MonoBehaviour
     void Start()
     {
         _actor = GetComponent<Actor>();
+        for (int i = 0; i < 6; i++)
+        {
+            if (gameObject.layer != 26 + i)
+                layerMask |= 1 << 26 + i;
+        }
     }
 
     // Update is called once per frame
