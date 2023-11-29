@@ -27,7 +27,6 @@ public class CollisionHandler : MonoBehaviourPun
     [SerializeField] private float _headbuttForceUp;
     [SerializeField] private float _dropkickForceUp;
 
-
     void Start()
     {
         if (actor == null)
@@ -150,7 +149,8 @@ public class CollisionHandler : MonoBehaviourPun
 
         return damage;
     }
-    private float PhysicalDamage(InteractableObject collisionInteractable, float damage, ContactPoint contact)
+
+private float PhysicalDamage(InteractableObject collisionInteractable, float damage, ContactPoint contact)
     {
         float itemDamage = 1f;
         if (collisionInteractable.GetComponent<Item>() != null)
@@ -171,18 +171,23 @@ public class CollisionHandler : MonoBehaviourPun
                     //    rb.angularVelocity = Vector3.zero;
                     //}
                     damage *= _objectDamage *itemDamage;
+                    actor.PlayerController.PlayerEffectSound("PlayerEffect/WEAPON_CrossBow");
                 }
                 break;
             case InteractableObject.Damage.Punch:
                 damage *= _punchDamage;
                 {
-                    string path = "Sounds/PlayerEffect/SFX_ArrowShot_Hit";
-                    AudioClip audioClip = Managers.Sound.GetOrAddAudioClip(path, Define.Sound.PlayerEffect);
-                    Managers.Sound.Play(audioClip, Define.Sound.PlayerEffect);
+                    actor.PlayerController.PlayerEffectSound("PlayerEffect/SFX_ArrowShot_Hit");
+                    //PlaySound("PlayerEffect/SFX_ArrowShot_Hit");
                 }
                 break;
             case InteractableObject.Damage.DropKick:
                 damage *= _dropkickDamage;
+                {
+                    actor.PlayerController.PlayerEffectSound("PlayerEffect/DAMAGE_Monster_01");
+
+                    //PlaySound("PlayerEffect/DAMAGE_Monster_01");
+                }
                 break;
             case InteractableObject.Damage.Headbutt:
                 damage *= _headbuttDamage;

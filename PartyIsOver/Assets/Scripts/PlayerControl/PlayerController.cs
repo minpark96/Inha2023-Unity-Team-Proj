@@ -322,7 +322,7 @@ public class PlayerController : MonoBehaviourPun
     }
 
     [PunRPC]
-    void PlayerEffectSound(string path)
+    public void PlayerEffectSound(string path)
     {
         _audioClip = Managers.Sound.GetOrAddAudioClip(path);
         _audioSource.clip = _audioClip;
