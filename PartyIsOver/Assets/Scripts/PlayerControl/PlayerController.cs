@@ -1441,6 +1441,7 @@ public class PlayerController : MonoBehaviourPun
     #endregion
 
     #region MoveAnimation
+    [PunRPC]
     public void Move()
     {
         if (_actor.actorState == ActorState.Run)

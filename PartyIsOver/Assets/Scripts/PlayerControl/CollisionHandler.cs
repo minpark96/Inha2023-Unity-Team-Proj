@@ -168,6 +168,7 @@ public class CollisionHandler : MonoBehaviourPun
                     //    rb.angularVelocity = Vector3.zero;
                     //}
                     damage *= _objectDamage *itemDamage;
+                    damage = Mathf.Clamp(damage, 15f, 50f);
                 }
                 break;
             case InteractableObject.Damage.Punch:
@@ -206,6 +207,7 @@ public class CollisionHandler : MonoBehaviourPun
             photonView.RPC("AddForceAttackedTarget", RpcTarget.All, thisViewID, NormalChange(contact.normal), (int)collisionInteractable.damageModifier, itemDamage);
         }
 
+        damage = Mathf.Clamp(damage, 0f, 25f);
         return damage;
     }
 
@@ -237,7 +239,6 @@ public class CollisionHandler : MonoBehaviourPun
             body = thisRb.transform.root.GetComponent<BodyHandler>().Hip.PartRigidbody;
         }
 
-
         switch ((InteractableObject.Damage)damageModifier)
         {
             case InteractableObject.Damage.Ignore:
@@ -245,18 +246,19 @@ public class CollisionHandler : MonoBehaviourPun
             case InteractableObject.Damage.Object:
                 if(body != null)
                 {
-                    normal = new Vector3(normal.x, 0f, normal.z);
+                    normal = new Vector3(normal.x, 0f, normal.z).normalized;
                     thisRb.transform.root.GetComponent<BodyHandler>().Head.PartRigidbody.
                          AddForce(normal * _objectForceNormal * itemDamage, ForceMode.VelocityChange);
                     body.AddForce(Vector3.up * _objectForceUp, ForceMode.VelocityChange);
                     body.AddForce(normal * _objectForceNormal* itemDamage, ForceMode.VelocityChange);
+
+                    Debug.Log("objcol  Hip");
                 }
                 else
                 {
                     thisRb.AddForce(Vector3.up * _objectForceUp, ForceMode.VelocityChange);
                     thisRb.AddForce(normal * _objectForceNormal * itemDamage, ForceMode.VelocityChange);
                 }
-
                 break;
             case InteractableObject.Damage.Punch:
                 thisRb.AddForce(normal * _punchForceNormal , ForceMode.VelocityChange);
@@ -269,6 +271,7 @@ public class CollisionHandler : MonoBehaviourPun
                          AddForce(normal * _dropkickForceNormal, ForceMode.VelocityChange);
                     body.AddForce(Vector3.up * _dropkickForceUp, ForceMode.VelocityChange);
                     body.AddForce(normal * _dropkickForceNormal, ForceMode.VelocityChange);
+                    Debug.Log("Dropcol  Hip");
                 }
                 else
                 {
@@ -291,9 +294,9 @@ public class CollisionHandler : MonoBehaviourPun
         {
             thisRb.velocity = thisRb.velocity.normalized * 15f;
         }
-        if (body != null && body.velocity.magnitude > 15f)
+        if (body != null && body.velocity.magnitude > 10f)
         {
-            body.velocity = body.velocity.normalized * 15f;
+            body.velocity = body.velocity.normalized * 10f;
             Debug.Log("maxVel");
 
         }
