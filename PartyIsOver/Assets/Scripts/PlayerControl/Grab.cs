@@ -107,8 +107,8 @@ public class Grab : MonoBehaviourPun
 
     void GrabStateCheck()
     {
-        PlayerLiftCheck();
-        photonView.RPC("PullingCheck", RpcTarget.All);
+        //PlayerLiftCheck();
+        //photonView.RPC("PullingCheck", RpcTarget.All);
 
         //PullingCheck();
         if (EquipItem != null)

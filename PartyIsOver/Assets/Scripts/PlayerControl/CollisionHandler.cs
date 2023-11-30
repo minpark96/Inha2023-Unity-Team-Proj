@@ -100,7 +100,6 @@ public class CollisionHandler : MonoBehaviourPun
                 damage *= actor.PlayerAttackPoint;
                 damage = Mathf.RoundToInt(damage);
 
-                Debug.Log(transform.root.GetComponent<PhotonView>().ViewID + "collision");
 
                 // 데미지 적용
                 if (damage > 0f && velocityMagnitude > damageMinimumVelocity)
@@ -108,7 +107,6 @@ public class CollisionHandler : MonoBehaviourPun
                     if (collisionInteractable != null)
                     {
                         actor.StatusHandler.AddDamage(collisionInteractable.damageModifier, damage, collisionCollider.gameObject);
-                    Debug.Log(transform.root.GetComponent<PhotonView>().ViewID + "collision 2");
                     }
                 }
             }
