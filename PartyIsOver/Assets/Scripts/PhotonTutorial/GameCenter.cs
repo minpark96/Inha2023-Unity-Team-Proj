@@ -95,6 +95,7 @@ public class GameCenter : BaseScene
     {
         if (scene.name == _arenaName)
         {
+            Debug.Log("아레나 로딩완료!!!");
             AlivePlayerCounts = PhotonNetwork.CurrentRoom.PlayerCount;
             InstantiatePlayer();
 
@@ -275,7 +276,7 @@ public class GameCenter : BaseScene
         {
             if (Actors[i].photonView.ViewID == viewID && Actors[i].photonView.IsMine == true)
             {
-                Actors[i].CameraControl.Camera.GetComponent<GameOverEffect>().StartGameOverEffect();
+                Actors[i].CameraControl.Camera.GetComponent<GrayscaleEffect>().StartGrayscalseEffect();
                 photonView.RPC("ReduceAlivePlayerCounts", RpcTarget.MasterClient, viewID);
                 Vector3 deadPos = Actors[i].BodyHandler.Hip.transform.position;
                 Debug.Log("HandleDeath: " + Actors[i].actorState);
@@ -297,7 +298,8 @@ public class GameCenter : BaseScene
 
     void EndRound()
     {
-        // To-Do: 라운드 종료
+        Debug.Log("라운드 종료");
+        PhotonNetwork.LoadLevel(_arenaName);
     }
 
 

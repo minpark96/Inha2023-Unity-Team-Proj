@@ -276,7 +276,8 @@ public class PlayerController : MonoBehaviourPun
 
         }
 
-        _cameraArm = _actor.CameraControl.CameraArm;
+        if (photonView.IsMine)
+            _cameraArm = _actor.CameraControl.CameraArm;
     }
 
 

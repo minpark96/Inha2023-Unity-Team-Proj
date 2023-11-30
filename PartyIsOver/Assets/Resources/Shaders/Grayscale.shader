@@ -2,41 +2,48 @@ Shader "Custom/Grayscale"
 {
 	Properties
 	{
-		_MainTex("Base (RGB)", 2D) = "white" {}
-		_Grayscale("Grayscale", Range(0.0, 1.0)) = 0.0
+		_LerpFactor("Lerp Factor", Range(0, 1)) = 0
 	}
 
-		SubShader
+	SubShader
+	{
+		Pass
 		{
-				Pass
-				{
-					CGPROGRAM
-					#pragma vertex vert_img
-					#pragma fragment frag
-					#include "UnityCG.cginc"
+			CGPROGRAM
+			#pragma vertex vert
+			#pragma fragment frag
+			#include "UnityCG.cginc"
 
-					sampler2D _MainTex;
-					float _Grayscale;
+			struct appdata 
+			{
+				float4 vertex : POSITION;
+				float2 uv : TEXCOORD0;
+			};
 
-					fixed4 frag(v2f_img i) : COLOR
-					{
-						fixed4 currentText = tex2D(_MainTex, i.uv);
+			struct v2f 
+			{
+				float2 uv : TEXCOORD0;
+				float4 vertex : SV_POSITION;
+			};
 
-					// simple grayscale
-					float grayscale = (currentText.r + currentText.g + currentText.b) / 3;
-
-					//YUV 
-					//float grayscale = 0.299 * currentText.r + 0.587 * currentText.g + 0.114 * currentText.b;
-
-					fixed4 color = lerp(currentText, grayscale, _Grayscale);
-
-					currentText.rgb = color;
-
-					return currentText;
-				}
-
-			ENDCG
+			v2f vert(appdata v) 
+			{
+				v2f o;
+				o.vertex = UnityObjectToClipPos(v.vertex);
+				o.uv = v.uv;
+				return o;
 			}
+
+			sampler2D _MainTex;
+			uniform float _LerpFactor;
+
+			fixed4 frag(v2f i) : SV_Target
+			{
+				fixed4 col = tex2D(_MainTex, i.uv);
+				float lum = dot(col.rgb, float3(0.299, 0.587, 0.114));
+				return lerp(col, float4(lum, lum, lum, 1.0), _LerpFactor);
+			}
+			ENDCG
 		}
-			FallBack off
+	}
 }
