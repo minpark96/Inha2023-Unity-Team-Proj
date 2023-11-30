@@ -848,6 +848,7 @@ public class Grab : MonoBehaviourPun
 
     }
 
+    [PunRPC]
     private void UseItem()
     {
         EquipItem.GetComponent<Item>().Use();

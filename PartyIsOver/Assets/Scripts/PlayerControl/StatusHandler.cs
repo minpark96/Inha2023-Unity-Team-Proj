@@ -170,8 +170,6 @@ public class StatusHandler : MonoBehaviourPun
             _audioSource.spatialBlend = 1;
             Managers.Sound.Play(_audioClip, Define.Sound.PlayerEffect);
         }
-        
-
     }
 
     public void DebuffCheck(InteractableObject.Damage type)
@@ -192,12 +190,15 @@ public class StatusHandler : MonoBehaviourPun
                 }
                 break;
             case Damage.Balloon: // 풍선
-                actor.debuffState |= Actor.DebuffState.Balloon;
-                foreach (Actor.DebuffState state in System.Enum.GetValues(typeof(Actor.DebuffState)))
                 {
-                    if (state != Actor.DebuffState.Balloon && (actor.debuffState & state) != 0)
+                    actor.debuffState |= Actor.DebuffState.Balloon;
+                    photonView.RPC("PlayerDebuffSound", RpcTarget.All, "PlayerEffect/Cartoon-UI-049");
+                    foreach (Actor.DebuffState state in System.Enum.GetValues(typeof(Actor.DebuffState)))
                     {
-                        actor.debuffState &= ~state;
+                        if (state != Actor.DebuffState.Balloon && (actor.debuffState & state) != 0)
+                        {
+                            actor.debuffState &= ~state;
+                        }
                     }
                 }
                 break;
@@ -265,8 +266,8 @@ public class StatusHandler : MonoBehaviourPun
                     if (!_hasStun)
                     {
                         StartCoroutine(ResetBodySpring());
-                        StartCoroutine(Stun(_stunTime));
-                        //photonView.RPC("Stun", RpcTarget.All, _stunTime);
+                        //StartCoroutine(Stun(_stunTime));
+                        photonView.RPC("Stun", RpcTarget.All, _stunTime);
                     }
                     break;
                 case Actor.DebuffState.Ghost:
@@ -454,8 +455,8 @@ public class StatusHandler : MonoBehaviourPun
             {
                 _hasShock = false;
                 actor.actorState = Actor.ActorState.Stand;
-                StartCoroutine(Stun(_stunTime));
-                //photonView.RPC("Stun", RpcTarget.All, _stunTime);
+                //StartCoroutine(Stun(_stunTime));
+                photonView.RPC("Stun", RpcTarget.All, _stunTime);
                 StopCoroutine(Shock(delay));
             }
 
@@ -481,15 +482,15 @@ public class StatusHandler : MonoBehaviourPun
         // 감전 해제
         _hasShock = false;
         StartCoroutine(ResetBodySpring());
-        StartCoroutine(Stun(3));
-        //photonView.RPC("Stun", RpcTarget.All, 3);
+        //StartCoroutine(Stun(3f));
+        photonView.RPC("Stun", RpcTarget.All, 3f);
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Shock;
 
         actor.InvokeStatusChangeEvent();
         _audioClip = null;
     }
-
+    [PunRPC]
     IEnumerator Stun(float delay)
     {
         _hasStun = true;
