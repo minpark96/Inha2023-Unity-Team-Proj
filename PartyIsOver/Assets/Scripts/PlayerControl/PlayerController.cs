@@ -275,6 +275,8 @@ public class PlayerController : MonoBehaviourPun
                 RotationsForBalloon.Add(_bodyHandler.BodyParts[i].PartTransform.localRotation);
 
         }
+
+        _cameraArm = _actor.CameraControl.CameraArm;
     }
 
 
@@ -296,7 +298,6 @@ public class PlayerController : MonoBehaviourPun
         originalZMotions = new ConfigurableJointMotion[childJoints.Length];
 
         _children = GetComponentsInChildren<Transform>();
-        _cameraArm = _actor.CameraControl.CameraArm;
 
         // 원래의 angularXMotion 값을 저장
         for (int i = 0; i < childJoints.Length; i++)
