@@ -108,7 +108,9 @@ public class Grab : MonoBehaviourPun
     void GrabStateCheck()
     {
         PlayerLiftCheck();
+        photonView.RPC("PullingCheck", RpcTarget.All);
 
+        //PullingCheck();
         if (EquipItem != null)
         {
             _actor.GrabState = GrabState.EquipItem;
@@ -117,6 +119,18 @@ public class Grab : MonoBehaviourPun
         ClimbCheck();
     }
 
+    void PullingCheck()
+    {
+        if(LeftGrabObject != null)
+        {
+            LeftGrabObject.GetComponent<InteractableObject>().ApplyPullingForce(_leftHandRigid.velocity);
+        }
+        if (RightGrabObject != null)
+        {
+            RightGrabObject.GetComponent<InteractableObject>().ApplyPullingForce(_rightHandRigid.velocity);
+        }
+
+    }
 
     void ClimbCheck()
     {

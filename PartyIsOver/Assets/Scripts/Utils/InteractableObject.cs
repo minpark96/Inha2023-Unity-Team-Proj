@@ -1,9 +1,17 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InteractableObject : MonoBehaviour
+public class InteractableObject : MonoBehaviourPun
 {
+    Rigidbody _rb;
+    private void Start()
+    {
+        _rb = GetComponent<Rigidbody>();
+    }
+
+
     public enum Damage
     {
         Ignore = 0,
@@ -27,4 +35,12 @@ public class InteractableObject : MonoBehaviour
 
     public Damage damageModifier = Damage.Default;
 
+
+    public void ApplyPullingForce(Vector3 vel)
+    {
+        if (!photonView.IsMine)
+            return;
+        Vector3 force = (vel - _rb.velocity) * _rb.mass; // 속도 차이에 질량을 곱하여 힘을 계산
+        _rb.AddForce(force, ForceMode.Impulse); // Impulse 모드를 사용하여 순간적으로 힘을 적용
+    }
 }
