@@ -47,7 +47,7 @@ public class Item : MonoBehaviourPun
         photonView.RPC("ChangeUseItemType", RpcTarget.All);
     }
 
-    [PunRPC]
+   
     public virtual void ChangeUseItemType()
     {
         InteractableObject.damageModifier = ItemData.UseDamageType;
@@ -57,7 +57,8 @@ public class Item : MonoBehaviourPun
     public virtual void Use()
     {
         //포션사용
-        photonView.RPC("ChangeUseItemType", RpcTarget.All);
+        ChangeUseItemType();
+        //photonView.RPC("ChangeUseItemType", RpcTarget.All);
         Destroy(gameObject,1f);
         //뚫어뻥 만들땐 스크립트 하나 더 파고 Item을 상속받아서 Use를 관절연결하는 함수로 오버라이드
         //방사형 만들때 ItemData 스크립트에서 Projectile을 일반 원거리무기의 투사체랑 같이 쓸 수 있게 하거나
