@@ -107,8 +107,7 @@ public class Grab : MonoBehaviourPun
 
     void GrabStateCheck()
     {
-        //PlayerLiftCheck();
-        //photonView.RPC("PullingCheck", RpcTarget.All);
+        PlayerLiftCheck();
 
         //PullingCheck();
         if (EquipItem != null)
@@ -119,7 +118,7 @@ public class Grab : MonoBehaviourPun
         ClimbCheck();
     }
 
-    [PunRPC]
+   
     void PullingCheck()
     {
         if (EquipItem != null)
@@ -156,19 +155,23 @@ public class Grab : MonoBehaviourPun
                 RightGrabObject.GetComponent<CollisionHandler>() != null)
             {
                 _actor.GrabState = GrabState.PlayerLift;
+                Debug.Log("lift");
+
 
                 AlignToVector(_actor.BodyHandler.LeftArm.PartRigidbody, _actor.BodyHandler.LeftArm.PartTransform.forward, -_actor.BodyHandler.Waist.PartTransform.forward + _actor.BodyHandler.Chest.PartTransform.right / 2f + -_actor.PlayerController.MoveInput / 8f, 0.01f, 8f);
                 AlignToVector(_actor.BodyHandler.LeftForearm.PartRigidbody, _actor.BodyHandler.LeftForearm.PartTransform.forward, -_actor.BodyHandler.Waist.PartTransform.forward, 0.01f, 8f);
-                //_leftHandRigid.AddForce(Vector3.up*500);
                 _leftHandRigid.AddForce(Vector3.up * 4, ForceMode.VelocityChange);
+                LeftGrabObject.GetComponent<InteractableObject>().PullingForceTrigger(_leftHandRigid.velocity, _leftHandRigid.angularVelocity);
 
-                //_actor.BodyHandler.Chest.PartRigidbody.AddForce(Vector3.down * 900);
                 _actor.BodyHandler.Chest.PartRigidbody.AddForce(Vector3.down * 3, ForceMode.VelocityChange);
 
                 AlignToVector(_actor.BodyHandler.RightArm.PartRigidbody, _actor.BodyHandler.RightArm.PartTransform.forward, -_actor.BodyHandler.Waist.PartTransform.forward + -_actor.BodyHandler.Chest.PartTransform.right / 2f + -_actor.PlayerController.MoveInput / 8f, 0.01f, 8f);
                 AlignToVector(_actor.BodyHandler.RightForearm.PartRigidbody, _actor.BodyHandler.RightForearm.PartTransform.forward, -_actor.BodyHandler.Waist.PartTransform.forward, 0.01f, 8f);
-                //_rightHandRigid.AddForce(Vector3.up*500);
                 _rightHandRigid.AddForce(Vector3.up * 4, ForceMode.VelocityChange);
+
+                RightGrabObject.GetComponent<InteractableObject>().PullingForceTrigger(_rightHandRigid.velocity, _rightHandRigid.angularVelocity);
+                Debug.Log("lif2t");
+
             }
         }
     }

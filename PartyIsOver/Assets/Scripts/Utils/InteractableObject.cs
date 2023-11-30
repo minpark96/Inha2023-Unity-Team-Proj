@@ -36,6 +36,12 @@ public class InteractableObject : MonoBehaviourPun
     public Damage damageModifier = Damage.Default;
 
 
+    public void PullingForceTrigger(Vector3 vel,Vector3 angularVel)
+    {
+        photonView.RPC("ApplyPullingForce", RpcTarget.All, vel, angularVel);
+    }
+
+    [PunRPC]
     public void ApplyPullingForce(Vector3 vel, Vector3 angularVel)
     {
         if (!photonView.IsMine)

@@ -168,7 +168,8 @@ private float PhysicalDamage(InteractableObject collisionInteractable, float dam
                     //    rb.velocity = Vector3.zero;
                     //    rb.angularVelocity = Vector3.zero;
                     //}
-                    damage *= _objectDamage *itemDamage;
+                    damage *= _objectDamage * itemDamage;
+                    damage = Mathf.Clamp(damage, 15f, 50f);
                     actor.PlayerController.PlayerEffectSound("PlayerEffect/WEAPON_CrossBow");
                 }
                 break;
@@ -209,10 +210,18 @@ private float PhysicalDamage(InteractableObject collisionInteractable, float dam
         if (contact.thisCollider.gameObject.GetComponent<PhotonView>() != null)
         {
             thisViewID = contact.thisCollider.gameObject.GetComponent<PhotonView>().ViewID;
-            photonView.RPC("AddForceAttackedTarget", RpcTarget.All, thisViewID, contact.normal, (int)collisionInteractable.damageModifier, itemDamage);
+            photonView.RPC("AddForceAttackedTarget", RpcTarget.All, thisViewID, NormalChange(contact.normal), (int)collisionInteractable.damageModifier, itemDamage);
         }
 
+        damage = Mathf.Clamp(damage, 0f, 25f);
         return damage;
+    }
+
+    Vector3 NormalChange(Vector3 normal)
+    {
+        Vector3 newNormal = new Vector3(normal.x, normal.y / 3, normal.z);
+
+        return newNormal.normalized;
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -224,45 +233,56 @@ private float PhysicalDamage(InteractableObject collisionInteractable, float dam
     }
     
     [PunRPC]
-    void AddForceAttackedTarget(int objViewId, Vector3 normal, int damageModifier,float itemDamage)
+    void AddForceAttackedTarget(int objViewId, Vector3 normal, int damageModifier, float itemDamage)
     {
         //Debug.Log("[AddForceAttackedTarget] id: " + objViewId);
         Rigidbody thisRb = PhotonNetwork.GetPhotonView(objViewId).transform.GetComponent<Rigidbody>();
 
-        Rigidbody hip = null;
-        if (PhotonNetwork.GetPhotonView(objViewId).GetComponent<BodyHandler>() != null)
+        Rigidbody body = null;
+        if (thisRb.transform.GetComponent<BodyPart>() != null)
         {
-            Debug.Log("PlayerCheck");
-            hip = PhotonNetwork.GetPhotonView(objViewId).transform.root.GetComponent<BodyHandler>().Hip.PartRigidbody;
+            body = thisRb.transform.root.GetComponent<BodyHandler>().Hip.PartRigidbody;
         }
-
 
         switch ((InteractableObject.Damage)damageModifier)
         {
             case InteractableObject.Damage.Ignore:
                 break;
             case InteractableObject.Damage.Object:
-                if(hip != null)
+                if (body != null)
                 {
-                    hip.AddForce(Vector3.up * _objectForceUp, ForceMode.VelocityChange);
-                    hip.AddForce(normal * _objectForceNormal* itemDamage, ForceMode.VelocityChange);
-                    Debug.Log("Item HipAddForce");
+                    normal = new Vector3(normal.x, 0f, normal.z).normalized;
+                    thisRb.transform.root.GetComponent<BodyHandler>().Head.PartRigidbody.
+                         AddForce(normal * _objectForceNormal * itemDamage, ForceMode.VelocityChange);
+                    body.AddForce(Vector3.up * _objectForceUp, ForceMode.VelocityChange);
+                    body.AddForce(normal * _objectForceNormal * itemDamage, ForceMode.VelocityChange);
+
+                    Debug.Log("objcol  Hip");
                 }
                 else
                 {
                     thisRb.AddForce(Vector3.up * _objectForceUp, ForceMode.VelocityChange);
                     thisRb.AddForce(normal * _objectForceNormal * itemDamage, ForceMode.VelocityChange);
-                    Debug.Log("Item AddForce");
                 }
-
                 break;
             case InteractableObject.Damage.Punch:
-                thisRb.AddForce(normal * _punchForceNormal , ForceMode.VelocityChange);
+                thisRb.AddForce(normal * _punchForceNormal, ForceMode.VelocityChange);
                 thisRb.AddForce(Vector3.up * _punchForceUp, ForceMode.VelocityChange);
                 break;
             case InteractableObject.Damage.DropKick:
-                thisRb.AddForce(normal * _dropkickForceNormal, ForceMode.VelocityChange);
-                thisRb.AddForce(Vector3.up * _dropkickForceUp, ForceMode.VelocityChange);
+                if (body != null)
+                {
+                    thisRb.transform.root.GetComponent<BodyHandler>().Head.PartRigidbody.
+                         AddForce(normal * _dropkickForceNormal, ForceMode.VelocityChange);
+                    body.AddForce(Vector3.up * _dropkickForceUp, ForceMode.VelocityChange);
+                    body.AddForce(normal * _dropkickForceNormal, ForceMode.VelocityChange);
+                    Debug.Log("Dropcol  Hip");
+                }
+                else
+                {
+                    thisRb.AddForce(normal * _dropkickForceNormal, ForceMode.VelocityChange);
+                    thisRb.AddForce(Vector3.up * _dropkickForceUp, ForceMode.VelocityChange);
+                }
                 break;
             case InteractableObject.Damage.Headbutt:
                 thisRb.AddForce(normal * _headbuttForceNormal, ForceMode.VelocityChange);
@@ -279,9 +299,9 @@ private float PhysicalDamage(InteractableObject collisionInteractable, float dam
         {
             thisRb.velocity = thisRb.velocity.normalized * 15f;
         }
-        if (hip != null && hip.velocity.magnitude > 15f)
+        if (body != null && body.velocity.magnitude > 10f)
         {
-            hip.velocity = hip.velocity.normalized * 15f;
+            body.velocity = body.velocity.normalized * 10f;
             Debug.Log("maxVel");
 
         }
