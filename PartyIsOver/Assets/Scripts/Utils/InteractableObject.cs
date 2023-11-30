@@ -36,7 +36,7 @@ public class InteractableObject : MonoBehaviourPun
     public Damage damageModifier = Damage.Default;
 
 
-    public void ApplyPullingForce(Vector3 vel)
+    public void ApplyPullingForce(Vector3 vel, Vector3 angularVel)
     {
         if (!photonView.IsMine)
             return;

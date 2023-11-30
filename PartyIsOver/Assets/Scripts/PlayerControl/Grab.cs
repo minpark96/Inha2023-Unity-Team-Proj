@@ -119,15 +119,19 @@ public class Grab : MonoBehaviourPun
         ClimbCheck();
     }
 
+    [PunRPC]
     void PullingCheck()
     {
-        if(LeftGrabObject != null)
+        if (EquipItem != null)
+            return;
+
+        if(LeftGrabObject != null && LeftGrabObject.GetComponent<PhotonView>() != null)
         {
-            LeftGrabObject.GetComponent<InteractableObject>().ApplyPullingForce(_leftHandRigid.velocity);
+            LeftGrabObject.GetComponent<InteractableObject>().ApplyPullingForce(_leftHandRigid.velocity,_leftHandRigid.angularVelocity);
         }
-        if (RightGrabObject != null)
+        if (RightGrabObject != null && RightGrabObject.GetComponent<PhotonView>() != null)
         {
-            RightGrabObject.GetComponent<InteractableObject>().ApplyPullingForce(_rightHandRigid.velocity);
+            RightGrabObject.GetComponent<InteractableObject>().ApplyPullingForce(_rightHandRigid.velocity, _rightHandRigid.angularVelocity);
         }
 
     }
@@ -137,8 +141,7 @@ public class Grab : MonoBehaviourPun
         if (_isRightGrab && _isLeftGrab && LeftGrabObject != null && RightGrabObject != null)
         {
             //나중에 아이템이나 플레이어가 아닌 오브젝트의 Layer를 ClimbLayer 등으로 통일하고 밑의 조건 바꿀 수 있음
-            if (LeftGrabObject.GetComponent<CollisionHandler>() == null && RightGrabObject.GetComponent<CollisionHandler>() == null
-                && LeftGrabObject.GetComponent<Item>() == null && RightGrabObject.GetComponent<Item>() == null)
+            if (LeftGrabObject.layer == (int)Define.Layer.ClimbObject && RightGrabObject.layer == (int)Define.Layer.ClimbObject)
             {
                 _actor.GrabState = GrabState.Climb;
             }
@@ -738,7 +741,7 @@ public class Grab : MonoBehaviourPun
 
         //objViewID 는 그랩오브젝트의 ID
         PhotonView pv = PhotonNetwork.GetPhotonView(objViewID);
-        if (photonView.IsMine && pv != null)
+        if (photonView.IsMine && pv != null && EquipItem != null)
         {
             int playerID = PhotonNetwork.LocalPlayer.ActorNumber;
             pv.TransferOwnership(playerID);

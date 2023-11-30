@@ -19,10 +19,14 @@ public class TargetingHandler : MonoBehaviour
     void Start()
     {
         _actor = GetComponent<Actor>();
+        layerMask |= 1 << (int)Define.Layer.Item;
+        layerMask |= 1 << (int)Define.Layer.ClimbObject;
+        layerMask |= 1 << (int)Define.Layer.InteractableObject;
+
         for (int i = 0; i < 6; i++)
         {
-            if (gameObject.layer != 26 + i)
-                layerMask |= 1 << 26 + i;
+            if (gameObject.layer != (int)Define.Layer.Player1 + i)
+                layerMask |= 1 << (int)Define.Layer.Player1 + i;
         }
     }
 
