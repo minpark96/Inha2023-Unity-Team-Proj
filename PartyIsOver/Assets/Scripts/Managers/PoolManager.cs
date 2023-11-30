@@ -33,7 +33,7 @@ public class PoolManager
             }
             #endregion
             #region 다른 Effect 이름 추가해줘야 함
-            else if (original.name == "")
+            else if (original.name == "Fog_poison")
             {
                 Root = new GameObject().transform;
                 Root.name = $"{original.name}_Root";

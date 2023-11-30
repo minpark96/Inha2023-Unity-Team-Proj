@@ -109,8 +109,11 @@ public class StatusHandler : MonoBehaviourPun
 
     private void LateUpdate()
     {
-        if (effectObject != null)
+        if (effectObject != null && effectObject.name == "Stun_loop")
             photonView.RPC("MoveEffect", RpcTarget.All);
+        else if(effectObject != null)
+            photonView.RPC("PlayerEffect", RpcTarget.All);
+
     }
 
     private void OnGUI()
@@ -227,6 +230,8 @@ public class StatusHandler : MonoBehaviourPun
                 {
                     actor.debuffState |= Actor.DebuffState.Drunk;
                     photonView.RPC("PlayerDebuffSound", RpcTarget.All, "PlayerEffect/Cartoon-UI-049");
+                    photonView.RPC("PoisonCreate", RpcTarget.All);
+                    
                 }
                 break;
         }
@@ -517,12 +522,29 @@ public class StatusHandler : MonoBehaviourPun
     }
 
     [PunRPC]
+    public void PoisonCreate()
+    {
+        //Effects/Stun_loop 생성 
+        effectObject = Managers.Resource.PhotonNetworkInstantiate("Effects/Fog_poison");
+        Debug.Log(effectObject);
+        Debug.Log(playerTransform);
+        effectObject.transform.position = playerTransform.position;
+    }
+
+    [PunRPC]
     public void MoveEffect()
     {
         //LateUpdate여서 늦게 갱신이 되어서 NullReference가 떠서 같은 if 문을 넣어줌
         if (effectObject != null)
             effectObject.transform.position = new Vector3(playerTransform.position.x, playerTransform.position.y + 1, playerTransform.position.z);
     }
+    [PunRPC]
+    public void PlayerEffect()
+    {
+        if (effectObject != null)
+            effectObject.transform.position = playerTransform.position;
+    }
+
     public void UpdateHealth()
     {
         if (_isDead)
