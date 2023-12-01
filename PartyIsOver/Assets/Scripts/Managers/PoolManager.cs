@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -25,26 +26,40 @@ public class PoolManager
             #region Stun Effect
             if (original.name == "Stun_loop")
             {
-                Root = new GameObject().transform;
-                Root.name = $"{original.name}_Root";
-
-                for (int i = 0; i < count; i++)
-                    Push(Create());
+                EffectPoolCreate(original);
             }
             #endregion
             #region 다른 Effect 이름 추가해줘야 함
             else if (original.name == "Fog_poison")
             {
-                Root = new GameObject().transform;
-                Root.name = $"{original.name}_Root";
-
-                for (int i = 0; i < count; i++)
-                    Push(Create());
+                EffectPoolCreate(original);
             }
             #endregion
-
+            #region Wet
+            else if (original.name == "Wet")
+            {
+                EffectPoolCreate(original);
+            }
+            else if (original.name == "Fog_frost")
+            {
+                EffectPoolCreate(original);
+            }
+            else if (original.name == "Aura_acceleration")
+            {
+                EffectPoolCreate(original);
+            }
+            #endregion
             //다른 오브젝트 여러개 생성
 
+        }
+
+        void EffectPoolCreate(GameObject original, int count = 6)
+        {
+            Root = new GameObject().transform;
+            Root.name = $"{original.name}_Root";
+
+            for (int i = 0; i < count; i++)
+                Push(Create());
         }
 
         Poolable Create()

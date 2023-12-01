@@ -697,6 +697,10 @@ public class PlayerController : MonoBehaviourPun
     #region FixedUpdate
     private void FixedUpdate()
     {
+        //여기서 특정 상태일 때 스테미너 회복이 안되게 한다.
+        if(_actor.Stamina <=_actor.MaxStamina)
+            _actor.Stamina += 0.1f;
+
         if (!photonView.IsMine || _actor.actorState == ActorState.Dead) return;
 
         if (isAI)
@@ -1123,6 +1127,7 @@ public class PlayerController : MonoBehaviourPun
     #region Punch
     public void PunchAndGrab()
     {
+        _actor.Stamina -= 20;
         if (!_isCoroutineRunning)
         {
             if (_readySide == Side.Left)

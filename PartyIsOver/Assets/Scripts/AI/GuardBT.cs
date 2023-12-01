@@ -8,6 +8,7 @@ public class GuardBT : Tree
     public static float speed = 2f;
     public static float fovRange = 6f;
     public static float attackRange = 1f;
+
     protected override Node SetupTree()
     {
         Node root = new Selector(new List<Node>

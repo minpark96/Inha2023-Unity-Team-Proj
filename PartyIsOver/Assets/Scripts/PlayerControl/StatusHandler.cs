@@ -2,6 +2,7 @@ using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using static InteractableObject;
@@ -40,8 +41,8 @@ public class StatusHandler : MonoBehaviourPun
     private bool _hasShock;
     private bool _hasStun;
 
-    Transform playerTransform;
-    GameObject effectObject = null;
+    public Transform playerTransform;
+    public GameObject effectObject = null;
 
     AudioClip _audioClip = null;
     AudioSource _audioSource;
@@ -96,7 +97,7 @@ public class StatusHandler : MonoBehaviourPun
     void Update()
     {
         // 지침 디버프 활성화/비활성화
-        if(actor.Stamina == 0)
+        if(actor.Stamina <= 0)
         {
             if(!_hasExhausted)
             {
@@ -271,7 +272,6 @@ public class StatusHandler : MonoBehaviourPun
                     if (!_hasStun)
                     {
                         StartCoroutine(ResetBodySpring());
-                        //StartCoroutine(Stun(_stunTime));
                         photonView.RPC("Stun", RpcTarget.All, _stunTime);
                     }
                     break;
@@ -343,6 +343,7 @@ public class StatusHandler : MonoBehaviourPun
     {
         // 지침
         _hasExhausted = true;
+        photonView.RPC("WetCreate", RpcTarget.All);
         actor.actorState = Actor.ActorState.Debuff;
         JointDrive angularXDrive;
 
@@ -362,12 +363,14 @@ public class StatusHandler : MonoBehaviourPun
 
         // 지침 해제
         _hasExhausted = false;
+        DestroyEffect("Wet");
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Exhausted;
         angularXDrive.positionSpring = _xPosSpringAry[0];
 
         actor.BodyHandler.BodyParts[0].PartJoint.angularXDrive = angularXDrive;
         actor.Stamina = 100;
+
 
         actor.StatusChangeEventInvoke();
     }
@@ -460,7 +463,6 @@ public class StatusHandler : MonoBehaviourPun
             {
                 _hasShock = false;
                 actor.actorState = Actor.ActorState.Stand;
-                //StartCoroutine(Stun(_stunTime));
                 photonView.RPC("Stun", RpcTarget.All, _stunTime);
                 StopCoroutine(Shock(delay));
             }
@@ -487,8 +489,7 @@ public class StatusHandler : MonoBehaviourPun
         // 감전 해제
         _hasShock = false;
         StartCoroutine(ResetBodySpring());
-        //StartCoroutine(Stun(3f));
-        photonView.RPC("Stun", RpcTarget.All, 3f);
+        photonView.RPC("Stun", RpcTarget.All, 0.5f);
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Shock;
 
@@ -508,7 +509,13 @@ public class StatusHandler : MonoBehaviourPun
 
         actor.StatusChangeEventInvoke();
 
-        GameObject go = GameObject.Find("Stun_loop");
+        DestroyEffect("Stun_loop");
+    }
+
+    public void DestroyEffect(string name)
+    {
+        Debug.Log("Start DestroyEffect");
+        GameObject go = GameObject.Find($"{name}");
         Managers.Resource.Destroy(go);
         effectObject = null;
     }
@@ -517,20 +524,26 @@ public class StatusHandler : MonoBehaviourPun
     public void StunCreate()
     {
         //Effects/Stun_loop 생성 
-        effectObject = Managers.Resource.PhotonNetworkInstantiate("Effects/Stun_loop");
-        effectObject.transform.position = playerTransform.position;
+        EffectObjectCreate("Effects/Stun_loop");
     }
 
     [PunRPC]
     public void PoisonCreate()
     {
-        //Effects/Stun_loop 생성 
-        effectObject = Managers.Resource.PhotonNetworkInstantiate("Effects/Fog_poison");
-        Debug.Log(effectObject);
-        Debug.Log(playerTransform);
-        effectObject.transform.position = playerTransform.position;
+        EffectObjectCreate("Effects/Fog_poison");
     }
 
+    [PunRPC]
+    public void WetCreate()
+    {
+        EffectObjectCreate("Effects/Wet");
+    }
+
+    void EffectObjectCreate(string path)
+    {
+        effectObject = Managers.Resource.PhotonNetworkInstantiate($"{path}");
+        effectObject.transform.position = playerTransform.position;
+    }
     [PunRPC]
     public void MoveEffect()
     {
@@ -575,7 +588,7 @@ public class StatusHandler : MonoBehaviourPun
                     if (actor.debuffState == Actor.DebuffState.Ice) //상태이상 후에 추가
                         return;
                     actor.actorState = Actor.ActorState.Unconscious;
-                    //photonView.RPC("StunCreate", RpcTarget.All);
+                    photonView.RPC("StunCreate", RpcTarget.All);
                     EnterUnconsciousState();
                 }
             }
