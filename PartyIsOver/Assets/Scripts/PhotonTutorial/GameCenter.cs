@@ -293,13 +293,24 @@ public class GameCenter : BaseScene
         AlivePlayerCounts--;
 
         if (AlivePlayerCounts == 1)
-            EndRound();
+            StartCoroutine(EndRound(7f));
     }
 
-    void EndRound()
+    IEnumerator EndRound(float time)
     {
         Debug.Log("라운드 종료");
+        yield return new WaitForSeconds(time);
+        photonView.RPC("ResetPlayer", RpcTarget.All);
         PhotonNetwork.LoadLevel(_arenaName);
+    }
+
+    [PunRPC]
+    void ResetPlayer()
+    {
+        for (int i = 0; i < Actors.Count; i++)
+        {
+            Actors[i].BodyHandler.Hip.transform.position = new Vector3(0, 0, 0);
+        }
     }
 
 
