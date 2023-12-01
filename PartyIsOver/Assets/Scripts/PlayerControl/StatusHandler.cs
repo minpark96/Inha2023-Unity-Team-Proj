@@ -113,26 +113,6 @@ public class StatusHandler : MonoBehaviourPun
             photonView.RPC("MoveEffect", RpcTarget.All);
     }
 
-    private void OnGUI()
-    {
-        if (this.name == "Ragdoll2" && photonView.IsMine)
-        {
-            GUI.contentColor = Color.red;
-            GUI.Label(new Rect(0, 0, 200, 200), "버프상태:" + actor.debuffState.ToString());
-            GUI.Label(new Rect(0, 20, 200, 200), "액션상태:" + actor.actorState.ToString());
-
-            GUI.contentColor = Color.blue;
-            GUI.Label(new Rect(0, 60, 200, 200), "체력: " + actor.Health);
-            GUI.Label(new Rect(0, 80, 200, 200), "스테미나: " + actor.Stamina);
-        }
-
-        if (this.name == "Dummy")
-        {
-            GUI.contentColor = Color.blue;
-            GUI.Label(new Rect(0, 120, 200, 200), "더미 체력: " + actor.Health);
-        }
-    }
-
     // 충격이 가해지면(trigger)
     public void AddDamage(InteractableObject.Damage type, float damage, GameObject causer)
     {
@@ -483,7 +463,7 @@ public class StatusHandler : MonoBehaviourPun
         _hasShock = false;
         StartCoroutine(ResetBodySpring());
         //StartCoroutine(Stun(3f));
-        photonView.RPC("Stun", RpcTarget.All, 3f);
+        photonView.RPC("Stun", RpcTarget.All, 0.5f);
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Shock;
 
@@ -553,7 +533,7 @@ public class StatusHandler : MonoBehaviourPun
                     if (actor.debuffState == Actor.DebuffState.Ice) //상태이상 후에 추가
                         return;
                     actor.actorState = Actor.ActorState.Unconscious;
-                    photonView.RPC("StunCreate", RpcTarget.All);
+                    //photonView.RPC("StunCreate", RpcTarget.All);
                     EnterUnconsciousState();
                 }
             }

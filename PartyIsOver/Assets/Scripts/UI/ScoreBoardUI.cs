@@ -41,9 +41,11 @@ public class ScoreBoardUI : MonoBehaviour
         _scoreBoardPanel.SetActive(false);
     }
 
-    public void ChangeScoreBoard(List<GameCenter.Ranking> list)
+    public void ChangeScoreBoard(int[] score, string[] name, int[] rank)
     {
-        for (int i = 0; i < list.Count; i++)
+        _playerNumber = PhotonNetwork.CurrentRoom.PlayerCount;
+
+        for (int i = 0; i < _playerNumber; i++)
         {
             for (int j = 0; j < 6; j++)
             {
@@ -51,24 +53,24 @@ public class ScoreBoardUI : MonoBehaviour
             }
         }
 
-        for (int i = 0; i < list.Count; i++)
+        for (int i = 0; i < _playerNumber; i++)
         {
-            _portrait[i].transform.GetChild(list[i].rank - 1).gameObject.SetActive(true);
+            Debug.Log("rank["+i+"]: " + rank[i]);
+            _portrait[i].transform.GetChild(rank[i] - 1).gameObject.SetActive(true);
         }
 
-        for (int i = 0; i < list.Count; i++)
+        for (int i = 0; i < _playerNumber; i++)
         {
-            for (int j = 0; j < list[i].score; j++)
+            for (int j = 0; j < score[i]; j++)
             {
                 _score[i].transform.GetChild(j).GetComponent<Image>().sprite = PointStar;
             }
         }
 
-        for (int i = 0; i < list.Count; i++)
+        for (int i = 0; i < _playerNumber; i++)
         {
-            _nickName[i].text = list[i].nickName;
+            _nickName[i].text = name[i];
         }
-
     }
 
 
