@@ -23,19 +23,21 @@ public class PoolManager
             Original = original;
             //생성하는 오브젝트를 나누기 위한 Root를 또 추가 해줌
             //Stun 이펙트 
-            #region Stun Effect
+
+            Root = new GameObject().transform;
+            Root.name = $"{original.name}_Root";
+
+            for (int i = 0; i < count; i++)
+                Push(Create());
+            /*#region Effect
             if (original.name == "Stun_loop")
             {
                 EffectPoolCreate(original);
             }
-            #endregion
-            #region 다른 Effect 이름 추가해줘야 함
             else if (original.name == "Fog_poison")
             {
                 EffectPoolCreate(original);
             }
-            #endregion
-            #region Wet
             else if (original.name == "Wet")
             {
                 EffectPoolCreate(original);
@@ -48,7 +50,7 @@ public class PoolManager
             {
                 EffectPoolCreate(original);
             }
-            #endregion
+            #endregion*/
             //다른 오브젝트 여러개 생성
 
         }
