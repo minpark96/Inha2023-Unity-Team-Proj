@@ -575,7 +575,7 @@ public class StatusHandler : MonoBehaviourPun
                     if (actor.debuffState == Actor.DebuffState.Ice) //상태이상 후에 추가
                         return;
                     actor.actorState = Actor.ActorState.Unconscious;
-                    photonView.RPC("StunCreate", RpcTarget.All);
+                    //photonView.RPC("StunCreate", RpcTarget.All);
                     EnterUnconsciousState();
                 }
             }

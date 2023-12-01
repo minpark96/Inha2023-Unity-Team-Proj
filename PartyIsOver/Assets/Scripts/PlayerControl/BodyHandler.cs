@@ -1,10 +1,11 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
-public class BodyHandler : MonoBehaviour
+public class BodyHandler : MonoBehaviourPun
 {
     public Transform Root;
     public List<BodyPart> BodyParts = new List<BodyPart>();
@@ -68,6 +69,8 @@ public class BodyHandler : MonoBehaviour
             part.PartRigidbody.maxAngularVelocity = 15f;
             part.PartRigidbody.solverIterations = 12;
             part.PartRigidbody.solverVelocityIterations = 12;
+            part.GetComponent<PhotonRigidbodyView>().m_SynchronizeVelocity = true;
+            part.GetComponent<PhotonRigidbodyView>().m_SynchronizeAngularVelocity = true;
         }
     }
 }
