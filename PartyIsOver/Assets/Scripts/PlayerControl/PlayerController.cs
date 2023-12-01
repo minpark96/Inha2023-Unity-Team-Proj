@@ -153,8 +153,6 @@ public class PlayerController : MonoBehaviourPun
     [SerializeField]
     private BodyHandler _bodyHandler;
 
-    [SerializeField]
-    private TargetingHandler targetingHandler;
 
     private Grab _grab;
     private Actor _actor;
@@ -285,7 +283,6 @@ public class PlayerController : MonoBehaviourPun
     void Init()
     {
         _bodyHandler = GetComponent<BodyHandler>();
-        targetingHandler = GetComponent<TargetingHandler>();
         _actor = GetComponent<Actor>();
         _hipRB = transform.Find("GreenHip").GetComponent<Rigidbody>();
         Transform SoundSourceTransform = transform.Find("GreenHip");
@@ -322,7 +319,7 @@ public class PlayerController : MonoBehaviourPun
     }
 
     [PunRPC]
-    void PlayerEffectSound(string path)
+    public void PlayerEffectSound(string path)
     {
         _audioClip = Managers.Sound.GetOrAddAudioClip(path);
         _audioSource.clip = _audioClip;
@@ -1441,6 +1438,7 @@ public class PlayerController : MonoBehaviourPun
     #endregion
 
     #region MoveAnimation
+    [PunRPC]
     public void Move()
     {
         if (_actor.actorState == ActorState.Run)
