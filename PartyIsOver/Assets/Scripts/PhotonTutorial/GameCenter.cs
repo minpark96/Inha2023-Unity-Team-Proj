@@ -67,9 +67,9 @@ public class GameCenter : BaseScene
     };
     public List<Ranking> Rank = new List<Ranking>();
 
-    private int[] _rankScore = new int[6];
-    private string[] _rankNickName = new string[6];
-    private int[] _rankRank = new int[6];
+    private int[] _rankScore = new int[6] { 0,0,0,0,0,0};
+    private string[] _rankNickName = new string[6] { "","","","","","" };
+    private int[] _rankRank = new int[6] { 0, 0, 0, 0, 0, 0 };
 
 
     #endregion
@@ -120,27 +120,21 @@ public class GameCenter : BaseScene
                     portrait.transform.GetChild(i - 1).gameObject.SetActive(false);
             }
 
-            
-            if(PhotonNetwork.IsMasterClient)
+
+            _scoreBoardUI = GameObject.Find("ScoreBoard Panel").GetComponent<ScoreBoardUI>();
+            _scoreBoardUI.ScoreBoardSetup();
+            _scoreBoardUI.isSetup = true;
+
+            if (PhotonNetwork.IsMasterClient)
             {
-                for(int i = 0; i < PhotonNetwork.CurrentRoom.PlayerCount; i++)
-                {
-                    if(i == PhotonNetwork.LocalPlayer.ActorNumber-1)
-                    {
-                        _rankScore[i] = 0;
-                        _rankNickName[i] = PhotonNetwork.NickName;
-                        _rankRank[i] = PhotonNetwork.LocalPlayer.ActorNumber;
-                    }
-                }
+                _rankScore[PhotonNetwork.LocalPlayer.ActorNumber - 1] = 0;
+                _rankNickName[PhotonNetwork.LocalPlayer.ActorNumber - 1] = PhotonNetwork.NickName;
+                _rankRank[PhotonNetwork.LocalPlayer.ActorNumber - 1] = PhotonNetwork.LocalPlayer.ActorNumber;
             }
             else
             {
                 photonView.RPC("AddUIInfoToMaster", RpcTarget.MasterClient, _rankScore, _rankNickName, _rankRank);
             }
-
-            _scoreBoardUI = GameObject.Find("ScoreBoard Panel").GetComponent<ScoreBoardUI>();
-            _scoreBoardUI.ScoreBoardSetup();
-            _scoreBoardUI.isSetup = true;
         }
     }
 
@@ -237,7 +231,7 @@ public class GameCenter : BaseScene
     {
         if (actor != null)
         {
-            Debug.Log("备刀 何盒 " + actor.photonView.ViewID);
+            //Debug.Log("备刀 何盒 " + actor.photonView.ViewID);
             actor.OnPlayerStatusChanges -= SendInfo;
             actor.OnPlayerStatusChanges += SendInfo;
             //actor.OnPlayerExhaust -= DecreaseStamina;
@@ -327,8 +321,6 @@ public class GameCenter : BaseScene
     [PunRPC]
     void UpdateScoreBoard(int[] score, string[] name, int[] rank)
     {
-        List<Ranking> rankList = new List<Ranking>();
-
         for (int i = 0; i < score.Length; i++)
         {
             _rankScore[i] = score[i];
@@ -336,13 +328,13 @@ public class GameCenter : BaseScene
             _rankRank[i] = rank[i];
         }
 
-        _scoreBoardUI.ChangeScoreBoard(_rankScore, _rankNickName, _rankRank);
+        //_scoreBoardUI.ChangeScoreBoard(_rankScore, _rankNickName, _rankRank);
     }
 
     [PunRPC]
     void AddUIInfoToMaster(int[] score, string[] name, int[] rank)
     {
-        for (int i = 0; i < PhotonNetwork.CurrentRoom.PlayerCount; i++)
+        for (int i = 0; i < score.Length; i++)
         {
             if (i == PhotonNetwork.LocalPlayer.ActorNumber-1)
             {
@@ -351,6 +343,8 @@ public class GameCenter : BaseScene
                 rank[i] = PhotonNetwork.LocalPlayer.ActorNumber;
             }
         }
+
+        photonView.RPC("UpdateScoreBoard", RpcTarget.Others, score, name, rank);
     }
 
 
@@ -416,6 +410,7 @@ public class GameCenter : BaseScene
                 {
                     _isDelayed = true;
                     StartCoroutine(GetDelayTime());
+
                     _scoreBoardUI.ChangeScoreBoard(_rankScore, _rankNickName, _rankRank);
 
                     photonView.RPC("UpdateScoreBoard", RpcTarget.Others, _rankScore, _rankNickName, _rankRank);

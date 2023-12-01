@@ -55,7 +55,7 @@ public class ScoreBoardUI : MonoBehaviour
 
         for (int i = 0; i < _playerNumber; i++)
         {
-            Debug.Log("rank[i]: " + rank[i]);
+            Debug.Log("rank["+i+"]: " + rank[i]);
             _portrait[i].transform.GetChild(rank[i] - 1).gameObject.SetActive(true);
         }
 
