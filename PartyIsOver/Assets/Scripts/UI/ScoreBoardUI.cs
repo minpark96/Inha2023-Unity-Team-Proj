@@ -8,6 +8,8 @@ using UnityEngine.UI;
 
 public class ScoreBoardUI : MonoBehaviour
 {
+    public bool isSetup;
+
     public GameObject Info;
     public Sprite PointStar;
 
@@ -20,10 +22,13 @@ public class ScoreBoardUI : MonoBehaviour
 
     public void ScoreBoardSetup()
     {
+        if (isSetup)
+            return;
+
         _scoreBoardPanel = GameObject.Find("ScoreBoard Panel");
         _playerNumber = PhotonNetwork.CurrentRoom.PlayerCount;
 
-        for(int i = 0; i < _playerNumber; i++)
+        for (int i = 0; i < _playerNumber; i++)
         {
             Info.transform.GetChild(i).gameObject.SetActive(true);
             _portrait[i] = Info.transform.GetChild(i).GetChild(0).gameObject;
@@ -33,37 +38,39 @@ public class ScoreBoardUI : MonoBehaviour
 
         Managers.Input.KeyboardAction -= OnKeyboardEvents;
         Managers.Input.KeyboardAction += OnKeyboardEvents;
-        _scoreBoardPanel.SetActive(false); 
+        _scoreBoardPanel.SetActive(false);
     }
 
-    public void ChangeScoreBoard(List<GameCenter.Ranking> list)
+    public void ChangeScoreBoard(int[] score, string[] name, int[] rank)
     {
-        for (int i = 0; i < list.Count; i++)
+        _playerNumber = PhotonNetwork.CurrentRoom.PlayerCount;
+
+        for (int i = 0; i < _playerNumber; i++)
         {
-            for(int j = 0; j < 6; j++)
+            for (int j = 0; j < 6; j++)
             {
                 _portrait[i].transform.GetChild(j).gameObject.SetActive(false);
             }
         }
 
-        for (int i = 0; i < list.Count; i++)
+        for (int i = 0; i < _playerNumber; i++)
         {
-            _portrait[i].transform.GetChild(list[i].index - 1).gameObject.SetActive(true);
+            Debug.Log("rank[i]: " + rank[i]);
+            _portrait[i].transform.GetChild(rank[i] - 1).gameObject.SetActive(true);
         }
 
-        for (int i = 0; i < list.Count; i++)
+        for (int i = 0; i < _playerNumber; i++)
         {
-            for(int j = 0; j < list[i].score; j++)
+            for (int j = 0; j < score[i]; j++)
             {
                 _score[i].transform.GetChild(j).GetComponent<Image>().sprite = PointStar;
             }
         }
 
-        for (int i = 0; i < list.Count; i++)
+        for (int i = 0; i < _playerNumber; i++)
         {
-            _nickName[i].text = list[i].nickName;
+            _nickName[i].text = name[i];
         }
-
     }
 
 
