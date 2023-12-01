@@ -312,7 +312,6 @@ public class StatusHandler : MonoBehaviourPun
         photonView.RPC("PlayerDebuffSound", RpcTarget.All, "PlayerEffect/SFX_FireBall_Projectile");
         photonView.RPC("BurnCreate", RpcTarget.All);
 
-
         float elapsedTime = 0f;
         float lastBurnTime = Time.time;
         float startTime = Time.time;
@@ -584,7 +583,7 @@ public class StatusHandler : MonoBehaviourPun
     }
 
     [PunRPC]
-    public void MoveEffect()
+    public void MoveEffect() 
     {
         //LateUpdate여서 늦게 갱신이 되어서 NullReference가 떠서 같은 if 문을 넣어줌
         if (effectObject != null)
