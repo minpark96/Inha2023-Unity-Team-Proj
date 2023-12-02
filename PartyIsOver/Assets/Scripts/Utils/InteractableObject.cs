@@ -46,7 +46,9 @@ public class InteractableObject : MonoBehaviourPun
     {
         if (!photonView.IsMine)
             return;
-        Vector3 force = (vel - _rb.velocity) * _rb.mass; // 속도 차이에 질량을 곱하여 힘을 계산
-        _rb.AddForce(force, ForceMode.Impulse); // Impulse 모드를 사용하여 순간적으로 힘을 적용
+        //Vector3 force = (vel - _rb.velocity) * _rb.mass; // 속도 차이에 질량을 곱하여 힘을 계산
+        //_rb.AddForce(force, ForceMode.VelocityChange); // Impulse 모드를 사용하여 순간적으로 힘을 적용
+        _rb.AddForce(Vector3.ClampMagnitude(Vector3.up * 4f, 35f), ForceMode.VelocityChange);
+        Debug.Log(_rb.transform.root.GetComponent<PhotonView>().ViewID);
     }
 }
