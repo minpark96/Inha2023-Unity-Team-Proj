@@ -125,6 +125,7 @@ public class GameCenter : BaseScene
             _scoreBoardUI.ScoreBoardSetup();
             _scoreBoardUI.isSetup = true;
 
+            
             if (PhotonNetwork.IsMasterClient)
             {
                 _rankScore[PhotonNetwork.LocalPlayer.ActorNumber - 1] = 0;
@@ -133,6 +134,12 @@ public class GameCenter : BaseScene
             }
             else
             {
+                Debug.Log("client PhotonNetwork.NickName : " + PhotonNetwork.NickName);
+                Debug.Log("client PhotonNetwork.LocalPlayer.ActorNumber : " + PhotonNetwork.LocalPlayer.ActorNumber);
+
+                _rankScore[PhotonNetwork.LocalPlayer.ActorNumber - 1] = 0;
+                _rankNickName[PhotonNetwork.LocalPlayer.ActorNumber - 1] = PhotonNetwork.NickName;
+                _rankRank[PhotonNetwork.LocalPlayer.ActorNumber - 1] = PhotonNetwork.LocalPlayer.ActorNumber;
                 photonView.RPC("AddUIInfoToMaster", RpcTarget.MasterClient, _rankScore, _rankNickName, _rankRank);
             }
         }
@@ -321,6 +328,7 @@ public class GameCenter : BaseScene
     [PunRPC]
     void UpdateScoreBoard(int[] score, string[] name, int[] rank)
     {
+
         for (int i = 0; i < score.Length; i++)
         {
             _rankScore[i] = score[i];
@@ -328,7 +336,8 @@ public class GameCenter : BaseScene
             _rankRank[i] = rank[i];
         }
 
-        //_scoreBoardUI.ChangeScoreBoard(_rankScore, _rankNickName, _rankRank);
+        if(!PhotonNetwork.IsMasterClient)
+            _scoreBoardUI.ChangeScoreBoard(_rankScore, _rankNickName, _rankRank);
     }
 
     [PunRPC]
@@ -344,7 +353,7 @@ public class GameCenter : BaseScene
             }
         }
 
-        photonView.RPC("UpdateScoreBoard", RpcTarget.Others, score, name, rank);
+        photonView.RPC("UpdateScoreBoard", RpcTarget.MasterClient, score, name, rank);
     }
 
 

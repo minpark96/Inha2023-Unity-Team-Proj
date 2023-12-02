@@ -35,7 +35,7 @@ public class MainUI : MonoBehaviour
     {
         if(_gameStartFlag)
         {
-            _angle -= 0.5f;
+            _angle -= 1f;
             StartObject.transform.rotation = Quaternion.Euler(_angle, 180, 0);
 
             if (_angle <= -90)

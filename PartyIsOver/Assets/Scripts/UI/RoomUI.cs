@@ -121,12 +121,17 @@ public class RoomUI : MonoBehaviour
 
     public void OnClickLeaveRoom()
     {
-        PhotonManager.Instance.LeaveRoom();
+        if(SceneManager.GetActiveScene().name != _arenaName)
+            PhotonManager.Instance.LeaveRoom();
+
         //PhotonNetwork.LeaveRoom();
     }
 
     public void OnClickSkillChange()
     {
+        if (!SkillChangeButton || !SkillName)
+            return;
+
         SkillChange = !SkillChange;
 
         if (SkillChange)
