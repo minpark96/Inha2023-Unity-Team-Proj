@@ -147,7 +147,7 @@ public class PlayerController : MonoBehaviourPun
 
     [SerializeField]
     private Rigidbody _hips;
-    [SerializeField]
+
     private Transform _cameraArm;
 
     [SerializeField]
@@ -273,6 +273,9 @@ public class PlayerController : MonoBehaviourPun
                 RotationsForBalloon.Add(_bodyHandler.BodyParts[i].PartTransform.localRotation);
 
         }
+
+        if (photonView.IsMine)
+            _cameraArm = _actor.CameraControl.CameraArm;
     }
 
 
@@ -1781,9 +1784,9 @@ public class PlayerController : MonoBehaviourPun
                 break;
             case Define.BodyPart.RightArm: 
                 break;
-            case Define.BodyPart.LeftForeArm: 
+            case Define.BodyPart.LeftForeArm:
                 break;
-            case Define.BodyPart.RightForeArm: 
+            case Define.BodyPart.RightForeArm:
                 break;
             case Define.BodyPart.LeftHand:
                 if (isAttack)

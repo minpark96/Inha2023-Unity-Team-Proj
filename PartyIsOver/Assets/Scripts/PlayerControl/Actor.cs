@@ -8,10 +8,11 @@ using UnityEngine.SceneManagement;
 
 public class Actor : MonoBehaviourPun, IPunObservable
 {
-    public delegate void PlayerStatusChanges(float HP, float Stamina, ActorState actorState, DebuffState debuffstate, int viewID);
-    public event PlayerStatusChanges OnPlayerStatusChanges;
+    public delegate void ChangePlayerStatus(float HP, float Stamina, ActorState actorState, DebuffState debuffstate, int viewID);
+    public event ChangePlayerStatus OnChangePlayerStatus;
+    public delegate void KillPlayer(int viewID);
+    public event KillPlayer OnKillPlayer;
 
-    public Transform CameraArm;
     AudioListener _audioListener;
 
     public StatusHandler StatusHandler;
@@ -19,6 +20,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
     public PlayerController PlayerController;
     public Grab Grab;
     public BalloonState BalloonState;
+    public CameraControl CameraControl;
 
     public enum ActorState
     {
@@ -84,18 +86,26 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
     public static int LayerCnt = (int)Define.Layer.Player1;
 
-    public void StatusChangeEventInvoke()
+    public void InvokeStatusChangeEvent()
     {
-        //Debug.Log("StatusChangeEventInvoke()");
-
-        if (OnPlayerStatusChanges == null)
+        if (OnChangePlayerStatus == null)
         {
-            Debug.Log(photonView.ViewID + " 이벤트 null");
+            Debug.Log(photonView.ViewID + " OnChangePlayerStatus 이벤트 null");
             return;
         }
 
-        //Debug.Log("_health: " + _health + " debuffState: " + debuffState + " photonView.ViewID: " + photonView.ViewID);
-        OnPlayerStatusChanges(_health, _stamina, actorState, debuffState, photonView.ViewID);
+        OnChangePlayerStatus(_health, _stamina, actorState, debuffState, photonView.ViewID);
+    }
+
+    public void InvokeDeathEvent()
+    {
+        if (OnKillPlayer == null)
+        {
+            Debug.Log(photonView.ViewID + " OnKillPlayer 이벤트 null");
+            return;
+        }
+
+        OnKillPlayer(photonView.ViewID);
     }
 
     private void Awake()
@@ -104,12 +114,16 @@ public class Actor : MonoBehaviourPun, IPunObservable
         _audioListener = SoundListenerTransform.gameObject.AddComponent<AudioListener>();
         if (photonView.IsMine)
         {
-            LocalPlayerInstance = this.gameObject; 
+            LocalPlayerInstance = this.gameObject;
+
+            if (CameraControl == null)
+            {
+                Debug.Log("카메라 컨트롤 초기화");
+                CameraControl = GetComponent<CameraControl>();
+            }
         }
         else
         {
-            // 다른 클라이언트 카메라 끄기
-            transform.GetChild(0).gameObject.SetActive(false);
             // 사운드 끄기
             _audioListener.enabled = false;
         }
@@ -117,7 +131,6 @@ public class Actor : MonoBehaviourPun, IPunObservable
         if(SceneManager.GetActiveScene().name != "[4]Room")
             DontDestroyOnLoad(this.gameObject);
 
-        CameraArm = transform.GetChild(0).GetChild(0);
         BodyHandler = GetComponent<BodyHandler>();
         StatusHandler = GetComponent<StatusHandler>();
         PlayerController = GetComponent<PlayerController>();
@@ -143,8 +156,8 @@ public class Actor : MonoBehaviourPun, IPunObservable
     {
         if (!photonView.IsMine || actorState == ActorState.Dead) return;
 
-        LookAround();
-        CursorControl();
+        CameraControl.LookAround(BodyHandler.Hip.transform.position);
+        CameraControl.CursorControl();
     }
 
     private void FixedUpdate()
@@ -192,58 +205,15 @@ public class Actor : MonoBehaviourPun, IPunObservable
         lastActorState = actorState;
     }
 
-    //카메라 컨트롤
-    private void LookAround()
-    {
-        CameraArm.parent.transform.position = BodyHandler.Hip.transform.position;
-
-        Vector2 mouseDelta = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
-        Vector3 camAngle = CameraArm.rotation.eulerAngles;
-        float x = camAngle.x - mouseDelta.y;
-
-        if (x < 180f)
-        {
-            x = Mathf.Clamp(x, -1f, 70f);
-        }
-        else
-        {
-            x = Mathf.Clamp(x, 335f, 361f);
-        }
-        CameraArm.rotation = Quaternion.Euler(x, camAngle.y + mouseDelta.x, camAngle.z);
-    }
-
-    private void CursorControl()
-    {
-        if (Input.anyKeyDown)
-        {
-            Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.Locked;
-        }
-
-        if (!Cursor.visible && Input.GetKeyDown(KeyCode.Escape))
-        {
-            Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.None;
-        }
-    }
-
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        //Debug.Log("OnPhotonSerializeView");
         if (stream.IsWriting)
         {
-            //Debug.Log("Writing");
-            // We own this player: send the others our data
-            //Debug.Log("Writing actorState: " + actorState);
             stream.SendNext(actorState);
         }
         else
         {
-            //Debug.Log("Receiving");
-            // Network player, receive data
-            //Debug.Log("Receiving B actorState: " + actorState);
             this.actorState = (ActorState)stream.ReceiveNext();
-            //Debug.Log("Receiving A actorState: " + actorState);
         }
     }
 }

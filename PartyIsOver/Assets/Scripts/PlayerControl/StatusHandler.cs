@@ -85,7 +85,7 @@ public class StatusHandler : MonoBehaviourPun
 
         for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
         {
-            if (i == 3)
+            if (i == (int)Define.BodyPart.Hip)
                 continue;
 
             _xPosSpringAry.Add(actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive.positionSpring);
@@ -102,8 +102,7 @@ public class StatusHandler : MonoBehaviourPun
             if(!_hasExhausted)
             {
                 actor.debuffState |= Actor.DebuffState.Exhausted;
-                photonView.RPC("Exhausted", RpcTarget.All, _exhaustedTime);
-                //StartCoroutine(Exhausted(_exhaustedTime));
+                StartCoroutine(Exhausted(_exhaustedTime));
             }
         }
     }
@@ -141,7 +140,7 @@ public class StatusHandler : MonoBehaviourPun
             DebuffAction();
         }
 
-        actor.StatusChangeEventInvoke();
+        actor.InvokeStatusChangeEvent();
     }
 
 
@@ -233,23 +232,23 @@ public class StatusHandler : MonoBehaviourPun
                     break;
                 case Actor.DebuffState.PowerUp:
                     if(!_hasPowerUp)
-                        photonView.RPC("PowerUp", RpcTarget.All, _powerUpTime);
+                        StartCoroutine(PowerUp(_powerUpTime));
                     break;
                 case Actor.DebuffState.Burn:
                     if (!_hasBurn)
-                        photonView.RPC("Burn", RpcTarget.All, _burnTime);
+                        StartCoroutine(Burn(_burnTime));
                     break;
                 case Actor.DebuffState.Slow:
                     if(!_hasSlow)
-                        photonView.RPC("Slow", RpcTarget.All, _slowTime);
+                        StartCoroutine(Slow(_slowTime));
                     break;
                 case Actor.DebuffState.Ice:
                     if(!_hasFreeze)
-                        photonView.RPC("Freeze", RpcTarget.All, _freezeTime);
+                        StartCoroutine(Freeze(_freezeTime));
                     break;
                 case Actor.DebuffState.Shock:
                     if (!_hasShock)
-                        photonView.RPC("Shock", RpcTarget.All, _shockTime);
+                        StartCoroutine(Shock(_shockTime));
                     break;
                 case Actor.DebuffState.Stun:
                     if (!_hasStun)
@@ -264,7 +263,6 @@ public class StatusHandler : MonoBehaviourPun
         }
     }
 
-    [PunRPC]
     IEnumerator PowerUp(float delay)
     {
 
@@ -282,12 +280,11 @@ public class StatusHandler : MonoBehaviourPun
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.PowerUp;
         actor.PlayerController.RunSpeed -= _maxSpeed * 0.1f;
-        photonView.RPC("DestroyEffect", RpcTarget.All, "Aura_acceleration");
+        DestroyEffect("Aura_acceleration");
 
-        actor.StatusChangeEventInvoke();
+        actor.InvokeStatusChangeEvent();
         _audioClip = null;
     }
-    [PunRPC]
     IEnumerator Burn(float delay)
     {
         // 화상
@@ -307,7 +304,7 @@ public class StatusHandler : MonoBehaviourPun
             {
                 _hasBurn = false;
                 actor.actorState = Actor.ActorState.Stand;
-                photonView.RPC("Burn", RpcTarget.All, delay);
+                StopCoroutine(Burn(delay));
             }
 
             if (Time.time - lastBurnTime >= 1.0f) // 1초간 데미지+액션
@@ -326,11 +323,10 @@ public class StatusHandler : MonoBehaviourPun
         _hasBurn = false;
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Burn;
-        photonView.RPC("DestroyEffect", RpcTarget.All, "Fire_large");
 
-        actor.StatusChangeEventInvoke();
+        actor.InvokeStatusChangeEvent();
+        DestroyEffect("Fire_large");
     }
-    [PunRPC]
     IEnumerator Exhausted(float delay)
     {
         // 지침
@@ -355,8 +351,7 @@ public class StatusHandler : MonoBehaviourPun
 
         // 지침 해제
         _hasExhausted = false;
-        photonView.RPC("DestroyEffect", RpcTarget.All, "Wet");
-
+        DestroyEffect("Wet");
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Exhausted;
         angularXDrive.positionSpring = _xPosSpringAry[0];
@@ -364,9 +359,8 @@ public class StatusHandler : MonoBehaviourPun
         actor.BodyHandler.BodyParts[0].PartJoint.angularXDrive = angularXDrive;
         actor.Stamina = 100;
 
-        actor.StatusChangeEventInvoke();
+        actor.InvokeStatusChangeEvent();
     }
-    [PunRPC]
     IEnumerator Slow(float delay)
     {
         // 둔화
@@ -382,10 +376,8 @@ public class StatusHandler : MonoBehaviourPun
         actor.debuffState &= ~Actor.DebuffState.Slow;
         actor.PlayerController.RunSpeed += _maxSpeed * 0.1f;
 
-        actor.StatusChangeEventInvoke();
+        actor.InvokeStatusChangeEvent();
     }
-
-    [PunRPC]
     IEnumerator Freeze(float delay)
     {
         yield return new WaitForSeconds(0.2f);
@@ -415,9 +407,10 @@ public class StatusHandler : MonoBehaviourPun
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Ice;
 
-        actor.StatusChangeEventInvoke();
-        photonView.RPC("DestroyEffect", RpcTarget.All, "Fog_frost");
-        photonView.RPC("DestroyEffect", RpcTarget.All, "IceCube");
+        actor.InvokeStatusChangeEvent();
+        DestroyEffect("Fog_frost");
+        DestroyEffect("IceCube");
+
         // 이펙트 삭제
         if (hasObject)
         {
@@ -430,8 +423,6 @@ public class StatusHandler : MonoBehaviourPun
         }
         _audioClip = null;
     }
-
-    [PunRPC]
     IEnumerator Shock(float delay)
     {
         yield return new WaitForSeconds(0.2f);
@@ -465,7 +456,7 @@ public class StatusHandler : MonoBehaviourPun
                 _hasShock = false;
                 actor.actorState = Actor.ActorState.Stand;
                 photonView.RPC("Stun", RpcTarget.All, _stunTime);
-                photonView.RPC("Shock", RpcTarget.All, delay);
+                StopCoroutine(Shock(delay));
             }
 
             if (UnityEngine.Random.Range(0, 20) > 17)
@@ -493,9 +484,9 @@ public class StatusHandler : MonoBehaviourPun
         photonView.RPC("Stun", RpcTarget.All, 0.5f);
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Shock;
-        photonView.RPC("DestroyEffect", RpcTarget.All, "Lightning_aura");
+        DestroyEffect("Lightning_aura");
 
-        actor.StatusChangeEventInvoke();
+        actor.InvokeStatusChangeEvent();
         _audioClip = null;
     }
     [PunRPC]
@@ -509,12 +500,11 @@ public class StatusHandler : MonoBehaviourPun
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Stun;
 
-        actor.StatusChangeEventInvoke();
+        actor.InvokeStatusChangeEvent();
 
-        photonView.RPC("DestroyEffect", RpcTarget.All, "Stun_loop");
+        DestroyEffect("Stun_loop");
     }
 
-    [PunRPC]
     public void DestroyEffect(string name)
     {
         GameObject go = GameObject.Find($"{name}");
@@ -648,6 +638,7 @@ public class StatusHandler : MonoBehaviourPun
         StartCoroutine(ResetBodySpring());
         actor.actorState = Actor.ActorState.Dead;
         _isDead = true;
+        actor.InvokeDeathEvent();
     }
 
     void EnterUnconsciousState()
@@ -673,7 +664,7 @@ public class StatusHandler : MonoBehaviourPun
         //기절과 회복에 모두 관여 기절시엔 퍼센티지를 0으로해서 사용
         for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
         {
-            if (i == 3)
+            if (i == (int)Define.BodyPart.Hip)
                 continue;
 
             angularXDrive = actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive;
