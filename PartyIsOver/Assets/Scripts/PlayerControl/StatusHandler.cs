@@ -323,9 +323,10 @@ public class StatusHandler : MonoBehaviourPun
         _hasBurn = false;
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Burn;
+        photonView.RPC("DestroyEffect", RpcTarget.All, "Fire_large");
 
         actor.InvokeStatusChangeEvent();
-        DestroyEffect("Fire_large");
+
     }
     IEnumerator Exhausted(float delay)
     {
