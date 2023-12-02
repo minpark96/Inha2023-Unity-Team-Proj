@@ -23,7 +23,9 @@ public class Define
         RightForeArm,
         LeftHand,
         RightHand,
+        Ball,
     }
+
     public enum Effect
     {
         UIEffect,

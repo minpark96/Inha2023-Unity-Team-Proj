@@ -85,7 +85,7 @@ public class StatusHandler : MonoBehaviourPun
 
         for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
         {
-            if (i == 3)
+            if (i == (int)Define.BodyPart.Hip)
                 continue;
 
             _xPosSpringAry.Add(actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive.positionSpring);
@@ -140,7 +140,7 @@ public class StatusHandler : MonoBehaviourPun
             DebuffAction();
         }
 
-        actor.StatusChangeEventInvoke();
+        actor.InvokeStatusChangeEvent();
     }
 
 
@@ -282,7 +282,7 @@ public class StatusHandler : MonoBehaviourPun
         actor.PlayerController.RunSpeed -= _maxSpeed * 0.1f;
         DestroyEffect("Aura_acceleration");
 
-        actor.StatusChangeEventInvoke();
+        actor.InvokeStatusChangeEvent();
         _audioClip = null;
     }
     IEnumerator Burn(float delay)
@@ -324,9 +324,8 @@ public class StatusHandler : MonoBehaviourPun
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Burn;
 
+        actor.InvokeStatusChangeEvent();
         DestroyEffect("Fire_large");
-
-        actor.StatusChangeEventInvoke();
     }
     IEnumerator Exhausted(float delay)
     {
@@ -360,7 +359,7 @@ public class StatusHandler : MonoBehaviourPun
         actor.BodyHandler.BodyParts[0].PartJoint.angularXDrive = angularXDrive;
         actor.Stamina = 100;
 
-        actor.StatusChangeEventInvoke();
+        actor.InvokeStatusChangeEvent();
     }
     IEnumerator Slow(float delay)
     {
@@ -377,7 +376,7 @@ public class StatusHandler : MonoBehaviourPun
         actor.debuffState &= ~Actor.DebuffState.Slow;
         actor.PlayerController.RunSpeed += _maxSpeed * 0.1f;
 
-        actor.StatusChangeEventInvoke();
+        actor.InvokeStatusChangeEvent();
     }
     IEnumerator Freeze(float delay)
     {
@@ -408,9 +407,10 @@ public class StatusHandler : MonoBehaviourPun
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Ice;
 
-        actor.StatusChangeEventInvoke();
+        actor.InvokeStatusChangeEvent();
         DestroyEffect("Fog_frost");
         DestroyEffect("IceCube");
+
         // 이펙트 삭제
         if (hasObject)
         {
@@ -486,7 +486,7 @@ public class StatusHandler : MonoBehaviourPun
         actor.debuffState &= ~Actor.DebuffState.Shock;
         DestroyEffect("Lightning_aura");
 
-        actor.StatusChangeEventInvoke();
+        actor.InvokeStatusChangeEvent();
         _audioClip = null;
     }
     [PunRPC]
@@ -500,7 +500,7 @@ public class StatusHandler : MonoBehaviourPun
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Stun;
 
-        actor.StatusChangeEventInvoke();
+        actor.InvokeStatusChangeEvent();
 
         DestroyEffect("Stun_loop");
     }
@@ -638,6 +638,7 @@ public class StatusHandler : MonoBehaviourPun
         StartCoroutine(ResetBodySpring());
         actor.actorState = Actor.ActorState.Dead;
         _isDead = true;
+        actor.InvokeDeathEvent();
     }
 
     void EnterUnconsciousState()
@@ -663,7 +664,7 @@ public class StatusHandler : MonoBehaviourPun
         //기절과 회복에 모두 관여 기절시엔 퍼센티지를 0으로해서 사용
         for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
         {
-            if (i == 3)
+            if (i == (int)Define.BodyPart.Hip)
                 continue;
 
             angularXDrive = actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive;
