@@ -38,6 +38,8 @@ public class InputManager
     bool _dkeyPressed = false;
     bool _lshiftKeyPressed = false;
 
+    bool _tabKeyPressed = false;
+
     public void OnUpdate()
     {
         // UI를 클릭할 때는 캐릭터가 움직이지 않게 함
@@ -256,18 +258,28 @@ public class InputManager
         }
         if (KeyboardAction != null)
         {
-            if (Input.GetKeyDown(KeyCode.Tab))
+
+            if (Input.GetKey(KeyCode.Tab))
             {
-                KeyboardAction.Invoke(Define.KeyboardEvent.Click);
+                if (!_tabKeyPressed)
+                {
+                    KeyboardAction.Invoke(Define.KeyboardEvent.PointerDown);
+                }
+                KeyboardAction.Invoke(Define.KeyboardEvent.Press);
+                _tabKeyPressed = true;
             }
             else
             {
-                KeyboardAction.Invoke(Define.KeyboardEvent.PointerUp);
+                if (_tabKeyPressed)
+                {
+                    KeyboardAction.Invoke(Define.KeyboardEvent.Click);
+                }
+                _tabKeyPressed = false;
             }
         }
         if (KeyboardAction != null)
         {
-            if (Input.GetKeyDown(KeyCode.F6))
+            if (Input.GetKeyDown(KeyCode.Escape))
             {
                 KeyboardAction.Invoke(Define.KeyboardEvent.Click);
             }
