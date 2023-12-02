@@ -95,9 +95,9 @@ public class RoomUI : MonoBehaviour
         {
             if(CanPlay)
             {
+                //StartCoroutine(CountDown());
                 PhotonNetwork.LoadLevel(_arenaName);
                 PhotonNetwork.CurrentRoom.IsOpen = false;
-                Managers.Input.KeyboardAction -= OnKeyboardEvent;
             }
         }
         else
@@ -118,6 +118,12 @@ public class RoomUI : MonoBehaviour
     }
 
    
+    IEnumerator CountDown()
+    {
+        Debug.Log("countdown");
+        yield return new WaitForSeconds(5.0f);
+    }
+
 
     public void OnClickLeaveRoom()
     {
