@@ -36,19 +36,18 @@ public class InteractableObject : MonoBehaviourPun
     public Damage damageModifier = Damage.Default;
 
 
-    public void PullingForceTrigger(Vector3 vel,Vector3 angularVel)
+    public void PullingForceTrigger(Vector3 dir ,float power)
     {
-        photonView.RPC("ApplyPullingForce", RpcTarget.All, vel, angularVel);
+        photonView.RPC("ApplyPullingForce", RpcTarget.All, dir, power);
     }
 
     [PunRPC]
-    public void ApplyPullingForce(Vector3 vel, Vector3 angularVel)
+    public void ApplyPullingForce(Vector3 dir, float power)
     {
         if (!photonView.IsMine)
             return;
         //Vector3 force = (vel - _rb.velocity) * _rb.mass; // 속도 차이에 질량을 곱하여 힘을 계산
         //_rb.AddForce(force, ForceMode.VelocityChange); // Impulse 모드를 사용하여 순간적으로 힘을 적용
-        _rb.AddForce(Vector3.ClampMagnitude(Vector3.up * 4f, 35f), ForceMode.VelocityChange);
-        Debug.Log(_rb.transform.root.GetComponent<PhotonView>().ViewID);
+        _rb.AddForce(Vector3.ClampMagnitude(dir.normalized * power, 100f), ForceMode.VelocityChange);
     }
 }

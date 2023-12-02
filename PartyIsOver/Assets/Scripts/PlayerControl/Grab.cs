@@ -24,7 +24,7 @@ public class Grab : MonoBehaviourPun
 
 
     [SerializeField]
-    private float _throwingForce = 40f;
+    private float _throwingForce = 80f;
 
     float _grabDelayTimer = 0.5f;
 
@@ -129,11 +129,13 @@ public class Grab : MonoBehaviourPun
 
         if(LeftGrabObject != null && LeftGrabObject.GetComponent<PhotonView>() != null)
         {
-            LeftGrabObject.GetComponent<InteractableObject>().ApplyPullingForce(_leftHandRigid.velocity,_leftHandRigid.angularVelocity);
+            LeftGrabObject.GetComponent<InteractableObject>().
+                ApplyPullingForce(Vector3.up,4f);
         }
         if (RightGrabObject != null && RightGrabObject.GetComponent<PhotonView>() != null)
         {
-            RightGrabObject.GetComponent<InteractableObject>().ApplyPullingForce(_rightHandRigid.velocity, _rightHandRigid.angularVelocity);
+            RightGrabObject.GetComponent<InteractableObject>().
+                ApplyPullingForce(Vector3.up, 4f);
         }
 
     }
@@ -158,21 +160,18 @@ public class Grab : MonoBehaviourPun
             {
                 _actor.GrabState = GrabState.PlayerLift;
 
-
                 AlignToVector(_actor.BodyHandler.LeftArm.PartRigidbody, _actor.BodyHandler.LeftArm.PartTransform.forward, -_actor.BodyHandler.Waist.PartTransform.forward + _actor.BodyHandler.Chest.PartTransform.right / 2f + -_actor.PlayerController.MoveInput / 8f, 0.01f, 8f);
                 AlignToVector(_actor.BodyHandler.LeftForearm.PartRigidbody, _actor.BodyHandler.LeftForearm.PartTransform.forward, -_actor.BodyHandler.Waist.PartTransform.forward, 0.01f, 8f);
-                //_leftHandRigid.AddForce(Vector3.up * 40, ForceMode.VelocityChange);
-                LeftGrabObject.GetComponent<InteractableObject>().PullingForceTrigger(_leftHandRigid.velocity, _leftHandRigid.angularVelocity);
+                LeftGrabObject.GetComponent<InteractableObject>().PullingForceTrigger(Vector3.up, 4.5f);
 
                // _actor.BodyHandler.Chest.PartRigidbody.AddForce(Vector3.down * 30, ForceMode.VelocityChange);
 
                 AlignToVector(_actor.BodyHandler.RightArm.PartRigidbody, _actor.BodyHandler.RightArm.PartTransform.forward, -_actor.BodyHandler.Waist.PartTransform.forward + -_actor.BodyHandler.Chest.PartTransform.right / 2f + -_actor.PlayerController.MoveInput / 8f, 0.01f, 8f);
                 AlignToVector(_actor.BodyHandler.RightForearm.PartRigidbody, _actor.BodyHandler.RightForearm.PartTransform.forward, -_actor.BodyHandler.Waist.PartTransform.forward, 0.01f, 8f);
-                //_rightHandRigid.AddForce(Vector3.up * 40, ForceMode.VelocityChange);
+                RightGrabObject.GetComponent<InteractableObject>().PullingForceTrigger(Vector3.up, 4.5f);
 
-                RightGrabObject.GetComponent<InteractableObject>().PullingForceTrigger(_rightHandRigid.velocity, _rightHandRigid.angularVelocity);
-
-
+                Vector3 vec = _actor.BodyHandler.Hip.PartRigidbody.velocity;
+                _actor.BodyHandler.Hip.PartRigidbody.velocity = new Vector3(vec.x*1.5f,0f,vec.z*1.5f);
             }
         }
     }
@@ -258,15 +257,15 @@ public class Grab : MonoBehaviourPun
                 {
                     if (Input.GetMouseButtonDown(1))
                     {
-                        Rigidbody rb1 = RightGrabObject.GetComponent<Rigidbody>();
-                        Rigidbody rb2 = LeftGrabObject.GetComponent<Rigidbody>();
+                        InteractableObject obj1 = RightGrabObject.transform.root.GetComponent<BodyHandler>().Hip.GetComponent<InteractableObject>();
                         GrabResetTrigger();
 
-                        rb1.AddForce(-_actor.BodyHandler.Chest.PartTransform.up * _throwingForce, ForceMode.VelocityChange);
-                        rb2.AddForce(-_actor.BodyHandler.Chest.PartTransform.up * _throwingForce, ForceMode.VelocityChange);
+                        obj1.PullingForceTrigger(-_actor.BodyHandler.Chest.PartTransform.up, _throwingForce);
+                        obj1.PullingForceTrigger(-_actor.BodyHandler.Chest.PartTransform.up, _throwingForce);
+                        obj1.PullingForceTrigger(-_actor.BodyHandler.Chest.PartTransform.up, _throwingForce);
 
-                        rb1.AddForce(Vector3.up * _throwingForce * 1.5f, ForceMode.VelocityChange);
-                        rb2.AddForce(Vector3.up * _throwingForce * 1.5f, ForceMode.VelocityChange);
+
+                        obj1.PullingForceTrigger(Vector3.up, _throwingForce*2f);
                     }
                 }
                 break;
