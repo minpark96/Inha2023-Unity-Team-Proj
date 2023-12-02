@@ -40,6 +40,8 @@ public class InputManager
 
     bool _tabKeyPressed = false;
 
+    public bool _checkHoldTime = true;
+
     public void OnUpdate()
     {
         // UI를 클릭할 때는 캐릭터가 움직이지 않게 함
@@ -219,6 +221,10 @@ public class InputManager
             {
                 if (_isCharge)
                 {
+                    if(Time.time < _rkeyPressedTime + 2f)
+                        _checkHoldTime = true;
+                    else
+                        _checkHoldTime = false;
                     _chargeTime += Time.deltaTime;
                     if (_chargeTime > _chargeThreshold)
                     {
@@ -230,6 +236,7 @@ public class InputManager
             {
                 if (_rkeyPressed)
                 {
+
                     if (Time.time < _rkeyPressedTime + 2f)
                     {
                         KeyboardAction.Invoke(Define.KeyboardEvent.Click);
