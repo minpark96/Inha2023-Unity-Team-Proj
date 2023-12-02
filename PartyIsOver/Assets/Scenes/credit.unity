@@ -136,7 +136,7 @@ GameObject:
   - component: {fileID: 821898553}
   - component: {fileID: 821898552}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: Stage1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -175,7 +175,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 2a3214d5f7922fb4ea0363bab97a0de1, type: 2}
+  - {fileID: 2100000, guid: cf382351e00085c48a0a093de1a70d70, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -216,9 +216,10 @@ Transform:
   m_LocalPosition: {x: -0.16, y: -2.937, z: -1.52}
   m_LocalScale: {x: 32.11708, y: 0.9709, z: 6.253672}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1422110614}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &958788084
 PrefabInstance:
@@ -370,7 +371,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!114 &1143077215
 MonoBehaviour:
@@ -402,7 +403,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1277233786}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: DancingPlayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -424,7 +425,7 @@ Transform:
   - {fileID: 8177958448682339044}
   - {fileID: 1525184318}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1422110610
 GameObject:
@@ -439,7 +440,7 @@ GameObject:
   - component: {fileID: 1422110612}
   - component: {fileID: 1422110611}
   m_Layer: 0
-  m_Name: Cube (1)
+  m_Name: Stage2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -478,7 +479,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 2a3214d5f7922fb4ea0363bab97a0de1, type: 2}
+  - {fileID: 2100000, guid: cf382351e00085c48a0a093de1a70d70, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -515,13 +516,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1422110610}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.16, y: -2.937, z: 1.16}
-  m_LocalScale: {x: 32.11708, y: 55.87347, z: 2.0415113}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0.42854816}
+  m_LocalScale: {x: 1, y: 57.548122, z: 0.32645}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_Father: {fileID: 821898555}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1525184318 stripped
 Transform:
@@ -594,7 +595,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1746110282
 GameObject:
@@ -827,7 +828,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1001 &1410108527242743981
 PrefabInstance:
@@ -842,7 +843,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4342112731878178029, guid: 5c39531fb18607f48b8be626edeccf80, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4342112731878178029, guid: 5c39531fb18607f48b8be626edeccf80, type: 3}
       propertyPath: m_LocalPosition.x
