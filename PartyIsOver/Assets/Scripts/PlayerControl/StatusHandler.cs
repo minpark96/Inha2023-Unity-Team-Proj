@@ -119,26 +119,6 @@ public class StatusHandler : MonoBehaviourPun
 
     }
 
-    private void OnGUI()
-    {
-        if (this.name == "Ragdoll2" && photonView.IsMine)
-        {
-            GUI.contentColor = Color.red;
-            GUI.Label(new Rect(0, 0, 200, 200), "버프상태:" + actor.debuffState.ToString());
-            GUI.Label(new Rect(0, 20, 200, 200), "액션상태:" + actor.actorState.ToString());
-
-            GUI.contentColor = Color.blue;
-            GUI.Label(new Rect(0, 60, 200, 200), "체력: " + actor.Health);
-            GUI.Label(new Rect(0, 80, 200, 200), "스테미나: " + actor.Stamina);
-        }
-
-        if (this.name == "Dummy")
-        {
-            GUI.contentColor = Color.blue;
-            GUI.Label(new Rect(0, 120, 200, 200), "더미 체력: " + actor.Health);
-        }
-    }
-
     // 충격이 가해지면(trigger)
     public void AddDamage(InteractableObject.Damage type, float damage, GameObject causer)
     {
@@ -379,7 +359,6 @@ public class StatusHandler : MonoBehaviourPun
 
         actor.BodyHandler.BodyParts[0].PartJoint.angularXDrive = angularXDrive;
         actor.Stamina = 100;
-
 
         actor.StatusChangeEventInvoke();
     }
