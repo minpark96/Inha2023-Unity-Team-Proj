@@ -9,42 +9,56 @@ using UnityEngine.SceneManagement;
 
 public class MainUI : MonoBehaviour
 {
-    public Text NickName;
     public GameObject StartObject;
     public GameObject CancelPanel;
     public GameObject LoadingPanel;
     public GameObject StoryBoardPanel;
     public GameObject StoryEndingPanel;
+    public GameObject SettingsPanel;
+    public GameObject CreditPanel;
+
+    public Text NickName;
     public Animator Animator;
     public Image LoadingBar;
 
     private bool _gameStartFlag;
     private bool _loadingFlag;
     private bool _loadingDelayFlag;
+    private bool _keyBoardOn;
+    private bool _creditOn;
+    private bool _storyBoardOn;
+
     private float _angle = 0f;
     private float _delayTime = 0.0f;
     private float _loadingTime = 2f;
-
+    
     private int _clickedNumber = 0;
+    private string[] _savedStory = new string[8];
+
     private Transform _storyBoard;
     private Text _storyText;
-    private string[] _savedStory = new string[8];
 
     private GameObject _mainObject;
     private GameObject _creditObject;
+    private GameObject _keyBoardObject;
 
 
     private void Start()
     {
-        NickName.text = PhotonNetwork.NickName;
         CancelPanel.SetActive(false);
         LoadingPanel.SetActive(false);
         StoryBoardPanel.SetActive(false);
         StoryEndingPanel.SetActive(false);
+        SettingsPanel.SetActive(false);
+        CreditPanel.SetActive(false);
+
+        NickName.text = PhotonNetwork.NickName;
 
         _mainObject = GameObject.Find("Main Object");
         _creditObject = GameObject.Find("Credit Object");
         _creditObject.SetActive(false);
+        _keyBoardObject = SettingsPanel.transform.GetChild(5).GetChild(0).gameObject;
+        _keyBoardObject.SetActive(false);
 
 
         _storyBoard = StoryBoardPanel.transform.GetChild(0);
@@ -72,7 +86,24 @@ public class MainUI : MonoBehaviour
                 {
                     if (Input.GetKeyDown(KeyCode.Escape))
                     {
-                        OnClickCreditExit();
+                        if(_creditOn)
+                        {
+                            OnClickCreditExit();
+                            _creditOn = false;
+                        }
+
+                        if (_keyBoardOn)
+                        {
+                            _keyBoardObject.SetActive(false);
+                            _keyBoardOn = false;
+                        }
+
+                        if(_storyBoardOn)
+                        {
+                            _clickedNumber = 0;
+                            StoryBoardPanel.SetActive(false);
+                            _storyBoardOn = false;
+                        }
                     }
                 }
                 break;
@@ -127,6 +158,7 @@ public class MainUI : MonoBehaviour
         Animator.SetBool("Pose", true);
     }
 
+    // Game Quit
     public void OnClickPopup()
     {
         CancelPanel.SetActive(true);
@@ -146,29 +178,56 @@ public class MainUI : MonoBehaviour
         #endif
     }
 
+    // Settings
+    public void OnClickSettings()
+    {
+        SettingsPanel.SetActive(true);
+    }
+    
+    public void OnClickSettingsOK()
+    {
+        // 바뀐 변경사항
 
+        SettingsPanel.SetActive(false);
+    }
+
+    public void OnClickSettingsCancel()
+    {
+        SettingsPanel.SetActive(false);
+    }
+
+    public void OnClickSettingsKeyboard()
+    {
+        _keyBoardObject.SetActive(true);
+        _keyBoardOn = true;
+    }
+
+    // Credit
     public void OnClickCredit()
     {
         _mainObject.SetActive(false);
         _creditObject.SetActive(true);
+        _creditOn = true;
+        CreditPanel.SetActive(true);
     }
 
     public void OnClickCreditExit()
     {
-
+        _mainObject.SetActive(true);
+        _creditObject.SetActive(false);
+        CreditPanel.SetActive(false);
     }
 
-    public void OnClickSettings()
-    {
-
-    }
-
+    // StoryBoard
     public void OnClickStoryBoard()
     {
         StoryBoardPanel.SetActive(true);
         _storyBoard.GetChild(0).gameObject.SetActive(true);
         _storyText.text = _savedStory[0];
+
+        _clickedNumber = 0;
         _clickedNumber++;
+        _storyBoardOn = true;
     }
 
     public void OnClickStoryBoardNext()
@@ -190,12 +249,12 @@ public class MainUI : MonoBehaviour
                 _storyBoard.GetChild(i).gameObject.SetActive(false);
         }
 
-
         _clickedNumber++;
     }
 
     public void OnClickStoryEnding()
     {
+        _clickedNumber = 0;
         StoryEndingPanel.SetActive(false);
     }
 }
