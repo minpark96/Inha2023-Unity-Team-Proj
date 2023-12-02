@@ -1757,9 +1757,9 @@ public class PlayerController : MonoBehaviourPun
                 break;
             case Define.BodyPart.RightArm: 
                 break;
-            case Define.BodyPart.LeftForeArm: 
+            case Define.BodyPart.LeftForeArm:
                 break;
-            case Define.BodyPart.RightForeArm: 
+            case Define.BodyPart.RightForeArm:
                 break;
             case Define.BodyPart.LeftHand:
                 if (isAttack)

@@ -23,7 +23,6 @@ public class GameCenter : BaseScene
     string _roomName = "[4]Room";
 
     string _arenaName = "PO_Map_KYH";
-    
 
     string _roomPlayerPath = "Ragdoll2_Room";
 
@@ -38,6 +37,8 @@ public class GameCenter : BaseScene
     string _graveStonePath = "Item/GraveStone";
 
     bool _isChecked;
+
+    
 
     #endregion
 
@@ -56,13 +57,23 @@ public class GameCenter : BaseScene
     public List<int> ActorViewIDs = new List<int>();
     public List<Actor> Actors = new List<Actor>();
     public List<int> Scores = new List<int>();
+    public GameObject MyGhost = null;
 
     // Arena UI
     public Image ImageHPBar;
     public Image ImageStaminusBar;
     public Image Portrait;
 
-    public float GhostSpawnDelay = 10f;
+    public float GhostSpawnDelay = 4f;
+    public float RoundEndDelay = 7f;
+
+    public Actor MyActor;
+    public int MyActorViewID;
+
+    public Vector3[] DefaultPos = new Vector3[17];
+    public Quaternion[] DefaultRot = new Quaternion[17];
+
+    public int RoundCounts = 1;
 
     #endregion
 
@@ -97,7 +108,15 @@ public class GameCenter : BaseScene
         {
             Debug.Log("아레나 로딩완료!!!");
             AlivePlayerCounts = PhotonNetwork.CurrentRoom.PlayerCount;
-            InstantiatePlayer();
+            
+            if (RoundCounts == 1)
+            {
+                InstantiatePlayer();
+            }
+            else if (RoundCounts > 1 && PhotonNetwork.IsMasterClient)
+            {
+                photonView.RPC("ResetPlayer", RpcTarget.All);
+            }
 
             SceneType = Define.Scene.Game;
             SceneBgmSound("BigBangBattleLOOPING");
@@ -205,19 +224,38 @@ public class GameCenter : BaseScene
                     go = Managers.Resource.PhotonNetworkInstantiate(_playerPath6, pos: SpawnPoints[5]);
                     break;
             }
+            MyActor = go.GetComponent<Actor>();
+            SaveDefaultInfo(go);
 
             PhotonView pv = go.GetComponent<PhotonView>();
-            int viewID = pv.ViewID;
+            MyActorViewID = pv.ViewID;
 
             if (PhotonNetwork.IsMasterClient)
             {
-                ActorViewIDs.Add(viewID);
-                AddActor(viewID);
+                ActorViewIDs.Add(MyActorViewID);
+                AddActor(MyActorViewID);
             }
             else
             {
-                photonView.RPC("RegisterActorInfo", RpcTarget.MasterClient, viewID);
+                photonView.RPC("RegisterActorInfo", RpcTarget.MasterClient, MyActorViewID);
             }
+
+        }
+    }
+
+    void SaveDefaultInfo(GameObject go)
+    {
+        Actor actor = go.GetComponent<Actor>();
+        Debug.Log(actor.BodyHandler.BodyParts.Count);
+
+        for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
+        {
+            DefaultPos[i] = actor.BodyHandler.BodyParts[i].transform.localPosition;
+            Debug.Log(actor.BodyHandler.BodyParts[i].transform.localPosition);
+            Debug.Log(DefaultPos[i]);
+            DefaultRot[i] = actor.BodyHandler.BodyParts[i].transform.localRotation;
+            Debug.Log(actor.BodyHandler.BodyParts[i].transform.localRotation);
+            Debug.Log(DefaultRot[i]);
         }
     }
 
@@ -293,26 +331,75 @@ public class GameCenter : BaseScene
         AlivePlayerCounts--;
 
         if (AlivePlayerCounts == 1)
-            StartCoroutine(EndRound(7f));
+            StartCoroutine(EndRound(RoundEndDelay));
     }
 
     IEnumerator EndRound(float time)
     {
-        Debug.Log("라운드 종료");
+        Debug.Log(time + "초 뒤 라운드 종료 예정");
         yield return new WaitForSeconds(time);
-        photonView.RPC("ResetPlayer", RpcTarget.All);
+        Debug.Log("라운드 종료");
+        RoundCounts++;
         PhotonNetwork.LoadLevel(_arenaName);
     }
 
     [PunRPC]
     void ResetPlayer()
     {
-        for (int i = 0; i < Actors.Count; i++)
+        Debug.Log("내 플레이어 리셋!!");
+
+        float[] w = new float[17];
+        float[] x = new float[17];
+        float[] y = new float[17];
+        float[] z = new float[17];
+
+        for (int i = 0; i < MyActor.BodyHandler.BodyParts.Count; i++)
         {
-            Actors[i].BodyHandler.Hip.transform.position = new Vector3(0, 0, 0);
+            MyActor.BodyHandler.BodyParts[i].transform.localPosition = DefaultPos[i];
+            MyActor.BodyHandler.BodyParts[i].transform.localRotation = DefaultRot[i];
+
+            MyActor.debuffState = DebuffState.Default;
+            MyActor.actorState = ActorState.Stand;
+            MyActor.Health = 200f;
+            MyActor.transform.GetChild(0).position = new Vector3(0f, -0.67f, 0f);
+
+            w[i] = DefaultRot[i].w;
+            x[i] = DefaultRot[i].x;
+            y[i] = DefaultRot[i].y;
+            z[i] = DefaultRot[i].z;
         }
+
+        photonView.RPC("SyncMyPlayerDefault", RpcTarget.Others, MyActorViewID, DefaultPos, w, x, y, z);
     }
 
+    [PunRPC]
+    void SyncMyPlayerDefault(int viewID, Vector3[] defaultPos, float[] w, float[] x, float[] y, float[] z)
+    {
+        Debug.Log(viewID + " 플레이어 리셋!!");
+
+        Quaternion[] defaultRot = new Quaternion[w.Length];
+        for (int i = 0; i < w.Length; i++)
+        {
+            defaultRot[i] = new Quaternion(w[i], x[i], y[i], z[i]);
+        }
+
+        for (int i = 0; i < Actors.Count; i++)
+        {
+            if (Actors[i].photonView.ViewID == viewID)
+            {
+                for (int j = 0; j < MyActor.BodyHandler.BodyParts.Count; j++)
+                {
+                    Actors[i].BodyHandler.BodyParts[j].transform.localPosition = defaultPos[j];
+                    Actors[i].BodyHandler.BodyParts[j].transform.localRotation = defaultRot[j];
+                    Actors[i].transform.GetChild(0).localPosition = new Vector3(0f, -0.67f, 0f);
+
+                    Actors[i].debuffState = DebuffState.Default;
+                    Actors[i].actorState = ActorState.Stand;
+                    Actors[i].Health = 200f;
+                }
+            }
+        }
+    }
 
     void SendInfo(float hp, float stamina, Actor.ActorState actorState, Actor.DebuffState debuffstate, int viewID)
     {
@@ -333,7 +420,7 @@ public class GameCenter : BaseScene
                 Actors[i].Health = hp;
                 Actors[i].actorState = actorState;
                 Actors[i].debuffState = debuffstate;
-
+                
                 break;
             }
         }
@@ -446,6 +533,7 @@ public class GameCenter : BaseScene
     {
         photonView.RPC("UpdateCount", RpcTarget.MasterClient, _roomUI.Ready);
     }
+
     void UpdateMasterStatus()
     {
         if (_roomUI.PlayerReadyCount == PhotonNetwork.CurrentRoom.PlayerCount)
