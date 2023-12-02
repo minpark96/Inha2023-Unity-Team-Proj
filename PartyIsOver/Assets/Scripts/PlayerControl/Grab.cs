@@ -82,6 +82,11 @@ public class Grab : MonoBehaviourPun
 
     }
 
+    private void FixedUpdate()
+    {
+        PlayerLiftCheck();
+    }
+
     void Init()
     {
         _actor = GetComponent<Actor>();
@@ -107,8 +112,6 @@ public class Grab : MonoBehaviourPun
 
     void GrabStateCheck()
     {
-        PlayerLiftCheck();
-
         //PullingCheck();
         if (EquipItem != null)
         {
@@ -139,7 +142,6 @@ public class Grab : MonoBehaviourPun
     {
         if (_isRightGrab && _isLeftGrab && LeftGrabObject != null && RightGrabObject != null)
         {
-            //나중에 아이템이나 플레이어가 아닌 오브젝트의 Layer를 ClimbLayer 등으로 통일하고 밑의 조건 바꿀 수 있음
             if (LeftGrabObject.layer == (int)Define.Layer.ClimbObject && RightGrabObject.layer == (int)Define.Layer.ClimbObject)
             {
                 _actor.GrabState = GrabState.Climb;
@@ -155,22 +157,21 @@ public class Grab : MonoBehaviourPun
                 RightGrabObject.GetComponent<CollisionHandler>() != null)
             {
                 _actor.GrabState = GrabState.PlayerLift;
-                Debug.Log("lift");
 
 
                 AlignToVector(_actor.BodyHandler.LeftArm.PartRigidbody, _actor.BodyHandler.LeftArm.PartTransform.forward, -_actor.BodyHandler.Waist.PartTransform.forward + _actor.BodyHandler.Chest.PartTransform.right / 2f + -_actor.PlayerController.MoveInput / 8f, 0.01f, 8f);
                 AlignToVector(_actor.BodyHandler.LeftForearm.PartRigidbody, _actor.BodyHandler.LeftForearm.PartTransform.forward, -_actor.BodyHandler.Waist.PartTransform.forward, 0.01f, 8f);
-                _leftHandRigid.AddForce(Vector3.up * 4, ForceMode.VelocityChange);
+                //_leftHandRigid.AddForce(Vector3.up * 40, ForceMode.VelocityChange);
                 LeftGrabObject.GetComponent<InteractableObject>().PullingForceTrigger(_leftHandRigid.velocity, _leftHandRigid.angularVelocity);
 
-                _actor.BodyHandler.Chest.PartRigidbody.AddForce(Vector3.down * 3, ForceMode.VelocityChange);
+               // _actor.BodyHandler.Chest.PartRigidbody.AddForce(Vector3.down * 30, ForceMode.VelocityChange);
 
                 AlignToVector(_actor.BodyHandler.RightArm.PartRigidbody, _actor.BodyHandler.RightArm.PartTransform.forward, -_actor.BodyHandler.Waist.PartTransform.forward + -_actor.BodyHandler.Chest.PartTransform.right / 2f + -_actor.PlayerController.MoveInput / 8f, 0.01f, 8f);
                 AlignToVector(_actor.BodyHandler.RightForearm.PartRigidbody, _actor.BodyHandler.RightForearm.PartTransform.forward, -_actor.BodyHandler.Waist.PartTransform.forward, 0.01f, 8f);
-                _rightHandRigid.AddForce(Vector3.up * 4, ForceMode.VelocityChange);
+                //_rightHandRigid.AddForce(Vector3.up * 40, ForceMode.VelocityChange);
 
                 RightGrabObject.GetComponent<InteractableObject>().PullingForceTrigger(_rightHandRigid.velocity, _rightHandRigid.angularVelocity);
-                Debug.Log("lif2t");
+
 
             }
         }
