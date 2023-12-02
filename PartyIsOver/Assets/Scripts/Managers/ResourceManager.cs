@@ -44,6 +44,7 @@ public class ResourceManager
     public GameObject PhotonNetworkInstantiate(string path, Transform parent = null, Vector3? pos = null, Quaternion? rot = null, byte group = 0, object[] data = null)
     {
         GameObject prefab = Load<GameObject>($"Prefabs/{path}");
+        //Debug.Log(path);
         pos = pos ?? Vector3.zero;
         rot = rot ?? Quaternion.identity;
 
@@ -71,7 +72,6 @@ public class ResourceManager
             return;
         }
 
-        Debug.Log("Destroy");
         PhotonNetwork.Destroy(go);
     }
 

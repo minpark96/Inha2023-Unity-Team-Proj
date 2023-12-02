@@ -2,6 +2,7 @@ using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using static InteractableObject;
@@ -40,8 +41,8 @@ public class StatusHandler : MonoBehaviourPun
     private bool _hasShock;
     private bool _hasStun;
 
-    Transform playerTransform;
-    GameObject effectObject = null;
+    public Transform playerTransform;
+    public GameObject effectObject = null;
 
     AudioClip _audioClip = null;
     AudioSource _audioSource;
@@ -96,7 +97,7 @@ public class StatusHandler : MonoBehaviourPun
     void Update()
     {
         // 지침 디버프 활성화/비활성화
-        if(actor.Stamina == 0)
+        if(actor.Stamina <= 0)
         {
             if(!_hasExhausted)
             {
@@ -109,28 +110,13 @@ public class StatusHandler : MonoBehaviourPun
 
     private void LateUpdate()
     {
-        if (effectObject != null)
+        if (effectObject != null && effectObject.name == "Stun_loop")
             photonView.RPC("MoveEffect", RpcTarget.All);
-    }
+        else if(effectObject != null && effectObject.name == "Fog_frost")
+            photonView.RPC("MoveEffect", RpcTarget.All);
+        else if(effectObject != null)
+            photonView.RPC("PlayerEffect", RpcTarget.All);
 
-    private void OnGUI()
-    {
-        if (this.name == "Ragdoll2" && photonView.IsMine)
-        {
-            GUI.contentColor = Color.red;
-            GUI.Label(new Rect(0, 0, 200, 200), "버프상태:" + actor.debuffState.ToString());
-            GUI.Label(new Rect(0, 20, 200, 200), "액션상태:" + actor.actorState.ToString());
-
-            GUI.contentColor = Color.blue;
-            GUI.Label(new Rect(0, 60, 200, 200), "체력: " + actor.Health);
-            GUI.Label(new Rect(0, 80, 200, 200), "스테미나: " + actor.Stamina);
-        }
-
-        if (this.name == "Dummy")
-        {
-            GUI.contentColor = Color.blue;
-            GUI.Label(new Rect(0, 120, 200, 200), "더미 체력: " + actor.Health);
-        }
     }
 
     // 충격이 가해지면(trigger)
@@ -227,6 +213,8 @@ public class StatusHandler : MonoBehaviourPun
                 {
                     actor.debuffState |= Actor.DebuffState.Drunk;
                     photonView.RPC("PlayerDebuffSound", RpcTarget.All, "PlayerEffect/Cartoon-UI-049");
+                    photonView.RPC("PoisonCreate", RpcTarget.All);
+                    
                 }
                 break;
         }
@@ -266,7 +254,6 @@ public class StatusHandler : MonoBehaviourPun
                     if (!_hasStun)
                     {
                         StartCoroutine(ResetBodySpring());
-                        //StartCoroutine(Stun(_stunTime));
                         photonView.RPC("Stun", RpcTarget.All, _stunTime);
                     }
                     break;
@@ -284,6 +271,7 @@ public class StatusHandler : MonoBehaviourPun
         actor.actorState = Actor.ActorState.Debuff;
         actor.PlayerController.RunSpeed += _maxSpeed * 0.1f;
         photonView.RPC("PlayerDebuffSound", RpcTarget.All, "PlayerEffect/Cartoon-UI-037");
+        photonView.RPC("PowerUpCreate", RpcTarget.All);
 
         yield return new WaitForSeconds(delay);
 
@@ -292,6 +280,7 @@ public class StatusHandler : MonoBehaviourPun
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.PowerUp;
         actor.PlayerController.RunSpeed -= _maxSpeed * 0.1f;
+        DestroyEffect("Aura_acceleration");
 
         actor.InvokeStatusChangeEvent();
         _audioClip = null;
@@ -301,6 +290,9 @@ public class StatusHandler : MonoBehaviourPun
         // 화상
         _hasBurn = true;
         actor.actorState = Actor.ActorState.Debuff;
+
+        photonView.RPC("PlayerDebuffSound", RpcTarget.All, "PlayerEffect/SFX_FireBall_Projectile");
+        photonView.RPC("BurnCreate", RpcTarget.All);
 
         float elapsedTime = 0f;
         float lastBurnTime = Time.time;
@@ -333,11 +325,13 @@ public class StatusHandler : MonoBehaviourPun
         actor.debuffState &= ~Actor.DebuffState.Burn;
 
         actor.InvokeStatusChangeEvent();
+        DestroyEffect("Fire_large");
     }
     IEnumerator Exhausted(float delay)
     {
         // 지침
         _hasExhausted = true;
+        photonView.RPC("WetCreate", RpcTarget.All);
         actor.actorState = Actor.ActorState.Debuff;
         JointDrive angularXDrive;
 
@@ -357,6 +351,7 @@ public class StatusHandler : MonoBehaviourPun
 
         // 지침 해제
         _hasExhausted = false;
+        DestroyEffect("Wet");
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Exhausted;
         angularXDrive.positionSpring = _xPosSpringAry[0];
@@ -387,6 +382,8 @@ public class StatusHandler : MonoBehaviourPun
     {
         yield return new WaitForSeconds(0.2f);
         photonView.RPC("PlayerDebuffSound", RpcTarget.All, "PlayerEffect/Cartoon-UI-047");
+        photonView.RPC("IceCubeCreate", RpcTarget.All);
+        photonView.RPC("IceSmokeCreate", RpcTarget.All);
 
         // 빙결
         _hasFreeze = true;
@@ -411,6 +408,8 @@ public class StatusHandler : MonoBehaviourPun
         actor.debuffState &= ~Actor.DebuffState.Ice;
 
         actor.InvokeStatusChangeEvent();
+        DestroyEffect("Fog_frost");
+        DestroyEffect("IceCube");
 
         // 이펙트 삭제
         if (hasObject)
@@ -432,6 +431,7 @@ public class StatusHandler : MonoBehaviourPun
         _hasShock = true;
         actor.actorState = Actor.ActorState.Debuff;
         photonView.RPC("PlayerDebuffSound", RpcTarget.All, "PlayerEffect/electronic_02");
+        photonView.RPC("ShockCreate", RpcTarget.All);
 
         JointDrive angularXDrive;
         JointDrive angularYZDrive;
@@ -455,7 +455,6 @@ public class StatusHandler : MonoBehaviourPun
             {
                 _hasShock = false;
                 actor.actorState = Actor.ActorState.Stand;
-                //StartCoroutine(Stun(_stunTime));
                 photonView.RPC("Stun", RpcTarget.All, _stunTime);
                 StopCoroutine(Shock(delay));
             }
@@ -482,10 +481,10 @@ public class StatusHandler : MonoBehaviourPun
         // 감전 해제
         _hasShock = false;
         StartCoroutine(ResetBodySpring());
-        //StartCoroutine(Stun(3f));
-        photonView.RPC("Stun", RpcTarget.All, 3f);
+        photonView.RPC("Stun", RpcTarget.All, 0.5f);
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Shock;
+        DestroyEffect("Lightning_aura");
 
         actor.InvokeStatusChangeEvent();
         _audioClip = null;
@@ -503,7 +502,12 @@ public class StatusHandler : MonoBehaviourPun
 
         actor.InvokeStatusChangeEvent();
 
-        GameObject go = GameObject.Find("Stun_loop");
+        DestroyEffect("Stun_loop");
+    }
+
+    public void DestroyEffect(string name)
+    {
+        GameObject go = GameObject.Find($"{name}");
         Managers.Resource.Destroy(go);
         effectObject = null;
     }
@@ -512,17 +516,75 @@ public class StatusHandler : MonoBehaviourPun
     public void StunCreate()
     {
         //Effects/Stun_loop 생성 
-        effectObject = Managers.Resource.PhotonNetworkInstantiate("Effects/Stun_loop");
+        EffectObjectCreate("Effects/Stun_loop");
+    }
+    [PunRPC]
+    public void BurnCreate()
+    {
+        EffectObjectCreate("Effects/Fire_large");
+    }
+
+    [PunRPC]
+    public void ShockCreate()
+    {
+        EffectObjectCreate("Effects/Lightning_aura");
+    }
+
+    [PunRPC]
+    public void PowerUpCreate()
+    {
+        EffectObjectCreate("Effects/Aura_acceleration");
+    }
+
+    [PunRPC]
+    public void IceCubeCreate()
+    {
+        EffectObjectCreate("Effects/IceCube");
+    }
+
+    [PunRPC]
+    public void IceSmokeCreate()
+    {
+        EffectObjectCreate("Effects/Fog_frost");
+    }
+
+    [PunRPC]
+    public void PoisonCreate()
+    {
+        EffectObjectCreate("Effects/Fog_poison");
+    }
+
+    [PunRPC]
+    public void WetCreate()
+    {
+        EffectObjectCreate("Effects/Wet");
+    }
+
+    void EffectObjectCreate(string path)
+    {
+        effectObject = Managers.Resource.PhotonNetworkInstantiate($"{path}");
         effectObject.transform.position = playerTransform.position;
     }
 
     [PunRPC]
-    public void MoveEffect()
+    public void MoveEffect() 
     {
         //LateUpdate여서 늦게 갱신이 되어서 NullReference가 떠서 같은 if 문을 넣어줌
-        if (effectObject != null)
+        if (effectObject != null && effectObject.name == "Stun_loop")
             effectObject.transform.position = new Vector3(playerTransform.position.x, playerTransform.position.y + 1, playerTransform.position.z);
+        else if(effectObject != null && effectObject.name == "Fog_frost")
+        {
+            effectObject.transform.position = new Vector3(playerTransform.position.x, playerTransform.position.y - 2, playerTransform.position.z);
+        }
+
     }
+    [PunRPC]
+    public void PlayerEffect()
+    {
+        if (effectObject != null)
+            effectObject.transform.position = playerTransform.position;
+    }
+
     public void UpdateHealth()
     {
         if (_isDead)

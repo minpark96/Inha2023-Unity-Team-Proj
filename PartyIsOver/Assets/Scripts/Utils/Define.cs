@@ -88,7 +88,16 @@ public class Define
 
     public enum Layer
     {
+        Item = 10,
+        ClimbObject = 11,
+        InteractableObject =12,
 
+        Player1 = 26,
+        Player2 = 27,
+        Player3 = 28,
+        Player4 = 29,
+        Player5 = 30,
+        Player6 = 31,
     }
 
     public enum UIEvent

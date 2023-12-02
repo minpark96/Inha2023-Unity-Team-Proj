@@ -84,7 +84,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
     public static GameObject LocalPlayerInstance;
 
-    public static int LayerCnt = 26;
+    public static int LayerCnt = (int)Define.Layer.Player1;
 
     public void InvokeStatusChangeEvent()
     {
