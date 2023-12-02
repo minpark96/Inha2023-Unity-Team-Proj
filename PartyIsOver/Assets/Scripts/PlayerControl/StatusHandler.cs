@@ -14,12 +14,12 @@ public class StatusHandler : MonoBehaviourPun
     public Actor actor;
 
     public bool invulnerable = false;
-    
+
     private float _healthDamage;
     private bool _isDead;
 
-    
-    private float _knockoutThreshold=15f;
+
+    private float _knockoutThreshold = 15f;
 
     // 초기 관절값
     private List<float> _xPosSpringAry = new List<float>();
@@ -93,16 +93,17 @@ public class StatusHandler : MonoBehaviourPun
         }
     }
 
-    
+
     void Update()
     {
         // 지침 디버프 활성화/비활성화
-        if(actor.Stamina <= 0)
+        if (actor.Stamina <= 0)
         {
-            if(!_hasExhausted)
+            if (!_hasExhausted)
             {
                 actor.debuffState |= Actor.DebuffState.Exhausted;
-                StartCoroutine(Exhausted(_exhaustedTime));
+                photonView.RPC("Exhausted", RpcTarget.All, _exhaustedTime);
+                //StartCoroutine(Exhausted(_exhaustedTime));
             }
         }
     }
@@ -112,9 +113,9 @@ public class StatusHandler : MonoBehaviourPun
     {
         if (effectObject != null && effectObject.name == "Stun_loop")
             photonView.RPC("MoveEffect", RpcTarget.All);
-        else if(effectObject != null && effectObject.name == "Fog_frost")
+        else if (effectObject != null && effectObject.name == "Fog_frost")
             photonView.RPC("MoveEffect", RpcTarget.All);
-        else if(effectObject != null)
+        else if (effectObject != null)
             photonView.RPC("PlayerEffect", RpcTarget.All);
 
     }
@@ -148,7 +149,7 @@ public class StatusHandler : MonoBehaviourPun
     [PunRPC]
     void PlayerDebuffSound(string path)
     {
-        if(_audioClip == null)
+        if (_audioClip == null)
         {
             _audioClip = Managers.Sound.GetOrAddAudioClip(path);
             _audioSource.clip = _audioClip;
@@ -189,7 +190,7 @@ public class StatusHandler : MonoBehaviourPun
                 }
                 break;
             case Damage.PowerUp: // 불끈
-                    actor.debuffState |= Actor.DebuffState.PowerUp;
+                actor.debuffState |= Actor.DebuffState.PowerUp;
                 break;
             case Damage.Burn: // 화상
                 actor.debuffState |= Actor.DebuffState.Burn;
@@ -214,7 +215,7 @@ public class StatusHandler : MonoBehaviourPun
                     actor.debuffState |= Actor.DebuffState.Drunk;
                     photonView.RPC("PlayerDebuffSound", RpcTarget.All, "PlayerEffect/Cartoon-UI-049");
                     photonView.RPC("PoisonCreate", RpcTarget.All);
-                    
+
                 }
                 break;
         }
@@ -225,30 +226,30 @@ public class StatusHandler : MonoBehaviourPun
         foreach (Actor.DebuffState state in System.Enum.GetValues(typeof(Actor.DebuffState)))
         {
             Actor.DebuffState checking = actor.debuffState & state;
-            
+
             switch (checking)
             {
                 case Actor.DebuffState.Default:
                     break;
                 case Actor.DebuffState.PowerUp:
-                    if(!_hasPowerUp)
-                        StartCoroutine(PowerUp(_powerUpTime));
+                    if (!_hasPowerUp)
+                        photonView.RPC("PowerUp", RpcTarget.All, _powerUpTime);
                     break;
                 case Actor.DebuffState.Burn:
                     if (!_hasBurn)
-                        StartCoroutine(Burn(_burnTime));
+                        photonView.RPC("Burn", RpcTarget.All, _burnTime);
                     break;
                 case Actor.DebuffState.Slow:
-                    if(!_hasSlow)
-                        StartCoroutine(Slow(_slowTime));
+                    if (!_hasSlow)
+                        photonView.RPC("Slow", RpcTarget.All, _slowTime);
                     break;
                 case Actor.DebuffState.Ice:
-                    if(!_hasFreeze)
-                        StartCoroutine(Freeze(_freezeTime));
+                    if (!_hasFreeze)
+                        photonView.RPC("Freeze", RpcTarget.All, _freezeTime);
                     break;
                 case Actor.DebuffState.Shock:
                     if (!_hasShock)
-                        StartCoroutine(Shock(_shockTime));
+                        photonView.RPC("Shock", RpcTarget.All, _shockTime);
                     break;
                 case Actor.DebuffState.Stun:
                     if (!_hasStun)
@@ -263,6 +264,7 @@ public class StatusHandler : MonoBehaviourPun
         }
     }
 
+    [PunRPC]
     IEnumerator PowerUp(float delay)
     {
 
@@ -280,11 +282,12 @@ public class StatusHandler : MonoBehaviourPun
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.PowerUp;
         actor.PlayerController.RunSpeed -= _maxSpeed * 0.1f;
-        DestroyEffect("Aura_acceleration");
+        photonView.RPC("DestroyEffect", RpcTarget.All, "Aura_acceleration");
 
         actor.InvokeStatusChangeEvent();
         _audioClip = null;
     }
+    [PunRPC]
     IEnumerator Burn(float delay)
     {
         // 화상
@@ -304,7 +307,7 @@ public class StatusHandler : MonoBehaviourPun
             {
                 _hasBurn = false;
                 actor.actorState = Actor.ActorState.Stand;
-                StopCoroutine(Burn(delay));
+                photonView.RPC("Burn", RpcTarget.All, delay);
             }
 
             if (Time.time - lastBurnTime >= 1.0f) // 1초간 데미지+액션
@@ -323,10 +326,11 @@ public class StatusHandler : MonoBehaviourPun
         _hasBurn = false;
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Burn;
+        photonView.RPC("DestroyEffect", RpcTarget.All, "Fire_large");
 
         actor.InvokeStatusChangeEvent();
-        DestroyEffect("Fire_large");
     }
+    [PunRPC]
     IEnumerator Exhausted(float delay)
     {
         // 지침
@@ -351,7 +355,8 @@ public class StatusHandler : MonoBehaviourPun
 
         // 지침 해제
         _hasExhausted = false;
-        DestroyEffect("Wet");
+        photonView.RPC("DestroyEffect", RpcTarget.All, "Wet");
+
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Exhausted;
         angularXDrive.positionSpring = _xPosSpringAry[0];
@@ -361,6 +366,7 @@ public class StatusHandler : MonoBehaviourPun
 
         actor.InvokeStatusChangeEvent();
     }
+    [PunRPC]
     IEnumerator Slow(float delay)
     {
         // 둔화
@@ -378,6 +384,8 @@ public class StatusHandler : MonoBehaviourPun
 
         actor.InvokeStatusChangeEvent();
     }
+
+    [PunRPC]
     IEnumerator Freeze(float delay)
     {
         yield return new WaitForSeconds(0.2f);
@@ -408,9 +416,8 @@ public class StatusHandler : MonoBehaviourPun
         actor.debuffState &= ~Actor.DebuffState.Ice;
 
         actor.InvokeStatusChangeEvent();
-        DestroyEffect("Fog_frost");
-        DestroyEffect("IceCube");
-
+        photonView.RPC("DestroyEffect", RpcTarget.All, "Fog_frost");
+        photonView.RPC("DestroyEffect", RpcTarget.All, "IceCube");
         // 이펙트 삭제
         if (hasObject)
         {
@@ -423,6 +430,8 @@ public class StatusHandler : MonoBehaviourPun
         }
         _audioClip = null;
     }
+
+    [PunRPC]
     IEnumerator Shock(float delay)
     {
         yield return new WaitForSeconds(0.2f);
@@ -456,7 +465,7 @@ public class StatusHandler : MonoBehaviourPun
                 _hasShock = false;
                 actor.actorState = Actor.ActorState.Stand;
                 photonView.RPC("Stun", RpcTarget.All, _stunTime);
-                StopCoroutine(Shock(delay));
+                photonView.RPC("Shock", RpcTarget.All, delay);
             }
 
             if (UnityEngine.Random.Range(0, 20) > 17)
@@ -484,7 +493,7 @@ public class StatusHandler : MonoBehaviourPun
         photonView.RPC("Stun", RpcTarget.All, 0.5f);
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Shock;
-        DestroyEffect("Lightning_aura");
+        photonView.RPC("DestroyEffect", RpcTarget.All, "Lightning_aura");
 
         actor.InvokeStatusChangeEvent();
         _audioClip = null;
@@ -502,9 +511,10 @@ public class StatusHandler : MonoBehaviourPun
 
         actor.InvokeStatusChangeEvent();
 
-        DestroyEffect("Stun_loop");
+        photonView.RPC("DestroyEffect", RpcTarget.All, "Stun_loop");
     }
 
+    [PunRPC]
     public void DestroyEffect(string name)
     {
         GameObject go = GameObject.Find($"{name}");
@@ -567,12 +577,12 @@ public class StatusHandler : MonoBehaviourPun
     }
 
     [PunRPC]
-    public void MoveEffect() 
+    public void MoveEffect()
     {
         //LateUpdate여서 늦게 갱신이 되어서 NullReference가 떠서 같은 if 문을 넣어줌
         if (effectObject != null && effectObject.name == "Stun_loop")
             effectObject.transform.position = new Vector3(playerTransform.position.x, playerTransform.position.y + 1, playerTransform.position.z);
-        else if(effectObject != null && effectObject.name == "Fog_frost")
+        else if (effectObject != null && effectObject.name == "Fog_frost")
         {
             effectObject.transform.position = new Vector3(playerTransform.position.x, playerTransform.position.y - 2, playerTransform.position.z);
         }
@@ -638,7 +648,6 @@ public class StatusHandler : MonoBehaviourPun
         StartCoroutine(ResetBodySpring());
         actor.actorState = Actor.ActorState.Dead;
         _isDead = true;
-        actor.InvokeDeathEvent();
     }
 
     void EnterUnconsciousState()
@@ -664,7 +673,7 @@ public class StatusHandler : MonoBehaviourPun
         //기절과 회복에 모두 관여 기절시엔 퍼센티지를 0으로해서 사용
         for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
         {
-            if (i == (int)Define.BodyPart.Hip)
+            if (i == 3)
                 continue;
 
             angularXDrive = actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive;
@@ -700,7 +709,7 @@ public class StatusHandler : MonoBehaviourPun
         }
     }
 
-    public IEnumerator RestoreBodySpring(float _springLerpTime=1f)
+    public IEnumerator RestoreBodySpring(float _springLerpTime = 1f)
     {
         float startTime = Time.time;
         float springLerpDuration = _springLerpTime;
