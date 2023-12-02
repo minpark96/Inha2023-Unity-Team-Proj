@@ -112,6 +112,8 @@ public class StatusHandler : MonoBehaviourPun
     {
         if (effectObject != null && effectObject.name == "Stun_loop")
             photonView.RPC("MoveEffect", RpcTarget.All);
+        else if(effectObject != null && effectObject.name == "Fog_frost")
+            photonView.RPC("MoveEffect", RpcTarget.All);
         else if(effectObject != null)
             photonView.RPC("PlayerEffect", RpcTarget.All);
 
@@ -402,8 +404,8 @@ public class StatusHandler : MonoBehaviourPun
     {
         yield return new WaitForSeconds(0.2f);
         photonView.RPC("PlayerDebuffSound", RpcTarget.All, "PlayerEffect/Cartoon-UI-047");
-        photonView.RPC("IceSmokeCreate", RpcTarget.All);
         photonView.RPC("IceCubeCreate", RpcTarget.All);
+        photonView.RPC("IceSmokeCreate", RpcTarget.All);
 
         // 빙결
         _hasFreeze = true;
@@ -554,16 +556,17 @@ public class StatusHandler : MonoBehaviourPun
     {
         EffectObjectCreate("Effects/Aura_acceleration");
     }
-    
-    [PunRPC]
-    public void IceSmokeCreate()
-    {
-        EffectObjectCreate("Effects/Fog_frost");
-    }
+
     [PunRPC]
     public void IceCubeCreate()
     {
         EffectObjectCreate("Effects/IceCube");
+    }
+
+    [PunRPC]
+    public void IceSmokeCreate()
+    {
+        EffectObjectCreate("Effects/Fog_frost");
     }
 
     [PunRPC]
@@ -588,8 +591,13 @@ public class StatusHandler : MonoBehaviourPun
     public void MoveEffect() 
     {
         //LateUpdate여서 늦게 갱신이 되어서 NullReference가 떠서 같은 if 문을 넣어줌
-        if (effectObject != null)
+        if (effectObject != null && effectObject.name == "Stun_loop")
             effectObject.transform.position = new Vector3(playerTransform.position.x, playerTransform.position.y + 1, playerTransform.position.z);
+        else if(effectObject != null && effectObject.name == "Fog_frost")
+        {
+            effectObject.transform.position = new Vector3(playerTransform.position.x, playerTransform.position.y - 2, playerTransform.position.z);
+        }
+
     }
     [PunRPC]
     public void PlayerEffect()
