@@ -1135,7 +1135,6 @@ public class PlayerController : MonoBehaviourPun
     #region Punch
     public void PunchAndGrab()
     {
-        _actor.Stamina -= 20;
         if (!_isCoroutineRunning)
         {
             if (_readySide == Side.Left)
