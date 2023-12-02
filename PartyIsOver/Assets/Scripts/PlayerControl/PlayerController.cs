@@ -385,8 +385,9 @@ public class PlayerController : MonoBehaviourPun
                             PunchAndGrab();
                     }
 
-                    if (Input.GetMouseButtonUp(1))
+                    if (Input.GetMouseButtonUp(1) && _actor.Stamina >= 0)
                     {
+                        _actor.Stamina -= 5;
                         if (_actor.debuffState == DebuffState.Balloon)
                         {
                             StartCoroutine(_balloonState.BalloonSpin());
@@ -477,9 +478,10 @@ public class PlayerController : MonoBehaviourPun
         {
             case Define.KeyboardEvent.PointerDown:
                 {
-                    if (Input.GetKeyDown(KeyCode.R))
+                    if (Input.GetKeyDown(KeyCode.R) && _actor.Stamina >= 0)
                     {
-                        if(_actor.debuffState != DebuffState.Drunk)
+                        _actor.Stamina -= 30;
+                        if (_actor.debuffState != DebuffState.Drunk)
                         {
                             if (!_isRSkillCheck)
                             {
@@ -508,11 +510,14 @@ public class PlayerController : MonoBehaviourPun
                         isRun = false;
                     }
 
-                    if (Input.GetKeyUp(KeyCode.H))
+                    if (Input.GetKeyUp(KeyCode.H) && _actor.Stamina >= 0)
+                    {
+                        _actor.Stamina -= 5;
                         StartCoroutine(Heading());
+                    }
                     
 
-                    if (Input.GetKeyUp(KeyCode.R))
+                    if (Input.GetKeyUp(KeyCode.R) && _actor.Stamina >= 0)
                     {
                         _isRSkillCheck = false;
                         StartCoroutine(ResetCharge());
@@ -538,7 +543,7 @@ public class PlayerController : MonoBehaviourPun
                 break;
             case Define.KeyboardEvent.Hold:
                 {
-                    if (Input.GetKey(KeyCode.R))
+                    if (Input.GetKey(KeyCode.R) && _actor.Stamina >= 0)
                     {
                         if (_actor.debuffState == DebuffState.Drunk)
                         {
@@ -697,6 +702,11 @@ public class PlayerController : MonoBehaviourPun
     #region FixedUpdate
     private void FixedUpdate()
     {
+
+        //여기서 특정 상태일 때 스테미너 회복이 안되게 한다.
+        if (_actor.Stamina <=_actor.MaxStamina)
+            _actor.Stamina += 0.1f;
+
         if (!photonView.IsMine || _actor.actorState == ActorState.Dead) return;
 
         if (isAI)
@@ -711,6 +721,8 @@ public class PlayerController : MonoBehaviourPun
         {
             isDrunk = true;
             StartCoroutine(_drunkState.DrunkOff());
+
+            
         }
 
 

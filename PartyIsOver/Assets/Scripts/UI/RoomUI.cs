@@ -55,19 +55,19 @@ public class RoomUI : MonoBehaviour
                         OnClickReady();
                     }
 
-                    if(Input.GetKeyDown(KeyCode.Tab))
-                    {
-                        OnClickSkillChange();
-                    }
-
                     if (Input.GetKeyDown(KeyCode.Escape))
                     {
                         OnClickLeaveRoom();
                     }
                 }
                 break;
-
-            case Define.KeyboardEvent.PointerUp:
+            case Define.KeyboardEvent.PointerDown:
+                {
+                    if (Input.GetKeyDown(KeyCode.Tab))
+                    {
+                        OnClickSkillChange();
+                    }
+                }
                 break;
         }
     }
@@ -94,16 +94,26 @@ public class RoomUI : MonoBehaviour
         if (PhotonNetwork.IsMasterClient)
         {
             if(CanPlay)
+            {
                 PhotonNetwork.LoadLevel(_arenaName);
+                PhotonNetwork.CurrentRoom.IsOpen = false;
+                Managers.Input.KeyboardAction -= OnKeyboardEvent;
+            }
         }
         else
         {
             Ready = !Ready;
 
-            if (Ready)
-                ReadyButton.GetComponentInChildren<Image>().sprite = ReadyOn;
+            if (!Ready)
+            {
+                ReadyButton.GetComponent<Image>().sprite = ReadyOn;
+                ReadyButton.GetComponentInChildren<Text>().text = "ÁØºñ! (F5)";
+            }
             else
-                ReadyButton.GetComponentInChildren<Image>().sprite = ReadyOff;
+            {
+                ReadyButton.GetComponent<Image>().sprite = ReadyOff;
+                ReadyButton.GetComponentInChildren<Text>().text = "ÁØºñÇØÁ¦! (F5)";
+            }
         }
     }
 
@@ -111,24 +121,28 @@ public class RoomUI : MonoBehaviour
 
     public void OnClickLeaveRoom()
     {
-        //PhotonManager.Instance.LeaveRoom();
+        if(SceneManager.GetActiveScene().name != _arenaName)
+            PhotonManager.Instance.LeaveRoom();
 
-        PhotonNetwork.LeaveRoom();
+        //PhotonNetwork.LeaveRoom();
     }
 
     public void OnClickSkillChange()
     {
+        if (!SkillChangeButton || !SkillName)
+            return;
+
         SkillChange = !SkillChange;
 
         if (SkillChange)
         {
             SkillChangeButton.sprite = Skill1;
-            SkillName.text = "Â÷Â¡ ½ºÅ³\n\n\n³É³ÉÆÝÄ¡";
+            SkillName.text = "Â÷Â¡ ½ºÅ³\n\n\n\n³É³ÉÆÝÄ¡";
         }
         else
         {
             SkillChangeButton.sprite = Skill2;
-            SkillName.text = "Â÷Â¡ ½ºÅ³\n\n\nÇÙÆÝÄ¡";
+            SkillName.text = "Â÷Â¡ ½ºÅ³\n\n\n\nÇÙÆÝÄ¡";
         }
     }
 
