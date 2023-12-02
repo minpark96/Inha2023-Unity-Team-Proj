@@ -241,8 +241,7 @@ public class PlayerController : MonoBehaviourPun
 
     float startChargeTime;
     float endChargeTime = 0f;
-
-
+    int _checkHoldTimeCount = 0;
     public enum Side
     {
         Left = 0,
@@ -282,7 +281,6 @@ public class PlayerController : MonoBehaviourPun
     private ConfigurableJoint[] childJoints;
     private ConfigurableJointMotion[] originalYMotions;
     private ConfigurableJointMotion[] originalZMotions;
-
     void Init()
     {
         _bodyHandler = GetComponent<BodyHandler>();
@@ -390,7 +388,13 @@ public class PlayerController : MonoBehaviourPun
 
                     if (Input.GetMouseButtonUp(1) && _actor.Stamina >= 0)
                     {
+                        if (_actor.debuffState == DebuffState.Exhausted)
+                            return;
                         _actor.Stamina -= 5;
+
+                        if(_actor.Stamina <= 0)
+                            _actor.Stamina = 0;
+
                         if (_actor.debuffState == DebuffState.Balloon)
                         {
                             StartCoroutine(_balloonState.BalloonSpin());
@@ -402,9 +406,17 @@ public class PlayerController : MonoBehaviourPun
                     if (_actor.debuffState == DebuffState.Balloon)
                         return;
 
+                    if (Input.GetMouseButtonUp(2) && _actor.Stamina >= 0)
+                    {
+                        if (_actor.debuffState == DebuffState.Exhausted)
+                            return;
+                        _actor.Stamina -= 5;
 
-                    if (!_isCoroutineRoll && Input.GetMouseButtonUp(2))
-                        ForwardRollTrigger();
+                        if (_actor.Stamina <= 0)
+                            _actor.Stamina = 0;
+
+                        StartCoroutine(Heading());
+                    }
                 }
                 break;
         }
@@ -484,13 +496,26 @@ public class PlayerController : MonoBehaviourPun
                     if (Input.GetKeyDown(KeyCode.R) && _actor.Stamina >= 0)
                     {
                         _actor.Stamina -= 30;
-                        if (_actor.debuffState != DebuffState.Drunk)
+
+                        if (_actor.Stamina <= 0)
                         {
-                            if (!_isRSkillCheck)
+                            _actor.Stamina = 0;
+                            _actor.debuffState = DebuffState.Exhausted;
+                        }
+
+                        if (_actor.debuffState == DebuffState.Exhausted)
+                            return;
+                        else
+                        {
+                            if (_actor.debuffState != DebuffState.Drunk)
                             {
-                                photonView.RPC("PlayerEffectSound",RpcTarget.All, "Sounds/PlayerEffect/ACTION_Changing_Smoke");
-                                _isRSkillCheck = true;
-                                StartCoroutine(ChargeReady());
+                                if (!_isRSkillCheck)
+                                {
+
+                                    photonView.RPC("PlayerEffectSound", RpcTarget.All, "Sounds/PlayerEffect/ACTION_Changing_Smoke");
+                                    _isRSkillCheck = true;
+                                    StartCoroutine(ChargeReady());
+                                }
                             }
                         }
                     }
@@ -513,18 +538,10 @@ public class PlayerController : MonoBehaviourPun
                         isRun = false;
                     }
 
-                    if (Input.GetKeyUp(KeyCode.H) && _actor.Stamina >= 0)
-                    {
-                        _actor.Stamina -= 5;
-                        StartCoroutine(Heading());
-                    }
-                    
-
                     if (Input.GetKeyUp(KeyCode.R) && _actor.Stamina >= 0)
                     {
                         _isRSkillCheck = false;
                         StartCoroutine(ResetCharge());
-                       
                     }
                 }
                 break;
@@ -546,8 +563,15 @@ public class PlayerController : MonoBehaviourPun
                 break;
             case Define.KeyboardEvent.Hold:
                 {
+                    if (Managers.Input._checkHoldTime == false && _checkHoldTimeCount == 0)
+                    {
+                        photonView.RPC("PlayerEffectSound", RpcTarget.All, "Sounds/PlayerEffect/Item_UI_029");
+                        _checkHoldTimeCount++;
+                    }
+
                     if (Input.GetKey(KeyCode.R) && _actor.Stamina >= 0)
                     {
+
                         if (_actor.debuffState == DebuffState.Drunk)
                         {
                             StartCoroutine(_drunkState.DrunkActionReady());
@@ -607,9 +631,9 @@ public class PlayerController : MonoBehaviourPun
 
     IEnumerator ResetCharge()
     {
+        _checkHoldTimeCount = 0;
         endChargeTime = Time.time;
         Rigidbody _RPartRigidbody;
-
         for (int i = 0; i < RSkillAniData.Length; i++)
         {
             for (int j = 0; j < RSkillAniData[i].StandardRigidbodies.Length; j++)
