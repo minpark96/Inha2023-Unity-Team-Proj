@@ -150,7 +150,7 @@ public class CollisionHandler : MonoBehaviourPun
 
 private float PhysicalDamage(InteractableObject collisionInteractable, float damage, ContactPoint contact)
     {
-        float itemDamage = 1f;
+        float itemDamage = 100f;
         if (collisionInteractable.GetComponent<Item>() != null)
             itemDamage = collisionInteractable.GetComponent<Item>().ItemData.Damage;
 

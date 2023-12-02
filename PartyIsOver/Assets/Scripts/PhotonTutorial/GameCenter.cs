@@ -228,6 +228,7 @@ public class GameCenter : BaseScene
                     go = Managers.Resource.PhotonNetworkInstantiate(_playerPath6, pos: SpawnPoints[5]);
                     break;
             }
+
             MyActor = go.GetComponent<Actor>();
             SaveDefaultInfo(go);
 
@@ -254,11 +255,11 @@ public class GameCenter : BaseScene
         for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
         {
             DefaultPos[i] = actor.BodyHandler.BodyParts[i].transform.localPosition;
-            Debug.Log(actor.BodyHandler.BodyParts[i].transform.localPosition);
-            Debug.Log(DefaultPos[i]);
+            //Debug.Log(actor.BodyHandler.BodyParts[i].transform.localPosition);
+            //Debug.Log(DefaultPos[i]);
             DefaultRot[i] = actor.BodyHandler.BodyParts[i].transform.localRotation;
-            Debug.Log(actor.BodyHandler.BodyParts[i].transform.localRotation);
-            Debug.Log(DefaultRot[i]);
+            //Debug.Log(actor.BodyHandler.BodyParts[i].transform.localRotation);
+            //Debug.Log(DefaultRot[i]);
         }
     }
 
