@@ -673,7 +673,7 @@ public class StatusHandler : MonoBehaviourPun
         //기절과 회복에 모두 관여 기절시엔 퍼센티지를 0으로해서 사용
         for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
         {
-            if (i == 3)
+            if (i == (int)Define.BodyPart.Hip)
                 continue;
 
             angularXDrive = actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive;
