@@ -35,7 +35,7 @@ public class MainUI : MonoBehaviour
     {
         if(_gameStartFlag)
         {
-            _angle -= 0.5f;
+            _angle -= 1f;
             StartObject.transform.rotation = Quaternion.Euler(_angle, 180, 0);
 
             if (_angle <= -90)
@@ -77,14 +77,17 @@ public class MainUI : MonoBehaviour
         _gameStartFlag = true;
         Animator.SetBool("Pose", true);
     }
+
     public void OnClickPopup()
     {
         CancelPanel.SetActive(true);
     }
+
     public void OnClickPopUpCancel()
     {
         CancelPanel.SetActive(false);
     }
+
     public void OnClickPopUpGameQuit()
     {
         #if UNITY_EDITOR
