@@ -484,7 +484,7 @@ public class StatusHandler : MonoBehaviourPun
         photonView.RPC("Stun", RpcTarget.All, 0.5f);
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Shock;
-        DestroyEffect("Flash_13");
+        DestroyEffect("Lightning_aura");
 
         actor.StatusChangeEventInvoke();
         _audioClip = null;
@@ -527,7 +527,7 @@ public class StatusHandler : MonoBehaviourPun
     [PunRPC]
     public void ShockCreate()
     {
-        EffectObjectCreate("Effects/Flash_13");
+        EffectObjectCreate("Effects/Lightning_aura");
     }
 
     [PunRPC]

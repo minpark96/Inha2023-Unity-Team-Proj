@@ -722,9 +722,7 @@ public class PlayerController : MonoBehaviourPun
             isDrunk = true;
             StartCoroutine(_drunkState.DrunkOff());
 
-            GameObject go = GameObject.Find("Fog_poison");
-            Managers.Resource.Destroy(go);
-            _actor.StatusHandler.effectObject = null;
+            
         }
 
 
