@@ -386,7 +386,7 @@ public class PlayerController : MonoBehaviourPun
                     }
 
                     if (Input.GetMouseButtonUp(1) && _actor.Stamina >= 0)
-                    {
+                    {          
                         _actor.Stamina -= 5;
                         if (_actor.debuffState == DebuffState.Balloon)
                         {
@@ -399,9 +399,11 @@ public class PlayerController : MonoBehaviourPun
                     if (_actor.debuffState == DebuffState.Balloon)
                         return;
 
-
-                    if (!_isCoroutineRoll && Input.GetMouseButtonUp(2))
-                        ForwardRollTrigger();
+                    if (Input.GetMouseButtonUp(2) && _actor.Stamina >= 0)
+                    {
+                        _actor.Stamina -= 5;
+                        StartCoroutine(Heading());
+                    }
                 }
                 break;
         }
@@ -509,13 +511,6 @@ public class PlayerController : MonoBehaviourPun
                         _actor.actorState = Actor.ActorState.Stand;
                         isRun = false;
                     }
-
-                    if (Input.GetKeyUp(KeyCode.H) && _actor.Stamina >= 0)
-                    {
-                        _actor.Stamina -= 5;
-                        StartCoroutine(Heading());
-                    }
-                    
 
                     if (Input.GetKeyUp(KeyCode.R) && _actor.Stamina >= 0)
                     {

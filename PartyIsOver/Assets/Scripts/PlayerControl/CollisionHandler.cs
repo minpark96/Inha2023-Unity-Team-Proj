@@ -177,19 +177,19 @@ private float PhysicalDamage(InteractableObject collisionInteractable, float dam
                 damage *= _punchDamage;
                 {
                     actor.PlayerController.PlayerEffectSound("PlayerEffect/SFX_ArrowShot_Hit");
-                    //PlaySound("PlayerEffect/SFX_ArrowShot_Hit");
                 }
                 break;
             case InteractableObject.Damage.DropKick:
                 damage *= _dropkickDamage;
                 {
                     actor.PlayerController.PlayerEffectSound("PlayerEffect/DAMAGE_Monster_01");
-
-                    //PlaySound("PlayerEffect/DAMAGE_Monster_01");
                 }
                 break;
             case InteractableObject.Damage.Headbutt:
                 damage *= _headbuttDamage;
+                {
+                    actor.PlayerController.PlayerEffectSound("PlayerEffect/WEAPON_CrossBow");
+                }
                 break;
             case InteractableObject.Damage.Knockout:
                 damage = 1000000f;
