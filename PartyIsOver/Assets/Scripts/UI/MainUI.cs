@@ -39,7 +39,6 @@ public class MainUI : MonoBehaviour
     private Text _storyText;
 
     private GameObject _mainObject;
-    private GameObject _creditObject;
     private GameObject _keyBoardObject;
 
 
@@ -55,8 +54,6 @@ public class MainUI : MonoBehaviour
         NickName.text = PhotonNetwork.NickName;
 
         _mainObject = GameObject.Find("Main Object");
-        _creditObject = GameObject.Find("Credit Object");
-        _creditObject.SetActive(false);
         _keyBoardObject = SettingsPanel.transform.GetChild(5).GetChild(0).gameObject;
         _keyBoardObject.SetActive(false);
 
@@ -206,7 +203,6 @@ public class MainUI : MonoBehaviour
     public void OnClickCredit()
     {
         _mainObject.SetActive(false);
-        _creditObject.SetActive(true);
         _creditOn = true;
         CreditPanel.SetActive(true);
     }
@@ -214,7 +210,6 @@ public class MainUI : MonoBehaviour
     public void OnClickCreditExit()
     {
         _mainObject.SetActive(true);
-        _creditObject.SetActive(false);
         CreditPanel.SetActive(false);
     }
 

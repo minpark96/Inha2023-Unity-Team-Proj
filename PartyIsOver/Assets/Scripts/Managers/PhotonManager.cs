@@ -28,11 +28,7 @@ public class PhotonManager : BaseScene
     public List<RoomItem> RoomItemsList = new List<RoomItem>();
     public LobbyUI LobbyUI;
 
-    private void Update()
-    {
-        Debug.Log("InLobby: " + PhotonNetwork.InLobby);
-        Debug.Log("InRoom: " + PhotonNetwork.InRoom);
-    }
+
     void Awake()
     {
         Init();
