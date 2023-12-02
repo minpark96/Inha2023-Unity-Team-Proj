@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using BehaviorTree;
 
 public class GuardBT : Tree
@@ -14,18 +15,18 @@ public class GuardBT : Tree
         Node root = new Selector(new List<Node>
         {
             //어택하는 간단한 노드
-            //new sequence(new list<node>
-            //{
-            //    new checkenemyinattackrange(transform),
-            //    new taskattack(transform),
-            //}),
             new Sequence(new List<Node>
+            {
+                new CheckEnemyInAttackRange(transform),
+                new TaskAttack(transform),
+            }),
+            /*new Sequence(new List<Node>
             {
                 new CheckEnemyInFOVRange(transform),
                 new TaskGoToTarget(transform),
-            }),
+            }),*/
             new TaskPatrol(transform, waypoints),
-        });
+        }) ;
 
         return root;
     }

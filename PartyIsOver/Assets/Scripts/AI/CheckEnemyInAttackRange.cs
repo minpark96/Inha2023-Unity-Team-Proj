@@ -27,6 +27,9 @@ public class CheckEnemyInAttackRange : Node
         }
 
         Transform target = (Transform)t;
+        Debug.Log(target);
+        Debug.Log(Vector3.Distance(_transform.position, target.position));
+        Debug.Log(GuardBT.attackRange);
         if(Vector3.Distance(_transform.position, target.position) <= GuardBT.attackRange)
         {
             _animator.SetBool("Attacking", true);
