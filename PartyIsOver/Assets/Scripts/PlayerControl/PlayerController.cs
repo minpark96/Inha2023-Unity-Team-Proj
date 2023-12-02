@@ -386,8 +386,14 @@ public class PlayerController : MonoBehaviourPun
                     }
 
                     if (Input.GetMouseButtonUp(1) && _actor.Stamina >= 0)
-                    {          
+                    {
+                        if (_actor.debuffState == DebuffState.Exhausted)
+                            return;
                         _actor.Stamina -= 5;
+
+                        if(_actor.Stamina <= 0)
+                            _actor.Stamina = 0;
+
                         if (_actor.debuffState == DebuffState.Balloon)
                         {
                             StartCoroutine(_balloonState.BalloonSpin());
@@ -401,7 +407,13 @@ public class PlayerController : MonoBehaviourPun
 
                     if (Input.GetMouseButtonUp(2) && _actor.Stamina >= 0)
                     {
+                        if (_actor.debuffState == DebuffState.Exhausted)
+                            return;
                         _actor.Stamina -= 5;
+
+                        if (_actor.Stamina <= 0)
+                            _actor.Stamina = 0;
+
                         StartCoroutine(Heading());
                     }
                 }
@@ -483,13 +495,23 @@ public class PlayerController : MonoBehaviourPun
                     if (Input.GetKeyDown(KeyCode.R) && _actor.Stamina >= 0)
                     {
                         _actor.Stamina -= 30;
-                        if (_actor.debuffState != DebuffState.Drunk)
+
+                        if (_actor.Stamina <= 0)
+                            _actor.Stamina = 0;
+
+                        if (_actor.debuffState == DebuffState.Exhausted)
+                            return;
+                        else
                         {
-                            if (!_isRSkillCheck)
+                            if (_actor.debuffState != DebuffState.Drunk)
                             {
-                                photonView.RPC("PlayerEffectSound",RpcTarget.All, "Sounds/PlayerEffect/ACTION_Changing_Smoke");
-                                _isRSkillCheck = true;
-                                StartCoroutine(ChargeReady());
+                                if (!_isRSkillCheck)
+                                {
+
+                                    photonView.RPC("PlayerEffectSound", RpcTarget.All, "Sounds/PlayerEffect/ACTION_Changing_Smoke");
+                                    _isRSkillCheck = true;
+                                    StartCoroutine(ChargeReady());
+                                }
                             }
                         }
                     }
@@ -514,9 +536,9 @@ public class PlayerController : MonoBehaviourPun
 
                     if (Input.GetKeyUp(KeyCode.R) && _actor.Stamina >= 0)
                     {
+                        Debug.Log("Click");
                         _isRSkillCheck = false;
                         StartCoroutine(ResetCharge());
-                       
                     }
                 }
                 break;
