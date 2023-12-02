@@ -342,6 +342,8 @@ public class StatusHandler : MonoBehaviourPun
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Burn;
 
+        DestroyEffect("Fire_large");
+
         actor.StatusChangeEventInvoke();
     }
     IEnumerator Exhausted(float delay)
