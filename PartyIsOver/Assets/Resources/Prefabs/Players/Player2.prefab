@@ -12293,9 +12293,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 168a9945a6afc8143a29851274a40341, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerController: {fileID: 0}
-  CameraArm: {fileID: 5215561827572490024}
-  Actor: {fileID: 0}
   BalloonDuration: 30
   RotateAngle: 10
   IsGrounded: 0

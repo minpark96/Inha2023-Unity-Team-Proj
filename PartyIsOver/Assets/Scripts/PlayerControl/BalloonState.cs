@@ -5,52 +5,53 @@ using UnityEngine;
 
 public class BalloonState : MonoBehaviour
 {
-    public PlayerController PlayerController;
-    public Transform CameraArm;
-    public Actor Actor;
-
     public float BalloonDuration;
-    public float RotateAngle = 8f;
-    public bool IsGrounded;
-    public float Force = 10000f;
+    //public bool IsGrounded;
+    //public float RotateAngle = 8f;
+    //public float Force = 10000f;
+
+    private PlayerController _playerController;
+    private Transform _cameraArm;
+    private Actor _actor;
 
     private Vector3 _moveDir;
-    private float _originalMass;
+    //private float _originalMass;
+    //private float _totalAngle = 0f;
+
 
     void Start()
     {
-        PlayerController = GetComponent<PlayerController>();
-        Actor = GetComponent<Actor>();
-        CameraArm = transform.GetChild(0).GetChild(0);
-
-        _originalMass = Actor.BodyHandler.Hip.PartRigidbody.mass;
+        _playerController = GetComponent<PlayerController>();
+        _actor = GetComponent<Actor>();
+        _cameraArm = transform.GetChild(0).GetChild(0);
+        //_originalMass = _actor.BodyHandler.Hip.PartRigidbody.mass;
     }
 
     public IEnumerator BalloonShapeOn()
     {
-        PlayerController.isBalloon = true;
+        _playerController.isBalloon = true;
 
-        for (int i = (int)Define.BodyPart.Hip; i < (int)Define.BodyPart.Head; i++)
+        for (int i = (int)Define.BodyPart.Hip; i <= (int)Define.BodyPart.Head; i++)
         {
-            RigidbodyConstraints constraints = Actor.BodyHandler.BodyParts[i].PartRigidbody.constraints;
+            RigidbodyConstraints constraints = _actor.BodyHandler.BodyParts[i].PartRigidbody.constraints;
             constraints |= RigidbodyConstraints.FreezeRotationY;
             constraints |= RigidbodyConstraints.FreezeRotationZ;
-            Actor.BodyHandler.BodyParts[i].PartRigidbody.constraints = constraints;
+            _actor.BodyHandler.BodyParts[i].PartRigidbody.constraints = constraints;
         }
-        for (int i = (int)Define.BodyPart.LeftArm; i < Actor.BodyHandler.BodyParts.Count - 1; i++)
+        for (int i = (int)Define.BodyPart.LeftArm; i < _actor.BodyHandler.BodyParts.Count - 1; i++)
         {
-            Actor.BodyHandler.BodyParts[i].PartRigidbody.freezeRotation = true;
+            _actor.BodyHandler.BodyParts[i].PartRigidbody.freezeRotation = true;
         }
 
-        for (int i = 0; i < Actor.BodyHandler.BodyParts.Count - 1; i++)
+        for (int i = 0; i < _actor.BodyHandler.BodyParts.Count - 1; i++)
         {
-            Actor.BodyHandler.BodyParts[i].PartRigidbody.angularVelocity = Vector3.zero;
-            Actor.BodyHandler.BodyParts[i].PartRigidbody.velocity = Vector3.zero;
+            _actor.BodyHandler.BodyParts[i].PartRigidbody.angularVelocity = Vector3.zero;
+            _actor.BodyHandler.BodyParts[i].PartRigidbody.velocity = Vector3.zero;
         }
 
-        Actor.BodyHandler.Waist.AddComponent<LimbCollision>();
-        Actor.BodyHandler.Waist.GetComponent<CapsuleCollider>().radius = 0.3f;
-        Actor.BodyHandler.Waist.GetComponent<Collider>().isTrigger = true;
+        _actor.BodyHandler.Waist.AddComponent<LimbCollision>();
+        _actor.BodyHandler.Waist.GetComponent<CapsuleCollider>().radius = 0.3f;
+        _actor.BodyHandler.Waist.GetComponent<Collider>().isTrigger = true;
 
         float startTime = Time.time;
         float duration = 1f;
@@ -63,9 +64,9 @@ public class BalloonState : MonoBehaviour
             float scaleValue4 = Mathf.Lerp(1f, 5f, t);
             float scaleValue5 = Mathf.Lerp(1f, 7f, t);
 
-            Actor.BodyHandler.Head.transform.localScale = new Vector3(scaleValue2, scaleValue1, scaleValue2);
-            Actor.BodyHandler.Chest.transform.localScale = new Vector3(scaleValue3, scaleValue4, scaleValue5);
-            Actor.BodyHandler.Waist.transform.localScale = new Vector3(scaleValue2, scaleValue1, scaleValue4);
+            _actor.BodyHandler.Head.transform.localScale = new Vector3(scaleValue2, scaleValue1, scaleValue2);
+            _actor.BodyHandler.Chest.transform.localScale = new Vector3(scaleValue3, scaleValue4, scaleValue5);
+            _actor.BodyHandler.Waist.transform.localScale = new Vector3(scaleValue2, scaleValue1, scaleValue4);
 
             yield return null;
         }
@@ -77,115 +78,117 @@ public class BalloonState : MonoBehaviour
 
     public void BalloonShapeOff()
     {
-        Actor.debuffState = Actor.DebuffState.Default;
+        _actor.debuffState = Actor.DebuffState.Default;
 
-        for (int i = 0; i < Actor.BodyHandler.BodyParts.Count - 1; i++)
+        for (int i = 0; i < _actor.BodyHandler.BodyParts.Count - 1; i++)
         {
-            Actor.BodyHandler.BodyParts[i].PartTransform.localRotation = PlayerController.RotationsForBalloon[i];
+            _actor.BodyHandler.BodyParts[i].PartTransform.localRotation = _playerController.RotationsForBalloon[i];
         }
 
-        for (int i = 0; i < Actor.BodyHandler.BodyParts.Count - 1; i++)
+        for (int i = 0; i < _actor.BodyHandler.BodyParts.Count - 1; i++)
         {
-            Actor.BodyHandler.BodyParts[i].PartRigidbody.angularVelocity = Vector3.zero;
-            Actor.BodyHandler.BodyParts[i].PartRigidbody.velocity = Vector3.zero;
+            _actor.BodyHandler.BodyParts[i].PartRigidbody.angularVelocity = Vector3.zero;
+            _actor.BodyHandler.BodyParts[i].PartRigidbody.velocity = Vector3.zero;
         }
-        Actor.BodyHandler.Head.transform.localScale = new Vector3(1, 1, 1);
-        Actor.BodyHandler.Chest.transform.localScale = new Vector3(1, 1, 1);
-        Actor.BodyHandler.Waist.transform.localScale = new Vector3(1, 1, 1);
+        _actor.BodyHandler.Head.transform.localScale = new Vector3(1, 1, 1);
+        _actor.BodyHandler.Chest.transform.localScale = new Vector3(1, 1, 1);
+        _actor.BodyHandler.Waist.transform.localScale = new Vector3(1, 1, 1);
 
-        for (int i = (int)Define.BodyPart.Hip; i < (int)Define.BodyPart.Head; i++)
+        for (int i = (int)Define.BodyPart.Hip; i <= (int)Define.BodyPart.Head; i++)
         {
-            RigidbodyConstraints constraints = Actor.BodyHandler.BodyParts[i].PartRigidbody.constraints;
-            constraints &= ~RigidbodyConstraints.FreezeRotationY;
+            RigidbodyConstraints constraints = _actor.BodyHandler.BodyParts[i].PartRigidbody.constraints;
+
+            if(i != (int)Define.BodyPart.Hip)
+                constraints &= ~RigidbodyConstraints.FreezeRotationY;
+
             constraints &= ~RigidbodyConstraints.FreezeRotationZ;
-            Actor.BodyHandler.BodyParts[i].PartRigidbody.constraints = constraints;
+            _actor.BodyHandler.BodyParts[i].PartRigidbody.constraints = constraints;
         }
-        for (int i = (int)Define.BodyPart.LeftArm; i < Actor.BodyHandler.BodyParts.Count - 1; i++)
+        for (int i = (int)Define.BodyPart.LeftArm; i < _actor.BodyHandler.BodyParts.Count - 1; i++)
         {
-            Actor.BodyHandler.BodyParts[i].PartRigidbody.freezeRotation = false;
+            _actor.BodyHandler.BodyParts[i].PartRigidbody.freezeRotation = false;
         }
 
-        Destroy(Actor.BodyHandler.Waist.GetComponent<LimbCollision>());
-        Actor.BodyHandler.Waist.GetComponent<CapsuleCollider>().radius = 0.25f;
-        Actor.BodyHandler.Waist.GetComponent<Collider>().isTrigger = false;
-        Actor.PlayerController.isBalloon = false;
+        Destroy(_actor.BodyHandler.Waist.GetComponent<LimbCollision>());
+        _actor.BodyHandler.Waist.GetComponent<CapsuleCollider>().radius = 0.25f;
+        _actor.BodyHandler.Waist.GetComponent<Collider>().isTrigger = false;
+        _actor.PlayerController.isBalloon = false;
     }
 
-    private float _totalAngle = 0f;
 
     public void BalloonMove()
     {
-        for (int i = 0; i < Actor.BodyHandler.BodyParts.Count; i++)
+        for (int i = 0; i < _actor.BodyHandler.BodyParts.Count; i++)
         {
-            Actor.BodyHandler.BodyParts[i].PartRigidbody.angularVelocity = Vector3.zero;
+            _actor.BodyHandler.BodyParts[i].PartRigidbody.angularVelocity = Vector3.zero;
         }
 
-        Vector3 lookForward = new Vector3(CameraArm.forward.x, 0f, CameraArm.forward.z).normalized;
-        Vector3 lookRight = new Vector3(CameraArm.right.x, 0f, CameraArm.right.z).normalized;
-        _moveDir = lookForward * PlayerController.MoveInput.z + lookRight * PlayerController.MoveInput.x;
+        Vector3 lookForward = new Vector3(_cameraArm.forward.x, 0f, _cameraArm.forward.z).normalized;
+        Vector3 lookRight = new Vector3(_cameraArm.right.x, 0f, _cameraArm.right.z).normalized;
+        _moveDir = lookForward * _playerController.MoveInput.z + lookRight * _playerController.MoveInput.x;
 
 
-        if (PlayerController.MoveInput.z == 1)
+        if (_playerController.MoveInput.z == 1)
         {
-            Actor.BodyHandler.Hip.PartRigidbody.AddForce(_moveDir * 350f * Time.deltaTime);
+            _actor.BodyHandler.Hip.PartRigidbody.AddForce(_moveDir * 350f * Time.deltaTime);
             Vector3 rotateDirX = new Vector3(_moveDir.x, 0, 0);
-            Actor.BodyHandler.Hip.PartTransform.Rotate(rotateDirX, 6);
+            _actor.BodyHandler.Hip.PartTransform.Rotate(rotateDirX, 6);
         }
 
-        if (PlayerController.MoveInput.x == 1 || PlayerController.MoveInput.x == -1)
-        {
-            Actor.BodyHandler.Hip.PartRigidbody.mass = 18;
+        //if (PlayerController.MoveInput.x == 1 || PlayerController.MoveInput.x == -1)
+        //{
+        //    Actor.BodyHandler.Hip.PartRigidbody.mass = 18;
 
-            Vector3 rotateDirZ = new Vector3(0, 0, _moveDir.z);
+        //    Vector3 rotateDirZ = new Vector3(0, 0, _moveDir.z);
 
-            if (_totalAngle <= 180f)
-            {
-                for (int i = 0; i < 4; i++)
-                {
-                    Actor.BodyHandler.BodyParts[i].PartTransform.Rotate(rotateDirZ, RotateAngle * 0.5f);
-                }
+        //    if (_totalAngle <= 180f)
+        //    {
+        //        for (int i = (int)Define.BodyPart.Hip; i < (int)Define.BodyPart.Head; i++)
+        //        {
+        //            Actor.BodyHandler.BodyParts[i].PartTransform.Rotate(rotateDirZ, RotateAngle * 0.5f);
+        //        }
 
-                _totalAngle += RotateAngle;
-            }
-        }
-        else
-        {
-            _totalAngle = 0;
-            Actor.BodyHandler.Hip.PartRigidbody.mass = _originalMass;
-        }
+        //        _totalAngle += RotateAngle;
+        //    }
+        //}
+        //else
+        //{
+        //    _totalAngle = 0;
+        //    Actor.BodyHandler.Hip.PartRigidbody.mass = _originalMass;
+        //}
     }
 
-    public IEnumerator BalloonSpin()
-    {
-        Vector3 lookForward = new Vector3(CameraArm.forward.x, 0f, CameraArm.forward.z).normalized;
-        Vector3 rotateDirZ = new Vector3(0, 0, 1);
-        float startTime = Time.time;
-        float totalAngle = 0f;
+    //public IEnumerator BalloonSpin()
+    //{
+    //    Vector3 lookForward = new Vector3(CameraArm.forward.x, 0f, CameraArm.forward.z).normalized;
+    //    Vector3 rotateDirZ = new Vector3(0, 0, 1);
+    //    float startTime = Time.time;
+    //    float totalAngle = 0f;
 
-        while (Time.time - startTime < 2f)
-        {
-            for (int i = 0; i < Actor.BodyHandler.BodyParts.Count; i++)
-            {
-                Actor.BodyHandler.BodyParts[i].PartRigidbody.angularVelocity = Vector3.zero;
-            }
+    //    while (Time.time - startTime < 2f)
+    //    {
+    //        for (int i = 0; i < Actor.BodyHandler.BodyParts.Count; i++)
+    //        {
+    //            Actor.BodyHandler.BodyParts[i].PartRigidbody.angularVelocity = Vector3.zero;
+    //        }
 
-            if (totalAngle <= 180)
-            {
-                for (int i = (int)Define.BodyPart.Hip; i < (int)Define.BodyPart.Head; i++)
-                {
-                    Actor.BodyHandler.BodyParts[i].PartTransform.Rotate(rotateDirZ, RotateAngle);
-                }
+    //        if (totalAngle <= 180)
+    //        {
+    //            for (int i = 0; i < 4; i++)
+    //            {
+    //                Actor.BodyHandler.BodyParts[i].PartTransform.Rotate(rotateDirZ, RotateAngle);
+    //            }
 
-                totalAngle += RotateAngle;
-            }
-            else
-                break;
+    //            totalAngle += RotateAngle;
+    //        }
+    //        else
+    //            break;
 
-            yield return new WaitForSeconds(0.02f);
-        }
+    //        yield return new WaitForSeconds(0.02f);
+    //    }
 
-        // Force : 3¸¸ÀÏ¶§ ÀÌ»Ý
-        Actor.BodyHandler.Hip.PartRigidbody.AddForce(lookForward * 1000f * Force * Time.deltaTime);
+    //    // Force : 3¸¸ÀÏ¶§ ÀÌ»Ý
+    //    Actor.BodyHandler.Hip.PartRigidbody.AddForce(lookForward * 1000f * Force * Time.deltaTime);
 
-    }
+    //}
 }

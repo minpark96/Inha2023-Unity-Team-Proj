@@ -397,7 +397,7 @@ public class PlayerController : MonoBehaviourPun
 
                         if (_actor.debuffState == DebuffState.Balloon)
                         {
-                            StartCoroutine(_balloonState.BalloonSpin());
+                            //StartCoroutine(_balloonState.BalloonSpin());
                         }
                         else if(!isGrounded)
                              DropKickTrigger();
