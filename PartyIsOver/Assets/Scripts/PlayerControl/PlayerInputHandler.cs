@@ -25,6 +25,11 @@ public class PlayerInputHandler : MonoBehaviourPun
         Managers.Input.KeyboardAction += OnKeyboardEvent;
     }
 
+    void OnDestroy()
+    {
+        Managers.Input.MouseAction -= OnMouseEvent;
+        Managers.Input.KeyboardAction -= OnKeyboardEvent;
+    }
 
     void OnKeyboardEvent(Define.KeyboardEvent evt)
     {

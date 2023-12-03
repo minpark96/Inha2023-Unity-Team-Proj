@@ -339,9 +339,9 @@ public class StatusHandler : MonoBehaviourPun
         actor.actorState = Actor.ActorState.Debuff;
         JointDrive angularXDrive;
 
-        angularXDrive = actor.BodyHandler.BodyParts[0].PartJoint.angularXDrive;
+        angularXDrive = actor.BodyHandler.BodyParts[(int)Define.BodyPart.Head].PartJoint.angularXDrive;
         angularXDrive.positionSpring = 0f;
-        actor.BodyHandler.BodyParts[0].PartJoint.angularXDrive = angularXDrive;
+        actor.BodyHandler.BodyParts[(int)Define.BodyPart.Head].PartJoint.angularXDrive = angularXDrive;
 
         float startTime = Time.time;
         while (Time.time < startTime + delay)
@@ -361,7 +361,7 @@ public class StatusHandler : MonoBehaviourPun
         actor.debuffState &= ~Actor.DebuffState.Exhausted;
         angularXDrive.positionSpring = _xPosSpringAry[0];
 
-        actor.BodyHandler.BodyParts[0].PartJoint.angularXDrive = angularXDrive;
+        actor.BodyHandler.BodyParts[(int)Define.BodyPart.Head].PartJoint.angularXDrive = angularXDrive;
         actor.Stamina = 100;
 
         actor.InvokeStatusChangeEvent();
@@ -445,8 +445,11 @@ public class StatusHandler : MonoBehaviourPun
         JointDrive angularXDrive;
         JointDrive angularYZDrive;
 
-        for (int i = 4; i < actor.BodyHandler.BodyParts.Count; i++)
+        for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
         {
+            if (i >= (int)Define.BodyPart.Hip && i <= (int)Define.BodyPart.Head) continue;
+            if (i == (int)Define.BodyPart.Ball) continue;
+
             angularXDrive = actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive;
             angularXDrive.positionSpring = 0f;
             actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive = angularXDrive;
@@ -470,17 +473,24 @@ public class StatusHandler : MonoBehaviourPun
 
             if (UnityEngine.Random.Range(0, 20) > 17)
             {
-                for (int i = 4; i < 14; i++)
+                for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
                 {
-                    if (i == 9) continue;
+                    if (i >= (int)Define.BodyPart.Hip && i <= (int)Define.BodyPart.Head) continue;
+                    if (i == (int)Define.BodyPart.LeftFoot || 
+                        i == (int)Define.BodyPart.RightFoot ||
+                        i == (int)Define.BodyPart.Ball) continue;
+
                     actor.BodyHandler.BodyParts[i].transform.rotation = Quaternion.Euler(20, 0, 0);
                 }
             }
             else
             {
-                for (int i = 4; i < 14; i++)
+                for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
                 {
-                    if (i == 9) continue;
+                    if (i >= (int)Define.BodyPart.Hip && i <= (int)Define.BodyPart.Head) continue;
+                    if (i == (int)Define.BodyPart.LeftFoot ||
+                        i == (int)Define.BodyPart.RightFoot ||
+                        i == (int)Define.BodyPart.Ball) continue;
                     actor.BodyHandler.BodyParts[i].transform.rotation = Quaternion.Euler(-20, 0, 0);
                 }
             }
@@ -673,7 +683,7 @@ public class StatusHandler : MonoBehaviourPun
         //기절과 회복에 모두 관여 기절시엔 퍼센티지를 0으로해서 사용
         for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
         {
-            if (i == 3)
+            if (i == (int)Define.BodyPart.Hip)
                 continue;
 
             angularXDrive = actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive;

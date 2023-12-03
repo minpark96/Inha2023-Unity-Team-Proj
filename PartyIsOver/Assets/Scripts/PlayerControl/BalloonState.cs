@@ -30,16 +30,15 @@ public class BalloonState : MonoBehaviour
     {
         PlayerController.isBalloon = true;
 
-        for (int i = 0; i < 3; i++)
+        for (int i = (int)Define.BodyPart.Hip; i < (int)Define.BodyPart.Head; i++)
         {
             RigidbodyConstraints constraints = Actor.BodyHandler.BodyParts[i].PartRigidbody.constraints;
             constraints |= RigidbodyConstraints.FreezeRotationY;
             constraints |= RigidbodyConstraints.FreezeRotationZ;
             Actor.BodyHandler.BodyParts[i].PartRigidbody.constraints = constraints;
         }
-        for (int i = 4; i < 13; i++)
+        for (int i = (int)Define.BodyPart.LeftArm; i < Actor.BodyHandler.BodyParts.Count - 1; i++)
         {
-            if (i >= 7 && i <= 9) continue;
             Actor.BodyHandler.BodyParts[i].PartRigidbody.freezeRotation = true;
         }
 
@@ -94,16 +93,15 @@ public class BalloonState : MonoBehaviour
         Actor.BodyHandler.Chest.transform.localScale = new Vector3(1, 1, 1);
         Actor.BodyHandler.Waist.transform.localScale = new Vector3(1, 1, 1);
 
-        for (int i = 0; i < 3; i++)
+        for (int i = (int)Define.BodyPart.Hip; i < (int)Define.BodyPart.Head; i++)
         {
             RigidbodyConstraints constraints = Actor.BodyHandler.BodyParts[i].PartRigidbody.constraints;
             constraints &= ~RigidbodyConstraints.FreezeRotationY;
             constraints &= ~RigidbodyConstraints.FreezeRotationZ;
             Actor.BodyHandler.BodyParts[i].PartRigidbody.constraints = constraints;
         }
-        for (int i = 4; i < 13; i++)
+        for (int i = (int)Define.BodyPart.LeftArm; i < Actor.BodyHandler.BodyParts.Count - 1; i++)
         {
-            if (i >= 7 && i <= 9) continue;
             Actor.BodyHandler.BodyParts[i].PartRigidbody.freezeRotation = false;
         }
 
@@ -173,7 +171,7 @@ public class BalloonState : MonoBehaviour
 
             if (totalAngle <= 180)
             {
-                for (int i = 0; i < 4; i++)
+                for (int i = (int)Define.BodyPart.Hip; i < (int)Define.BodyPart.Head; i++)
                 {
                     Actor.BodyHandler.BodyParts[i].PartTransform.Rotate(rotateDirZ, RotateAngle);
                 }
