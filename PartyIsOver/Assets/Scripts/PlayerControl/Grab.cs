@@ -24,8 +24,8 @@ public class Grab : MonoBehaviourPun
     bool _isLeftGrab = false;
 
 
-    [SerializeField]
-    private float _throwingForce = 80f;
+  
+    private float _throwingForce = 40f;
 
     float _grabDelayTimer = 0.5f;
 
@@ -109,6 +109,9 @@ public class Grab : MonoBehaviourPun
         _configurableJoints.Add(_jointRightUpperArm = _actor.BodyHandler.RightArm.PartJoint);
         _configurableJoints.Add(_jointRightForeArm = _actor.BodyHandler.RightForearm.PartJoint);
         _configurableJoints.Add(_jointRight = _actor.BodyHandler.RightHand.PartJoint);
+
+        PlayerStatData statData = Managers.Resource.Load<PlayerStatData>("ScriptableObject/PlayerStatData");
+        _throwingForce = statData.ThrowingForce;
     }
 
     void GrabStateCheck()

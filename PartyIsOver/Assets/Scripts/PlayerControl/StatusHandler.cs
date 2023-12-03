@@ -32,6 +32,17 @@ public class StatusHandler : MonoBehaviourPun
     // 초기 속도
     private float _maxSpeed;
 
+    [SerializeField]
+    private float _damageReduction = 0f;
+    public float DamageReduction { get { return _damageReduction; } set { _damageReduction = value; } }
+
+    [SerializeField]
+    private float _playerAttackPoint = 1f;
+
+    public float PlayerAttackPoint { get { return _playerAttackPoint; } set { _damageReduction = value; } }
+
+
+
     // 버프 확인용 플래그
     private bool _hasPowerUp;
     private bool _hasBurn;
@@ -293,6 +304,7 @@ public class StatusHandler : MonoBehaviourPun
         // 화상
         _hasBurn = true;
         actor.actorState = Actor.ActorState.Debuff;
+        Debug.Log("Burn!");
 
         photonView.RPC("PlayerDebuffSound", RpcTarget.All, "PlayerEffect/SFX_FireBall_Projectile");
         photonView.RPC("BurnCreate", RpcTarget.All);
