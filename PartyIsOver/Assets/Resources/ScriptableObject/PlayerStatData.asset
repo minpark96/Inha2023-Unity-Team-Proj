@@ -12,17 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 567ca23b2b3d359439c56ddee5c02811, type: 3}
   m_Name: PlayerStatData
   m_EditorClassIdentifier: 
-  _runSpeed: 0
-  _maxSpeed: 0
-  _playerAttackPoint: 0
-  _health: 0
-  _maxHealth: 0
-  _stamina: 0
-  _maxStamina: 0
+  _runSpeed: 100
+  _maxSpeed: 5
+  _playerAttackPoint: 1
+  _health: 200
+  _maxHealth: 200
+  _stamina: 100
+  _maxStamina: 100
   _damageReduction: 0
-  _throwingForce: 0
-  _itemSwingPower: 0
-  _headMultiple: 0
-  _armMultiple: 0
-  _handMultiple: 0
-  _legMultiple: 0
+  _throwingForce: 40
+  _itemSwingPower: 1000
+  _headMultiple: 1.5
+  _armMultiple: 0.8
+  _handMultiple: 0.8
+  _legMultiple: 0.8

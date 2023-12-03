@@ -37,6 +37,7 @@ public class Grab : MonoBehaviourPun
     public GameObject RightGrabObject;
 
     public Transform RangeWeaponSkin;
+    public Transform FirePoint;
 
     private Rigidbody _leftHandRigid;
     private Rigidbody _rightHandRigid;
@@ -282,7 +283,7 @@ public class Grab : MonoBehaviourPun
                             float mass = obj1.transform.GetComponent<Rigidbody>().mass;
                             obj1.PullingForceTrigger(-_actor.BodyHandler.Chest.PartTransform.up, 7f);
                             obj1.PullingForceTrigger(Vector3.up, 2f);
-                            obj1.photonView.RPC("ChangeUseTypeTrigger", RpcTarget.All, 0.2f, 1f);
+                            obj1.photonView.RPC("ChangeUseTypeTrigger", RpcTarget.MasterClient, 0.2f, 1f);
                         }
                         else //플레이어 던지기
                         {
@@ -374,7 +375,9 @@ public class Grab : MonoBehaviourPun
         {
             EquipItem.gameObject.layer = LayerMask.NameToLayer("Item");
             EquipItem.GetComponent<Item>().Body.gameObject.SetActive(true);
+
             RangeWeaponSkin.gameObject.SetActive(false);
+
             EquipItem.GetComponent<Item>().Owner = null;
             if (EquipItem.GetComponent<Item>().ItemData.ItemType == ItemType.OneHanded ||
                 EquipItem.GetComponent<Item>().ItemData.ItemType == ItemType.TwoHanded)
@@ -701,8 +704,11 @@ public class Grab : MonoBehaviourPun
                 break;
             case ItemType.Ranged:
                 {
-                    item.GetComponent<Item>().Body.gameObject.SetActive(false);
-                    RangeWeaponSkin.gameObject.SetActive(true);
+
+                    int id = 0;
+                    if (item.transform.GetComponent<PhotonView>() != null)
+                        id = item.transform.GetComponent<PhotonView>().ViewID;
+                    photonView.RPC("ChangeWeaponSkin", RpcTarget.All, id);
                     targetPosition = -_jointChest.transform.up;
                 }
                 break;
@@ -905,6 +911,38 @@ public class Grab : MonoBehaviourPun
         EquipItem.GetComponent<Item>().Use();
     }
 
+    [PunRPC]
+    private void ChangeWeaponSkin(int id)
+    {
+        RangeWeaponSkin.gameObject.SetActive(true);
+
+
+        RangeWeapon item = PhotonNetwork.GetPhotonView(id).transform.GetComponent<RangeWeapon>();
+        Define.RangeWeapon weapon = Define.RangeWeapon.IceGun;
+        item.GetComponent<Item>().Body.gameObject.SetActive(false);
+
+
+        switch (item.ItemData.UseDamageType)
+        {
+            case InteractableObject.Damage.Ice:
+                {
+                    weapon = Define.RangeWeapon.IceGun;
+                }
+                break;
+            case InteractableObject.Damage.Shock:
+                {
+                    weapon = Define.RangeWeapon.StunGun;
+                }
+                break;
+        }
+
+        for (int i = 0; i < RangeWeaponSkin.childCount; i++)
+            RangeWeaponSkin.GetChild(i).gameObject.SetActive(false);
+
+
+        RangeWeaponSkin.GetChild((int)weapon).gameObject.SetActive(true);
+        FirePoint = RangeWeaponSkin.GetChild((int)weapon).GetChild(1);
+    }
 
     //리지드바디 part의 alignmentVector방향을 targetVector방향으로 회전
     private void AlignToVector(Rigidbody part, Vector3 alignmentVector, Vector3 targetVector, float stability, float speed)

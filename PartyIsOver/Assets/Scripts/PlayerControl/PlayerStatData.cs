@@ -17,7 +17,7 @@ public class PlayerStatData : ScriptableObject
 
     [SerializeField]
     private float _playerAttackPoint;
-    public float PlayerAttackPoint { get { return PlayerAttackPoint; } }
+    public float PlayerAttackPoint { get { return _playerAttackPoint; } }
 
 
     [SerializeField]

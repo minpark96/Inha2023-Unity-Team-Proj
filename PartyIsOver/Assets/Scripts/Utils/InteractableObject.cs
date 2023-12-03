@@ -7,9 +7,12 @@ using UnityEngine;
 public class InteractableObject : MonoBehaviourPun
 {
     Rigidbody _rb;
+    public Damage damageModifier = Damage.Default;
+    Damage _initialDamage;
     private void Start()
     {
         _rb = GetComponent<Rigidbody>();
+        _initialDamage = damageModifier;
     }
 
 
@@ -34,7 +37,6 @@ public class InteractableObject : MonoBehaviourPun
         Balloon = 15,
     }
 
-    public Damage damageModifier = Damage.Default;
 
 
     public void PullingForceTrigger(Vector3 dir ,float power)
@@ -59,12 +61,16 @@ public class InteractableObject : MonoBehaviourPun
     }
     IEnumerator ChangeUseType(float waitTime, float useTime)
     {
-        Damage tempDamage = damageModifier;
+       
         yield return new WaitForSeconds(waitTime);
 
         if (GetComponent<Item>() != null)
         {
             damageModifier = GetComponent<Item>().ItemData.UseDamageType;
+        }
+        else if(GetComponent<ProjectileStandard>() != null)
+        {
+            damageModifier = GetComponent<ProjectileStandard>().Gun.GetComponent<Item>().ItemData.UseDamageType;
         }
         else
         {
@@ -72,6 +78,11 @@ public class InteractableObject : MonoBehaviourPun
         }
 
         yield return new WaitForSeconds(useTime);
-        damageModifier = tempDamage;
+        ResetType();
+    }
+
+    public void ResetType()
+    {
+        damageModifier = _initialDamage;
     }
 }

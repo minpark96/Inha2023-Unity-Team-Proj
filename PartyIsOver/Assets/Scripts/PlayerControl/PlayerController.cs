@@ -368,7 +368,18 @@ public class PlayerController : MonoBehaviourPun
         {
             case Define.MouseEvent.PointerDown:
                 {
+                    if (Input.GetMouseButtonDown(1) && _actor.Stamina >= 0)
+                    {
+                        if (_actor.debuffState == DebuffState.Exhausted)
+                            return;
+                        _actor.Stamina -= 5;
 
+                        if (_actor.Stamina <= 0)
+                            _actor.Stamina = 0;
+
+                        if (_actor.debuffState != DebuffState.Balloon && !isGrounded)
+                            DropKickTrigger();
+                    }
                 }
                 break;
             case Define.MouseEvent.Click:
@@ -403,8 +414,7 @@ public class PlayerController : MonoBehaviourPun
                         {
                             StartCoroutine(_balloonState.BalloonSpin());
                         }
-                        else if(!isGrounded)
-                             DropKickTrigger();
+
                     }
 
                     if (_actor.debuffState == DebuffState.Balloon)

@@ -32,14 +32,6 @@ public class StatusHandler : MonoBehaviourPun
     // 초기 속도
     private float _maxSpeed;
 
-    [SerializeField]
-    private float _damageReduction = 0f;
-    public float DamageReduction { get { return _damageReduction; } set { _damageReduction = value; } }
-
-    [SerializeField]
-    private float _playerAttackPoint = 1f;
-
-    public float PlayerAttackPoint { get { return _playerAttackPoint; } set { _damageReduction = value; } }
 
 
 
@@ -132,7 +124,7 @@ public class StatusHandler : MonoBehaviourPun
     }
 
     // 충격이 가해지면(trigger)
-    public void AddDamage(InteractableObject.Damage type, float damage, GameObject causer)
+    public void AddDamage(InteractableObject.Damage type, float damage, GameObject causer=null)
     {
         // 데미지 체크
         damage *= _damageModifer;
@@ -150,12 +142,19 @@ public class StatusHandler : MonoBehaviourPun
             // 상태이상 체크
             DebuffCheck(type);
             DebuffAction();
+            CheckProjectile(causer);
         }
 
         actor.InvokeStatusChangeEvent();
     }
 
-
+    void CheckProjectile(GameObject go)
+    {
+        if (go.GetComponent<ProjectileStandard>() != null)
+        {
+            go.GetComponent<ProjectileStandard>().DestoryProjectileTrigger();
+        }
+    }
 
     [PunRPC]
     void PlayerDebuffSound(string path)
