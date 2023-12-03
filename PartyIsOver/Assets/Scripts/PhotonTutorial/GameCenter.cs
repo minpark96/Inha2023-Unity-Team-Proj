@@ -74,13 +74,6 @@ public class GameCenter : BaseScene
 
     public int RoundCounts = 1;
 
-    public struct Ranking
-    {
-        public int score;
-        public string nickName;
-        public int rank;
-    };
-    public List<Ranking> Rank = new List<Ranking>();
 
     private int[] _rankScore = new int[6] { 0,0,0,0,0,0};
     private string[] _rankNickName = new string[6] { "","","","","","" };
@@ -184,6 +177,8 @@ public class GameCenter : BaseScene
                 _audioSources.clip = audioClip;
                 _audioSources.volume = 0.1f;
                 Managers.Sound.Play(audioClip, Define.Sound.Bgm);
+
+                Managers.Sound.ChangeVolume();
             }
 
             if (_roomName == currentSceneName)
@@ -193,6 +188,8 @@ public class GameCenter : BaseScene
                 _audioSources.clip = audioClip;
                 _audioSources.volume = 0.1f;
                 Managers.Sound.Play(audioClip, Define.Sound.Bgm);
+
+                Managers.Sound.ChangeVolume();
             }
 
         }

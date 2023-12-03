@@ -106,11 +106,17 @@ public class RoomUI : MonoBehaviour
 
             if (!Ready)
             {
+                AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-160");
+                Managers.Sound.Play(uiSound, Define.Sound.UISound);
+
                 ReadyButton.GetComponent<Image>().sprite = ReadyOn;
                 ReadyButton.GetComponentInChildren<Text>().text = "준비! (F5)";
             }
             else
             {
+                AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-160");
+                Managers.Sound.Play(uiSound, Define.Sound.UISound);
+
                 ReadyButton.GetComponent<Image>().sprite = ReadyOff;
                 ReadyButton.GetComponentInChildren<Text>().text = "준비해제! (F5)";
             }
@@ -120,8 +126,7 @@ public class RoomUI : MonoBehaviour
    
     IEnumerator CountDown()
     {
-        Debug.Log("countdown");
-        yield return new WaitForSeconds(5.0f);
+        yield return new WaitForSeconds(1.0f);
     }
 
 
@@ -130,7 +135,6 @@ public class RoomUI : MonoBehaviour
         if(SceneManager.GetActiveScene().name != _arenaName)
             PhotonManager.Instance.LeaveRoom();
 
-        //PhotonNetwork.LeaveRoom();
     }
 
     public void OnClickSkillChange()
@@ -139,6 +143,8 @@ public class RoomUI : MonoBehaviour
             return;
 
         SkillChange = !SkillChange;
+        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-050");
+        Managers.Sound.Play(uiSound, Define.Sound.UISound);
 
         if (SkillChange)
         {

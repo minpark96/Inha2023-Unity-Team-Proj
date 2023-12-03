@@ -28,6 +28,7 @@ public class PhotonManager : BaseScene
     public List<RoomItem> RoomItemsList = new List<RoomItem>();
     public LobbyUI LobbyUI;
 
+    public AudioSource[] AudioSources;
 
     void Awake()
     {

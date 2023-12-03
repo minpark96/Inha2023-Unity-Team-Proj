@@ -319,7 +319,7 @@ GameObject:
   - component: {fileID: 74898937}
   - component: {fileID: 74898938}
   m_Layer: 5
-  m_Name: Slider
+  m_Name: BGMSlider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -395,7 +395,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 0
+  m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -1401,7 +1401,7 @@ GameObject:
   - component: {fileID: 633633735}
   - component: {fileID: 633633734}
   m_Layer: 5
-  m_Name: VIdeo1
+  m_Name: VIdeo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1447,7 +1447,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 8400000, guid: 5a1bfb24884cd9741bca2dc190c2cab2, type: 2}
+  m_Texture: {fileID: 8400000, guid: 299ee1882b2e388418248966ec94cdac, type: 2}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -1474,7 +1474,7 @@ VideoPlayer:
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
   m_TargetCamera: {fileID: 0}
-  m_TargetTexture: {fileID: 8400000, guid: 5a1bfb24884cd9741bca2dc190c2cab2, type: 2}
+  m_TargetTexture: {fileID: 8400000, guid: 299ee1882b2e388418248966ec94cdac, type: 2}
   m_TimeReference: 0
   m_TargetMaterialRenderer: {fileID: 0}
   m_TargetMaterialProperty: <noninit>
@@ -2862,6 +2862,8 @@ MonoBehaviour:
   NickName: {fileID: 2104108293}
   Animator: {fileID: 3427927788694291602}
   LoadingBar: {fileID: 535726646}
+  BGMAudioSlider: {fileID: 74898938}
+  EffectAudioSlider: {fileID: 1200310445}
 --- !u!1 &1200310443
 GameObject:
   m_ObjectHideFlags: 0
@@ -2873,7 +2875,7 @@ GameObject:
   - component: {fileID: 1200310444}
   - component: {fileID: 1200310445}
   m_Layer: 5
-  m_Name: Slider (1)
+  m_Name: EffectSlider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2949,7 +2951,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 0
+  m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -4141,7 +4143,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -661.48, y: 457.76}
+  m_AnchoredPosition: {x: -572, y: 433}
   m_SizeDelta: {x: 365, y: 44}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1381651329
@@ -4325,7 +4327,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 8400000, guid: 5a1bfb24884cd9741bca2dc190c2cab2, type: 2}
+  m_Texture: {fileID: 8400000, guid: 3f7e9e495f06a5547a04201b0dbbb52d, type: 2}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -4352,7 +4354,7 @@ VideoPlayer:
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
   m_TargetCamera: {fileID: 0}
-  m_TargetTexture: {fileID: 8400000, guid: 5a1bfb24884cd9741bca2dc190c2cab2, type: 2}
+  m_TargetTexture: {fileID: 8400000, guid: 3f7e9e495f06a5547a04201b0dbbb52d, type: 2}
   m_TimeReference: 0
   m_TargetMaterialRenderer: {fileID: 0}
   m_TargetMaterialProperty: <noninit>

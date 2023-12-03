@@ -21,6 +21,10 @@ public class MainUI : MonoBehaviour
     public Animator Animator;
     public Image LoadingBar;
 
+    public Slider BGMAudioSlider;
+    public Slider EffectAudioSlider;
+
+
     private bool _gameStartFlag;
     private bool _loadingFlag;
     private bool _loadingDelayFlag;
@@ -83,7 +87,10 @@ public class MainUI : MonoBehaviour
                 {
                     if (Input.GetKeyDown(KeyCode.Escape))
                     {
-                        if(_creditOn)
+                        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-030");
+                        Managers.Sound.Play(uiSound, Define.Sound.UISound);
+
+                        if (_creditOn)
                         {
                             OnClickCreditExit();
                             _creditOn = false;
@@ -151,6 +158,9 @@ public class MainUI : MonoBehaviour
 
     public void OnClickStart()
     {
+        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-160");
+        Managers.Sound.Play(uiSound, Define.Sound.UISound);
+
         _gameStartFlag = true;
         Animator.SetBool("Pose", true);
     }
@@ -158,18 +168,27 @@ public class MainUI : MonoBehaviour
     // Game Quit
     public void OnClickPopup()
     {
+        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-030");
+        Managers.Sound.Play(uiSound, Define.Sound.UISound);
+
         CancelPanel.SetActive(true);
     }
 
     public void OnClickPopUpCancel()
     {
+        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-030");
+        Managers.Sound.Play(uiSound, Define.Sound.UISound);
+
         CancelPanel.SetActive(false);
     }
 
     public void OnClickPopUpGameQuit()
     {
+        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-030");
+        Managers.Sound.Play(uiSound, Define.Sound.UISound);
+
         #if UNITY_EDITOR
-                UnityEditor.EditorApplication.isPlaying = false;
+        UnityEditor.EditorApplication.isPlaying = false;
         #else
                 Application.Quit();
         #endif
@@ -178,23 +197,39 @@ public class MainUI : MonoBehaviour
     // Settings
     public void OnClickSettings()
     {
+        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-030");
+        Managers.Sound.Play(uiSound, Define.Sound.UISound);
+
         SettingsPanel.SetActive(true);
     }
     
     public void OnClickSettingsOK()
     {
-        // 바뀐 변경사항
+        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-030");
+        Managers.Sound.Play(uiSound, Define.Sound.UISound);
 
+        Managers.Sound.SoundVolume[(int)Define.Sound.Bgm] = 0.1f * BGMAudioSlider.value;
+        Managers.Sound.SoundVolume[(int)Define.Sound.UISound] = 1f * EffectAudioSlider.value;
+        Managers.Sound.ChangeVolume();
         SettingsPanel.SetActive(false);
     }
 
     public void OnClickSettingsCancel()
     {
+        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-030");
+        Managers.Sound.Play(uiSound, Define.Sound.UISound);
+        
+        Managers.Sound.SoundVolume[(int)Define.Sound.Bgm] = 0.1f * 1;
+        Managers.Sound.SoundVolume[(int)Define.Sound.UISound] = 1f * 1;
+        Managers.Sound.ChangeVolume();
         SettingsPanel.SetActive(false);
     }
 
     public void OnClickSettingsKeyboard()
     {
+        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-030");
+        Managers.Sound.Play(uiSound, Define.Sound.UISound);
+
         _keyBoardObject.SetActive(true);
         _keyBoardOn = true;
     }
@@ -202,6 +237,9 @@ public class MainUI : MonoBehaviour
     // Credit
     public void OnClickCredit()
     {
+        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-030");
+        Managers.Sound.Play(uiSound, Define.Sound.UISound);
+
         _mainObject.SetActive(false);
         _creditOn = true;
         CreditPanel.SetActive(true);
@@ -209,6 +247,9 @@ public class MainUI : MonoBehaviour
 
     public void OnClickCreditExit()
     {
+        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-030");
+        Managers.Sound.Play(uiSound, Define.Sound.UISound);
+
         _mainObject.SetActive(true);
         CreditPanel.SetActive(false);
     }
@@ -216,6 +257,9 @@ public class MainUI : MonoBehaviour
     // StoryBoard
     public void OnClickStoryBoard()
     {
+        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-030");
+        Managers.Sound.Play(uiSound, Define.Sound.UISound);
+
         StoryBoardPanel.SetActive(true);
         _storyBoard.GetChild(0).gameObject.SetActive(true);
         _storyText.text = _savedStory[0];
@@ -227,6 +271,9 @@ public class MainUI : MonoBehaviour
 
     public void OnClickStoryBoardNext()
     {
+        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-030");
+        Managers.Sound.Play(uiSound, Define.Sound.UISound);
+
         if (_clickedNumber >= 8)
         {
             StoryBoardPanel.SetActive(false);
@@ -249,6 +296,9 @@ public class MainUI : MonoBehaviour
 
     public void OnClickStoryEnding()
     {
+        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-030");
+        Managers.Sound.Play(uiSound, Define.Sound.UISound);
+
         _clickedNumber = 0;
         StoryEndingPanel.SetActive(false);
     }
