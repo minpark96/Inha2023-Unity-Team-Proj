@@ -445,8 +445,11 @@ public class StatusHandler : MonoBehaviourPun
         JointDrive angularXDrive;
         JointDrive angularYZDrive;
 
-        for (int i = 4; i < actor.BodyHandler.BodyParts.Count; i++)
+        for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
         {
+            if (i >= (int)Define.BodyPart.Hip && i <= (int)Define.BodyPart.Head) continue;
+            if (i == (int)Define.BodyPart.Ball) continue;
+
             angularXDrive = actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive;
             angularXDrive.positionSpring = 0f;
             actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive = angularXDrive;
@@ -465,22 +468,29 @@ public class StatusHandler : MonoBehaviourPun
                 _hasShock = false;
                 actor.actorState = Actor.ActorState.Stand;
                 photonView.RPC("Stun", RpcTarget.All, _stunTime);
-                photonView.RPC("Shock", RpcTarget.All, delay);
+                StopCoroutine(Shock(delay));
             }
 
             if (UnityEngine.Random.Range(0, 20) > 17)
             {
-                for (int i = 4; i < 14; i++)
+                for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
                 {
-                    if (i == 9) continue;
+                    if (i >= (int)Define.BodyPart.Hip && i <= (int)Define.BodyPart.Head) continue;
+                    if (i == (int)Define.BodyPart.LeftFoot ||
+                        i == (int)Define.BodyPart.RightFoot ||
+                        i == (int)Define.BodyPart.Ball) continue;
+
                     actor.BodyHandler.BodyParts[i].transform.rotation = Quaternion.Euler(20, 0, 0);
                 }
             }
             else
             {
-                for (int i = 4; i < 14; i++)
+                for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
                 {
-                    if (i == 9) continue;
+                    if (i >= (int)Define.BodyPart.Hip && i <= (int)Define.BodyPart.Head) continue;
+                    if (i == (int)Define.BodyPart.LeftFoot ||
+                        i == (int)Define.BodyPart.RightFoot ||
+                        i == (int)Define.BodyPart.Ball) continue;
                     actor.BodyHandler.BodyParts[i].transform.rotation = Quaternion.Euler(-20, 0, 0);
                 }
             }
@@ -493,7 +503,7 @@ public class StatusHandler : MonoBehaviourPun
         photonView.RPC("Stun", RpcTarget.All, 0.5f);
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Shock;
-        photonView.RPC("DestroyEffect", RpcTarget.All, "Lightning_aura");
+        DestroyEffect("Lightning_aura");
 
         actor.InvokeStatusChangeEvent();
         _audioClip = null;

@@ -37830,7 +37830,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 015abfabc52bdf8489d8523bc44d3a3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damageModifier: 12
+  damageModifier: 15
 --- !u!65 &1909000849
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -37902,7 +37902,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1909000847}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 513.17, y: 12.525063, z: 413.23}
+  m_LocalPosition: {x: 513.17, y: 13.07, z: 419.04}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

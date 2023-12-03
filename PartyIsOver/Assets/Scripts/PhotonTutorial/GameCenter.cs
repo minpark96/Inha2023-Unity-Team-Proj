@@ -157,9 +157,6 @@ public class GameCenter : BaseScene
             }
             else
             {
-                Debug.Log("client PhotonNetwork.NickName : " + PhotonNetwork.NickName);
-                Debug.Log("client PhotonNetwork.LocalPlayer.ActorNumber : " + PhotonNetwork.LocalPlayer.ActorNumber);
-
                 _rankScore[PhotonNetwork.LocalPlayer.ActorNumber - 1] = 0;
                 _rankNickName[PhotonNetwork.LocalPlayer.ActorNumber - 1] = PhotonNetwork.NickName;
                 _rankRank[PhotonNetwork.LocalPlayer.ActorNumber - 1] = PhotonNetwork.LocalPlayer.ActorNumber;
@@ -468,7 +465,6 @@ public class GameCenter : BaseScene
     [PunRPC]
     void UpdateScoreBoard(int[] score, string[] name, int[] rank)
     {
-
         for (int i = 0; i < score.Length; i++)
         {
             _rankScore[i] = score[i];
@@ -556,6 +552,7 @@ public class GameCenter : BaseScene
                 if (PhotonNetwork.IsMasterClient)
                 {
                     _isDelayed = true;
+
                     StartCoroutine(GetDelayTime());
 
                     _scoreBoardUI.ChangeScoreBoard(_rankScore, _rankNickName, _rankRank);
