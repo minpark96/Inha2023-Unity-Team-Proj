@@ -12,6 +12,7 @@ public class ScoreBoardUI : MonoBehaviour
 
     public GameObject Info;
     public Sprite PointStar;
+    public GameObject Tab;
 
     private GameObject _scoreBoardPanel;
     private GameObject[] _portrait = new GameObject[6];
@@ -55,7 +56,6 @@ public class ScoreBoardUI : MonoBehaviour
 
         for (int i = 0; i < _playerNumber; i++)
         {
-            Debug.Log("rank["+i+"]: " + rank[i]);
             _portrait[i].transform.GetChild(rank[i] - 1).gameObject.SetActive(true);
         }
 
@@ -83,6 +83,7 @@ public class ScoreBoardUI : MonoBehaviour
                     if (Input.GetKeyDown(KeyCode.Tab))
                     {
                         OnClickScoreBoardON();
+                        Tab.SetActive(false);
                     }
                 }
                 break;
@@ -92,6 +93,7 @@ public class ScoreBoardUI : MonoBehaviour
                     if (Input.GetKeyUp(KeyCode.Tab))
                     {
                         OnClickScoreBoardOFF();
+                        Tab.SetActive(true);
                     }
                 }
                 break;

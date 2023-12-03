@@ -8,7 +8,7 @@ using UnityEngine;
 public class BodyHandler : MonoBehaviourPun
 {
     public Transform Root;
-    public List<BodyPart> BodyParts = new List<BodyPart>();
+    public List<BodyPart> BodyParts = new List<BodyPart>(17);
 
     public BodyPart LeftFoot;
     public BodyPart RightFoot;
@@ -42,27 +42,33 @@ public class BodyHandler : MonoBehaviourPun
 
         _isSetting = true;
 
-        BodyParts.Add(Head);
-        BodyParts.Add(Chest);
-        BodyParts.Add(Waist);
-        BodyParts.Add(Hip);
+        if (BodyParts.Count == 0 )
+        {
+            BodyParts.Add(LeftFoot);
+            BodyParts.Add(RightFoot);
 
-        BodyParts.Add(LeftArm);
-        BodyParts.Add(LeftForearm);
-        BodyParts.Add(LeftHand);
+            BodyParts.Add(LeftLeg);
+            BodyParts.Add(RightLeg);
 
-        BodyParts.Add(LeftThigh);
-        BodyParts.Add(LeftLeg);
-        BodyParts.Add(LeftFoot);
+            BodyParts.Add(LeftThigh);
+            BodyParts.Add(RightThigh);
 
-        BodyParts.Add(RightArm);
-        BodyParts.Add(RightForearm);
-        BodyParts.Add(RightHand);
+            BodyParts.Add(Hip);
+            BodyParts.Add(Waist);
+            BodyParts.Add(Chest);
+            BodyParts.Add(Head);
 
-        BodyParts.Add(RightThigh);
-        BodyParts.Add(RightLeg);
-        BodyParts.Add(RightFoot);
-        BodyParts.Add(Ball);
+            BodyParts.Add(LeftArm);
+            BodyParts.Add(RightArm);
+
+            BodyParts.Add(LeftForearm);
+            BodyParts.Add(RightForearm);
+
+            BodyParts.Add(LeftHand);
+            BodyParts.Add(RightHand);
+
+            BodyParts.Add(Ball);
+        }
 
         foreach (BodyPart part in BodyParts)
         {

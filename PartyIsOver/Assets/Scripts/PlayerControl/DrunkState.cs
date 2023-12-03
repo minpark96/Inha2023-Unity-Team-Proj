@@ -36,6 +36,11 @@ public class DrunkState : MonoBehaviour
     {
         yield return new WaitForSeconds(DrunkDuration);
         _actor.debuffState = Actor.DebuffState.Default;
+
         PlayerController.isDrunk = false;
+        
+        GameObject go = GameObject.Find("Fog_poison");
+        Managers.Resource.Destroy(go);
+        _actor.StatusHandler.effectObject = null;
     }
 }
