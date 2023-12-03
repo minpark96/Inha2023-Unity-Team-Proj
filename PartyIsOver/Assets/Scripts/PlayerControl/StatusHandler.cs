@@ -474,10 +474,12 @@ public class StatusHandler : MonoBehaviourPun
                 _hasShock = false;
                 actor.actorState = Actor.ActorState.Stand;
                 photonView.RPC("Stun", RpcTarget.All, _stunTime);
-                photonView.RPC("Shock", RpcTarget.All, delay);
+                photonView.RPC("StopShock", RpcTarget.All);
             }
 
-            if (UnityEngine.Random.Range(0, 20) > 17)
+            yield return new WaitForSeconds(0.2f);
+
+            if (UnityEngine.Random.Range(0, 20) > 10)
             {
                 for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
                 {
@@ -514,6 +516,24 @@ public class StatusHandler : MonoBehaviourPun
         actor.InvokeStatusChangeEvent();
         _audioClip = null;
     }
+
+    [PunRPC]
+    void StopShock()
+    {
+        StopCoroutine("Shock");
+        // 감전 해제
+        _hasShock = false;
+        StartCoroutine(ResetBodySpring());
+        photonView.RPC("Stun", RpcTarget.All, 0.5f);
+        actor.actorState = Actor.ActorState.Stand;
+        actor.debuffState &= ~Actor.DebuffState.Shock;
+        photonView.RPC("DestroyEffect", RpcTarget.All, "Lightning_aura");
+
+        actor.InvokeStatusChangeEvent();
+        _audioClip = null;
+    }
+
+
     [PunRPC]
     IEnumerator Stun(float delay)
     {

@@ -752,11 +752,8 @@ public class PlayerController : MonoBehaviourPun
 
         if (_actor.debuffState == Actor.DebuffState.Drunk && isDrunk == false)
         {
-            Debug.Log("여기 들어오나?");
             isDrunk = true;
             StartCoroutine(_drunkState.DrunkOff());
-
-            
         }
 
 
