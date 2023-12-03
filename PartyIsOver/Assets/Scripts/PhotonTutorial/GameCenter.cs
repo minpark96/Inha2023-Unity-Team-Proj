@@ -251,23 +251,18 @@ public class GameCenter : BaseScene
     void SaveDefaultInfo(GameObject go)
     {
         Actor actor = go.GetComponent<Actor>();
-        Debug.Log(actor.BodyHandler.BodyParts.Count);
 
         for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
         {
             DefaultPos[i] = actor.BodyHandler.BodyParts[i].transform.localPosition;
-            Debug.Log(actor.BodyHandler.BodyParts[i].transform.localPosition);
-            Debug.Log(DefaultPos[i]);
+            
             DefaultRot[i] = actor.BodyHandler.BodyParts[i].transform.localRotation;
-            Debug.Log(actor.BodyHandler.BodyParts[i].transform.localRotation);
-            Debug.Log(DefaultRot[i]);
+            
         }
     }
 
     IEnumerator InitiateGhost(Vector3 spawnPos)
     {
-        Debug.Log(PhotonNetwork.LocalPlayer.ActorNumber);
-        Debug.Log("¼ÒÈ¯");
         if (Ghost.LocalGhostInstance == null)
         {
             Vector3 spawnAirPos = spawnPos + new Vector3(0f, 10f, 0f);
