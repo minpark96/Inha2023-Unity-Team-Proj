@@ -95,7 +95,7 @@ public class TargetingHandler : MonoBehaviour
                 //서치타겟이 래그돌일경우 중요도가 낮은 몸 부위에 값을 곱해서 최종타겟이 될 가능성을 낮춤
                 if (colliders[i].GetComponent<BodyPart>() !=null)
                 {
-                    for (int j = 0; j < 4; j++)
+                    for (int j = (int)Define.BodyPart.Hip; j < (int)Define.BodyPart.Hip + 1; j++)
                     {
                         if (colliders[i].gameObject == colliders[i].transform.root.GetComponent<BodyHandler>().BodyParts[j].gameObject)
                         {

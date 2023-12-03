@@ -267,7 +267,7 @@ public class PlayerController : MonoBehaviourPun
         _bodyHandler.BodySetup();
         for (int i = 0; i < _bodyHandler.BodyParts.Count - 1; i++)
         {
-            if (i == 3)
+            if (i == (int)Define.BodyPart.Hip)
                 RotationsForBalloon.Add(Quaternion.Euler(-90, 0, 0));
             else
                 RotationsForBalloon.Add(_bodyHandler.BodyParts[i].PartTransform.localRotation);
