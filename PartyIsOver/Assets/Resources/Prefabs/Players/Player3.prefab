@@ -12119,7 +12119,6 @@ MonoBehaviour:
   RunSpeed: 100
   _hips: {fileID: 5856347132035830517}
   _bodyHandler: {fileID: 0}
-  targetingHandler: {fileID: 0}
   ReadyPunch: 0.1
   Punching: 0.1
   ResetPunch: 0.3
@@ -12236,6 +12235,8 @@ MonoBehaviour:
   actor: {fileID: 0}
   invulnerable: 0
   _hasFreeze: 0
+  playerTransform: {fileID: 0}
+  effectObject: {fileID: 0}
   _powerUpTime: 3
   _burnTime: 3
   _exhaustedTime: 5
@@ -18111,6 +18112,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5878509405600198244}
     m_Modifications:
+    - target: {fileID: 5554747602041468552, guid: fd38d312c47f4c146a8b65484bb081ee, type: 3}
+      propertyPath: GrayscaleShader
+      value: 
+      objectReference: {fileID: 4800000, guid: b2f12e7f68333584389d5dfe4836218c, type: 3}
     - target: {fileID: 8666174000545788914, guid: fd38d312c47f4c146a8b65484bb081ee, type: 3}
       propertyPath: m_RootOrder
       value: 0
