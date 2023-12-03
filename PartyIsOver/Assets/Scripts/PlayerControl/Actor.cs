@@ -13,7 +13,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
     public delegate void KillPlayer(int viewID);
     public event KillPlayer OnKillPlayer;
 
-    AudioListener _audioListener;
+    public AudioListener _audioListener;
 
     public StatusHandler StatusHandler;
     public BodyHandler BodyHandler;

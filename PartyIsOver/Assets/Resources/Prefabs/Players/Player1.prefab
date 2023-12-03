@@ -12200,6 +12200,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0444d9ac95de644cb7ff3b6d6c356fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _audioListener: {fileID: 0}
   StatusHandler: {fileID: 0}
   BodyHandler: {fileID: 0}
   PlayerController: {fileID: 0}

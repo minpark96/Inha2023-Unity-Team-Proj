@@ -328,11 +328,11 @@ public class PlayerController : MonoBehaviourPun
     [PunRPC]
     public void PlayerEffectSound(string path)
     {
-        _audioClip = Managers.Sound.GetOrAddAudioClip(path);
+        _audioClip = Managers.Sound.GetOrAddAudioClip(path, Define.Sound.PlayerEffect);
         _audioSource.clip = _audioClip;
         _audioSource.volume = 0.2f;
         _audioSource.spatialBlend = 1;
-        Managers.Sound.Play(_audioClip, Define.Sound.PlayerEffect);
+        Managers.Sound.Play(_audioClip, Define.Sound.PlayerEffect, _audioSource);
 
     }
 
@@ -501,6 +501,8 @@ public class PlayerController : MonoBehaviourPun
                 {
                     if (Input.GetKeyDown(KeyCode.R) && _actor.Stamina >= 0)
                     {
+                        Debug.Log(_actor._audioListener.transform.position);
+
                         _actor.Stamina -= 30;
 
                         if (_actor.Stamina <= 0)
@@ -520,7 +522,6 @@ public class PlayerController : MonoBehaviourPun
 
                                     photonView.RPC("PlayerEffectSound", RpcTarget.All, "Sounds/PlayerEffect/ACTION_Changing_Smoke");
                                     _isRSkillCheck = true;
-
                                     photonView.RPC("ChargeReady", RpcTarget.All);
                                 }
                             }

@@ -157,7 +157,7 @@ public class StatusHandler : MonoBehaviourPun
             _audioSource.clip = _audioClip;
             _audioSource.volume = 0.2f;
             _audioSource.spatialBlend = 1;
-            Managers.Sound.Play(_audioClip, Define.Sound.PlayerEffect);
+            Managers.Sound.Play(_audioClip, Define.Sound.PlayerEffect, _audioSource);
         }
     }
 
@@ -217,7 +217,6 @@ public class StatusHandler : MonoBehaviourPun
                     actor.debuffState |= Actor.DebuffState.Drunk;
                     photonView.RPC("PlayerDebuffSound", RpcTarget.All, "PlayerEffect/Cartoon-UI-049");
                     photonView.RPC("PoisonCreate", RpcTarget.All);
-
                 }
                 break;
         }
@@ -310,7 +309,7 @@ public class StatusHandler : MonoBehaviourPun
             {
                 _hasBurn = false;
                 actor.actorState = Actor.ActorState.Stand;
-                photonView.RPC("Burn", RpcTarget.All, delay);
+                StartCoroutine(Burn(delay));
             }
 
             if (Time.time - lastBurnTime >= 1.0f) // 1초간 데미지+액션
@@ -531,11 +530,7 @@ public class StatusHandler : MonoBehaviourPun
     public void DestroyEffect(string name)
     {
         GameObject go = GameObject.Find($"{name}");
-        if(go.name == "Stun_loop")
-            Managers.Resource.Destroy(effectObject);
-        else
-            Managers.Resource.Destroy(go);
-
+        Managers.Resource.Destroy(go);
         effectObject = null;
     }
 
@@ -571,6 +566,7 @@ public class StatusHandler : MonoBehaviourPun
         EffectObjectCreate("Effects/Fog_frost");
     }
 
+    [PunRPC]
     public void PoisonCreate()
     {
         EffectObjectCreate("Effects/Fog_poison");
