@@ -78,6 +78,11 @@ public class Actor : MonoBehaviourPun, IPunObservable
     public float Stamina { get { return _stamina; } set { _stamina = value; } }
     public float MaxStamina { get { return _maxStamina; } }
 
+    // 동사스택
+    [SerializeField]
+    private float _magneticStack = 0f;
+    public float MagneticStack { get { return _magneticStack; } set { _magneticStack = value; } }
+
     public ActorState actorState = ActorState.Stand;
     public ActorState lastActorState = ActorState.Run;
     public DebuffState debuffState = DebuffState.Default;

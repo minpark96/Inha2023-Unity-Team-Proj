@@ -12218,6 +12218,7 @@ MonoBehaviour:
   _maxHealth: 200
   _stamina: 100
   _maxStamina: 100
+  _magneticStack: 0
   actorState: 4
   lastActorState: 8
   debuffState: 0
@@ -12309,7 +12310,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DrunkDuration: 10
-  effectObject: {fileID: 0}
 --- !u!1 &5873269987166717472
 GameObject:
   m_ObjectHideFlags: 0

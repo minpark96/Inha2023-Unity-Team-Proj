@@ -17,6 +17,7 @@ public class GameCenter : BaseScene
     RoomUI _roomUI;
     ScoreBoardUI _scoreBoardUI;
 
+    MagneticField _magneticField;
     #endregion
 
     #region Private Fields
@@ -36,6 +37,10 @@ public class GameCenter : BaseScene
 
     bool _isChecked;
     bool _isDelayed;
+
+    int[] _rankScore = new int[6] { 0, 0, 0, 0, 0, 0 };
+    string[] _rankNickName = new string[6] { "", "", "", "", "", "" };
+    int[] _rankRank = new int[6] { 0, 0, 0, 0, 0, 0 };
 
     #endregion
 
@@ -75,9 +80,7 @@ public class GameCenter : BaseScene
     public int RoundCounts = 1;
 
 
-    private int[] _rankScore = new int[6] { 0,0,0,0,0,0};
-    private string[] _rankNickName = new string[6] { "","","","","","" };
-    private int[] _rankRank = new int[6] { 0, 0, 0, 0, 0, 0 };
+   
 
     #endregion
 
@@ -101,6 +104,8 @@ public class GameCenter : BaseScene
         }
 
         DontDestroyOnLoad(this.gameObject);
+
+
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -143,12 +148,16 @@ public class GameCenter : BaseScene
             _scoreBoardUI.ScoreBoardSetup();
             _scoreBoardUI.isSetup = true;
 
-            
+            _magneticField = GameObject.Find("Magnetic Field").GetComponent<MagneticField>();
+
             if (PhotonNetwork.IsMasterClient)
             {
                 _rankScore[PhotonNetwork.LocalPlayer.ActorNumber - 1] = 0;
                 _rankNickName[PhotonNetwork.LocalPlayer.ActorNumber - 1] = PhotonNetwork.NickName;
                 _rankRank[PhotonNetwork.LocalPlayer.ActorNumber - 1] = PhotonNetwork.LocalPlayer.ActorNumber;
+
+                Debug.Log(PhotonNetwork.LocalPlayer.ActorNumber - 1);
+                _magneticField.Actor = Actors[PhotonNetwork.LocalPlayer.ActorNumber - 1];
             }
             else
             {
@@ -156,7 +165,12 @@ public class GameCenter : BaseScene
                 _rankNickName[PhotonNetwork.LocalPlayer.ActorNumber - 1] = PhotonNetwork.NickName;
                 _rankRank[PhotonNetwork.LocalPlayer.ActorNumber - 1] = PhotonNetwork.LocalPlayer.ActorNumber;
                 photonView.RPC("AddUIInfoToMaster", RpcTarget.MasterClient, _rankScore, _rankNickName, _rankRank);
+
+                Debug.Log(PhotonNetwork.LocalPlayer.ActorNumber - 1);
             }
+
+            
+
         }
     }
 
@@ -475,6 +489,9 @@ public class GameCenter : BaseScene
             ActorViewIDs.Add(ids[i]);
             AddActor(ids[i]);
         }
+
+        if (_magneticField.Actor == null)
+            _magneticField.Actor = Actors[PhotonNetwork.LocalPlayer.ActorNumber - 1];
     }
 
     void AddActor(int id)

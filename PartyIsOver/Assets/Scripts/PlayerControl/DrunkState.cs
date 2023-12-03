@@ -8,10 +8,10 @@ public class DrunkState : MonoBehaviourPun
     private PlayerController _playerController;
     private Actor _actor;
     private Transform _playerTransform;
+    private GameObject effectObject = null;
     private float _drunkActionDuration = 3f;
 
     public float DrunkDuration = 10f;
-    public GameObject effectObject = null;
 
     void Start()
     {
