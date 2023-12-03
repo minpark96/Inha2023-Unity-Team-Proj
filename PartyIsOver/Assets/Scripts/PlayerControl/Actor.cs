@@ -111,7 +111,8 @@ public class Actor : MonoBehaviourPun, IPunObservable
     private void Awake()
     {
         Transform SoundListenerTransform = transform.Find("GreenHead");
-        _audioListener = SoundListenerTransform.gameObject.AddComponent<AudioListener>();
+        if(SoundListenerTransform != null)
+            _audioListener = SoundListenerTransform.gameObject.AddComponent<AudioListener>();
         if (photonView.IsMine)
         {
             LocalPlayerInstance = this.gameObject;
@@ -125,7 +126,8 @@ public class Actor : MonoBehaviourPun, IPunObservable
         else
         {
             // »ç¿îµå ²ô±â
-            _audioListener.enabled = false;
+            Destroy(_audioListener);
+            //_audioListener.enabled = false;
         }
 
         if(SceneManager.GetActiveScene().name != "[4]Room")

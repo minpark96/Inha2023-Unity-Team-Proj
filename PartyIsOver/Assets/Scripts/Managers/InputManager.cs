@@ -222,7 +222,7 @@ public class InputManager
             {
                 if (_isCharge)
                 {
-                    if(Time.time < _rkeyPressedTime + playerController.ChargeTime)
+                    if(Time.time < _rkeyPressedTime + 1.3f)
                         _checkHoldTime = true;
                     else
                         _checkHoldTime = false;
@@ -238,7 +238,7 @@ public class InputManager
                 if (_rkeyPressed)
                 {
 
-                    if (Time.time < _rkeyPressedTime + playerController.ChargeTime)
+                    if (Time.time < _rkeyPressedTime + 1.3f)
                     {
                         KeyboardAction.Invoke(Define.KeyboardEvent.Click);
                     }
