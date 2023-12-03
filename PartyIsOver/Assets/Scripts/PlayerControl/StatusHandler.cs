@@ -103,7 +103,6 @@ public class StatusHandler : MonoBehaviourPun
             {
                 actor.debuffState |= Actor.DebuffState.Exhausted;
                 photonView.RPC("Exhausted", RpcTarget.All, _exhaustedTime);
-                //StartCoroutine(Exhausted(_exhaustedTime));
             }
         }
     }

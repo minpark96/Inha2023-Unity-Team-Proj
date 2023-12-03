@@ -180,8 +180,10 @@ public class PlayerController : MonoBehaviourPun
 
     [Header("SkillControll")]
     public float RSkillCoolTime = 10;
-    public float ChargeAniHoldTime = 0.5f;
+    //잠깐 딜레이를 줘야 자세를 잡음
+    private float ChargeAniHoldTime = 0.5f;
     public float MeowPunchPower = 1f;
+    //펀치 3개
     public float MeowPunchReadyPunch = 0.1f;
     public float MeowPunchPunching = 0.1f;
     public float MeowPunchResetPunch = 0.3f;
@@ -190,6 +192,9 @@ public class PlayerController : MonoBehaviourPun
     public float NuclearPunchReadyPunch = 0.1f;
     public float NuclearPunching = 0.1f;
     public float NuclearPunchResetPunch = 0.3f;
+
+    //차지 시간
+    public float ChargeTime = 1.3f;
 
     public bool BalloonJump;
     public bool BalloonDrop;
@@ -544,7 +549,6 @@ public class PlayerController : MonoBehaviourPun
                     {
                         _isRSkillCheck = false;
                         photonView.RPC("ResetCharge", RpcTarget.All);
-                        //StartCoroutine(ResetCharge());
                     }
                 }
                 break;
