@@ -12119,7 +12119,6 @@ MonoBehaviour:
   RunSpeed: 100
   _hips: {fileID: 5856347132035830517}
   _bodyHandler: {fileID: 0}
-  targetingHandler: {fileID: 0}
   ReadyPunch: 0.1
   Punching: 0.1
   ResetPunch: 0.3
@@ -12236,6 +12235,8 @@ MonoBehaviour:
   actor: {fileID: 0}
   invulnerable: 0
   _hasFreeze: 0
+  playerTransform: {fileID: 0}
+  effectObject: {fileID: 0}
   _powerUpTime: 3
   _burnTime: 3
   _exhaustedTime: 5

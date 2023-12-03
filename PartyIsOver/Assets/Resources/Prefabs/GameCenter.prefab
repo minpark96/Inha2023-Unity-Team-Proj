@@ -54,6 +54,8 @@ MonoBehaviour:
   ActorViewIDs: 
   Actors: []
   Scores: 
+  MyGraveStone: {fileID: 0}
+  MyGhost: {fileID: 0}
   ImageHPBar: {fileID: 0}
   ImageStaminusBar: {fileID: 0}
   Portrait: {fileID: 0}
