@@ -117,16 +117,16 @@ public class GameCenter : BaseScene
             Debug.Log("아레나 로딩완료!!!");
             AlivePlayerCounts = PhotonNetwork.CurrentRoom.PlayerCount;
             
-            InstantiatePlayer();
-            
-            //if (RoundCounts == 1)
-            //{
             //InstantiatePlayer();
-            //}
-            //else if (RoundCounts > 1 && PhotonNetwork.IsMasterClient)
-            //{
-            //    photonView.RPC("SendDefaultInfo", RpcTarget.All);
-            //}
+            
+            if (RoundCounts == 1)
+            {
+                InstantiatePlayer();
+            }
+            else if (RoundCounts > 1 && PhotonNetwork.IsMasterClient)
+            {
+                photonView.RPC("SendDefaultInfo", RpcTarget.All);
+            }
 
             SceneType = Define.Scene.Game;
             SceneBgmSound("BigBangBattleLOOPING");
@@ -231,7 +231,7 @@ public class GameCenter : BaseScene
                     break;
             }
             MyActor = go.GetComponent<Actor>();
-            //SaveDefaultInfo(go);
+            SaveDefaultInfo(go);
 
             PhotonView pv = go.GetComponent<PhotonView>();
             MyActorViewID = pv.ViewID;
@@ -341,7 +341,7 @@ public class GameCenter : BaseScene
         yield return new WaitForSeconds(time);
         Debug.Log("라운드 종료");
         //photonView.RPC("DestroyGhost", RpcTarget.All);
-        photonView.RPC("DestroyObjects", RpcTarget.All);
+        photonView.RPC("DestroyGhost", RpcTarget.All);
         yield return new WaitForSeconds(time);
         RoundCounts++;
         PhotonNetwork.LoadLevel(_arenaName);
@@ -374,8 +374,8 @@ public class GameCenter : BaseScene
             if (MyActor != null)
             {
                 Debug.Log("플레이어 카메라 복원");
-                MyGhost.transform.GetChild(0).gameObject.SetActive(false);
                 MyActor.transform.GetChild(0).gameObject.SetActive(true);
+                MyGhost.transform.GetChild(0).gameObject.SetActive(false);
             }
 
             Debug.Log("고스트 삭제");
