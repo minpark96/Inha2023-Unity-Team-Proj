@@ -5,18 +5,19 @@ using UnityEngine;
 
 public class BalloonState : MonoBehaviour
 {
-    public float BalloonDuration;
     //public bool IsGrounded;
     //public float RotateAngle = 8f;
     //public float Force = 10000f;
 
+    //private float _originalMass;
+    //private float _totalAngle = 0f;
+
+
+    public float BalloonDuration;
     private PlayerController _playerController;
     private Transform _cameraArm;
     private Actor _actor;
-
     private Vector3 _moveDir;
-    //private float _originalMass;
-    //private float _totalAngle = 0f;
 
 
     void Start()
@@ -135,6 +136,8 @@ public class BalloonState : MonoBehaviour
             _actor.BodyHandler.Hip.PartTransform.Rotate(rotateDirX, 6);
         }
 
+      
+        
         //if (PlayerController.MoveInput.x == 1 || PlayerController.MoveInput.x == -1)
         //{
         //    Actor.BodyHandler.Hip.PartRigidbody.mass = 18;

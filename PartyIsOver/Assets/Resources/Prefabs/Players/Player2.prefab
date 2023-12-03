@@ -12294,9 +12294,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BalloonDuration: 30
-  RotateAngle: 10
-  IsGrounded: 0
-  Force: 10000
 --- !u!114 &-864565118446243330
 MonoBehaviour:
   m_ObjectHideFlags: 0

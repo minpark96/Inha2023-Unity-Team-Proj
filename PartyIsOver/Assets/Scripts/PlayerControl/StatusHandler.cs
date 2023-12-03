@@ -40,6 +40,7 @@ public class StatusHandler : MonoBehaviourPun
     public bool _hasFreeze;
     private bool _hasShock;
     private bool _hasStun;
+    public bool HasDrunk;
 
     public Transform playerTransform;
     public GameObject effectObject = null;
@@ -214,7 +215,6 @@ public class StatusHandler : MonoBehaviourPun
                 {
                     actor.debuffState |= Actor.DebuffState.Drunk;
                     photonView.RPC("PlayerDebuffSound", RpcTarget.All, "PlayerEffect/Cartoon-UI-049");
-                    photonView.RPC("PoisonCreate", RpcTarget.All);
 
                 }
                 break;
@@ -259,6 +259,12 @@ public class StatusHandler : MonoBehaviourPun
                     }
                     break;
                 case Actor.DebuffState.Ghost:
+                    break;
+                case Actor.DebuffState.Drunk:
+                    if(!HasDrunk)
+                    {
+                        photonView.RPC("PoisonCreate", RpcTarget.All);
+                    }
                     break;
             }
         }
@@ -571,6 +577,7 @@ public class StatusHandler : MonoBehaviourPun
     [PunRPC]
     public void PoisonCreate()
     {
+        HasDrunk = true;
         EffectObjectCreate("Effects/Fog_poison");
     }
 

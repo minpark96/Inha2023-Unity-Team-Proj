@@ -194,6 +194,8 @@ public class PlayerController : MonoBehaviourPun
     public bool BalloonJump;
     public bool BalloonDrop;
 
+    public bool IsFlambe;
+
 
     [Header("ItemControll")]
     public float ItempSwingPower;
@@ -427,6 +429,8 @@ public class PlayerController : MonoBehaviourPun
 
     public void OnKeyboardEvent_Move(Define.KeyboardEvent evt)
     {
+        if (IsFlambe)
+            return;
 
         switch (evt)
         {
@@ -547,8 +551,9 @@ public class PlayerController : MonoBehaviourPun
                 break;
             case Define.KeyboardEvent.Charge:
                 {
-                    if (_actor.debuffState == DebuffState.Drunk)
+                    if (Input.GetKeyUp(KeyCode.R) && _actor.debuffState == DebuffState.Drunk)
                     {
+                        IsFlambe = true;
                         StartCoroutine(_drunkState.DrunkAction());
                     }
                     else
@@ -741,11 +746,13 @@ public class PlayerController : MonoBehaviourPun
 
         if (_actor.debuffState == Actor.DebuffState.Balloon && isBalloon == false)
         {
-            StartCoroutine(_balloonState.BalloonShapeOn());
+            photonView.RPC("_balloonState.BalloonShapeOn", RpcTarget.All);
+            //StartCoroutine(_balloonState.BalloonShapeOn());
         }
 
         if (_actor.debuffState == Actor.DebuffState.Drunk && isDrunk == false)
         {
+            Debug.Log("여기 들어오나?");
             isDrunk = true;
             StartCoroutine(_drunkState.DrunkOff());
 
