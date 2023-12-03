@@ -309,6 +309,7 @@ public class PlayerController : MonoBehaviourPun
         Instance = this;
     }
 
+    [PunRPC]
     void RestoreOriginalMotions()
     {
         //y z 초기값 대입
@@ -514,7 +515,8 @@ public class PlayerController : MonoBehaviourPun
 
                                     photonView.RPC("PlayerEffectSound", RpcTarget.All, "Sounds/PlayerEffect/ACTION_Changing_Smoke");
                                     _isRSkillCheck = true;
-                                    StartCoroutine(ChargeReady());
+
+                                    photonView.RPC("ChargeReady", RpcTarget.All);
                                 }
                             }
                         }
@@ -541,7 +543,8 @@ public class PlayerController : MonoBehaviourPun
                     if (Input.GetKeyUp(KeyCode.R) && _actor.Stamina >= 0)
                     {
                         _isRSkillCheck = false;
-                        StartCoroutine(ResetCharge());
+                        photonView.RPC("ResetCharge", RpcTarget.All);
+                        //StartCoroutine(ResetCharge());
                     }
                 }
                 break;
@@ -553,7 +556,7 @@ public class PlayerController : MonoBehaviourPun
                     }
                     else
                     {
-                        RestoreOriginalMotions();
+                        photonView.RPC("RestoreOriginalMotions", RpcTarget.All);
                         if (Input.GetKeyUp(KeyCode.R) && isMeowNyangPunch)
                             MeowNyangPunch();
                         else
@@ -587,6 +590,7 @@ public class PlayerController : MonoBehaviourPun
     #endregion
 
     #region ChargeSkill
+    [PunRPC]
     IEnumerator ChargeReady()
     {
         for (int i = 0; i < childJoints.Length; i++)
@@ -599,9 +603,11 @@ public class PlayerController : MonoBehaviourPun
         {
             AniAngleForce(RSkillAngleAniData, i);
         }
-        yield return ForceRready(ChargeAniHoldTime);
+        photonView.RPC("ForceRready", RpcTarget.All, ChargeAniHoldTime);
+        yield return null;
     }
 
+    [PunRPC]
     IEnumerator ForceRready(float _delay)
     {
         startChargeTime = Time.time;
@@ -629,6 +635,7 @@ public class PlayerController : MonoBehaviourPun
         yield return null;
     }
 
+    [PunRPC]
     IEnumerator ResetCharge()
     {
         _checkHoldTimeCount = 0;
@@ -645,7 +652,7 @@ public class PlayerController : MonoBehaviourPun
                 _RPartRigidbody.angularVelocity = Vector3.zero;
             }
         }
-        RestoreOriginalMotions();
+        photonView.RPC("RestoreOriginalMotions", RpcTarget.All);
         yield return new WaitForSeconds(0.5f);
     }
     #endregion
@@ -655,7 +662,7 @@ public class PlayerController : MonoBehaviourPun
     private void NuclearPunch()
     {
         StartCoroutine(NuclearPunchDelay());
-        StartCoroutine(ResetCharge());
+        photonView.RPC("ResetCharge", RpcTarget.All);
     }
 
     IEnumerator NuclearPunchDelay()
@@ -668,7 +675,7 @@ public class PlayerController : MonoBehaviourPun
     private void MeowNyangPunch()
     {
         StartCoroutine(MeowNyangPunchDelay());
-        StartCoroutine(ResetCharge());
+        photonView.RPC("ResetCharge", RpcTarget.All);
     }
 
     IEnumerator MeowNyangPunchDelay()
