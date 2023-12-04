@@ -2,6 +2,7 @@ using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using Unity.VisualScripting;
 using UnityEngine;
 using static InteractableObject;
 
@@ -160,7 +161,13 @@ public class CollisionHandler : MonoBehaviourPun
         return damage;
     }
 
-private float PhysicalDamage(InteractableObject collisionInteractable, float damage, ContactPoint contact)
+    [PunRPC]
+    void PlayerEffectSound(string path)
+    {
+        actor.PlayerController.PlayerEffectSound($"{path}");
+    }
+
+    private float PhysicalDamage(InteractableObject collisionInteractable, float damage, ContactPoint contact)
     {
         float itemDamage = 100f;
         if (collisionInteractable.GetComponent<Item>() != null)
@@ -182,25 +189,25 @@ private float PhysicalDamage(InteractableObject collisionInteractable, float dam
                     //}
                     damage *= _objectDamage * itemDamage;
                     damage = Mathf.Clamp(damage, 15f, 50f);
-                    actor.PlayerController.PlayerEffectSound("PlayerEffect/WEAPON_CrossBow");
+                    photonView.RPC("PlayerEffectSound", RpcTarget.All, "PlayerEffect/WEAPON_CrossBow");
                 }
                 break;
             case InteractableObject.Damage.Punch:
                 damage *= _punchDamage;
                 {
-                    actor.PlayerController.PlayerEffectSound("PlayerEffect/SFX_ArrowShot_Hit");
+                    photonView.RPC("PlayerEffectSound", RpcTarget.All, "PlayerEffect/SFX_ArrowShot_Hit");
                 }
                 break;
             case InteractableObject.Damage.DropKick:
                 damage *= _dropkickDamage;
                 {
-                    actor.PlayerController.PlayerEffectSound("PlayerEffect/DAMAGE_Monster_01");
+                    photonView.RPC("PlayerEffectSound", RpcTarget.All, "PlayerEffect/DAMAGE_Monster_01");
                 }
                 break;
             case InteractableObject.Damage.Headbutt:
                 damage *= _headbuttDamage;
                 {
-                    actor.PlayerController.PlayerEffectSound("PlayerEffect/WEAPON_CrossBow");
+                    photonView.RPC("PlayerEffectSound", RpcTarget.All, "PlayerEffect/WEAPON_CrossBow");
                 }
                 break;
             case InteractableObject.Damage.Knockout:
