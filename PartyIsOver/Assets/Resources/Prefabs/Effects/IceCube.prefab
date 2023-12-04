@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 6777222368527734758}
   - component: {fileID: 6777222368526407622}
   - component: {fileID: 6777222368525309190}
-  - component: {fileID: -5015977185544696073}
-  - component: {fileID: -124140429631594920}
-  - component: {fileID: 2143750114758297980}
+  - component: {fileID: 2642171737209643522}
+  - component: {fileID: 1576621759661971327}
+  - component: {fileID: -543773590819435208}
   m_Layer: 0
   m_Name: IceCube
   m_TagString: Untagged
@@ -64,7 +64,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 074515e1c91e6764295ec27f55198e74, type: 2}
+  - {fileID: 2100000, guid: becb0be6f4da89f4c8aef6f222a35a6d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -86,7 +86,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &-5015977185544696073
+--- !u!114 &2642171737209643522
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -103,13 +103,13 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 2
+  observableSearch: 0
   ObservedComponents:
-  - {fileID: -124140429631594920}
+  - {fileID: 0}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &-124140429631594920
+--- !u!114 &1576621759661971327
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -124,8 +124,8 @@ MonoBehaviour:
   m_SynchronizePosition: 1
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
-  m_UseLocal: 1
---- !u!114 &2143750114758297980
+  m_UseLocal: 0
+--- !u!114 &-543773590819435208
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

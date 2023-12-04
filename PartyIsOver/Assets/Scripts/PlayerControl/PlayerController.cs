@@ -619,6 +619,11 @@ public class PlayerController : MonoBehaviourPun
 
                     if (Input.GetKey(KeyCode.R) && _actor.Stamina >= 0)
                     {
+                        if(_actor.debuffState == DebuffState.Ice || _actor.debuffState == DebuffState.Shock || _actor.debuffState == DebuffState.Stun || _actor.debuffState == DebuffState.Drunk)
+                        {
+                            _isRSkillCheck = false;
+                            photonView.RPC("ResetCharge", RpcTarget.All);
+                        }
 
                         if (_actor.debuffState == DebuffState.Drunk)
                         {
