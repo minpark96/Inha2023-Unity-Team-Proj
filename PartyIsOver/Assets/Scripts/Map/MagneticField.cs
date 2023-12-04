@@ -48,6 +48,7 @@ public class MagneticField : MonoBehaviour
 
     private void Update()
     {
+        return;
         if(!_waitFlag)
         {
             StartCoroutine(WaitForSync());
