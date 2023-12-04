@@ -16,7 +16,7 @@ public class StatusHandler : MonoBehaviourPun
     public bool invulnerable = false;
 
     private float _healthDamage;
-    private bool _isDead;
+    public bool _isDead;
 
 
     private float _knockoutThreshold = 15f;
@@ -25,9 +25,7 @@ public class StatusHandler : MonoBehaviourPun
     private List<float> _xPosSpringAry = new List<float>();
     private List<float> _yzPosSpringAry = new List<float>();
 
-
-    // 이펙트 생성
-    private bool hasObject = false;
+   
 
     // 초기 속도
     private float _maxSpeed;
@@ -146,9 +144,10 @@ public class StatusHandler : MonoBehaviourPun
             // 상태이상 체크
             DebuffCheck(type);
             DebuffAction();
-            CheckProjectile(causer);
+            //CheckProjectile(causer);
         }
 
+        photonView.RPC("InvulnerableState", RpcTarget.All, 0.5f);
         actor.InvokeStatusChangeEvent();
     }
 
@@ -172,34 +171,37 @@ public class StatusHandler : MonoBehaviourPun
 
     public void DebuffCheck(InteractableObject.Damage type)
     {
+        if (actor.debuffState != Actor.DebuffState.Default)
+            return;
+
         if (actor.debuffState == Actor.DebuffState.Ice) return;
-        if (actor.debuffState == Actor.DebuffState.Balloon) return;
+        //if (actor.debuffState == Actor.DebuffState.Balloon) return;
 
         switch (type)
         {
             case Damage.Ice: // 빙결
                 actor.debuffState |= Actor.DebuffState.Ice;
-                foreach (Actor.DebuffState state in System.Enum.GetValues(typeof(Actor.DebuffState)))
-                {
-                    if (state != Actor.DebuffState.Ice && (actor.debuffState & state) != 0)
-                    {
-                        actor.debuffState &= ~state;
-                    }
-                }
+                //foreach (Actor.DebuffState state in System.Enum.GetValues(typeof(Actor.DebuffState)))
+                //{
+                //    if (state != Actor.DebuffState.Ice && (actor.debuffState & state) != 0)
+                //    {
+                //        actor.debuffState &= ~state;
+                //    }
+                //}
                 break;
-            case Damage.Balloon: // 풍선
-                {
-                    actor.debuffState |= Actor.DebuffState.Balloon;
-                    photonView.RPC("PlayerDebuffSound", RpcTarget.All, "PlayerEffect/Cartoon-UI-049");
-                    foreach (Actor.DebuffState state in System.Enum.GetValues(typeof(Actor.DebuffState)))
-                    {
-                        if (state != Actor.DebuffState.Balloon && (actor.debuffState & state) != 0)
-                        {
-                            actor.debuffState &= ~state;
-                        }
-                    }
-                }
-                break;
+            //case Damage.Balloon: // 풍선
+            //    {
+            //        actor.debuffState |= Actor.DebuffState.Balloon;
+            //        photonView.RPC("PlayerDebuffSound", RpcTarget.All, "PlayerEffect/Cartoon-UI-049");
+            //        foreach (Actor.DebuffState state in System.Enum.GetValues(typeof(Actor.DebuffState)))
+            //        {
+            //            if (state != Actor.DebuffState.Balloon && (actor.debuffState & state) != 0)
+            //            {
+            //                actor.debuffState &= ~state;
+            //            }
+            //        }
+            //    }
+            //    break;
             case Damage.PowerUp: // 불끈
                 actor.debuffState |= Actor.DebuffState.PowerUp;
                 break;
@@ -213,7 +215,7 @@ public class StatusHandler : MonoBehaviourPun
                     actor.debuffState |= Actor.DebuffState.Shock;
                 break;
             case Damage.Stun: // 기절
-                if (actor.debuffState == Actor.DebuffState.Shock || actor.debuffState == Actor.DebuffState.Drunk)
+                if (actor.debuffState == Actor.DebuffState.Shock || actor.debuffState == Actor.DebuffState.Drunk )
                     break;
                 else
                     actor.debuffState |= Actor.DebuffState.Stun;
@@ -252,10 +254,6 @@ public class StatusHandler : MonoBehaviourPun
                     if (!_hasSlow)
                         photonView.RPC("Slow", RpcTarget.All, _slowTime);
                     break;
-                case Actor.DebuffState.Ice:
-                    if (!_hasFreeze)
-                        photonView.RPC("Freeze", RpcTarget.All, _freezeTime);
-                    break;
                 case Actor.DebuffState.Shock:
                     if (!_hasShock)
                         photonView.RPC("Shock", RpcTarget.All, _shockTime);
@@ -274,6 +272,10 @@ public class StatusHandler : MonoBehaviourPun
                     {
                         photonView.RPC("PoisonCreate", RpcTarget.All);
                     }
+                    break;
+                case Actor.DebuffState.Ice:
+                    if (!_hasFreeze)
+                        photonView.RPC("Freeze", RpcTarget.All, _freezeTime);
                     break;
             }
         }
@@ -324,7 +326,7 @@ public class StatusHandler : MonoBehaviourPun
             {
                 _hasBurn = false;
                 actor.actorState = Actor.ActorState.Stand;
-                StartCoroutine(Burn(delay));
+                StopCoroutine(Burn(delay));
             }
 
             if (Time.time - lastBurnTime >= 1.0f) // 1초간 데미지+액션
@@ -350,6 +352,8 @@ public class StatusHandler : MonoBehaviourPun
         actor.InvokeStatusChangeEvent();
         _audioClip = null;
     }
+
+   
     [PunRPC]
     IEnumerator Exhausted(float delay)
     {
@@ -403,13 +407,15 @@ public class StatusHandler : MonoBehaviourPun
     [PunRPC]
     IEnumerator Freeze(float delay)
     {
+        _hasFreeze = true;
+
         yield return new WaitForSeconds(0.2f);
+
         PlayerDebuffSound("PlayerEffect/Cartoon-UI-047");
         IceCubeCreate();
         IceSmokeCreate();
 
         // 빙결
-        _hasFreeze = true;
         actor.actorState = Actor.ActorState.Debuff;
 
         for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
@@ -438,17 +444,15 @@ public class StatusHandler : MonoBehaviourPun
     [PunRPC]
     IEnumerator Shock(float delay)
     {
-        if (actor.debuffState == Actor.DebuffState.Ice)
-            StopCoroutine(Shock(delay));
+        _hasShock = true;
 
-        yield return new WaitForSeconds(0.2f);
+        if (actor.debuffState == Actor.DebuffState.Ice)
+            photonView.RPC("StopShock", RpcTarget.All, delay);
+
 
         // 감전
-        _hasShock = true;
         actor.actorState = Actor.ActorState.Debuff;
-
         
-
         PlayerDebuffSound("PlayerEffect/electronic_02");
         ShockCreate();
 
@@ -473,13 +477,14 @@ public class StatusHandler : MonoBehaviourPun
 
         while (Time.time - startTime < delay)
         {
-            //if (actor.debuffState == Actor.DebuffState.Ice)
-            //{
-            //    _hasShock = false;
-            //    actor.actorState = Actor.ActorState.Stand;
-            //    photonView.RPC("Stun", RpcTarget.All, _stunTime);
-            //    photonView.RPC("StopShock", RpcTarget.All);
-            //}
+            if (actor.debuffState == Actor.DebuffState.Ice)
+            {
+                _hasShock = false;
+                actor.actorState = Actor.ActorState.Stand;
+                StartCoroutine(Stun(0.5f));
+                //photonView.RPC("Stun", RpcTarget.All, _stunTime);
+                photonView.RPC("StopShock", RpcTarget.All, delay);
+            }
 
             yield return new WaitForSeconds(0.2f);
 
@@ -667,7 +672,6 @@ public class StatusHandler : MonoBehaviourPun
                 }
             }
         }
-        photonView.RPC("InvulnerableState", RpcTarget.All, 0.5f);
         actor.Health = Mathf.Clamp(tempHealth, 0f, actor.MaxHealth);
 
         _healthDamage = 0f;

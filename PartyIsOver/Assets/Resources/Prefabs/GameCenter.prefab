@@ -46,14 +46,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _roomUI: {fileID: 0}
-  AlivePlayerCounts: 1
+  _scores: 000000000000000000000000000000000000000000000000
+  _nicknames:
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  _actorNumbers: 000000000000000000000000000000000000000000000000
   SpawnPointX: 470
   SpawnPointY: 17
   SpawnPointZ: 420
   SpawnPoints: []
   ActorViewIDs: 
   Actors: []
-  Scores: 
   MyGraveStone: {fileID: 0}
   MyGhost: {fileID: 0}
   ImageHPBar: {fileID: 0}
@@ -65,42 +72,7 @@ MonoBehaviour:
   DeleteDelay: 2
   MyActor: {fileID: 0}
   MyActorViewID: 0
-  DefaultPos:
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  DefaultRot:
-  - {x: 0, y: 0, z: 0, w: 0}
-  - {x: 0, y: 0, z: 0, w: 0}
-  - {x: 0, y: 0, z: 0, w: 0}
-  - {x: 0, y: 0, z: 0, w: 0}
-  - {x: 0, y: 0, z: 0, w: 0}
-  - {x: 0, y: 0, z: 0, w: 0}
-  - {x: 0, y: 0, z: 0, w: 0}
-  - {x: 0, y: 0, z: 0, w: 0}
-  - {x: 0, y: 0, z: 0, w: 0}
-  - {x: 0, y: 0, z: 0, w: 0}
-  - {x: 0, y: 0, z: 0, w: 0}
-  - {x: 0, y: 0, z: 0, w: 0}
-  - {x: 0, y: 0, z: 0, w: 0}
-  - {x: 0, y: 0, z: 0, w: 0}
-  - {x: 0, y: 0, z: 0, w: 0}
-  - {x: 0, y: 0, z: 0, w: 0}
-  - {x: 0, y: 0, z: 0, w: 0}
+  AlivePlayerCounts: 1
   RoundCounts: 1
 --- !u!114 &-6182396937385309685
 MonoBehaviour:

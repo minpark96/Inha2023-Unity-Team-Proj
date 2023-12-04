@@ -12,8 +12,6 @@ public class PhotonManager : BaseScene
 {
     static PhotonManager p_instance;
 
-    const byte MAX_PLAYERS_PER_ROOM = 6;
-
     bool IsConnecting;
     string GameVersion = "1";
     string _gameCenterPath = "GameCenter";
@@ -81,7 +79,7 @@ public class PhotonManager : BaseScene
         if (scene.name == "[4]Room")
         {
             SceneType = Define.Scene.Lobby;
-            gameCenter.SceneBgmSound("LaxLayoverLOOPING");
+            gameCenter.SetSceneBgmSound("LaxLayoverLOOPING");
         }
     }
 
@@ -181,7 +179,7 @@ public class PhotonManager : BaseScene
 
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
-        PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = MAX_PLAYERS_PER_ROOM });
+        PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = Define.MAX_PLAYERS_PER_ROOM });
     }
 
     public override void OnJoinedLobby()
