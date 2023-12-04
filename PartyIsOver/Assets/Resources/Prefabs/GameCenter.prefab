@@ -62,6 +62,7 @@ MonoBehaviour:
   GhostSpawnDelay: 4
   RoundEndDelay: 7
   UpdateScoreBoardDelay: 2
+  DeleteDelay: 2
   MyActor: {fileID: 0}
   MyActorViewID: 0
   DefaultPos:

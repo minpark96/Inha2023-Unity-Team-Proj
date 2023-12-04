@@ -139,6 +139,12 @@ public class PlayerController : MonoBehaviourPun
     public AniAngleData[] ItemTwoHandLeftAngleData;
 
     [SerializeField]
+    public AniFrameData[] PotionThrowAniData;
+
+    [SerializeField]
+    public AniAngleData[] PotionThrowAngleData;
+
+    [SerializeField]
     public AniFrameData[] TestRready1;
 
     [SerializeField]
@@ -2107,6 +2113,65 @@ public class PlayerController : MonoBehaviourPun
         for (int i = 0; i < potionReadys.Length; i++)
         {
             AniAngleForce(potionReadys, i);
+        }
+    }
+    #endregion
+
+    #region PotionThrow
+
+    public IEnumerator PotionThrow(float duration, float ready, float start,  float end)
+    {
+        float checkTime = Time.time;
+
+        while (Time.time - checkTime < ready)
+        {
+            PotionThrowReady();
+            yield return new WaitForSeconds(duration);
+        }
+        checkTime = Time.time;
+
+        while (Time.time - checkTime < start)
+        {
+            PotionThrowing();
+            yield return new WaitForSeconds(duration);
+        }
+        checkTime = Time.time;
+
+        while (Time.time - checkTime < end)
+        {
+            PotionThrowEnd();
+            yield return new WaitForSeconds(duration);
+        }
+    }
+
+    #endregion
+
+    #region PotionThrowAni
+
+    void PotionThrowReady()
+    {
+        AniAngleData[] potionReadys = PotionThrowAngleData;
+        for (int i = 0; i < potionReadys.Length; i++)
+        {
+            AniAngleForce(potionReadys, i);
+        }
+    }
+
+    void PotionThrowing()
+    {
+        AniFrameData[] potionStarts = PotionThrowAniData;
+        for (int i = 0; i < potionStarts.Length; i++)
+        {
+            AniForce(potionStarts, i);
+        }
+    }
+
+    void PotionThrowEnd()
+    {
+        AniAngleData[] potionThrowEnds = PotionThrowAngleData;
+        for (int i = 0; i < potionThrowEnds.Length; i++)
+        {
+            AniAngleForce(potionThrowEnds, i);
         }
     }
     #endregion
