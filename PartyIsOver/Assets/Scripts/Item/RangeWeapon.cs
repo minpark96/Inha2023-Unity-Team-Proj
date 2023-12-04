@@ -21,7 +21,7 @@ public class RangeWeapon : Item
         Owner.PlayerController.PlayerEffectSound("PlayerEffect/Cartoon-UI-040");
         if (PhotonNetwork.IsMasterClient)
         {
-            projectile.GetComponent<InteractableObject>().ChangeUseTypeTrigger(0.15f, 5f);
+            projectile.GetComponent<InteractableObject>().ChangeUseTypeTrigger(0.08f, 5f);
         }
     }
 }
