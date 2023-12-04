@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 public class ProjectileStandard : ProjectileBase
 {
@@ -32,7 +33,16 @@ public class ProjectileStandard : ProjectileBase
         projectileBase.InteractableObject = GetComponent<InteractableObject>();
         projectileBase.OnShoot += OnShoot;
 
-        Destroy(gameObject, maxLifeTime);
+        StartCoroutine(SelfDestroy());
+    }
+
+    IEnumerator SelfDestroy()
+    {
+        yield return new WaitForSeconds(maxLifeTime);
+
+        if (gameObject.activeSelf)
+            Managers.Resource.Destroy(gameObject);
+        GetComponent<InteractableObject>().ResetType();
     }
 
     new void OnShoot()
@@ -91,6 +101,8 @@ public class ProjectileStandard : ProjectileBase
         transform.forward = velocity.normalized;
         lastRootPosition = root.position;
     }
+
+    [PunRPC]
     public virtual void OnHit(Vector3 point, Vector3 normal,Collider collider)
     {
         //¿Ã∆Â∆Æ
@@ -104,7 +116,20 @@ public class ProjectileStandard : ProjectileBase
             }
         }
 
-        Destroy(gameObject);
+        DestroyProjectile();
+    }
+    
+    public void DestoryProjectileTrigger()
+    {
+        //photonView.RPC("DestroyProjectile", RpcTarget.All);
+        DestroyProjectile();
+    }
+
+    [PunRPC]
+    public void DestroyProjectile()
+    {
+        GetComponent<InteractableObject>().ResetType();
+        Managers.Resource.Destroy(gameObject);
     }
 
     private bool IsHitValid(RaycastHit hit)
