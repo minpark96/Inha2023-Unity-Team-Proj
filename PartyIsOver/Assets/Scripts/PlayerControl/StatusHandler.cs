@@ -16,7 +16,7 @@ public class StatusHandler : MonoBehaviourPun
     public bool invulnerable = false;
 
     private float _healthDamage;
-    private bool _isDead;
+    public bool _isDead;
 
 
     private float _knockoutThreshold = 15f;

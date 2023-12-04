@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class Define
 {
+    public const byte MAX_PLAYERS_PER_ROOM = 6;
+
     public enum BodyPart
     {
         LeftFoot,

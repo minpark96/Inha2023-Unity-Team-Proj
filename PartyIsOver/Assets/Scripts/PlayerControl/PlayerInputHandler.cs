@@ -46,7 +46,33 @@ public class PlayerInputHandler : MonoBehaviourPun
             if(_actor.debuffState != DebuffState.Exhausted)
                 _actor.PlayerController.OnKeyboardEvent_Skill(evt);
         }
+
+        if (Input.GetKeyDown(KeyCode.F4))
+        {
+            KillOneself();
+        }
     }
+
+    #region 임시 자살 테스트용
+    void KillOneself()
+    {
+        photonView.RPC("TestKill", RpcTarget.MasterClient, photonView.ViewID);
+    }
+
+    [PunRPC]
+    void TestKill(int ID)
+    {
+        PhotonView pv = PhotonView.Find(ID);
+        Actor ac = pv.transform.GetComponent<Actor>();
+        StartCoroutine(ac.StatusHandler.ResetBodySpring());
+        ac.actorState = Actor.ActorState.Dead;
+        ac.StatusHandler._isDead = true;
+        _actor.Health = 0;
+        ac.InvokeDeathEvent();
+        ac.InvokeStatusChangeEvent();
+    }
+
+    #endregion
 
     void OnMouseEvent(Define.MouseEvent evt)
     {
