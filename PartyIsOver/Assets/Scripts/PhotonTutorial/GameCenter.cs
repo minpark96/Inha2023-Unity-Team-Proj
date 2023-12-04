@@ -65,6 +65,7 @@ public class GameCenter : BaseScene
 
     public float GhostSpawnDelay = 4f;
     public float RoundEndDelay = 7f;
+    public float UpdateScoreBoardDelay = 2f;
 
     public Actor MyActor;
     public int MyActorViewID;
@@ -82,8 +83,8 @@ public class GameCenter : BaseScene
     };
     public List<Ranking> Rank = new List<Ranking>();
 
-    private int[] _rankScore = new int[6] { 0,0,0,0,0,0};
-    private string[] _rankNickName = new string[6] { "","","","","","" };
+    private int[] _rankScore = new int[6] { 0, 0, 0, 0, 0, 0 };
+    private string[] _rankNickName = new string[6] { "", "", "", "", "", "" };
     private int[] _rankRank = new int[6] { 0, 0, 0, 0, 0, 0 };
 
     #endregion
@@ -116,17 +117,17 @@ public class GameCenter : BaseScene
         {
             Debug.Log("아레나 로딩완료!!!");
             AlivePlayerCounts = PhotonNetwork.CurrentRoom.PlayerCount;
-            
-            //InstantiatePlayer();
-            
-            if (RoundCounts == 1)
-            {
-                InstantiatePlayer();
-            }
-            else if (RoundCounts > 1 && PhotonNetwork.IsMasterClient)
-            {
-                photonView.RPC("SendDefaultInfo", RpcTarget.All);
-            }
+
+            InstantiatePlayer();
+
+            //if (RoundCounts == 1)
+            //{
+            //    InstantiatePlayer();
+            //}
+            //else if (RoundCounts > 1 && PhotonNetwork.IsMasterClient)
+            //{
+            //    photonView.RPC("SendDefaultInfo", RpcTarget.All);
+            //}
 
             SceneType = Define.Scene.Game;
             SceneBgmSound("BigBangBattleLOOPING");
@@ -150,7 +151,7 @@ public class GameCenter : BaseScene
             _scoreBoardUI.ScoreBoardSetup();
             _scoreBoardUI.isSetup = true;
 
-            
+
             if (PhotonNetwork.IsMasterClient)
             {
                 _rankScore[PhotonNetwork.LocalPlayer.ActorNumber - 1] = 0;
@@ -167,8 +168,18 @@ public class GameCenter : BaseScene
                 _rankRank[PhotonNetwork.LocalPlayer.ActorNumber - 1] = PhotonNetwork.LocalPlayer.ActorNumber;
                 photonView.RPC("AddUIInfoToMaster", RpcTarget.MasterClient, _rankScore, _rankNickName, _rankRank);
             }
+
+            if (!_isDelayed)
+            {
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    _isDelayed = true;
+                    StartCoroutine(UpdateScoreBoardWithDelay());
+                }
+            }
         }
     }
+
 
     public void SceneBgmSound(string path)
     {
@@ -231,7 +242,7 @@ public class GameCenter : BaseScene
                     break;
             }
             MyActor = go.GetComponent<Actor>();
-            SaveDefaultInfo(go);
+            //SaveDefaultInfo(go);
 
             PhotonView pv = go.GetComponent<PhotonView>();
             MyActorViewID = pv.ViewID;
@@ -255,9 +266,9 @@ public class GameCenter : BaseScene
         for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
         {
             DefaultPos[i] = actor.BodyHandler.BodyParts[i].transform.localPosition;
-            
+
             DefaultRot[i] = actor.BodyHandler.BodyParts[i].transform.localRotation;
-            
+
         }
     }
 
@@ -283,9 +294,9 @@ public class GameCenter : BaseScene
         for (int i = 0; i < ActorViewIDs.Count; i++)
         {
             GUI.contentColor = Color.black;
-            GUI.Label(new Rect(0, 140 + i * 60, 200, 200), "Actor View ID: " + ActorViewIDs[i] + " / HP: " + Actors[i].Health, style);
+            GUI.Label(new Rect(0, 340 + i * 60, 200, 200), "Actor View ID: " + ActorViewIDs[i] + " / HP: " + Actors[i].Health, style);
             GUI.contentColor = Color.red;
-            GUI.Label(new Rect(0, 160 + i * 60, 200, 200), "Status: " + Actors[i].actorState + " / Debuff: " + Actors[i].debuffState, style);
+            GUI.Label(new Rect(0, 360 + i * 60, 200, 200), "Status: " + Actors[i].actorState + " / Debuff: " + Actors[i].debuffState, style);
         }
     }
 
@@ -328,23 +339,87 @@ public class GameCenter : BaseScene
     void ReduceAlivePlayerCounts(int viewID)
     {
         Debug.Log("[Only Master] " + viewID + " Player is Dead!");
-
         AlivePlayerCounts--;
 
         if (AlivePlayerCounts == 1)
-            StartCoroutine(EndRound(RoundEndDelay));
+            StartCoroutine(EndRound());
     }
 
-    IEnumerator EndRound(float time)
+    IEnumerator EndRound()
     {
-        Debug.Log(time + "초 뒤 라운드 종료 예정");
-        yield return new WaitForSeconds(time);
+        Debug.Log(RoundEndDelay + "초 뒤 라운드 종료 예정");
+        photonView.RPC("FindWinner", RpcTarget.All);
+        yield return new WaitForSeconds(RoundEndDelay);
         Debug.Log("라운드 종료");
-        //photonView.RPC("DestroyGhost", RpcTarget.All);
-        photonView.RPC("DestroyGhost", RpcTarget.All);
-        yield return new WaitForSeconds(time);
+
+        photonView.RPC("DestroyObjects", RpcTarget.All);
+        yield return new WaitForSeconds(1f);
+
         RoundCounts++;
-        PhotonNetwork.LoadLevel(_arenaName);
+
+        if (RoundCounts == 5)
+        {
+            photonView.RPC("QuitRoom", RpcTarget.All);
+        }
+        else
+        {
+            photonView.RPC("ReloadSameScene", RpcTarget.All);
+        }
+    }
+
+    [PunRPC]
+    void FindWinner()
+    {
+        if (MyActor.actorState != ActorState.Dead)
+        {
+            photonView.RPC("UpdateScoreBoard", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber);
+        }
+    }
+
+    [PunRPC]
+    void UpdateScoreBoard(int ActorNum)
+    {
+        for (int i = 0; i < _rankRank.Length; i++)
+        {
+            Debug.Log(_rankRank[i]);
+            if (_rankRank[i] == ActorNum)
+            {
+                Debug.Log("승자: " + _rankRank[i]);
+                _rankScore[i]++;
+            }
+        }
+
+        SetScoreBoard();
+        photonView.RPC("FixScoreBoard", RpcTarget.All);
+    }
+
+    [PunRPC]
+    void FixScoreBoard()
+    {
+        _scoreBoardUI.DisplayFixedScoreBoard();
+    }
+
+    void SetScoreBoard()
+    {
+        _scoreBoardUI.ChangeScoreBoard(_rankScore, _rankNickName, _rankRank);
+
+        photonView.RPC("SyncScoreBoard", RpcTarget.Others, _rankScore, _rankNickName, _rankRank);
+    }
+
+    [PunRPC]
+    void QuitRoom()
+    {
+        PhotonNetwork.Disconnect();
+        SceneManager.LoadScene("[2]Main");
+        PhotonManager.Instance.Connect();
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+    }
+
+    [PunRPC]
+    void ReloadSameScene()
+    {
+        SceneManager.LoadScene(_arenaName);
     }
 
     [PunRPC]
@@ -506,17 +581,16 @@ public class GameCenter : BaseScene
     }
 
     [PunRPC]
-    void UpdateScoreBoard(int[] score, string[] name, int[] rank)
+    void SyncScoreBoard(int[] score, string[] name, int[] rank)
     {
-
         for (int i = 0; i < score.Length; i++)
         {
             _rankScore[i] = score[i];
             _rankNickName[i] = name[i];
             _rankRank[i] = rank[i];
         }
-
-        if(!PhotonNetwork.IsMasterClient)
+        
+        if (!PhotonNetwork.IsMasterClient)
             _scoreBoardUI.ChangeScoreBoard(_rankScore, _rankNickName, _rankRank);
     }
 
@@ -533,7 +607,7 @@ public class GameCenter : BaseScene
             }
         }
 
-        photonView.RPC("UpdateScoreBoard", RpcTarget.MasterClient, score, name, rank);
+        photonView.RPC("SyncScoreBoard", RpcTarget.MasterClient, score, name, rank);
     }
 
     void Start()
@@ -591,26 +665,16 @@ public class GameCenter : BaseScene
                 }
             }
 
-            if (!_isDelayed)
-            {
-                if (PhotonNetwork.IsMasterClient)
-                {
-                    _isDelayed = true;
-                    StartCoroutine(GetDelayTime());
-
-                    _scoreBoardUI.ChangeScoreBoard(_rankScore, _rankNickName, _rankRank);
-
-                    photonView.RPC("UpdateScoreBoard", RpcTarget.Others, _rankScore, _rankNickName, _rankRank);
-                }
-            }
+            
 
 
         }
     }
 
-    IEnumerator GetDelayTime()
+    IEnumerator UpdateScoreBoardWithDelay()
     {
-        yield return new WaitForSeconds(5.0f);
+        yield return new WaitForSeconds(UpdateScoreBoardDelay);
+        SetScoreBoard();
         _isDelayed = false;
     }
 

@@ -128,8 +128,8 @@ public class Actor : MonoBehaviourPun, IPunObservable
             _audioListener.enabled = false;
         }
 
-        if(SceneManager.GetActiveScene().name != "[4]Room")
-            DontDestroyOnLoad(this.gameObject);
+        //if (SceneManager.GetActiveScene().name != "[4]Room")
+        //    DontDestroyOnLoad(this.gameObject);
 
         BodyHandler = GetComponent<BodyHandler>();
         StatusHandler = GetComponent<StatusHandler>();
