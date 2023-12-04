@@ -943,11 +943,11 @@ public class Grab : MonoBehaviourPun
         }
 
         for (int i = 0; i < RangeWeaponSkin.childCount; i++)
-            RangeWeaponSkin.GetChild(i).gameObject.SetActive(false);
+            RangeWeaponSkin.GetChild(0).GetChild(0).GetChild(i).gameObject.SetActive(false);
 
 
-        RangeWeaponSkin.GetChild((int)weapon).gameObject.SetActive(true);
-        FirePoint = RangeWeaponSkin.GetChild((int)weapon).GetChild(1);
+        RangeWeaponSkin.GetChild(0).GetChild(0).GetChild((int)weapon).gameObject.SetActive(true);
+        FirePoint = RangeWeaponSkin.GetChild(0).GetChild(1);
     }
 
     //리지드바디 part의 alignmentVector방향을 targetVector방향으로 회전
