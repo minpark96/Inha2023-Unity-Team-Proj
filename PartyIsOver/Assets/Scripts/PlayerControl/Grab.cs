@@ -790,7 +790,10 @@ public class Grab : MonoBehaviourPun
         {
             _grabJointLeft = _leftHandRigid.AddComponent<FixedJoint>();
             if (_leftSearchTarget == null)
+            {
                 Debug.Log("lllllllllllllllllllll");
+                return;
+            }
             _grabJointLeft.connectedBody = _leftSearchTarget.GetComponent<Rigidbody>();
             _grabJointLeft.breakForce = 9001;
 
@@ -821,7 +824,10 @@ public class Grab : MonoBehaviourPun
             //if (pv != null)
             //    _rightSearchTarget = pv.transform.GetComponent<InteractableObject>();
             if (_rightSearchTarget == null)
+            {
                 Debug.Log("lllllllllllllllllllll");
+                return;
+            }
             _grabJointRight.connectedBody = _rightSearchTarget.GetComponent<Rigidbody>();
             _grabJointRight.breakForce = 9001;
 
