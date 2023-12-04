@@ -685,7 +685,7 @@ public class GameCenter : BaseScene
         {
             for (int i = 0; i < Actors.Count; i++)
             {
-                if (Actors[i].photonView.IsMine)
+                if (Actors[i].photonView.IsMine && ImageHPBar != null)
                 {
                     ImageHPBar.fillAmount = Actors[i].Health / Actors[i].MaxHealth;
                     ImageStaminusBar.fillAmount = Actors[i].Stamina / Actors[i].MaxStamina;

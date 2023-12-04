@@ -240,7 +240,7 @@ private float PhysicalDamage(InteractableObject collisionInteractable, float dam
     {
         if (!PhotonNetwork.IsMasterClient && PhotonNetwork.IsConnected == true) return;
 
-        if (collision.collider.gameObject.layer != LayerMask.NameToLayer("Ground"))
+        if (collision.collider.gameObject.layer != LayerMask.NameToLayer("Ground") && !actor.StatusHandler.invulnerable)
             DamageCheck(collision);
     }
   
