@@ -174,11 +174,9 @@ public class PlayerController : MonoBehaviourPun
     public bool rightKick;
     public bool isStateChange;
     public bool isMeowNyangPunch = false;
-    public bool _isRSkillCheck;
+    private bool _isRSkillCheck;
     public bool isBalloon;
     public bool isDrunk;
-    public bool isHeading;
-    public bool isDropkick;
 
     [Header("SkillControll")]
     public float RSkillCoolTime = 10;
@@ -201,6 +199,9 @@ public class PlayerController : MonoBehaviourPun
     public bool BalloonJump;
     public bool BalloonDrop;
 
+    public bool IsFlambe;
+
+
     [Header("ItemControll")]
     public float ItempSwingPower;
 
@@ -209,7 +210,7 @@ public class PlayerController : MonoBehaviourPun
     public Vector3 MoveInput;
     private Vector3 _moveDir;
     private bool _isCoroutineRunning = false;
-    public bool _isCoroutineDrop;
+    private bool _isCoroutineDrop = false;
     private bool _isCoroutineRoll = false;
     private float _idleTimer = 0;
     private float _cycleTimer = 0;
@@ -408,13 +409,10 @@ public class PlayerController : MonoBehaviourPun
 
                         if (_actor.debuffState == DebuffState.Balloon)
                         {
-                            StartCoroutine(_balloonState.BalloonSpin());
+                            //StartCoroutine(_balloonState.BalloonSpin());
                         }
                         else if(!isGrounded)
-                        {
-                            isDropkick = true;
-                            DropKickTrigger();
-                        }
+                             DropKickTrigger();
                     }
 
                     if (_actor.debuffState == DebuffState.Balloon)
@@ -429,9 +427,7 @@ public class PlayerController : MonoBehaviourPun
                         if (_actor.Stamina <= 0)
                             _actor.Stamina = 0;
 
-                        isHeading = true;
                         StartCoroutine(Heading());
-
                     }
                 }
                 break;
@@ -443,6 +439,8 @@ public class PlayerController : MonoBehaviourPun
 
     public void OnKeyboardEvent_Move(Define.KeyboardEvent evt)
     {
+        if (IsFlambe)
+            return;
 
         switch (evt)
         {
@@ -563,9 +561,10 @@ public class PlayerController : MonoBehaviourPun
                 break;
             case Define.KeyboardEvent.Charge:
                 {
-                    if (_actor.debuffState == DebuffState.Drunk)
+                    if (Input.GetKeyUp(KeyCode.R) && _actor.debuffState == DebuffState.Drunk)
                     {
-                        StartCoroutine(_drunkState.DrunkAction());
+                        IsFlambe = true;
+                        photonView.RPC("DrunkAction", RpcTarget.All);
                     }
                     else
                     {
@@ -598,6 +597,11 @@ public class PlayerController : MonoBehaviourPun
                 }
                 break;
         }
+    }
+    [PunRPC]
+    void DrunkAction()
+    {
+        StartCoroutine(_drunkState.DrunkAction());
     }
 
     #endregion
@@ -758,15 +762,14 @@ public class PlayerController : MonoBehaviourPun
 
         if (_actor.debuffState == Actor.DebuffState.Balloon && isBalloon == false)
         {
-            StartCoroutine(_balloonState.BalloonShapeOn());
+            photonView.RPC("_balloonState.BalloonShapeOn", RpcTarget.All);
+            //StartCoroutine(_balloonState.BalloonShapeOn());
         }
 
         if (_actor.debuffState == Actor.DebuffState.Drunk && isDrunk == false)
         {
             isDrunk = true;
             StartCoroutine(_drunkState.DrunkOff());
-
-            
         }
 
 
@@ -1490,7 +1493,6 @@ public class PlayerController : MonoBehaviourPun
         yield return new WaitForSeconds(1);
         this._bodyHandler.Head.PartInteractable.damageModifier = InteractableObject.Damage.Default;
         photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.Head, false);
-        isHeading = false;
     }
     #endregion
 
