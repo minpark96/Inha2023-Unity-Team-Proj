@@ -222,6 +222,9 @@ public class MainUI : MonoBehaviour
         Managers.Sound.SoundVolume[(int)Define.Sound.Bgm] = 0.1f * 1;
         Managers.Sound.SoundVolume[(int)Define.Sound.UISound] = 1f * 1;
         Managers.Sound.ChangeVolume();
+
+        BGMAudioSlider.value = 1;
+        EffectAudioSlider.value = 1;
         SettingsPanel.SetActive(false);
     }
 

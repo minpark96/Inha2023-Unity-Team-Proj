@@ -55,10 +55,10 @@ public class RoomUI : MonoBehaviour
                         OnClickReady();
                     }
 
-                    if (Input.GetKeyDown(KeyCode.Escape))
-                    {
-                        OnClickLeaveRoom();
-                    }
+                    //if (Input.GetKeyDown(KeyCode.Escape))
+                    //{
+                    //    OnClickLeaveRoom();
+                    //}
                 }
                 break;
             case Define.KeyboardEvent.PointerDown:
@@ -95,7 +95,6 @@ public class RoomUI : MonoBehaviour
         {
             if(CanPlay)
             {
-                //StartCoroutine(CountDown());
                 PhotonNetwork.LoadLevel(_arenaName);
                 PhotonNetwork.CurrentRoom.IsOpen = false;
             }
@@ -121,12 +120,6 @@ public class RoomUI : MonoBehaviour
                 ReadyButton.GetComponentInChildren<Text>().text = "준비해제! (F5)";
             }
         }
-    }
-
-   
-    IEnumerator CountDown()
-    {
-        yield return new WaitForSeconds(1.0f);
     }
 
 

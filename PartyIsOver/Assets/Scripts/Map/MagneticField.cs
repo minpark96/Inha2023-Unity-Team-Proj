@@ -7,13 +7,16 @@ using Photon.Pun;
 
 public class MagneticField : MonoBehaviour
 {
-    public float FirstPhaseStartTime = 3f;
-    public float SecondPhaseStartTime = 3f;
+    public float FirstPhaseStartTime = 45f;
+    public float SecondPhaseStartTime = 45f;
+    public float ThirdPhaseStartTime = 45f;
 
     public float FirstPhaseDuration = 15f;
     public float SecondPhaseDuration = 15f;
+    public float ThirdPhaseDuration = 10f;
 
-    public float MagneticFieldStack = 0.1f;
+    private float _magneticFieldStack = 2f;
+    private float _magneticFieldStackRestore = 1f;
 
     private float _firstRadius = 52f;
     private float _secondRadius = 22f;
@@ -29,7 +32,7 @@ public class MagneticField : MonoBehaviour
     private Vector3 ThirdPoint = new Vector3(453.9f, 6.8f, 410.5f);
 
     private float FirstScale = 103.2f;
-    private float SecondScale =43.1f;
+    private float SecondScale = 43.1f;
     private float ThirdScale = 20.0f;
 
     public Actor Actor;
@@ -53,11 +56,11 @@ public class MagneticField : MonoBehaviour
 
         InsideArea();
 
-        if(Actor.MagneticStack >= 1f)
+        if(Actor.MagneticStack >= 100f)
         {
             // player Á×À½ Ã³¸®
-            Actor.Health = 0;
-            Actor.actorState = Actor.ActorState.Dead;
+            //Actor.Health = 0;
+            //Actor.actorState = Actor.ActorState.Dead;
         }
     }
 
@@ -85,6 +88,10 @@ public class MagneticField : MonoBehaviour
         {
             _isInside = true;
             _repeatFlag = false;
+            if (Actor.MagneticStack > 0)
+                StartCoroutine(MagneticDamageRestore());
+            else
+                Actor.MagneticStack = 0;
         }
     }
 
@@ -119,17 +126,40 @@ public class MagneticField : MonoBehaviour
 
             yield return null;
         }
+
+        yield return new WaitForSeconds(ThirdPhaseStartTime);
+        StartCoroutine(ThirdPhase());
     }
 
+    IEnumerator ThirdPhase()
+    {
+        float startTime = Time.time;
+        while (Time.time - startTime < ThirdPhaseDuration)
+        {
+            float t = (Time.time - startTime) / ThirdPhaseDuration;
+            _radius = Mathf.Lerp(_thirdRadius, 0, t);
+            transform.localScale = new Vector3(Mathf.Lerp(ThirdScale, 0, t), Mathf.Lerp(ThirdScale, 0, t), Mathf.Lerp(ThirdScale, 0, t));
+
+            yield return null;
+        }
+    }
 
     IEnumerator MagneticDamage()
     {
-        float startTime = Time.time;
-
         while (!_isInside)
         {
-            Actor.MagneticStack += MagneticFieldStack;
+            Actor.MagneticStack += _magneticFieldStack;
             
+            yield return new WaitForSeconds(1.0f);
+        }
+    }
+
+    IEnumerator MagneticDamageRestore()
+    {
+        while (_isInside)
+        {
+            Actor.MagneticStack -= _magneticFieldStackRestore;
+
             yield return new WaitForSeconds(1.0f);
         }
     }

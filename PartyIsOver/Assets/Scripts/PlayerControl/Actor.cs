@@ -82,6 +82,9 @@ public class Actor : MonoBehaviourPun, IPunObservable
     [SerializeField]
     private float _magneticStack = 0f;
     public float MagneticStack { get { return _magneticStack; } set { _magneticStack = value; } }
+    public bool _IsIceFloor;
+    
+
 
     public ActorState actorState = ActorState.Stand;
     public ActorState lastActorState = ActorState.Run;
@@ -171,6 +174,10 @@ public class Actor : MonoBehaviourPun, IPunObservable
             //1초마다  1 씩 까임 수정 사항
             Stamina -= Time.deltaTime;
         }
+
+        //if(_IsIceFloor)
+        //    Actor.
+
 
     }
 
