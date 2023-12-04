@@ -18,7 +18,7 @@ public class PoolManager
 
         Stack<Poolable> _poolStack = new Stack<Poolable>();
 
-        public void Init(GameObject original, int count = 10)
+        public void Init(GameObject original, int count = 6)
         {
             Original = original;
             //생성하는 오브젝트를 나누기 위한 Root를 또 추가 해줌
@@ -66,7 +66,8 @@ public class PoolManager
 
             if (parent == null)
                 poolable.transform.parent = Managers.Scene.GetCurrentSceneRootGameObject().transform;
-
+            //else
+            //    poolable.transform.parent = parent;
             poolable.transform.parent = parent;
             poolable.IsUsing = true;
 
@@ -89,7 +90,7 @@ public class PoolManager
         }
     }
 
-    public void CreatePool(GameObject original, int count = 10)
+    public void CreatePool(GameObject original, int count = 6)
     {
         Pool pool = new Pool();
         pool.Init(original, count);
