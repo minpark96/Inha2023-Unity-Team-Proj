@@ -12152,6 +12152,8 @@ MonoBehaviour:
   RotationsForBalloon: []
   _audioSource: {fileID: 0}
   isAI: 0
+  RecoveryTime: 0.1
+  RecoveryStaminaValue: 1
 --- !u!114 &5878509405600198236
 MonoBehaviour:
   m_ObjectHideFlags: 0

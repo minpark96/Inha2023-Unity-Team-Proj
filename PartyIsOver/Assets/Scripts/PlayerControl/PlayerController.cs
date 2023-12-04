@@ -280,7 +280,10 @@ public class PlayerController : MonoBehaviourPun
 
         if (photonView.IsMine)
             _cameraArm = _actor.CameraControl.CameraArm;
+        
+
     }
+
 
 
     private ConfigurableJoint[] childJoints;
@@ -607,12 +610,10 @@ public class PlayerController : MonoBehaviourPun
         {
             AniAngleForce(RSkillAngleAniData, i);
         }
-
-        photonView.RPC("ForceRready", RpcTarget.Others, ChargeAniHoldTime);
+        StartCoroutine(ForceRready(ChargeAniHoldTime));
         yield return null;
     }
 
-    [PunRPC]
     IEnumerator ForceRready(float _delay)
     {
         startChargeTime = Time.time;
@@ -744,11 +745,6 @@ public class PlayerController : MonoBehaviourPun
     #region FixedUpdate
     private void FixedUpdate()
     {
-
-        //여기서 특정 상태일 때 스테미너 회복이 안되게 한다.
-        if (_actor.Stamina <=_actor.MaxStamina)
-            _actor.Stamina += 0.1f;
-
         if (!photonView.IsMine || _actor.actorState == ActorState.Dead) return;
 
         if (isAI)

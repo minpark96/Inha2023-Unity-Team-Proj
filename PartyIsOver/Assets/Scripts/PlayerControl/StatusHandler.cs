@@ -72,6 +72,7 @@ public class StatusHandler : MonoBehaviourPun
 
     int Creatcount = 0;
 
+
     private void Awake()
     {
         playerTransform = this.transform.Find("GreenHip").GetComponent<Transform>();
@@ -347,13 +348,8 @@ public class StatusHandler : MonoBehaviourPun
         angularXDrive.positionSpring = 0f;
         actor.BodyHandler.BodyParts[(int)Define.BodyPart.Head].PartJoint.angularXDrive = angularXDrive;
 
-        float startTime = Time.time;
-        while (Time.time < startTime + delay)
+        while(actor.Stamina != 100)
         {
-            float elapsed = Time.time - startTime;
-            float percentage = elapsed / delay;
-
-            actor.Stamina = Mathf.Clamp(actor.MaxStamina * percentage, 0, actor.MaxStamina);
             yield return null;
         }
 
@@ -366,7 +362,6 @@ public class StatusHandler : MonoBehaviourPun
         angularXDrive.positionSpring = _xPosSpringAry[0];
 
         actor.BodyHandler.BodyParts[(int)Define.BodyPart.Head].PartJoint.angularXDrive = angularXDrive;
-        actor.Stamina = 100;
 
         actor.InvokeStatusChangeEvent();
     }
