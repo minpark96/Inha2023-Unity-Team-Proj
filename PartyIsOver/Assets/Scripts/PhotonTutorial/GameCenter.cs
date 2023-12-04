@@ -301,21 +301,21 @@ public class GameCenter : BaseScene
         }
     }
 
-    private void OnGUI()
-    {
-        GUIStyle style = new GUIStyle();
+    //private void OnGUI()
+    //{
+    //    GUIStyle style = new GUIStyle();
 
-        style.fontSize = 30;
+    //    style.fontSize = 30;
 
-        GUI.backgroundColor = Color.white;
-        for (int i = 0; i < ActorViewIDs.Count; i++)
-        {
-            GUI.contentColor = Color.black;
-            GUI.Label(new Rect(0, 340 + i * 60, 200, 200), "Actor View ID: " + ActorViewIDs[i] + " / HP: " + Actors[i].Health, style);
-            GUI.contentColor = Color.red;
-            GUI.Label(new Rect(0, 360 + i * 60, 200, 200), "Status: " + Actors[i].actorState + " / Debuff: " + Actors[i].debuffState, style);
-        }
-    }
+    //    GUI.backgroundColor = Color.white;
+    //    for (int i = 0; i < ActorViewIDs.Count; i++)
+    //    {
+    //        GUI.contentColor = Color.black;
+    //        GUI.Label(new Rect(0, 340 + i * 60, 200, 200), "Actor View ID: " + ActorViewIDs[i] + " / HP: " + Actors[i].Health, style);
+    //        GUI.contentColor = Color.red;
+    //        GUI.Label(new Rect(0, 360 + i * 60, 200, 200), "Status: " + Actors[i].actorState + " / Debuff: " + Actors[i].debuffState, style);
+    //    }
+    //}
 
     void SubscribeActorEvent(Actor actor)
     {
