@@ -27,6 +27,11 @@ public class CollisionHandler : MonoBehaviourPun
     [SerializeField] private float _headbuttForceUp;
     [SerializeField] private float _dropkickForceUp;
 
+    [SerializeField] private float _headMultiple = 1.5f;
+    [SerializeField] private float _armMultiple = 0.8f;
+    [SerializeField] private float _handMultiple = 0.8f;
+    [SerializeField] private float _legMultiple = 0.8f;
+
     void Start()
     {
         if (actor == null)
@@ -44,6 +49,7 @@ public class CollisionHandler : MonoBehaviourPun
     void Init()
     {
         CollisionData data = Managers.Resource.Load<CollisionData>("ScriptableObject/CollisionData");
+        PlayerStatData statData = Managers.Resource.Load<PlayerStatData>("ScriptableObject/PlayerStatData");
         _objectDamage = data._ObjectDamage;
         _punchDamage = data.PunchDamage;
         _dropkickDamage = data.DropkickDamage;
@@ -58,6 +64,12 @@ public class CollisionHandler : MonoBehaviourPun
         _punchForceUp = data.PunchForceUp;
         _headbuttForceUp = data.HeadbuttForceUp;
         _dropkickForceUp = data.DropkickForceUp;
+
+        _headMultiple = statData.HeadMultiple;
+        _armMultiple = statData.ArmMultiple;    
+        _handMultiple = statData.HandMultiple;
+        _legMultiple = statData.LegMultiple;
+
     }
 
     private void DamageCheck(Collision collision)
@@ -99,7 +111,7 @@ public class CollisionHandler : MonoBehaviourPun
                 damage = ApplyBodyPartDamageModifier(damage);
                 damage *= actor.PlayerAttackPoint;
                 damage = Mathf.RoundToInt(damage);
-
+                damage -= damage * (actor.DamageReduction / 100f);
 
                 // 데미지 적용
                 if (damage > 0f && velocityMagnitude > damageMinimumVelocity)
@@ -126,31 +138,31 @@ public class CollisionHandler : MonoBehaviourPun
     {
         if (transform == actor.BodyHandler.RightArm.transform ||
             transform == actor.BodyHandler.LeftArm.transform)
-            damage *= actor.ArmMultiple;
+            damage *= _armMultiple;
         else if (transform == actor.BodyHandler.RightForearm.transform ||
             transform == actor.BodyHandler.LeftForearm.transform)
-            damage *= actor.ArmMultiple;
+            damage *= _armMultiple;
         else if (transform == actor.BodyHandler.RightHand.transform ||
             transform == actor.BodyHandler.LeftHand.transform)
-            damage *= actor.HandMultiple;
+            damage *= _handMultiple;
         else if (transform == actor.BodyHandler.RightLeg.transform ||
             transform == actor.BodyHandler.LeftLeg.transform)
-            damage *= actor.LegMultiple;
+            damage *=_legMultiple;
         else if (transform == actor.BodyHandler.RightThigh.transform ||
             transform == actor.BodyHandler.LeftThigh.transform)
-            damage *= actor.LegMultiple;
+            damage *= _legMultiple;
         //else if (transform == actor.BodyHandler.RightFoot.transform ||
             //transform == actor.BodyHandler.LeftFoot.transform)
             //damage *= actor.LegMultiple;
         else if (transform == actor.BodyHandler.Head.transform)
-            damage *= actor.HeadMultiple;
+            damage *= _headMultiple;
 
         return damage;
     }
 
 private float PhysicalDamage(InteractableObject collisionInteractable, float damage, ContactPoint contact)
     {
-        float itemDamage = 1f;
+        float itemDamage = 100f;
         if (collisionInteractable.GetComponent<Item>() != null)
             itemDamage = collisionInteractable.GetComponent<Item>().ItemData.Damage;
 

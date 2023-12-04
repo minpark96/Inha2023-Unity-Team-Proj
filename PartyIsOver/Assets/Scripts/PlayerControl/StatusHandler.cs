@@ -32,6 +32,9 @@ public class StatusHandler : MonoBehaviourPun
     // 초기 속도
     private float _maxSpeed;
 
+
+
+
     // 버프 확인용 플래그
     private bool _hasPowerUp;
     private bool _hasBurn;
@@ -125,7 +128,7 @@ public class StatusHandler : MonoBehaviourPun
     }
 
     // 충격이 가해지면(trigger)
-    public void AddDamage(InteractableObject.Damage type, float damage, GameObject causer)
+    public void AddDamage(InteractableObject.Damage type, float damage, GameObject causer=null)
     {
         // 데미지 체크
         damage *= _damageModifer;
@@ -143,12 +146,19 @@ public class StatusHandler : MonoBehaviourPun
             // 상태이상 체크
             DebuffCheck(type);
             DebuffAction();
+            CheckProjectile(causer);
         }
 
         actor.InvokeStatusChangeEvent();
     }
 
-
+    void CheckProjectile(GameObject go)
+    {
+        if (go.GetComponent<ProjectileStandard>() != null)
+        {
+            go.GetComponent<ProjectileStandard>().DestoryProjectileTrigger();
+        }
+    }
 
     [PunRPC]
     void PlayerDebuffSound(string path)
@@ -299,6 +309,7 @@ public class StatusHandler : MonoBehaviourPun
         // 화상
         _hasBurn = true;
         actor.actorState = Actor.ActorState.Debuff;
+        Debug.Log("Burn!");
 
         PlayerDebuffSound("PlayerEffect/SFX_FireBall_Projectile");
         BurnCreate();
