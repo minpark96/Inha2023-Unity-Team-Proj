@@ -174,9 +174,11 @@ public class PlayerController : MonoBehaviourPun
     public bool rightKick;
     public bool isStateChange;
     public bool isMeowNyangPunch = false;
-    private bool _isRSkillCheck;
+    public bool _isRSkillCheck;
     public bool isBalloon;
     public bool isDrunk;
+    public bool isHeading;
+    public bool isDropkick;
 
     [Header("SkillControll")]
     public float RSkillCoolTime = 10;
@@ -199,7 +201,6 @@ public class PlayerController : MonoBehaviourPun
     public bool BalloonJump;
     public bool BalloonDrop;
 
-
     [Header("ItemControll")]
     public float ItempSwingPower;
 
@@ -208,7 +209,7 @@ public class PlayerController : MonoBehaviourPun
     public Vector3 MoveInput;
     private Vector3 _moveDir;
     private bool _isCoroutineRunning = false;
-    private bool _isCoroutineDrop = false;
+    public bool _isCoroutineDrop;
     private bool _isCoroutineRoll = false;
     private float _idleTimer = 0;
     private float _cycleTimer = 0;
@@ -410,7 +411,10 @@ public class PlayerController : MonoBehaviourPun
                             StartCoroutine(_balloonState.BalloonSpin());
                         }
                         else if(!isGrounded)
-                             DropKickTrigger();
+                        {
+                            isDropkick = true;
+                            DropKickTrigger();
+                        }
                     }
 
                     if (_actor.debuffState == DebuffState.Balloon)
@@ -425,7 +429,9 @@ public class PlayerController : MonoBehaviourPun
                         if (_actor.Stamina <= 0)
                             _actor.Stamina = 0;
 
+                        isHeading = true;
                         StartCoroutine(Heading());
+
                     }
                 }
                 break;
@@ -1484,6 +1490,7 @@ public class PlayerController : MonoBehaviourPun
         yield return new WaitForSeconds(1);
         this._bodyHandler.Head.PartInteractable.damageModifier = InteractableObject.Damage.Default;
         photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.Head, false);
+        isHeading = false;
     }
     #endregion
 
