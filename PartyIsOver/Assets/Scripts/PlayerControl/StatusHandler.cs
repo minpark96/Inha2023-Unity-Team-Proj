@@ -684,6 +684,7 @@ public class StatusHandler : MonoBehaviourPun
         StartCoroutine(ResetBodySpring());
         actor.actorState = Actor.ActorState.Dead;
         _isDead = true;
+        actor.InvokeDeathEvent();
     }
 
     void EnterUnconsciousState()
