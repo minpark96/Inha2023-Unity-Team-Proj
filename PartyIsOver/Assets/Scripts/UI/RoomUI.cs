@@ -74,7 +74,7 @@ public class RoomUI : MonoBehaviour
 
     void Update()
     {
-        if (PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
             if (CanPlay)
                 PlayButton.GetComponentInChildren<Image>().sprite = GamePlayOn;
@@ -91,7 +91,7 @@ public class RoomUI : MonoBehaviour
 
     public void OnClickReady()
     {
-        if (PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
             if(CanPlay)
             {

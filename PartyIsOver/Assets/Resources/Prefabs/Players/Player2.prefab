@@ -12030,6 +12030,10 @@ MonoBehaviour:
     AnglePowerValues:
     - 100
     - 100
+  ItemTwoHandLeftAniData: []
+  ItemTwoHandLeftAngleData: []
+  PotionThrowAniData: []
+  PotionThrowAngleData: []
   TestRready1:
   - StandardRigidbodies:
     - {fileID: 5856379624502544924}
@@ -12133,8 +12137,11 @@ MonoBehaviour:
   rightKick: 0
   isStateChange: 0
   isMeowNyangPunch: 0
+  _isRSkillCheck: 0
   isBalloon: 0
   isDrunk: 0
+  isHeading: 0
+  isDropkick: 0
   RSkillCoolTime: 5
   MeowPunchPower: 3
   MeowPunchReadyPunch: 0.05
@@ -12149,6 +12156,7 @@ MonoBehaviour:
   BalloonDrop: 0
   IsFlambe: 0
   MoveInput: {x: 0, y: 0, z: 0}
+  _isCoroutineDrop: 0
   RotationsForBalloon: []
   _audioSource: {fileID: 0}
   isAI: 0
@@ -12238,6 +12246,7 @@ MonoBehaviour:
   invulnerable: 0
   _isDead: 0
   _hasFreeze: 0
+  _hasShock: 0
   HasDrunk: 0
   playerTransform: {fileID: 0}
   effectObject: {fileID: 0}
