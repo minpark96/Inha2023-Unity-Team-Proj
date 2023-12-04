@@ -179,11 +179,6 @@ public class Actor : MonoBehaviourPun, IPunObservable
         CameraControl.LookAround(BodyHandler.Hip.transform.position);
         CameraControl.CursorControl();
 
-        if(GrabState == GrabState.Climb)
-        {
-            //1초마다  1 씩 까임 수정 사항
-            Stamina -= Time.deltaTime * 10;
-        }
     }
 
     void RecoveryStamina()
