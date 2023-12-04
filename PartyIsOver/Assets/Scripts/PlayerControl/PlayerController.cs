@@ -180,8 +180,10 @@ public class PlayerController : MonoBehaviourPun
 
     [Header("SkillControll")]
     public float RSkillCoolTime = 10;
-    public float ChargeAniHoldTime = 0.5f;
+    //잠깐 딜레이를 줘야 자세를 잡음
+    private float ChargeAniHoldTime = 0.5f;
     public float MeowPunchPower = 1f;
+    //펀치 3개
     public float MeowPunchReadyPunch = 0.1f;
     public float MeowPunchPunching = 0.1f;
     public float MeowPunchResetPunch = 0.3f;
@@ -190,6 +192,9 @@ public class PlayerController : MonoBehaviourPun
     public float NuclearPunchReadyPunch = 0.1f;
     public float NuclearPunching = 0.1f;
     public float NuclearPunchResetPunch = 0.3f;
+
+    //차지 시간
+    public float ChargeTime = 1.3f;
 
     public bool BalloonJump;
     public bool BalloonDrop;
@@ -309,6 +314,7 @@ public class PlayerController : MonoBehaviourPun
         Instance = this;
     }
 
+    [PunRPC]
     void RestoreOriginalMotions()
     {
         //y z 초기값 대입
@@ -322,11 +328,11 @@ public class PlayerController : MonoBehaviourPun
     [PunRPC]
     public void PlayerEffectSound(string path)
     {
-        _audioClip = Managers.Sound.GetOrAddAudioClip(path);
+        _audioClip = Managers.Sound.GetOrAddAudioClip(path, Define.Sound.PlayerEffect);
         _audioSource.clip = _audioClip;
         _audioSource.volume = 0.2f;
         _audioSource.spatialBlend = 1;
-        Managers.Sound.Play(_audioClip, Define.Sound.PlayerEffect);
+        Managers.Sound.Play(_audioClip, Define.Sound.PlayerEffect, _audioSource);
 
     }
 
@@ -495,6 +501,8 @@ public class PlayerController : MonoBehaviourPun
                 {
                     if (Input.GetKeyDown(KeyCode.R) && _actor.Stamina >= 0)
                     {
+                        Debug.Log(_actor._audioListener.transform.position);
+
                         _actor.Stamina -= 30;
 
                         if (_actor.Stamina <= 0)
@@ -514,7 +522,7 @@ public class PlayerController : MonoBehaviourPun
 
                                     photonView.RPC("PlayerEffectSound", RpcTarget.All, "Sounds/PlayerEffect/ACTION_Changing_Smoke");
                                     _isRSkillCheck = true;
-                                    StartCoroutine(ChargeReady());
+                                    photonView.RPC("ChargeReady", RpcTarget.All);
                                 }
                             }
                         }
@@ -541,7 +549,7 @@ public class PlayerController : MonoBehaviourPun
                     if (Input.GetKeyUp(KeyCode.R) && _actor.Stamina >= 0)
                     {
                         _isRSkillCheck = false;
-                        StartCoroutine(ResetCharge());
+                        photonView.RPC("ResetCharge", RpcTarget.All);
                     }
                 }
                 break;
@@ -553,7 +561,7 @@ public class PlayerController : MonoBehaviourPun
                     }
                     else
                     {
-                        RestoreOriginalMotions();
+                        photonView.RPC("RestoreOriginalMotions", RpcTarget.All);
                         if (Input.GetKeyUp(KeyCode.R) && isMeowNyangPunch)
                             MeowNyangPunch();
                         else
@@ -587,6 +595,7 @@ public class PlayerController : MonoBehaviourPun
     #endregion
 
     #region ChargeSkill
+    [PunRPC]
     IEnumerator ChargeReady()
     {
         for (int i = 0; i < childJoints.Length; i++)
@@ -599,9 +608,11 @@ public class PlayerController : MonoBehaviourPun
         {
             AniAngleForce(RSkillAngleAniData, i);
         }
-        yield return ForceRready(ChargeAniHoldTime);
+        photonView.RPC("ForceRready", RpcTarget.All, ChargeAniHoldTime);
+        yield return null;
     }
 
+    [PunRPC]
     IEnumerator ForceRready(float _delay)
     {
         startChargeTime = Time.time;
@@ -629,6 +640,7 @@ public class PlayerController : MonoBehaviourPun
         yield return null;
     }
 
+    [PunRPC]
     IEnumerator ResetCharge()
     {
         _checkHoldTimeCount = 0;
@@ -645,7 +657,7 @@ public class PlayerController : MonoBehaviourPun
                 _RPartRigidbody.angularVelocity = Vector3.zero;
             }
         }
-        RestoreOriginalMotions();
+        photonView.RPC("RestoreOriginalMotions", RpcTarget.All);
         yield return new WaitForSeconds(0.5f);
     }
     #endregion
@@ -655,7 +667,7 @@ public class PlayerController : MonoBehaviourPun
     private void NuclearPunch()
     {
         StartCoroutine(NuclearPunchDelay());
-        StartCoroutine(ResetCharge());
+        photonView.RPC("ResetCharge", RpcTarget.All);
     }
 
     IEnumerator NuclearPunchDelay()
@@ -668,7 +680,7 @@ public class PlayerController : MonoBehaviourPun
     private void MeowNyangPunch()
     {
         StartCoroutine(MeowNyangPunchDelay());
-        StartCoroutine(ResetCharge());
+        photonView.RPC("ResetCharge", RpcTarget.All);
     }
 
     IEnumerator MeowNyangPunchDelay()
