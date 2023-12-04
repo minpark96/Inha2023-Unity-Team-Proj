@@ -650,6 +650,9 @@ public class GameCenter : BaseScene
             _roomUI.ReadyButton.SetActive(false);
         else
             _roomUI.PlayButton.SetActive(false);
+
+
+
     }
 
     void Update()
