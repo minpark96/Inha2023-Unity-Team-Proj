@@ -34,6 +34,7 @@ public class RoomUI : MonoBehaviour
     public bool Ready;
     public bool ReadyIsClicked;
 
+    public GameObject SpawnPoint;
 
     string _arenaName = "PO_Map_KYH";
 
@@ -42,6 +43,12 @@ public class RoomUI : MonoBehaviour
         Init();
         Managers.Input.KeyboardAction -= OnKeyboardEvent;
         Managers.Input.KeyboardAction += OnKeyboardEvent;
+    }
+
+    void Init()
+    {
+        _playerNameText.text = PhotonNetwork.NickName;
+        SpawnPoint = GameObject.Find("Spawn Point");
     }
 
     void OnKeyboardEvent(Define.KeyboardEvent evt)
@@ -83,11 +90,6 @@ public class RoomUI : MonoBehaviour
         }
     }
 
-    void Init()
-    {
-        _playerNameText.text = PhotonNetwork.NickName;
-    }
-
 
     public void OnClickReady()
     {
@@ -123,12 +125,11 @@ public class RoomUI : MonoBehaviour
     }
 
 
-    public void OnClickLeaveRoom()
-    {
-        if(SceneManager.GetActiveScene().name != _arenaName)
-            PhotonManager.Instance.LeaveRoom();
-
-    }
+    //public void OnClickLeaveRoom()
+    //{
+    //    if(SceneManager.GetActiveScene().name != _arenaName)
+    //        PhotonManager.Instance.LeaveRoom();
+    //}
 
     public void OnClickSkillChange()
     {
@@ -150,5 +151,8 @@ public class RoomUI : MonoBehaviour
             SkillName.text = "Â÷Â¡ ½ºÅ³\n\n\n\nÇÙÆÝÄ¡";
         }
     }
+
+
+
 
 }
