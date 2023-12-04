@@ -17,6 +17,8 @@ public class GameCenter : BaseScene
     RoomUI _roomUI;
     ScoreBoardUI _scoreBoardUI;
 
+    MagneticField _magneticField;
+    SnowStorm _snowStorm;
     #endregion
 
     #region Private Fields
@@ -36,6 +38,10 @@ public class GameCenter : BaseScene
 
     bool _isChecked;
     bool _isDelayed;
+
+    int[] _rankScore = new int[6] { 0, 0, 0, 0, 0, 0 };
+    string[] _rankNickName = new string[6] { "", "", "", "", "", "" };
+    int[] _rankRank = new int[6] { 0, 0, 0, 0, 0, 0 };
 
     #endregion
 
@@ -74,17 +80,8 @@ public class GameCenter : BaseScene
 
     public int RoundCounts = 1;
 
-    public struct Ranking
-    {
-        public int score;
-        public string nickName;
-        public int rank;
-    };
-    public List<Ranking> Rank = new List<Ranking>();
 
-    private int[] _rankScore = new int[6] { 0,0,0,0,0,0};
-    private string[] _rankNickName = new string[6] { "","","","","","" };
-    private int[] _rankRank = new int[6] { 0, 0, 0, 0, 0, 0 };
+   
 
     #endregion
 
@@ -108,6 +105,8 @@ public class GameCenter : BaseScene
         }
 
         DontDestroyOnLoad(this.gameObject);
+
+
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -150,18 +149,20 @@ public class GameCenter : BaseScene
             _scoreBoardUI.ScoreBoardSetup();
             _scoreBoardUI.isSetup = true;
 
+            _magneticField = GameObject.Find("Magnetic Field").GetComponent<MagneticField>();
+            _snowStorm = GameObject.Find("Snow Storm").GetComponent<SnowStorm>();
             
             if (PhotonNetwork.IsMasterClient)
             {
                 _rankScore[PhotonNetwork.LocalPlayer.ActorNumber - 1] = 0;
                 _rankNickName[PhotonNetwork.LocalPlayer.ActorNumber - 1] = PhotonNetwork.NickName;
                 _rankRank[PhotonNetwork.LocalPlayer.ActorNumber - 1] = PhotonNetwork.LocalPlayer.ActorNumber;
+
+                _magneticField.Actor = Actors[PhotonNetwork.LocalPlayer.ActorNumber - 1];
+                _snowStorm.Actor = Actors[PhotonNetwork.LocalPlayer.ActorNumber - 1];
             }
             else
             {
-                Debug.Log("client PhotonNetwork.NickName : " + PhotonNetwork.NickName);
-                Debug.Log("client PhotonNetwork.LocalPlayer.ActorNumber : " + PhotonNetwork.LocalPlayer.ActorNumber);
-
                 _rankScore[PhotonNetwork.LocalPlayer.ActorNumber - 1] = 0;
                 _rankNickName[PhotonNetwork.LocalPlayer.ActorNumber - 1] = PhotonNetwork.NickName;
                 _rankRank[PhotonNetwork.LocalPlayer.ActorNumber - 1] = PhotonNetwork.LocalPlayer.ActorNumber;
@@ -187,6 +188,8 @@ public class GameCenter : BaseScene
                 _audioSources.clip = audioClip;
                 _audioSources.volume = 0.1f;
                 Managers.Sound.Play(audioClip, Define.Sound.Bgm);
+
+                Managers.Sound.ChangeVolume();
             }
 
             if (_roomName == currentSceneName)
@@ -196,6 +199,8 @@ public class GameCenter : BaseScene
                 _audioSources.clip = audioClip;
                 _audioSources.volume = 0.1f;
                 Managers.Sound.Play(audioClip, Define.Sound.Bgm);
+
+                Managers.Sound.ChangeVolume();
             }
 
         }
@@ -481,6 +486,12 @@ public class GameCenter : BaseScene
             ActorViewIDs.Add(ids[i]);
             AddActor(ids[i]);
         }
+
+        if (_magneticField.Actor == null)
+            _magneticField.Actor = Actors[PhotonNetwork.LocalPlayer.ActorNumber - 1];
+        if(_snowStorm.Actor == null)
+            _snowStorm.Actor = Actors[PhotonNetwork.LocalPlayer.ActorNumber - 1];
+
     }
 
     void AddActor(int id)
@@ -508,7 +519,6 @@ public class GameCenter : BaseScene
     [PunRPC]
     void UpdateScoreBoard(int[] score, string[] name, int[] rank)
     {
-
         for (int i = 0; i < score.Length; i++)
         {
             _rankScore[i] = score[i];
@@ -596,6 +606,7 @@ public class GameCenter : BaseScene
                 if (PhotonNetwork.IsMasterClient)
                 {
                     _isDelayed = true;
+
                     StartCoroutine(GetDelayTime());
 
                     _scoreBoardUI.ChangeScoreBoard(_rankScore, _rankNickName, _rankRank);

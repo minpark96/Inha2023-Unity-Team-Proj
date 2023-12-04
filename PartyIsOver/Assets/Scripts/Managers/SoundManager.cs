@@ -14,6 +14,10 @@ public class SoundManager
     //캐싱 역할
     Dictionary<string,AudioClip> _audioClip = new Dictionary<string, AudioClip>();
 
+
+    public float[] SoundVolume = new float[(int)Define.Sound.Maxcount];
+
+
     //사운드 오브젝트 생성
     public void Init()
     {
@@ -37,6 +41,10 @@ public class SoundManager
                 go.transform.parent = root.transform;
             }
             _audioSources[(int)Define.Sound.Bgm].loop = true;
+
+            SoundVolume[(int)Define.Sound.Bgm] = 0.1f;
+            SoundVolume[(int)Define.Sound.UISound] = 1f;
+
         }
 
         if (currentSceneName == _launcher)
@@ -144,5 +152,12 @@ public class SoundManager
             Debug.Log($"AudioClip Missing : {path}");
         
         return audioClip;
+    }
+
+
+    public void ChangeVolume()
+    {
+        _audioSources[(int)Define.Sound.Bgm].volume = SoundVolume[(int)Define.Sound.Bgm];
+        _audioSources[(int)Define.Sound.UISound].volume = SoundVolume[(int)Define.Sound.UISound];
     }
 }

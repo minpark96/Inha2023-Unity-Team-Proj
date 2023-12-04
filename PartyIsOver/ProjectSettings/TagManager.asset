@@ -19,6 +19,7 @@ TagManager:
   - Prop (Medium Priority)
   - Camera Target (Track)
   - ItemHandle
+  - Destroyable
   layers:
   - Default
   - TransparentFX
@@ -34,7 +35,7 @@ TagManager:
   - ClimbObject
   - InteractableObject
   - 
-  - 
+  - IceFloor
   - 
   - 
   - 
