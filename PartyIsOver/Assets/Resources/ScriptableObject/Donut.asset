@@ -15,6 +15,6 @@ MonoBehaviour:
   _itemName: Spicyonion
   _itemType: 5
   _projectile: {fileID: 0}
-  _useDamageType: 11
+  _useDamageType: 8
   _damage: 0
   _coolTime: 0

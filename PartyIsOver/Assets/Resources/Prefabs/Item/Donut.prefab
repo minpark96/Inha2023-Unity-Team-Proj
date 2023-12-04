@@ -457,6 +457,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3865760196915554322}
     m_Modifications:
+    - target: {fileID: 2181142044968346779, guid: d330a0894e211a7418d7429ecbbae882, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4605042033267968526, guid: d330a0894e211a7418d7429ecbbae882, type: 3}
       propertyPath: m_Name
       value: DonutPrefab
