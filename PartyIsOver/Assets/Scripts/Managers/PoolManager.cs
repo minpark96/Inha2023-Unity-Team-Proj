@@ -18,7 +18,7 @@ public class PoolManager
 
         Stack<Poolable> _poolStack = new Stack<Poolable>();
 
-        public void Init(GameObject original, int count = 6)
+        public void Init(GameObject original, int count = 10)
         {
             Original = original;
             //생성하는 오브젝트를 나누기 위한 Root를 또 추가 해줌
@@ -28,39 +28,9 @@ public class PoolManager
             Root.name = $"{original.name}_Root";
             for (int i = 0; i < count; i++)
                 Push(Create());
-            /*#region Effect
-            if (original.name == "Stun_loop")
-            {
-                EffectPoolCreate(original);
-            }
-            else if (original.name == "Fog_poison")
-            {
-                EffectPoolCreate(original);
-            }
-            else if (original.name == "Wet")
-            {
-                EffectPoolCreate(original);
-            }
-            else if (original.name == "Fog_frost")
-            {
-                EffectPoolCreate(original);
-            }
-            else if (original.name == "Aura_acceleration")
-            {
-                EffectPoolCreate(original);
-            }
-            #endregion*/
+            
             //다른 오브젝트 여러개 생성
 
-        }
-
-        void EffectPoolCreate(GameObject original, int count = 6)
-        {
-            Root = new GameObject().transform;
-            Root.name = $"{original.name}_Root";
-
-            for (int i = 0; i < count; i++)
-                Push(Create());
         }
 
         Poolable Create()
@@ -92,11 +62,13 @@ public class PoolManager
                 poolable = Create();
 
             poolable.gameObject.SetActive(true);
+            _poolStack.Push(poolable);
 
             if (parent == null)
                 poolable.transform.parent = Managers.Scene.GetCurrentSceneRootGameObject().transform;
+            else
+                poolable.transform.parent = parent;
 
-            poolable.transform.parent = parent;
             poolable.IsUsing = true;
 
             return poolable;
@@ -118,7 +90,7 @@ public class PoolManager
         }
     }
 
-    public void CreatePool(GameObject original, int count =6)
+    public void CreatePool(GameObject original, int count = 10)
     {
         Pool pool = new Pool();
         pool.Init(original, count);
