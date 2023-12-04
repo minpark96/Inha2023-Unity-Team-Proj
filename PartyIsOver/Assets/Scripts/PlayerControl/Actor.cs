@@ -9,10 +9,12 @@ using System.Numerics;
 
 public class Actor : MonoBehaviourPun, IPunObservable
 {
-    public delegate void ChangePlayerStatus(float HP, float Stamina, ActorState actorState, DebuffState debuffstate, int viewID);
+    public delegate void ChangePlayerStatus(float HP, ActorState actorState, DebuffState debuffstate, int viewID);
     public event ChangePlayerStatus OnChangePlayerStatus;
     public delegate void KillPlayer(int viewID);
     public event KillPlayer OnKillPlayer;
+    public delegate void ChangeStaminaBar();
+    public event ChangeStaminaBar OnChangeStaminaBar;
 
     public AudioListener _audioListener;
 
@@ -116,7 +118,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
             return;
         }
 
-        OnChangePlayerStatus(_health, _stamina, actorState, debuffState, photonView.ViewID);
+        OnChangePlayerStatus(_health, actorState, debuffState, photonView.ViewID);
     }
 
     public void InvokeDeathEvent()
@@ -214,10 +216,12 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
     private void FixedUpdate()
     {
+        if (!photonView.IsMine || actorState == ActorState.Dead) return;
+
         RecoveryStamina();
 
         accumulatedTime += Time.fixedDeltaTime;
-        if(accumulatedTime >= currentRecoveryTime)
+        if (accumulatedTime >= currentRecoveryTime)
         {
             if (PlayerController.isRun || GrabState == GrabState.Climb)
             {
@@ -242,10 +246,8 @@ public class Actor : MonoBehaviourPun, IPunObservable
             accumulatedTime = 0f;
         }
 
-        
+        OnChangeStaminaBar();
 
-        if (!photonView.IsMine || actorState == ActorState.Dead) return;
-        
         if (actorState != lastActorState)
         {
             PlayerController.isStateChange = true;

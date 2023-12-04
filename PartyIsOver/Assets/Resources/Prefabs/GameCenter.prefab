@@ -64,7 +64,7 @@ MonoBehaviour:
   MyGraveStone: {fileID: 0}
   MyGhost: {fileID: 0}
   ImageHPBar: {fileID: 0}
-  ImageStaminusBar: {fileID: 0}
+  ImageStaminaBar: {fileID: 0}
   Portrait: {fileID: 0}
   GhostSpawnDelay: 4
   RoundEndDelay: 7
@@ -74,6 +74,7 @@ MonoBehaviour:
   MyActorViewID: 0
   AlivePlayerCounts: 1
   RoundCounts: 1
+  LoadingDoneCounts: 0
 --- !u!114 &-6182396937385309685
 MonoBehaviour:
   m_ObjectHideFlags: 0
