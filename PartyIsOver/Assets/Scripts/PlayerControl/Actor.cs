@@ -88,6 +88,14 @@ public class Actor : MonoBehaviourPun, IPunObservable
     public float Stamina { get { return _stamina; } set { _stamina = value; } }
     public float MaxStamina { get { return _maxStamina; } }
 
+    // 동사스택
+    [SerializeField]
+    private float _magneticStack = 0f;
+    public float MagneticStack { get { return _magneticStack; } set { _magneticStack = value; } }
+    public bool _IsIceFloor;
+    
+
+
     public ActorState actorState = ActorState.Stand;
     public ActorState lastActorState = ActorState.Run;
     public DebuffState debuffState = DebuffState.Default;
@@ -176,7 +184,6 @@ public class Actor : MonoBehaviourPun, IPunObservable
             //1초마다  1 씩 까임 수정 사항
             Stamina -= Time.deltaTime;
         }
-
     }
 
     void RecoveryStamina()

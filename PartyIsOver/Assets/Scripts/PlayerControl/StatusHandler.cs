@@ -40,6 +40,7 @@ public class StatusHandler : MonoBehaviourPun
     public bool _hasFreeze;
     private bool _hasShock;
     private bool _hasStun;
+    public bool HasDrunk;
 
     public Transform playerTransform;
     public GameObject effectObject = null;
@@ -152,14 +153,11 @@ public class StatusHandler : MonoBehaviourPun
     [PunRPC]
     void PlayerDebuffSound(string path)
     {
-        if (_audioClip == null)
-        {
-            _audioClip = Managers.Sound.GetOrAddAudioClip(path);
-            _audioSource.clip = _audioClip;
-            _audioSource.volume = 0.2f;
-            _audioSource.spatialBlend = 1;
-            Managers.Sound.Play(_audioClip, Define.Sound.PlayerEffect, _audioSource);
-        }
+        _audioClip = Managers.Sound.GetOrAddAudioClip(path);
+        _audioSource.clip = _audioClip;
+        _audioSource.volume = 0.2f;
+        _audioSource.spatialBlend = 1;
+        Managers.Sound.Play(_audioClip, Define.Sound.PlayerEffect, _audioSource);
     }
 
     public void DebuffCheck(InteractableObject.Damage type)
@@ -217,7 +215,6 @@ public class StatusHandler : MonoBehaviourPun
                 {
                     actor.debuffState |= Actor.DebuffState.Drunk;
                     photonView.RPC("PlayerDebuffSound", RpcTarget.All, "PlayerEffect/Cartoon-UI-049");
-                    photonView.RPC("PoisonCreate", RpcTarget.All);
                 }
                 break;
         }
@@ -261,6 +258,12 @@ public class StatusHandler : MonoBehaviourPun
                     }
                     break;
                 case Actor.DebuffState.Ghost:
+                    break;
+                case Actor.DebuffState.Drunk:
+                    if(!HasDrunk)
+                    {
+                        photonView.RPC("PoisonCreate", RpcTarget.All);
+                    }
                     break;
             }
         }
@@ -364,6 +367,7 @@ public class StatusHandler : MonoBehaviourPun
         actor.BodyHandler.BodyParts[(int)Define.BodyPart.Head].PartJoint.angularXDrive = angularXDrive;
 
         actor.InvokeStatusChangeEvent();
+        _audioClip = null;
     }
     [PunRPC]
     IEnumerator Slow(float delay)
@@ -396,12 +400,6 @@ public class StatusHandler : MonoBehaviourPun
         _hasFreeze = true;
         actor.actorState = Actor.ActorState.Debuff;
 
-        // 이펙트 생성
-        if (!hasObject)
-        {
-            hasObject = true;
-        }
-
         for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
         {
             actor.BodyHandler.BodyParts[i].PartRigidbody.isKinematic = true;
@@ -417,12 +415,7 @@ public class StatusHandler : MonoBehaviourPun
         actor.InvokeStatusChangeEvent();
         DestroyEffect("Fog_frost");
         DestroyEffect("IceCube");
-        // 이펙트 삭제
-        if (hasObject)
-        {
-            hasObject = false;
-        }
-
+       
         for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
         {
             actor.BodyHandler.BodyParts[i].PartRigidbody.isKinematic = false;
@@ -433,11 +426,17 @@ public class StatusHandler : MonoBehaviourPun
     [PunRPC]
     IEnumerator Shock(float delay)
     {
+        if (actor.debuffState == Actor.DebuffState.Ice)
+            StopCoroutine(Shock(delay));
+
         yield return new WaitForSeconds(0.2f);
 
         // 감전
         _hasShock = true;
         actor.actorState = Actor.ActorState.Debuff;
+
+        
+
         PlayerDebuffSound("PlayerEffect/electronic_02");
         ShockCreate();
 
@@ -462,15 +461,17 @@ public class StatusHandler : MonoBehaviourPun
 
         while (Time.time - startTime < delay)
         {
-            if (actor.debuffState == Actor.DebuffState.Ice)
-            {
-                _hasShock = false;
-                actor.actorState = Actor.ActorState.Stand;
-                StartCoroutine(Stun(_stunTime));
-                StartCoroutine(Shock(delay));
-            }
+            //if (actor.debuffState == Actor.DebuffState.Ice)
+            //{
+            //    _hasShock = false;
+            //    actor.actorState = Actor.ActorState.Stand;
+            //    photonView.RPC("Stun", RpcTarget.All, _stunTime);
+            //    photonView.RPC("StopShock", RpcTarget.All);
+            //}
 
-            if (UnityEngine.Random.Range(0, 20) > 17)
+            yield return new WaitForSeconds(0.2f);
+
+            if (UnityEngine.Random.Range(0, 20) > 10)
             {
                 for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
                 {
@@ -499,7 +500,10 @@ public class StatusHandler : MonoBehaviourPun
         // 감전 해제
         _hasShock = false;
         StartCoroutine(ResetBodySpring());
+
+        //photonView.RPC("Stun", RpcTarget.All, 0.5f);
         StartCoroutine(Stun(0.5f));
+        
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Shock;
         DestroyEffect("Lightning_aura");
@@ -507,6 +511,24 @@ public class StatusHandler : MonoBehaviourPun
         actor.InvokeStatusChangeEvent();
         _audioClip = null;
     }
+
+    [PunRPC]
+    void StopShock()
+    {
+        StopCoroutine("Shock");
+        // 감전 해제
+        _hasShock = false;
+        StartCoroutine(ResetBodySpring());
+        photonView.RPC("Stun", RpcTarget.All, 0.5f);
+        actor.actorState = Actor.ActorState.Stand;
+        actor.debuffState &= ~Actor.DebuffState.Shock;
+        photonView.RPC("DestroyEffect", RpcTarget.All, "Lightning_aura");
+
+        actor.InvokeStatusChangeEvent();
+        _audioClip = null;
+    }
+
+
     [PunRPC]
     IEnumerator Stun(float delay)
     {
@@ -564,6 +586,7 @@ public class StatusHandler : MonoBehaviourPun
     [PunRPC]
     public void PoisonCreate()
     {
+        HasDrunk = true;
         EffectObjectCreate("Effects/Fog_poison");
     }
 
