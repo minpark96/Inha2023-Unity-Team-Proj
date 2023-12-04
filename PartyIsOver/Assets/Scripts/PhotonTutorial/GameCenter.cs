@@ -156,7 +156,7 @@ public class GameCenter : BaseScene
         _scoreBoardUI.isSetup = true;
 
         _magneticField = GameObject.Find("Magnetic Field").GetComponent<MagneticField>();
-        //_snowStorm = GameObject.Find("Snow Storm").GetComponent<SnowStorm>();
+        _snowStorm = GameObject.Find("Snow Storm").GetComponent<SnowStorm>();
 
         if (RoundCounts == 1)
         {
@@ -167,7 +167,7 @@ public class GameCenter : BaseScene
                 _actorNumbers[PhotonNetwork.LocalPlayer.ActorNumber - 1] = PhotonNetwork.LocalPlayer.ActorNumber;
 
                 _magneticField.Actor = Actors[PhotonNetwork.LocalPlayer.ActorNumber - 1];
-                //_snowStorm.Actor = Actors[PhotonNetwork.LocalPlayer.ActorNumber - 1];
+                _snowStorm.Actor = Actors[PhotonNetwork.LocalPlayer.ActorNumber - 1];
             }
             else
             {

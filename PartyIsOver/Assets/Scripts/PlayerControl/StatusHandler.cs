@@ -321,7 +321,7 @@ public class StatusHandler : MonoBehaviourPun
         float lastBurnTime = Time.time;
         float startTime = Time.time;
 
-        while (elapsedTime < delay)
+        while (elapsedTime <= delay)
         {
             if (actor.debuffState == Actor.DebuffState.Ice)
             {
@@ -333,8 +333,8 @@ public class StatusHandler : MonoBehaviourPun
             if (Time.time - lastBurnTime >= 1.0f) // 1초간 데미지+액션
             {
                 actor.Health -= _burnDamage;
-                actor.BodyHandler.Waist.PartRigidbody.AddForce((actor.BodyHandler.Hip.transform.right) * 25, ForceMode.VelocityChange);
-                actor.BodyHandler.Hip.PartRigidbody.AddForce((actor.BodyHandler.Hip.transform.right) * 25, ForceMode.VelocityChange);
+                actor.BodyHandler.Waist.PartRigidbody.AddForce((actor.BodyHandler.Hip.transform.right) * 40f, ForceMode.VelocityChange);
+                actor.BodyHandler.Hip.PartRigidbody.AddForce((actor.BodyHandler.Hip.transform.right) * 40f, ForceMode.VelocityChange);
                 lastBurnTime = Time.time;
             }
 

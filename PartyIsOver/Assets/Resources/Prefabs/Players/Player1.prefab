@@ -12238,6 +12238,7 @@ MonoBehaviour:
   invulnerable: 0
   _isDead: 0
   _hasFreeze: 0
+  _hasShock: 0
   HasDrunk: 0
   playerTransform: {fileID: 0}
   effectObject: {fileID: 0}
