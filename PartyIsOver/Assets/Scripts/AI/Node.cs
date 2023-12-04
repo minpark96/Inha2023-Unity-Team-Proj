@@ -15,9 +15,9 @@ namespace BehaviorTree
     {
         //현재 노드의 상태를 나타냄
         protected NodeState state;
-
+        //부모 노드를 가리킴
         public Node parent;
-        //양방향으로 진행하기 위해서 리스트 사용
+        //양방향으로 진행하기 위해 사용하는 자식 노드 리스트
         protected List<Node> children = new List<Node>();
         //노드에서 사용하는 데이터를 관리
         private Dictionary<string, object>_dataContext = new Dictionary<string, object>();
@@ -28,6 +28,7 @@ namespace BehaviorTree
             parent = null;
         }
 
+        //생성자 자식 노드를 받아서 현재 노드에 추가함
         public Node(List<Node> children)
         {
             foreach(Node child in children)

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Define;
 using UnityEngine.SceneManagement;
+using System.Numerics;
 
 
 public class Actor : MonoBehaviourPun, IPunObservable
@@ -13,7 +14,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
     public delegate void KillPlayer(int viewID);
     public event KillPlayer OnKillPlayer;
 
-    AudioListener _audioListener;
+    public AudioListener _audioListener;
 
     public StatusHandler StatusHandler;
     public BodyHandler BodyHandler;
@@ -74,6 +75,15 @@ public class Actor : MonoBehaviourPun, IPunObservable
     public float Health { get { return _health; } set { _health = value; } }
     public float MaxHealth { get { return _maxHealth; } }
 
+
+    [Header("Stamina Recovery")]
+    public float RecoveryTime = 0.1f;
+    public float RecoveryStaminaValue = 1f;
+    public float ExhaustedRecoveryTime = 0.2f;
+    float currentRecoveryTime;
+    float currentRecoveryStaminaValue; 
+    float accumulatedTime = 0.0f;
+
     // 스테미나
     [SerializeField]
     private float _stamina;
@@ -115,7 +125,8 @@ public class Actor : MonoBehaviourPun, IPunObservable
     private void Awake()
     {
         Transform SoundListenerTransform = transform.Find("GreenHead");
-        _audioListener = SoundListenerTransform.gameObject.AddComponent<AudioListener>();
+        if(SoundListenerTransform != null)
+            _audioListener = SoundListenerTransform.gameObject.AddComponent<AudioListener>();
         if (photonView.IsMine)
         {
             LocalPlayerInstance = this.gameObject;
@@ -129,7 +140,8 @@ public class Actor : MonoBehaviourPun, IPunObservable
         else
         {
             // 사운드 끄기
-            _audioListener.enabled = false;
+            Destroy(_audioListener);
+            //_audioListener.enabled = false;
         }
 
         if(SceneManager.GetActiveScene().name != "[4]Room")
@@ -166,7 +178,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
         {
             ChangeLayerRecursively(child.gameObject, layer);
         }
-    }
+    } 
 
     private void Update()
     {
@@ -174,10 +186,47 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
         CameraControl.LookAround(BodyHandler.Hip.transform.position);
         CameraControl.CursorControl();
+
+        if(GrabState == GrabState.Climb)
+        {
+            //1초마다  1 씩 까임 수정 사항
+            Stamina -= Time.deltaTime;
+        }
+
+    }
+
+    void RecoveryStamina()
+    {
+        if (debuffState != Actor.DebuffState.Exhausted)
+        {
+            currentRecoveryTime = RecoveryTime;
+            currentRecoveryStaminaValue = RecoveryStaminaValue;
+        }
+        else
+        {
+            currentRecoveryTime = 0.2f;
+            currentRecoveryStaminaValue = RecoveryStaminaValue;
+        }
     }
 
     private void FixedUpdate()
     {
+        RecoveryStamina();
+
+        accumulatedTime += Time.fixedDeltaTime;
+
+        if(accumulatedTime >= currentRecoveryTime)
+        {
+
+            Stamina += currentRecoveryStaminaValue;
+            if (Stamina > MaxStamina)
+                Stamina = MaxStamina;
+
+            accumulatedTime = 0f;
+        }
+
+        
+
         if (!photonView.IsMine || actorState == ActorState.Dead) return;
         
         if (actorState != lastActorState)

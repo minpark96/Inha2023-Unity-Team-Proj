@@ -66,7 +66,7 @@ public class ResourceManager
             return;
 
         Poolable poolable = go.GetComponent<Poolable>();
-        if(poolable != null )
+        if(poolable != null)
         {
             Managers.Pool.Push(poolable);
             return;
