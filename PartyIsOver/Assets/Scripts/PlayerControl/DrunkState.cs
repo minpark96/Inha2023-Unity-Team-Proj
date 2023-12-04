@@ -1,6 +1,7 @@
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class DrunkState : MonoBehaviourPun
@@ -20,7 +21,13 @@ public class DrunkState : MonoBehaviourPun
         _playerTransform = transform.Find("GreenHead").GetComponent<Transform>();
     }
 
-   public IEnumerator DrunkActionReady()
+    private void FixedUpdate()
+    {
+        if(effectObject != null)
+            photonView.RPC("StatusMoveEffect", RpcTarget.All);
+    }
+
+    public IEnumerator DrunkActionReady()
     {
         _actor.BodyHandler.Head.PartRigidbody.AddForce(_actor.BodyHandler.Hip.PartTransform.up * 100f);
         yield return null;
@@ -28,7 +35,7 @@ public class DrunkState : MonoBehaviourPun
 
     public IEnumerator DrunkAction()
     {
-        photonView.RPC("CreateEffect", RpcTarget.All, "Effects/Flamethrower");
+        StatusCreateEffect("Effects/Flamethrower");
         float startTime = Time.time;
 
         while (Time.time - startTime < _drunkActionDuration)
@@ -40,7 +47,7 @@ public class DrunkState : MonoBehaviourPun
 
         _playerController.IsFlambe = false;
 
-        photonView.RPC("DestroyEffect", RpcTarget.All, "Flamethrower");
+        photonView.RPC("StatusDestroyEffect", RpcTarget.All, "Flamethrower");
     }
 
     public IEnumerator DrunkOff()
@@ -50,21 +57,35 @@ public class DrunkState : MonoBehaviourPun
 
         _playerController.isDrunk = false;
         _actor.StatusHandler.HasDrunk = false;
-        photonView.RPC("DestroyEffect", RpcTarget.All, "Fog_poison");
+        photonView.RPC("StatusDestroyEffect", RpcTarget.All, "Fog_poison");
+        
     }
 
     [PunRPC]
-    void CreateEffect(string path)
+    void StatusCreateEffect(string path)
     {
         effectObject = Managers.Resource.PhotonNetworkInstantiate($"{path}");
         effectObject.transform.position = _playerTransform.position;
     }
 
     [PunRPC]
-    void DestroyEffect(string name)
+    void StatusDestroyEffect(string name)
     {
         GameObject go = GameObject.Find($"{name}");
         Managers.Resource.Destroy(go);
         effectObject = null;
+    }
+
+    [PunRPC]
+    void StatusMoveEffect()
+    {
+        if (effectObject != null && effectObject.name == "Flamethrower")
+        {
+            effectObject.transform.position = _playerTransform.position + _playerTransform.forward;
+            effectObject.transform.rotation = Quaternion.LookRotation(-_playerTransform.right);
+        }
+        else if(effectObject != null)
+            effectObject.transform.position = _playerTransform.position;
+
     }
 }
