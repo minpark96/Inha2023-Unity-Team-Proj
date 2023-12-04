@@ -39,9 +39,9 @@ public class GameCenter : BaseScene
     bool _isChecked;
     bool _isDelayed;
 
-    int[] _rankScore = new int[6] { 0, 0, 0, 0, 0, 0 };
-    string[] _rankNickName = new string[6] { "", "", "", "", "", "" };
-    int[] _rankRank = new int[6] { 0, 0, 0, 0, 0, 0 };
+    public int[] _scores = new int[Define.MAX_PLAYERS_PER_ROOM] { 0, 0, 0, 0, 0, 0 };
+    public string[] _nicknames = new string[Define.MAX_PLAYERS_PER_ROOM] { "", "", "", "", "", "" };
+    public int[] _actorNumbers = new int[Define.MAX_PLAYERS_PER_ROOM] { 0, 0, 0, 0, 0, 0 };
 
     #endregion
 
@@ -49,7 +49,6 @@ public class GameCenter : BaseScene
 
     public static GameObject LocalGameCenterInstance = null;
 
-    public int AlivePlayerCounts = 1;
     public float SpawnPointX = 485f;
     public float SpawnPointY = 12f;
     public float SpawnPointZ = 411f;
@@ -59,7 +58,7 @@ public class GameCenter : BaseScene
 
     public List<int> ActorViewIDs = new List<int>();
     public List<Actor> Actors = new List<Actor>();
-    public List<int> Scores = new List<int>();
+
     public GameObject MyGraveStone = null;
     public GameObject MyGhost = null;
 
@@ -67,7 +66,6 @@ public class GameCenter : BaseScene
     public Image ImageHPBar;
     public Image ImageStaminusBar;
     public Image Portrait;
-
 
     public float GhostSpawnDelay = 4f;
     public float RoundEndDelay = 7f;
@@ -77,9 +75,10 @@ public class GameCenter : BaseScene
     public Actor MyActor;
     public int MyActorViewID;
 
-    public Vector3[] DefaultPos = new Vector3[17];
-    public Quaternion[] DefaultRot = new Quaternion[17];
+    //public Vector3[] DefaultPos = new Vector3[17];
+    //public Quaternion[] DefaultRot = new Quaternion[17];
 
+    public int AlivePlayerCounts = 1;
     public int RoundCounts = 1;
     public const int MAX_ROUND = 3;
 
@@ -116,7 +115,7 @@ public class GameCenter : BaseScene
             Debug.Log("아레나 로딩완료!!!");
             AlivePlayerCounts = PhotonNetwork.CurrentRoom.PlayerCount;
 
-            InstantiatePlayer();
+            StartCoroutine(InstantiatePlayer());
 
             //if (RoundCounts == 1)
             //{
@@ -127,61 +126,70 @@ public class GameCenter : BaseScene
             //    photonView.RPC("SendDefaultInfo", RpcTarget.All);
             //}
 
-            SceneType = Define.Scene.Game;
-            SceneBgmSound("BigBangBattleLOOPING");
-
-
-            GameObject mainPanel = GameObject.Find("Main Panel");
-            ImageHPBar = mainPanel.transform.GetChild(0).GetChild(1).GetComponent<Image>();
-            ImageStaminusBar = mainPanel.transform.GetChild(0).GetChild(2).GetComponent<Image>();
-
-            GameObject portrait = mainPanel.transform.GetChild(0).GetChild(0).gameObject;
-
-            for (int i = 1; i <= 6; i++)
-            {
-                if (i == PhotonNetwork.LocalPlayer.ActorNumber)
-                    portrait.transform.GetChild(i - 1).gameObject.SetActive(true);
-                else
-                    portrait.transform.GetChild(i - 1).gameObject.SetActive(false);
-            }
-
-            _scoreBoardUI = GameObject.Find("ScoreBoard Panel").GetComponent<ScoreBoardUI>();
-            _scoreBoardUI.ScoreBoardSetup();
-            _scoreBoardUI.isSetup = true;
-
-            _magneticField = GameObject.Find("Magnetic Field").GetComponent<MagneticField>();
-            _snowStorm = GameObject.Find("Snow Storm").GetComponent<SnowStorm>();
             
-            if (PhotonNetwork.IsMasterClient)
-            {
-                _rankScore[PhotonNetwork.LocalPlayer.ActorNumber - 1] = 0;
-                _rankNickName[PhotonNetwork.LocalPlayer.ActorNumber - 1] = PhotonNetwork.NickName;
-                _rankRank[PhotonNetwork.LocalPlayer.ActorNumber - 1] = PhotonNetwork.LocalPlayer.ActorNumber;
-
-                _magneticField.Actor = Actors[PhotonNetwork.LocalPlayer.ActorNumber - 1];
-                _snowStorm.Actor = Actors[PhotonNetwork.LocalPlayer.ActorNumber - 1];
-            }
-            else
-            {
-                _rankScore[PhotonNetwork.LocalPlayer.ActorNumber - 1] = 0;
-                _rankNickName[PhotonNetwork.LocalPlayer.ActorNumber - 1] = PhotonNetwork.NickName;
-                _rankRank[PhotonNetwork.LocalPlayer.ActorNumber - 1] = PhotonNetwork.LocalPlayer.ActorNumber;
-                photonView.RPC("AddUIInfoToMaster", RpcTarget.MasterClient, _rankScore, _rankNickName, _rankRank);
-            }
-
-            if (!_isDelayed)
-            {
-                if (PhotonNetwork.IsMasterClient)
-                {
-                    _isDelayed = true;
-                    StartCoroutine(UpdateScoreBoardWithDelay());
-                }
-            }
         }
     }
 
+    IEnumerator InitArenaScene()
+    {
+        yield return new WaitForSeconds(2f);
 
-    public void SceneBgmSound(string path)
+        SceneType = Define.Scene.Game;
+        SetSceneBgmSound("BigBangBattleLOOPING");
+
+        GameObject mainPanel = GameObject.Find("Main Panel");
+        ImageHPBar = mainPanel.transform.GetChild(0).GetChild(1).GetComponent<Image>();
+        ImageStaminusBar = mainPanel.transform.GetChild(0).GetChild(2).GetComponent<Image>();
+
+        GameObject portrait = mainPanel.transform.GetChild(0).GetChild(0).gameObject;
+
+        for (int i = 0; i < Define.MAX_PLAYERS_PER_ROOM; i++)
+        {
+            if (i == PhotonNetwork.LocalPlayer.ActorNumber - 1)
+                portrait.transform.GetChild(i).gameObject.SetActive(true);
+            else
+                portrait.transform.GetChild(i).gameObject.SetActive(false);
+        }
+
+        _scoreBoardUI = GameObject.Find("ScoreBoard Panel").GetComponent<ScoreBoardUI>();
+        _scoreBoardUI.SetScoreBoard();
+        _scoreBoardUI.isSetup = true;
+
+        //_magneticField = GameObject.Find("Magnetic Field").GetComponent<MagneticField>();
+        //_snowStorm = GameObject.Find("Snow Storm").GetComponent<SnowStorm>();
+
+        if (RoundCounts == 1)
+        {
+            if (PhotonNetwork.IsMasterClient)
+            {
+                _scores[PhotonNetwork.LocalPlayer.ActorNumber - 1] = 0;
+                _nicknames[PhotonNetwork.LocalPlayer.ActorNumber - 1] = PhotonNetwork.NickName;
+                _actorNumbers[PhotonNetwork.LocalPlayer.ActorNumber - 1] = PhotonNetwork.LocalPlayer.ActorNumber;
+
+                //_magneticField.Actor = Actors[PhotonNetwork.LocalPlayer.ActorNumber - 1];
+                //_snowStorm.Actor = Actors[PhotonNetwork.LocalPlayer.ActorNumber - 1];
+            }
+            else
+            {
+                photonView.RPC("InitUIInfo", RpcTarget.MasterClient, PhotonNetwork.NickName, PhotonNetwork.LocalPlayer.ActorNumber);
+            }
+        }
+        else
+        {
+            _scoreBoardUI.ChangeScoreBoard(_scores, _nicknames, _actorNumbers);
+        }
+
+        //if (!_isDelayed)
+        //{
+        //    if (PhotonNetwork.IsMasterClient)
+        //    {
+        //        _isDelayed = true;
+        //        StartCoroutine(UpdateScoreBoardWithDelay());
+        //    }
+        //}
+    }
+
+    public void SetSceneBgmSound(string path)
     {
         GameObject root = GameObject.Find("@Sound");
         if (root != null)
@@ -216,8 +224,10 @@ public class GameCenter : BaseScene
         }
     }
 
-    void InstantiatePlayer()
+    IEnumerator InstantiatePlayer()
     {
+        yield return new WaitForSeconds(3f);
+
         if (Actor.LocalPlayerInstance == null)
         {
             Debug.LogFormat("PhotonManager.cs => We are Instantiating LocalPlayer from {0}", SceneManagerHelper.ActiveSceneName);
@@ -258,9 +268,12 @@ public class GameCenter : BaseScene
             }
             else
             {
+                Debug.Log("RegisterActorInfo 보냄");
                 photonView.RPC("RegisterActorInfo", RpcTarget.MasterClient, MyActorViewID);
             }
         }
+
+        StartCoroutine(InitArenaScene());
     }
 
     void SaveDefaultInfo(GameObject go)
@@ -269,14 +282,14 @@ public class GameCenter : BaseScene
 
         for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
         {
-            DefaultPos[i] = actor.BodyHandler.BodyParts[i].transform.localPosition;
+            //DefaultPos[i] = actor.BodyHandler.BodyParts[i].transform.localPosition;
 
-            DefaultRot[i] = actor.BodyHandler.BodyParts[i].transform.localRotation;
+            //DefaultRot[i] = actor.BodyHandler.BodyParts[i].transform.localRotation;
 
         }
     }
 
-    IEnumerator InitiateGhost(Vector3 spawnPos)
+    IEnumerator InstantiateGhost(Vector3 spawnPos)
     {
         if (Ghost.LocalGhostInstance == null)
         {
@@ -334,7 +347,7 @@ public class GameCenter : BaseScene
                 photonView.RPC("ReduceAlivePlayerCounts", RpcTarget.MasterClient, viewID);
                 Vector3 deadPos = Actors[i].BodyHandler.Hip.transform.position;
                 Debug.Log("HandleDeath: " + Actors[i].actorState);
-                StartCoroutine(InitiateGhost(deadPos));
+                StartCoroutine(InstantiateGhost(deadPos));
             }
         }
     }
@@ -376,20 +389,20 @@ public class GameCenter : BaseScene
     {
         if (MyActor.actorState != ActorState.Dead)
         {
-            photonView.RPC("UpdateScoreBoard", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber);
+            photonView.RPC("GiveScoreToWinner", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber);
         }
     }
 
     [PunRPC]
-    void UpdateScoreBoard(int ActorNum)
+    void GiveScoreToWinner(int ActorNum)
     {
-        for (int i = 0; i < _rankRank.Length; i++)
+        for (int i = 0; i < _actorNumbers.Length; i++)
         {
-            Debug.Log(_rankRank[i]);
-            if (_rankRank[i] == ActorNum)
+            Debug.Log(_actorNumbers[i]);
+            if (_actorNumbers[i] == ActorNum)
             {
-                Debug.Log("승자: " + _rankRank[i]);
-                _rankScore[i]++;
+                Debug.Log("승자: " + _actorNumbers[i]);
+                _scores[i]++;
             }
         }
 
@@ -400,14 +413,15 @@ public class GameCenter : BaseScene
     [PunRPC]
     void FixScoreBoard()
     {
+        Debug.Log("스코어보드 상시 출력 변경");
         _scoreBoardUI.DisplayFixedScoreBoard();
     }
 
     void SetScoreBoard()
     {
-        _scoreBoardUI.ChangeScoreBoard(_rankScore, _rankNickName, _rankRank);
+        _scoreBoardUI.ChangeScoreBoard(_scores, _nicknames, _actorNumbers);
 
-        photonView.RPC("SyncScoreBoard", RpcTarget.Others, _rankScore, _rankNickName, _rankRank);
+        photonView.RPC("SyncScoreBoard", RpcTarget.Others, _scores, _nicknames, _actorNumbers);
     }
 
     [PunRPC]
@@ -480,13 +494,13 @@ public class GameCenter : BaseScene
 
         for (int i = 0; i < MyActor.BodyHandler.BodyParts.Count; i++)
         {
-            w[i] = DefaultRot[i].w;
-            x[i] = DefaultRot[i].x;
-            y[i] = DefaultRot[i].y;
-            z[i] = DefaultRot[i].z;
+            //w[i] = DefaultRot[i].w;
+            //x[i] = DefaultRot[i].x;
+            //y[i] = DefaultRot[i].y;
+            //z[i] = DefaultRot[i].z;
         }
 
-        photonView.RPC("ResetPlayer", RpcTarget.All, MyActorViewID, DefaultPos, w, x, y, z);
+        //photonView.RPC("ResetPlayer", RpcTarget.All, MyActorViewID, DefaultPos, w, x, y, z);
     }
 
     [PunRPC]
@@ -550,12 +564,15 @@ public class GameCenter : BaseScene
         ActorViewIDs.Add(viewID);
         AddActor(viewID);
 
+        Debug.Log("SyncActorsList 보냄");
         photonView.RPC("SyncActorsList", RpcTarget.Others, ActorViewIDs.ToArray());
     }
 
     [PunRPC]
     void SyncActorsList(int[] ids)
     {
+        Debug.Log("여기까지 오셨을까요?");
+
         for (int i = ActorViewIDs.Count; i < ids.Length; i++)
         {
             ActorViewIDs.Add(ids[i]);
@@ -592,33 +609,32 @@ public class GameCenter : BaseScene
     }
 
     [PunRPC]
-    void SyncScoreBoard(int[] score, string[] name, int[] rank)
+    void SyncScoreBoard(int[] scores, string[] nicknames, int[] actorNumbers)
     {
-        for (int i = 0; i < score.Length; i++)
+        for (int i = 0; i < scores.Length; i++)
         {
-            _rankScore[i] = score[i];
-            _rankNickName[i] = name[i];
-            _rankRank[i] = rank[i];
+            _scores[i] = scores[i];
+            _nicknames[i] = nicknames[i];
+            _actorNumbers[i] = actorNumbers[i];
         }
         
-        if (!PhotonNetwork.IsMasterClient)
-            _scoreBoardUI.ChangeScoreBoard(_rankScore, _rankNickName, _rankRank);
+        _scoreBoardUI.ChangeScoreBoard(_scores, _nicknames, _actorNumbers);
     }
 
     [PunRPC]
-    void AddUIInfoToMaster(int[] score, string[] name, int[] rank)
+    void InitUIInfo(string nickname, int actorNumber)
     {
-        for (int i = 0; i < score.Length; i++)
+        for (int i = 0; i < _scores.Length; i++)
         {
-            if (i == PhotonNetwork.LocalPlayer.ActorNumber-1)
+            if (i == actorNumber - 1)
             {
-                score[i] = 0;
-                name[i] = PhotonNetwork.NickName;
-                rank[i] = PhotonNetwork.LocalPlayer.ActorNumber;
+                _scores[i] = 0;
+                _nicknames[i] = nickname;
+                _actorNumbers[i] = actorNumber;
             }
         }
 
-        photonView.RPC("SyncScoreBoard", RpcTarget.MasterClient, score, name, rank);
+        SetScoreBoard();
     }
 
     void Start()
