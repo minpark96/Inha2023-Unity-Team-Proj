@@ -19,8 +19,7 @@ public class ScoreBoardUI : MonoBehaviour
     private GameObject[] _score = new GameObject[6];
     private Text[] _nickName = new Text[6];
     private int _playerNumber;
-
-
+    
     public void ScoreBoardSetup()
     {
         if (isSetup)
@@ -40,6 +39,12 @@ public class ScoreBoardUI : MonoBehaviour
         Managers.Input.KeyboardAction -= OnKeyboardEvents;
         Managers.Input.KeyboardAction += OnKeyboardEvents;
         _scoreBoardPanel.SetActive(false);
+    }
+    
+    public void DisplayFixedScoreBoard()
+    {
+        Managers.Input.KeyboardAction -= OnKeyboardEvents;
+        _scoreBoardPanel.SetActive(true);
     }
 
     public void ChangeScoreBoard(int[] score, string[] name, int[] rank)
