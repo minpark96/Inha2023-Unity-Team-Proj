@@ -73,6 +73,11 @@ public class Define
         Climb,
     }
 
+    public enum RangeWeapon
+    {
+        IceGun,
+        StunGun
+    }
 
     public enum ItemType
     {

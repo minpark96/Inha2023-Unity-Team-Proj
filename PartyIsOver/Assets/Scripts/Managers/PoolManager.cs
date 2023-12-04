@@ -26,7 +26,6 @@ public class PoolManager
 
             Root = new GameObject().transform;
             Root.name = $"{original.name}_Root";
-
             for (int i = 0; i < count; i++)
                 Push(Create());
             /*#region Effect
@@ -76,11 +75,10 @@ public class PoolManager
         {
             if (poolable == null)
                 return;
-
             poolable.transform.parent = Root;
             poolable.gameObject.SetActive(false);
             poolable.IsUsing = false;
-
+            
             _poolStack.Push(poolable);
         }
 
@@ -125,7 +123,6 @@ public class PoolManager
         Pool pool = new Pool();
         pool.Init(original, count);
         pool.Root.parent = _root;
-
         _pool.Add(original.name, pool);
     }
 

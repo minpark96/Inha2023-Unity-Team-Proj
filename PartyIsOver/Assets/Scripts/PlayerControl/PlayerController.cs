@@ -143,7 +143,7 @@ public class PlayerController : MonoBehaviourPun
 
     [Header("Speed")]
     public float RunSpeed;
-    private float MaxSpeed = 5f;
+    private float MaxSpeed;
 
     [SerializeField]
     private Rigidbody _hips;
@@ -202,8 +202,7 @@ public class PlayerController : MonoBehaviourPun
     public bool IsFlambe;
 
 
-    [Header("ItemControll")]
-    public float ItempSwingPower;
+    private float _itemSwingPower;
 
     [Header("MoveControll")]
     private float _runSpeedOffset = 350f;
@@ -317,6 +316,11 @@ public class PlayerController : MonoBehaviourPun
         _drunkState = GetComponent<DrunkState>();
 
         Instance = this;
+
+        PlayerStatData statData = Managers.Resource.Load<PlayerStatData>("ScriptableObject/PlayerStatData");
+        MaxSpeed = statData.MaxSpeed;
+        RunSpeed = statData.RunSpeed;
+        _itemSwingPower = statData.ItemSwingPower;
     }
 
     [PunRPC]
@@ -376,7 +380,18 @@ public class PlayerController : MonoBehaviourPun
         {
             case Define.MouseEvent.PointerDown:
                 {
+                    if (Input.GetMouseButtonDown(1) && _actor.Stamina >= 0)
+                    {
+                        if (_actor.debuffState == DebuffState.Exhausted)
+                            return;
+                        _actor.Stamina -= 5;
 
+                        if (_actor.Stamina <= 0)
+                            _actor.Stamina = 0;
+
+                        if (_actor.debuffState != DebuffState.Balloon && !isGrounded)
+                            DropKickTrigger();
+                    }
                 }
                 break;
             case Define.MouseEvent.Click:
@@ -411,8 +426,7 @@ public class PlayerController : MonoBehaviourPun
                         {
                             //StartCoroutine(_balloonState.BalloonSpin());
                         }
-                        else if(!isGrounded)
-                             DropKickTrigger();
+
                     }
 
                     if (_actor.debuffState == DebuffState.Balloon)
@@ -1841,7 +1855,7 @@ public class PlayerController : MonoBehaviourPun
 
     IEnumerator ItemTwoHandDelay(Side side)
     {
-        yield return ItemTwoHand(side, 0.07f, 0.1f, 0.3f, 0.1f, ItempSwingPower);
+        yield return ItemTwoHand(side, 0.07f, 0.1f, 0.3f, 0.1f, _itemSwingPower);
     }
 
     public IEnumerator ItemTwoHand(Side side, float duration, float readyTime, float punchTime, float resetTime, float itemPower)
@@ -1883,7 +1897,7 @@ public class PlayerController : MonoBehaviourPun
         }
     }
 
-    public void ItemTwoHandSwing(Side side, float itemPower)
+    public void ItemTwoHandSwing(Side side, float itemSwingPower)
     {
         if (target)
             return;
@@ -1907,7 +1921,7 @@ public class PlayerController : MonoBehaviourPun
         for (int i = 0; i < itemTwoHands.Length; i++)
         {
             Vector3 dir = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
-            AniForce(itemTwoHands, i, dir , itemPower);
+            AniForce(itemTwoHands, i, dir , itemSwingPower);
         }
     }
 
