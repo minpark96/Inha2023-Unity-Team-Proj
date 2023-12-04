@@ -226,17 +226,10 @@ private float PhysicalDamage(InteractableObject collisionInteractable, float dam
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.gameObject.layer == LayerMask.NameToLayer("IceFloor"))
-        {
-            actor._IsIceFloor = true;
-        }
-
-
         if (!PhotonNetwork.IsMasterClient && PhotonNetwork.IsConnected == true) return;
 
         if (collision.collider.gameObject.layer != LayerMask.NameToLayer("Ground"))
             DamageCheck(collision);
-
     }
   
 

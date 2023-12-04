@@ -564,7 +564,7 @@ public class PlayerController : MonoBehaviourPun
                     if (Input.GetKeyUp(KeyCode.R) && _actor.debuffState == DebuffState.Drunk)
                     {
                         IsFlambe = true;
-                        StartCoroutine(_drunkState.DrunkAction());
+                        photonView.RPC("DrunkAction", RpcTarget.All);
                     }
                     else
                     {
@@ -597,6 +597,11 @@ public class PlayerController : MonoBehaviourPun
                 }
                 break;
         }
+    }
+    [PunRPC]
+    void DrunkAction()
+    {
+        StartCoroutine(_drunkState.DrunkAction());
     }
 
     #endregion

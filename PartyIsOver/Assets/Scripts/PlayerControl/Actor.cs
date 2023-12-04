@@ -184,11 +184,6 @@ public class Actor : MonoBehaviourPun, IPunObservable
             //1초마다  1 씩 까임 수정 사항
             Stamina -= Time.deltaTime;
         }
-
-        //if(_IsIceFloor)
-        //    Actor.
-
-
     }
 
     void RecoveryStamina()
