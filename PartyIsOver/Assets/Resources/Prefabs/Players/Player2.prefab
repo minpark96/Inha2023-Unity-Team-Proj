@@ -11282,7 +11282,6 @@ GameObject:
   - component: {fileID: 5878509405600198234}
   - component: {fileID: 1602883286494261838}
   - component: {fileID: 4655386519301525991}
-  - component: {fileID: -3116543834385216606}
   - component: {fileID: -864565118446243330}
   m_Layer: 7
   m_Name: Player2
@@ -12153,8 +12152,6 @@ MonoBehaviour:
   RotationsForBalloon: []
   _audioSource: {fileID: 0}
   isAI: 0
-  RecoveryTime: 0.1
-  RecoveryStaminaValue: 1
 --- !u!114 &5878509405600198236
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12219,9 +12216,13 @@ MonoBehaviour:
   PlayerAttackPoint: 1
   _health: 0
   _maxHealth: 200
+  RecoveryTime: 0.1
+  RecoveryStaminaValue: 1
+  ExhaustedRecoveryTime: 0.2
   _stamina: 100
   _maxStamina: 100
   _magneticStack: 0
+  _IsIceFloor: 0
   actorState: 4
   lastActorState: 8
   debuffState: 0
@@ -12251,7 +12252,7 @@ MonoBehaviour:
   _shockTime: 3
   _stunTime: 3
   _iceDamage: 0
-  _burnDamage: 1
+  _burnDamage: 5
 --- !u!114 &1602883286494261838
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12287,19 +12288,6 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &-3116543834385216606
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5873236424662451676}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 168a9945a6afc8143a29851274a40341, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  BalloonDuration: 30
 --- !u!114 &-864565118446243330
 MonoBehaviour:
   m_ObjectHideFlags: 0
