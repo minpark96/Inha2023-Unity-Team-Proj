@@ -225,9 +225,11 @@ public class Actor : MonoBehaviourPun, IPunObservable
                 {
                     Stamina -= 0;
                     GrabState = GrabState.None;
+                    PlayerController.isRun = false;
                 }
                 else
                     Stamina -= 1;
+
             }
             else if(PlayerController._isRSkillCheck || PlayerController.isHeading || PlayerController._isCoroutineDrop)
                 Stamina += 0;
