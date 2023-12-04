@@ -14,6 +14,7 @@ public class SnowStorm : MonoBehaviour
 
     public Actor Actor;
 
+    private float _stormForce = 7f;
 
     private void Start()
     {
@@ -24,14 +25,14 @@ public class SnowStorm : MonoBehaviour
     {
         yield return new WaitForSeconds(FirstPhaseStartTime);
         
-        Actor.PlayerController.RunSpeed = 200;
+        //Actor.PlayerController.RunSpeed = 200;
 
         float startTime = Time.time;
         while(Time.time - startTime < FirstPhaseDuration)
         {
             for (int i = 0; i < Actor.BodyHandler.BodyParts.Count; i++)
             {
-                Actor.BodyHandler.BodyParts[i].PartRigidbody.AddForce(transform.right * 10f * Time.deltaTime, ForceMode.VelocityChange);
+                Actor.BodyHandler.BodyParts[i].PartRigidbody.AddForce(transform.right * _stormForce * Time.deltaTime, ForceMode.VelocityChange);
             }
 
             yield return null;
@@ -42,18 +43,18 @@ public class SnowStorm : MonoBehaviour
 
     IEnumerator SecondPhase()
     {
-        Actor.PlayerController.RunSpeed = 100;
+        //Actor.PlayerController.RunSpeed = 100;
 
         yield return new WaitForSeconds(SecondPhaseStartTime);
 
-        Actor.PlayerController.RunSpeed = 200;
+        //Actor.PlayerController.RunSpeed = 200;
 
         float startTime = Time.time;
         while (Time.time - startTime < SecondPhaseDuration)
         {
             for (int i = 0; i < Actor.BodyHandler.BodyParts.Count; i++)
             {
-                Actor.BodyHandler.BodyParts[i].PartRigidbody.AddForce(transform.right * 10f * Time.deltaTime, ForceMode.VelocityChange);
+                Actor.BodyHandler.BodyParts[i].PartRigidbody.AddForce(transform.right * _stormForce * Time.deltaTime, ForceMode.VelocityChange);
             }
 
             yield return null;
@@ -64,18 +65,18 @@ public class SnowStorm : MonoBehaviour
 
     IEnumerator ThirdPhase()
     {
-        Actor.PlayerController.RunSpeed = 100;
+        //Actor.PlayerController.RunSpeed = 100;
 
         yield return new WaitForSeconds(ThirdPhaseStartTime);
 
-        Actor.PlayerController.RunSpeed = 200;
+        //Actor.PlayerController.RunSpeed = 200;
 
         float startTime = Time.time;
         while (Time.time - startTime < ThirdPhaseDuration)
         {
             for (int i = 0; i < Actor.BodyHandler.BodyParts.Count; i++)
             {
-                Actor.BodyHandler.BodyParts[i].PartRigidbody.AddForce(transform.right * 10f * Time.deltaTime, ForceMode.VelocityChange);
+                Actor.BodyHandler.BodyParts[i].PartRigidbody.AddForce(transform.right * _stormForce * Time.deltaTime, ForceMode.VelocityChange);
             }
 
             yield return null;

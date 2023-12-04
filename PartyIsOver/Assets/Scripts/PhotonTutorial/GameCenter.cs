@@ -156,7 +156,7 @@ public class GameCenter : BaseScene
         _scoreBoardUI.isSetup = true;
 
         _magneticField = GameObject.Find("Magnetic Field").GetComponent<MagneticField>();
-        //_snowStorm = GameObject.Find("Snow Storm").GetComponent<SnowStorm>();
+        _snowStorm = GameObject.Find("Snow Storm").GetComponent<SnowStorm>();
 
         if (RoundCounts == 1)
         {
@@ -167,7 +167,7 @@ public class GameCenter : BaseScene
                 _actorNumbers[PhotonNetwork.LocalPlayer.ActorNumber - 1] = PhotonNetwork.LocalPlayer.ActorNumber;
 
                 _magneticField.Actor = Actors[PhotonNetwork.LocalPlayer.ActorNumber - 1];
-                //_snowStorm.Actor = Actors[PhotonNetwork.LocalPlayer.ActorNumber - 1];
+                _snowStorm.Actor = Actors[PhotonNetwork.LocalPlayer.ActorNumber - 1];
             }
             else
             {
@@ -301,21 +301,21 @@ public class GameCenter : BaseScene
         }
     }
 
-    private void OnGUI()
-    {
-        GUIStyle style = new GUIStyle();
+    //private void OnGUI()
+    //{
+    //    GUIStyle style = new GUIStyle();
 
-        style.fontSize = 30;
+    //    style.fontSize = 30;
 
-        GUI.backgroundColor = Color.white;
-        for (int i = 0; i < ActorViewIDs.Count; i++)
-        {
-            GUI.contentColor = Color.black;
-            GUI.Label(new Rect(0, 340 + i * 60, 200, 200), "Actor View ID: " + ActorViewIDs[i] + " / HP: " + Actors[i].Health, style);
-            GUI.contentColor = Color.red;
-            GUI.Label(new Rect(0, 360 + i * 60, 200, 200), "Status: " + Actors[i].actorState + " / Debuff: " + Actors[i].debuffState, style);
-        }
-    }
+    //    GUI.backgroundColor = Color.white;
+    //    for (int i = 0; i < ActorViewIDs.Count; i++)
+    //    {
+    //        GUI.contentColor = Color.black;
+    //        GUI.Label(new Rect(0, 340 + i * 60, 200, 200), "Actor View ID: " + ActorViewIDs[i] + " / HP: " + Actors[i].Health, style);
+    //        GUI.contentColor = Color.red;
+    //        GUI.Label(new Rect(0, 360 + i * 60, 200, 200), "Status: " + Actors[i].actorState + " / Debuff: " + Actors[i].debuffState, style);
+    //    }
+    //}
 
     void SubscribeActorEvent(Actor actor)
     {
@@ -650,6 +650,9 @@ public class GameCenter : BaseScene
             _roomUI.ReadyButton.SetActive(false);
         else
             _roomUI.PlayButton.SetActive(false);
+
+
+
     }
 
     void Update()
