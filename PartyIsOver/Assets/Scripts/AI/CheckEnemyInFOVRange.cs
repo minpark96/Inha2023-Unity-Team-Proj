@@ -32,6 +32,17 @@ public class CheckEnemyInFOVRange : Node
             state = NodeState.Failure;
             return state;
         }
+        else
+        {
+            Transform targetTransform = (Transform)t;
+            float distanceToTarget = Vector3.Distance(_transform.position, targetTransform.position);
+
+            if(distanceToTarget > GuardBT.fovRange * 1.5f)
+            {
+                parent.parent.SetData("target", null);
+                _animator.SetBool("Walking", false);
+            }
+        }
         state = NodeState.Success;
         return state;
     }

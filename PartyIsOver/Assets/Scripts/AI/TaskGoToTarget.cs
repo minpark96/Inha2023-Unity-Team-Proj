@@ -16,6 +16,8 @@ public class TaskGoToTarget : Node
     public override NodeState Evaluate()
     {
         Transform target = (Transform)GetData("target");
+        Debug.Log(target.position);
+        Debug.Log(_transform.position);
         if(Vector3.Distance(_transform.position, target.position) > 0.01f)
         {
             _transform.position = Vector3.MoveTowards(_transform.position, target.position, GuardBT.speed * Time.deltaTime);

@@ -73,9 +73,9 @@ public class SoundManager
     public void Play( string path, Define.Sound type = Define.Sound.PlayerEffect, float pitch =1.0f)
     {
         AudioClip audioClip = GetOrAddAudioClip(path, type);
-        Play(audioClip, type, pitch);
+        Play(audioClip, type, null, pitch);
     }
-    public void Play(AudioClip audioClip,  Define.Sound type = Define.Sound.PlayerEffect, float pitch = 1.0f)
+    public void Play(AudioClip audioClip, Define.Sound type = Define.Sound.PlayerEffect, AudioSource playaudioSource = null, float pitch = 1.0f)
     {
         if (audioClip == null)
             return;
@@ -104,9 +104,9 @@ public class SoundManager
         }
         else if((type == Define.Sound.PlayerEffect))
         {
-            AudioSource audioSource = PlayerController.Instance._audioSource;
-            audioSource.pitch = pitch;
-            audioSource.PlayOneShot(audioClip);
+            /*AudioSource audioSource = PlayerController.Instance._audioSource;
+            audioSource.pitch = pitch;*/
+            playaudioSource.PlayOneShot(audioClip);
         }
     }
 
@@ -140,7 +140,7 @@ public class SoundManager
                 _audioClip.Add(path, audioClip);
             }
         }
-        else
+        else if(type == Define.Sound.PlayerEffect)
         {
             if (_audioClip.TryGetValue(path, out audioClip) == false)
             {

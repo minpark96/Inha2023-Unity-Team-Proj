@@ -12136,7 +12136,6 @@ MonoBehaviour:
   isBalloon: 0
   isDrunk: 0
   RSkillCoolTime: 5
-  ChargeAniHoldTime: 0.5
   MeowPunchPower: 3
   MeowPunchReadyPunch: 0.05
   MeowPunchPunching: 0.05
@@ -12145,6 +12144,7 @@ MonoBehaviour:
   NuclearPunchReadyPunch: 0.1
   NuclearPunching: 0.1
   NuclearPunchResetPunch: 0.1
+  ChargeTime: 1.3
   BalloonJump: 0
   BalloonDrop: 0
   IsFlambe: 0
@@ -12201,6 +12201,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0444d9ac95de644cb7ff3b6d6c356fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _audioListener: {fileID: 0}
   StatusHandler: {fileID: 0}
   BodyHandler: {fileID: 0}
   PlayerController: {fileID: 0}
@@ -13609,7 +13610,7 @@ AudioSource:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0.16666667
+      time: 0.0014979094
       value: 1
       inSlope: -6.002399
       outSlope: -6.002399
