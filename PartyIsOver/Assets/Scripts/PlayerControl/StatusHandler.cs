@@ -351,6 +351,7 @@ public class StatusHandler : MonoBehaviourPun
 
         DestroyEffect("Fire_large");
         actor.InvokeStatusChangeEvent();
+        _audioClip = null;
     }
 
    
