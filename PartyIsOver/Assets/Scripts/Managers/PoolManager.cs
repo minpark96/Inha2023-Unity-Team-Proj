@@ -62,13 +62,12 @@ public class PoolManager
                 poolable = Create();
 
             poolable.gameObject.SetActive(true);
-            _poolStack.Push(poolable);
+            //_poolStack.Push(poolable);
 
             if (parent == null)
                 poolable.transform.parent = Managers.Scene.GetCurrentSceneRootGameObject().transform;
-            else
-                poolable.transform.parent = parent;
 
+            poolable.transform.parent = parent;
             poolable.IsUsing = true;
 
             return poolable;
