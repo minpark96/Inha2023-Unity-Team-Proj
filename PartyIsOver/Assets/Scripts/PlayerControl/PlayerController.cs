@@ -1904,7 +1904,7 @@ public class PlayerController : MonoBehaviourPun
     {
         //upperArm 2 chest1 up right 0.01 20 foreArm chest up back 
         //TestRready 오른쪽 왼쪽 구별해서 좌우로 휘두룰수 있음
-        AniAngleData[] itemTwoHands = (side == Side.Right) ? ItemTwoHandAngleData : ItemTwoHandAngleData;
+        AniAngleData[] itemTwoHands = (side == Side.Right) ? ItemTwoHandAngleData : ItemTwoHandLeftAngleData;
         for (int i = 0; i < itemTwoHands.Length; i++)
         {
             AniAngleForce(itemTwoHands, i);
@@ -1917,7 +1917,7 @@ public class PlayerController : MonoBehaviourPun
             return;
 
         Transform partTransform = _bodyHandler.Chest.transform;
-        AniFrameData[] itemTwoHands = ItemTwoHandAniData;
+        AniFrameData[] itemTwoHands = ItemTwoHandLeftAniData;
         Transform transform2 = _bodyHandler.LeftHand.transform;
         _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
         _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
@@ -1943,7 +1943,7 @@ public class PlayerController : MonoBehaviourPun
     {
         Transform partTransform = _bodyHandler.Chest.transform;
 
-        AniAngleData[] itemTwoHands = ItemTwoHandAngleData;
+        AniAngleData[] itemTwoHands = ItemTwoHandLeftAngleData;
         _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
         _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
         _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
