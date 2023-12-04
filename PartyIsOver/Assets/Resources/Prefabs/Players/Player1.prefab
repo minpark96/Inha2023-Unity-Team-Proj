@@ -12030,6 +12030,86 @@ MonoBehaviour:
     AnglePowerValues:
     - 100
     - 100
+  ItemTwoHandLeftAniData:
+  - StandardRigidbodies:
+    - {fileID: 5855867809452644878}
+    - {fileID: 5855867809452644878}
+    - {fileID: 5855867809452644878}
+    - {fileID: 5855867809452644878}
+    ActionRigidbodies:
+    - {fileID: 5856411775826887216}
+    - {fileID: 5856411775826887216}
+    - {fileID: 5856411775826887216}
+    - {fileID: 5856572161679450355}
+    ForceDirections: 07000000030000000400000006000000
+    ForcePowerValues:
+    - 15
+    - 50
+    - 15
+    - 5
+  - StandardRigidbodies:
+    - {fileID: 5855867809452644878}
+    - {fileID: 5855867809452644878}
+    - {fileID: 5855867809452644878}
+    - {fileID: 5855867809452644878}
+    ActionRigidbodies:
+    - {fileID: 5856729462922818502}
+    - {fileID: 5856003484643476932}
+    - {fileID: 5793437608505534348}
+    - {fileID: 5855867809452644878}
+    ForceDirections: 02000000020000000200000002000000
+    ForcePowerValues:
+    - 2
+    - 2
+    - 2
+    - 2
+  ItemTwoHandLeftAngleData:
+  - StandardRigidbodies:
+    - {fileID: 5793437608505534348}
+    ActionDirection:
+    - {fileID: 5875873347556913874}
+    TargetDirection:
+    - {fileID: 5875873347556913874}
+    ActionAngleDirections: 01000000
+    TargetAngleDirections: 03000000
+    AngleStability:
+    - 0.01
+    AnglePowerValues:
+    - 100
+  PotionThrowAniData:
+  - StandardRigidbodies:
+    - {fileID: 5855867809452644878}
+    - {fileID: 5855867809452644878}
+    ActionRigidbodies:
+    - {fileID: 5856729462922818502}
+    - {fileID: 5793437608505534348}
+    ForceDirections: 0400000004000000
+    ForcePowerValues:
+    - 10
+    - 10
+  - StandardRigidbodies:
+    - {fileID: 5855867809452644878}
+    - {fileID: 5855867809452644878}
+    ActionRigidbodies:
+    - {fileID: 5856729462922818502}
+    - {fileID: 5793437608505534348}
+    ForceDirections: 0200000002000000
+    ForcePowerValues:
+    - 15
+    - 15
+  PotionThrowAngleData:
+  - StandardRigidbodies:
+    - {fileID: 5793437608505534348}
+    ActionDirection:
+    - {fileID: 5875996918003196956}
+    TargetDirection:
+    - {fileID: 5875996918003196956}
+    ActionAngleDirections: 01000000
+    TargetAngleDirections: 01000000
+    AngleStability:
+    - 0.01
+    AnglePowerValues:
+    - 100
   TestRready1:
   - StandardRigidbodies:
     - {fileID: 5856379624502544924}
@@ -12133,8 +12213,11 @@ MonoBehaviour:
   rightKick: 0
   isStateChange: 0
   isMeowNyangPunch: 0
+  _isRSkillCheck: 0
   isBalloon: 0
   isDrunk: 0
+  isHeading: 0
+  isDropkick: 0
   RSkillCoolTime: 5
   MeowPunchPower: 3
   MeowPunchReadyPunch: 0.05
@@ -12149,6 +12232,7 @@ MonoBehaviour:
   BalloonDrop: 0
   IsFlambe: 0
   MoveInput: {x: 0, y: 0, z: 0}
+  _isCoroutineDrop: 0
   RotationsForBalloon: []
   _audioSource: {fileID: 0}
   isAI: 0

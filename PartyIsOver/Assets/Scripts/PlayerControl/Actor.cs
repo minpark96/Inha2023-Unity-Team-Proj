@@ -195,11 +195,6 @@ public class Actor : MonoBehaviourPun, IPunObservable
         CameraControl.LookAround(BodyHandler.Hip.transform.position);
         CameraControl.CursorControl();
 
-        if(GrabState == GrabState.Climb)
-        {
-            //1초마다  1 씩 까임 수정 사항
-            Stamina -= Time.deltaTime;
-        }
     }
 
     void RecoveryStamina()
@@ -211,6 +206,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
         }
         else
         {
+            PlayerController.isRun = false;
             currentRecoveryTime = 0.2f;
             currentRecoveryStaminaValue = RecoveryStaminaValue;
         }
@@ -221,11 +217,15 @@ public class Actor : MonoBehaviourPun, IPunObservable
         RecoveryStamina();
 
         accumulatedTime += Time.fixedDeltaTime;
-
         if(accumulatedTime >= currentRecoveryTime)
         {
+            if (PlayerController.isRun || GrabState == GrabState.Climb)
+                Stamina -= 1;
+            else if(PlayerController._isRSkillCheck || PlayerController.isHeading || PlayerController._isCoroutineDrop)
+                Stamina += 0;
+            else
+                Stamina += currentRecoveryStaminaValue;
 
-            Stamina += currentRecoveryStaminaValue;
             if (Stamina > MaxStamina)
                 Stamina = MaxStamina;
 

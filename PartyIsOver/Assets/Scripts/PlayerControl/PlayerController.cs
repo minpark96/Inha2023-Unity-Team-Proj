@@ -133,6 +133,18 @@ public class PlayerController : MonoBehaviourPun
     public AniAngleData[] RipAngleAniData;
 
     [SerializeField]
+    public AniFrameData[] ItemTwoHandLeftAniData;
+
+    [SerializeField]
+    public AniAngleData[] ItemTwoHandLeftAngleData;
+
+    [SerializeField]
+    public AniFrameData[] PotionThrowAniData;
+
+    [SerializeField]
+    public AniAngleData[] PotionThrowAngleData;
+
+    [SerializeField]
     public AniFrameData[] TestRready1;
 
     [SerializeField]
@@ -140,6 +152,8 @@ public class PlayerController : MonoBehaviourPun
 
     [SerializeField]
     public AniAngleData[] TestRready2;
+
+
 
     [Header("Speed")]
     public float RunSpeed;
@@ -174,9 +188,11 @@ public class PlayerController : MonoBehaviourPun
     public bool rightKick;
     public bool isStateChange;
     public bool isMeowNyangPunch = false;
-    private bool _isRSkillCheck;
+    public bool _isRSkillCheck;
     public bool isBalloon;
     public bool isDrunk;
+    public bool isHeading;
+    public bool isDropkick;
 
     [Header("SkillControll")]
     public float RSkillCoolTime = 10;
@@ -208,9 +224,9 @@ public class PlayerController : MonoBehaviourPun
     private float _runSpeedOffset = 350f;
     public Vector3 MoveInput;
     private Vector3 _moveDir;
-    private bool _isCoroutineRunning = false;
-    private bool _isCoroutineDrop = false;
-    private bool _isCoroutineRoll = false;
+    private bool _isCoroutineRunning;
+    public bool _isCoroutineDrop;
+    private bool _isCoroutineRoll;
     private float _idleTimer = 0;
     private float _cycleTimer = 0;
     private float _cycleSpeed;
@@ -390,7 +406,10 @@ public class PlayerController : MonoBehaviourPun
                             _actor.Stamina = 0;
 
                         if (_actor.debuffState != DebuffState.Balloon && !isGrounded)
+                        {
+                            isDropkick = true;
                             DropKickTrigger();
+                        }
                     }
                 }
                 break;
@@ -440,7 +459,7 @@ public class PlayerController : MonoBehaviourPun
 
                         if (_actor.Stamina <= 0)
                             _actor.Stamina = 0;
-
+                        isHeading = true;
                         StartCoroutine(Heading());
                     }
                 }
@@ -1507,6 +1526,7 @@ public class PlayerController : MonoBehaviourPun
         yield return new WaitForSeconds(1);
         this._bodyHandler.Head.PartInteractable.damageModifier = InteractableObject.Damage.Default;
         photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.Head, false);
+        isHeading = false;
     }
     #endregion
 
@@ -1890,7 +1910,7 @@ public class PlayerController : MonoBehaviourPun
     {
         //upperArm 2 chest1 up right 0.01 20 foreArm chest up back 
         //TestRready ¿À¸¥ÂÊ ¿ÞÂÊ ±¸º°ÇØ¼­ ÁÂ¿ì·Î ÈÖµÎ·ê¼ö ÀÖÀ½
-        AniAngleData[] itemTwoHands = (side == Side.Right) ? ItemTwoHandAngleData : ItemTwoHandAngleData;
+        AniAngleData[] itemTwoHands = (side == Side.Right) ? ItemTwoHandAngleData : ItemTwoHandLeftAngleData;
         for (int i = 0; i < itemTwoHands.Length; i++)
         {
             AniAngleForce(itemTwoHands, i);
@@ -1903,7 +1923,7 @@ public class PlayerController : MonoBehaviourPun
             return;
 
         Transform partTransform = _bodyHandler.Chest.transform;
-        AniFrameData[] itemTwoHands = ItemTwoHandAniData;
+        AniFrameData[] itemTwoHands = ItemTwoHandLeftAniData;
         Transform transform2 = _bodyHandler.LeftHand.transform;
         _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
         _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
@@ -1929,7 +1949,7 @@ public class PlayerController : MonoBehaviourPun
     {
         Transform partTransform = _bodyHandler.Chest.transform;
 
-        AniAngleData[] itemTwoHands = ItemTwoHandAngleData;
+        AniAngleData[] itemTwoHands = ItemTwoHandLeftAngleData;
         _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
         _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
         _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
@@ -2093,6 +2113,65 @@ public class PlayerController : MonoBehaviourPun
         for (int i = 0; i < potionReadys.Length; i++)
         {
             AniAngleForce(potionReadys, i);
+        }
+    }
+    #endregion
+
+    #region PotionThrow
+
+    public IEnumerator PotionThrow(float duration, float ready, float start,  float end)
+    {
+        float checkTime = Time.time;
+
+        while (Time.time - checkTime < ready)
+        {
+            PotionThrowReady();
+            yield return new WaitForSeconds(duration);
+        }
+        checkTime = Time.time;
+
+        while (Time.time - checkTime < start)
+        {
+            PotionThrowing();
+            yield return new WaitForSeconds(duration);
+        }
+        checkTime = Time.time;
+
+        while (Time.time - checkTime < end)
+        {
+            PotionThrowEnd();
+            yield return new WaitForSeconds(duration);
+        }
+    }
+
+    #endregion
+
+    #region PotionThrowAni
+
+    void PotionThrowReady()
+    {
+        AniAngleData[] potionReadys = PotionThrowAngleData;
+        for (int i = 0; i < potionReadys.Length; i++)
+        {
+            AniAngleForce(potionReadys, i);
+        }
+    }
+
+    void PotionThrowing()
+    {
+        AniFrameData[] potionStarts = PotionThrowAniData;
+        for (int i = 0; i < potionStarts.Length; i++)
+        {
+            AniForce(potionStarts, i);
+        }
+    }
+
+    void PotionThrowEnd()
+    {
+        AniAngleData[] potionThrowEnds = PotionThrowAngleData;
+        for (int i = 0; i < potionThrowEnds.Length; i++)
+        {
+            AniAngleForce(potionThrowEnds, i);
         }
     }
     #endregion
