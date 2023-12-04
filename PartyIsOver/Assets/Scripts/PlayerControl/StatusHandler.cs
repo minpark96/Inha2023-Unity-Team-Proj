@@ -39,7 +39,7 @@ public class StatusHandler : MonoBehaviourPun
     private bool _hasExhausted;
     private bool _hasSlow;
     public bool _hasFreeze;
-    private bool _hasShock;
+    public bool _hasShock;
     private bool _hasStun;
     public bool HasDrunk;
 
@@ -311,7 +311,8 @@ public class StatusHandler : MonoBehaviourPun
         // 화상
         _hasBurn = true;
         actor.actorState = Actor.ActorState.Debuff;
-        Debug.Log("Burn!");
+        photonView.RPC("TransferDebuffToPlayer", RpcTarget.MasterClient, (int)InteractableObject.Damage.Burn);
+
 
         PlayerDebuffSound("PlayerEffect/SFX_FireBall_Projectile");
         BurnCreate();
@@ -344,11 +345,11 @@ public class StatusHandler : MonoBehaviourPun
         Creatcount = 0;
         // 화상 해제
         _hasBurn = false;
+        photonView.RPC("TransferDebuffToPlayer", RpcTarget.MasterClient, (int)InteractableObject.Damage.Default);
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Burn;
 
         DestroyEffect("Fire_large");
-
         actor.InvokeStatusChangeEvent();
     }
 
@@ -444,14 +445,15 @@ public class StatusHandler : MonoBehaviourPun
     IEnumerator Shock(float delay)
     {
         _hasShock = true;
+        
 
         if (actor.debuffState == Actor.DebuffState.Ice)
             photonView.RPC("StopShock", RpcTarget.All, delay);
 
-
+        
         // 감전
         actor.actorState = Actor.ActorState.Debuff;
-        
+        photonView.RPC("TransferDebuffToPlayer", RpcTarget.MasterClient, (int)InteractableObject.Damage.Shock);
         PlayerDebuffSound("PlayerEffect/electronic_02");
         ShockCreate();
 
@@ -516,6 +518,7 @@ public class StatusHandler : MonoBehaviourPun
         // 감전 해제
         _hasShock = false;
         StartCoroutine(ResetBodySpring());
+        photonView.RPC("TransferDebuffToPlayer", RpcTarget.MasterClient, (int)InteractableObject.Damage.Default);
 
         //photonView.RPC("Stun", RpcTarget.All, 0.5f);
         StartCoroutine(Stun(0.5f));
@@ -763,4 +766,66 @@ public class StatusHandler : MonoBehaviourPun
             yield return null;
         }
     }
+
+    [PunRPC]
+    public void TransferDebuffToPlayer(int DamageType)
+    {
+        ChangeDamageModifier((int)Define.BodyPart.LeftFoot, DamageType);
+        ChangeDamageModifier((int)Define.BodyPart.RightFoot, DamageType);
+        ChangeDamageModifier((int)Define.BodyPart.LeftLeg, DamageType);
+        ChangeDamageModifier((int)Define.BodyPart.RightLeg, DamageType);
+        ChangeDamageModifier((int)Define.BodyPart.Head, DamageType);
+        ChangeDamageModifier((int)Define.BodyPart.LeftHand, DamageType);
+        ChangeDamageModifier((int)Define.BodyPart.RightHand, DamageType);
+    }
+
+
+
+    private void ChangeDamageModifier(int bodyPart, int DamageType)
+    {
+        switch ((Define.BodyPart)bodyPart)
+        {
+            case Define.BodyPart.LeftFoot:
+                actor.BodyHandler.LeftFoot.PartInteractable.damageModifier = (InteractableObject.Damage)DamageType;
+                break;
+            case Define.BodyPart.RightFoot:
+                actor.BodyHandler.RightFoot.PartInteractable.damageModifier = (InteractableObject.Damage)DamageType;
+                break;
+            case Define.BodyPart.LeftLeg:
+                actor.BodyHandler.LeftLeg.PartInteractable.damageModifier = (InteractableObject.Damage)DamageType;
+                break;
+            case Define.BodyPart.RightLeg:
+                actor.BodyHandler.RightLeg.PartInteractable.damageModifier = (InteractableObject.Damage)DamageType;
+                break;
+            case Define.BodyPart.LeftThigh:
+                break;
+            case Define.BodyPart.RightThigh:
+                break;
+            case Define.BodyPart.Hip:
+                break;
+            case Define.BodyPart.Waist:
+                break;
+            case Define.BodyPart.Chest:
+                break;
+            case Define.BodyPart.Head:
+                actor.BodyHandler.Head.PartInteractable.damageModifier = (InteractableObject.Damage)DamageType;
+                break;
+            case Define.BodyPart.LeftArm:
+                break;
+            case Define.BodyPart.RightArm:
+                break;
+            case Define.BodyPart.LeftForeArm:
+                break;
+            case Define.BodyPart.RightForeArm:
+                break;
+            case Define.BodyPart.LeftHand:
+                actor.BodyHandler.LeftHand.PartInteractable.damageModifier = (InteractableObject.Damage)DamageType;
+                break;
+            case Define.BodyPart.RightHand:
+                actor.BodyHandler.RightHand.PartInteractable.damageModifier = (InteractableObject.Damage)DamageType;
+                break;
+        }
+    }
+
+
 }
