@@ -146,9 +146,10 @@ public class StatusHandler : MonoBehaviourPun
             // 상태이상 체크
             DebuffCheck(type);
             DebuffAction();
-            CheckProjectile(causer);
+            //CheckProjectile(causer);
         }
 
+        photonView.RPC("InvulnerableState", RpcTarget.All, 0.5f);
         actor.InvokeStatusChangeEvent();
     }
 
@@ -666,7 +667,6 @@ public class StatusHandler : MonoBehaviourPun
                 }
             }
         }
-        photonView.RPC("InvulnerableState", RpcTarget.All, 0.5f);
         actor.Health = Mathf.Clamp(tempHealth, 0f, actor.MaxHealth);
 
         _healthDamage = 0f;
