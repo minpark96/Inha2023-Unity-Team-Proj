@@ -143,7 +143,7 @@ public class PlayerController : MonoBehaviourPun
 
     [Header("Speed")]
     public float RunSpeed;
-    private float MaxSpeed = 5f;
+    private float MaxSpeed;
 
     [SerializeField]
     private Rigidbody _hips;
@@ -180,8 +180,10 @@ public class PlayerController : MonoBehaviourPun
 
     [Header("SkillControll")]
     public float RSkillCoolTime = 10;
-    public float ChargeAniHoldTime = 0.5f;
+    //잠깐 딜레이를 줘야 자세를 잡음
+    private float ChargeAniHoldTime = 0.5f;
     public float MeowPunchPower = 1f;
+    //펀치 3개
     public float MeowPunchReadyPunch = 0.1f;
     public float MeowPunchPunching = 0.1f;
     public float MeowPunchResetPunch = 0.3f;
@@ -191,12 +193,16 @@ public class PlayerController : MonoBehaviourPun
     public float NuclearPunching = 0.1f;
     public float NuclearPunchResetPunch = 0.3f;
 
+    //차지 시간
+    public float ChargeTime = 1.3f;
+
     public bool BalloonJump;
     public bool BalloonDrop;
 
+    public bool IsFlambe;
 
-    [Header("ItemControll")]
-    public float ItempSwingPower;
+
+    private float _itemSwingPower;
 
     [Header("MoveControll")]
     private float _runSpeedOffset = 350f;
@@ -275,7 +281,10 @@ public class PlayerController : MonoBehaviourPun
 
         if (photonView.IsMine)
             _cameraArm = _actor.CameraControl.CameraArm;
+        
+
     }
+
 
 
     private ConfigurableJoint[] childJoints;
@@ -307,10 +316,17 @@ public class PlayerController : MonoBehaviourPun
         _drunkState = GetComponent<DrunkState>();
 
         Instance = this;
+
+        PlayerStatData statData = Managers.Resource.Load<PlayerStatData>("ScriptableObject/PlayerStatData");
+        MaxSpeed = statData.MaxSpeed;
+        RunSpeed = statData.RunSpeed;
+        _itemSwingPower = statData.ItemSwingPower;
     }
 
+    [PunRPC]
     void RestoreOriginalMotions()
     {
+
         //y z 초기값 대입
         for (int i = 0; i < childJoints.Length; i++)
         {
@@ -322,11 +338,11 @@ public class PlayerController : MonoBehaviourPun
     [PunRPC]
     public void PlayerEffectSound(string path)
     {
-        _audioClip = Managers.Sound.GetOrAddAudioClip(path);
+        _audioClip = Managers.Sound.GetOrAddAudioClip(path, Define.Sound.PlayerEffect);
         _audioSource.clip = _audioClip;
         _audioSource.volume = 0.2f;
         _audioSource.spatialBlend = 1;
-        Managers.Sound.Play(_audioClip, Define.Sound.PlayerEffect);
+        Managers.Sound.Play(_audioClip, Define.Sound.PlayerEffect, _audioSource);
 
     }
 
@@ -364,7 +380,18 @@ public class PlayerController : MonoBehaviourPun
         {
             case Define.MouseEvent.PointerDown:
                 {
+                    if (Input.GetMouseButtonDown(1) && _actor.Stamina >= 0)
+                    {
+                        if (_actor.debuffState == DebuffState.Exhausted)
+                            return;
+                        _actor.Stamina -= 5;
 
+                        if (_actor.Stamina <= 0)
+                            _actor.Stamina = 0;
+
+                        if (_actor.debuffState != DebuffState.Balloon && !isGrounded)
+                            DropKickTrigger();
+                    }
                 }
                 break;
             case Define.MouseEvent.Click:
@@ -397,10 +424,9 @@ public class PlayerController : MonoBehaviourPun
 
                         if (_actor.debuffState == DebuffState.Balloon)
                         {
-                            StartCoroutine(_balloonState.BalloonSpin());
+                            //StartCoroutine(_balloonState.BalloonSpin());
                         }
-                        else if(!isGrounded)
-                             DropKickTrigger();
+
                     }
 
                     if (_actor.debuffState == DebuffState.Balloon)
@@ -427,6 +453,8 @@ public class PlayerController : MonoBehaviourPun
 
     public void OnKeyboardEvent_Move(Define.KeyboardEvent evt)
     {
+        if (IsFlambe)
+            return;
 
         switch (evt)
         {
@@ -514,7 +542,7 @@ public class PlayerController : MonoBehaviourPun
 
                                     photonView.RPC("PlayerEffectSound", RpcTarget.All, "Sounds/PlayerEffect/ACTION_Changing_Smoke");
                                     _isRSkillCheck = true;
-                                    StartCoroutine(ChargeReady());
+                                    photonView.RPC("ChargeReady", RpcTarget.All);
                                 }
                             }
                         }
@@ -538,22 +566,23 @@ public class PlayerController : MonoBehaviourPun
                         isRun = false;
                     }
 
-                    if (Input.GetKeyUp(KeyCode.R) && _actor.Stamina >= 0)
+                    if (Input.GetKeyUp(KeyCode.R) && Managers.Input._checkHoldTime)
                     {
                         _isRSkillCheck = false;
-                        StartCoroutine(ResetCharge());
+                        photonView.RPC("ResetCharge", RpcTarget.All);
                     }
                 }
                 break;
             case Define.KeyboardEvent.Charge:
                 {
-                    if (_actor.debuffState == DebuffState.Drunk)
+                    if (Input.GetKeyUp(KeyCode.R) && _actor.debuffState == DebuffState.Drunk)
                     {
-                        StartCoroutine(_drunkState.DrunkAction());
+                        IsFlambe = true;
+                        photonView.RPC("DrunkAction", RpcTarget.All);
                     }
                     else
                     {
-                        RestoreOriginalMotions();
+                        photonView.RPC("RestoreOriginalMotions", RpcTarget.All);
                         if (Input.GetKeyUp(KeyCode.R) && isMeowNyangPunch)
                             MeowNyangPunch();
                         else
@@ -583,10 +612,16 @@ public class PlayerController : MonoBehaviourPun
                 break;
         }
     }
+    [PunRPC]
+    void DrunkAction()
+    {
+        StartCoroutine(_drunkState.DrunkAction());
+    }
 
     #endregion
 
     #region ChargeSkill
+    [PunRPC]
     IEnumerator ChargeReady()
     {
         for (int i = 0; i < childJoints.Length; i++)
@@ -599,7 +634,8 @@ public class PlayerController : MonoBehaviourPun
         {
             AniAngleForce(RSkillAngleAniData, i);
         }
-        yield return ForceRready(ChargeAniHoldTime);
+        StartCoroutine(ForceRready(ChargeAniHoldTime));
+        yield return null;
     }
 
     IEnumerator ForceRready(float _delay)
@@ -618,7 +654,8 @@ public class PlayerController : MonoBehaviourPun
             {
                 _RPartRigidbody = RSkillAniData[i].ActionRigidbodies[j];
                 _RPartRigidbody.constraints = RigidbodyConstraints.FreezeAll;
-                if (endChargeTime - startChargeTime > 0.1f)
+                //키를 짧게 누르면 락 걸리는걸 방지 하기 위한 
+                if (endChargeTime - startChargeTime > 0.0001f)
                 {
                     _RPartRigidbody.constraints = RigidbodyConstraints.None;
                 }
@@ -626,14 +663,17 @@ public class PlayerController : MonoBehaviourPun
                 _RPartRigidbody.angularVelocity = Vector3.zero;
             }
         }
+
         yield return null;
     }
 
+    [PunRPC]
     IEnumerator ResetCharge()
     {
         _checkHoldTimeCount = 0;
         endChargeTime = Time.time;
         Rigidbody _RPartRigidbody;
+
         for (int i = 0; i < RSkillAniData.Length; i++)
         {
             for (int j = 0; j < RSkillAniData[i].StandardRigidbodies.Length; j++)
@@ -655,7 +695,7 @@ public class PlayerController : MonoBehaviourPun
     private void NuclearPunch()
     {
         StartCoroutine(NuclearPunchDelay());
-        StartCoroutine(ResetCharge());
+        photonView.RPC("ResetCharge", RpcTarget.All);
     }
 
     IEnumerator NuclearPunchDelay()
@@ -668,7 +708,7 @@ public class PlayerController : MonoBehaviourPun
     private void MeowNyangPunch()
     {
         StartCoroutine(MeowNyangPunchDelay());
-        StartCoroutine(ResetCharge());
+        photonView.RPC("ResetCharge", RpcTarget.All);
     }
 
     IEnumerator MeowNyangPunchDelay()
@@ -729,11 +769,6 @@ public class PlayerController : MonoBehaviourPun
     #region FixedUpdate
     private void FixedUpdate()
     {
-
-        //여기서 특정 상태일 때 스테미너 회복이 안되게 한다.
-        if (_actor.Stamina <=_actor.MaxStamina)
-            _actor.Stamina += 0.1f;
-
         if (!photonView.IsMine || _actor.actorState == ActorState.Dead) return;
 
         if (isAI)
@@ -741,15 +776,14 @@ public class PlayerController : MonoBehaviourPun
 
         if (_actor.debuffState == Actor.DebuffState.Balloon && isBalloon == false)
         {
-            StartCoroutine(_balloonState.BalloonShapeOn());
+            photonView.RPC("_balloonState.BalloonShapeOn", RpcTarget.All);
+            //StartCoroutine(_balloonState.BalloonShapeOn());
         }
 
         if (_actor.debuffState == Actor.DebuffState.Drunk && isDrunk == false)
         {
             isDrunk = true;
             StartCoroutine(_drunkState.DrunkOff());
-
-            
         }
 
 
@@ -1821,7 +1855,7 @@ public class PlayerController : MonoBehaviourPun
 
     IEnumerator ItemTwoHandDelay(Side side)
     {
-        yield return ItemTwoHand(side, 0.07f, 0.1f, 0.3f, 0.1f, ItempSwingPower);
+        yield return ItemTwoHand(side, 0.07f, 0.1f, 0.3f, 0.1f, _itemSwingPower);
     }
 
     public IEnumerator ItemTwoHand(Side side, float duration, float readyTime, float punchTime, float resetTime, float itemPower)
@@ -1863,7 +1897,7 @@ public class PlayerController : MonoBehaviourPun
         }
     }
 
-    public void ItemTwoHandSwing(Side side, float itemPower)
+    public void ItemTwoHandSwing(Side side, float itemSwingPower)
     {
         if (target)
             return;
@@ -1887,7 +1921,7 @@ public class PlayerController : MonoBehaviourPun
         for (int i = 0; i < itemTwoHands.Length; i++)
         {
             Vector3 dir = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
-            AniForce(itemTwoHands, i, dir , itemPower);
+            AniForce(itemTwoHands, i, dir , itemSwingPower);
         }
     }
 

@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class SnowStorm : MonoBehaviour
 {
-    public Actor Actor;
-
     public float FirstPhaseDuration = 20f;
     public float SecondPhaseDuration = 20f;
     public float ThirdPhaseDuration = 20f;
@@ -13,6 +11,8 @@ public class SnowStorm : MonoBehaviour
     public float FirstPhaseStartTime = 20f;
     public float SecondPhaseStartTime = 40f;
     public float ThirdPhaseStartTime = 40f;
+
+    public Actor Actor;
 
 
     private void Start()

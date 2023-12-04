@@ -17,13 +17,13 @@ public class GuardBT : Tree
             //어택하는 간단한 노드
             new Sequence(new List<Node>
             {
-                new CheckEnemyInAttackRange(transform),
-                new TaskAttack(transform),
+                new CheckEnemyInFOVRange(transform),
+                new TaskGoToTarget(transform),
             }),
             /*new Sequence(new List<Node>
             {
-                new CheckEnemyInFOVRange(transform),
-                new TaskGoToTarget(transform),
+                new CheckEnemyInAttackRange(transform),
+                new TaskAttack(transform),
             }),*/
             new TaskPatrol(transform, waypoints),
         }) ;

@@ -14,6 +14,10 @@ public class SoundManager
     //캐싱 역할
     Dictionary<string,AudioClip> _audioClip = new Dictionary<string, AudioClip>();
 
+
+    public float[] SoundVolume = new float[(int)Define.Sound.Maxcount];
+
+
     //사운드 오브젝트 생성
     public void Init()
     {
@@ -37,6 +41,10 @@ public class SoundManager
                 go.transform.parent = root.transform;
             }
             _audioSources[(int)Define.Sound.Bgm].loop = true;
+
+            SoundVolume[(int)Define.Sound.Bgm] = 0.1f;
+            SoundVolume[(int)Define.Sound.UISound] = 1f;
+
         }
 
         if (currentSceneName == _launcher)
@@ -65,9 +73,9 @@ public class SoundManager
     public void Play( string path, Define.Sound type = Define.Sound.PlayerEffect, float pitch =1.0f)
     {
         AudioClip audioClip = GetOrAddAudioClip(path, type);
-        Play(audioClip, type, pitch);
+        Play(audioClip, type, null, pitch);
     }
-    public void Play(AudioClip audioClip,  Define.Sound type = Define.Sound.PlayerEffect, float pitch = 1.0f)
+    public void Play(AudioClip audioClip, Define.Sound type = Define.Sound.PlayerEffect, AudioSource playaudioSource = null, float pitch = 1.0f)
     {
         if (audioClip == null)
             return;
@@ -96,9 +104,9 @@ public class SoundManager
         }
         else if((type == Define.Sound.PlayerEffect))
         {
-            AudioSource audioSource = PlayerController.Instance._audioSource;
-            audioSource.pitch = pitch;
-            audioSource.PlayOneShot(audioClip);
+            /*AudioSource audioSource = PlayerController.Instance._audioSource;
+            audioSource.pitch = pitch;*/
+            playaudioSource.PlayOneShot(audioClip);
         }
     }
 
@@ -132,7 +140,7 @@ public class SoundManager
                 _audioClip.Add(path, audioClip);
             }
         }
-        else
+        else if(type == Define.Sound.PlayerEffect)
         {
             if (_audioClip.TryGetValue(path, out audioClip) == false)
             {
@@ -144,5 +152,12 @@ public class SoundManager
             Debug.Log($"AudioClip Missing : {path}");
         
         return audioClip;
+    }
+
+
+    public void ChangeVolume()
+    {
+        _audioSources[(int)Define.Sound.Bgm].volume = SoundVolume[(int)Define.Sound.Bgm];
+        _audioSources[(int)Define.Sound.UISound].volume = SoundVolume[(int)Define.Sound.UISound];
     }
 }

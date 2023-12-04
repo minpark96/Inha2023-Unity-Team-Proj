@@ -15,6 +15,6 @@ MonoBehaviour:
   _itemName: IceGun
   _itemType: 4
   _projectile: {fileID: -4489562901240129692, guid: 84a16ef6178c9a74a8b52064b87a0941, type: 3}
-  _useDamageType: 0
+  _useDamageType: 11
   _damage: 0
   _coolTime: 0

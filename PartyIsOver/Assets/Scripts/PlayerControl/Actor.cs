@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Define;
 using UnityEngine.SceneManagement;
+using System.Numerics;
 
 
 public class Actor : MonoBehaviourPun, IPunObservable
@@ -13,7 +14,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
     public delegate void KillPlayer(int viewID);
     public event KillPlayer OnKillPlayer;
 
-    AudioListener _audioListener;
+    public AudioListener _audioListener;
 
     public StatusHandler StatusHandler;
     public BodyHandler BodyHandler;
@@ -53,14 +54,18 @@ public class Actor : MonoBehaviourPun, IPunObservable
         Ghost =     0x200,
     }
 
-    public GrabState GrabState = GrabState.None; 
+    public GrabState GrabState = GrabState.None;
 
-    public float HeadMultiple = 1.5f;
-    public float ArmMultiple = 0.8f;
-    public float HandMultiple = 0.8f;
-    public float LegMultiple = 0.8f;
-    public float DamageReduction = 0f;
-    public float PlayerAttackPoint = 1f;
+    //공격력 방어력(100이 무적)
+    [SerializeField]
+    private float _damageReduction = 0f;
+    public float DamageReduction { get { return _damageReduction; } set { _damageReduction = value; } }
+
+    [SerializeField]
+    private float _playerAttackPoint = 1f;
+
+    public float PlayerAttackPoint { get { return _playerAttackPoint; } set { _damageReduction = value; } }
+
 
     // 체력
     [SerializeField]
@@ -70,13 +75,30 @@ public class Actor : MonoBehaviourPun, IPunObservable
     public float Health { get { return _health; } set { _health = value; } }
     public float MaxHealth { get { return _maxHealth; } }
 
+
+    [Header("Stamina Recovery")]
+    public float RecoveryTime = 0.1f;
+    public float RecoveryStaminaValue = 1f;
+    public float ExhaustedRecoveryTime = 0.2f;
+    float currentRecoveryTime;
+    float currentRecoveryStaminaValue; 
+    float accumulatedTime = 0.0f;
+
     // 스테미나
     [SerializeField]
-    private float _stamina = 100f;
+    private float _stamina;
     [SerializeField]
     private float _maxStamina = 100f;
     public float Stamina { get { return _stamina; } set { _stamina = value; } }
     public float MaxStamina { get { return _maxStamina; } }
+
+    // 동사스택
+    [SerializeField]
+    private float _magneticStack = 0f;
+    public float MagneticStack { get { return _magneticStack; } set { _magneticStack = value; } }
+    public bool _IsIceFloor;
+    
+
 
     public ActorState actorState = ActorState.Stand;
     public ActorState lastActorState = ActorState.Run;
@@ -111,7 +133,8 @@ public class Actor : MonoBehaviourPun, IPunObservable
     private void Awake()
     {
         Transform SoundListenerTransform = transform.Find("GreenHead");
-        _audioListener = SoundListenerTransform.gameObject.AddComponent<AudioListener>();
+        if(SoundListenerTransform != null)
+            _audioListener = SoundListenerTransform.gameObject.AddComponent<AudioListener>();
         if (photonView.IsMine)
         {
             LocalPlayerInstance = this.gameObject;
@@ -125,7 +148,8 @@ public class Actor : MonoBehaviourPun, IPunObservable
         else
         {
             // 사운드 끄기
-            _audioListener.enabled = false;
+            Destroy(_audioListener);
+            //_audioListener.enabled = false;
         }
 
         //if (SceneManager.GetActiveScene().name != "[4]Room")
@@ -139,7 +163,19 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
         ChangeLayerRecursively(gameObject, LayerCnt++);
 
-        _health = _maxHealth;
+        Init();
+    }
+
+    private void Init()
+    {
+        PlayerStatData statData = Managers.Resource.Load<PlayerStatData>("ScriptableObject/PlayerStatData");
+
+        _health = statData.Health;
+        _stamina = statData.Stamina;
+        _maxHealth = statData.MaxHealth;
+        _maxStamina = statData.MaxStamina;
+        _damageReduction = statData.DamageReduction;
+        _playerAttackPoint = statData.PlayerAttackPoint;
     }
 
     private void ChangeLayerRecursively(GameObject obj, int layer)
@@ -150,7 +186,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
         {
             ChangeLayerRecursively(child.gameObject, layer);
         }
-    }
+    } 
 
     private void Update()
     {
@@ -158,10 +194,46 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
         CameraControl.LookAround(BodyHandler.Hip.transform.position);
         CameraControl.CursorControl();
+
+        if(GrabState == GrabState.Climb)
+        {
+            //1초마다  1 씩 까임 수정 사항
+            Stamina -= Time.deltaTime;
+        }
+    }
+
+    void RecoveryStamina()
+    {
+        if (debuffState != Actor.DebuffState.Exhausted)
+        {
+            currentRecoveryTime = RecoveryTime;
+            currentRecoveryStaminaValue = RecoveryStaminaValue;
+        }
+        else
+        {
+            currentRecoveryTime = 0.2f;
+            currentRecoveryStaminaValue = RecoveryStaminaValue;
+        }
     }
 
     private void FixedUpdate()
     {
+        RecoveryStamina();
+
+        accumulatedTime += Time.fixedDeltaTime;
+
+        if(accumulatedTime >= currentRecoveryTime)
+        {
+
+            Stamina += currentRecoveryStaminaValue;
+            if (Stamina > MaxStamina)
+                Stamina = MaxStamina;
+
+            accumulatedTime = 0f;
+        }
+
+        
+
         if (!photonView.IsMine || actorState == ActorState.Dead) return;
         
         if (actorState != lastActorState)

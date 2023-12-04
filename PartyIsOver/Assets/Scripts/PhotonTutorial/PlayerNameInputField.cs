@@ -6,13 +6,13 @@ using Photon.Pun;
 
 public class PlayerNameInputField : MonoBehaviour
 {
-
     public GameObject PlaceHolder;
-
+    public InputField InputField;
 
     void Start()
     {
         PlaceHolder.SetActive(true);
+        InputField.onValueChanged.AddListener(SetPlayerName);
     }
        
     public void SetPlayerName(string value)
