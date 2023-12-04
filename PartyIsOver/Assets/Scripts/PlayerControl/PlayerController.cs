@@ -133,6 +133,12 @@ public class PlayerController : MonoBehaviourPun
     public AniAngleData[] RipAngleAniData;
 
     [SerializeField]
+    public AniFrameData[] ItemTwoHandLeftAniData;
+
+    [SerializeField]
+    public AniAngleData[] ItemTwoHandLeftAngleData;
+
+    [SerializeField]
     public AniFrameData[] TestRready1;
 
     [SerializeField]
@@ -140,6 +146,8 @@ public class PlayerController : MonoBehaviourPun
 
     [SerializeField]
     public AniAngleData[] TestRready2;
+
+
 
     [Header("Speed")]
     public float RunSpeed;
