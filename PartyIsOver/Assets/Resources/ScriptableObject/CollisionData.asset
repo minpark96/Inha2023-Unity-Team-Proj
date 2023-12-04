@@ -16,11 +16,11 @@ MonoBehaviour:
   _punchDamage: 1000
   _dropkickDamage: 2000
   _headbuttDamage: 23000
-  _objectForceNormal: 3.5
-  _punchForceNormal: 4
-  _dropkickForceNormal: 10
-  _headbuttForceNormal: 5
-  _objectForceUp: 2
-  _punchForceUp: 2
-  _headbuttForceUp: 5
-  _dropkickForceUp: 3
+  _objectForceNormal: 35
+  _punchForceNormal: 40
+  _dropkickForceNormal: 100
+  _headbuttForceNormal: 50
+  _objectForceUp: 20
+  _punchForceUp: 20
+  _headbuttForceUp: 50
+  _dropkickForceUp: 30
