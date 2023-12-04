@@ -248,6 +248,8 @@ private float PhysicalDamage(InteractableObject collisionInteractable, float dam
     [PunRPC]
     void AddForceAttackedTarget(int objViewId, Vector3 normal, int damageModifier, float itemDamage)
     {
+        if (actor.StatusHandler._hasShock)
+            return;
         //Debug.Log("[AddForceAttackedTarget] id: " + objViewId);
         Rigidbody thisRb = PhotonNetwork.GetPhotonView(objViewId).transform.GetComponent<Rigidbody>();
 
@@ -318,5 +320,6 @@ private float PhysicalDamage(InteractableObject collisionInteractable, float dam
             Debug.Log("maxVel");
 
         }
+
     }
 }
