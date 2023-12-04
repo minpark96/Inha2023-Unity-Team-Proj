@@ -20,7 +20,7 @@ public class ScoreBoardUI : MonoBehaviour
     private Text[] _nickName = new Text[6];
     private int _playerNumber;
     
-    public void ScoreBoardSetup()
+    public void SetScoreBoard()
     {
         if (isSetup)
             return;
