@@ -282,7 +282,10 @@ public class PlayerController : MonoBehaviourPun
 
         if (photonView.IsMine)
             _cameraArm = _actor.CameraControl.CameraArm;
+        
+
     }
+
 
 
     private ConfigurableJoint[] childJoints;
@@ -319,6 +322,7 @@ public class PlayerController : MonoBehaviourPun
     [PunRPC]
     void RestoreOriginalMotions()
     {
+
         //y z 초기값 대입
         for (int i = 0; i < childJoints.Length; i++)
         {
@@ -505,8 +509,6 @@ public class PlayerController : MonoBehaviourPun
                 {
                     if (Input.GetKeyDown(KeyCode.R) && _actor.Stamina >= 0)
                     {
-                        Debug.Log(_actor._audioListener.transform.position);
-
                         _actor.Stamina -= 30;
 
                         if (_actor.Stamina <= 0)
@@ -550,7 +552,7 @@ public class PlayerController : MonoBehaviourPun
                         isRun = false;
                     }
 
-                    if (Input.GetKeyUp(KeyCode.R) && _actor.Stamina >= 0)
+                    if (Input.GetKeyUp(KeyCode.R) && Managers.Input._checkHoldTime)
                     {
                         _isRSkillCheck = false;
                         photonView.RPC("ResetCharge", RpcTarget.All);
@@ -613,11 +615,10 @@ public class PlayerController : MonoBehaviourPun
         {
             AniAngleForce(RSkillAngleAniData, i);
         }
-        photonView.RPC("ForceRready", RpcTarget.All, ChargeAniHoldTime);
+        StartCoroutine(ForceRready(ChargeAniHoldTime));
         yield return null;
     }
 
-    [PunRPC]
     IEnumerator ForceRready(float _delay)
     {
         startChargeTime = Time.time;
@@ -634,7 +635,8 @@ public class PlayerController : MonoBehaviourPun
             {
                 _RPartRigidbody = RSkillAniData[i].ActionRigidbodies[j];
                 _RPartRigidbody.constraints = RigidbodyConstraints.FreezeAll;
-                if (endChargeTime - startChargeTime > 0.1f)
+                //키를 짧게 누르면 락 걸리는걸 방지 하기 위한 
+                if (endChargeTime - startChargeTime > 0.0001f)
                 {
                     _RPartRigidbody.constraints = RigidbodyConstraints.None;
                 }
@@ -642,6 +644,7 @@ public class PlayerController : MonoBehaviourPun
                 _RPartRigidbody.angularVelocity = Vector3.zero;
             }
         }
+
         yield return null;
     }
 
@@ -651,6 +654,7 @@ public class PlayerController : MonoBehaviourPun
         _checkHoldTimeCount = 0;
         endChargeTime = Time.time;
         Rigidbody _RPartRigidbody;
+
         for (int i = 0; i < RSkillAniData.Length; i++)
         {
             for (int j = 0; j < RSkillAniData[i].StandardRigidbodies.Length; j++)
@@ -662,7 +666,7 @@ public class PlayerController : MonoBehaviourPun
                 _RPartRigidbody.angularVelocity = Vector3.zero;
             }
         }
-        photonView.RPC("RestoreOriginalMotions", RpcTarget.All);
+        RestoreOriginalMotions();
         yield return new WaitForSeconds(0.5f);
     }
     #endregion
@@ -746,11 +750,6 @@ public class PlayerController : MonoBehaviourPun
     #region FixedUpdate
     private void FixedUpdate()
     {
-
-        //여기서 특정 상태일 때 스테미너 회복이 안되게 한다.
-        if (_actor.Stamina <=_actor.MaxStamina)
-            _actor.Stamina += 0.1f;
-
         if (!photonView.IsMine || _actor.actorState == ActorState.Dead) return;
 
         if (isAI)

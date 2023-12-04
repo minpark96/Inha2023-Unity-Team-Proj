@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Define;
 using UnityEngine.SceneManagement;
+using System.Numerics;
 
 
 public class Actor : MonoBehaviourPun, IPunObservable
@@ -69,6 +70,15 @@ public class Actor : MonoBehaviourPun, IPunObservable
     private float _maxHealth = 200f;
     public float Health { get { return _health; } set { _health = value; } }
     public float MaxHealth { get { return _maxHealth; } }
+
+
+    [Header("Stamina Recovery")]
+    public float RecoveryTime = 0.1f;
+    public float RecoveryStaminaValue = 1f;
+    public float ExhaustedRecoveryTime = 0.2f;
+    float currentRecoveryTime;
+    float currentRecoveryStaminaValue; 
+    float accumulatedTime = 0.0f;
 
     // 스테미나
     [SerializeField]
@@ -181,8 +191,38 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
     }
 
+    void RecoveryStamina()
+    {
+        if (debuffState != Actor.DebuffState.Exhausted)
+        {
+            currentRecoveryTime = RecoveryTime;
+            currentRecoveryStaminaValue = RecoveryStaminaValue;
+        }
+        else
+        {
+            currentRecoveryTime = 0.2f;
+            currentRecoveryStaminaValue = RecoveryStaminaValue;
+        }
+    }
+
     private void FixedUpdate()
     {
+        RecoveryStamina();
+
+        accumulatedTime += Time.fixedDeltaTime;
+
+        if(accumulatedTime >= currentRecoveryTime)
+        {
+
+            Stamina += currentRecoveryStaminaValue;
+            if (Stamina > MaxStamina)
+                Stamina = MaxStamina;
+
+            accumulatedTime = 0f;
+        }
+
+        
+
         if (!photonView.IsMine || actorState == ActorState.Dead) return;
         
         if (actorState != lastActorState)
