@@ -22,7 +22,7 @@ public class RangeWeapon : Item
         projectile.transform.rotation = Quaternion.LookRotation(forward + new Vector3(0f, 0.37f, 0f));
         projectile.Shoot(this);
         Owner.PlayerController.PlayerEffectSound("PlayerEffect/Cartoon-UI-040");
-        if (PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
             projectile.GetComponent<InteractableObject>().ChangeUseTypeTrigger(0.08f, 5f);
         }
