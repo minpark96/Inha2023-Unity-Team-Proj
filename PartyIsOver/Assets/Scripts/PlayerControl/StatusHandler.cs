@@ -16,7 +16,7 @@ public class StatusHandler : MonoBehaviourPun
     public bool invulnerable = false;
 
     private float _healthDamage;
-    private bool _isDead;
+    public bool _isDead;
 
 
     private float _knockoutThreshold = 15f;
@@ -684,6 +684,7 @@ public class StatusHandler : MonoBehaviourPun
         StartCoroutine(ResetBodySpring());
         actor.actorState = Actor.ActorState.Dead;
         _isDead = true;
+        actor.InvokeDeathEvent();
     }
 
     void EnterUnconsciousState()
