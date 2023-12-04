@@ -9,7 +9,6 @@ public class InputManager
     public Action KeyAction = null;
     public Action<Define.MouseEvent> MouseAction = null;
     public Action<Define.KeyboardEvent> KeyboardAction = null;
-    PlayerController playerController;
 
     bool _leftMpressed = false;
     float _leftMpressedTime = 0;
@@ -226,6 +225,7 @@ public class InputManager
                         _checkHoldTime = true;
                     else
                         _checkHoldTime = false;
+
                     _chargeTime += Time.deltaTime;
                     if (_chargeTime > _chargeThreshold)
                     {
@@ -237,7 +237,6 @@ public class InputManager
             {
                 if (_rkeyPressed)
                 {
-
                     if (Time.time < _rkeyPressedTime + 1.3f)
                     {
                         KeyboardAction.Invoke(Define.KeyboardEvent.Click);
