@@ -58,9 +58,12 @@ public class MagneticField : MonoBehaviour
 
         if(Actor.MagneticStack >= 100f)
         {
+            Actor.MagneticStack = 100f;
+
             // player Á×À½ Ã³¸®
             //Actor.Health = 0;
             //Actor.actorState = Actor.ActorState.Dead;
+
         }
     }
 
