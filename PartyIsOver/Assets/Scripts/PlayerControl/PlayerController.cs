@@ -608,7 +608,7 @@ public class PlayerController : MonoBehaviourPun
                         else
                             NuclearPunch();
 
-                        photonView.RPC("DestroyEffect", RpcTarget.All, "Love_aura");
+                        
                     }
                 }
                 break;
@@ -642,6 +642,7 @@ public class PlayerController : MonoBehaviourPun
     [PunRPC]
     void RSkillDestroyEffect(string name)
     {
+        Debug.Log("RSkillDestroyEffect : " + name);
         _actor.StatusHandler.DestroyEffect(name);
     }
 
@@ -727,6 +728,7 @@ public class PlayerController : MonoBehaviourPun
 
     private void NuclearPunch()
     {
+        photonView.RPC("DestroyEffect", RpcTarget.All, "Love_aura");
         StartCoroutine(NuclearPunchDelay());
         photonView.RPC("ResetCharge", RpcTarget.All);
     }
@@ -740,6 +742,7 @@ public class PlayerController : MonoBehaviourPun
 
     private void MeowNyangPunch()
     {
+        photonView.RPC("DestroyEffect", RpcTarget.All, "Love_aura");
         StartCoroutine(MeowNyangPunchDelay());
         photonView.RPC("ResetCharge", RpcTarget.All);
     }

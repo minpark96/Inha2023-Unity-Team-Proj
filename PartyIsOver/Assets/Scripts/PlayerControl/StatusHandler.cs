@@ -132,12 +132,9 @@ public class StatusHandler : MonoBehaviourPun
 
     private void LateUpdate()
     {
-        if (effectObject != null && effectObject.name == "Stun_loop")
+        if (effectObject != null )
             photonView.RPC("MoveEffect", RpcTarget.All);
-        else if (effectObject != null && effectObject.name == "Fog_frost")
-            photonView.RPC("MoveEffect", RpcTarget.All);
-        else if (effectObject != null)
-            photonView.RPC("PlayerEffect", RpcTarget.All);
+
 
     }
 
@@ -286,7 +283,7 @@ public class StatusHandler : MonoBehaviourPun
                 case Actor.DebuffState.Drunk:
                     if(!HasDrunk)
                     {
-                        HasDrunk = true;
+                        
                         photonView.RPC("PoisonCreate", RpcTarget.All);
                     }
                     break;
@@ -589,6 +586,7 @@ public class StatusHandler : MonoBehaviourPun
     [PunRPC]
     public void DestroyEffect(string name)
     {
+        Debug.Log("In");
         GameObject go = GameObject.Find($"{name}");
         Managers.Resource.Destroy(go);
         effectObject = null;
@@ -629,6 +627,7 @@ public class StatusHandler : MonoBehaviourPun
     [PunRPC]
     public void PoisonCreate()
     {
+        HasDrunk = true;
         EffectObjectCreate("Effects/Fog_poison");
     }
 
@@ -642,31 +641,26 @@ public class StatusHandler : MonoBehaviourPun
     {
         //오브젝트 확인 하는 애가 여기 있어서 문제 있는거 같은데
         effectObject = Managers.Resource.PhotonNetworkInstantiate($"{path}");
-        effectObject.transform.position = playerTransform.position;
+        Debug.Log(effectObject.transform.parent.name);
     }
 
     [PunRPC]
     public void MoveEffect()
     {
         //LateUpdate여서 늦게 갱신이 되어서 NullReference가 떠서 같은 if 문을 넣어줌
-        if (effectObject != null && effectObject.name == "Stun_loop")
+        if (effectObject.name == "Stun_loop")
+        {
             effectObject.transform.position = new Vector3(playerTransform.position.x, playerTransform.position.y + 1, playerTransform.position.z);
-        else if (effectObject != null && effectObject.name == "Fog_frost")
+        }
+        else if (effectObject.name == "Fog_frost")
         {
             effectObject.transform.position = new Vector3(playerTransform.position.x, playerTransform.position.y - 2, playerTransform.position.z);
         }
-
-    }
-    [PunRPC]
-    public void PlayerEffect()
-    {
-
-        if (effectObject != null)
+        else
         {
             effectObject.transform.position = playerTransform.position;
-            Debug.Log(effectObject);
         }
-            Debug.Log(effectObject);
+
     }
 
     public void UpdateHealth()
