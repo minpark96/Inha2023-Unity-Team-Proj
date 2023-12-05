@@ -20,12 +20,17 @@ public class ScoreBoardUI : MonoBehaviour
     private Text[] _nickName = new Text[6];
     private int _playerNumber;
     
+    public void InitScoreBoard()
+    {
+        _scoreBoardPanel = GameObject.Find("ScoreBoard Panel");
+        _scoreBoardPanel.SetActive(false);
+    }
+
     public void SetScoreBoard()
     {
-        if (isSetup)
-            return;
+        Managers.Input.KeyboardAction -= OnKeyboardEvents;
+        Managers.Input.KeyboardAction += OnKeyboardEvents;
 
-        _scoreBoardPanel = GameObject.Find("ScoreBoard Panel");
         _playerNumber = PhotonNetwork.CurrentRoom.PlayerCount;
 
         for (int i = 0; i < _playerNumber; i++)
@@ -35,12 +40,9 @@ public class ScoreBoardUI : MonoBehaviour
             _score[i] = Info.transform.GetChild(i).GetChild(1).gameObject;
             _nickName[i] = Info.transform.GetChild(i).GetChild(2).GetComponent<Text>();
         }
-
-        Managers.Input.KeyboardAction -= OnKeyboardEvents;
-        Managers.Input.KeyboardAction += OnKeyboardEvents;
-        _scoreBoardPanel.SetActive(false);
     }
-    
+
+
     public void DisplayFixedScoreBoard()
     {
         Managers.Input.KeyboardAction -= OnKeyboardEvents;
@@ -87,7 +89,7 @@ public class ScoreBoardUI : MonoBehaviour
                 {
                     if (Input.GetKeyDown(KeyCode.Tab))
                     {
-                        OnClickScoreBoardON();
+                        SetScoreBoardActive();
                         Tab.SetActive(false);
                     }
                 }
@@ -97,7 +99,7 @@ public class ScoreBoardUI : MonoBehaviour
                 {
                     if (Input.GetKeyUp(KeyCode.Tab))
                     {
-                        OnClickScoreBoardOFF();
+                        SetScoreBoardInactive();
                         Tab.SetActive(true);
                     }
                 }
@@ -105,11 +107,11 @@ public class ScoreBoardUI : MonoBehaviour
         }
     }
 
-    void OnClickScoreBoardON()
+    void SetScoreBoardActive()
     {
         _scoreBoardPanel.SetActive(true);
     }
-    void OnClickScoreBoardOFF()
+    void SetScoreBoardInactive()
     {
         _scoreBoardPanel.SetActive(false);
     }

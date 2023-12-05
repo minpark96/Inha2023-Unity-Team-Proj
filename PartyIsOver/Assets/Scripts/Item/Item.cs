@@ -46,7 +46,7 @@ public class Item : MonoBehaviourPun
     public virtual void Use()
     {
         //포션사용
-        if (PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.LocalPlayer.IsMasterClient)
             Owner.StatusHandler.AddDamage(ItemData.UseDamageType, 0f, null);
         
         

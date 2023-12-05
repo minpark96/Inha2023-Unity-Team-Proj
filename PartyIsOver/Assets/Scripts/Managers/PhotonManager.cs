@@ -189,7 +189,7 @@ public class PhotonManager : BaseScene
     {
         Debug.Log("[OnJoinedRoom]");
 
-        if (PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
             StartCoroutine(LoadNextScene(_sceneRoom));
         }
