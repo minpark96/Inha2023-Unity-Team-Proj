@@ -273,9 +273,9 @@ public class GameCenter : BaseScene
     void UpdateMasterStatus()
     {
         if (_roomUI.PlayerReadyCount == PhotonNetwork.CurrentRoom.PlayerCount)
-            _roomUI.CanPlay = true;
+            _roomUI.ChangeMasterButton(true);
         else
-            _roomUI.CanPlay = false;
+            _roomUI.ChangeMasterButton(false);
     }
 
     void PlayerReady()

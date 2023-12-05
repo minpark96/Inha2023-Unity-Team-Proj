@@ -84,8 +84,8 @@ public class DrunkState : MonoBehaviourPun
             effectObject.transform.position = _playerTransform.position + _playerTransform.forward;
             effectObject.transform.rotation = Quaternion.LookRotation(-_playerTransform.right);
         }
-        else if(effectObject != null)
-            effectObject.transform.position = _playerTransform.position;
+        //else if(effectObject != null)
+        //    effectObject.transform.position = _playerTransform.position;
 
     }
 }
