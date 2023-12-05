@@ -296,7 +296,8 @@ public class GameCenter : BaseScene
     [PunRPC]
     void UpdatePlayerNumber(int totalPlayerNumber)
     {
-        _roomUI.UpdatePlayerNumber(totalPlayerNumber);
+        if(!PhotonNetwork.IsMasterClient)
+            _roomUI.UpdatePlayerNumber(totalPlayerNumber);
     }
 
     void UpdateMasterStatus()
