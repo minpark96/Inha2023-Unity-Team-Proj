@@ -86,6 +86,11 @@ public class PhotonManager : BaseScene
 
     public void UpdateRoomList(List<RoomInfo> list)
     {
+        if(SceneManager.GetActiveScene().name == _sceneLobby)
+        {
+            if(LobbyUI == null)
+                GameObject.Find("Canvas_Lobby").GetComponent<LobbyUI>();
+
             foreach (RoomItem item in RoomItemsList)
             {
                 Destroy(item.gameObject);
@@ -101,6 +106,7 @@ public class PhotonManager : BaseScene
                 newRoom.SetRoomName(room.Name, room.PlayerCount);
                 RoomItemsList.Add(newRoom);
             }
+        }
     }
 
     #endregion

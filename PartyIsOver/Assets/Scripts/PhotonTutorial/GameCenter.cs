@@ -17,8 +17,8 @@ public class GameCenter : BaseScene
     RoomUI _roomUI;
     ScoreBoardUI _scoreBoardUI;
 
-    MagneticField _magneticField;
-    SnowStorm _snowStorm;
+    //MagneticField _magneticField;
+    //SnowStorm _snowStorm;
     #endregion
 
     #region Private Fields
@@ -440,8 +440,8 @@ public class GameCenter : BaseScene
             AddActor(ids[i]);
         }
 
-        if (_magneticField.Actor == null)
-            _magneticField.Actor = Actors[PhotonNetwork.LocalPlayer.ActorNumber - 1];
+        //if (_magneticField.Actor == null)
+        //    _magneticField.Actor = Actors[PhotonNetwork.LocalPlayer.ActorNumber - 1];
         //if (_snowStorm.Actor == null)
             //_snowStorm.Actor = Actors[PhotonNetwork.LocalPlayer.ActorNumber - 1];
     }
@@ -455,7 +455,7 @@ public class GameCenter : BaseScene
 
         _scoreBoardUI.SetScoreBoard();
 
-        _magneticField = GameObject.Find("Magnetic Field").GetComponent<MagneticField>();
+        //_magneticField = GameObject.Find("Magnetic Field").GetComponent<MagneticField>();
         //_snowStorm = GameObject.Find("Snow Storm").GetComponent<SnowStorm>();
 
         if (RoundCount == 1)
@@ -466,7 +466,7 @@ public class GameCenter : BaseScene
                 _nicknames[PhotonNetwork.LocalPlayer.ActorNumber - 1] = PhotonNetwork.NickName;
                 _actorNumbers[PhotonNetwork.LocalPlayer.ActorNumber - 1] = PhotonNetwork.LocalPlayer.ActorNumber;
 
-                _magneticField.Actor = Actors[PhotonNetwork.LocalPlayer.ActorNumber - 1];
+                //_magneticField.Actor = Actors[PhotonNetwork.LocalPlayer.ActorNumber - 1];
                 //_snowStorm.Actor = Actors[PhotonNetwork.LocalPlayer.ActorNumber - 1];
             }
             else
@@ -665,12 +665,7 @@ public class GameCenter : BaseScene
     [PunRPC]
     void QuitRoom()
     {
-        // 여기 수정하세요
-        PhotonNetwork.Disconnect();
-        SceneManager.LoadScene("[2]Main");
-        PhotonManager.Instance.Connect();
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
+        SceneManager.LoadScene("[6]Ending");
     }
 
     [PunRPC]
