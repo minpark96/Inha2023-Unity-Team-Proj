@@ -28,6 +28,7 @@ public class PhotonManager : BaseScene
 
     public AudioSource[] AudioSources;
 
+    
     void Awake()
     {
         Init();
@@ -85,8 +86,11 @@ public class PhotonManager : BaseScene
 
     public void UpdateRoomList(List<RoomInfo> list)
     {
-        if (SceneManager.GetActiveScene().name == _sceneLobby)
+        if(SceneManager.GetActiveScene().name == _sceneLobby)
         {
+            if(LobbyUI == null)
+                GameObject.Find("Canvas_Lobby").GetComponent<LobbyUI>();
+
             foreach (RoomItem item in RoomItemsList)
             {
                 Destroy(item.gameObject);
