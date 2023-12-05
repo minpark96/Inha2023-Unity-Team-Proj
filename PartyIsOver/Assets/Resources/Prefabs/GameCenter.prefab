@@ -76,6 +76,7 @@ MonoBehaviour:
   RoundCount: 1
   LoadingCompleteCount: 0
   DestroyingCompleteCount: 0
+  IsMeowNyangPunch: 0
 --- !u!114 &-6182396937385309685
 MonoBehaviour:
   m_ObjectHideFlags: 0
