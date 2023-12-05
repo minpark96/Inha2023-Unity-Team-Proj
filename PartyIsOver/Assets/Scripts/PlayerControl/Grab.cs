@@ -455,6 +455,7 @@ public class Grab : MonoBehaviourPun
         if(side == 0)
         {
             _leftSearchTarget = PhotonNetwork.GetPhotonView(id).transform.GetComponent<InteractableObject>();
+            Debug.Log("target");
         }
         else if(side == 1)
         {
@@ -855,7 +856,6 @@ public class Grab : MonoBehaviourPun
             if (_leftSearchTarget == null)
             {
                 Debug.Log("lllllllllllllllllllll");
-                return;
             }
             _grabJointLeft.connectedBody = _leftSearchTarget.GetComponent<Rigidbody>();
             //_grabJointLeft.breakForce = 9999999;
@@ -888,7 +888,6 @@ public class Grab : MonoBehaviourPun
             if (_rightSearchTarget == null)
             {
                 Debug.Log("lllllllllllllllllllll");
-                return;
             }
             _grabJointRight.connectedBody = _rightSearchTarget.GetComponent<Rigidbody>();
             //_grabJointRight.breakForce = 9001;
