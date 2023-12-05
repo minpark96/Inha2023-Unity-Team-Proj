@@ -37,7 +37,6 @@ public class GameCenter : BaseScene
     string _graveStonePath = "Item/GraveStone";
 
     bool _isChecked;
-    bool _isDelayed;
 
     public int[] _scores = new int[Define.MAX_PLAYERS_PER_ROOM] { 0, 0, 0, 0, 0, 0 };
     public string[] _nicknames = new string[Define.MAX_PLAYERS_PER_ROOM] { "", "", "", "", "", "" };
@@ -214,8 +213,9 @@ public class GameCenter : BaseScene
         else
             _roomUI.PlayButton.SetActive(false);
 
+        _roomUI.PlayerCount = PhotonNetwork.CurrentRoom.PlayerCount;
 
-
+        photonView.RPC("UpdatePlayerNumber", RpcTarget.All, _roomUI.PlayerCount);
     }
 
     void Update()
@@ -235,6 +235,8 @@ public class GameCenter : BaseScene
                         PlayerReady();
                         _isChecked = true;
                     }
+
+                    photonView.RPC("UpdatePlayerIsReady", RpcTarget.All, _roomUI.ActorNumber, true);
                 }
                 else
                 {
@@ -243,22 +245,30 @@ public class GameCenter : BaseScene
                         PlayerReady();
                         _isChecked = false;
                     }
+
+                    photonView.RPC("UpdatePlayerIsReady", RpcTarget.All, _roomUI.ActorNumber, false);
                 }
             }
         }
     }
 
-    IEnumerator UpdateScoreBoardWithDelay()
+    [PunRPC]
+    void UpdatePlayerIsReady(int actorNumber, bool isReady)
     {
-        yield return new WaitForSeconds(DelayInUpdateScoreBoard);
-        SetScoreBoard();
-        _isDelayed = false;
+        if (isReady)
+            _roomUI.SpawnPoint.transform.GetChild(actorNumber - 1).GetChild(0).gameObject.SetActive(true);
+        else
+            _roomUI.SpawnPoint.transform.GetChild(actorNumber - 1).GetChild(0).gameObject.SetActive(false);
     }
 
-    void PlayerReady()
+
+    [PunRPC]
+    void UpdatePlayerNumber(int totalPlayerNumber)
     {
-        photonView.RPC("UpdateCount", RpcTarget.MasterClient, _roomUI.Ready);
+        _roomUI.UpdatePlayerNumber(totalPlayerNumber);
     }
+
+  
 
     void UpdateMasterStatus()
     {
@@ -266,6 +276,11 @@ public class GameCenter : BaseScene
             _roomUI.CanPlay = true;
         else
             _roomUI.CanPlay = false;
+    }
+
+    void PlayerReady()
+    {
+        photonView.RPC("UpdateCount", RpcTarget.MasterClient, _roomUI.Ready);
     }
 
     [PunRPC]
@@ -463,15 +478,6 @@ public class GameCenter : BaseScene
         {
             _scoreBoardUI.ChangeScoreBoard(_scores, _nicknames, _actorNumbers);
         }
-
-        //if (!_isDelayed)
-        //{
-        //    if (PhotonNetwork.IsMasterClient)
-        //    {
-        //        _isDelayed = true;
-        //        StartCoroutine(UpdateScoreBoardWithDelay());
-        //    }
-        //}
     }
 
     #endregion
