@@ -270,6 +270,7 @@ public class StatusHandler : MonoBehaviourPun
                 case Actor.DebuffState.Drunk:
                     if(!HasDrunk)
                     {
+                        HasDrunk = true;
                         photonView.RPC("PoisonCreate", RpcTarget.All);
                     }
                     break;
@@ -526,6 +527,7 @@ public class StatusHandler : MonoBehaviourPun
         
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Shock;
+
         DestroyEffect("Lightning_aura");
 
         actor.InvokeStatusChangeEvent();
@@ -606,7 +608,6 @@ public class StatusHandler : MonoBehaviourPun
     [PunRPC]
     public void PoisonCreate()
     {
-        HasDrunk = true;
         EffectObjectCreate("Effects/Fog_poison");
     }
 
@@ -615,8 +616,9 @@ public class StatusHandler : MonoBehaviourPun
         EffectObjectCreate("Effects/Wet");
     }
 
-    void EffectObjectCreate(string path)
+    public void EffectObjectCreate(string path)
     {
+        //오브젝트 확인 하는 애가 여기 있어서 문제 있는거 같은데
         effectObject = Managers.Resource.PhotonNetworkInstantiate($"{path}");
         effectObject.transform.position = playerTransform.position;
     }
