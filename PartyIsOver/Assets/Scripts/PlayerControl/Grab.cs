@@ -63,7 +63,10 @@ public class Grab : MonoBehaviourPun
     private List<ConfigurableJoint> _configurableJoints = new List<ConfigurableJoint>();
     private FixedJoint[] _armJoints = new FixedJoint[6];
 
-
+    private PlayerController.Side _side = PlayerController.Side.Right;
+    private bool _isAttackReady = true;
+    private float _coolTime =1f;
+    private float _coolTimeTimer = 0f;
     public enum Side
     {
         Left = 0,
@@ -81,7 +84,7 @@ public class Grab : MonoBehaviourPun
     {
         _grabDelayTimer -= Time.deltaTime;
         GrabStateCheck();
-
+        CheckCoolTime();
     }
 
     private void FixedUpdate()
@@ -113,6 +116,15 @@ public class Grab : MonoBehaviourPun
 
         PlayerStatData statData = Managers.Resource.Load<PlayerStatData>("ScriptableObject/PlayerStatData");
         _throwingForce = statData.ThrowingForce;
+    }
+
+    void CheckCoolTime()
+    {
+        _coolTimeTimer -= Time.deltaTime;
+        if(_coolTimeTimer < 0)
+        {
+            _isAttackReady = true;
+        }    
     }
 
     void GrabStateCheck()
@@ -201,7 +213,6 @@ public class Grab : MonoBehaviourPun
 
         _actor.BodyHandler.Hip.PartRigidbody.AddForce(Vector3.up * 100f, ForceMode.VelocityChange);
         _grabDelayTimer = 0.7f;
-
     }
 
     public void OnMouseEvent_EquipItem(Define.MouseEvent evt)
@@ -225,8 +236,11 @@ public class Grab : MonoBehaviourPun
                 {
                     ItemType type = EquipItem.GetComponent<Item>().ItemData.ItemType;
 
-                    if (Input.GetMouseButtonUp(0))
+                    if (Input.GetMouseButtonUp(0) && _isAttackReady)
                     {
+                        _coolTimeTimer = _coolTime;
+                        _isAttackReady = false;
+
                         switch (type)
                         {
                             case ItemType.OneHanded:
@@ -250,14 +264,13 @@ public class Grab : MonoBehaviourPun
                     }
                     if (Input.GetMouseButtonUp(1))
                     {
-                        GrabResetTrigger();
-
-                        switch(type)
+                        if(type == ItemType.Potion)
                         {
-                            case ItemType.Potion:
-                                photonView.RPC("PotionThrowAnim",RpcTarget.All);
-                                //StartCoroutine(PotionThrowAnim());
-                                break;
+                            photonView.RPC("PotionThrowAnim", RpcTarget.All);
+                        }
+                        else
+                        {
+                            GrabResetTrigger();
                         }
                     }
                 }
@@ -317,13 +330,22 @@ public class Grab : MonoBehaviourPun
 
         if (EquipItem.GetComponent<Item>().ItemData.ItemType == ItemType.Ranged)
         {
-            _jointLeft.targetPosition = EquipItem.GetComponent<Item>().TwoHandedPos.position;
-            _jointRight.targetPosition = EquipItem.GetComponent<Item>().OneHandedPos.position;
+            //_jointLeft.targetPosition = EquipItem.GetComponent<Item>().TwoHandedPos.position;
+            //_jointRight.targetPosition = EquipItem.GetComponent<Item>().OneHandedPos.position;
         }
         else if (EquipItem.GetComponent<Item>().ItemData.ItemType == ItemType.TwoHanded)
         {
-            //_jointLeft.targetPosition = EquipItem.GetComponent<Item>().TwoHandedPos.position;
-            //_jointRight.targetPosition = EquipItem.GetComponent<Item>().TwoHandedPos.position;
+            if(_side == PlayerController.Side.Left)
+            {
+                //_jointLeft.targetPosition = EquipItem.GetComponent<Item>().TwoHandedPos.position;
+                //_jointRight.targetPosition = EquipItem.GetComponent<Item>().OneHandedPos.position;
+            }
+            else
+            {
+                //_jointLeft.targetPosition = EquipItem.GetComponent<Item>().OneHandedPos.position;
+                //_jointRight.targetPosition = EquipItem.GetComponent<Item>().TwoHandedPos.position;
+            }
+
         }
         else if (EquipItem.GetComponent<Item>().ItemData.ItemType == ItemType.OneHanded)
         {
@@ -406,21 +428,47 @@ public class Grab : MonoBehaviourPun
     }
 
 
-    [PunRPC]
     private void SearchTarget()
     {
         //타겟서치 태그설정 주의할것
         _leftSearchTarget = _targetingHandler.SearchTarget(Side.Left);
         _rightSearchTarget = _targetingHandler.SearchTarget(Side.Right);
+
+        if(_leftSearchTarget != null && _leftSearchTarget.GetComponent<PhotonView>() != null)
+        {
+            int id = _leftSearchTarget.GetComponent<PhotonView>().ViewID;
+            photonView.RPC("BroadcastFoundTarget", RpcTarget.All,0,id);
+
+        }
+        if (_rightSearchTarget != null && _rightSearchTarget.GetComponent<PhotonView>() != null)
+        {
+            int id = _rightSearchTarget.GetComponent<PhotonView>().ViewID;
+            photonView.RPC("BroadcastFoundTarget", RpcTarget.All,1,id);
+
+        }
+
     }
-    
+
+    [PunRPC]
+    private void BroadcastFoundTarget(int side, int id)
+    {
+        if(side == 0)
+        {
+            _leftSearchTarget = PhotonNetwork.GetPhotonView(id).transform.GetComponent<InteractableObject>();
+        }
+        else if(side == 1)
+        {
+            _rightSearchTarget = PhotonNetwork.GetPhotonView(id).transform.GetComponent<InteractableObject>();
+        }
+    }
+
+
     public void Grabbing()
     {
         if (_grabDelayTimer > 0f)
             return;
 
-
-        photonView.RPC("SearchTarget", RpcTarget.All);
+        SearchTarget();
         //Debug.Log(_leftSearchTarget);
         //Debug.Log(_rightSearchTarget);
 
@@ -616,15 +664,13 @@ public class Grab : MonoBehaviourPun
     void UsingItemSetting(int id)
     {
         _grabDelayTimer = 0.5f;
-         
+        
 
         PhotonView pv = PhotonNetwork.GetPhotonView(id);
 
         pv.GetComponent<Item>().Owner = GetComponent<Actor>();
-        if (pv.GetComponent<Item>().ItemData.ItemType == ItemType.OneHanded ||
-            pv.GetComponent<Item>().ItemData.ItemType == ItemType.TwoHanded)
-            pv.GetComponent<InteractableObject>().damageModifier = pv.GetComponent<Item>().ItemData.UseDamageType;
-        pv.GetComponent<Rigidbody>().mass = 0.1f;
+        pv.GetComponent<Rigidbody>().mass = 0.3f;
+        _coolTime = pv.GetComponent<Item>().ItemData.CoolTime;
     }
 
     bool HandCollisionCheck(Side side)
@@ -693,9 +739,15 @@ public class Grab : MonoBehaviourPun
             case ItemType.TwoHanded:
                 //아이템의 헤드부분이 해당 방향벡터를 바라보게
                 if (isHeadLeft)
+                {
                     targetPosition = -_jointChest.transform.right;
+                    photonView.RPC("CheckItemDir", RpcTarget.All, (int)PlayerController.Side.Right);
+                }
                 else
+                {
                     targetPosition = _jointChest.transform.right;
+                    photonView.RPC("CheckItemDir", RpcTarget.All, (int)PlayerController.Side.Left);
+                }
                 break;
             case ItemType.OneHanded:
                 targetPosition = _jointChest.transform.forward;
@@ -712,7 +764,6 @@ public class Grab : MonoBehaviourPun
                 break;
             case ItemType.Ranged:
                 {
-
                     int id = 0;
                     if (item.transform.GetComponent<PhotonView>() != null)
                         id = item.transform.GetComponent<PhotonView>().ViewID;
@@ -732,7 +783,11 @@ public class Grab : MonoBehaviourPun
             photonView.RPC("SyncGrapItemPosition", RpcTarget.All, targetPosition, itemViewID);
             photonView.RPC("GrabPose", RpcTarget.All, itemViewID);
         }
-
+    }
+    [PunRPC]
+    void CheckItemDir(int dir)
+    {
+        _side = (PlayerController.Side)dir;
     }
 
     [PunRPC]
@@ -803,8 +858,8 @@ public class Grab : MonoBehaviourPun
                 return;
             }
             _grabJointLeft.connectedBody = _leftSearchTarget.GetComponent<Rigidbody>();
-            _grabJointLeft.breakForce = 9001;
-
+            //_grabJointLeft.breakForce = 9999999;
+            
             //if (pv != null)
             //    _leftSearchTarget = pv.transform.GetComponent<InteractableObject>();
 
@@ -820,13 +875,12 @@ public class Grab : MonoBehaviourPun
                 _jointLeft.angularZMotion = ConfigurableJointMotion.Locked;
                 _jointLeftForeArm.angularZMotion = ConfigurableJointMotion.Locked;
                 _jointLeftUpperArm.angularZMotion = ConfigurableJointMotion.Locked;
+                //_grabJointLeft.breakForce = 9999999;
             }
 
         }
         else if ((Side)side == Side.Right)
         {
-            
-
             _grabJointRight = _rightHandRigid.AddComponent<FixedJoint>();
 
             //if (pv != null)
@@ -837,7 +891,7 @@ public class Grab : MonoBehaviourPun
                 return;
             }
             _grabJointRight.connectedBody = _rightSearchTarget.GetComponent<Rigidbody>();
-            _grabJointRight.breakForce = 9001;
+            //_grabJointRight.breakForce = 9001;
 
             if (_rightSearchTarget != null)
                 RightGrabObject = _rightSearchTarget.gameObject;
@@ -850,7 +904,7 @@ public class Grab : MonoBehaviourPun
                 _jointRight.angularZMotion = ConfigurableJointMotion.Locked;
                 _jointRightForeArm.angularZMotion = ConfigurableJointMotion.Locked;
                 _jointRightUpperArm.angularZMotion = ConfigurableJointMotion.Locked;
-
+                //_grabJointRight.breakForce = 9999999;
 
             }
         }
@@ -902,10 +956,13 @@ public class Grab : MonoBehaviourPun
 
     IEnumerator HorizontalAttack()
     {
+        if(PhotonNetwork.IsMasterClient)
+            EquipItem.GetComponent<InteractableObject>().ChangeUseTypeTrigger(0f, 1.1f);
+
         _jointLeft.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 3, 0, 0));
         _jointRight.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 3, 0, 0));
 
-        yield return _actor.PlayerController.ItemTwoHand(PlayerController.Side.Right, 0.07f, 0.1f, 0.5f, 0.1f, 3f);
+        yield return _actor.PlayerController.ItemTwoHand(_side, 0.07f, 0.1f, 0.5f, 0.1f, 3f);
     }
 
     IEnumerator UsePotionAnim()
@@ -917,21 +974,37 @@ public class Grab : MonoBehaviourPun
 
         photonView.RPC("UseItem", RpcTarget.All);
         GrabResetTrigger();
+
     }
 
     [PunRPC]
     IEnumerator PotionThrowAnim()
     {
+        InteractableObject obj = EquipItem.GetComponent<InteractableObject>();
+
         _jointLeft.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 3, 0, 0));
         _jointRight.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 3, 0, 0));
 
         yield return _actor.PlayerController.PotionThrow(0.07f, 0.1f, 0.3f, 0.1f);
+
+        if (PhotonNetwork.LocalPlayer.IsMasterClient)
+        {
+            obj.GetComponent<Item>().ThrowItem();
+        }
+        obj.gameObject.SetActive(false);
+
+        yield return new WaitForSeconds(1);
+        GrabResetTrigger();
+        Destroy(obj.gameObject, 1f);
+
     }
 
     [PunRPC]
     private void UseItem()
     {
         EquipItem.GetComponent<Item>().Use();
+        _isAttackReady = false;
+        
     }
 
     [PunRPC]

@@ -5,9 +5,12 @@ using Photon.Pun;
 
 public class RangeWeapon : Item
 {
+    private int BulletCount = 10;
+
     public override void Use()
     {
-        Fire();
+        if(BulletCount-- > 0)
+            Fire();
     }
 
     void Fire()
