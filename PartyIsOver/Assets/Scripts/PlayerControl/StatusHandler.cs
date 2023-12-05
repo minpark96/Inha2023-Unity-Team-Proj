@@ -394,7 +394,6 @@ public class StatusHandler : MonoBehaviourPun
 
         // 지침 해제
         _hasExhausted = false;
-        photonView.RPC("DestroyEffect", RpcTarget.All, "Wet");
 
         //DestroyEffect("Wet");
 
@@ -403,6 +402,8 @@ public class StatusHandler : MonoBehaviourPun
         angularXDrive.positionSpring = _xPosSpringAry[0];
 
         actor.BodyHandler.BodyParts[(int)Define.BodyPart.Head].PartJoint.angularXDrive = angularXDrive;
+        
+        photonView.RPC("DestroyEffect", RpcTarget.All, "Wet");
 
         actor.InvokeStatusChangeEvent();
         _audioClip = null;
