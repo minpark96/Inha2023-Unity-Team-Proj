@@ -30,7 +30,7 @@ public class ScoreBoardUI : MonoBehaviour
     {
         Managers.Input.KeyboardAction -= OnKeyboardEvents;
         Managers.Input.KeyboardAction += OnKeyboardEvents;
-
+        Debug.Log("SetScoreBoard");
         _playerNumber = PhotonNetwork.CurrentRoom.PlayerCount;
 
         for (int i = 0; i < _playerNumber; i++)

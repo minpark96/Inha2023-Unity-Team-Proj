@@ -7,6 +7,7 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Photon.Realtime;
+using static RoomUI;
 
 public class RoomUI : MonoBehaviour
 {
@@ -40,6 +41,13 @@ public class RoomUI : MonoBehaviour
     public int ActorNumber;
 
     string _arenaName = "PO_Map_KYH";
+
+    public delegate void ChangeSkillEvent(bool isChange);
+    public event ChangeSkillEvent OnChangeSkiilEvent;
+    public delegate void LeaveRoom();
+    public event LeaveRoom OnLeaveRoom;
+    public delegate void ReadyEvent(bool isReady);
+    public event ReadyEvent OnReadyEvent;
 
     void Start()
     {
@@ -90,11 +98,13 @@ public class RoomUI : MonoBehaviour
         }
     }
 
-    void Update()
+    public void ChangeMasterButton(bool canPlay)
     {
         if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
-            if (CanPlay)
+            CanPlay = canPlay;
+
+            if (canPlay)
                 PlayButton.GetComponentInChildren<Image>().sprite = GamePlayOn;
             else
                 PlayButton.GetComponentInChildren<Image>().sprite = GamePlayOff;
@@ -114,8 +124,9 @@ public class RoomUI : MonoBehaviour
     {
         if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
-            if(CanPlay)
+            if (CanPlay)
             {
+                OnLeaveRoom();
                 PhotonNetwork.LoadLevel(_arenaName);
                 PhotonNetwork.CurrentRoom.IsOpen = false;
             }
@@ -123,6 +134,7 @@ public class RoomUI : MonoBehaviour
         else
         {
             Ready = !Ready;
+            OnReadyEvent(Ready);
 
             if (!Ready)
             {
@@ -158,6 +170,7 @@ public class RoomUI : MonoBehaviour
             return;
 
         SkillChange = !SkillChange;
+        OnChangeSkiilEvent(SkillChange);
         AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-050");
         Managers.Sound.Play(uiSound, Define.Sound.UISound);
 
@@ -172,8 +185,4 @@ public class RoomUI : MonoBehaviour
             SkillName.text = "Â÷Â¡ ½ºÅ³\n\n\n\nÇÙÆÝÄ¡";
         }
     }
-
-
-
-
 }
