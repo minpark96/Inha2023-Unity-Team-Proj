@@ -637,7 +637,7 @@ public class GameCenter : BaseScene
     {
         DestroyingCompleteCount++;
         Debug.Log("Num: " + actorNumber + " Destroying Complete!!");
-        Debug.Log("Current DestroyingCompleteCount: " + LoadingCompleteCount);
+        Debug.Log("Current DestroyingCompleteCount: " + DestroyingCompleteCount);
 
         if (DestroyingCompleteCount == PhotonNetwork.CurrentRoom.PlayerCount)
         {
