@@ -30,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 786889566517218707}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4850381029586569017}
@@ -9728,6 +9728,7 @@ GameObject:
   - component: {fileID: 4850381029571345987}
   - component: {fileID: 4850381029572804213}
   - component: {fileID: 7047372503827900953}
+  - component: {fileID: 8370910724387794749}
   m_Layer: 0
   m_Name: fire
   m_TagString: Untagged
@@ -14522,6 +14523,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 2.0918295, y: 2.126217, z: 4.2656226}
   m_Center: {x: 0.016504487, y: 0.13972896, z: 1.8434453}
+--- !u!114 &8370910724387794749
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4850381029586326573}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 015abfabc52bdf8489d8523bc44d3a3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageModifier: 9
 --- !u!1 &4850381029586337973
 GameObject:
   m_ObjectHideFlags: 0

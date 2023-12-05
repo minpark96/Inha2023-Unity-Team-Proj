@@ -17,4 +17,4 @@ MonoBehaviour:
   _projectile: {fileID: -4489562901240129692, guid: 4cd04d9bbc2255147a7d948a98b96770, type: 3}
   _useDamageType: 12
   _damage: 0
-  _coolTime: 0
+  _coolTime: 0.35
