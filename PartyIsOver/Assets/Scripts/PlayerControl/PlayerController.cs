@@ -619,12 +619,6 @@ public class PlayerController : MonoBehaviourPun
 
                     if (Input.GetKey(KeyCode.R) && _actor.Stamina >= 0)
                     {
-                        if(_actor.debuffState == DebuffState.Ice || _actor.debuffState == DebuffState.Shock || _actor.debuffState == DebuffState.Stun || _actor.debuffState == DebuffState.Drunk)
-                        {
-                            _isRSkillCheck = false;
-                            photonView.RPC("ResetCharge", RpcTarget.All);
-                        }
-
                         if (_actor.debuffState == DebuffState.Drunk)
                         {
                             StartCoroutine(_drunkState.DrunkActionReady());
@@ -793,6 +787,16 @@ public class PlayerController : MonoBehaviourPun
     #region FixedUpdate
     private void FixedUpdate()
     {
+        if(_isRSkillCheck == true)
+        {
+            if (_actor.debuffState == DebuffState.Stun || _actor.debuffState == DebuffState.Ice || _actor.debuffState == DebuffState.Shock || _actor.debuffState == DebuffState.Drunk)
+            {
+                photonView.RPC("ResetCharge", RpcTarget.All);
+                _isRSkillCheck = false;
+            }
+        }
+        
+
         if (!photonView.IsMine || _actor.actorState == ActorState.Dead) return;
 
         if (isAI)

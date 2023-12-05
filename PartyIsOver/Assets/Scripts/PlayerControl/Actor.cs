@@ -224,7 +224,17 @@ public class Actor : MonoBehaviourPun, IPunObservable
         if (accumulatedTime >= currentRecoveryTime)
         {
             if (PlayerController.isRun || GrabState == GrabState.Climb)
-                Stamina -= 1;
+            {
+                if(debuffState == Actor.DebuffState.Ice || debuffState == Actor.DebuffState.Shock)
+                {
+                    Stamina -= 0;
+                    GrabState = GrabState.None;
+                    PlayerController.isRun = false;
+                }
+                else
+                    Stamina -= 1;
+
+            }
             else if(PlayerController._isRSkillCheck || PlayerController.isHeading || PlayerController._isCoroutineDrop)
                 Stamina += 0;
             else
