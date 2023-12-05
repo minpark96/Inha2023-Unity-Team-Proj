@@ -108,7 +108,23 @@ public class StatusHandler : MonoBehaviourPun
             if (!_hasExhausted)
             {
                 actor.debuffState |= Actor.DebuffState.Exhausted;
+                if(actor.GrabState != Define.GrabState.PlayerLift)
+                {
+                    actor.GrabState = Define.GrabState.None;
+                    actor.Grab.GrabResetTrigger();
+                }
                 photonView.RPC("Exhausted", RpcTarget.All, _exhaustedTime);
+            }
+        }
+        else
+        {
+            if(_hasExhausted)
+            {
+                if (actor.GrabState != Define.GrabState.PlayerLift)
+                {
+                    actor.GrabState = Define.GrabState.None;
+                    actor.Grab.GrabResetTrigger();
+                }
             }
         }
     }
@@ -360,8 +376,10 @@ public class StatusHandler : MonoBehaviourPun
     IEnumerator Exhausted(float delay)
     {
         // 지침
+        photonView.RPC("WetCreate", RpcTarget.All);
+
+        //WetCreate();
         _hasExhausted = true;
-        WetCreate();
         actor.actorState = Actor.ActorState.Debuff;
         JointDrive angularXDrive;
 
@@ -376,7 +394,9 @@ public class StatusHandler : MonoBehaviourPun
 
         // 지침 해제
         _hasExhausted = false;
-        DestroyEffect("Wet");
+        photonView.RPC("DestroyEffect", RpcTarget.All, "Wet");
+
+        //DestroyEffect("Wet");
 
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Exhausted;
@@ -611,6 +631,7 @@ public class StatusHandler : MonoBehaviourPun
         EffectObjectCreate("Effects/Fog_poison");
     }
 
+    [PunRPC]
     public void WetCreate()
     {
         EffectObjectCreate("Effects/Wet");
@@ -638,8 +659,13 @@ public class StatusHandler : MonoBehaviourPun
     [PunRPC]
     public void PlayerEffect()
     {
+
         if (effectObject != null)
+        {
             effectObject.transform.position = playerTransform.position;
+            Debug.Log(effectObject);
+        }
+            Debug.Log(effectObject);
     }
 
     public void UpdateHealth()

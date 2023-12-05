@@ -218,6 +218,12 @@ public class Actor : MonoBehaviourPun, IPunObservable
     {
         if (!photonView.IsMine || actorState == ActorState.Dead) return;
 
+        if(Stamina <= 0)
+        {
+            Grab.GrabResetTrigger();
+            GrabState = GrabState.None;
+        }
+
         RecoveryStamina();
 
         accumulatedTime += Time.fixedDeltaTime;
@@ -228,6 +234,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
                 if(debuffState == Actor.DebuffState.Ice || debuffState == Actor.DebuffState.Shock)
                 {
                     Stamina -= 0;
+                    Grab.GrabResetTrigger();
                     GrabState = GrabState.None;
                     PlayerController.isRun = false;
                 }

@@ -202,7 +202,7 @@ public class CollisionHandler : MonoBehaviourPun
                 damage *= _punchDamage;
                 {
                     photonView.RPC("PlayerEffectSound", RpcTarget.All, "PlayerEffect/SFX_ArrowShot_Hit");
-                    photonView.RPC("PlayerEffectCreate", RpcTarget.All, "Effects/PS_VFX_Dash_Variant");
+                    //photonView.RPC("PlayerEffectCreate", RpcTarget.All, "Effects/PS_VFX_Dash_Variant");
                 }
                 break;
             case InteractableObject.Damage.DropKick:
@@ -257,7 +257,6 @@ public class CollisionHandler : MonoBehaviourPun
         if (collision.collider.gameObject.layer != LayerMask.NameToLayer("Ground") && !actor.StatusHandler.invulnerable)
             DamageCheck(collision);
     }
-  
 
     [PunRPC]
     void AddForceAttackedTarget(int objViewId, Vector3 normal, int damageModifier, float itemDamage)
