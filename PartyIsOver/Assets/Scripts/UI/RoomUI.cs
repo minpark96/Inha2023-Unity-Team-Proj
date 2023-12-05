@@ -46,6 +46,8 @@ public class RoomUI : MonoBehaviour
     public event ChangeSkillEvent OnChangeSkiilEvent;
     public delegate void LeaveRoom();
     public event LeaveRoom OnLeaveRoom;
+    public delegate void ReadyEvent(bool isReady);
+    public event ReadyEvent OnReadyEvent;
 
     void Start()
     {
@@ -130,6 +132,7 @@ public class RoomUI : MonoBehaviour
         else
         {
             Ready = !Ready;
+            OnReadyEvent(Ready);
 
             if (!Ready)
             {

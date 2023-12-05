@@ -222,6 +222,8 @@ public class GameCenter : BaseScene
         _roomUI.OnChangeSkiilEvent += ToggleSkillSelection;
         _roomUI.OnLeaveRoom -= LeaveRoom;
         _roomUI.OnLeaveRoom += LeaveRoom;
+        _roomUI.OnReadyEvent -= AnnouncePlayerReady;
+        _roomUI.OnReadyEvent += AnnouncePlayerReady;
 
         photonView.RPC("UpdatePlayerNumber", RpcTarget.All, _roomUI.PlayerCount);
     }
@@ -239,45 +241,47 @@ public class GameCenter : BaseScene
     [PunRPC]
     void UnsubscribeRoomEvent()
     {
+        _roomUI.OnChangeSkiilEvent -= ToggleSkillSelection;
         _roomUI.OnLeaveRoom -= LeaveRoom;
+        _roomUI.OnReadyEvent -= AnnouncePlayerReady;
     }
 
-    void Update()
-    {
-        if (SceneManager.GetActiveScene().name == _roomName)
-        {
-            if (PhotonNetwork.LocalPlayer.IsMasterClient)
-            {
-                UpdateMasterStatus();
-            }
-            else
-            {
-                if (_roomUI.Ready == true)
-                {
-                    if (_isChecked == false)
-                    {
-                        PlayerReady();
-                        _isChecked = true;
-                    }
+    //void Update()
+    //{
+    //    if (SceneManager.GetActiveScene().name == _roomName)
+    //    {
+    //        if (PhotonNetwork.LocalPlayer.IsMasterClient)
+    //        {
+    //            UpdateMasterStatus();
+    //        }
+    //        else
+    //        {
+    //            if (_roomUI.Ready == true)
+    //            {
+    //                if (_isChecked == false)
+    //                {
+    //                    AnnouncePlayerReady();
+    //                    _isChecked = true;
+    //                }
 
-                    photonView.RPC("UpdatePlayerIsReady", RpcTarget.All, _roomUI.ActorNumber, true);
-                }
-                else
-                {
-                    if (_isChecked == true)
-                    {
-                        PlayerReady();
-                        _isChecked = false;
-                    }
+    //                photonView.RPC("UpdatePlayerReady", RpcTarget.All, _roomUI.ActorNumber, true);
+    //            }
+    //            else
+    //            {
+    //                if (_isChecked == true)
+    //                {
+    //                    AnnouncePlayerReady();
+    //                    _isChecked = false;
+    //                }
 
-                    photonView.RPC("UpdatePlayerIsReady", RpcTarget.All, _roomUI.ActorNumber, false);
-                }
-            }
-        }
-    }
+    //                photonView.RPC("UpdatePlayerReady", RpcTarget.All, _roomUI.ActorNumber, false);
+    //            }
+    //        }
+    //    }
+    //}
 
     [PunRPC]
-    void UpdatePlayerIsReady(int actorNumber, bool isReady)
+    void UpdatePlayerReady(int actorNumber, bool isReady)
     {
         if (isReady)
             _roomUI.SpawnPoint.transform.GetChild(actorNumber - 1).GetChild(0).gameObject.SetActive(true);
@@ -285,14 +289,11 @@ public class GameCenter : BaseScene
             _roomUI.SpawnPoint.transform.GetChild(actorNumber - 1).GetChild(0).gameObject.SetActive(false);
     }
 
-
     [PunRPC]
     void UpdatePlayerNumber(int totalPlayerNumber)
     {
         _roomUI.UpdatePlayerNumber(totalPlayerNumber);
     }
-
-  
 
     void UpdateMasterStatus()
     {
@@ -302,9 +303,10 @@ public class GameCenter : BaseScene
             _roomUI.CanPlay = false;
     }
 
-    void PlayerReady()
+    void AnnouncePlayerReady(bool isReady)
     {
-        photonView.RPC("UpdateCount", RpcTarget.MasterClient, _roomUI.Ready);
+        photonView.RPC("UpdateCount", RpcTarget.MasterClient, isReady);
+        photonView.RPC("UpdatePlayerReady", RpcTarget.All, _roomUI.ActorNumber, isReady);
     }
 
     [PunRPC]
@@ -314,6 +316,11 @@ public class GameCenter : BaseScene
             _roomUI.PlayerReadyCount++;
         else
             _roomUI.PlayerReadyCount--;
+
+        if (PhotonNetwork.LocalPlayer.IsMasterClient)
+        {
+            UpdateMasterStatus();
+        }
     }
 
     #endregion
