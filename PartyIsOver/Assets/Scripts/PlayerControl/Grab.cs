@@ -428,21 +428,47 @@ public class Grab : MonoBehaviourPun
     }
 
 
-    [PunRPC]
     private void SearchTarget()
     {
         //타겟서치 태그설정 주의할것
         _leftSearchTarget = _targetingHandler.SearchTarget(Side.Left);
         _rightSearchTarget = _targetingHandler.SearchTarget(Side.Right);
+
+        if(_leftSearchTarget != null && _leftSearchTarget.GetComponent<PhotonView>() != null)
+        {
+            int id = _leftSearchTarget.GetComponent<PhotonView>().ViewID;
+            photonView.RPC("BroadcastFoundTarget", RpcTarget.All,0,id);
+
+        }
+        if (_rightSearchTarget != null && _rightSearchTarget.GetComponent<PhotonView>() != null)
+        {
+            int id = _rightSearchTarget.GetComponent<PhotonView>().ViewID;
+            photonView.RPC("BroadcastFoundTarget", RpcTarget.All,1,id);
+
+        }
+
     }
-    
+
+    [PunRPC]
+    private void BroadcastFoundTarget(int side, int id)
+    {
+        if(side == 0)
+        {
+            _leftSearchTarget = PhotonNetwork.GetPhotonView(id).transform.GetComponent<InteractableObject>();
+        }
+        else if(side == 1)
+        {
+            _rightSearchTarget = PhotonNetwork.GetPhotonView(id).transform.GetComponent<InteractableObject>();
+        }
+    }
+
+
     public void Grabbing()
     {
         if (_grabDelayTimer > 0f)
             return;
 
-
-        photonView.RPC("SearchTarget", RpcTarget.All);
+        SearchTarget();
         //Debug.Log(_leftSearchTarget);
         //Debug.Log(_rightSearchTarget);
 
