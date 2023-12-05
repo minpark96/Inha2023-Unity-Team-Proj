@@ -17,6 +17,8 @@ public class GameCenter : BaseScene
     [SerializeField]
     RoomUI _roomUI;
     ScoreBoardUI _scoreBoardUI;
+    [SerializeField]
+    EndingUI _endingUI;
 
     //MagneticField _magneticField;
     //SnowStorm _snowStorm;
@@ -80,12 +82,14 @@ public class GameCenter : BaseScene
 
     public int AlivePlayerCount = 1;
     public int RoundCount = 1;
-    public const int MAX_ROUND = 3;
+    public const int MAX_ROUND = 2;
 
     public int LoadingCompleteCount = 0;
     public int DestroyingCompleteCount = 0;
+    public int EndingCount = 0;
 
     public bool IsMeowNyangPunch = false;
+    public int winner;
 
     #endregion
 
@@ -356,6 +360,43 @@ public class GameCenter : BaseScene
             //    photonView.RPC("SendDefaultInfo", RpcTarget.All);
             //}
         }
+
+        if(scene.name == "[6]Ending")
+        {
+            photonView.RPC("EndingComplete", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber);
+
+        }
+    }
+
+    [PunRPC]
+    void EndingComplete(int actorNumber)
+    {
+        EndingCount++;
+        Debug.Log("Num: " + actorNumber + " Loading Complete!!");
+        Debug.Log("Current LoadingCompleteCount: " + EndingCount);
+
+        if (EndingCount == PhotonNetwork.CurrentRoom.PlayerCount)
+        {
+            Debug.Log("End Game");
+            photonView.RPC("InitEndingScene", RpcTarget.All);
+            EndingCount = 0;
+        }
+    }
+
+    [PunRPC]
+    void InitEndingScene()
+    {
+        int max1 = _scores[0];
+
+        for (int i = 0; i < _scores.Length; i++)
+        {
+            int max = _scores[i];
+
+            if (max1 < max) winner = i;
+        }
+
+        _endingUI = GameObject.Find("Canvas").GetComponent<EndingUI>();
+        _endingUI.SetWinner(winner);
     }
 
     [PunRPC]
