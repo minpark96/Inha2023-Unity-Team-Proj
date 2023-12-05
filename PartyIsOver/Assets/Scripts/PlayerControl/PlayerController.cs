@@ -558,7 +558,7 @@ public class PlayerController : MonoBehaviourPun
                             {
                                 if (!_isRSkillCheck)
                                 {
-
+                                    photonView.RPC("EffectCreate", RpcTarget.All, "Effects/Love_aura");
                                     photonView.RPC("PlayerEffectSound", RpcTarget.All, "Sounds/PlayerEffect/ACTION_Changing_Smoke");
                                     _isRSkillCheck = true;
                                     photonView.RPC("ChargeReady", RpcTarget.All);
@@ -589,6 +589,7 @@ public class PlayerController : MonoBehaviourPun
                     {
                         _isRSkillCheck = false;
                         photonView.RPC("ResetCharge", RpcTarget.All);
+                        photonView.RPC("RSkillDestroyEffect", RpcTarget.All, "Love_aura");
                     }
                 }
                 break;
@@ -606,6 +607,8 @@ public class PlayerController : MonoBehaviourPun
                             MeowNyangPunch();
                         else
                             NuclearPunch();
+
+                        photonView.RPC("DestroyEffect", RpcTarget.All, "Love_aura");
                     }
                 }
                 break;
@@ -630,6 +633,18 @@ public class PlayerController : MonoBehaviourPun
                 break;
         }
     }
+    [PunRPC]
+    void EffectCreate(string path)
+    {
+        _actor.StatusHandler.EffectObjectCreate($"{path}");
+    }
+
+    [PunRPC]
+    void RSkillDestroyEffect(string name)
+    {
+        _actor.StatusHandler.DestroyEffect(name);
+    }
+
     [PunRPC]
     void DrunkAction()
     {
