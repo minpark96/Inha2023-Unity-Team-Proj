@@ -14,6 +14,7 @@ public class RoomUI : MonoBehaviour
     [SerializeField]
     private TMP_Text _playerNameText;
 
+    private bool _hasCheckedTime;
 
     public int PlayerReadyCount = 1;
 
@@ -35,6 +36,8 @@ public class RoomUI : MonoBehaviour
     public bool ReadyIsClicked;
 
     public GameObject SpawnPoint;
+    public int PlayerCount;
+    public int ActorNumber;
 
     string _arenaName = "PO_Map_KYH";
 
@@ -43,12 +46,20 @@ public class RoomUI : MonoBehaviour
         Init();
         Managers.Input.KeyboardAction -= OnKeyboardEvent;
         Managers.Input.KeyboardAction += OnKeyboardEvent;
+
+        SpawnPoint = GameObject.Find("Spawn Point");
+        PlayerCount = PhotonNetwork.CurrentRoom.PlayerCount;
+        ActorNumber = PhotonNetwork.LocalPlayer.ActorNumber;
+
+        for (int i = 0; i < PlayerCount; i++)
+        {
+            SpawnPoint.transform.GetChild(i).gameObject.SetActive(true);
+        }
     }
 
     void Init()
     {
         _playerNameText.text = PhotonNetwork.NickName;
-        SpawnPoint = GameObject.Find("Spawn Point");
     }
 
     void OnKeyboardEvent(Define.KeyboardEvent evt)
@@ -90,7 +101,15 @@ public class RoomUI : MonoBehaviour
         }
     }
 
+    public void UpdatePlayerNumber(int totalPlayerNumber)
+    {
+        for (int i = 0; i < totalPlayerNumber; i++)
+        {
+            SpawnPoint.transform.GetChild(i).gameObject.SetActive(true);
+        }
+    }
 
+   
     public void OnClickReady()
     {
         if (PhotonNetwork.LocalPlayer.IsMasterClient)
@@ -112,6 +131,7 @@ public class RoomUI : MonoBehaviour
 
                 ReadyButton.GetComponent<Image>().sprite = ReadyOn;
                 ReadyButton.GetComponentInChildren<Text>().text = "¡ÿ∫Ò! (F5)";
+
             }
             else
             {
@@ -123,6 +143,7 @@ public class RoomUI : MonoBehaviour
             }
         }
     }
+
 
 
     //public void OnClickLeaveRoom()

@@ -245,7 +245,7 @@ GameObject:
   m_Component:
   - component: {fileID: 149170537}
   m_Layer: 0
-  m_Name: Spwan Point
+  m_Name: Spawn Point
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -466,6 +466,7 @@ MonoBehaviour:
   Ready: 0
   ReadyIsClicked: 0
   SpawnPoint: {fileID: 0}
+  ActorNumber: 0
 --- !u!1 &296165693
 GameObject:
   m_ObjectHideFlags: 0
@@ -484,7 +485,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &296165694
 Transform:
   m_ObjectHideFlags: 0
@@ -662,7 +663,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &468386020
 Transform:
   m_ObjectHideFlags: 0
@@ -883,7 +884,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &542520278
 Transform:
   m_ObjectHideFlags: 0
@@ -1612,7 +1613,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &734965389
 Transform:
   m_ObjectHideFlags: 0
@@ -2609,7 +2610,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1385078977
 Transform:
   m_ObjectHideFlags: 0
@@ -3763,7 +3764,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2055788646
 Transform:
   m_ObjectHideFlags: 0
