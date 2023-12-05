@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _itemName: Mushroom
   _itemType: 5
-  _projectile: {fileID: 0}
+  _projectile: {fileID: 7379434535127652972, guid: 1a9e1c2baca451e4c8eeea9b328b5f0e, type: 3}
   _useDamageType: 14
   _damage: 0
   _coolTime: 0
