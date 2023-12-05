@@ -82,7 +82,7 @@ public class GameCenter : BaseScene
 
     public int AlivePlayerCount = 1;
     public int RoundCount = 1;
-    public const int MAX_ROUND = 2;
+    public const int MAX_ROUND = 3;
 
     public int LoadingCompleteCount = 0;
     public int DestroyingCompleteCount = 0;

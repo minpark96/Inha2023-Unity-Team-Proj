@@ -42,16 +42,16 @@ public class CameraControl : MonoBehaviourPun
 
     public void CursorControl()
     {
-        //if (Input.anyKeyDown)
-        //{
-        //    Cursor.visible = false;
-        //    Cursor.lockState = CursorLockMode.Locked;
-        //}
+        if (Input.anyKeyDown)
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+        }
 
-        //if (!Cursor.visible && Input.GetKeyDown(KeyCode.Escape))
-        //{
-        //    Cursor.visible = true;
-        //    Cursor.lockState = CursorLockMode.None;
-        //}
+        if (!Cursor.visible && Input.GetKeyDown(KeyCode.Escape))
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+        }
     }
 }
