@@ -264,14 +264,13 @@ public class Grab : MonoBehaviourPun
                     }
                     if (Input.GetMouseButtonUp(1))
                     {
-                        GrabResetTrigger();
-
-                        switch(type)
+                        if(type == ItemType.Potion)
                         {
-                            case ItemType.Potion:
-                                photonView.RPC("PotionThrowAnim",RpcTarget.All);
-                                //StartCoroutine(PotionThrowAnim());
-                                break;
+                            photonView.RPC("PotionThrowAnim", RpcTarget.All);
+                        }
+                        else
+                        {
+                            GrabResetTrigger();
                         }
                     }
                 }
@@ -856,8 +855,6 @@ public class Grab : MonoBehaviourPun
         }
         else if ((Side)side == Side.Right)
         {
-            
-
             _grabJointRight = _rightHandRigid.AddComponent<FixedJoint>();
 
             //if (pv != null)
@@ -951,15 +948,29 @@ public class Grab : MonoBehaviourPun
 
         photonView.RPC("UseItem", RpcTarget.All);
         GrabResetTrigger();
+
     }
 
     [PunRPC]
     IEnumerator PotionThrowAnim()
     {
+        InteractableObject obj = EquipItem.GetComponent<InteractableObject>();
+
         _jointLeft.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 3, 0, 0));
         _jointRight.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 3, 0, 0));
 
         yield return _actor.PlayerController.PotionThrow(0.07f, 0.1f, 0.3f, 0.1f);
+
+        if (PhotonNetwork.LocalPlayer.IsMasterClient)
+        {
+            obj.GetComponent<Item>().ThrowItem();
+        }
+        obj.gameObject.SetActive(false);
+
+        yield return new WaitForSeconds(1);
+        GrabResetTrigger();
+        Destroy(obj.gameObject, 1f);
+
     }
 
     [PunRPC]

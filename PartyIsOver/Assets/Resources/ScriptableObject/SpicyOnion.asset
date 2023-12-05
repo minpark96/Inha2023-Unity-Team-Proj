@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _itemName: Spicyonion
   _itemType: 5
-  _projectile: {fileID: 0}
+  _projectile: {fileID: 4397491357844937495, guid: b4bfc9f34969928499cda3402cada618, type: 3}
   _useDamageType: 9
   _damage: 0
   _coolTime: 0

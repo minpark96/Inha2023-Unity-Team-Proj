@@ -76,9 +76,11 @@ public class InteractableObject : MonoBehaviourPun
         {
             damageModifier = Damage.Object;
         }
-
-        yield return new WaitForSeconds(useTime);
-        ResetType();
+        if(useTime != -1)
+        {
+            yield return new WaitForSeconds(useTime);
+            ResetType();
+        }
     }
 
     public void ResetType()

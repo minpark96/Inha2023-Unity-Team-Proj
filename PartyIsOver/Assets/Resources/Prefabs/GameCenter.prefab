@@ -66,15 +66,16 @@ MonoBehaviour:
   ImageHPBar: {fileID: 0}
   ImageStaminaBar: {fileID: 0}
   Portrait: {fileID: 0}
-  GhostSpawnDelay: 4
-  RoundEndDelay: 7
-  UpdateScoreBoardDelay: 2
-  DeleteDelay: 2
+  DelayInGhostSpawn: 4
+  DelayInRoundEnd: 7
+  DelayInUpdateScoreBoard: 2
+  DelayInDestroyObjects: 2
   MyActor: {fileID: 0}
   MyActorViewID: 0
-  AlivePlayerCounts: 1
-  RoundCounts: 1
-  LoadingDoneCounts: 0
+  AlivePlayerCount: 1
+  RoundCount: 1
+  LoadingCompleteCount: 0
+  DestroyingCompleteCount: 0
 --- !u!114 &-6182396937385309685
 MonoBehaviour:
   m_ObjectHideFlags: 0
