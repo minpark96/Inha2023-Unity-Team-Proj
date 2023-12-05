@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using static Actor;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 public class GameCenter : BaseScene
 {
@@ -83,6 +84,8 @@ public class GameCenter : BaseScene
 
     public int LoadingCompleteCount = 0;
     public int DestroyingCompleteCount = 0;
+
+    public bool IsMeowNyangPunch = false;
 
     #endregion
 
@@ -215,7 +218,28 @@ public class GameCenter : BaseScene
 
         _roomUI.PlayerCount = PhotonNetwork.CurrentRoom.PlayerCount;
 
+        _roomUI.OnChangeSkiilEvent -= ToggleSkillSelection;
+        _roomUI.OnChangeSkiilEvent += ToggleSkillSelection;
+        _roomUI.OnLeaveRoom -= LeaveRoom;
+        _roomUI.OnLeaveRoom += LeaveRoom;
+
         photonView.RPC("UpdatePlayerNumber", RpcTarget.All, _roomUI.PlayerCount);
+    }
+
+    void ToggleSkillSelection(bool isChange)
+    {
+        IsMeowNyangPunch = isChange;
+    }
+
+    void LeaveRoom()
+    {
+        photonView.RPC("UnsubscribeRoomEvent", RpcTarget.All);
+    }
+
+    [PunRPC]
+    void UnsubscribeRoomEvent()
+    {
+        _roomUI.OnLeaveRoom -= LeaveRoom;
     }
 
     void Update()
@@ -317,6 +341,8 @@ public class GameCenter : BaseScene
             }
 
             _scoreBoardUI = GameObject.Find("ScoreBoard Panel").GetComponent<ScoreBoardUI>();
+            if (_scoreBoardUI == null)
+                Debug.Log("스코어보드 null");
             _scoreBoardUI.InitScoreBoard();
 
             photonView.RPC("SendLoadingComplete", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber);
@@ -351,9 +377,10 @@ public class GameCenter : BaseScene
     [PunRPC]
     void CreatePlayer()
     {
+        Debug.Log("CreatePlayer -> " + Actor.LocalPlayerInstance);
         if (Actor.LocalPlayerInstance == null)
         {
-            //Debug.LogFormat("We are Instantiating LocalPlayer from {0}", SceneManagerHelper.ActiveSceneName);
+            Debug.LogFormat("We are Instantiating LocalPlayer from {0}", SceneManagerHelper.ActiveSceneName);
 
             GameObject go = null;
 
@@ -364,13 +391,17 @@ public class GameCenter : BaseScene
                                                  BindingFlags.NonPublic);
             string playerPath = (string)field.GetValue(this);
             go = Managers.Resource.PhotonNetworkInstantiate(playerPath, pos: SpawnPoints[PhotonNetwork.LocalPlayer.ActorNumber - 1]);
-        
+
+            Debug.Log(go);
             MyActor = go.GetComponent<Actor>();
+            Debug.Log(MyActor);
             MyActor.OnChangeStaminaBar -= UpdateStaminaBar;
             MyActor.OnChangeStaminaBar += UpdateStaminaBar;
 
             PhotonView pv = go.GetComponent<PhotonView>();
+            Debug.Log(pv);
             MyActorViewID = pv.ViewID;
+            Debug.Log(MyActorViewID);
 
             if (PhotonNetwork.LocalPlayer.IsMasterClient)
             {
@@ -395,11 +426,10 @@ public class GameCenter : BaseScene
             Actor actor = targetPV.transform.GetComponent<Actor>();
             Actors.Add(actor);
 
-            if (_roomUI.SkillChange)
+            if (IsMeowNyangPunch)
                 actor.PlayerController.isMeowNyangPunch = true;
             else
                 actor.PlayerController.isMeowNyangPunch = false;
-
 
             if (PhotonNetwork.LocalPlayer.IsMasterClient)
             {
@@ -423,8 +453,16 @@ public class GameCenter : BaseScene
     [PunRPC]
     void RegisterActorInfo(int viewID)
     {
+        Debug.Log("RegisterActorInfo: " + viewID);
+
         ActorViewIDs.Add(viewID);
         AddActor(viewID);
+
+        for (int i = 0; i < ActorViewIDs.Count; i++)
+        {
+            Debug.Log(ActorViewIDs[i]);
+            Debug.Log(Actors[i]);
+        }
 
         photonView.RPC("SyncActorsList", RpcTarget.Others, ActorViewIDs.ToArray());
     }
@@ -448,11 +486,12 @@ public class GameCenter : BaseScene
 
     IEnumerator InitArenaScene()
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(5f);
 
         SceneType = Define.Scene.Game;
         SetSceneBgmSound("BigBangBattleLOOPING");
 
+        Debug.Log("InitArenaScene");
         _scoreBoardUI.SetScoreBoard();
 
         //_magneticField = GameObject.Find("Magnetic Field").GetComponent<MagneticField>();
@@ -635,6 +674,8 @@ public class GameCenter : BaseScene
         ActorViewIDs.Clear();
         Actors.Clear();
 
+        RoundCount++;
+
         photonView.RPC("SendDestroyingComplete", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber);
     }
 
@@ -649,8 +690,6 @@ public class GameCenter : BaseScene
         {
             Debug.Log("Round 찐 종료");
             DestroyingCompleteCount = 0;
-
-            RoundCount++;
             if (RoundCount == MAX_ROUND)
             {
                 photonView.RPC("QuitRoom", RpcTarget.All);
