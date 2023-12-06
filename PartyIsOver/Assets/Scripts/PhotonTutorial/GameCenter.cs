@@ -20,8 +20,8 @@ public class GameCenter : BaseScene
     [SerializeField]
     EndingUI _endingUI;
 
-    //MagneticField _magneticField;
-    //SnowStorm _snowStorm;
+    MagneticField _magneticField;
+    SnowStorm _snowStorm;
     #endregion
 
     #region Private Fields
@@ -229,6 +229,12 @@ public class GameCenter : BaseScene
         _roomUI.OnReadyEvent -= AnnouncePlayerReady;
         _roomUI.OnReadyEvent += AnnouncePlayerReady;
 
+
+        if (PhotonNetwork.LocalPlayer.IsMasterClient)
+        {
+            UpdateMasterStatus();
+        }
+
         photonView.RPC("UpdatePlayerNumber", RpcTarget.All, _roomUI.PlayerCount);
     }
 
@@ -284,28 +290,26 @@ public class GameCenter : BaseScene
     //    }
     //}
 
-    [PunRPC]
-    void UpdatePlayerReady(int actorNumber, bool isReady)
-    {
-        if (isReady)
-            _roomUI.SpawnPoint.transform.GetChild(actorNumber - 1).GetChild(0).gameObject.SetActive(true);
-        else
-            _roomUI.SpawnPoint.transform.GetChild(actorNumber - 1).GetChild(0).gameObject.SetActive(false);
-    }
+
 
     [PunRPC]
     void UpdatePlayerNumber(int totalPlayerNumber)
     {
-        if(!PhotonNetwork.IsMasterClient)
-            _roomUI.UpdatePlayerNumber(totalPlayerNumber);
+        _roomUI.UpdatePlayerNumber(totalPlayerNumber);
     }
 
     void UpdateMasterStatus()
     {
         if (_roomUI.PlayerReadyCount == PhotonNetwork.CurrentRoom.PlayerCount)
+        {
             _roomUI.ChangeMasterButton(true);
+            _roomUI.CanPlay = true;
+        }
         else
+        {
             _roomUI.ChangeMasterButton(false);
+            _roomUI.CanPlay = false;
+        }
     }
 
     void AnnouncePlayerReady(bool isReady)
@@ -317,15 +321,24 @@ public class GameCenter : BaseScene
     [PunRPC]
     void UpdateCount(bool isReady)
     {
+        //if (PhotonNetwork.LocalPlayer.IsMasterClient)
+        //{
+        //    UpdateMasterStatus();
+        //}
+      
         if (isReady)
             _roomUI.PlayerReadyCount++;
         else
             _roomUI.PlayerReadyCount--;
+    }
 
-        if (PhotonNetwork.LocalPlayer.IsMasterClient)
-        {
-            UpdateMasterStatus();
-        }
+    [PunRPC]
+    void UpdatePlayerReady(int actorNumber, bool isReady)
+    {
+        if (!isReady)
+            _roomUI.SpawnPoint.transform.GetChild(actorNumber - 1).GetChild(0).gameObject.SetActive(true);
+        else
+            _roomUI.SpawnPoint.transform.GetChild(actorNumber - 1).GetChild(0).gameObject.SetActive(false);
     }
 
     #endregion
@@ -353,8 +366,6 @@ public class GameCenter : BaseScene
             }
 
             _scoreBoardUI = GameObject.Find("ScoreBoard Panel").GetComponent<ScoreBoardUI>();
-            if (_scoreBoardUI == null)
-                Debug.Log("스코어보드 null");
             _scoreBoardUI.InitScoreBoard();
 
             photonView.RPC("SendLoadingComplete", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber);
@@ -372,7 +383,6 @@ public class GameCenter : BaseScene
         if(scene.name == "[6]Ending")
         {
             photonView.RPC("EndingComplete", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber);
-
         }
     }
 
@@ -394,13 +404,12 @@ public class GameCenter : BaseScene
     [PunRPC]
     void InitEndingScene()
     {
-        int max1 = _scores[0];
+        int max = _scores[0];
 
         for (int i = 0; i < _scores.Length; i++)
         {
-            int max = _scores[i];
-
-            if (max1 < max) winner = i;
+            if (max < _scores[i]) 
+                winner = i;
         }
 
         _endingUI = GameObject.Find("Canvas").GetComponent<EndingUI>();
@@ -429,7 +438,7 @@ public class GameCenter : BaseScene
         Debug.Log("CreatePlayer -> " + Actor.LocalPlayerInstance);
         if (Actor.LocalPlayerInstance == null)
         {
-            Debug.LogFormat("We are Instantiating LocalPlayer from {0}", SceneManagerHelper.ActiveSceneName);
+            //Debug.LogFormat("We are Instantiating LocalPlayer from {0}", SceneManagerHelper.ActiveSceneName);
 
             GameObject go = null;
 
@@ -441,16 +450,16 @@ public class GameCenter : BaseScene
             string playerPath = (string)field.GetValue(this);
             go = Managers.Resource.PhotonNetworkInstantiate(playerPath, pos: SpawnPoints[PhotonNetwork.LocalPlayer.ActorNumber - 1]);
 
-            Debug.Log(go);
+            //Debug.Log(go);
             MyActor = go.GetComponent<Actor>();
-            Debug.Log(MyActor);
+            //Debug.Log(MyActor);
             MyActor.OnChangeStaminaBar -= UpdateStaminaBar;
             MyActor.OnChangeStaminaBar += UpdateStaminaBar;
 
             PhotonView pv = go.GetComponent<PhotonView>();
-            Debug.Log(pv);
+            //Debug.Log(pv);
             MyActorViewID = pv.ViewID;
-            Debug.Log(MyActorViewID);
+            //Debug.Log(MyActorViewID);
 
             if (PhotonNetwork.LocalPlayer.IsMasterClient)
             {
@@ -527,10 +536,8 @@ public class GameCenter : BaseScene
             AddActor(ids[i]);
         }
 
-        //if (_magneticField.Actor == null)
-        //    _magneticField.Actor = Actors[PhotonNetwork.LocalPlayer.ActorNumber - 1];
-        //if (_snowStorm.Actor == null)
-            //_snowStorm.Actor = Actors[PhotonNetwork.LocalPlayer.ActorNumber - 1];
+        _magneticField.Actor = Actors[PhotonNetwork.LocalPlayer.ActorNumber - 1];
+        //_snowStorm.Actor = Actors[PhotonNetwork.LocalPlayer.ActorNumber - 1];
     }
 
     IEnumerator InitArenaScene()
@@ -543,7 +550,7 @@ public class GameCenter : BaseScene
         Debug.Log("InitArenaScene");
         _scoreBoardUI.SetScoreBoard();
 
-        //_magneticField = GameObject.Find("Magnetic Field").GetComponent<MagneticField>();
+        _magneticField = GameObject.Find("Magnetic Field").GetComponent<MagneticField>();
         //_snowStorm = GameObject.Find("Snow Storm").GetComponent<SnowStorm>();
 
         if (RoundCount == 1)

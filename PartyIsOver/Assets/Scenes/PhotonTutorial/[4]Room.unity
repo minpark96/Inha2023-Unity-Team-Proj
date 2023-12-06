@@ -461,11 +461,11 @@ MonoBehaviour:
   GamePlayOn: {fileID: 21300000, guid: ca2f80ad1ba69374f99a88e7883ea493, type: 3}
   CanPlay: 0
   ReadyButton: {fileID: 664352075}
-  ReadyOff: {fileID: 21300000, guid: af3e12b0c001e3c4f97e334d6769b19e, type: 3}
-  ReadyOn: {fileID: 21300000, guid: 6042030644af41b44a70b45613815aa4, type: 3}
+  ReadyOff: {fileID: 21300000, guid: 6042030644af41b44a70b45613815aa4, type: 3}
+  ReadyOn: {fileID: 21300000, guid: af3e12b0c001e3c4f97e334d6769b19e, type: 3}
   Ready: 0
-  ReadyIsClicked: 0
   SpawnPoint: {fileID: 0}
+  PlayerCount: 0
   ActorNumber: 0
 --- !u!1 &296165693
 GameObject:
@@ -1421,7 +1421,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &717228802
 Transform:
   m_ObjectHideFlags: 0

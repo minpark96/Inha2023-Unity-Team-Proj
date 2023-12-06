@@ -15,7 +15,8 @@ public class RoomUI : MonoBehaviour
     [SerializeField]
     private TMP_Text _playerNameText;
 
-    private bool _hasCheckedTime;
+    string _arenaName = "PO_Map_KYH";
+
 
     public int PlayerReadyCount = 1;
 
@@ -34,13 +35,11 @@ public class RoomUI : MonoBehaviour
     public Sprite ReadyOff;
     public Sprite ReadyOn;
     public bool Ready;
-    public bool ReadyIsClicked;
 
     public GameObject SpawnPoint;
     public int PlayerCount;
     public int ActorNumber;
 
-    string _arenaName = "PO_Map_KYH";
 
     public delegate void ChangeSkillEvent(bool isChange);
     public event ChangeSkillEvent OnChangeSkiilEvent;
@@ -49,9 +48,12 @@ public class RoomUI : MonoBehaviour
     public delegate void ReadyEvent(bool isReady);
     public event ReadyEvent OnReadyEvent;
 
+
     void Start()
     {
-        Init();
+        _playerNameText.text = PhotonNetwork.NickName;
+        Ready = false;
+
         Managers.Input.KeyboardAction -= OnKeyboardEvent;
         Managers.Input.KeyboardAction += OnKeyboardEvent;
 
@@ -65,10 +67,6 @@ public class RoomUI : MonoBehaviour
         }
     }
 
-    void Init()
-    {
-        _playerNameText.text = PhotonNetwork.NickName;
-    }
 
     void OnKeyboardEvent(Define.KeyboardEvent evt)
     {
@@ -100,15 +98,10 @@ public class RoomUI : MonoBehaviour
 
     public void ChangeMasterButton(bool canPlay)
     {
-        if (PhotonNetwork.LocalPlayer.IsMasterClient)
-        {
-            CanPlay = canPlay;
-
-            if (canPlay)
-                PlayButton.GetComponentInChildren<Image>().sprite = GamePlayOn;
-            else
-                PlayButton.GetComponentInChildren<Image>().sprite = GamePlayOff;
-        }
+        if (canPlay)
+            PlayButton.GetComponentInChildren<Image>().sprite = GamePlayOn;
+        else
+            PlayButton.GetComponentInChildren<Image>().sprite = GamePlayOff;
     }
 
     public void UpdatePlayerNumber(int totalPlayerNumber)
@@ -136,12 +129,12 @@ public class RoomUI : MonoBehaviour
             Ready = !Ready;
             OnReadyEvent(Ready);
 
-            if (!Ready)
+            if (Ready == true)
             {
                 AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-160");
                 Managers.Sound.Play(uiSound, Define.Sound.UISound);
 
-                ReadyButton.GetComponent<Image>().sprite = ReadyOn;
+                ReadyButton.GetComponent<Image>().sprite = ReadyOff;
                 ReadyButton.GetComponentInChildren<Text>().text = "준비! (F5)";
 
             }
@@ -150,7 +143,7 @@ public class RoomUI : MonoBehaviour
                 AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-160");
                 Managers.Sound.Play(uiSound, Define.Sound.UISound);
 
-                ReadyButton.GetComponent<Image>().sprite = ReadyOff;
+                ReadyButton.GetComponent<Image>().sprite = ReadyOn;
                 ReadyButton.GetComponentInChildren<Text>().text = "준비해제! (F5)";
             }
         }
