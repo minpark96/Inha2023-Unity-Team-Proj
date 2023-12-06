@@ -74,12 +74,14 @@ public class StatusHandler : MonoBehaviourPun
 
     int Creatcount = 0;
 
+    Context _context;
 
     private void Awake()
     {
         playerTransform = this.transform.Find("GreenHip").GetComponent<Transform>();
         Transform SoundSourceTransform = transform.Find("GreenHip");
         _audioSource = SoundSourceTransform.GetComponent<AudioSource>();
+        _context = GetComponent<Context>();
     }
 
     void Start()
@@ -129,12 +131,29 @@ public class StatusHandler : MonoBehaviourPun
         }
     }
 
+    [PunRPC]
+    void PlayerEffect()
+    {
+        photonView.RPC("TestPlayerEffect",RpcTarget.All);
+    }
+
+    [PunRPC]
+    void TestPlayerEffect()
+    {
+        //참여자는 방장한테 이펙트가 생기는 버그
+        actor.PlayerController._drunkState.effectObject = effectObject;
+        actor.PlayerController._drunkState.TestPlayerEffect();
+    }
 
     private void LateUpdate()
     {
-        if (effectObject != null )
-            photonView.RPC("MoveEffect", RpcTarget.All);
 
+        if (effectObject != null && effectObject.name == "Stun_loop")
+            photonView.RPC("MoveEffect", RpcTarget.All);
+        else if (effectObject != null && effectObject.name == "Fog_frost")
+            photonView.RPC("MoveEffect", RpcTarget.All);
+        else if (effectObject != null)
+            photonView.RPC("PlayerEffect", RpcTarget.All);
 
     }
 
@@ -156,7 +175,9 @@ public class StatusHandler : MonoBehaviourPun
         {
             // 상태이상 체크
             DebuffCheck(type);
-            DebuffAction();
+            Debug.Log("지금은 기절로 바꿔줘요");
+            _context.ChangeState(new Stun());
+            //DebuffAction();
             //CheckProjectile(causer);
         }
 
@@ -238,6 +259,7 @@ public class StatusHandler : MonoBehaviourPun
                     break;
                 else
                 {
+                    effectObject = null;
                     actor.debuffState |= Actor.DebuffState.Drunk;
                     photonView.RPC("PlayerDebuffSound", RpcTarget.All, "PlayerEffect/Cartoon-UI-049");
                 }
@@ -283,7 +305,6 @@ public class StatusHandler : MonoBehaviourPun
                 case Actor.DebuffState.Drunk:
                     if(!HasDrunk)
                     {
-                        
                         photonView.RPC("PoisonCreate", RpcTarget.All);
                     }
                     break;
@@ -368,15 +389,13 @@ public class StatusHandler : MonoBehaviourPun
         _audioClip = null;
     }
 
-   
+
     [PunRPC]
     IEnumerator Exhausted(float delay)
     {
         // 지침
-        photonView.RPC("WetCreate", RpcTarget.All);
-
-        //WetCreate();
         _hasExhausted = true;
+        WetCreate();
         actor.actorState = Actor.ActorState.Debuff;
         JointDrive angularXDrive;
 
@@ -384,27 +403,25 @@ public class StatusHandler : MonoBehaviourPun
         angularXDrive.positionSpring = 0f;
         actor.BodyHandler.BodyParts[(int)Define.BodyPart.Head].PartJoint.angularXDrive = angularXDrive;
 
-        while(actor.Stamina != 100)
+        while (actor.Stamina != 100)
         {
             yield return null;
         }
 
         // 지침 해제
         _hasExhausted = false;
-
-        //DestroyEffect("Wet");
+        DestroyEffect("Wet");
 
         actor.actorState = Actor.ActorState.Stand;
         actor.debuffState &= ~Actor.DebuffState.Exhausted;
         angularXDrive.positionSpring = _xPosSpringAry[0];
 
         actor.BodyHandler.BodyParts[(int)Define.BodyPart.Head].PartJoint.angularXDrive = angularXDrive;
-        
-        photonView.RPC("DestroyEffect", RpcTarget.All, "Wet");
 
         actor.InvokeStatusChangeEvent();
         _audioClip = null;
     }
+
     [PunRPC]
     IEnumerator Slow(float delay)
     {
@@ -586,7 +603,6 @@ public class StatusHandler : MonoBehaviourPun
     [PunRPC]
     public void DestroyEffect(string name)
     {
-        Debug.Log("In");
         GameObject go = GameObject.Find($"{name}");
         Managers.Resource.Destroy(go);
         effectObject = null;
@@ -631,7 +647,6 @@ public class StatusHandler : MonoBehaviourPun
         EffectObjectCreate("Effects/Fog_poison");
     }
 
-    [PunRPC]
     public void WetCreate()
     {
         EffectObjectCreate("Effects/Wet");
@@ -639,29 +654,23 @@ public class StatusHandler : MonoBehaviourPun
 
     public void EffectObjectCreate(string path)
     {
-        //오브젝트 확인 하는 애가 여기 있어서 문제 있는거 같은데
         effectObject = Managers.Resource.PhotonNetworkInstantiate($"{path}");
-        Debug.Log(effectObject.transform.parent.name);
+        //effectObject.transform.position = playerTransform.position;
     }
-
     [PunRPC]
     public void MoveEffect()
     {
         //LateUpdate여서 늦게 갱신이 되어서 NullReference가 떠서 같은 if 문을 넣어줌
-        if (effectObject.name == "Stun_loop")
-        {
+        if (effectObject != null && effectObject.name == "Stun_loop")
             effectObject.transform.position = new Vector3(playerTransform.position.x, playerTransform.position.y + 1, playerTransform.position.z);
-        }
-        else if (effectObject.name == "Fog_frost")
+        else if (effectObject != null && effectObject.name == "Fog_frost")
         {
             effectObject.transform.position = new Vector3(playerTransform.position.x, playerTransform.position.y - 2, playerTransform.position.z);
         }
         else
-        {
             effectObject.transform.position = playerTransform.position;
-        }
-
     }
+
 
     public void UpdateHealth()
     {

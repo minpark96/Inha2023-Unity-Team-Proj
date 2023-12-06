@@ -44,7 +44,6 @@ public class ResourceManager
     public GameObject PhotonNetworkInstantiate(string path, Transform parent = null, Vector3? pos = null, Quaternion? rot = null, byte group = 0, object[] data = null)
     {
         GameObject prefab = Load<GameObject>($"Prefabs/{path}");
-        Debug.Log(prefab);
         pos = pos ?? Vector3.zero;
         rot = rot ?? Quaternion.identity;
 
@@ -55,12 +54,8 @@ public class ResourceManager
         }
 
         if (prefab.GetComponent<Poolable>() != null)
-        {
-            Debug.Log("Start Pool");
             return Managers.Pool.Pop(prefab, parent).gameObject;
-        }
 
-            Debug.Log("Start Instantiate");
         return PhotonNetwork.Instantiate($"Prefabs/{path}", (Vector3)pos, (Quaternion)rot, group, data);
     }
 

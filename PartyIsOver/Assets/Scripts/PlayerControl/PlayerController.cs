@@ -238,7 +238,7 @@ public class PlayerController : MonoBehaviourPun
 
     public List<Quaternion> RotationsForBalloon = new List<Quaternion>();
     private BalloonState _balloonState;
-    private DrunkState _drunkState;
+    public DrunkState _drunkState;
 
     public static PlayerController Instance;
     public AudioSource _audioSource;
@@ -606,9 +606,7 @@ public class PlayerController : MonoBehaviourPun
                         if (Input.GetKeyUp(KeyCode.R) && isMeowNyangPunch)
                             MeowNyangPunch();
                         else
-                            NuclearPunch();
-
-                        
+                            NuclearPunch();        
                     }
                 }
                 break;
