@@ -246,40 +246,6 @@ public class GameCenter : BaseScene
         _roomUI.OnReadyEvent -= AnnouncePlayerReady;
     }
 
-    //void Update()
-    //{
-    //    if (SceneManager.GetActiveScene().name == _roomName)
-    //    {
-    //        if (PhotonNetwork.LocalPlayer.IsMasterClient)
-    //        {
-    //            UpdateMasterStatus();
-    //        }
-    //        else
-    //        {
-    //            if (_roomUI.Ready == true)
-    //            {
-    //                if (_isChecked == false)
-    //                {
-    //                    AnnouncePlayerReady();
-    //                    _isChecked = true;
-    //                }
-
-    //                photonView.RPC("UpdatePlayerReady", RpcTarget.All, _roomUI.ActorNumber, true);
-    //            }
-    //            else
-    //            {
-    //                if (_isChecked == true)
-    //                {
-    //                    AnnouncePlayerReady();
-    //                    _isChecked = false;
-    //                }
-
-    //                photonView.RPC("UpdatePlayerReady", RpcTarget.All, _roomUI.ActorNumber, false);
-    //            }
-    //        }
-    //    }
-    //}
-
     [PunRPC]
     void UpdatePlayerReady(int actorNumber, bool isReady)
     {
@@ -592,14 +558,11 @@ public class GameCenter : BaseScene
 
     IEnumerator InstantiateGhost(Vector3 spawnPos)
     {
-        if (Ghost.LocalGhostInstance == null)
-        {
-            Vector3 spawnAirPos = spawnPos + new Vector3(0f, 10f, 0f);
-            MyGraveStone = Managers.Resource.PhotonNetworkInstantiate(_graveStonePath, pos: spawnAirPos);
-            yield return new WaitForSeconds(DelayInGhostSpawn);
-            MyGhost = Managers.Resource.PhotonNetworkInstantiate(_ghostPath, pos: spawnPos);
-            MyActor.transform.GetChild(0).gameObject.SetActive(false);
-        }
+        Vector3 spawnAirPos = spawnPos + new Vector3(0f, 10f, 0f);
+        MyGraveStone = Managers.Resource.PhotonNetworkInstantiate(_graveStonePath, pos: spawnAirPos);
+        yield return new WaitForSeconds(DelayInGhostSpawn);
+        MyGhost = Managers.Resource.Instantiate(_ghostPath, pos: spawnPos);
+        MyActor.transform.GetChild(0).gameObject.SetActive(false);
     }
 
     #endregion
@@ -655,8 +618,6 @@ public class GameCenter : BaseScene
     {
         if (MyGhost != null)
         {
-            Debug.Log("고스트 삭제");
-            Managers.Resource.Destroy(MyGhost);
             MyGhost = null;
             Debug.Log("비석 삭제");
             Managers.Resource.Destroy(MyGraveStone);

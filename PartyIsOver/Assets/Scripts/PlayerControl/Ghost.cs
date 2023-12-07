@@ -1,4 +1,5 @@
 using Photon.Pun;
+using Photon.Pun.UtilityScripts;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,22 +9,23 @@ public class Ghost : MonoBehaviourPunCallbacks
 {
     public float Speed = 5.0f;
 
-    public static GameObject LocalGhostInstance;
     public CameraControl CameraControl;
+    Animator anim;
+    Vector3 moveDir = new Vector3(0, 0, 0);
 
     void Awake()
     {
-        if (photonView.IsMine)
+        if (CameraControl == null)
         {
-            LocalGhostInstance = this.gameObject; 
-            
-            if (CameraControl == null)
-            {
-                Debug.Log("카메라 컨트롤 초기화");
-                CameraControl = GetComponent<CameraControl>();
-            }
+            Debug.Log("카메라 컨트롤 초기화");
+            CameraControl = GetComponent<CameraControl>();
         }
 
+        anim = GetComponent<Animator>();
+    }
+
+    void Start()
+    {
         Managers.Input.MouseAction -= OnMouseEvent;
         Managers.Input.MouseAction += OnMouseEvent;
         Managers.Input.KeyboardAction -= OnKeyboardEvent;
@@ -32,25 +34,21 @@ public class Ghost : MonoBehaviourPunCallbacks
 
     void OnKeyboardEvent(Define.KeyboardEvent evt)
     {
-        if (!photonView.IsMine) return;
-
         switch (evt)
         {
-
             case Define.KeyboardEvent.Press:
                 {
-                    Vector3 moveDir = new Vector3(0, 0, 0);
                     if (Input.GetKey(KeyCode.W))
                     {
                         moveDir += Vector3.forward;
                     }
                     if (Input.GetKey(KeyCode.S))
                     {
-                        moveDir -= Vector3.right;
+                        moveDir -= Vector3.forward;
                     }
                     if (Input.GetKey(KeyCode.A))
                     {
-                        moveDir -= Vector3.forward;
+                        moveDir -= Vector3.right;
                     }
                     if (Input.GetKey(KeyCode.D))
                     {
@@ -59,25 +57,46 @@ public class Ghost : MonoBehaviourPunCallbacks
 
                     if (moveDir != Vector3.zero)
                     {
-                        moveDir = moveDir.normalized * Speed * Time.deltaTime;
+                        moveDir = moveDir.normalized;
                     }
-
-                    transform.position += moveDir;
                     break;
                 }
         }
     }
 
+    void OnDestroy()
+    {
+        Managers.Input.MouseAction -= OnMouseEvent;
+        Managers.Input.KeyboardAction -= OnKeyboardEvent;
+    }
+
+    void Move(Vector3 moveDir)
+    {
+        transform.position += moveDir * Speed * Time.deltaTime;
+        Debug.Log(moveDir);
+        anim.SetBool("IsFly", moveDir != Vector3.zero);
+        moveDir = Vector3.zero;
+    }
+
+    void Turn(Vector3 moveDir)
+    {
+        //transform.LookAt(transform.position + moveDir);
+    }
+
     void OnMouseEvent(Define.MouseEvent evt)
     {
-        if (!photonView.IsMine) return;
+
     }
 
     void Update()
     {
-        if (!photonView.IsMine) return;
-
         CameraControl.LookAround(transform.position);
         CameraControl.CursorControl();
+    }
+
+    void FixedUpdate()
+    {
+        Move(moveDir);
+        Turn(moveDir);
     }
 }
