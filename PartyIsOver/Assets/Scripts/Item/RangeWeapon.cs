@@ -16,6 +16,7 @@ public class RangeWeapon : Item
     void Fire()
     {
         ProjectileBase projectile  = Managers.Pool.Pop(ItemData.Projectile.gameObject).GetComponent<ProjectileBase>();
+        projectile.gameObject.layer = Owner.gameObject.layer;
 
         Vector3 forward = -Owner.BodyHandler.Chest.PartTransform.up;
         projectile.transform.position = Owner.Grab.FirePoint.position + (forward * 0.2f) + (Vector3.up*0.1f);
@@ -24,7 +25,7 @@ public class RangeWeapon : Item
         Owner.PlayerController.PlayerEffectSound("PlayerEffect/Cartoon-UI-040");
         if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
-            projectile.GetComponent<InteractableObject>().ChangeUseTypeTrigger(0.08f, 5f);
+            projectile.GetComponent<InteractableObject>().ChangeUseTypeTrigger(0f, 5f);
         }
     }
 }

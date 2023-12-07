@@ -162,7 +162,7 @@ public class PlayerController : MonoBehaviourPun
     [SerializeField]
     private Rigidbody _hips;
 
-    private Transform _cameraArm;
+    public Transform _cameraArm;
 
     [SerializeField]
     private BodyHandler _bodyHandler;
