@@ -110,6 +110,8 @@ public class RoomUI : MonoBehaviour
         {
             SpawnPoint.transform.GetChild(i).gameObject.SetActive(true);
         }
+
+        PlayerCount = totalPlayerNumber;
     }
 
    
@@ -129,7 +131,7 @@ public class RoomUI : MonoBehaviour
             Ready = !Ready;
             OnReadyEvent(Ready);
 
-            if (Ready == true)
+            if (Ready == false)
             {
                 AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-160");
                 Managers.Sound.Play(uiSound, Define.Sound.UISound);
