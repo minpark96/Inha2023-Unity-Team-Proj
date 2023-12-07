@@ -150,19 +150,22 @@ public class GameCenter : BaseScene
         }
     }
 
-    //private void OnGUI()
-    //{
-    //    GUIStyle style = new GUIStyle();
-    //    style.fontSize = 30;
-    //    GUI.backgroundColor = Color.white;
-    //    for (int i = 0; i < ActorViewIDs.Count; i++)
-    //    {
-    //        GUI.contentColor = Color.black;
-    //        GUI.Label(new Rect(0, 340 + i * 60, 200, 200), "Actor View ID: " + ActorViewIDs[i] + " / HP: " + Actors[i].Health, style);
-    //        GUI.contentColor = Color.red;
-    //        GUI.Label(new Rect(0, 360 + i * 60, 200, 200), "Status: " + Actors[i].actorState + " / Debuff: " + Actors[i].debuffState, style);
-    //    }
-    //}
+    private void OnGUI()
+    {
+        GUIStyle style = new GUIStyle();
+        style.fontSize = 30;
+        GUI.backgroundColor = Color.white;
+        for (int i = 0; i < ActorViewIDs.Count; i++)
+        {
+            //GUI.contentColor = Color.black;
+            //GUI.Label(new Rect(0, 340 + i * 60, 200, 200), "Actor View ID: " + ActorViewIDs[i] + " / HP: " + Actors[i].Health, style);
+            //GUI.contentColor = Color.red;
+            //GUI.Label(new Rect(0, 360 + i * 60, 200, 200), "Status: " + Actors[i].actorState + " / Debuff: " + Actors[i].debuffState, style);
+
+            GUI.contentColor = Color.red;
+            GUI.Label(new Rect(0, 360 + i * 60, 200, 200), "Stack: " + Actors[i].MagneticStack, style);
+        }
+    }
 
     void SetScoreBoard()
     {
@@ -321,11 +324,11 @@ public class GameCenter : BaseScene
     [PunRPC]
     void UpdateCount(bool isReady)
     {
-        //if (PhotonNetwork.LocalPlayer.IsMasterClient)
-        //{
-        //    UpdateMasterStatus();
-        //}
-      
+        if (PhotonNetwork.LocalPlayer.IsMasterClient)
+        {
+            UpdateMasterStatus();
+        }
+
         if (isReady)
             _roomUI.PlayerReadyCount++;
         else
@@ -535,9 +538,6 @@ public class GameCenter : BaseScene
             ActorViewIDs.Add(ids[i]);
             AddActor(ids[i]);
         }
-
-        _magneticField.Actor = Actors[PhotonNetwork.LocalPlayer.ActorNumber - 1];
-        //_snowStorm.Actor = Actors[PhotonNetwork.LocalPlayer.ActorNumber - 1];
     }
 
     IEnumerator InitArenaScene()
@@ -560,9 +560,6 @@ public class GameCenter : BaseScene
                 _scores[PhotonNetwork.LocalPlayer.ActorNumber - 1] = 0;
                 _nicknames[PhotonNetwork.LocalPlayer.ActorNumber - 1] = PhotonNetwork.NickName;
                 _actorNumbers[PhotonNetwork.LocalPlayer.ActorNumber - 1] = PhotonNetwork.LocalPlayer.ActorNumber;
-
-                //_magneticField.Actor = Actors[PhotonNetwork.LocalPlayer.ActorNumber - 1];
-                //_snowStorm.Actor = Actors[PhotonNetwork.LocalPlayer.ActorNumber - 1];
             }
             else
             {
@@ -573,6 +570,9 @@ public class GameCenter : BaseScene
         {
             _scoreBoardUI.ChangeScoreBoard(_scores, _nicknames, _actorNumbers);
         }
+
+        _magneticField.Actor = Actors[PhotonNetwork.LocalPlayer.ActorNumber - 1];
+
     }
 
     #endregion
