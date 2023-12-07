@@ -12,15 +12,25 @@ public class MagneticField : MonoBehaviour
     
     private float[] _radius = { 0f, 52f, 22f, 11f };
     private float[] _scale = { 0f, 103.2f, 43.1f, 20.0f };
-    private Vector3[] Point = { Vector3.zero, new Vector3(465.9f, 6.8f, 414.6f), new Vector3(444.3f, 6.8f, 422.1f), new Vector3(453.9f, 6.8f, 410.5f) };
-    
-    private float _magneticFieldStack = 10f;
-    private float _magneticFieldStackRestore = 10f;
-    private float _floorStack = 2f;
+    private Vector3[] _point = { Vector3.zero, new Vector3(465.9f, 6.8f, 414.6f), new Vector3(444.3f, 6.8f, 422.1f), new Vector3(453.9f, 6.8f, 410.5f) };
+
+    private float[] _magneticFieldStack = { 0f, 10f, 14f, 20f, 33f };
+    private float _stackRestore = 10f;
+    private float _floorStack = 20f;
     private float _delay = 1f;
 
+    private float _stack;
     private float _magneticRadius;
     private double _distance;
+
+    private GameObject MagneticFieldEffect;
+    private Vector3[] _effect1Position = { new Vector3(-103.46f, -14.85f, -9.04f), new Vector3(-68f, -9.26f, -2.31f), new Vector3(-52.08f, -4.03f, 3.97f)};
+    private Vector3[] _effect3Position = { new Vector3(31.1f, -56.3f, -45), new Vector3(34.41f, -34.21f, -18.44f) };
+    private Vector3[] _effect4Position = { new Vector3(80.9f, 27.6f, 42.4f), new Vector3(54.95f, 19.03f, 32.17f), new Vector3(34.39f, 12.27f, 24.06f) };
+    private Transform _effect1;
+    private Transform _effect3;
+    private Transform _effect4;
+
 
     bool _isSynced;
 
@@ -39,8 +49,13 @@ public class MagneticField : MonoBehaviour
     private void Start()
     {
         _magneticRadius = _radius[1];
-        transform.position = Point[1];
+        transform.position = _point[1];
         transform.localScale = new Vector3(_scale[1], _scale[1], _scale[1]);
+
+        MagneticFieldEffect = GameObject.Find("Magnetic Field Effect");
+        _effect1 = MagneticFieldEffect.transform.GetChild(0);
+        _effect3 = MagneticFieldEffect.transform.GetChild(2);
+        _effect4 = MagneticFieldEffect.transform.GetChild(3);
 
         StartCoroutine(FirstPhase(1));
     }
@@ -52,7 +67,6 @@ public class MagneticField : MonoBehaviour
             StartCoroutine(WaitForSync());
             return;
         }
-
 
         TouchedFloor();
 
@@ -124,7 +138,7 @@ public class MagneticField : MonoBehaviour
     {
         yield return new WaitForSeconds(PhaseStartTime[index]);
 
-        _magneticFieldStack = 10f;
+        _stack = _magneticFieldStack[1];
 
         float startTime = Time.time;
         while (Time.time - startTime < PhaseDuration[index])
@@ -132,7 +146,9 @@ public class MagneticField : MonoBehaviour
             float t = (Time.time - startTime) / PhaseDuration[index];
             _magneticRadius = Mathf.Lerp(_radius[index], _radius[index + 1], t) ;
             transform.localScale = new Vector3(Mathf.Lerp(_scale[index], _scale[index + 1], t), Mathf.Lerp(_scale[index], _scale[index + 1], t), Mathf.Lerp(_scale[index], _scale[index + 1], t));
-            transform.position = new Vector3(Mathf.Lerp(Point[index].x, Point[index + 1].x, t), 6.8f, Mathf.Lerp(Point[index].z, Point[index + 1].z, t));
+            transform.position = new Vector3(Mathf.Lerp(_point[index].x, _point[index + 1].x, t), 6.8f, Mathf.Lerp(_point[index].z, _point[index + 1].z, t));
+
+            _effect1.localPosition = new Vector3(Mathf.Lerp(_effect1Position[0].x, _effect1Position[1].x, t), Mathf.Lerp(_effect1Position[0].y, _effect1Position[1].y, t), Mathf.Lerp(_effect1Position[0].z, _effect1Position[1].z, t));
 
             yield return null;
         }
@@ -144,7 +160,7 @@ public class MagneticField : MonoBehaviour
     {
         yield return new WaitForSeconds(PhaseStartTime[index]);
 
-        _magneticFieldStack = 14f;
+        _stack = _magneticFieldStack[2];
 
         float startTime = Time.time;
         while (Time.time - startTime < PhaseDuration[index])
@@ -152,7 +168,10 @@ public class MagneticField : MonoBehaviour
             float t = (Time.time - startTime) / PhaseDuration[index];
             _magneticRadius = Mathf.Lerp(_radius[index], _radius[index + 1], t);
             transform.localScale = new Vector3(Mathf.Lerp(_scale[index], _scale[index + 1], t), Mathf.Lerp(_scale[index], _scale[index + 1], t), Mathf.Lerp(_scale[index], _scale[index + 1], t));
-            transform.position = new Vector3(Mathf.Lerp(Point[index].x, Point[index + 1].x, t), 6.8f, Mathf.Lerp(Point[index].z, Point[index + 1].z, t));
+            transform.position = new Vector3(Mathf.Lerp(_point[index].x, _point[index + 1].x, t), 6.8f, Mathf.Lerp(_point[index].z, _point[index + 1].z, t));
+
+            _effect3.localPosition = new Vector3(Mathf.Lerp(_effect3Position[0].x, _effect3Position[1].x, t), Mathf.Lerp(_effect3Position[0].y, _effect3Position[1].y, t), Mathf.Lerp(_effect3Position[0].z, _effect3Position[1].z, t));
+            _effect4.localPosition = new Vector3(Mathf.Lerp(_effect4Position[0].x, _effect4Position[1].x, t), Mathf.Lerp(_effect4Position[0].y, _effect4Position[1].y, t), Mathf.Lerp(_effect4Position[0].z, _effect4Position[1].z, t));
 
             yield return null;
         }
@@ -164,7 +183,7 @@ public class MagneticField : MonoBehaviour
     {
         yield return new WaitForSeconds(PhaseStartTime[index]);
 
-        _magneticFieldStack = 20f;
+        _stack = _magneticFieldStack[3];
 
         float startTime = Time.time;
         while (Time.time - startTime < PhaseDuration[index])
@@ -173,14 +192,19 @@ public class MagneticField : MonoBehaviour
             _magneticRadius = Mathf.Lerp(_radius[index], 0, t);
             transform.localScale = new Vector3(Mathf.Lerp(_scale[index], 0, t), Mathf.Lerp(_scale[index], 0, t), Mathf.Lerp(_scale[index], 0, t));
 
+            _effect1.localPosition = new Vector3(Mathf.Lerp(_effect1Position[1].x, _effect1Position[2].x, t), Mathf.Lerp(_effect1Position[1].y, _effect1Position[2].y, t), Mathf.Lerp(_effect1Position[1].z, _effect1Position[2].z, t));
+            _effect4.localPosition = new Vector3(Mathf.Lerp(_effect4Position[1].x, _effect4Position[2].x, t), Mathf.Lerp(_effect4Position[1].y, _effect4Position[2].y, t), Mathf.Lerp(_effect4Position[1].z, _effect4Position[2].z, t));
+
             yield return null;
         }
 
-        _magneticFieldStack = 33f;
 
+        _stack = _magneticFieldStack[4];
     }
     #endregion
 
+
+    #region 바닥, 자기장 내/외부에 따른 데미지
 
     IEnumerator DamagedByFloor()
     {
@@ -197,7 +221,6 @@ public class MagneticField : MonoBehaviour
         }
     }
 
-
     IEnumerator DamagedByMagnetic()
     {
         _isDamaging = true;
@@ -207,7 +230,7 @@ public class MagneticField : MonoBehaviour
 
         while (Actor.MagneticStack <= 100 && !_isInside && !_isFloor)
         {
-            Actor.MagneticStack += _magneticFieldStack;
+            Actor.MagneticStack += _stack;
             
             yield return new WaitForSeconds(_delay);
         }
@@ -222,7 +245,7 @@ public class MagneticField : MonoBehaviour
 
         while (Actor.MagneticStack > 0 && _isInside && !_isFloor)
         {
-            Actor.MagneticStack -= _magneticFieldStackRestore;
+            Actor.MagneticStack -= _stackRestore;
 
             if (Actor.MagneticStack < 0)
                 Actor.MagneticStack = 0;
@@ -231,4 +254,12 @@ public class MagneticField : MonoBehaviour
         }
     }
 
+    #endregion
+
+
+    void ChangeEffectLocation(int index, Vector3 pos)
+    {
+
+
+    }
 }
