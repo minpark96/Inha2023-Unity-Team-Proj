@@ -75,6 +75,7 @@ public class StatusHandler : MonoBehaviourPun
     int Creatcount = 0;
 
     Context _context;
+    Stun stunInStance;
 
     private void Awake()
     {
@@ -82,6 +83,7 @@ public class StatusHandler : MonoBehaviourPun
         Transform SoundSourceTransform = transform.Find("GreenHip");
         _audioSource = SoundSourceTransform.GetComponent<AudioSource>();
         _context = GetComponent<Context>();
+        stunInStance = gameObject.AddComponent<Stun>();
     }
 
     void Start()
@@ -176,7 +178,7 @@ public class StatusHandler : MonoBehaviourPun
             // 상태이상 체크
             DebuffCheck(type);
             Debug.Log("지금은 기절로 바꿔줘요");
-            _context.ChangeState(new Stun());
+            _context.ChangeState(stunInStance);
             //DebuffAction();
             //CheckProjectile(causer);
         }
@@ -702,7 +704,7 @@ public class StatusHandler : MonoBehaviourPun
                     if (actor.debuffState == Actor.DebuffState.Ice) //상태이상 후에 추가
                         return;
                     actor.actorState = Actor.ActorState.Unconscious;
-                    photonView.RPC("StunCreate", RpcTarget.All);
+                    //photonView.RPC("StunCreate", RpcTarget.All);
                     EnterUnconsciousState();
                 }
             }
@@ -740,7 +742,7 @@ public class StatusHandler : MonoBehaviourPun
         actor.BodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
     }
 
-    [PunRPC]
+/*    [PunRPC]
     void SetJointSpring(float percentage)
     {
         JointDrive angularXDrive;
@@ -764,11 +766,11 @@ public class StatusHandler : MonoBehaviourPun
             j++;
         }
 
-    }
+    }*/
 
     public IEnumerator ResetBodySpring()
     {
-        photonView.RPC("SetJointSpring", RpcTarget.All, 0f);
+        //photonView.RPC("SetJointSpring", RpcTarget.All, 0f);
         yield return null;
     }
 
@@ -781,7 +783,7 @@ public class StatusHandler : MonoBehaviourPun
         {
             float elapsed = Time.time - startTime;
             float percentage = elapsed / springLerpDuration;
-            photonView.RPC("SetJointSpring", RpcTarget.All, percentage);
+            //photonView.RPC("SetJointSpring", RpcTarget.All, percentage);
             yield return null;
         }
     }
@@ -795,7 +797,7 @@ public class StatusHandler : MonoBehaviourPun
         {
             float elapsed = Time.time - startTime;
             float percentage = elapsed / springLerpDuration;
-            photonView.RPC("SetJointSpring", RpcTarget.All, percentage);
+           // photonView.RPC("SetJointSpring", RpcTarget.All, percentage);
             yield return null;
         }
     }

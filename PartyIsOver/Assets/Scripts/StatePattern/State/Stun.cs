@@ -3,25 +3,17 @@ using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
 
-public class Stun : MonoBehaviour, IState
+public class Stun : MonoBehaviourPun ,IState
 {
     private bool _isStun = false;
     public Actor MyActor { get; set; }
-    private float _stateDownTime = 2;
-    private float _stateUpTime = 2;
 
     private List<float> _xPosSpringAry = new List<float>();
     private List<float> _yzPosSpringAry = new List<float>();
 
-
-
     public void EnterState()
     {
         _isStun = true;
-
-            MyActor = GetComponent<Actor>();
-
-
 
         for (int i = 0; i < MyActor.BodyHandler.BodyParts.Count; i++)
         {
@@ -34,44 +26,51 @@ public class Stun : MonoBehaviour, IState
 
         MyActor.debuffState = Actor.DebuffState.Stun;
         //TODO :: 이펙트 추가 
-
-        ResetBodySpring();
+        Debug.Log("Start ResetBodySpring");
+        StartCoroutine("ResetBodySpring");
         Debug.Log($"상태를 변환 했습니다. {_isStun}");
     }
 
     public void UpdateState()
     {
-        if (_stateDownTime > 0f)
-        {
-            _stateDownTime -= Time.deltaTime;
-            Debug.Log("지속시간 : " + _stateDownTime);
-        }
 
-        if (_stateDownTime <= 0f)
-        {
-            Debug.Log("시간이 끝났어요");
-
-            ExitState();
-            _stateDownTime = _stateUpTime;
-            Debug.Log("지속시간 대기 채우기");
-        }
     }
 
     public void ExitState()
     {
         _isStun = false;
+
         Debug.Log("상태를 정상으로 돌립니다 : " + _isStun);
-        StartCoroutine(RestoreBodySpring());
+        //StartCoroutine이여서 병렬로 돌아서 찍고 다시 돌아옴
+        StartCoroutine(RestoreBodySpring(0.07f));
         MyActor.actorState = Actor.ActorState.Stand;
         MyActor.debuffState &= ~Actor.DebuffState.Stun;
         MyActor.InvokeStatusChangeEvent();
         //TODO :: 이펙트 삭제
     }
 
-    void ResetBodySpring()
+    IEnumerator ResetBodySpring()
     {
-        SetJointSpring(0f);
-        //photonView.RPC("SetJointSpring", RpcTarget.All, 0f);
+        photonView.RPC("SetJointSpring", RpcTarget.All, 0f);
+        yield return null;
+    }
+
+    IEnumerator RestoreBodySpring(float _springLerpTime = 1f)
+    {
+        Debug.Log("Start RestoreBodySpring");
+        float startTime = Time.time;
+        float springLerpDuration = _springLerpTime;
+
+        while (Time.time < startTime + springLerpDuration)
+        {
+            float elapsed = Time.time - startTime;
+            float percentage = elapsed / springLerpDuration;
+            //SetJointSpring(percentage);
+            photonView.RPC("SetJointSpring", RpcTarget.All, percentage);
+            Debug.Log("RestoreBodySpring+++++++++++++++");
+            yield return null;
+        }
+        Debug.Log("End RestoreBodySpring");
     }
 
     [PunRPC]
@@ -103,20 +102,4 @@ public class Stun : MonoBehaviour, IState
         Debug.Log("End SetJointSpring");
 
     }
-
-    public IEnumerator RestoreBodySpring()
-    {
-        float startTime = Time.time;
-        float springLerpDuration = 0.07f;
-
-        while (Time.time < startTime + springLerpDuration)
-        {
-            float elapsed = Time.time - startTime;
-            float percentage = elapsed / springLerpDuration;
-            SetJointSpring(percentage);
-            //photonView.RPC("SetJointSpring", RpcTarget.All, percentage);
-            yield return null;
-        }
-    }
-
 }

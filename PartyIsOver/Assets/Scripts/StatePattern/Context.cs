@@ -6,15 +6,18 @@ using UnityEngine;
 public class Context : MonoBehaviourPun
 {
     private IState _currentState;
-    private float time = 2f;
+    [SerializeField]
+    private float _stunTime = 2;
+    private float _currentTime = 0;
+
+    public void Start()
+    {
+        Managers.DurationTime.DurationTimeExpired += OnDurationTime;
+    }
 
     public void SetState(IState state)
     {
-        if(_currentState != null)
-        {
-            Debug.Log("다른 상태가 들어왔어요 그래서 지금 있던 상태는 종료 할께요");
-            _currentState.ExitState();
-        }
+        state.MyActor = GetComponent<Actor>();
 
         Debug.Log("상태 변환");
         _currentState = state;
@@ -24,7 +27,10 @@ public class Context : MonoBehaviourPun
     private void FixedUpdate()
     {
         if(_currentState != null)
+        {
             _currentState.UpdateState();
+            Managers.DurationTime.UpdateDurationTimes(Time.fixedDeltaTime);
+        }
     }
 
     public void ChangeState(IState newState)
@@ -36,9 +42,21 @@ public class Context : MonoBehaviourPun
             Debug.Log("전 상태 끝내기");
             _currentState.ExitState();
         }
-
+        //스턴 시간 추가 하기
+        Managers.DurationTime.SetDurationTime(newState.ToString(), _stunTime);
         Debug.Log("상태 전환 신청");
         SetState(newState);
+        
+    }
+
+    //이벤트는 종료를 하는 것
+    private void OnDurationTime(string state)
+    {
+        if(_currentState != null)
+        {
+            _currentState.ExitState();
+        }
+        _currentState = null;
     }
 
 
