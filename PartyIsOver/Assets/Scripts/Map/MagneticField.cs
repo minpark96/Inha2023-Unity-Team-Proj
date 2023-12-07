@@ -13,23 +13,19 @@ public class MagneticField : MonoBehaviour
     private float[] _radius = { 0f, 52f, 22f, 11f };
     private float[] _scale = { 0f, 103.2f, 43.1f, 20.0f };
     private Vector3[] Point = { Vector3.zero, new Vector3(465.9f, 6.8f, 414.6f), new Vector3(444.3f, 6.8f, 422.1f), new Vector3(453.9f, 6.8f, 410.5f) };
-
+    
     private float _magneticFieldStack = 10f;
     private float _magneticFieldStackRestore = 10f;
-    private float _floorStack = 2f;
     private float _delay = 1f;
 
     private float _magneticRadius;
     private double _distance;
 
-    bool _isSynced;
-
-    bool _isInside;
-    bool _isFloor;
+    private bool _isSynced;
+    private bool _isInside;
 
     bool _isDamaging;
     bool _isRestoring;
-    bool _isFloorDamaging;
 
     public Actor Actor;
 
@@ -51,45 +47,24 @@ public class MagneticField : MonoBehaviour
             return;
         }
 
-
-        if(FallOutside() && !_isFloorDamaging)
-            StartCoroutine(DamagedByFloor());
-        else if (InsideArea() && !_isDamaging)
+        if (InsideArea() && !_isDamaging)
             StartCoroutine(DamagedByMagnetic());
-        else if (!InsideArea() && !_isRestoring)
+        else if(!InsideArea() && !_isRestoring)
             StartCoroutine(RestoreMagneticDamage());
 
 
-        if (Actor.MagneticStack >= 100f)
+        if(Actor.MagneticStack >= 100f)
         {
             Actor.MagneticStack = 100f;
 
             // player Á×À½ Ã³¸®
-            //Actor.Health = 0;
-            //Actor.actorState = Actor.ActorState.Dead;
+            Actor.Health = 0;
+            Actor.actorState = Actor.ActorState.Dead;
 
             Debug.Log("½ºÅÃ ½×¿©¼­ »ç¸Á");
         }
     }
-
-
-    bool FallOutside()
-    {
-        float player = Actor.BodyHandler.Hip.transform.position.y;
-        float floor = 4.8f;
-
-        if (player <= floor)
-        {
-            _isFloor = true;
-            return true;
-        }
-        else
-        {
-            _isFloorDamaging = false;
-            _isFloor = false;
-            return false;
-        }
-    }
+  
 
     bool InsideArea()
     {
@@ -179,24 +154,13 @@ public class MagneticField : MonoBehaviour
     }
     #endregion
 
-    IEnumerator DamagedByFloor()
-    {
-        _isFloorDamaging = true;
-
-        while (Actor.MagneticStack <= 100 && _isFloor)
-        {
-            Actor.MagneticStack += _floorStack;
-
-            yield return new WaitForSeconds(_delay);
-        }
-    }
 
     IEnumerator DamagedByMagnetic()
     {
         _isDamaging = true;
         _isRestoring = false;
 
-        while (Actor.MagneticStack <= 100 && !_isInside && !_isFloorDamaging)
+        while (Actor.MagneticStack <= 100 && !_isInside)
         {
             Actor.MagneticStack += _magneticFieldStack;
             
@@ -209,7 +173,7 @@ public class MagneticField : MonoBehaviour
         _isRestoring = true;
         _isDamaging = false;
 
-        while (Actor.MagneticStack > 0 && _isInside && !_isFloorDamaging)
+        while (Actor.MagneticStack > 0 && _isInside)
         {
             Actor.MagneticStack -= _magneticFieldStackRestore;
 
