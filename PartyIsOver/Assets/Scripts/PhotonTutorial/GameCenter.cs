@@ -355,10 +355,10 @@ public class GameCenter : BaseScene
             Debug.Log("아레나 로딩완료!!!");
 
             GameObject mainPanel = GameObject.Find("Main Panel");
-            ImageHPBar = mainPanel.transform.GetChild(0).GetChild(1).GetComponent<Image>();
-            ImageStaminaBar = mainPanel.transform.GetChild(0).GetChild(2).GetComponent<Image>();
+            ImageHPBar = mainPanel.transform.GetChild(1).GetChild(1).GetComponent<Image>();
+            ImageStaminaBar = mainPanel.transform.GetChild(1).GetChild(2).GetComponent<Image>();
 
-            GameObject portrait = mainPanel.transform.GetChild(0).GetChild(0).gameObject;
+            GameObject portrait = mainPanel.transform.GetChild(1).GetChild(0).gameObject;
 
             for (int i = 0; i < Define.MAX_PLAYERS_PER_ROOM; i++)
             {

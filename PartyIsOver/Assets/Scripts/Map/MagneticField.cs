@@ -9,7 +9,10 @@ public class MagneticField : MonoBehaviour
 {
     public float[] PhaseStartTime = { 0f, 45f, 45f, 45f };
     public float[] PhaseDuration = { 0f, 15f, 15f, 10f };
-    
+
+    public GameObject FreezeImage;
+
+
     private float[] _radius = { 0f, 52f, 22f, 11f };
     private float[] _scale = { 0f, 103.2f, 43.1f, 20.0f };
     private Vector3[] _point = { Vector3.zero, new Vector3(465.9f, 6.8f, 414.6f), new Vector3(444.3f, 6.8f, 422.1f), new Vector3(453.9f, 6.8f, 410.5f) };
@@ -57,6 +60,9 @@ public class MagneticField : MonoBehaviour
         _effect3 = MagneticFieldEffect.transform.GetChild(2);
         _effect4 = MagneticFieldEffect.transform.GetChild(3);
 
+        GameObject mainPanel = GameObject.Find("Main Panel");
+        FreezeImage = mainPanel.transform.GetChild(0).gameObject;
+
         StartCoroutine(FirstPhase(1));
     }
 
@@ -69,7 +75,7 @@ public class MagneticField : MonoBehaviour
         }
 
         TouchedFloor();
-
+        ChangeMainPanel();
 
         if (Actor.MagneticStack >= 100f)
         {
@@ -82,6 +88,25 @@ public class MagneticField : MonoBehaviour
             Debug.Log("스택 쌓여서 사망");
         }
     }
+
+    void ChangeMainPanel()
+    {
+        for (int i = 0; i < 5; i++)
+            FreezeImage.transform.GetChild(i).gameObject.SetActive(false);
+
+        if (Actor.MagneticStack >= 20 && Actor.MagneticStack < 40)
+            FreezeImage.transform.GetChild(0).gameObject.SetActive(true);
+        else if (Actor.MagneticStack >= 40 && Actor.MagneticStack < 60)
+            FreezeImage.transform.GetChild(1).gameObject.SetActive(true);
+        else if (Actor.MagneticStack >= 60 && Actor.MagneticStack < 80)
+            FreezeImage.transform.GetChild(2).gameObject.SetActive(true);
+        else if (Actor.MagneticStack >= 80 && Actor.MagneticStack < 100)
+            FreezeImage.transform.GetChild(3).gameObject.SetActive(true);
+        else if (Actor.MagneticStack >= 100)
+            FreezeImage.transform.GetChild(4).gameObject.SetActive(true);
+    }
+
+    #region 영역 검사
 
     void TouchedFloor()
     {
@@ -126,6 +151,7 @@ public class MagneticField : MonoBehaviour
         }
     }
 
+    #endregion
 
     IEnumerator WaitForSync()
     {
@@ -256,10 +282,4 @@ public class MagneticField : MonoBehaviour
 
     #endregion
 
-
-    void ChangeEffectLocation(int index, Vector3 pos)
-    {
-
-
-    }
 }
