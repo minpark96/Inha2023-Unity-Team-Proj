@@ -24,9 +24,11 @@ public class MagneticField : MonoBehaviour
 
     bool _isSynced;
 
+    // 1초간 스택 쌓는 조건
     bool _isInside;
     bool _isFloor;
 
+    // 코루틴 1번 실행하게하는 flag
     bool _isDamaging;
     bool _isRestoring;
     bool _isFloorDamaging;
@@ -52,12 +54,7 @@ public class MagneticField : MonoBehaviour
         }
 
 
-        if (FallOutside() && !_isFloorDamaging)
-            StartCoroutine(DamagedByFloor());
-        else if (InsideArea() && !_isDamaging)
-            StartCoroutine(DamagedByMagnetic());
-        else if (!InsideArea() && !_isRestoring)
-            StartCoroutine(RestoreMagneticDamage());
+        TouchedFloor();
 
 
         if (Actor.MagneticStack >= 100f)
@@ -72,7 +69,7 @@ public class MagneticField : MonoBehaviour
         }
     }
 
-    bool FallOutside()
+    void TouchedFloor()
     {
         float player = Actor.BodyHandler.Hip.transform.position.y;
         float floor = 4.8f;
@@ -80,13 +77,18 @@ public class MagneticField : MonoBehaviour
         if (player <= floor)
         {
             _isFloor = true;
-            return true;
+
+            if(!_isFloorDamaging)
+                StartCoroutine(DamagedByFloor());
         }
         else
         {
-            _isFloorDamaging = false;
             _isFloor = false;
-            return false;
+
+            if (!InsideArea() && !_isDamaging)
+                StartCoroutine(DamagedByMagnetic());
+            else if (InsideArea() && !_isRestoring)
+                StartCoroutine(RestoreMagneticDamage());
         }
     }
 
@@ -101,12 +103,12 @@ public class MagneticField : MonoBehaviour
         if (_distance > _magneticRadius)
         {
             _isInside = false;
-            return true;
+            return false;
         }
         else
         {
             _isInside = true;
-            return false;
+            return true;
         }
     }
 
@@ -183,6 +185,9 @@ public class MagneticField : MonoBehaviour
     IEnumerator DamagedByFloor()
     {
         _isFloorDamaging = true;
+        _isDamaging = false;
+        _isRestoring = false;
+
 
         while (Actor.MagneticStack <= 100 && _isFloor)
         {
@@ -197,8 +202,10 @@ public class MagneticField : MonoBehaviour
     {
         _isDamaging = true;
         _isRestoring = false;
+        _isFloorDamaging = false;
 
-        while (Actor.MagneticStack <= 100 && !_isInside && !_isFloorDamaging)
+
+        while (Actor.MagneticStack <= 100 && !_isInside && !_isFloor)
         {
             Actor.MagneticStack += _magneticFieldStack;
             
@@ -210,10 +217,15 @@ public class MagneticField : MonoBehaviour
     {
         _isRestoring = true;
         _isDamaging = false;
+        _isFloorDamaging = false;
 
-        while (Actor.MagneticStack > 0 && _isInside && !_isFloorDamaging)
+
+        while (Actor.MagneticStack > 0 && _isInside && !_isFloor)
         {
             Actor.MagneticStack -= _magneticFieldStackRestore;
+
+            if (Actor.MagneticStack < 0)
+                Actor.MagneticStack = 0;
 
             yield return new WaitForSeconds(_delay);
         }
