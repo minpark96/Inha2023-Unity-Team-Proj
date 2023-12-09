@@ -26,7 +26,6 @@ public class StatusHandler : MonoBehaviourPun
     private List<float> _yzPosSpringAry = new List<float>();
 
    
-
     // 초기 속도
     private float _maxSpeed;
 
@@ -75,7 +74,7 @@ public class StatusHandler : MonoBehaviourPun
 
     int Creatcount = 0;
 
-    Context _context;
+    public Context _context;
     Stun stunInStance;
 
     private void Awake()
@@ -698,6 +697,7 @@ public class StatusHandler : MonoBehaviourPun
             //기절상태가 아닐때 일정 이상의 데미지를 받으면 기절
             if (actor.actorState != Actor.ActorState.Unconscious)
             {
+
                 if (realDamage >= _knockoutThreshold)
                 {
                     if (actor.debuffState == Actor.DebuffState.Ice) //상태이상 후에 추가
@@ -733,9 +733,7 @@ public class StatusHandler : MonoBehaviourPun
         //데미지 이펙트나 사운드 추후 추가
 
         //actor.debuffState = Actor.DebuffState.Stun;
-        Debug.Log("Start Stun");
-        _context.ChangeState(stunInStance, 2f);
-        Debug.Log("End Stun");
+        photonView.RPC("ChangeStateMachines", RpcTarget.All);
         //StartCoroutine(ResetBodySpring());
         actor.Grab.GrabResetTrigger();
         actor.BodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
@@ -744,31 +742,37 @@ public class StatusHandler : MonoBehaviourPun
         actor.BodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
     }
 
-/*    [PunRPC]
-    void SetJointSpring(float percentage)
+    [PunRPC]
+    void ChangeStateMachines()
     {
-        JointDrive angularXDrive;
-        JointDrive angularYZDrive;
-        int j = 0;
+        _context.ChangeState(stunInStance, 2f);
+    }
 
-        //기절과 회복에 모두 관여 기절시엔 퍼센티지를 0으로해서 사용
-        for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
+    /*    [PunRPC]
+        void SetJointSpring(float percentage)
         {
-            if (i == (int)Define.BodyPart.Hip)
-                continue;
+            JointDrive angularXDrive;
+            JointDrive angularYZDrive;
+            int j = 0;
 
-            angularXDrive = actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive;
-            angularXDrive.positionSpring = _xPosSpringAry[j] * percentage;
-            actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive = angularXDrive;
+            //기절과 회복에 모두 관여 기절시엔 퍼센티지를 0으로해서 사용
+            for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
+            {
+                if (i == (int)Define.BodyPart.Hip)
+                    continue;
 
-            angularYZDrive = actor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive;
-            angularYZDrive.positionSpring = _yzPosSpringAry[j] * percentage;
-            actor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive = angularYZDrive;
+                angularXDrive = actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive;
+                angularXDrive.positionSpring = _xPosSpringAry[j] * percentage;
+                actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive = angularXDrive;
 
-            j++;
-        }
+                angularYZDrive = actor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive;
+                angularYZDrive.positionSpring = _yzPosSpringAry[j] * percentage;
+                actor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive = angularYZDrive;
 
-    }*/
+                j++;
+            }
+
+        }*/
 
     public IEnumerator ResetBodySpring()
     {

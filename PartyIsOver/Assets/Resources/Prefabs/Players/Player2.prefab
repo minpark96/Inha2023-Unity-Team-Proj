@@ -12338,6 +12338,7 @@ MonoBehaviour:
   _stunTime: 3
   _iceDamage: 0
   _burnDamage: 5
+  _context: {fileID: 0}
 --- !u!114 &1602883286494261838
 MonoBehaviour:
   m_ObjectHideFlags: 0
