@@ -4,22 +4,19 @@ using Photon.Pun;
 using UnityEngine;
 using static Define;
 
-public class Stun : MonoBehaviourPun ,IState
+public class Stun : MonoBehaviourPun , IDebuffState
 {
     public Actor MyActor { get; set; }
     public float CoolTime { get; set; }
-
-    private bool _isStun = false;
-    private GameObject effectObject = null;
-    private Transform playerTransform;
-
+    public GameObject effectObject { get; set; }
+    public Transform playerTransform { get; set; }
+    
     private List<float> _xPosSpringAry = new List<float>();
     private List<float> _yzPosSpringAry = new List<float>();
 
     public void EnterState()
     {
-        _isStun = true;
-
+        effectObject = null;
         playerTransform = this.transform.Find("GreenHip").GetComponent<Transform>();
 
         for (int i = 0; i < MyActor.BodyHandler.BodyParts.Count; i++)
@@ -39,22 +36,17 @@ public class Stun : MonoBehaviourPun ,IState
     public void UpdateState()
     {
         if(effectObject != null)
-        {
             effectObject.transform.position = new Vector3(playerTransform.position.x, playerTransform.position.y + 1, playerTransform.position.z);
-        }
     }
 
     public void ExitState()
     {
-        _isStun = false;
-
         StartCoroutine(RestoreBodySpring(0.07f));
 
         MyActor.actorState = Actor.ActorState.Stand;
         MyActor.InvokeStatusChangeEvent();
 
-        photonView.RPC("RemoveObject", RpcTarget.All, "Stun_loop");
-
+        RemoveObject("Stun_loop");
     }
 
     [PunRPC]
@@ -79,13 +71,11 @@ public class Stun : MonoBehaviourPun ,IState
         }
     }
 
-    [PunRPC]
     public void InstantiateEffect(string path)
     {
         effectObject = Managers.Resource.PhotonNetworkInstantiate($"{path}");
     }
 
-    [PunRPC]
     public void RemoveObject(string name)
     {
         GameObject go = GameObject.Find($"{name}");

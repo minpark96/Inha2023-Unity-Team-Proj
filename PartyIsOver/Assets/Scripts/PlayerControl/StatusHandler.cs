@@ -72,8 +72,6 @@ public class StatusHandler : MonoBehaviourPun
     [SerializeField]
     public float _burnDamage;
 
-    int Creatcount = 0;
-
     public Context _context;
     Stun stunInStance;
 
@@ -377,7 +375,6 @@ public class StatusHandler : MonoBehaviourPun
             yield return null;
         }
         _burnCount = 0;
-        Creatcount = 0;
         // 화상 해제
         _hasBurn = false;
         photonView.RPC("TransferDebuffToPlayer", RpcTarget.MasterClient, (int)InteractableObject.Damage.Default);
@@ -733,7 +730,7 @@ public class StatusHandler : MonoBehaviourPun
         //데미지 이펙트나 사운드 추후 추가
 
         //actor.debuffState = Actor.DebuffState.Stun;
-        photonView.RPC("ChangeStateMachines", RpcTarget.All);
+        photonView.RPC("ChangeStateMachines", RpcTarget.All, _stunTime);
         //StartCoroutine(ResetBodySpring());
         actor.Grab.GrabResetTrigger();
         actor.BodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
@@ -743,9 +740,9 @@ public class StatusHandler : MonoBehaviourPun
     }
 
     [PunRPC]
-    void ChangeStateMachines()
+    void ChangeStateMachines(float durationTime)
     {
-        _context.ChangeState(stunInStance, 2f);
+        _context.ChangeState(stunInStance, durationTime);
     }
 
     /*    [PunRPC]

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class Default : MonoBehaviourPun , IDebuffState
+public class Burn : MonoBehaviourPun , IDebuffState
 {
     public Actor MyActor { get; set; }
     public float CoolTime { get; set; }
@@ -18,7 +18,8 @@ public class Default : MonoBehaviourPun , IDebuffState
 
     public void UpdateState()
     {
-
+        if (effectObject != null)
+            effectObject.transform.position = playerTransform.position;
     }
 
     public void ExitState()
