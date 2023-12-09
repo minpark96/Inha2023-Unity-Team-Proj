@@ -98,11 +98,13 @@ public class RoomUI : MonoBehaviour
         }
     }
 
-    void Update()
+    public void ChangeMasterButton(bool canPlay)
     {
         if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
-            if (CanPlay)
+            CanPlay = canPlay;
+
+            if (canPlay)
                 PlayButton.GetComponentInChildren<Image>().sprite = GamePlayOn;
             else
                 PlayButton.GetComponentInChildren<Image>().sprite = GamePlayOff;

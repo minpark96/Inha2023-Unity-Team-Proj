@@ -41,4 +41,9 @@ public class EndingUI : MonoBehaviour
         StartCoroutine(PopUp());
     }
 
+    public void SetWinner(int winner)
+    {
+        Winner.transform.GetChild(winner).gameObject.SetActive(true);
+    }
+
 }
