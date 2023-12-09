@@ -562,7 +562,7 @@ public class GameCenter : BaseScene
         MyGraveStone = Managers.Resource.PhotonNetworkInstantiate(_graveStonePath, pos: spawnAirPos);
         yield return new WaitForSeconds(DelayInGhostSpawn);
         MyGhost = Managers.Resource.Instantiate(_ghostPath, pos: spawnPos);
-        MyActor.transform.GetChild(0).gameObject.SetActive(false);
+        MyActor.CameraControl = null;
     }
 
     #endregion

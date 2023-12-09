@@ -7,11 +7,14 @@ using static Actor;
 
 public class Ghost : MonoBehaviourPunCallbacks
 {
-    public float Speed = 5.0f;
-
+    public float MoveSpeed = 5.0f;
+    public float TurnSpeed = 3.0f;
     public CameraControl CameraControl;
+    
     Animator anim;
     Vector3 moveDir = new Vector3(0, 0, 0);
+    Transform camPos;
+    Vector3 prevPos;
 
     void Awake()
     {
@@ -30,6 +33,8 @@ public class Ghost : MonoBehaviourPunCallbacks
         Managers.Input.MouseAction += OnMouseEvent;
         Managers.Input.KeyboardAction -= OnKeyboardEvent;
         Managers.Input.KeyboardAction += OnKeyboardEvent;
+
+        prevPos = transform.position;
     }
 
     void OnKeyboardEvent(Define.KeyboardEvent evt)
@@ -38,23 +43,25 @@ public class Ghost : MonoBehaviourPunCallbacks
         {
             case Define.KeyboardEvent.Press:
                 {
+                    camPos = CameraControl.CameraArm.transform;
                     if (Input.GetKey(KeyCode.W))
                     {
-                        moveDir += Vector3.forward;
+                        moveDir += camPos.forward;
                     }
                     if (Input.GetKey(KeyCode.S))
                     {
-                        moveDir -= Vector3.forward;
+                        moveDir -= camPos.forward;
                     }
                     if (Input.GetKey(KeyCode.A))
                     {
-                        moveDir -= Vector3.right;
+                        moveDir -= camPos.right;
                     }
                     if (Input.GetKey(KeyCode.D))
                     {
-                        moveDir += Vector3.right;
+                        moveDir += camPos.right;
                     }
 
+                    Turn(moveDir);
                     if (moveDir != Vector3.zero)
                     {
                         moveDir = moveDir.normalized;
@@ -63,24 +70,28 @@ public class Ghost : MonoBehaviourPunCallbacks
                 }
         }
     }
-
+    
     void OnDestroy()
     {
         Managers.Input.MouseAction -= OnMouseEvent;
         Managers.Input.KeyboardAction -= OnKeyboardEvent;
     }
 
-    void Move(Vector3 moveDir)
+    void Move()
     {
-        transform.position += moveDir * Speed * Time.deltaTime;
-        Debug.Log(moveDir);
+        transform.position += moveDir * MoveSpeed * Time.deltaTime;
         anim.SetBool("IsFly", moveDir != Vector3.zero);
         moveDir = Vector3.zero;
     }
 
-    void Turn(Vector3 moveDir)
+    void Turn(Vector3 offset)
     {
-        //transform.LookAt(transform.position + moveDir);
+        if (offset == Vector3.zero) return;
+        Quaternion turnAngle = Quaternion.LookRotation(offset, Vector3.up);
+        transform.rotation = Quaternion.Slerp(transform.rotation, turnAngle, TurnSpeed * Time.deltaTime);
+
+        Vector3 turnDir = transform.position - prevPos;
+        prevPos = transform.position;
     }
 
     void OnMouseEvent(Define.MouseEvent evt)
@@ -96,7 +107,6 @@ public class Ghost : MonoBehaviourPunCallbacks
 
     void FixedUpdate()
     {
-        Move(moveDir);
-        Turn(moveDir);
+        Move();
     }
 }

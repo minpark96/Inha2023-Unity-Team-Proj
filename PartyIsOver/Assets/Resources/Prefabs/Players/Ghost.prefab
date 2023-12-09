@@ -1310,7 +1310,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: 242edde3011c7a346bc9651788b72c62, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
-  m_ApplyRootMotion: 0
+  m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_WarningMessage: 
@@ -1330,7 +1330,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e33a8c1f48083df4faff09cee1f70037, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Speed: 5
+  MoveSpeed: 5
+  TurnSpeed: 5
   CameraControl: {fileID: 6596436116345887367}
 --- !u!114 &6596436116345887367
 MonoBehaviour:

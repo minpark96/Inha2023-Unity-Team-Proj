@@ -10,8 +10,7 @@ public class CameraControl : MonoBehaviourPun
     
     void Awake()
     {
-        if (photonView != null && !photonView.IsMine)
-            transform.GetChild(0).gameObject.SetActive(false); // 다른 클라이언트 카메라 끄기
+        if (photonView != null && !photonView.IsMine) return;
 
         if (CameraArm == null)
             CameraArm = GameObject.Find("CameraArm").transform;
