@@ -28,7 +28,7 @@ public class GameCenter : BaseScene
     #region Private Fields
 
     string _roomName = "[4]Room";
-    string _arenaName = "PO_Map_KYH";
+    string _arenaName = "[5]Arena";
 
     string _playerPath1 = "Players/Player1";
     string _playerPath2 = "Players/Player2";
