@@ -5,59 +5,57 @@ using UnityEngine;
 
 public class Context : MonoBehaviourPun
 {
-    private IState _currentState;
-    [SerializeField]
-    private float _stunTime = 2;
-    private float _currentTime = 0;
-
-    public void Start()
-    {
-        Managers.DurationTime.DurationTimeExpired += OnDurationTime;
-    }
+    private List<IState> _currentStateList = new List<IState>();
 
     public void SetState(IState state)
     {
         state.MyActor = GetComponent<Actor>();
 
         Debug.Log("상태 변환");
-        _currentState = state;
-        _currentState.EnterState();
+        _currentStateList.Add(state);
+        state.EnterState();
     }
 
     private void FixedUpdate()
     {
-        if(_currentState != null)
+        for(int i = 0; i < _currentStateList.Count; i++)
         {
-            _currentState.UpdateState();
-            Managers.DurationTime.UpdateDurationTimes(Time.fixedDeltaTime);
+            var state = _currentStateList[i];
+
+            if(state != null)
+            {
+                if(state.CoolTime > 0f)
+                    state.CoolTime -= Time.deltaTime;
+
+                if(state.CoolTime <= 0f)
+                {
+                    state.ExitState();
+                    _currentStateList[i] = null;
+                }
+
+                state.UpdateState();
+            }
         }
+        _currentStateList.RemoveAll(state => state == null);
     }
 
-    public void ChangeState(IState newState)
+    public void ChangeState(IState newState, float time)
     {
         Debug.Log("상태 바꾸라는 요청이 들어왔어요!!");
-
-        if(_currentState != null)
+        
+        //같은 상태가 중복되면 쿨을 늘리는 것보다 그냥 있던 것을 끝내는 것 같은 상태이면 return
+        foreach(var state in _currentStateList)
         {
-            Debug.Log("전 상태 끝내기");
-            _currentState.ExitState();
+            if (state == newState && state != null)
+            {
+                Debug.Log("같은 상태여서 그냥 나가");
+                return;
+            }
         }
-        //스턴 시간 추가 하기
-        Managers.DurationTime.SetDurationTime(newState.ToString(), _stunTime);
+
+        newState.CoolTime = time;
+
         Debug.Log("상태 전환 신청");
         SetState(newState);
-        
     }
-
-    //이벤트는 종료를 하는 것
-    private void OnDurationTime(string state)
-    {
-        if(_currentState != null)
-        {
-            _currentState.ExitState();
-        }
-        _currentState = null;
-    }
-
-
 }

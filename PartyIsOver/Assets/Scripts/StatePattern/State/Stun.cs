@@ -2,11 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
+using static Define;
 
 public class Stun : MonoBehaviourPun ,IState
 {
     private bool _isStun = false;
     public Actor MyActor { get; set; }
+    public float CoolTime { get; set; }
+    public GameObject effectObject = null;
+    public Transform playerTransform;
 
     private List<float> _xPosSpringAry = new List<float>();
     private List<float> _yzPosSpringAry = new List<float>();
@@ -14,6 +18,8 @@ public class Stun : MonoBehaviourPun ,IState
     public void EnterState()
     {
         _isStun = true;
+
+        playerTransform = this.transform.Find("GreenHip").GetComponent<Transform>();
 
         for (int i = 0; i < MyActor.BodyHandler.BodyParts.Count; i++)
         {
@@ -24,8 +30,11 @@ public class Stun : MonoBehaviourPun ,IState
             _yzPosSpringAry.Add(MyActor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive.positionSpring);
         }
 
-        MyActor.debuffState = Actor.DebuffState.Stun;
-        //TODO :: 이펙트 추가 
+        //MyActor.debuffState = Actor.DebuffState.Stun;
+        //TODO :: 이펙트 생성 추가
+        photonView.RPC("InstantiateEffect", RpcTarget.All, "Effects/Stun_loop");
+        //InstantiateEffect("Effects/Stun_loop");
+
         Debug.Log("Start ResetBodySpring");
         StartCoroutine("ResetBodySpring");
         Debug.Log($"상태를 변환 했습니다. {_isStun}");
@@ -33,7 +42,11 @@ public class Stun : MonoBehaviourPun ,IState
 
     public void UpdateState()
     {
-
+        if(effectObject != null)
+        {
+            effectObject.transform.position = new Vector3(playerTransform.position.x, playerTransform.position.y + 1, playerTransform.position.z);
+            
+        }
     }
 
     public void ExitState()
@@ -44,9 +57,18 @@ public class Stun : MonoBehaviourPun ,IState
         //StartCoroutine이여서 병렬로 돌아서 찍고 다시 돌아옴
         StartCoroutine(RestoreBodySpring(0.07f));
         MyActor.actorState = Actor.ActorState.Stand;
-        MyActor.debuffState &= ~Actor.DebuffState.Stun;
+
+        /*MyActor.actorState = Actor.ActorState.Stand;
+        MyActor.debuffState &= ~Actor.DebuffState.Stun;*/
+
         MyActor.InvokeStatusChangeEvent();
         //TODO :: 이펙트 삭제
+        photonView.RPC("RemoveObject", RpcTarget.All, "Stun_loop");
+        //RemoveObject("Stun_loop");
+
+        //여기서 지금 자기 자신의 상태를 널로 해야한야하는데
+        //지금 상태를 여기서 바꾸던지 해야하는데
+
     }
 
     IEnumerator ResetBodySpring()
@@ -74,6 +96,20 @@ public class Stun : MonoBehaviourPun ,IState
     }
 
     [PunRPC]
+    public void InstantiateEffect(string path)
+    {
+        effectObject = Managers.Resource.PhotonNetworkInstantiate($"{path}");
+    }
+
+    [PunRPC]
+    public void RemoveObject(string name)
+    {
+        GameObject go = GameObject.Find($"{name}");
+        Managers.Resource.Destroy(go);
+        effectObject = null;
+    }
+
+    [PunRPC]
     void SetJointSpring(float percentage)
     {
         JointDrive angularXDrive;
@@ -98,8 +134,6 @@ public class Stun : MonoBehaviourPun ,IState
 
             j++;
         }
-
         Debug.Log("End SetJointSpring");
-
     }
 }

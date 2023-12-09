@@ -30,7 +30,8 @@ public class StatusHandler : MonoBehaviourPun
     // 초기 속도
     private float _maxSpeed;
 
-
+    // 추후 DebuffTime Actor에서만 사용할 예정
+    public float StunTime = 2;
 
 
     // 버프 확인용 플래그
@@ -177,9 +178,7 @@ public class StatusHandler : MonoBehaviourPun
         {
             // 상태이상 체크
             DebuffCheck(type);
-            Debug.Log("지금은 기절로 바꿔줘요");
-            _context.ChangeState(stunInStance);
-            //DebuffAction();
+            DebuffAction();
             //CheckProjectile(causer);
         }
 
@@ -733,8 +732,11 @@ public class StatusHandler : MonoBehaviourPun
     {
         //데미지 이펙트나 사운드 추후 추가
 
-        actor.debuffState = Actor.DebuffState.Stun;
-        StartCoroutine(ResetBodySpring());
+        //actor.debuffState = Actor.DebuffState.Stun;
+        Debug.Log("Start Stun");
+        _context.ChangeState(stunInStance, 2f);
+        Debug.Log("End Stun");
+        //StartCoroutine(ResetBodySpring());
         actor.Grab.GrabResetTrigger();
         actor.BodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
         actor.BodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;

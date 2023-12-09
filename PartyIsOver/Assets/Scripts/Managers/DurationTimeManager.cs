@@ -40,6 +40,7 @@ public class DurationTimeManager : MonoBehaviour
                 Debug.Log("상태 이벤트 종료 끝");
             }
         }
+        Debug.Log("상태 이벤트 ++진짜++ 종료 끝");
     }
 
     //지속시간 종료 이벤트 발생
