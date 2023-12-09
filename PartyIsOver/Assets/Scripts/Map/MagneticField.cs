@@ -38,12 +38,12 @@ public class MagneticField : MonoBehaviour
     public bool IsFloor;
 
 
-    public Actor Actor;
+    public List<Actor> ActorList;
 
     public bool Checking;
     public int AreaName;
 
-    public delegate void CheckArea(int areaName);
+    public delegate void CheckArea(int areaName, int index);
     public event CheckArea CheckMagneticFieldArea;
 
     private void Start()
@@ -72,17 +72,22 @@ public class MagneticField : MonoBehaviour
             return;
         }
 
-        ChangeMainPanel();
+        //ChangeMainPanel();
 
-        if (Actor.MagneticStack >= 100f)
+      
+    }
+
+    void InvokeDeath()
+    {
+        for(int i = 0; i < ActorList.Count; i++)
         {
-            Actor.MagneticStack = 100f;
+            if (ActorList[i].MagneticStack >= 100f)
+            {
+                ActorList[i].MagneticStack = 100f;
 
-            // player 죽음 처리
-            //Actor.Health = 0;
-            //Actor.actorState = Actor.ActorState.Dead;
-
-            Debug.Log("스택 쌓여서 사망");
+                // player 죽음 처리
+                Debug.Log("스택 쌓여서 사망");
+            }
         }
     }
 
@@ -91,41 +96,53 @@ public class MagneticField : MonoBehaviour
         for (int i = 0; i < 5; i++)
             FreezeImage.transform.GetChild(i).gameObject.SetActive(false);
 
-        if (Actor.MagneticStack >= 20 && Actor.MagneticStack < 40)
-            FreezeImage.transform.GetChild(0).gameObject.SetActive(true);
-        else if (Actor.MagneticStack >= 40 && Actor.MagneticStack < 60)
-            FreezeImage.transform.GetChild(1).gameObject.SetActive(true);
-        else if (Actor.MagneticStack >= 60 && Actor.MagneticStack < 80)
-            FreezeImage.transform.GetChild(2).gameObject.SetActive(true);
-        else if (Actor.MagneticStack >= 80 && Actor.MagneticStack < 100)
-            FreezeImage.transform.GetChild(3).gameObject.SetActive(true);
-        else if (Actor.MagneticStack >= 100)
-            FreezeImage.transform.GetChild(4).gameObject.SetActive(true);
+        for (int i = 0; i < ActorList.Count; i++)
+        {
+            if (ActorList[i].MagneticStack >= 20 && ActorList[i].MagneticStack < 40)
+                FreezeImage.transform.GetChild(0).gameObject.SetActive(true);
+            else if (ActorList[i].MagneticStack >= 40 && ActorList[i].MagneticStack < 60)
+                FreezeImage.transform.GetChild(1).gameObject.SetActive(true);
+            else if (ActorList[i].MagneticStack >= 60 && ActorList[i].MagneticStack < 80)
+                FreezeImage.transform.GetChild(2).gameObject.SetActive(true);
+            else if (ActorList[i].MagneticStack >= 80 && ActorList[i].MagneticStack < 100)
+                FreezeImage.transform.GetChild(3).gameObject.SetActive(true);
+            else if (ActorList[i].MagneticStack >= 100)
+                FreezeImage.transform.GetChild(4).gameObject.SetActive(true);
+        }
     }
 
     #region 영역 검사
 
     private void OnTriggerEnter(Collider other)
     {
-        //if (!PhotonNetwork.LocalPlayer.IsMasterClient && PhotonNetwork.IsConnected == true) return;
+        if (!PhotonNetwork.LocalPlayer.IsMasterClient && PhotonNetwork.IsConnected == true) return;
 
-        if (Actor == null) return;
+        if (ActorList == null) return;
 
-        if (other.name == Actor.BodyHandler.Hip.name)
+
+        for (int i = 0; i < ActorList.Count; i++)
         {
-            AreaName = (int)Define.Area.Inside;
-            CheckMagneticFieldArea(AreaName);
+            if (other.name == ActorList[i].BodyHandler.Hip.name)
+            {
+                AreaName = (int)Define.Area.Inside;
+                CheckMagneticFieldArea(AreaName, i);
+            }
         }
+
+       
     }
 
     private void OnTriggerExit(Collider other)
     {
-        //if (!PhotonNetwork.LocalPlayer.IsMasterClient && PhotonNetwork.IsConnected == true) return;
+        if (!PhotonNetwork.LocalPlayer.IsMasterClient && PhotonNetwork.IsConnected == true) return;
 
-        if (other.name == Actor.BodyHandler.Hip.name)
+        for (int i = 0; i < ActorList.Count; i++)
         {
-            AreaName = (int)Define.Area.Outside;
-            CheckMagneticFieldArea(AreaName);
+            if (other.name == ActorList[i].BodyHandler.Hip.name)
+            {
+                AreaName = (int)Define.Area.Outside;
+                CheckMagneticFieldArea(AreaName, i);
+            }
         }
     }
 
@@ -207,40 +224,34 @@ public class MagneticField : MonoBehaviour
 
     #region 바닥, 자기장 내/외부에 따른 데미지
 
-    public IEnumerator DamagedByFloor()
+    public IEnumerator DamagedByFloor(int index)
     {
-        Debug.Log("DamageByFloor/ AreaName: " + (Define.Area)AreaName);
-
-        while (Actor.MagneticStack <= 100 && AreaName == (int)Define.Area.Floor)
+        while (ActorList[index].MagneticStack <= 100 && AreaName == (int)Define.Area.Floor)
         {
-            Actor.MagneticStack += _floorStack;
+            ActorList[index].MagneticStack += _floorStack;
 
             yield return new WaitForSeconds(_delay);
         }
     }
 
-    public IEnumerator DamagedByMagnetic()
+    public IEnumerator DamagedByMagnetic(int index)
     {
-        Debug.Log("DamagedByMagnetic/ AreaName: " + (Define.Area)AreaName);
-
-        while (Actor.MagneticStack <= 100 && AreaName == (int)Define.Area.Outside)
+        while (ActorList[index].MagneticStack <= 100 && AreaName == (int)Define.Area.Outside)
         {
-            Actor.MagneticStack += _stack;
+            ActorList[index].MagneticStack += _stack;
             
             yield return new WaitForSeconds(_delay);
         }
     }
 
-    public IEnumerator RestoreMagneticDamage()
+    public IEnumerator RestoreMagneticDamage(int index)
     {
-        Debug.Log("RestoreMagneticDamage/ AreaName: " + (Define.Area)AreaName);
-
-        while (Actor.MagneticStack > 0 && AreaName == (int)Define.Area.Inside)
+        while (ActorList[index].MagneticStack > 0 && AreaName == (int)Define.Area.Inside)
         {
-            Actor.MagneticStack -= _stackRestore;
+            ActorList[index].MagneticStack -= _stackRestore;
 
-            if (Actor.MagneticStack < 0)
-                Actor.MagneticStack = 0;
+            if (ActorList[index].MagneticStack < 0)
+                ActorList[index].MagneticStack = 0;
 
             yield return new WaitForSeconds(_delay);
         }
