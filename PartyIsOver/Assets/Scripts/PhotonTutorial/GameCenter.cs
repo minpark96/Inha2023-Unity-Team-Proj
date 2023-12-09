@@ -21,6 +21,7 @@ public class GameCenter : BaseScene
     EndingUI _endingUI;
 
     MagneticField _magneticField;
+    Floor _floor;
     SnowStorm _snowStorm;
     #endregion
 
@@ -39,7 +40,6 @@ public class GameCenter : BaseScene
     string _ghostPath = "Players/Ghost";
     string _graveStonePath = "Item/GraveStone";
 
-    bool _isChecked;
 
     public int[] _scores = new int[Define.MAX_PLAYERS_PER_ROOM] { 0, 0, 0, 0, 0, 0 };
     public string[] _nicknames = new string[Define.MAX_PLAYERS_PER_ROOM] { "", "", "", "", "", "" };
@@ -82,7 +82,7 @@ public class GameCenter : BaseScene
 
     public int AlivePlayerCount = 1;
     public int RoundCount = 1;
-    public const int MAX_ROUND = 2;
+    public const int MAX_ROUND = 3;
 
     public int LoadingCompleteCount = 0;
     public int DestroyingCompleteCount = 0;
@@ -519,7 +519,16 @@ public class GameCenter : BaseScene
         _scoreBoardUI.SetScoreBoard();
 
         _magneticField = GameObject.Find("Magnetic Field").GetComponent<MagneticField>();
+        _floor = GameObject.Find("mainFloor").GetComponent<Floor>();
         //_snowStorm = GameObject.Find("Snow Storm").GetComponent<SnowStorm>();
+
+        _magneticField.CheckMagneticFieldArea -= CheckPlayerLocation;
+        _magneticField.CheckMagneticFieldArea += CheckPlayerLocation;
+        _floor.CheckMagneticFieldArea -= CheckPlayerLocation;
+        _floor.CheckMagneticFieldArea += CheckPlayerLocation;
+
+
+
 
         if (RoundCount == 1)
         {
@@ -618,6 +627,89 @@ public class GameCenter : BaseScene
             MyActor.transform.GetChild(0).gameObject.SetActive(false);
         }
     }
+
+    #endregion
+
+
+    #region 자기장 스택 체크
+
+    int[] checkArea = new int[Define.MAX_PLAYERS_PER_ROOM] { -1, -1, -1, -1, -1, -1 };
+  
+    void DamageByMagneticField()
+    {
+        for (int i = 0; i < Actors.Count; i++)
+        {
+            Debug.Log("Area: " + (Define.Area)checkArea[i]);
+            Debug.Log("checkArea[" + i + "] = " + checkArea[i]);
+
+            if (Actors[i].photonView.IsMine)
+            {
+                switch (checkArea[i])
+                {
+                    case (int)Define.Area.Floor:
+                        StartCoroutine(_magneticField.DamagedByFloor());
+                        break;
+                    case (int)Define.Area.Inside:
+                        StartCoroutine(_magneticField.RestoreMagneticDamage());
+                        break;
+                    case (int)Define.Area.Outside:
+                        StartCoroutine(_magneticField.DamagedByMagnetic());
+                        break;
+                    default:
+                        break;
+                }
+            }
+               
+        }
+    }
+
+    void CheckPlayerLocation(int areaName)
+    {
+        if (PhotonNetwork.LocalPlayer.IsMasterClient)
+        {
+            for (int i = 0; i < Actors.Count; i++)
+            {
+                if (Actors[i].photonView.IsMine)
+                {
+                    checkArea[i] = areaName;
+                }
+            }
+        }
+        else
+        {
+            Debug.Log("Areaname: " + (Define.Area)areaName);
+            photonView.RPC("SendTriggerToMaster", RpcTarget.MasterClient, areaName);
+        }
+
+        photonView.RPC("CheckAreaType", RpcTarget.All, checkArea);
+
+        DamageByMagneticField();
+    }
+
+    [PunRPC]
+    void SendTriggerToMaster(int areaName)
+    {
+        for (int i = 0; i < Actors.Count; i++)
+        {
+            if (Actors[i].photonView.IsMine)
+            {
+                Debug.Log("i = " + i);
+                Debug.Log("Actors[i].photonView.IsMine: " + Actors[i].photonView.IsMine);
+
+                checkArea[i] = areaName;
+            }
+        }
+    }
+    
+    [PunRPC]
+    void CheckAreaType(int[] updateArea)
+    {
+        for(int i = 0; i < Actors.Count; i++)
+        {
+            checkArea[i] = updateArea[i];
+        }
+    }
+
 
     #endregion
 

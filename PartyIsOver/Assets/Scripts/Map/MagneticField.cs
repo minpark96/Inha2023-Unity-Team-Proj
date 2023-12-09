@@ -10,9 +10,6 @@ public class MagneticField : MonoBehaviour
     public float[] PhaseStartTime = { 0f, 45f, 45f, 45f };
     public float[] PhaseDuration = { 0f, 15f, 15f, 10f };
 
-    public GameObject FreezeImage;
-
-
     private float[] _radius = { 0f, 52f, 22f, 11f };
     private float[] _scale = { 0f, 103.2f, 43.1f, 20.0f };
     private Vector3[] _point = { Vector3.zero, new Vector3(465.9f, 6.8f, 414.6f), new Vector3(444.3f, 6.8f, 422.1f), new Vector3(453.9f, 6.8f, 410.5f) };
@@ -21,10 +18,8 @@ public class MagneticField : MonoBehaviour
     private float _stackRestore = 10f;
     private float _floorStack = 20f;
     private float _delay = 1f;
-
     private float _stack;
-    private float _magneticRadius;
-    private double _distance;
+
 
     private GameObject MagneticFieldEffect;
     private Vector3[] _effect1Position = { new Vector3(-103.46f, -14.85f, -9.04f), new Vector3(-68f, -9.26f, -2.31f), new Vector3(-52.08f, -4.03f, 3.97f)};
@@ -34,24 +29,25 @@ public class MagneticField : MonoBehaviour
     private Transform _effect3;
     private Transform _effect4;
 
+    public GameObject FreezeImage;
 
     bool _isSynced;
 
     // 1초간 스택 쌓는 조건
-    bool _isInside;
-    bool _isFloor;
+    public bool IsInside;
+    public bool IsFloor;
 
-    // 코루틴 1번 실행하게하는 flag
-    bool _isDamaging;
-    bool _isRestoring;
-    bool _isFloorDamaging;
 
     public Actor Actor;
 
+    public bool Checking;
+    public int AreaName;
+
+    public delegate void CheckArea(int areaName);
+    public event CheckArea CheckMagneticFieldArea;
 
     private void Start()
     {
-        _magneticRadius = _radius[1];
         transform.position = _point[1];
         transform.localScale = new Vector3(_scale[1], _scale[1], _scale[1]);
 
@@ -62,6 +58,8 @@ public class MagneticField : MonoBehaviour
 
         GameObject mainPanel = GameObject.Find("Main Panel");
         FreezeImage = mainPanel.transform.GetChild(0).gameObject;
+
+        Checking = true;
 
         StartCoroutine(FirstPhase(1));
     }
@@ -74,7 +72,6 @@ public class MagneticField : MonoBehaviour
             return;
         }
 
-        TouchedFloor();
         ChangeMainPanel();
 
         if (Actor.MagneticStack >= 100f)
@@ -108,46 +105,27 @@ public class MagneticField : MonoBehaviour
 
     #region 영역 검사
 
-    void TouchedFloor()
+    private void OnTriggerEnter(Collider other)
     {
-        float player = Actor.BodyHandler.Hip.transform.position.y;
-        float floor = 4.8f;
+        //if (!PhotonNetwork.LocalPlayer.IsMasterClient && PhotonNetwork.IsConnected == true) return;
 
-        if (player <= floor)
+        if (Actor == null) return;
+
+        if (other.name == Actor.BodyHandler.Hip.name)
         {
-            _isFloor = true;
-
-            if(!_isFloorDamaging)
-                StartCoroutine(DamagedByFloor());
-        }
-        else
-        {
-            _isFloor = false;
-
-            if (!InsideArea() && !_isDamaging)
-                StartCoroutine(DamagedByMagnetic());
-            else if (InsideArea() && !_isRestoring)
-                StartCoroutine(RestoreMagneticDamage());
+            AreaName = (int)Define.Area.Inside;
+            CheckMagneticFieldArea(AreaName);
         }
     }
 
-
-    bool InsideArea()
+    private void OnTriggerExit(Collider other)
     {
-        Vector2 player = new Vector2(Actor.BodyHandler.Hip.transform.position.x, Actor.BodyHandler.Hip.transform.position.z);
-        Vector2 map = new Vector2(transform.position.x, transform.position.z);
+        //if (!PhotonNetwork.LocalPlayer.IsMasterClient && PhotonNetwork.IsConnected == true) return;
 
-        _distance = Math.Sqrt(Math.Pow((player.x - map.x), 2) + Math.Pow((player.y - map.y), 2));
-
-        if (_distance > _magneticRadius)
+        if (other.name == Actor.BodyHandler.Hip.name)
         {
-            _isInside = false;
-            return false;
-        }
-        else
-        {
-            _isInside = true;
-            return true;
+            AreaName = (int)Define.Area.Outside;
+            CheckMagneticFieldArea(AreaName);
         }
     }
 
@@ -170,7 +148,6 @@ public class MagneticField : MonoBehaviour
         while (Time.time - startTime < PhaseDuration[index])
         {
             float t = (Time.time - startTime) / PhaseDuration[index];
-            _magneticRadius = Mathf.Lerp(_radius[index], _radius[index + 1], t) ;
             transform.localScale = new Vector3(Mathf.Lerp(_scale[index], _scale[index + 1], t), Mathf.Lerp(_scale[index], _scale[index + 1], t), Mathf.Lerp(_scale[index], _scale[index + 1], t));
             transform.position = new Vector3(Mathf.Lerp(_point[index].x, _point[index + 1].x, t), 6.8f, Mathf.Lerp(_point[index].z, _point[index + 1].z, t));
 
@@ -192,7 +169,6 @@ public class MagneticField : MonoBehaviour
         while (Time.time - startTime < PhaseDuration[index])
         {
             float t = (Time.time - startTime) / PhaseDuration[index];
-            _magneticRadius = Mathf.Lerp(_radius[index], _radius[index + 1], t);
             transform.localScale = new Vector3(Mathf.Lerp(_scale[index], _scale[index + 1], t), Mathf.Lerp(_scale[index], _scale[index + 1], t), Mathf.Lerp(_scale[index], _scale[index + 1], t));
             transform.position = new Vector3(Mathf.Lerp(_point[index].x, _point[index + 1].x, t), 6.8f, Mathf.Lerp(_point[index].z, _point[index + 1].z, t));
 
@@ -215,7 +191,6 @@ public class MagneticField : MonoBehaviour
         while (Time.time - startTime < PhaseDuration[index])
         {
             float t = (Time.time - startTime) / PhaseDuration[index];
-            _magneticRadius = Mathf.Lerp(_radius[index], 0, t);
             transform.localScale = new Vector3(Mathf.Lerp(_scale[index], 0, t), Mathf.Lerp(_scale[index], 0, t), Mathf.Lerp(_scale[index], 0, t));
 
             _effect1.localPosition = new Vector3(Mathf.Lerp(_effect1Position[1].x, _effect1Position[2].x, t), Mathf.Lerp(_effect1Position[1].y, _effect1Position[2].y, t), Mathf.Lerp(_effect1Position[1].z, _effect1Position[2].z, t));
@@ -232,14 +207,11 @@ public class MagneticField : MonoBehaviour
 
     #region 바닥, 자기장 내/외부에 따른 데미지
 
-    IEnumerator DamagedByFloor()
+    public IEnumerator DamagedByFloor()
     {
-        _isFloorDamaging = true;
-        _isDamaging = false;
-        _isRestoring = false;
+        Debug.Log("DamageByFloor/ AreaName: " + (Define.Area)AreaName);
 
-
-        while (Actor.MagneticStack <= 100 && _isFloor)
+        while (Actor.MagneticStack <= 100 && AreaName == (int)Define.Area.Floor)
         {
             Actor.MagneticStack += _floorStack;
 
@@ -247,14 +219,11 @@ public class MagneticField : MonoBehaviour
         }
     }
 
-    IEnumerator DamagedByMagnetic()
+    public IEnumerator DamagedByMagnetic()
     {
-        _isDamaging = true;
-        _isRestoring = false;
-        _isFloorDamaging = false;
+        Debug.Log("DamagedByMagnetic/ AreaName: " + (Define.Area)AreaName);
 
-
-        while (Actor.MagneticStack <= 100 && !_isInside && !_isFloor)
+        while (Actor.MagneticStack <= 100 && AreaName == (int)Define.Area.Outside)
         {
             Actor.MagneticStack += _stack;
             
@@ -262,14 +231,11 @@ public class MagneticField : MonoBehaviour
         }
     }
 
-    IEnumerator RestoreMagneticDamage()
+    public IEnumerator RestoreMagneticDamage()
     {
-        _isRestoring = true;
-        _isDamaging = false;
-        _isFloorDamaging = false;
+        Debug.Log("RestoreMagneticDamage/ AreaName: " + (Define.Area)AreaName);
 
-
-        while (Actor.MagneticStack > 0 && _isInside && !_isFloor)
+        while (Actor.MagneticStack > 0 && AreaName == (int)Define.Area.Inside)
         {
             Actor.MagneticStack -= _stackRestore;
 

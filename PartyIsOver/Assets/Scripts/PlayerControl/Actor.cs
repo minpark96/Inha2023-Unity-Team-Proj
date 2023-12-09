@@ -98,7 +98,6 @@ public class Actor : MonoBehaviourPun, IPunObservable
     [SerializeField]
     private float _magneticStack = 0f;
     public float MagneticStack { get { return _magneticStack; } set { _magneticStack = value; } }
-    public bool _IsIceFloor;
     
 
 
@@ -280,9 +279,6 @@ public class Actor : MonoBehaviourPun, IPunObservable
             case ActorState.Climb:
                 break;
             case ActorState.Roll:
-                break;
-            case ActorState.BalloonWalk:
-                BalloonState.BalloonMove();
                 break;
         }
 
