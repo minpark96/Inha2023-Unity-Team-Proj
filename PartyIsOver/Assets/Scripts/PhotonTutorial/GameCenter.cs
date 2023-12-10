@@ -147,22 +147,22 @@ public class GameCenter : BaseScene
         }
     }
 
-    private void OnGUI()
-    {
-        GUIStyle style = new GUIStyle();
-        style.fontSize = 30;
-        GUI.backgroundColor = Color.white;
-        for (int i = 0; i < ActorViewIDs.Count; i++)
-        {
-            //GUI.contentColor = Color.black;
-            //GUI.Label(new Rect(0, 340 + i * 60, 200, 200), "Actor View ID: " + ActorViewIDs[i] + " / HP: " + Actors[i].Health, style);
-            //GUI.contentColor = Color.red;
-            //GUI.Label(new Rect(0, 360 + i * 60, 200, 200), "Status: " + Actors[i].actorState + " / Debuff: " + Actors[i].debuffState, style);
+    //private void OnGUI()
+    //{
+    //    GUIStyle style = new GUIStyle();
+    //    style.fontSize = 30;
+    //    GUI.backgroundColor = Color.white;
+    //    for (int i = 0; i < ActorViewIDs.Count; i++)
+    //    {
+    //        //GUI.contentColor = Color.black;
+    //        //GUI.Label(new Rect(0, 340 + i * 60, 200, 200), "Actor View ID: " + ActorViewIDs[i] + " / HP: " + Actors[i].Health, style);
+    //        //GUI.contentColor = Color.red;
+    //        //GUI.Label(new Rect(0, 360 + i * 60, 200, 200), "Status: " + Actors[i].actorState + " / Debuff: " + Actors[i].debuffState, style);
 
-            GUI.contentColor = Color.red;
-            GUI.Label(new Rect(0, 360 + i * 60, 200, 200), "Stack: " + Actors[i].MagneticStack, style);
-        }
-    }
+    //        GUI.contentColor = Color.red;
+    //        GUI.Label(new Rect(0, 360 + i * 60, 200, 200), "Stack: " + Actors[i].MagneticStack, style);
+    //    }
+    //}
 
     void UpdateStaminaBar()
     {
@@ -336,6 +336,9 @@ public class GameCenter : BaseScene
             _scoreBoardUI = GameObject.Find("ScoreBoard Panel").GetComponent<ScoreBoardUI>();
             _scoreBoardUI.InitScoreBoard();
 
+            SceneType = Define.Scene.Game;
+            SetSceneBgmSound("BigBangBattleLOOPING");
+
             photonView.RPC("SendLoadingComplete", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber);
 
             //if (RoundCount == 1)
@@ -505,9 +508,6 @@ public class GameCenter : BaseScene
     {
         yield return new WaitForSeconds(5f);
 
-        SceneType = Define.Scene.Game;
-        SetSceneBgmSound("BigBangBattleLOOPING");
-
         //Debug.Log("InitArenaScene");
         _scoreBoardUI.SetScoreBoard();
 
@@ -619,6 +619,7 @@ public class GameCenter : BaseScene
         MyGraveStone = Managers.Resource.PhotonNetworkInstantiate(_graveStonePath, pos: spawnAirPos);
         yield return new WaitForSeconds(DelayInGhostSpawn);
         MyGhost = Managers.Resource.Instantiate(_ghostPath, pos: spawnPos);
+        Destroy(MyActor._audioListener);
         MyActor.CameraControl = null;
     }
 
