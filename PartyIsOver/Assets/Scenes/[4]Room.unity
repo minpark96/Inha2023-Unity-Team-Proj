@@ -453,8 +453,8 @@ MonoBehaviour:
   PlayerReadyCount: 1
   SkillChange: 0
   SkillChangeButton: {fileID: 1308242964}
-  Skill1: {fileID: 21300000, guid: 7cbf1eb974e956d4fa1c227d5cf68625, type: 3}
-  Skill2: {fileID: 21300000, guid: 472d86fe955b8bd4faa62c04df0923fc, type: 3}
+  Skill1: {fileID: 21300000, guid: 4a8741a8bb35fc9419bf84d54d1d8928, type: 3}
+  Skill2: {fileID: 21300000, guid: 9a6b43221103e524eb6e2bbd21d69440, type: 3}
   SkillName: {fileID: 600104049}
   PlayButton: {fileID: 27030158}
   GamePlayOff: {fileID: 21300000, guid: 0ce0be1bdfce1394da992329fafa563f, type: 3}
@@ -2551,8 +2551,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.00059128, y: -20.175}
-  m_SizeDelta: {x: 104.0946, y: 93.8507}
+  m_AnchoredPosition: {x: 4.0303, y: -21.272}
+  m_SizeDelta: {x: 80.3192, y: 88.3031}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1308242964
 MonoBehaviour:
@@ -2574,7 +2574,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 472d86fe955b8bd4faa62c04df0923fc, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 4a8741a8bb35fc9419bf84d54d1d8928, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
