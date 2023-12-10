@@ -38,7 +38,10 @@ public class LauncherUI : MonoBehaviour
 
         Managers.Input.KeyboardAction -= OnKeyboardEvent;
         Managers.Input.KeyboardAction += OnKeyboardEvent;
+
+        Screen.SetResolution(960, 540, false);
     }
+
 
     void OnKeyboardEvent(Define.KeyboardEvent evt)
     {

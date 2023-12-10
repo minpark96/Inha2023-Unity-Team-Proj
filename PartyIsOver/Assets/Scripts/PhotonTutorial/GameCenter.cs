@@ -147,22 +147,22 @@ public class GameCenter : BaseScene
         }
     }
 
-    //private void OnGUI()
-    //{
-    //    GUIStyle style = new GUIStyle();
-    //    style.fontSize = 30;
-    //    GUI.backgroundColor = Color.white;
-    //    for (int i = 0; i < ActorViewIDs.Count; i++)
-    //    {
-    //        //GUI.contentColor = Color.black;
-    //        //GUI.Label(new Rect(0, 340 + i * 60, 200, 200), "Actor View ID: " + ActorViewIDs[i] + " / HP: " + Actors[i].Health, style);
-    //        //GUI.contentColor = Color.red;
-    //        //GUI.Label(new Rect(0, 360 + i * 60, 200, 200), "Status: " + Actors[i].actorState + " / Debuff: " + Actors[i].debuffState, style);
+    private void OnGUI()
+    {
+        GUIStyle style = new GUIStyle();
+        style.fontSize = 30;
+        GUI.backgroundColor = Color.white;
+        for (int i = 0; i < ActorViewIDs.Count; i++)
+        {
+            //GUI.contentColor = Color.black;
+            //GUI.Label(new Rect(0, 340 + i * 60, 200, 200), "Actor View ID: " + ActorViewIDs[i] + " / HP: " + Actors[i].Health, style);
+            //GUI.contentColor = Color.red;
+            //GUI.Label(new Rect(0, 360 + i * 60, 200, 200), "Status: " + Actors[i].actorState + " / Debuff: " + Actors[i].debuffState, style);
 
-    //        GUI.contentColor = Color.red;
-    //        GUI.Label(new Rect(0, 360 + i * 60, 200, 200), "Stack: " + Actors[i].MagneticStack, style);
-    //    }
-    //}
+            GUI.contentColor = Color.red;
+            GUI.Label(new Rect(0, 360 + i * 60, 200, 200), "Stack: " + Actors[i].MagneticStack, style);
+        }
+    }
 
     void UpdateStaminaBar()
     {
@@ -636,16 +636,15 @@ public class GameCenter : BaseScene
         {
             if(checkArea[i] == (int)Define.Area.Floor)
             {
-                StartCoroutine(_magneticField.DamagedByFloor(i));
+                photonView.RPC("DamagedByFloor", RpcTarget.All, i);
             }
             else if(checkArea[i] == (int)Define.Area.Inside)
             {
-                StartCoroutine(_magneticField.RestoreMagneticDamage(i));
-
+                photonView.RPC("RestoreMagneticDamage", RpcTarget.All, i);
             }
             else if(checkArea[i] ==(int)Define.Area.Outside)
             {
-                StartCoroutine(_magneticField.DamagedByMagnetic(i));
+                photonView.RPC("DamagedByMagnetic", RpcTarget.All, i);
             }
         }
     }
@@ -655,9 +654,41 @@ public class GameCenter : BaseScene
         if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
             checkArea[index] = areaName;
+
+            DamageByMagneticField();
         }
 
-        DamageByMagneticField();
+    }
+
+    [PunRPC]
+    void DamagedByFloor(int index)
+    {
+        for(int i = 0; i < Actors.Count; i++)
+        {
+            if (Actors[i].photonView.IsMine == true)
+                StartCoroutine(_magneticField.DamagedByFloor(index));
+        }
+        
+    }
+
+    [PunRPC]
+    void RestoreMagneticDamage(int index)
+    {
+        for (int i = 0; i < Actors.Count; i++)
+        {
+            if (Actors[i].photonView.IsMine == true)
+                StartCoroutine(_magneticField.RestoreMagneticDamage(index));
+        }
+    }
+
+    [PunRPC]
+    void DamagedByMagnetic(int index)
+    {
+        for (int i = 0; i < Actors.Count; i++)
+        {
+            if (Actors[i].photonView.IsMine == true)
+                StartCoroutine(_magneticField.DamagedByMagnetic(index));
+        }
     }
 
 
