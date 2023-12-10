@@ -142,7 +142,7 @@ public class StatusHandler : MonoBehaviourPun
     {
         //참여자는 방장한테 이펙트가 생기는 버그
         actor.PlayerController._drunkState.effectObject = effectObject;
-        actor.PlayerController._drunkState.TestPlayerEffect();
+        actor.PlayerController._drunkState.StatusMoveEffect();
     }
 
     private void LateUpdate()
