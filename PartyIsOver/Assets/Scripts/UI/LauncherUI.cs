@@ -55,7 +55,7 @@ public class LauncherUI : MonoBehaviour
 
     public void OnClickGameStart()
     {
-        if (PhotonNetwork.NickName.Length < 2 || PhotonNetwork.NickName.Length > 12)
+        if (PhotonNetwork.NickName.Length < 2 || PhotonNetwork.NickName.Length > 13)
         {
             AudioClip uiSound1 = Managers.Sound.GetOrAddAudioClip("Effect/Cartoon-UI-092");
             Managers.Sound.Play(uiSound1, Define.Sound.UISound);

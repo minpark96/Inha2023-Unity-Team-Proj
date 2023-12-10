@@ -63,7 +63,7 @@ public class MainUI : MonoBehaviour
         NickName.text = PhotonNetwork.NickName;
 
         _mainObject = GameObject.Find("Main Object");
-        _keyBoardObject = SettingsPanel.transform.GetChild(5).GetChild(0).gameObject;
+        _keyBoardObject = SettingsPanel.transform.GetChild(5).GetChild(1).gameObject;
         _keyBoardObject.SetActive(false);
 
 
