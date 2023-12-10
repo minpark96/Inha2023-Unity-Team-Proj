@@ -8,8 +8,8 @@ public class DrunkState : MonoBehaviourPun
 {
     private PlayerController _playerController;
     private Actor _actor;
-    private Transform _playerTransform;
-    private GameObject effectObject = null;
+    public Transform _playerTransform;
+    public GameObject effectObject = null;
     private float _drunkActionDuration = 3f;
 
     public float DrunkDuration = 10f;
@@ -77,7 +77,7 @@ public class DrunkState : MonoBehaviourPun
     }
 
     [PunRPC]
-    void StatusMoveEffect()
+    public void StatusMoveEffect()
     {
         if (effectObject != null && effectObject.name == "Flamethrower")
         {
