@@ -65883,6 +65883,10 @@ PrefabInstance:
       propertyPath: looping
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4834009847967589778, guid: 0fff2d4848dea52418943a7fbacdc630, type: 3}
+      propertyPath: simulationSpeed
+      value: 0.4
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0fff2d4848dea52418943a7fbacdc630, type: 3}
 --- !u!4 &1648035906 stripped
@@ -66585,7 +66589,7 @@ MonoBehaviour:
   FreezeImage: {fileID: 0}
   IsInside: 0
   IsFloor: 0
-  Actor: {fileID: 0}
+  ActorList: []
   Checking: 0
   AreaName: 0
 --- !u!135 &1675441217
