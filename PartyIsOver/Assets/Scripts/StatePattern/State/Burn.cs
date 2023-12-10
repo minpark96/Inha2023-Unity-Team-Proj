@@ -14,16 +14,19 @@ public class Burn : MonoBehaviourPun , IDebuffState
     AudioSource _audioSource;
     float delay = 3f;
     float _burnDamage = 5f;
+    float lastBurnTime = Time.time;
 
     public void EnterState()
     {
         effectObject = null;
         playerTransform = this.transform.Find("GreenHip").GetComponent<Transform>();
+        Transform SoundSourceTransform = transform.Find("GreenHip");
+        _audioSource = SoundSourceTransform.GetComponent<AudioSource>();
+
         InstantiateEffect("Effects/Fire_large");
         PlayerDebuffSound("PlayerEffect/SFX_FireBall_Projectile");
         TransferDebuffToPlayer((int)InteractableObject.Damage.Burn);
-
-
+        //StartCoroutine("BurnDmanage");
 
     }
 
@@ -31,11 +34,25 @@ public class Burn : MonoBehaviourPun , IDebuffState
     {
         if (effectObject != null)
             effectObject.transform.position = playerTransform.position;
+
+        if (Time.time - lastBurnTime >= 1.0f) // 1초간 데미지+액션
+        {
+            MyActor.Health -= _burnDamage;
+            MyActor.BodyHandler.Waist.PartRigidbody.AddForce((MyActor.BodyHandler.Hip.transform.right) * 40f, ForceMode.VelocityChange);
+            MyActor.BodyHandler.Hip.PartRigidbody.AddForce((MyActor.BodyHandler.Hip.transform.right) * 40f, ForceMode.VelocityChange);
+            lastBurnTime = Time.time;
+        }
+
     }
 
     public void ExitState()
     {
+        TransferDebuffToPlayer((int)InteractableObject.Damage.Default);
+        MyActor.actorState = Actor.ActorState.Stand;
 
+        RemoveObject("Fire_large");
+        MyActor.InvokeStatusChangeEvent();
+        _audioClip = null;
     }
 
     IEnumerator BurnDmanage()
@@ -52,6 +69,8 @@ public class Burn : MonoBehaviourPun , IDebuffState
                 //상태가 Ice 가 들어오면 종료를 해야한다.
                 MyActor.actorState = Actor.ActorState.Stand;
                 //StopCoroutine(Burn(delay));
+                //상태가 들어오면 그냥 종료
+                ExitState();
             }
 
             if (Time.time - lastBurnTime >= 1.0f) // 1초간 데미지+액션
@@ -67,18 +86,22 @@ public class Burn : MonoBehaviourPun , IDebuffState
         }
     }
 
+    [PunRPC]
     public void InstantiateEffect(string path)
     {
         effectObject = Managers.Resource.PhotonNetworkInstantiate($"{path}");
     }
+    [PunRPC]
     public void RemoveObject(string name)
     {
         GameObject go = GameObject.Find($"{name}");
         Managers.Resource.Destroy(go);
         effectObject = null;
     }
+    [PunRPC]
     void PlayerDebuffSound(string path)
     {
+        //사운드 문제 있음
         _audioClip = Managers.Sound.GetOrAddAudioClip(path);
         _audioSource.clip = _audioClip;
         _audioSource.volume = 0.2f;
