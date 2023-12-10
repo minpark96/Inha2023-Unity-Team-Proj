@@ -30,7 +30,7 @@ public class ScoreBoardUI : MonoBehaviour
     {
         Managers.Input.KeyboardAction -= OnKeyboardEvents;
         Managers.Input.KeyboardAction += OnKeyboardEvents;
-
+        //Debug.Log("SetScoreBoard");
         _playerNumber = PhotonNetwork.CurrentRoom.PlayerCount;
 
         for (int i = 0; i < _playerNumber; i++)
@@ -55,7 +55,7 @@ public class ScoreBoardUI : MonoBehaviour
 
         for (int i = 0; i < _playerNumber; i++)
         {
-            for (int j = 0; j < 6; j++)
+            for (int j = 0; j < Define.MAX_PLAYERS_PER_ROOM; j++)
             {
                 _portrait[i].transform.GetChild(j).gameObject.SetActive(false);
             }

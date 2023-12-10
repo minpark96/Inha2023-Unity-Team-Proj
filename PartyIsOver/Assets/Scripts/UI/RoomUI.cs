@@ -7,6 +7,7 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Photon.Realtime;
+using static RoomUI;
 
 public class RoomUI : MonoBehaviour
 {
@@ -14,7 +15,8 @@ public class RoomUI : MonoBehaviour
     [SerializeField]
     private TMP_Text _playerNameText;
 
-    private bool _hasCheckedTime;
+    string _arenaName = "PO_Map_KYH";
+
 
     public int PlayerReadyCount = 1;
 
@@ -33,17 +35,25 @@ public class RoomUI : MonoBehaviour
     public Sprite ReadyOff;
     public Sprite ReadyOn;
     public bool Ready;
-    public bool ReadyIsClicked;
 
     public GameObject SpawnPoint;
     public int PlayerCount;
     public int ActorNumber;
 
-    string _arenaName = "PO_Map_KYH";
+
+    public delegate void ChangeSkillEvent(bool isChange);
+    public event ChangeSkillEvent OnChangeSkiilEvent;
+    public delegate void LeaveRoom();
+    public event LeaveRoom OnLeaveRoom;
+    public delegate void ReadyEvent(bool isReady);
+    public event ReadyEvent OnReadyEvent;
+
 
     void Start()
     {
-        Init();
+        _playerNameText.text = PhotonNetwork.NickName;
+        Ready = false;
+
         Managers.Input.KeyboardAction -= OnKeyboardEvent;
         Managers.Input.KeyboardAction += OnKeyboardEvent;
 
@@ -57,10 +67,6 @@ public class RoomUI : MonoBehaviour
         }
     }
 
-    void Init()
-    {
-        _playerNameText.text = PhotonNetwork.NickName;
-    }
 
     void OnKeyboardEvent(Define.KeyboardEvent evt)
     {
@@ -90,15 +96,12 @@ public class RoomUI : MonoBehaviour
         }
     }
 
-    void Update()
+    public void ChangeMasterButton(bool canPlay)
     {
-        if (PhotonNetwork.LocalPlayer.IsMasterClient)
-        {
-            if (CanPlay)
-                PlayButton.GetComponentInChildren<Image>().sprite = GamePlayOn;
-            else
-                PlayButton.GetComponentInChildren<Image>().sprite = GamePlayOff;
-        }
+        if (canPlay)
+            PlayButton.GetComponentInChildren<Image>().sprite = GamePlayOn;
+        else
+            PlayButton.GetComponentInChildren<Image>().sprite = GamePlayOff;
     }
 
     public void UpdatePlayerNumber(int totalPlayerNumber)
@@ -107,6 +110,8 @@ public class RoomUI : MonoBehaviour
         {
             SpawnPoint.transform.GetChild(i).gameObject.SetActive(true);
         }
+
+        PlayerCount = totalPlayerNumber;
     }
 
    
@@ -114,8 +119,9 @@ public class RoomUI : MonoBehaviour
     {
         if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
-            if(CanPlay)
+            if (CanPlay)
             {
+                OnLeaveRoom();
                 PhotonNetwork.LoadLevel(_arenaName);
                 PhotonNetwork.CurrentRoom.IsOpen = false;
             }
@@ -123,13 +129,14 @@ public class RoomUI : MonoBehaviour
         else
         {
             Ready = !Ready;
+            OnReadyEvent(Ready);
 
-            if (!Ready)
+            if (Ready == false)
             {
                 AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-160");
                 Managers.Sound.Play(uiSound, Define.Sound.UISound);
 
-                ReadyButton.GetComponent<Image>().sprite = ReadyOn;
+                ReadyButton.GetComponent<Image>().sprite = ReadyOff;
                 ReadyButton.GetComponentInChildren<Text>().text = "ÁØºñ! (F5)";
 
             }
@@ -138,7 +145,7 @@ public class RoomUI : MonoBehaviour
                 AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-160");
                 Managers.Sound.Play(uiSound, Define.Sound.UISound);
 
-                ReadyButton.GetComponent<Image>().sprite = ReadyOff;
+                ReadyButton.GetComponent<Image>().sprite = ReadyOn;
                 ReadyButton.GetComponentInChildren<Text>().text = "ÁØºñÇØÁ¦! (F5)";
             }
         }
@@ -158,6 +165,7 @@ public class RoomUI : MonoBehaviour
             return;
 
         SkillChange = !SkillChange;
+        OnChangeSkiilEvent(SkillChange);
         AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-050");
         Managers.Sound.Play(uiSound, Define.Sound.UISound);
 
@@ -172,8 +180,4 @@ public class RoomUI : MonoBehaviour
             SkillName.text = "Â÷Â¡ ½ºÅ³\n\n\n\nÇÙÆÝÄ¡";
         }
     }
-
-
-
-
 }

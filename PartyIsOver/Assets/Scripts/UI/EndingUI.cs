@@ -30,15 +30,23 @@ public class EndingUI : MonoBehaviour
 
     public void OnClickMain()
     {
-        SceneManager.LoadScene("[2]Main");
+        //SceneManager.LoadScene("[2]Main");
+        //PhotonManager.Instance.Connect();
+
         PhotonManager.Instance.Connect();
-        
+        PhotonManager.Instance.LoadNextScene("[2]Main");
+        SceneManager.LoadSceneAsync("[2]Main");
     }
 
     public void OnClickCancel()
     {
         PopUpPanel.SetActive(false);
         StartCoroutine(PopUp());
+    }
+
+    public void SetWinner(int winner)
+    {
+        Winner.transform.GetChild(winner).gameObject.SetActive(true);
     }
 
 }

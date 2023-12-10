@@ -12304,7 +12304,6 @@ MonoBehaviour:
   _stamina: 100
   _maxStamina: 100
   _magneticStack: 0
-  _IsIceFloor: 0
   actorState: 4
   lastActorState: 8
   debuffState: 0
