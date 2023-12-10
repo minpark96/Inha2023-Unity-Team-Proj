@@ -238,7 +238,7 @@ public class PlayerController : MonoBehaviourPun
 
     public List<Quaternion> RotationsForBalloon = new List<Quaternion>();
     private BalloonState _balloonState;
-    private DrunkState _drunkState;
+    public DrunkState _drunkState;
 
     public static PlayerController Instance;
     public AudioSource _audioSource;
@@ -558,7 +558,7 @@ public class PlayerController : MonoBehaviourPun
                             {
                                 if (!_isRSkillCheck)
                                 {
-
+                                    photonView.RPC("EffectCreate", RpcTarget.All, "Effects/Love_aura");
                                     photonView.RPC("PlayerEffectSound", RpcTarget.All, "Sounds/PlayerEffect/ACTION_Changing_Smoke");
                                     _isRSkillCheck = true;
                                     photonView.RPC("ChargeReady", RpcTarget.All);
@@ -589,6 +589,7 @@ public class PlayerController : MonoBehaviourPun
                     {
                         _isRSkillCheck = false;
                         photonView.RPC("ResetCharge", RpcTarget.All);
+                        photonView.RPC("RSkillDestroyEffect", RpcTarget.All, "Love_aura");
                     }
                 }
                 break;
@@ -605,7 +606,7 @@ public class PlayerController : MonoBehaviourPun
                         if (Input.GetKeyUp(KeyCode.R) && isMeowNyangPunch)
                             MeowNyangPunch();
                         else
-                            NuclearPunch();
+                            NuclearPunch();        
                     }
                 }
                 break;
@@ -630,6 +631,19 @@ public class PlayerController : MonoBehaviourPun
                 break;
         }
     }
+    [PunRPC]
+    void EffectCreate(string path)
+    {
+        _actor.StatusHandler.EffectObjectCreate($"{path}");
+    }
+
+    [PunRPC]
+    void RSkillDestroyEffect(string name)
+    {
+        Debug.Log("RSkillDestroyEffect : " + name);
+        _actor.StatusHandler.DestroyEffect(name);
+    }
+
     [PunRPC]
     void DrunkAction()
     {
@@ -712,6 +726,7 @@ public class PlayerController : MonoBehaviourPun
 
     private void NuclearPunch()
     {
+        photonView.RPC("DestroyEffect", RpcTarget.All, "Love_aura");
         StartCoroutine(NuclearPunchDelay());
         photonView.RPC("ResetCharge", RpcTarget.All);
     }
@@ -725,6 +740,7 @@ public class PlayerController : MonoBehaviourPun
 
     private void MeowNyangPunch()
     {
+        photonView.RPC("DestroyEffect", RpcTarget.All, "Love_aura");
         StartCoroutine(MeowNyangPunchDelay());
         photonView.RPC("ResetCharge", RpcTarget.All);
     }
