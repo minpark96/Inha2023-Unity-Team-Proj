@@ -41,6 +41,24 @@ public class ResourceManager
         return Object.Instantiate(original, parent);
     }
 
+    public GameObject Instantiate(string path, Vector3? pos, Quaternion? rot = null, Transform parent = null)
+    {
+        GameObject original = Load<GameObject>($"Prefabs/{path}");
+        pos = pos ?? Vector3.zero;
+        rot = rot ?? Quaternion.identity;
+
+        if (original == null)
+        {
+            Debug.Log($"Failed to load prefab : {path}");
+            return null;
+        }
+
+        if (original.GetComponent<Poolable>() != null)
+            return Managers.Pool.Pop(original, parent).gameObject;
+
+        return Object.Instantiate(original, (Vector3)pos, (Quaternion)rot, parent);
+    }
+
     public GameObject PhotonNetworkInstantiate(string path, Transform parent = null, Vector3? pos = null, Quaternion? rot = null, byte group = 0, object[] data = null)
     {
         GameObject prefab = Load<GameObject>($"Prefabs/{path}");

@@ -10,20 +10,19 @@ public class CameraControl : MonoBehaviourPun
     
     void Awake()
     {
-        if (!photonView.IsMine)
-            transform.GetChild(0).gameObject.SetActive(false); // 다른 클라이언트 카메라 끄기
+        if (photonView != null && !photonView.IsMine) return;
 
         if (CameraArm == null)
-            CameraArm = transform.GetChild(0).GetChild(0);
+            CameraArm = GameObject.Find("CameraArm").transform;
 
         if (Camera == null)
-            Camera = transform.GetChild(0).GetChild(0).GetChild(1).GetComponent<Camera>();
+            Camera = Camera.main;
     }
 
     //카메라 컨트롤
-    public void LookAround(Vector3 hipPos)
+    public void LookAround(Vector3 Pos)
     {
-        CameraArm.parent.transform.position = hipPos;
+        CameraArm.position = Pos;
 
         Vector2 mouseDelta = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
         Vector3 camAngle = CameraArm.rotation.eulerAngles;

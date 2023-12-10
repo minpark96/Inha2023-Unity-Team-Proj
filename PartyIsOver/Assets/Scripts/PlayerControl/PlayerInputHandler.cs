@@ -47,7 +47,7 @@ public class PlayerInputHandler : MonoBehaviourPun
                 _actor.PlayerController.OnKeyboardEvent_Skill(evt);
         }
 
-        if (Input.GetKeyDown(KeyCode.F4))
+        if (Input.GetKeyUp(KeyCode.F4))
         {
             KillOneself();
         }
