@@ -195,7 +195,6 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
         CameraControl.LookAround(BodyHandler.Hip.transform.position);
         CameraControl.CursorControl();
-
     }
 
     void RecoveryStamina()

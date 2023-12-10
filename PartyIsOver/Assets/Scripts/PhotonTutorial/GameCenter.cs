@@ -28,7 +28,7 @@ public class GameCenter : BaseScene
     #region Private Fields
 
     string _roomName = "[4]Room";
-    string _arenaName = "PO_Map_KYH";
+    string _arenaName = "[5]Arena";
 
     string _playerPath1 = "Players/Player1";
     string _playerPath2 = "Players/Player2";
@@ -76,9 +76,6 @@ public class GameCenter : BaseScene
 
     public Actor MyActor;
     public int MyActorViewID;
-
-    //public Vector3[] DefaultPos = new Vector3[17];
-    //public Quaternion[] DefaultRot = new Quaternion[17];
 
     public int AlivePlayerCount = 1;
     public int RoundCount = 1;
@@ -339,6 +336,9 @@ public class GameCenter : BaseScene
             _scoreBoardUI = GameObject.Find("ScoreBoard Panel").GetComponent<ScoreBoardUI>();
             _scoreBoardUI.InitScoreBoard();
 
+            SceneType = Define.Scene.Game;
+            SetSceneBgmSound("BigBangBattleLOOPING");
+
             photonView.RPC("SendLoadingComplete", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber);
 
             //if (RoundCount == 1)
@@ -421,16 +421,12 @@ public class GameCenter : BaseScene
             string playerPath = (string)field.GetValue(this);
             go = Managers.Resource.PhotonNetworkInstantiate(playerPath, pos: SpawnPoints[PhotonNetwork.LocalPlayer.ActorNumber - 1]);
 
-            //Debug.Log(go);
             MyActor = go.GetComponent<Actor>();
-            //Debug.Log(MyActor);
             MyActor.OnChangeStaminaBar -= UpdateStaminaBar;
             MyActor.OnChangeStaminaBar += UpdateStaminaBar;
 
             PhotonView pv = go.GetComponent<PhotonView>();
-            //Debug.Log(pv);
             MyActorViewID = pv.ViewID;
-            //Debug.Log(MyActorViewID);
 
             if (PhotonNetwork.LocalPlayer.IsMasterClient)
             {
@@ -511,9 +507,6 @@ public class GameCenter : BaseScene
     IEnumerator InitArenaScene()
     {
         yield return new WaitForSeconds(5f);
-
-        SceneType = Define.Scene.Game;
-        SetSceneBgmSound("BigBangBattleLOOPING");
 
         //Debug.Log("InitArenaScene");
         _scoreBoardUI.SetScoreBoard();
@@ -622,14 +615,12 @@ public class GameCenter : BaseScene
 
     IEnumerator InstantiateGhost(Vector3 spawnPos)
     {
-        if (Ghost.LocalGhostInstance == null)
-        {
-            Vector3 spawnAirPos = spawnPos + new Vector3(0f, 10f, 0f);
-            MyGraveStone = Managers.Resource.PhotonNetworkInstantiate(_graveStonePath, pos: spawnAirPos);
-            yield return new WaitForSeconds(DelayInGhostSpawn);
-            MyGhost = Managers.Resource.PhotonNetworkInstantiate(_ghostPath, pos: spawnPos);
-            MyActor.transform.GetChild(0).gameObject.SetActive(false);
-        }
+        Vector3 spawnAirPos = spawnPos + new Vector3(0f, 10f, 0f);
+        MyGraveStone = Managers.Resource.PhotonNetworkInstantiate(_graveStonePath, pos: spawnAirPos);
+        yield return new WaitForSeconds(DelayInGhostSpawn);
+        MyGhost = Managers.Resource.Instantiate(_ghostPath, pos: spawnPos);
+        Destroy(MyActor._audioListener);
+        MyActor.CameraControl = null;
     }
 
     #endregion
@@ -723,8 +714,6 @@ public class GameCenter : BaseScene
     {
         if (MyGhost != null)
         {
-            Debug.Log("고스트 삭제");
-            Managers.Resource.Destroy(MyGhost);
             MyGhost = null;
             Debug.Log("비석 삭제");
             Managers.Resource.Destroy(MyGraveStone);

@@ -15,7 +15,7 @@ public class RoomUI : MonoBehaviour
     [SerializeField]
     private TMP_Text _playerNameText;
 
-    string _arenaName = "PO_Map_KYH";
+    string _arenaName = "[5]Arena";
 
 
     public int PlayerReadyCount = 1;
