@@ -4,18 +4,18 @@ using UnityEngine;
 
 public class Floor : MonoBehaviour
 {
-    MagneticField _magneticField;
-    int _areaName;
-    int _beforeAreaName;
+    //MagneticField _magneticField;
+    //int _areaName;
+    //int _beforeAreaName;
 
-    public delegate void CheckArea(int areaName);
-    public event CheckArea CheckMagneticFieldArea;
+    //public delegate void CheckArea(int areaName);
+    //public event CheckArea CheckMagneticFieldArea;
 
-    private void Start()
-    {
-        _magneticField = GameObject.Find("Magnetic Field").GetComponent<MagneticField>();
-        _beforeAreaName = _magneticField.AreaName;
-    }
+    //private void Start()
+    //{
+    //    _magneticField = GameObject.Find("Magnetic Field").GetComponent<MagneticField>();
+    //    _beforeAreaName = _magneticField.AreaName;
+    //}
 
     //private void OnTriggerEnter(Collider other)
     //{

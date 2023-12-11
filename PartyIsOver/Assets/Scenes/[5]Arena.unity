@@ -7959,7 +7959,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 37664e9f417e9ab40a05788fa3258d10, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 6a87b4551d34bd449aca90d2e423899d, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -27928,7 +27928,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 2354c4c4f1ca3fa4aa91177ff5842e4e, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d05ffad953fb33940935a96532122f85, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -40432,7 +40432,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: dc3e677f81183fa479a29a5bfb23fb1e, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 266605593abf12b41bf9e393b10d1934, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -50696,7 +50696,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f4bb67f7d41635d44bfba8eb8058b606, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 710c9718fef679b4ea6e2f7249de5dd0, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -57559,7 +57559,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 21fe057293484dd4d946d291a52c03bf, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 8dd1a47af6ab26043be88874eb055c24, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -66871,7 +66871,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PhaseStartTime:
   - 0
-  - 7
+  - 45
   - 45
   - 45
   PhaseDuration:
@@ -66880,11 +66880,10 @@ MonoBehaviour:
   - 15
   - 10
   FreezeImage: {fileID: 0}
-  IsInside: 0
-  IsFloor: 0
   ActorList: []
+  AreaNames: 000000000000000000000000000000000000000000000000
+  ActorStack: 000000000000000000000000000000000000000000000000
   Checking: 0
-  AreaName: 0
 --- !u!135 &1675441217
 SphereCollider:
   m_ObjectHideFlags: 0
