@@ -306,7 +306,6 @@ public class MainUI : MonoBehaviour
         if (_clickedNumber >= 8)
         {
             StoryBoardPanel.SetActive(false);
-            StoryEndingPanel.SetActive(true);
         }
 
         for (int i = 0; i < 8; i++)
