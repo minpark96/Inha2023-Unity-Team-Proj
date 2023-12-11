@@ -127,27 +127,31 @@ public class StatusHandler : MonoBehaviourPun
     void Update()
     {
         // 지침 디버프 활성화/비활성화
-        if (actor.Stamina <= 0)
+        if(PhotonNetwork.LocalPlayer.IsMasterClient)
         {
-            if (!_hasExhausted)
+            if (actor.Stamina <= 0)
             {
-                actor.debuffState |= Actor.DebuffState.Exhausted;
-                if(actor.GrabState != Define.GrabState.PlayerLift)
+                if (!_hasExhausted)
                 {
-                    actor.GrabState = Define.GrabState.None;
-                    actor.Grab.GrabResetTrigger();
+                    actor.debuffState |= Actor.DebuffState.Exhausted;
+                    if (actor.GrabState != Define.GrabState.PlayerLift)
+                    {
+                        actor.GrabState = Define.GrabState.None;
+                        actor.Grab.GrabResetTrigger();
+                    }
+                    //_context.ChangeState(exhaustedInStance);
+                    photonView.RPC("RPCExhaustedCreate", RpcTarget.All);
                 }
-                photonView.RPC("RPCExhaustedCreate", RpcTarget.All);
             }
-        }
-        else
-        {
-            if(_hasExhausted)
+            else
             {
-                if (actor.GrabState != Define.GrabState.PlayerLift)
+                if (_hasExhausted)
                 {
-                    actor.GrabState = Define.GrabState.None;
-                    actor.Grab.GrabResetTrigger();
+                    if (actor.GrabState != Define.GrabState.PlayerLift)
+                    {
+                        actor.GrabState = Define.GrabState.None;
+                        actor.Grab.GrabResetTrigger();
+                    }
                 }
             }
         }
@@ -340,7 +344,7 @@ public class StatusHandler : MonoBehaviourPun
     [PunRPC]
     void RPCExhaustedCreate()
     {
-        _context.ChangeState(exhaustedInStance, 0);
+        _context.ChangeState(exhaustedInStance);
     }
     [PunRPC]
     void RPCPowerUpCreate()

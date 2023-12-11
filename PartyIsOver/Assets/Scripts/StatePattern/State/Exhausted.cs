@@ -13,6 +13,7 @@ public class Exhausted : MonoBehaviour , IDebuffState
 
     public void EnterState()
     {
+        Debug.Log("Start EnterState");
         effectObject = null;
         playerTransform = this.transform.Find("GreenHip").GetComponent<Transform>();
         for (int i = 0; i < MyActor.BodyHandler.BodyParts.Count; i++)

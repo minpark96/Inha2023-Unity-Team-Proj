@@ -51,7 +51,7 @@ public class Context : MonoBehaviourPun
         _currentStateList.RemoveAll(state => state == null);
     }
 
-    public void ChangeState(IDebuffState newState, float time)
+    public void ChangeState(IDebuffState newState, float time = 0)
     {        
         //같은 상태가 중복되면 쿨을 늘리는 것보다 그냥 있던 것을 끝내는 것 같은 상태이면 return
         foreach(var state in _currentStateList)
