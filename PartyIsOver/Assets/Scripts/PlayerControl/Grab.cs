@@ -257,14 +257,14 @@ public class Grab : MonoBehaviourPun
                             case ItemType.Ranged:
                                 photonView.RPC("UseItem", RpcTarget.All);
                                 break;
-                            case ItemType.Potion:
+                            case ItemType.Consumable:
                                 StartCoroutine(UsePotionAnim());
                                 break;
                         }
                     }
                     if (Input.GetMouseButtonUp(1))
                     {
-                        if(type == ItemType.Potion)
+                        if(type == ItemType.Consumable)
                         {
                             photonView.RPC("PotionThrowAnim", RpcTarget.All);
                         }
@@ -587,7 +587,7 @@ public class Grab : MonoBehaviourPun
                     TwoHandedGrab(item);
                 }
                 break;
-            case ItemType.Potion:
+            case ItemType.Consumable:
                 {
                     Vector3 dir = item.OneHandedPos.position - _rightHandRigid.transform.position;
                     _rightHandRigid.AddForce(dir.normalized * 80f);
@@ -772,7 +772,7 @@ public class Grab : MonoBehaviourPun
                     targetPosition = -_jointChest.transform.up;
                 }
                 break;
-            case ItemType.Potion:
+            case ItemType.Consumable:
                 targetPosition = _jointChest.transform.forward;
                 break;
         }

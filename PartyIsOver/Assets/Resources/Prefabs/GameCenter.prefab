@@ -56,10 +56,13 @@ MonoBehaviour:
   - 
   - 
   _actorNumbers: 000000000000000000000000000000000000000000000000
-  SpawnPointX: 470
-  SpawnPointY: 17
-  SpawnPointZ: 420
-  SpawnPoints: []
+  SpawnPoints:
+  - {x: 480.5, y: 15, z: 401.23}
+  - {x: 473.24, y: 15, z: 402.1}
+  - {x: 482.55, y: 15, z: 405.68}
+  - {x: 472.08, y: 15, z: 407.17}
+  - {x: 481.82, y: 15, z: 411.03}
+  - {x: 473.66, y: 15, z: 412.15}
   ActorViewIDs: 
   Actors: []
   MyGraveStone: {fileID: 0}

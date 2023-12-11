@@ -88,10 +88,50 @@ public class Define
         TwoHanded,
         Gravestone,
         Ranged,
-        Potion,
+        Consumable,
     }
 
+    public enum SpawnableItemType
+    {
+        TwoHanded,
+        Ranged,
+        Consumable,
 
+
+
+        End,
+    }
+
+    public enum TwoHandedItemType
+    {
+        FrozenMeat,
+
+
+
+        End,
+    }
+
+    public enum RangedItemType
+    {
+        TaserGun,
+        IceGun,
+
+
+
+        End,
+    }
+
+    public enum ConsumableItemType
+    {
+        IceCream,
+        SpicyOnion,
+        Mushroom,
+        Donut,
+
+
+
+        End,
+    }
 
     public enum Layer
     {

@@ -8,7 +8,6 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using static Actor;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 
 public class GameCenter : BaseScene
 {
@@ -51,12 +50,40 @@ public class GameCenter : BaseScene
 
     public static GameObject LocalGameCenterInstance = null;
 
-    public float SpawnPointX = 485f;
-    public float SpawnPointY = 12f;
-    public float SpawnPointZ = 411f;
-
     // 스폰 포인트 6인 기준
-    public List<Vector3> SpawnPoints = new List<Vector3>();
+    public List<Vector3> PlayerSpawnPoints = new List<Vector3>() 
+    {
+        new Vector3(480.5f, 15f, 401.23f),
+        new Vector3(473.24f, 15f, 402.1f),
+        new Vector3(482.55f, 15f, 405.68f),
+        new Vector3(472.08f, 15f, 407.17f),
+        new Vector3(481.82f, 15f, 411.03f),
+        new Vector3(473.66f, 15f, 412.15f)
+    };
+
+    public List<Vector3> TwoHandedItemSpawnPoints = new List<Vector3>()
+    {
+        new Vector3(476.441f, 20f, 406.541f),
+        new Vector3(460.6f, 20f, 407.8f)
+    };
+
+    public List<Vector3> RangedItemSpawnPoints = new List<Vector3>()
+    {
+        new Vector3(478.16f, 20f, 393.72f),
+        new Vector3(471.17f, 20f, 395.25f),
+        new Vector3(443.3f, 20f, 420.7f),
+        new Vector3(450.7f, 20f, 412.2f)
+    };
+
+    public List<Vector3> ConsumableItemSpawnPoints = new List<Vector3>()
+    {
+        new Vector3(486.98f, 20f, 408.49f),
+        new Vector3(480.49f, 20f, 422.68f),
+        new Vector3(469.49f, 20f, 414.05f),
+        new Vector3(452.4f, 20f, 426.6f),
+        new Vector3(456.5f, 20f, 409.7f),
+        new Vector3(443.6f, 20f, 412.2f)
+    };
 
     public List<int> ActorViewIDs = new List<int>();
     public List<Actor> Actors = new List<Actor>();
@@ -69,10 +96,9 @@ public class GameCenter : BaseScene
     public Image ImageStaminaBar;
     public Image Portrait;
 
-    public float DelayInGhostSpawn = 4f;
-    public float DelayInRoundEnd = 7f;
-    public float DelayInUpdateScoreBoard = 2f;
-    public float DelayInDestroyObjects = 2f;
+    public float GhostSpawnDelay = 4f;
+    public float RoundEndDelay = 7f;
+    public float ItemSpawnInterval = 30f;
 
     public Actor MyActor;
     public int MyActorViewID;
@@ -88,22 +114,16 @@ public class GameCenter : BaseScene
     public bool IsMeowNyangPunch = false;
     public int winner;
 
+    public List<Transform> Items = new List<Transform>();
+    public List<int> ItemSpawnCount = new List<int>((int)Define.SpawnableItemType.End);
+    public int ItemSpawnPhaseCount = 5;
+
     #endregion
 
     #region Private Methods
 
     void Awake()
     {
-        SpawnPoints.Add(new Vector3(SpawnPointX + 5f, SpawnPointY, SpawnPointZ + 0f));
-        SpawnPoints.Add(new Vector3(SpawnPointX + 2.5f, SpawnPointY, SpawnPointZ + 4.33f));
-        SpawnPoints.Add(new Vector3(SpawnPointX + -2.5f, SpawnPointY, SpawnPointZ + 4.33f));
-        SpawnPoints.Add(new Vector3(SpawnPointX + -5f, SpawnPointY, SpawnPointZ + 0f));
-        SpawnPoints.Add(new Vector3(SpawnPointX + -2.5f, SpawnPointY, SpawnPointZ + -4.33f));
-        SpawnPoints.Add(new Vector3(SpawnPointX + 2.5f, SpawnPointY, SpawnPointZ + -4.33f));
-
-        SpawnPoints.Add(new Vector3(0f, 0f, 0f));
-
-
         if (photonView.IsMine)
         {
             LocalGameCenterInstance = this.gameObject;
@@ -339,6 +359,8 @@ public class GameCenter : BaseScene
             SceneType = Define.Scene.Game;
             SetSceneBgmSound("BigBangBattleLOOPING");
 
+            InitItems();
+
             photonView.RPC("SendLoadingComplete", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber);
 
             //if (RoundCount == 1)
@@ -355,6 +377,53 @@ public class GameCenter : BaseScene
         {
             photonView.RPC("EndingComplete", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber);
         }
+    }
+
+    void InitItems()
+    {
+        Transform items = GameObject.Find("Items").transform;
+        for (int i = 0; i < items.childCount; i++)
+        {
+            Items.Add(items.GetChild(i));
+        }
+
+        for (int j = 0; j < items.childCount; j++)
+        {
+            SetItemsAllInactive(j);
+        }
+    }
+
+    void SetItemsAllInactive(int itemType)
+    {
+        int rootItemsCount = GetRootItemsCount(itemType);
+
+        for (int i = 0; i < rootItemsCount; i++)
+        {
+            Transform rootItem = Items[i].transform;
+            for (int j = 0; j < rootItem.childCount; j++)
+            {
+                rootItem.GetChild(j).gameObject.SetActive(false);
+            }
+        }
+    }
+
+    int GetRootItemsCount(int itemType)
+    {
+        int rootItemsCount = 0;
+        switch (itemType)
+        {
+            case (int)Define.SpawnableItemType.TwoHanded:
+                rootItemsCount = (int)Define.TwoHandedItemType.End;
+                break;
+            case (int)Define.SpawnableItemType.Ranged:
+                rootItemsCount = (int)Define.RangedItemType.End;
+                break;
+            case (int)Define.SpawnableItemType.Consumable:
+                rootItemsCount = (int)Define.ConsumableItemType.End;
+                break;
+        }
+
+        return rootItemsCount;
     }
 
     [PunRPC]
@@ -399,8 +468,85 @@ public class GameCenter : BaseScene
             Debug.Log("Start Game");
             AlivePlayerCount = PhotonNetwork.CurrentRoom.PlayerCount;
             photonView.RPC("CreatePlayer", RpcTarget.All);
+            StartCoroutine(StartItemSpawnTimer());
             LoadingCompleteCount = 0;
         }
+    }
+
+    IEnumerator StartItemSpawnTimer()
+    {
+        for (int i = 0; i < ItemSpawnPhaseCount; i++)
+        {
+            SpawnItems(i);
+            yield return new WaitForSeconds(ItemSpawnInterval);
+        }
+    }
+
+    void SpawnItems(int phase)
+    {
+        switch(phase)
+        {
+            case 0:
+                {
+                    SetItemsActive(ChooseRandomItemRootTypes((int)Define.SpawnableItemType.TwoHanded, 1));
+                }
+                break;
+            case 1:
+                {
+                    ChooseRandomItemRootTypes((int)Define.SpawnableItemType.Consumable, 3);
+                    ChooseRandomItemRootTypes((int)Define.SpawnableItemType.Ranged, 2);
+                }
+                break;
+            case 2:
+                {
+                    ChooseRandomItemRootTypes((int)Define.SpawnableItemType.Consumable, 1);
+                    ChooseRandomItemRootTypes((int)Define.SpawnableItemType.Ranged, 1);
+                }
+                break;
+            case 3:
+                {
+                    ChooseRandomItemRootTypes((int)Define.SpawnableItemType.Consumable, 2);
+                }
+                break;
+            case 4:
+                {
+                    ChooseRandomItemRootTypes((int)Define.SpawnableItemType.TwoHanded, 1);
+                    ChooseRandomItemRootTypes((int)Define.SpawnableItemType.Ranged, 1);
+                }
+                break;
+        }
+    }
+
+    void SetItemsActive(List<int> rootTypes)
+    {
+
+    }
+
+    List<int> ChooseRandomItemRootTypes(int itemType, int amount)
+    {
+        int rootItemsCount = GetRootItemsCount(itemType);
+
+        List<int> rootTypes = new List<int>(amount);
+        for (int i = 0; i < rootTypes.Count; i++)
+        {
+            rootTypes[i] = -1;
+        }
+
+        for (int j = 0; j < amount; j++)
+        {
+            int numPicked = UnityEngine.Random.Range(0, rootItemsCount);
+            if (rootTypes.Contains(numPicked))
+            {
+                j--;
+                continue;
+            }
+            else
+            {
+                rootTypes.Add(numPicked);
+            }
+        }
+
+        return rootTypes;
     }
 
     [PunRPC]
@@ -419,7 +565,7 @@ public class GameCenter : BaseScene
                                                  BindingFlags.Public |
                                                  BindingFlags.NonPublic);
             string playerPath = (string)field.GetValue(this);
-            go = Managers.Resource.PhotonNetworkInstantiate(playerPath, pos: SpawnPoints[PhotonNetwork.LocalPlayer.ActorNumber - 1]);
+            go = Managers.Resource.PhotonNetworkInstantiate(playerPath, pos: PlayerSpawnPoints[PhotonNetwork.LocalPlayer.ActorNumber - 1]);
 
             MyActor = go.GetComponent<Actor>();
             MyActor.OnChangeStaminaBar -= UpdateStaminaBar;
@@ -617,7 +763,7 @@ public class GameCenter : BaseScene
     {
         Vector3 spawnAirPos = spawnPos + new Vector3(0f, 10f, 0f);
         MyGraveStone = Managers.Resource.PhotonNetworkInstantiate(_graveStonePath, pos: spawnAirPos);
-        yield return new WaitForSeconds(DelayInGhostSpawn);
+        yield return new WaitForSeconds(GhostSpawnDelay);
         MyGhost = Managers.Resource.Instantiate(_ghostPath, pos: spawnPos);
         Destroy(MyActor._audioListener);
         MyActor.CameraControl = null;
@@ -667,9 +813,9 @@ public class GameCenter : BaseScene
 
     IEnumerator BookRoundEnd()
     {
-        Debug.Log(DelayInRoundEnd + "초 뒤 라운드 종료 예정");
+        Debug.Log(RoundEndDelay + "초 뒤 라운드 종료 예정");
         photonView.RPC("FindWinner", RpcTarget.All);
-        yield return new WaitForSeconds(DelayInRoundEnd);
+        yield return new WaitForSeconds(RoundEndDelay);
 
         Debug.Log("라운드 종료 오브젝트 삭제");
         photonView.RPC("DestroyObjects", RpcTarget.All);

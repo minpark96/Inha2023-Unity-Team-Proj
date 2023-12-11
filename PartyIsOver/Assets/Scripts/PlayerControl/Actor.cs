@@ -229,7 +229,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
         {
             if (PlayerController.isRun || GrabState == GrabState.Climb)
             {
-                if(debuffState == Actor.DebuffState.Ice || debuffState == Actor.DebuffState.Shock)
+                if (debuffState == Actor.DebuffState.Ice || debuffState == Actor.DebuffState.Shock)
                 {
                     Stamina -= 0;
                     Grab.GrabResetTrigger();
