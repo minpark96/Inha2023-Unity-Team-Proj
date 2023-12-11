@@ -42,20 +42,21 @@ public class Burn : MonoBehaviourPun , IDebuffState
             MyActor.BodyHandler.Hip.PartRigidbody.AddForce((MyActor.BodyHandler.Hip.transform.right) * 40f, ForceMode.VelocityChange);
             lastBurnTime = Time.time;
         }
-
     }
 
     public void ExitState()
     {
         TransferDebuffToPlayer((int)InteractableObject.Damage.Default);
         MyActor.actorState = Actor.ActorState.Stand;
+        MyActor.debuffState = Actor.DebuffState.Default;
 
         RemoveObject("Fire_large");
         MyActor.InvokeStatusChangeEvent();
         _audioClip = null;
     }
 
-    IEnumerator BurnDmanage()
+    //추후 Ice 상태를 체크하여 Burn 상태를 종료 한다.
+/*    IEnumerator BurnDmanage() 
     {
         float elapsedTime = 0f;
         float lastBurnTime = Time.time;
@@ -84,21 +85,18 @@ public class Burn : MonoBehaviourPun , IDebuffState
             elapsedTime = Time.time - startTime;
             yield return null;
         }
-    }
+    }*/
 
-    [PunRPC]
     public void InstantiateEffect(string path)
     {
         effectObject = Managers.Resource.PhotonNetworkInstantiate($"{path}");
     }
-    [PunRPC]
     public void RemoveObject(string name)
     {
         GameObject go = GameObject.Find($"{name}");
         Managers.Resource.Destroy(go);
         effectObject = null;
     }
-    [PunRPC]
     void PlayerDebuffSound(string path)
     {
         //사운드 문제 있음

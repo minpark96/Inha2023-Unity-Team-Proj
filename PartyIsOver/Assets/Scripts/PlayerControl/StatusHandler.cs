@@ -32,6 +32,7 @@ public class StatusHandler : MonoBehaviourPun
     // 추후 DebuffTime Actor에서만 사용할 예정
     public float StunTime = 2f;
     public float BurnTime = 3f;
+    public float IceTime = 3f;
 
 
     // 버프 확인용 플래그
@@ -76,6 +77,8 @@ public class StatusHandler : MonoBehaviourPun
     public Context _context;
     Stun stunInStance;
     Burn burnInStance;
+    Ice IceInStance;
+
 
     private void Awake()
     {
@@ -85,6 +88,7 @@ public class StatusHandler : MonoBehaviourPun
         _context = GetComponent<Context>();
         stunInStance = gameObject.AddComponent<Stun>();
         burnInStance = gameObject.AddComponent<Burn>();
+        IceInStance = gameObject.AddComponent<Ice>();
     }
 
     void Start()
@@ -311,7 +315,7 @@ public class StatusHandler : MonoBehaviourPun
                     break;
                 case Actor.DebuffState.Ice:
                     if (!_hasFreeze)
-                        photonView.RPC("Freeze", RpcTarget.All, _freezeTime);
+                        photonView.RPC("RPCIceCreate", RpcTarget.All);
                     break;
             }
         }
@@ -321,6 +325,12 @@ public class StatusHandler : MonoBehaviourPun
     void RPCBurnCreate()
     {
         _context.ChangeState(burnInStance, BurnTime);
+    }
+
+    [PunRPC]
+    void RPCIceCreate()
+    {
+        _context.ChangeState(IceInStance, IceTime);
     }
 
     [PunRPC]
