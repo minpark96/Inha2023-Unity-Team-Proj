@@ -33,6 +33,10 @@ public class StatusHandler : MonoBehaviourPun
     public float StunTime = 2f;
     public float BurnTime = 3f;
     public float IceTime = 3f;
+    public float PowerUpTime = 3f;
+    public float Drunktime = 5f;
+    public float Slowtime = 5f;
+    public float Shocktime = 5f;
 
 
     // 버프 확인용 플래그
@@ -78,6 +82,12 @@ public class StatusHandler : MonoBehaviourPun
     Stun stunInStance;
     Burn burnInStance;
     Ice IceInStance;
+    PowerUp powerUpInStance;
+    Drunk drunkInStance;
+    Slow slowInStance;
+    Shock shockInStance;
+    Exhausted exhaustedInStance;
+
 
 
     private void Awake()
@@ -89,6 +99,11 @@ public class StatusHandler : MonoBehaviourPun
         stunInStance = gameObject.AddComponent<Stun>();
         burnInStance = gameObject.AddComponent<Burn>();
         IceInStance = gameObject.AddComponent<Ice>();
+        powerUpInStance = gameObject.AddComponent<PowerUp>();
+        drunkInStance = gameObject.AddComponent<Drunk>();
+        slowInStance = gameObject.AddComponent<Slow>();
+        shockInStance = gameObject.AddComponent<Shock>();
+        exhaustedInStance = gameObject.AddComponent<Exhausted>();
     }
 
     void Start()
@@ -122,7 +137,7 @@ public class StatusHandler : MonoBehaviourPun
                     actor.GrabState = Define.GrabState.None;
                     actor.Grab.GrabResetTrigger();
                 }
-                photonView.RPC("Exhausted", RpcTarget.All, _exhaustedTime);
+                photonView.RPC("RPCExhaustedCreate", RpcTarget.All);
             }
         }
         else
@@ -284,7 +299,7 @@ public class StatusHandler : MonoBehaviourPun
                     break;
                 case Actor.DebuffState.PowerUp:
                     if (!_hasPowerUp)
-                        photonView.RPC("PowerUp", RpcTarget.All, _powerUpTime);
+                        photonView.RPC("RPCPowerUpCreate", RpcTarget.All);
                     break;
                 case Actor.DebuffState.Burn:
                     if (!_hasBurn)
@@ -319,6 +334,18 @@ public class StatusHandler : MonoBehaviourPun
                     break;
             }
         }
+    }
+
+
+    [PunRPC]
+    void RPCExhaustedCreate()
+    {
+        _context.ChangeState(exhaustedInStance, 0);
+    }
+    [PunRPC]
+    void RPCPowerUpCreate()
+    {
+        _context.ChangeState(powerUpInStance, PowerUpTime);
     }
 
     [PunRPC]

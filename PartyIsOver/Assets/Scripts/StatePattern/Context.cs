@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Context : MonoBehaviourPun
@@ -17,22 +18,34 @@ public class Context : MonoBehaviourPun
 
     private void FixedUpdate()
     {
-        for(int i = 0; i < _currentStateList.Count; i++)
+        for (int i = 0; i < _currentStateList.Count; i++)
         {
             var state = _currentStateList[i];
 
-            if(state != null)
+            if (state != null)
             {
-                if(state.CoolTime > 0f)
-                    state.CoolTime -= Time.deltaTime;
-
-                if(state.CoolTime <= 0f)
+                //지침 상태면은 100이 아니라면 계속 업데이트
+                if (state.ToString().Contains("Exhausted") && state.MyActor.Stamina != 100)
                 {
-                    state.ExitState();
-                    _currentStateList[i] = null;
+                    state.UpdateState();
                 }
+                //지침 상태가 아니라면 일반 적인 지속시간으로 확인
+                else
+                {
+                    if(state.ToString().Contains("Exhausted") && state.MyActor.Stamina == 100)
+                        state.ExitState();
 
-                state.UpdateState();
+                    if (state.CoolTime > 0f)
+                        state.CoolTime -= Time.deltaTime;
+
+                    if (state.CoolTime <= 0f)
+                    {
+                        state.ExitState();
+                        _currentStateList[i] = null;
+                    }
+
+                    state.UpdateState();
+                }
             }
         }
         _currentStateList.RemoveAll(state => state == null);

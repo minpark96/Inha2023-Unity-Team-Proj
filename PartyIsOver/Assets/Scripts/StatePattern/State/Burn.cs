@@ -12,13 +12,15 @@ public class Burn : MonoBehaviourPun , IDebuffState
 
     AudioClip _audioClip = null;
     AudioSource _audioSource;
-    float delay = 3f;
+
     float _burnDamage = 5f;
-    float lastBurnTime = Time.time;
+    float lastBurnTime;
 
     public void EnterState()
     {
         effectObject = null;
+        lastBurnTime = Time.time;
+
         playerTransform = this.transform.Find("GreenHip").GetComponent<Transform>();
         Transform SoundSourceTransform = transform.Find("GreenHip");
         _audioSource = SoundSourceTransform.GetComponent<AudioSource>();
