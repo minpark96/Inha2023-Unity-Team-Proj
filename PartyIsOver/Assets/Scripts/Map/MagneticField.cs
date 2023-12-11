@@ -228,16 +228,30 @@ public class MagneticField : MonoBehaviour
 
     #region 바닥, 자기장 내/외부에 따른 데미지
 
-    //public IEnumerator DamagedByFloor(int index)
-    //{
-        
-    //    while (ActorList[index].MagneticStack <= 100 && AreaName[index] == (int)Define.Area.Floor)
-    //    {
-    //        ActorList[index].MagneticStack += _floorStack;
+    public IEnumerator DamagedByFloor(int index)
+    {
+        if (ActorList[index].actorState == Actor.ActorState.Dead) yield return null;
 
-    //        yield return new WaitForSeconds(_delay);
-    //    }
-    //}
+        if (PhotonNetwork.IsMasterClient)
+        {
+            while (ActorList[index].MagneticStack <= 100 && AreaNames[index] == (int)Define.Area.Floor)
+            {
+                ActorList[index].MagneticStack += _floorStack;
+
+                if (ActorList[index].MagneticStack > 100)
+                {
+                    ActorList[index].MagneticStack = 100;
+                    AreaNames[index] = (int)Define.Area.Default;
+                    InvokeDeath(index);
+                }
+
+                ActorStack[index] = ActorList[index].MagneticStack;
+                UpdateMagneticStack(ActorStack);
+
+                yield return new WaitForSeconds(_delay);
+            }
+        }
+    }
 
     public IEnumerator DamagedByMagnetic(int index)
     {
@@ -252,13 +266,12 @@ public class MagneticField : MonoBehaviour
                 if (ActorList[index].MagneticStack > 100)
                 {
                     ActorList[index].MagneticStack = 100;
-                    AreaNames[index] = -1;
+                    AreaNames[index] = (int)Define.Area.Default;
                     InvokeDeath(index);
                 }
 
                 ActorStack[index] = ActorList[index].MagneticStack;
                 UpdateMagneticStack(ActorStack);
-
 
                 yield return new WaitForSeconds(_delay);
             }

@@ -40,12 +40,13 @@ public class GameCenter : BaseScene
     string _ghostPath = "Players/Ghost";
     string _graveStonePath = "Item/GraveStone";
 
-    int[] _checkArea = new int[Define.MAX_PLAYERS_PER_ROOM] { -1, -1, -1, -1, -1, -1 };
-
 
     public int[] _scores = new int[Define.MAX_PLAYERS_PER_ROOM] { 0, 0, 0, 0, 0, 0 };
     public string[] _nicknames = new string[Define.MAX_PLAYERS_PER_ROOM] { "", "", "", "", "", "" };
     public int[] _actorNumbers = new int[Define.MAX_PLAYERS_PER_ROOM] { 0, 0, 0, 0, 0, 0 };
+
+
+    int[] _checkArea = new int[Define.MAX_PLAYERS_PER_ROOM];
 
     #endregion
 
@@ -528,8 +529,8 @@ public class GameCenter : BaseScene
             _magneticField.UpdateMagneticStack -= SendPlayerMagneticStack;
             _magneticField.UpdateMagneticStack += SendPlayerMagneticStack;
 
-            //_floor.CheckMagneticFieldArea -= CheckPlayerLocation;
-            // _floor.CheckMagneticFieldArea += CheckPlayerLocation;
+            _floor.CheckFloor -= CheckPlayerLocation;
+            _floor.CheckFloor += CheckPlayerLocation;
         }
 
 
@@ -643,11 +644,12 @@ public class GameCenter : BaseScene
             DamageByMagneticField(index);
         }
     }
+
     void DamageByMagneticField(int index)
     {
         if (_checkArea[index] == (int)Define.Area.Floor)
         {
-            //photonView.RPC("DamagedByFloor", RpcTarget.All, i);
+            StartCoroutine(_magneticField.DamagedByFloor(index));
         }
         else if (_checkArea[index] == (int)Define.Area.Inside)
         {
@@ -657,7 +659,6 @@ public class GameCenter : BaseScene
         {
             StartCoroutine(_magneticField.DamagedByMagnetic(index));
         }
-
     }
 
     
@@ -678,39 +679,6 @@ public class GameCenter : BaseScene
             Actors[i].MagneticStack = magneticStack[i];
         }
     }
-
-    //[PunRPC]
-    //void DamagedByFloor(int index)
-    //{
-    //    for(int i = 0; i < Actors.Count; i++)
-    //    {
-    //        if (Actors[i].photonView.IsMine == true)
-    //            StartCoroutine(_magneticField.DamagedByFloor(index));
-    //    }
-
-    //}
-
-    [PunRPC]
-    void RestoreMagneticDamage(int index)
-    {
-        for (int i = 0; i < Actors.Count; i++)
-        {
-            Debug.Log("client damage check");
-            if (Actors[i].photonView.IsMine == true)
-                StartCoroutine(_magneticField.RestoreMagneticDamage(index));
-        }
-    }
-
-    [PunRPC]
-    void DamagedByMagnetic(int index)
-    {
-        for (int i = 0; i < Actors.Count; i++)
-        {
-            if (Actors[i].photonView.IsMine == true)
-                StartCoroutine(_magneticField.DamagedByMagnetic(index));
-        }
-    }
-
 
     #endregion
 
@@ -783,6 +751,10 @@ public class GameCenter : BaseScene
                 actor.OnChangePlayerStatus -= SendInfo;
                 actor.OnKillPlayer -= AnnounceDeath;
             }
+
+            _magneticField.CheckMagneticFieldArea -= CheckPlayerLocation;
+            _magneticField.UpdateMagneticStack -= SendPlayerMagneticStack;
+            _floor.CheckFloor -= CheckPlayerLocation;
         }
 
         Debug.Log("리스트 초기화");
