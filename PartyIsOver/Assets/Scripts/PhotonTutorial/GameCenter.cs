@@ -196,7 +196,7 @@ public class GameCenter : BaseScene
     {
         for (int i = 0; i < _scores.Length; i++)
         {
-            if (i == actorNumber - 1)
+            if (i == (actorNumber - 1))
             {
                 _scores[i] = 0;
                 _nicknames[i] = nickname;

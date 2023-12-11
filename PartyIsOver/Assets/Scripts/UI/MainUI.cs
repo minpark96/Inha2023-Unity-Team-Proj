@@ -96,23 +96,29 @@ public class MainUI : MonoBehaviour
                 {
                     if (Input.GetKeyDown(KeyCode.Escape))
                     {
-                        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-030");
-                        Managers.Sound.Play(uiSound, Define.Sound.UISound);
-
                         if (_creditOn)
                         {
+                            AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-030");
+                            Managers.Sound.Play(uiSound, Define.Sound.UISound);
+
                             OnClickCreditExit();
                             _creditOn = false;
                         }
 
                         if (_keyBoardOn)
                         {
+                            AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-030");
+                            Managers.Sound.Play(uiSound, Define.Sound.UISound);
+
                             _keyBoardObject.SetActive(false);
                             _keyBoardOn = false;
                         }
 
                         if(_storyBoardOn)
                         {
+                            AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-030");
+                            Managers.Sound.Play(uiSound, Define.Sound.UISound);
+
                             _clickedNumber = 0;
                             StoryBoardPanel.SetActive(false);
                             _storyBoardOn = false;
