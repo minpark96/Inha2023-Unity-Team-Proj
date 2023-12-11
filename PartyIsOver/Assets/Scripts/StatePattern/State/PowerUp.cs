@@ -1,8 +1,9 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PowerUp : MonoBehaviour, IDebuffState
+public class PowerUp : MonoBehaviourPun, IDebuffState
 {
     public Actor MyActor { get; set; }
     public float CoolTime { get; set; }

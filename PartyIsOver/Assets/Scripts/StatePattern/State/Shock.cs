@@ -1,8 +1,9 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Shock : MonoBehaviour , IDebuffState
+public class Shock : MonoBehaviourPun, IDebuffState
 {
     public Actor MyActor { get; set; }
     public float CoolTime { get; set; }
@@ -10,25 +11,86 @@ public class Shock : MonoBehaviour , IDebuffState
     public Transform playerTransform { get; set; }
     AudioClip _audioClip = null;
     AudioSource _audioSource;
+    private List<float> _xPosSpringAry = new List<float>();
+    private List<float> _yzPosSpringAry = new List<float>();
     public void EnterState()
     {
         effectObject = null;
         playerTransform = this.transform.Find("GreenHip").GetComponent<Transform>();
         Transform SoundSourceTransform = transform.Find("GreenHip");
         _audioSource = SoundSourceTransform.GetComponent<AudioSource>();
+
+        for (int i = 0; i < MyActor.BodyHandler.BodyParts.Count; i++)
+        {
+            if (i == (int)Define.BodyPart.Hip)
+                continue;
+
+            _xPosSpringAry.Add(MyActor.BodyHandler.BodyParts[i].PartJoint.angularXDrive.positionSpring);
+            _yzPosSpringAry.Add(MyActor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive.positionSpring);
+        }
+
+        TransferDebuffToPlayer((int)InteractableObject.Damage.Shock);
+        PlayerDebuffSound("PlayerEffect/electronic_02");
+        InstantiateEffect("Effects/Lightning_aura");
+
+        JointDrive angularXDrive;
+        JointDrive angularYZDrive;
+
+        for (int i = 0; i < MyActor.BodyHandler.BodyParts.Count; i++)
+        {
+            if (i >= (int)Define.BodyPart.Hip && i <= (int)Define.BodyPart.Head) continue;
+            if (i == (int)Define.BodyPart.Ball) continue;
+
+            angularXDrive = MyActor.BodyHandler.BodyParts[i].PartJoint.angularXDrive;
+            angularXDrive.positionSpring = 0f;
+            MyActor.BodyHandler.BodyParts[i].PartJoint.angularXDrive = angularXDrive;
+
+            angularYZDrive = MyActor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive;
+            angularYZDrive.positionSpring = 0f;
+            MyActor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive = angularYZDrive;
+        }
     }
 
     public void UpdateState()
     {
         if (effectObject != null)
-        {
             effectObject.transform.position = playerTransform.position;
+        
+        if (Random.Range(0, 20) > 10)
+        {
+            for (int i = 0; i < MyActor.BodyHandler.BodyParts.Count; i++)
+            {
+                if (i >= (int)Define.BodyPart.Hip && i <= (int)Define.BodyPart.Head) continue;
+                if (i == (int)Define.BodyPart.LeftFoot ||
+                    i == (int)Define.BodyPart.RightFoot ||
+                    i == (int)Define.BodyPart.Ball) continue;
+
+                MyActor.BodyHandler.BodyParts[i].transform.rotation = Quaternion.Euler(20, 0, 0);
+            }
+        }
+        else
+        {
+            for (int i = 0; i < MyActor.BodyHandler.BodyParts.Count; i++)
+            {
+                if (i >= (int)Define.BodyPart.Hip && i <= (int)Define.BodyPart.Head) continue;
+                if (i == (int)Define.BodyPart.LeftFoot ||
+                    i == (int)Define.BodyPart.RightFoot ||
+                    i == (int)Define.BodyPart.Ball) continue;
+                MyActor.BodyHandler.BodyParts[i].transform.rotation = Quaternion.Euler(-20, 0, 0);
+            }
         }
     }
 
     public void ExitState()
     {
+        //StartCoroutine(Stun(0.5f));
 
+        photonView.RPC("ResetBodySpring", RpcTarget.All);
+        TransferDebuffToPlayer((int)InteractableObject.Damage.Default);
+
+        MyActor.actorState = Actor.ActorState.Stand;
+        RemoveObject("Lightning_aura");
+        _audioClip = null;
     }
     public void InstantiateEffect(string path)
     {
@@ -48,5 +110,93 @@ public class Shock : MonoBehaviour , IDebuffState
         _audioSource.volume = 0.2f;
         _audioSource.spatialBlend = 1;
         Managers.Sound.Play(_audioClip, Define.Sound.PlayerEffect, _audioSource);
+    }
+
+    public void TransferDebuffToPlayer(int DamageType)
+    {
+        ChangeDamageModifier((int)Define.BodyPart.LeftFoot, DamageType);
+        ChangeDamageModifier((int)Define.BodyPart.RightFoot, DamageType);
+        ChangeDamageModifier((int)Define.BodyPart.LeftLeg, DamageType);
+        ChangeDamageModifier((int)Define.BodyPart.RightLeg, DamageType);
+        ChangeDamageModifier((int)Define.BodyPart.Head, DamageType);
+        ChangeDamageModifier((int)Define.BodyPart.LeftHand, DamageType);
+        ChangeDamageModifier((int)Define.BodyPart.RightHand, DamageType);
+    }
+
+    private void ChangeDamageModifier(int bodyPart, int DamageType)
+    {
+        switch ((Define.BodyPart)bodyPart)
+        {
+            case Define.BodyPart.LeftFoot:
+                MyActor.BodyHandler.LeftFoot.PartInteractable.damageModifier = (InteractableObject.Damage)DamageType;
+                break;
+            case Define.BodyPart.RightFoot:
+                MyActor.BodyHandler.RightFoot.PartInteractable.damageModifier = (InteractableObject.Damage)DamageType;
+                break;
+            case Define.BodyPart.LeftLeg:
+                MyActor.BodyHandler.LeftLeg.PartInteractable.damageModifier = (InteractableObject.Damage)DamageType;
+                break;
+            case Define.BodyPart.RightLeg:
+                MyActor.BodyHandler.RightLeg.PartInteractable.damageModifier = (InteractableObject.Damage)DamageType;
+                break;
+            case Define.BodyPart.LeftThigh:
+                break;
+            case Define.BodyPart.RightThigh:
+                break;
+            case Define.BodyPart.Hip:
+                break;
+            case Define.BodyPart.Waist:
+                break;
+            case Define.BodyPart.Chest:
+                break;
+            case Define.BodyPart.Head:
+                MyActor.BodyHandler.Head.PartInteractable.damageModifier = (InteractableObject.Damage)DamageType;
+                break;
+            case Define.BodyPart.LeftArm:
+                break;
+            case Define.BodyPart.RightArm:
+                break;
+            case Define.BodyPart.LeftForeArm:
+                break;
+            case Define.BodyPart.RightForeArm:
+                break;
+            case Define.BodyPart.LeftHand:
+                MyActor.BodyHandler.LeftHand.PartInteractable.damageModifier = (InteractableObject.Damage)DamageType;
+                break;
+            case Define.BodyPart.RightHand:
+                MyActor.BodyHandler.RightHand.PartInteractable.damageModifier = (InteractableObject.Damage)DamageType;
+                break;
+        }
+    }
+
+    [PunRPC]
+    public IEnumerator ResetBodySpring()
+    {
+        photonView.RPC("SetJointSpring", RpcTarget.All, 0f);
+        yield return null;
+    }
+    [PunRPC]
+    void SetJointSpring(float percentage)
+    {
+        JointDrive angularXDrive;
+        JointDrive angularYZDrive;
+        int j = 0;
+
+        //기절과 회복에 모두 관여 기절시엔 퍼센티지를 0으로해서 사용
+        for (int i = 0; i < MyActor.BodyHandler.BodyParts.Count; i++)
+        {
+            if (i == (int)Define.BodyPart.Hip)
+                continue;
+
+            angularXDrive = MyActor.BodyHandler.BodyParts[i].PartJoint.angularXDrive;
+            angularXDrive.positionSpring = _xPosSpringAry[j] * percentage;
+            MyActor.BodyHandler.BodyParts[i].PartJoint.angularXDrive = angularXDrive;
+
+            angularYZDrive = MyActor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive;
+            angularYZDrive.positionSpring = _yzPosSpringAry[j] * percentage;
+            MyActor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive = angularYZDrive;
+
+            j++;
+        }
     }
 }

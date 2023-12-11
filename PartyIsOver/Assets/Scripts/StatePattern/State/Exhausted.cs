@@ -1,8 +1,9 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Exhausted : MonoBehaviour , IDebuffState
+public class Exhausted : MonoBehaviourPun, IDebuffState
 {
     public Actor MyActor { get; set; }
     public float CoolTime { get; set; }
@@ -13,7 +14,6 @@ public class Exhausted : MonoBehaviour , IDebuffState
 
     public void EnterState()
     {
-        Debug.Log("Start EnterState");
         effectObject = null;
         playerTransform = this.transform.Find("GreenHip").GetComponent<Transform>();
         for (int i = 0; i < MyActor.BodyHandler.BodyParts.Count; i++)
