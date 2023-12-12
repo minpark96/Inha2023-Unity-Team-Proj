@@ -150,22 +150,22 @@ public class GameCenter : BaseScene
         }
     }
 
-    //private void OnGUI()
-    //{
-    //    GUIStyle style = new GUIStyle();
-    //    style.fontSize = 30;
-    //    GUI.backgroundColor = Color.white;
-    //    for (int i = 0; i < ActorViewIDs.Count; i++)
-    //    {
-    //        //GUI.contentColor = Color.black;
-    //        //GUI.Label(new Rect(0, 340 + i * 60, 200, 200), "Actor View ID: " + ActorViewIDs[i] + " / HP: " + Actors[i].Health, style);
-    //        //GUI.contentColor = Color.red;
-    //        //GUI.Label(new Rect(0, 360 + i * 60, 200, 200), "Status: " + Actors[i].actorState + " / Debuff: " + Actors[i].debuffState, style);
+    private void OnGUI()
+    {
+        GUIStyle style = new GUIStyle();
+        style.fontSize = 30;
+        GUI.backgroundColor = Color.white;
+        for (int i = 0; i < ActorViewIDs.Count; i++)
+        {
+            //GUI.contentColor = Color.black;
+            //GUI.Label(new Rect(0, 340 + i * 60, 200, 200), "Actor View ID: " + ActorViewIDs[i] + " / HP: " + Actors[i].Health, style);
+            //GUI.contentColor = Color.red;
+            //GUI.Label(new Rect(0, 360 + i * 60, 200, 200), "Status: " + Actors[i].actorState + " / Debuff: " + Actors[i].debuffState, style);
 
-    //        GUI.contentColor = Color.red;
-    //        GUI.Label(new Rect(0, 360 + i * 60, 200, 200), "Stack: " + Actors[i].MagneticStack, style);
-    //    }
-    //}
+            GUI.contentColor = Color.red;
+            GUI.Label(new Rect(0, 360 + i * 60, 200, 200), "Stack: " + Actors[i].MagneticStack, style);
+        }
+    }
 
     void UpdateStaminaBar()
     {
@@ -664,6 +664,7 @@ public class GameCenter : BaseScene
     
     void SendPlayerMagneticStack(int[] magneticStack)
     {
+        // 죽으면 안들어오게 막기
         _magneticField.ChangeMainPanel();
 
         photonView.RPC("SyncPlayerMagneticStack", RpcTarget.Others, magneticStack);
