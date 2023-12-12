@@ -12,11 +12,12 @@ public class Item : MonoBehaviourPun
     public InteractableObject InteractableObject;
     public ItemData ItemData;
 
-
     public Transform OneHandedPos;
     public Transform TwoHandedPos;
     public Transform Head;
     public Transform Body;
+
+    public bool IsSpawned = false;
 
     // Start is called before the first frame update
     void Start()
