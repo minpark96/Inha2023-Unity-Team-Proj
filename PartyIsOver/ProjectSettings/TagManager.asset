@@ -34,7 +34,7 @@ TagManager:
   - Item
   - ClimbObject
   - InteractableObject
-  - 
+  - TriggerObject
   - IceFloor
   - 
   - 

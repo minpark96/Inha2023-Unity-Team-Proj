@@ -12198,6 +12198,7 @@ MonoBehaviour:
     - 100
   RunSpeed: 100
   _hips: {fileID: 5856347132035830517}
+  _cameraArm: {fileID: 0}
   _bodyHandler: {fileID: 0}
   ReadyPunch: 0.1
   Punching: 0.1
@@ -12333,13 +12334,13 @@ MonoBehaviour:
   HasDrunk: 0
   playerTransform: {fileID: 0}
   effectObject: {fileID: 0}
-  _powerUpTime: 3
-  _burnTime: 3
+  _powerUpTime: 10
+  _burnTime: 10
   _exhaustedTime: 5
   _slowTime: 3
-  _freezeTime: 3
-  _shockTime: 3
-  _stunTime: 3
+  _freezeTime: 5
+  _shockTime: 5
+  _stunTime: 6
   _iceDamage: 0
   _burnDamage: 5
   _context: {fileID: 0}

@@ -163,7 +163,7 @@ Transform:
   m_GameObject: {fileID: 2021700320522950763}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.35, y: 0.35, z: 0.35}
+  m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 478858640801381439}
@@ -264,6 +264,7 @@ MonoBehaviour:
   InitialDirection: {x: 0, y: 0, z: 0}
   InteractableObject: {fileID: 0}
   root: {fileID: 8194921285208927527}
+  speed: 10
   maxLifeTime: 5
   gravityDownAcceleration: 7
   _ignoredColliders: []

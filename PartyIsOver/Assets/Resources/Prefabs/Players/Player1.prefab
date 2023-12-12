@@ -12198,6 +12198,7 @@ MonoBehaviour:
     - 100
   RunSpeed: 100
   _hips: {fileID: 5856347132035830517}
+  _cameraArm: {fileID: 0}
   _bodyHandler: {fileID: 0}
   ReadyPunch: 0.1
   Punching: 0.1
@@ -12325,21 +12326,21 @@ MonoBehaviour:
   BurnTime: 3
   IceTime: 3
   PowerUpTime: 3
-  Drunktime: 10
-  Slowtime: 3
-  ShockTime: 3
+  Drunktime: 5
+  Slowtime: 5
+  ShockTime: 5
   _hasFreeze: 0
   _hasShock: 0
   HasDrunk: 0
   playerTransform: {fileID: 0}
   effectObject: {fileID: 0}
-  _powerUpTime: 3
-  _burnTime: 3
+  _powerUpTime: 10
+  _burnTime: 10
   _exhaustedTime: 5
   _slowTime: 3
-  _freezeTime: 3
-  _shockTime: 3
-  _stunTime: 3
+  _freezeTime: 5
+  _shockTime: 5
+  _stunTime: 6
   _iceDamage: 0
   _burnDamage: 5
   _context: {fileID: 0}
@@ -12385,7 +12386,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5873236424662451676}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 533221557a1a98c4db9903655536764b, type: 3}
   m_Name: 
