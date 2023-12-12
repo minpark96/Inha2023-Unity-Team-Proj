@@ -653,7 +653,8 @@ public class Grab : MonoBehaviourPun
         //HandChecker 스크립트에서 양손 다 아이템의 손잡이와 접촉중인지 판정
         if (HandCollisionCheck(side))
         {
-            EquipItem = item.transform.root.gameObject;
+            EquipItem = item.transform.gameObject;
+            Debug.Log(EquipItem);
             int id = EquipItem.GetComponent<PhotonView>().ViewID;
             photonView.RPC("UsingItemSetting", RpcTarget.All, id);
             return true;
