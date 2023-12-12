@@ -351,13 +351,4 @@ public class MainUI : MonoBehaviour
             _nextButton.GetComponent<Image>().sprite = NextButtonImage;
 
     }
-
-    public void OnClickStoryEnding()
-    {
-        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-030");
-        Managers.Sound.Play(uiSound, Define.Sound.UISound);
-
-        _clickedNumber = 0;
-        StoryEndingPanel.SetActive(false);
-    }
 }
