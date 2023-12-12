@@ -24,8 +24,8 @@ public class InteractableObject : MonoBehaviourPun
         Punch = 3,
         DropKick = 4,
         Headbutt = 5,
-        Knockout = 6,
-        Special= 7,
+        NuclearPunch = 6,
+        MeowNyangPunch= 7,
 
         PowerUp = 8,
         Burn = 9,

@@ -653,7 +653,8 @@ public class Grab : MonoBehaviourPun
         //HandChecker 스크립트에서 양손 다 아이템의 손잡이와 접촉중인지 판정
         if (HandCollisionCheck(side))
         {
-            EquipItem = item.transform.root.gameObject;
+            EquipItem = item.transform.gameObject;
+            Debug.Log(EquipItem);
             int id = EquipItem.GetComponent<PhotonView>().ViewID;
             photonView.RPC("UsingItemSetting", RpcTarget.All, id);
             return true;
@@ -984,18 +985,13 @@ public class Grab : MonoBehaviourPun
         _jointLeft.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 3, 0, 0));
         _jointRight.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 3, 0, 0));
 
+        StartCoroutine(obj.GetComponent<Item>().ThrowItem());
         yield return _actor.PlayerController.PotionThrow(0.07f, 0.1f, 0.3f, 0.1f);
 
-        if (PhotonNetwork.LocalPlayer.IsMasterClient)
-        {
-            obj.GetComponent<Item>().ThrowItem();
-        }
-        obj.gameObject.SetActive(false);
 
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(1f);
         GrabResetTrigger();
         Destroy(obj.gameObject, 1f);
-
     }
 
     [PunRPC]

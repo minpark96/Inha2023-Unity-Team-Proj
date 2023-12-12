@@ -6,7 +6,7 @@ using Photon.Pun;
 public class ProjectileStandard : ProjectileBase
 {
     public Transform root;
-    private float speed = 15f;
+    public float speed = 15f;
     public float maxLifeTime = 5f;
 
     private ProjectileBase projectileBase;
