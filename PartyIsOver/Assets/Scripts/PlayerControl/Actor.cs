@@ -96,8 +96,8 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
     // 동사스택
     [SerializeField]
-    private float _magneticStack = 0f;
-    public float MagneticStack { get { return _magneticStack; } set { _magneticStack = value; } }
+    private int _magneticStack = 0;
+    public int MagneticStack { get { return _magneticStack; } set { _magneticStack = value; } }
     
 
 

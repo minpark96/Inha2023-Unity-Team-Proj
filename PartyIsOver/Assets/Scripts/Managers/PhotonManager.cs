@@ -183,7 +183,8 @@ public class PhotonManager : BaseScene
 
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
-        PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = Define.MAX_PLAYERS_PER_ROOM });
+        string roomName = "설산 속의 아지트";
+        PhotonNetwork.CreateRoom(roomName, new RoomOptions { MaxPlayers = Define.MAX_PLAYERS_PER_ROOM });
     }
 
     public override void OnJoinedLobby()
