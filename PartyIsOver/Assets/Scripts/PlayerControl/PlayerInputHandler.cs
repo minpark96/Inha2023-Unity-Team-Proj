@@ -18,7 +18,7 @@ public class PlayerInputHandler : MonoBehaviourPun
             return;
 
         _actor.BodyHandler.BodySetup();
-
+                                                  
         Managers.Input.MouseAction -= OnMouseEvent;
         Managers.Input.MouseAction += OnMouseEvent;
         Managers.Input.KeyboardAction -= OnKeyboardEvent;

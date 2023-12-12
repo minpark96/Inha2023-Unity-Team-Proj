@@ -257,14 +257,14 @@ public class Grab : MonoBehaviourPun
                             case ItemType.Ranged:
                                 photonView.RPC("UseItem", RpcTarget.All);
                                 break;
-                            case ItemType.Potion:
+                            case ItemType.Consumable:
                                 StartCoroutine(UsePotionAnim());
                                 break;
                         }
                     }
                     if (Input.GetMouseButtonUp(1))
                     {
-                        if(type == ItemType.Potion)
+                        if(type == ItemType.Consumable)
                         {
                             photonView.RPC("PotionThrowAnim", RpcTarget.All);
                         }
@@ -587,7 +587,7 @@ public class Grab : MonoBehaviourPun
                     TwoHandedGrab(item);
                 }
                 break;
-            case ItemType.Potion:
+            case ItemType.Consumable:
                 {
                     Vector3 dir = item.OneHandedPos.position - _rightHandRigid.transform.position;
                     _rightHandRigid.AddForce(dir.normalized * 80f);
@@ -653,7 +653,8 @@ public class Grab : MonoBehaviourPun
         //HandChecker 스크립트에서 양손 다 아이템의 손잡이와 접촉중인지 판정
         if (HandCollisionCheck(side))
         {
-            EquipItem = item.transform.root.gameObject;
+            EquipItem = item.transform.gameObject;
+            Debug.Log(EquipItem);
             int id = EquipItem.GetComponent<PhotonView>().ViewID;
             photonView.RPC("UsingItemSetting", RpcTarget.All, id);
             return true;
@@ -772,7 +773,7 @@ public class Grab : MonoBehaviourPun
                     targetPosition = -_jointChest.transform.up;
                 }
                 break;
-            case ItemType.Potion:
+            case ItemType.Consumable:
                 targetPosition = _jointChest.transform.forward;
                 break;
         }
@@ -984,18 +985,13 @@ public class Grab : MonoBehaviourPun
         _jointLeft.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 3, 0, 0));
         _jointRight.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 3, 0, 0));
 
+        StartCoroutine(obj.GetComponent<Item>().ThrowItem());
         yield return _actor.PlayerController.PotionThrow(0.07f, 0.1f, 0.3f, 0.1f);
 
-        if (PhotonNetwork.LocalPlayer.IsMasterClient)
-        {
-            obj.GetComponent<Item>().ThrowItem();
-        }
-        obj.gameObject.SetActive(false);
 
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(1f);
         GrabResetTrigger();
         Destroy(obj.gameObject, 1f);
-
     }
 
     [PunRPC]

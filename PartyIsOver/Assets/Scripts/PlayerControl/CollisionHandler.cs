@@ -17,16 +17,23 @@ public class CollisionHandler : MonoBehaviourPun
     [SerializeField] private float _punchDamage;
     [SerializeField] private float _dropkickDamage;
     [SerializeField] private float _headbuttDamage;
+    [SerializeField] private float _nuclearPunchDamage;
+    [SerializeField] private float _meowNyangPunchDamage;
+
 
     [SerializeField] private float _objectForceNormal;
     [SerializeField] private float _punchForceNormal;
     [SerializeField] private float _dropkickForceNormal;
     [SerializeField] private float _headbuttForceNormal;
+    [SerializeField] private float _nuclearPunchForceNormal;
+    [SerializeField] private float _meowNyangPunchForceNormal;
 
     [SerializeField] private float _objectForceUp;
     [SerializeField] private float _punchForceUp;
     [SerializeField] private float _headbuttForceUp;
     [SerializeField] private float _dropkickForceUp;
+    [SerializeField] private float _nuclearPunchForceUp;
+    [SerializeField] private float _meowNyangPunchForceUp;
 
     [SerializeField] private float _headMultiple = 1.5f;
     [SerializeField] private float _armMultiple = 0.8f;
@@ -55,16 +62,22 @@ public class CollisionHandler : MonoBehaviourPun
         _punchDamage = data.PunchDamage;
         _dropkickDamage = data.DropkickDamage;
         _headbuttDamage = data.HeadbuttDamage;
+        _nuclearPunchDamage = data.NuclearPunchDamage;
+        _meowNyangPunchDamage = data.MeowNyangPunchDamage;
 
         _objectForceNormal = data.ObjectForceNormal;
         _punchForceNormal = data.PunchForceNormal;
         _dropkickForceNormal = data.DropkickForceNormal;
         _headbuttForceNormal = data.HeadbuttForceNormal;
+        _nuclearPunchDamage = data.NuclearPunchForceNormal;
+        _meowNyangPunchDamage = data.MeowNyangPunchForceNormal;
 
         _objectForceUp = data.ObjectForceUp;
         _punchForceUp = data.PunchForceUp;
         _headbuttForceUp = data.HeadbuttForceUp;
         _dropkickForceUp = data.DropkickForceUp;
+        _nuclearPunchDamage = data.NuclearPunchForceUp;
+        _meowNyangPunchDamage = data.MeowNyangPunchForceUp;
 
         _headMultiple = statData.HeadMultiple;
         _armMultiple = statData.ArmMultiple;    
@@ -106,7 +119,7 @@ public class CollisionHandler : MonoBehaviourPun
             }
 
             // 물리적 공격을 받을 때
-            if (collisionInteractable.damageModifier <= InteractableObject.Damage.Special)
+            if (collisionInteractable.damageModifier <= InteractableObject.Damage.MeowNyangPunch)
             {
                 damage = PhysicalDamage(collisionInteractable, damage, contact);
                 damage = ApplyBodyPartDamageModifier(damage);
@@ -217,8 +230,16 @@ public class CollisionHandler : MonoBehaviourPun
                     photonView.RPC("PlayerEffectSound", RpcTarget.All, "PlayerEffect/WEAPON_CrossBow");
                 }
                 break;
-            case InteractableObject.Damage.Knockout:
-                damage = 1000000f;
+            case InteractableObject.Damage.NuclearPunch:
+                {
+                    damage *= _nuclearPunchDamage;
+
+                }
+                break;
+            case InteractableObject.Damage.MeowNyangPunch:
+                {
+                    damage *= _meowNyangPunchDamage;
+                }
                 break;
             default:
                 break;
@@ -256,6 +277,25 @@ public class CollisionHandler : MonoBehaviourPun
 
         if (collision.collider.gameObject.layer != LayerMask.NameToLayer("Ground") && !actor.StatusHandler.invulnerable)
             DamageCheck(collision);
+    }
+    private void OnTriggerStay(Collider other)
+    {
+        if(other.gameObject.layer == (int)Define.Layer.TriggerObject 
+            && !actor.StatusHandler.invulnerable && actor.debuffState != Actor.DebuffState.Burn)
+        {
+            TriggerCheck(other);
+        }
+    }
+    private void TriggerCheck(Collider other)
+    {
+        InteractableObject collisionInteractable = other.transform.GetComponent<InteractableObject>();
+        if (collisionInteractable == null)
+            return;
+        if (other.gameObject.GetComponent<Item>() != null && other.gameObject.GetComponent<Item>().Owner == actor)
+            return;
+
+
+        actor.StatusHandler.AddDamage(collisionInteractable.damageModifier, 0f);
     }
 
     [PunRPC]
@@ -316,8 +356,13 @@ public class CollisionHandler : MonoBehaviourPun
                 thisRb.AddForce(normal * _headbuttForceNormal, ForceMode.VelocityChange);
                 thisRb.AddForce(Vector3.up * _headbuttForceUp, ForceMode.VelocityChange);
                 break;
-            case InteractableObject.Damage.Knockout:
-                thisRb.AddForce(normal * 10f, ForceMode.VelocityChange);
+            case InteractableObject.Damage.NuclearPunch:
+                thisRb.AddForce(normal * _nuclearPunchForceNormal, ForceMode.VelocityChange);
+                thisRb.AddForce(Vector3.up * _nuclearPunchForceUp, ForceMode.VelocityChange);
+                break;
+            case InteractableObject.Damage.MeowNyangPunch:
+                thisRb.AddForce(normal * _meowNyangPunchForceNormal, ForceMode.VelocityChange);
+                thisRb.AddForce(Vector3.up * _meowNyangPunchForceUp, ForceMode.VelocityChange);
                 break;
             default:
                 break;
