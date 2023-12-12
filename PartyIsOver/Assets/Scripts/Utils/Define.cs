@@ -144,6 +144,14 @@ public class Define
         Find,
         Attack,
     }
+
+    public enum Area
+    {
+        Floor,
+        Inside,
+        Outside,
+        Default,
+    }
 }
 
 

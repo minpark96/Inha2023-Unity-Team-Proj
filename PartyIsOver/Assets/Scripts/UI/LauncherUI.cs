@@ -5,10 +5,12 @@ using UnityEngine.UI;
 using Photon.Pun;
 using UnityEngine.SceneManagement;
 using System.Text.RegularExpressions;
+using UnityEngine.Video;
 
 
 public class LauncherUI : MonoBehaviour
 {
+    private GameObject _startPanel;
     private GameObject _controlPanel;
     private GameObject _cancelPanel;
     private GameObject _errorPanel;
@@ -17,7 +19,7 @@ public class LauncherUI : MonoBehaviour
     private string _nickName;
 
     public Text ErrorText;
-
+    public VideoPlayer Video;
 
     void Awake()
     {
@@ -26,36 +28,33 @@ public class LauncherUI : MonoBehaviour
 
     void Init()
     {
+        _startPanel = GameObject.Find("Start Panel");
         _controlPanel = GameObject.Find("Control Panel");
         _cancelPanel = GameObject.Find("Cancel Panel");
         _errorPanel = GameObject.Find("Error Panel");
         _feedbackPanel = GameObject.Find("Feedback Panel");
 
-        _controlPanel.SetActive(true);
+        _controlPanel.SetActive(false);
         _cancelPanel.SetActive(false);
         _errorPanel.SetActive(false);
         _feedbackPanel.SetActive(false);
 
-        Managers.Input.KeyboardAction -= OnKeyboardEvent;
-        Managers.Input.KeyboardAction += OnKeyboardEvent;
+        Screen.SetResolution(960, 540, false);
+
+        Video.loopPointReached += EndReached;
     }
 
-    void OnKeyboardEvent(Define.KeyboardEvent evt)
+   
+    public void EndReached(UnityEngine.Video.VideoPlayer video)
     {
-        switch (evt)
-        {
-            case Define.KeyboardEvent.Press:
-                {
-                    //if (Input.GetKeyDown(KeyCode.KeypadEnter))
-                        //OnClickErrorOK();
-                }
-                break;
-        }
+        _startPanel.SetActive(false);
+        _controlPanel.SetActive(true);
     }
+
 
     public void OnClickGameStart()
     {
-        if (PhotonNetwork.NickName.Length < 2 || PhotonNetwork.NickName.Length > 12)
+        if (PhotonNetwork.NickName.Length < 2 || PhotonNetwork.NickName.Length > 13)
         {
             AudioClip uiSound1 = Managers.Sound.GetOrAddAudioClip("Effect/Cartoon-UI-092");
             Managers.Sound.Play(uiSound1, Define.Sound.UISound);

@@ -24,14 +24,14 @@ public class ScoreBoardUI : MonoBehaviour
     {
         _scoreBoardPanel = GameObject.Find("ScoreBoard Panel");
         _scoreBoardPanel.SetActive(false);
+
+        _playerNumber = PhotonNetwork.CurrentRoom.PlayerCount;
     }
 
     public void SetScoreBoard()
     {
         Managers.Input.KeyboardAction -= OnKeyboardEvents;
         Managers.Input.KeyboardAction += OnKeyboardEvents;
-        Debug.Log("SetScoreBoard");
-        _playerNumber = PhotonNetwork.CurrentRoom.PlayerCount;
 
         for (int i = 0; i < _playerNumber; i++)
         {
@@ -55,7 +55,18 @@ public class ScoreBoardUI : MonoBehaviour
 
         for (int i = 0; i < _playerNumber; i++)
         {
-            for (int j = 0; j < 6; j++)
+            Info.transform.GetChild(i).gameObject.SetActive(true);
+            _portrait[i] = Info.transform.GetChild(i).GetChild(0).gameObject;
+            _score[i] = Info.transform.GetChild(i).GetChild(1).gameObject;
+            _nickName[i] = Info.transform.GetChild(i).GetChild(2).GetComponent<Text>();
+        }
+
+        for (int i = 0; i < _playerNumber; i++)
+        {
+            if (_portrait[i] == null)
+                Debug.LogError("portrait is null");
+
+            for (int j = 0; j < Define.MAX_PLAYERS_PER_ROOM; j++)
             {
                 _portrait[i].transform.GetChild(j).gameObject.SetActive(false);
             }

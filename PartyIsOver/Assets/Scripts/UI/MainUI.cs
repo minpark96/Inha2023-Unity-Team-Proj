@@ -45,6 +45,11 @@ public class MainUI : MonoBehaviour
     private GameObject _mainObject;
     private GameObject _keyBoardObject;
 
+    private Button _prevButton;
+    private Button _nextButton;
+    public Sprite NextButtonImage;
+    public Sprite HomeButtonImage;
+
 
     private void Start()
     {
@@ -58,7 +63,7 @@ public class MainUI : MonoBehaviour
         NickName.text = PhotonNetwork.NickName;
 
         _mainObject = GameObject.Find("Main Object");
-        _keyBoardObject = SettingsPanel.transform.GetChild(5).GetChild(0).gameObject;
+        _keyBoardObject = SettingsPanel.transform.GetChild(5).GetChild(1).gameObject;
         _keyBoardObject.SetActive(false);
 
 
@@ -71,8 +76,12 @@ public class MainUI : MonoBehaviour
         _savedStory[3] = "하지만, 불가능하다는 것을 곧 알게 되었죠.";
         _savedStory[4] = "폭설로 인해 <아지트>에 갇혀 버린 몬스터들은 눈이 녹을 때까지 기다리고 또 기다렸습니다.";
         _savedStory[5] = "하지만 오래도록 눈은 녹지 않았고….\n< 아지트 > 의 음식도 고갈되어 가기 시작했습니다.";
-        _savedStory[6] = "굶주림에 지친 몬스터들은 논의 끝에 남은 파티 음식의 주인을 격투로 정하기로 하였습니다.";
+        _savedStory[6] = "굶주림에 지친 몬스터들은 논의 끝에 \n남은 파티 음식의 주인을 격투로 정하기로 하였습니다.";
         _savedStory[7] = "격투의 승리 규칙은 단 하나, 마지막에 살아남은 몬스터가 될 것!\n파티 음식의 주인을 정하기 위한 눈치 싸움이 이제 시작됩니다!";
+
+
+        _nextButton = _storyBoard.GetChild(11).GetComponent<Button>();
+        _prevButton = _storyBoard.GetChild(12).GetComponent<Button>();
 
 
         Managers.Input.KeyboardAction -= OnKeyboardEvent;
@@ -87,23 +96,29 @@ public class MainUI : MonoBehaviour
                 {
                     if (Input.GetKeyDown(KeyCode.Escape))
                     {
-                        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-030");
-                        Managers.Sound.Play(uiSound, Define.Sound.UISound);
-
                         if (_creditOn)
                         {
+                            AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-030");
+                            Managers.Sound.Play(uiSound, Define.Sound.UISound);
+
                             OnClickCreditExit();
                             _creditOn = false;
                         }
 
                         if (_keyBoardOn)
                         {
+                            AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-030");
+                            Managers.Sound.Play(uiSound, Define.Sound.UISound);
+
                             _keyBoardObject.SetActive(false);
                             _keyBoardOn = false;
                         }
 
                         if(_storyBoardOn)
                         {
+                            AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-030");
+                            Managers.Sound.Play(uiSound, Define.Sound.UISound);
+
                             _clickedNumber = 0;
                             StoryBoardPanel.SetActive(false);
                             _storyBoardOn = false;
@@ -119,7 +134,7 @@ public class MainUI : MonoBehaviour
     {
         if(_gameStartFlag)
         {
-            _angle -= 1f;
+            _angle -= 90f * Time.deltaTime;
             StartObject.transform.rotation = Quaternion.Euler(_angle, 180, 0);
 
             if (_angle <= -90)
@@ -165,7 +180,7 @@ public class MainUI : MonoBehaviour
         Animator.SetBool("Pose", true);
     }
 
-    // Game Quit
+    #region Game Quit
     public void OnClickPopup()
     {
         AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-030");
@@ -194,7 +209,9 @@ public class MainUI : MonoBehaviour
         #endif
     }
 
-    // Settings
+    #endregion
+
+    #region Settings
     public void OnClickSettings()
     {
         AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-030");
@@ -236,8 +253,9 @@ public class MainUI : MonoBehaviour
         _keyBoardObject.SetActive(true);
         _keyBoardOn = true;
     }
+    #endregion
 
-    // Credit
+    #region Credit
     public void OnClickCredit()
     {
         AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-030");
@@ -256,6 +274,7 @@ public class MainUI : MonoBehaviour
         _mainObject.SetActive(true);
         CreditPanel.SetActive(false);
     }
+    #endregion
 
     // StoryBoard
     public void OnClickStoryBoard()
@@ -268,8 +287,10 @@ public class MainUI : MonoBehaviour
         _storyText.text = _savedStory[0];
 
         _clickedNumber = 0;
-        _clickedNumber++;
         _storyBoardOn = true;
+
+        _nextButton.GetComponent<Image>().sprite = NextButtonImage;
+        _prevButton.gameObject.SetActive(false);
     }
 
     public void OnClickStoryBoardNext()
@@ -277,10 +298,14 @@ public class MainUI : MonoBehaviour
         AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-030");
         Managers.Sound.Play(uiSound, Define.Sound.UISound);
 
+
+        _clickedNumber++;
+        _prevButton.gameObject.SetActive(true);
+
+
         if (_clickedNumber >= 8)
         {
             StoryBoardPanel.SetActive(false);
-            StoryEndingPanel.SetActive(true);
         }
 
         for (int i = 0; i < 8; i++)
@@ -294,15 +319,36 @@ public class MainUI : MonoBehaviour
                 _storyBoard.GetChild(i).gameObject.SetActive(false);
         }
 
-        _clickedNumber++;
+        if (_clickedNumber == 7)
+            _nextButton.GetComponent<Image>().sprite = HomeButtonImage;
+
     }
 
-    public void OnClickStoryEnding()
+    public void OnClickStoryBoardPrev()
     {
         AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-030");
         Managers.Sound.Play(uiSound, Define.Sound.UISound);
 
-        _clickedNumber = 0;
-        StoryEndingPanel.SetActive(false);
+        _clickedNumber--;
+
+        if (_clickedNumber <= 0)
+        {
+            _prevButton.gameObject.SetActive(false);
+        }
+
+        for (int i = 0; i < 8; i++)
+        {
+            if (i == _clickedNumber)
+            {
+                _storyBoard.GetChild(i).gameObject.SetActive(true);
+                _storyText.text = _savedStory[i];
+            }
+            else
+                _storyBoard.GetChild(i).gameObject.SetActive(false);
+        }
+
+        if(_clickedNumber < 7)
+            _nextButton.GetComponent<Image>().sprite = NextButtonImage;
+
     }
 }

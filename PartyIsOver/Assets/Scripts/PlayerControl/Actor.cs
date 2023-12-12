@@ -9,7 +9,7 @@ using System.Numerics;
 
 public class Actor : MonoBehaviourPun, IPunObservable
 {
-    public delegate void ChangePlayerStatus(float HP, ActorState actorState, DebuffState debuffstate, int viewID);
+    public delegate void ChangePlayerStatus(float HP,float Stamina, ActorState actorState, DebuffState debuffstate, int viewID);
     public event ChangePlayerStatus OnChangePlayerStatus;
     public delegate void KillPlayer(int viewID);
     public event KillPlayer OnKillPlayer;
@@ -96,9 +96,8 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
     // 동사스택
     [SerializeField]
-    private float _magneticStack = 0f;
-    public float MagneticStack { get { return _magneticStack; } set { _magneticStack = value; } }
-    public bool _IsIceFloor;
+    private int _magneticStack = 0;
+    public int MagneticStack { get { return _magneticStack; } set { _magneticStack = value; } }
     
 
 
@@ -118,7 +117,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
             return;
         }
 
-        OnChangePlayerStatus(_health, actorState, debuffState, photonView.ViewID);
+        OnChangePlayerStatus(_health, _stamina, actorState, debuffState, photonView.ViewID);
     }
 
     public void InvokeDeathEvent()
@@ -196,7 +195,6 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
         CameraControl.LookAround(BodyHandler.Hip.transform.position);
         CameraControl.CursorControl();
-
     }
 
     void RecoveryStamina()
@@ -214,37 +212,64 @@ public class Actor : MonoBehaviourPun, IPunObservable
         }
     }
 
+    [PunRPC]
+    void DecreaseStamina(float amount)
+    {
+        Stamina -= 0;
+    }
+    [PunRPC]
+    void RecoverStamina(float amount)
+    {
+        Stamina += 0;
+    }
+
     private void FixedUpdate()
     {
-        if (!photonView.IsMine || actorState == ActorState.Dead) return;
-
-        RecoveryStamina();
-
-        accumulatedTime += Time.fixedDeltaTime;
-        if (accumulatedTime >= currentRecoveryTime)
+        /*if(PhotonNetwork.LocalPlayer.IsMasterClient)
         {
-            if (PlayerController.isRun || GrabState == GrabState.Climb)
+            if (Stamina <= 0)
             {
-                if(debuffState == Actor.DebuffState.Ice || debuffState == Actor.DebuffState.Shock)
-                {
-                    Stamina -= 0;
-                    GrabState = GrabState.None;
-                    PlayerController.isRun = false;
-                }
-                else
-                    Stamina -= 1;
-
+                Grab.GrabResetTrigger();
+                GrabState = GrabState.None;
             }
-            else if(PlayerController._isRSkillCheck || PlayerController.isHeading || PlayerController._isCoroutineDrop)
-                Stamina += 0;
-            else
-                Stamina += currentRecoveryStaminaValue;
 
-            if (Stamina > MaxStamina)
-                Stamina = MaxStamina;
+            RecoveryStamina();
 
-            accumulatedTime = 0f;
-        }
+            accumulatedTime += Time.fixedDeltaTime;
+            if (accumulatedTime >= currentRecoveryTime)
+            {
+                if (PlayerController.isRun || GrabState == GrabState.Climb)
+                {
+                    if (debuffState == Actor.DebuffState.Ice || debuffState == Actor.DebuffState.Shock)
+                    {
+                        photonView.RPC("DecreaseStamina", RpcTarget.All, 0);
+                        //Stamina -= 0;
+                        Grab.GrabResetTrigger();
+                        GrabState = GrabState.None;
+                        PlayerController.isRun = false;
+                    }
+                    else
+                        photonView.RPC("DecreaseStamina", RpcTarget.All, 1);
+
+                    //Stamina -= 1;
+
+                }
+                else if (PlayerController._isRSkillCheck || PlayerController.isHeading || PlayerController._isCoroutineDrop)
+                    photonView.RPC("RecoverStamina",RpcTarget.All, 0);
+                    //Stamina += 0;
+                else
+                    photonView.RPC("RecoverStamina", RpcTarget.All, currentRecoveryStaminaValue);
+
+                //Stamina += currentRecoveryStaminaValue;
+
+                if (Stamina > MaxStamina)
+                    Stamina = MaxStamina;
+
+                accumulatedTime = 0f;
+            }
+        }*/
+
+        if (!photonView.IsMine || actorState == ActorState.Dead) return;
 
         OnChangeStaminaBar();
 
@@ -280,9 +305,6 @@ public class Actor : MonoBehaviourPun, IPunObservable
             case ActorState.Climb:
                 break;
             case ActorState.Roll:
-                break;
-            case ActorState.BalloonWalk:
-                BalloonState.BalloonMove();
                 break;
         }
 

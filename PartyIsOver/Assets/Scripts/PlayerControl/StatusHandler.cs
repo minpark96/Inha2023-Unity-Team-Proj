@@ -26,11 +26,17 @@ public class StatusHandler : MonoBehaviourPun
     private List<float> _yzPosSpringAry = new List<float>();
 
    
-
     // 초기 속도
     private float _maxSpeed;
 
-
+    // 추후 DebuffTime Actor에서만 사용할 예정
+    public float StunTime = 2f;
+    public float BurnTime = 3f;
+    public float IceTime = 3f;
+    public float PowerUpTime = 3f;
+    public float Drunktime = 5f;
+    public float Slowtime = 5f;
+    public float ShockTime = 5f;
 
 
     // 버프 확인용 플래그
@@ -72,7 +78,16 @@ public class StatusHandler : MonoBehaviourPun
     [SerializeField]
     public float _burnDamage;
 
-    int Creatcount = 0;
+    public Context _context;
+    Stun stunInStance;
+    Burn burnInStance;
+    Ice IceInStance;
+    PowerUp powerUpInStance;
+    Drunk drunkInStance;
+    Slow slowInStance;
+    Shock shockInStance;
+    Exhausted exhaustedInStance;
+
 
 
     private void Awake()
@@ -80,6 +95,15 @@ public class StatusHandler : MonoBehaviourPun
         playerTransform = this.transform.Find("GreenHip").GetComponent<Transform>();
         Transform SoundSourceTransform = transform.Find("GreenHip");
         _audioSource = SoundSourceTransform.GetComponent<AudioSource>();
+        _context = GetComponent<Context>();
+        stunInStance = gameObject.AddComponent<Stun>();
+        burnInStance = gameObject.AddComponent<Burn>();
+        IceInStance = gameObject.AddComponent<Ice>();
+        powerUpInStance = gameObject.AddComponent<PowerUp>();
+        drunkInStance = gameObject.AddComponent<Drunk>();
+        slowInStance = gameObject.AddComponent<Slow>();
+        shockInStance = gameObject.AddComponent<Shock>();
+        exhaustedInStance = gameObject.AddComponent<Exhausted>();
     }
 
     void Start()
@@ -103,19 +127,53 @@ public class StatusHandler : MonoBehaviourPun
     void Update()
     {
         // 지침 디버프 활성화/비활성화
-        if (actor.Stamina <= 0)
+        if(PhotonNetwork.LocalPlayer.IsMasterClient)
         {
-            if (!_hasExhausted)
+            if (actor.Stamina <= 0)
             {
-                actor.debuffState |= Actor.DebuffState.Exhausted;
-                photonView.RPC("Exhausted", RpcTarget.All, _exhaustedTime);
+                if (!_hasExhausted)
+                {
+                    actor.debuffState |= Actor.DebuffState.Exhausted;
+                    if (actor.GrabState != Define.GrabState.PlayerLift)
+                    {
+                        actor.GrabState = Define.GrabState.None;
+                        actor.Grab.GrabResetTrigger();
+                    }
+                    //_context.ChangeState(exhaustedInStance);
+                    photonView.RPC("RPCExhaustedCreate", RpcTarget.All);
+                }
+            }
+            else
+            {
+                if (_hasExhausted)
+                {
+                    if (actor.GrabState != Define.GrabState.PlayerLift)
+                    {
+                        actor.GrabState = Define.GrabState.None;
+                        actor.Grab.GrabResetTrigger();
+                    }
+                }
             }
         }
     }
 
+    [PunRPC]
+    void PlayerEffect()
+    {
+        photonView.RPC("TestPlayerEffect",RpcTarget.All);
+    }
+
+    [PunRPC]
+    void TestPlayerEffect()
+    {
+        //참여자는 방장한테 이펙트가 생기는 버그
+        actor.PlayerController._drunkState.effectObject = effectObject;
+        actor.PlayerController._drunkState.StatusMoveEffect();
+    }
 
     private void LateUpdate()
     {
+
         if (effectObject != null && effectObject.name == "Stun_loop")
             photonView.RPC("MoveEffect", RpcTarget.All);
         else if (effectObject != null && effectObject.name == "Fog_frost")
@@ -225,6 +283,7 @@ public class StatusHandler : MonoBehaviourPun
                     break;
                 else
                 {
+                    effectObject = null;
                     actor.debuffState |= Actor.DebuffState.Drunk;
                     photonView.RPC("PlayerDebuffSound", RpcTarget.All, "PlayerEffect/Cartoon-UI-049");
                 }
@@ -244,11 +303,11 @@ public class StatusHandler : MonoBehaviourPun
                     break;
                 case Actor.DebuffState.PowerUp:
                     if (!_hasPowerUp)
-                        photonView.RPC("PowerUp", RpcTarget.All, _powerUpTime);
+                        photonView.RPC("RPCPowerUpCreate", RpcTarget.All);
                     break;
                 case Actor.DebuffState.Burn:
                     if (!_hasBurn)
-                        photonView.RPC("Burn", RpcTarget.All, _burnTime);
+                        photonView.RPC("RPCBurnCreate", RpcTarget.All);
                     break;
                 case Actor.DebuffState.Slow:
                     if (!_hasSlow)
@@ -256,13 +315,13 @@ public class StatusHandler : MonoBehaviourPun
                     break;
                 case Actor.DebuffState.Shock:
                     if (!_hasShock)
-                        photonView.RPC("Shock", RpcTarget.All, _shockTime);
+                        photonView.RPC("RPCShockCreate", RpcTarget.All);
                     break;
                 case Actor.DebuffState.Stun:
                     if (!_hasStun)
                     {
                         StartCoroutine(ResetBodySpring());
-                        photonView.RPC("Stun", RpcTarget.All, _stunTime);
+                        //photonView.RPC("Stun", RpcTarget.All, _stunTime);
                     }
                     break;
                 case Actor.DebuffState.Ghost:
@@ -270,16 +329,44 @@ public class StatusHandler : MonoBehaviourPun
                 case Actor.DebuffState.Drunk:
                     if(!HasDrunk)
                     {
-                        HasDrunk = true;
                         photonView.RPC("PoisonCreate", RpcTarget.All);
                     }
                     break;
                 case Actor.DebuffState.Ice:
                     if (!_hasFreeze)
-                        photonView.RPC("Freeze", RpcTarget.All, _freezeTime);
+                        photonView.RPC("RPCIceCreate", RpcTarget.All);
                     break;
             }
         }
+    }
+
+    [PunRPC]
+    void RPCShockCreate()
+    {
+        _context.ChangeState(shockInStance, ShockTime);
+    }
+
+    [PunRPC]
+    void RPCExhaustedCreate()
+    {
+        _context.ChangeState(exhaustedInStance);
+    }
+    [PunRPC]
+    void RPCPowerUpCreate()
+    {
+        _context.ChangeState(powerUpInStance, PowerUpTime);
+    }
+
+    [PunRPC]
+    void RPCBurnCreate()
+    {
+        _context.ChangeState(burnInStance, BurnTime);
+    }
+
+    [PunRPC]
+    void RPCIceCreate()
+    {
+        _context.ChangeState(IceInStance, IceTime);
     }
 
     [PunRPC]
@@ -343,7 +430,6 @@ public class StatusHandler : MonoBehaviourPun
             yield return null;
         }
         _burnCount = 0;
-        Creatcount = 0;
         // 화상 해제
         _hasBurn = false;
         photonView.RPC("TransferDebuffToPlayer", RpcTarget.MasterClient, (int)InteractableObject.Damage.Default);
@@ -355,7 +441,7 @@ public class StatusHandler : MonoBehaviourPun
         _audioClip = null;
     }
 
-   
+
     [PunRPC]
     IEnumerator Exhausted(float delay)
     {
@@ -369,7 +455,7 @@ public class StatusHandler : MonoBehaviourPun
         angularXDrive.positionSpring = 0f;
         actor.BodyHandler.BodyParts[(int)Define.BodyPart.Head].PartJoint.angularXDrive = angularXDrive;
 
-        while(actor.Stamina != 100)
+        while (actor.Stamina != 100)
         {
             yield return null;
         }
@@ -387,6 +473,7 @@ public class StatusHandler : MonoBehaviourPun
         actor.InvokeStatusChangeEvent();
         _audioClip = null;
     }
+
     [PunRPC]
     IEnumerator Slow(float delay)
     {
@@ -608,6 +695,7 @@ public class StatusHandler : MonoBehaviourPun
     [PunRPC]
     public void PoisonCreate()
     {
+        HasDrunk = true;
         EffectObjectCreate("Effects/Fog_poison");
     }
 
@@ -618,11 +706,9 @@ public class StatusHandler : MonoBehaviourPun
 
     public void EffectObjectCreate(string path)
     {
-        //오브젝트 확인 하는 애가 여기 있어서 문제 있는거 같은데
         effectObject = Managers.Resource.PhotonNetworkInstantiate($"{path}");
-        effectObject.transform.position = playerTransform.position;
+        //effectObject.transform.position = playerTransform.position;
     }
-
     [PunRPC]
     public void MoveEffect()
     {
@@ -633,14 +719,10 @@ public class StatusHandler : MonoBehaviourPun
         {
             effectObject.transform.position = new Vector3(playerTransform.position.x, playerTransform.position.y - 2, playerTransform.position.z);
         }
-
-    }
-    [PunRPC]
-    public void PlayerEffect()
-    {
-        if (effectObject != null)
+        else
             effectObject.transform.position = playerTransform.position;
     }
+
 
     public void UpdateHealth()
     {
@@ -667,12 +749,13 @@ public class StatusHandler : MonoBehaviourPun
             //기절상태가 아닐때 일정 이상의 데미지를 받으면 기절
             if (actor.actorState != Actor.ActorState.Unconscious)
             {
+
                 if (realDamage >= _knockoutThreshold)
                 {
                     if (actor.debuffState == Actor.DebuffState.Ice) //상태이상 후에 추가
                         return;
                     actor.actorState = Actor.ActorState.Unconscious;
-                    photonView.RPC("StunCreate", RpcTarget.All);
+                    //photonView.RPC("StunCreate", RpcTarget.All);
                     EnterUnconsciousState();
                 }
             }
@@ -701,8 +784,9 @@ public class StatusHandler : MonoBehaviourPun
     {
         //데미지 이펙트나 사운드 추후 추가
 
-        actor.debuffState = Actor.DebuffState.Stun;
-        StartCoroutine(ResetBodySpring());
+        //actor.debuffState = Actor.DebuffState.Stun;
+        photonView.RPC("ChangeStateMachines", RpcTarget.All, _stunTime);
+        //StartCoroutine(ResetBodySpring());
         actor.Grab.GrabResetTrigger();
         actor.BodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
         actor.BodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
@@ -711,34 +795,40 @@ public class StatusHandler : MonoBehaviourPun
     }
 
     [PunRPC]
-    void SetJointSpring(float percentage)
+    void ChangeStateMachines(float durationTime)
     {
-        JointDrive angularXDrive;
-        JointDrive angularYZDrive;
-        int j = 0;
-
-        //기절과 회복에 모두 관여 기절시엔 퍼센티지를 0으로해서 사용
-        for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
-        {
-            if (i == (int)Define.BodyPart.Hip)
-                continue;
-
-            angularXDrive = actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive;
-            angularXDrive.positionSpring = _xPosSpringAry[j] * percentage;
-            actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive = angularXDrive;
-
-            angularYZDrive = actor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive;
-            angularYZDrive.positionSpring = _yzPosSpringAry[j] * percentage;
-            actor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive = angularYZDrive;
-
-            j++;
-        }
-
+        _context.ChangeState(stunInStance, durationTime);
     }
+
+    /*    [PunRPC]
+        void SetJointSpring(float percentage)
+        {
+            JointDrive angularXDrive;
+            JointDrive angularYZDrive;
+            int j = 0;
+
+            //기절과 회복에 모두 관여 기절시엔 퍼센티지를 0으로해서 사용
+            for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
+            {
+                if (i == (int)Define.BodyPart.Hip)
+                    continue;
+
+                angularXDrive = actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive;
+                angularXDrive.positionSpring = _xPosSpringAry[j] * percentage;
+                actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive = angularXDrive;
+
+                angularYZDrive = actor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive;
+                angularYZDrive.positionSpring = _yzPosSpringAry[j] * percentage;
+                actor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive = angularYZDrive;
+
+                j++;
+            }
+
+        }*/
 
     public IEnumerator ResetBodySpring()
     {
-        photonView.RPC("SetJointSpring", RpcTarget.All, 0f);
+        //photonView.RPC("SetJointSpring", RpcTarget.All, 0f);
         yield return null;
     }
 
@@ -751,7 +841,7 @@ public class StatusHandler : MonoBehaviourPun
         {
             float elapsed = Time.time - startTime;
             float percentage = elapsed / springLerpDuration;
-            photonView.RPC("SetJointSpring", RpcTarget.All, percentage);
+            //photonView.RPC("SetJointSpring", RpcTarget.All, percentage);
             yield return null;
         }
     }
@@ -765,7 +855,7 @@ public class StatusHandler : MonoBehaviourPun
         {
             float elapsed = Time.time - startTime;
             float percentage = elapsed / springLerpDuration;
-            photonView.RPC("SetJointSpring", RpcTarget.All, percentage);
+           // photonView.RPC("SetJointSpring", RpcTarget.All, percentage);
             yield return null;
         }
     }
