@@ -27,11 +27,7 @@ public class DrunkState : MonoBehaviourPun
             photonView.RPC("StatusMoveEffect", RpcTarget.All);
     }
 
-    public IEnumerator DrunkActionReady()
-    {
-        _actor.BodyHandler.Head.PartRigidbody.AddForce(_actor.BodyHandler.Hip.PartTransform.up * 100f);
-        yield return null;
-    }
+
 
     public IEnumerator DrunkAction()
     {
@@ -50,7 +46,7 @@ public class DrunkState : MonoBehaviourPun
         photonView.RPC("StatusDestroyEffect", RpcTarget.All, "Flamethrower");
     }
 
-    public IEnumerator DrunkOff()
+/*    public IEnumerator DrunkOff()
     {
         yield return new WaitForSeconds(DrunkDuration);
         _actor.debuffState = Actor.DebuffState.Default;
@@ -59,24 +55,24 @@ public class DrunkState : MonoBehaviourPun
         _actor.StatusHandler.HasDrunk = false;
         photonView.RPC("StatusDestroyEffect", RpcTarget.All, "Fog_poison");
         
-    }
+    }*/
 
-    [PunRPC]
+/*    [PunRPC]
     void StatusCreateEffect(string path)
     {
         effectObject = Managers.Resource.PhotonNetworkInstantiate($"{path}");
         effectObject.transform.position = _playerTransform.position;
-    }
+    }*/
 
-    [PunRPC]
+/*    [PunRPC]
     void StatusDestroyEffect(string name)
     {
         GameObject go = GameObject.Find($"{name}");
         Managers.Resource.Destroy(go);
         effectObject = null;
-    }
+    }*/
 
-    [PunRPC]
+/*    [PunRPC]
     public void StatusMoveEffect()
     {
         if (effectObject != null && effectObject.name == "Flamethrower")
@@ -87,5 +83,5 @@ public class DrunkState : MonoBehaviourPun
         //else if(effectObject != null)
         //    effectObject.transform.position = _playerTransform.position;
 
-    }
+    }*/
 }

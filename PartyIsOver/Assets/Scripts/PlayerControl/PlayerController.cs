@@ -620,7 +620,7 @@ public class PlayerController : MonoBehaviourPun
                     {
                         if (_actor.debuffState == DebuffState.Drunk)
                         {
-                            StartCoroutine(_drunkState.DrunkActionReady());
+                            StartCoroutine(DrunkActionReady());
                         }
                     }
                     //중일때 확인 ex 이펙트 출현하는 코드를 넣어주면 기모아지는 것 첨 될듯
@@ -648,6 +648,14 @@ public class PlayerController : MonoBehaviourPun
         StartCoroutine(_drunkState.DrunkAction());
     }
 
+    #endregion
+
+    #region
+    IEnumerator DrunkActionReady()
+    {
+        _actor.BodyHandler.Head.PartRigidbody.AddForce(_actor.BodyHandler.Hip.PartTransform.up * 100f);
+        yield return null;
+    }
     #endregion
 
     #region ChargeSkill
@@ -821,12 +829,12 @@ public class PlayerController : MonoBehaviourPun
             photonView.RPC("_balloonState.BalloonShapeOn", RpcTarget.All);
             //StartCoroutine(_balloonState.BalloonShapeOn());
         }
-
+/*
         if (_actor.debuffState == Actor.DebuffState.Drunk && isDrunk == false)
         {
             isDrunk = true;
             StartCoroutine(_drunkState.DrunkOff());
-        }
+        }*/
 
 
         if (_actor.actorState != Actor.ActorState.Jump && _actor.actorState != Actor.ActorState.Roll 
