@@ -278,6 +278,25 @@ public class CollisionHandler : MonoBehaviourPun
         if (collision.collider.gameObject.layer != LayerMask.NameToLayer("Ground") && !actor.StatusHandler.invulnerable)
             DamageCheck(collision);
     }
+    private void OnTriggerStay(Collider other)
+    {
+        if(other.gameObject.layer == (int)Define.Layer.TriggerObject 
+            && !actor.StatusHandler.invulnerable && actor.debuffState != Actor.DebuffState.Burn)
+        {
+            TriggerCheck(other);
+        }
+    }
+    private void TriggerCheck(Collider other)
+    {
+        InteractableObject collisionInteractable = other.transform.GetComponent<InteractableObject>();
+        if (collisionInteractable == null)
+            return;
+        if (other.gameObject.GetComponent<Item>() != null && other.gameObject.GetComponent<Item>().Owner == actor)
+            return;
+
+
+        actor.StatusHandler.AddDamage(collisionInteractable.damageModifier, 0f);
+    }
 
     [PunRPC]
     void AddForceAttackedTarget(int objViewId, Vector3 normal, int damageModifier, float itemDamage)

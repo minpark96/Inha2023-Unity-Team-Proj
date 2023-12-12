@@ -95,9 +95,12 @@ public class Define
 
     public enum Layer
     {
+        Ground=9,
         Item = 10,
         ClimbObject = 11,
         InteractableObject =12,
+        TriggerObject = 13,
+        IceFloor = 14,
 
         Player1 = 26,
         Player2 = 27,
