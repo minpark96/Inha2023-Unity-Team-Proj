@@ -92,8 +92,13 @@ public class StatusHandler : MonoBehaviourPun
     private void Init()
     {
         StatusData data = Managers.Resource.Load<StatusData>("ScriptableObject/StatusData");
-
-
+        _stunTime = data.StunTime;
+        _burnTime = data.BurnTime;
+        _freezeTime = data.FreezeTime;
+        _powerUpTime = data.PowerUpTime;
+        //_drunkTime = data.DrunkTime; // _drunkTime ¾øÀ½
+        _slowTime = data.SlowTime;
+        _shockTime = data.ShockTime;
     }
 
     private void Awake()

@@ -230,7 +230,7 @@ public class GameCenter : BaseScene
                 _nicknames[i] = nickname;
                 _actorNumbers[i] = actorNumber;
 
-                //SetScoreBoard();
+                SetScoreBoard();
             }
         }
 

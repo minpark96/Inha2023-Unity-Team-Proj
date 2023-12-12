@@ -10,8 +10,8 @@ public class StatusData : ScriptableObject
     public float StunTime { get { return _stunTime; } }
     [SerializeField] private float _burnTime;
     public float BurnTime { get { return _burnTime; } }
-    [SerializeField] private float _iceTime;
-    public float IceTime { get { return _iceTime; } }
+    [SerializeField] private float _freezeTime;
+    public float FreezeTime { get { return _freezeTime; } }
     [SerializeField] private float _powerUpTime;
     public float PowerUpTime { get { return _powerUpTime; } }
     [SerializeField] private float _drunktime;
