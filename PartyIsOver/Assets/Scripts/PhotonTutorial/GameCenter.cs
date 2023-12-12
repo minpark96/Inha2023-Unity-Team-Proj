@@ -562,15 +562,15 @@ public class GameCenter : BaseScene
 
     #region 플레이어 동기화
 
-    void SendInfo(float hp, Actor.ActorState actorState, Actor.DebuffState debuffstate, int viewID)
+    void SendInfo(float hp, float stamina, Actor.ActorState actorState, Actor.DebuffState debuffstate, int viewID)
     {
         if (!PhotonNetwork.LocalPlayer.IsMasterClient) return;
 
-        photonView.RPC("SyncInfo", RpcTarget.All, hp, actorState, debuffstate, viewID);
+        photonView.RPC("SyncInfo", RpcTarget.All, hp, stamina, actorState, debuffstate, viewID);
     }
 
     [PunRPC]
-    void SyncInfo(float hp, Actor.ActorState actorState, Actor.DebuffState debuffstate, int viewID)
+    void SyncInfo(float hp, float stamina, Actor.ActorState actorState, Actor.DebuffState debuffstate, int viewID)
     {
         for (int i = 0; i < Actors.Count; i++)
         {
@@ -579,6 +579,7 @@ public class GameCenter : BaseScene
                 Actors[i].Health = hp;
                 Actors[i].actorState = actorState;
                 Actors[i].debuffState = debuffstate;
+                Actors[i].Stamina = stamina;
 
                 if (Actors[i].photonView.IsMine && ImageHPBar != null)
                 {
