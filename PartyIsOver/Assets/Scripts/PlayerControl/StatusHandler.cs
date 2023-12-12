@@ -89,6 +89,12 @@ public class StatusHandler : MonoBehaviourPun
     Exhausted exhaustedInStance;
 
 
+    private void Init()
+    {
+        StatusData data = Managers.Resource.Load<StatusData>("ScriptableObject/StatusData");
+
+
+    }
 
     private void Awake()
     {

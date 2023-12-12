@@ -205,7 +205,7 @@ public class GameCenter : BaseScene
                 _nicknames[i] = nickname;
                 _actorNumbers[i] = actorNumber;
 
-                SetScoreBoard();
+                //SetScoreBoard();
             }
         }
 
@@ -521,7 +521,7 @@ public class GameCenter : BaseScene
         //_snowStorm = GameObject.Find("Snow Storm").GetComponent<SnowStorm>();
 
 
-        if(PhotonNetwork.LocalPlayer.IsMasterClient)
+        if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
             _magneticField.CheckMagneticFieldArea -= CheckPlayerLocation;
             _magneticField.CheckMagneticFieldArea += CheckPlayerLocation;
