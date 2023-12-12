@@ -113,8 +113,8 @@ public class Define
 
     public enum RangedItemType
     {
-        TaserGun,
         IceGun,
+        TaserGun,
 
 
 

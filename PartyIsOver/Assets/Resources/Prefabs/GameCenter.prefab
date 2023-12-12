@@ -56,13 +56,28 @@ MonoBehaviour:
   - 
   - 
   _actorNumbers: 000000000000000000000000000000000000000000000000
-  SpawnPoints:
+  PlayerSpawnPoints:
   - {x: 480.5, y: 15, z: 401.23}
   - {x: 473.24, y: 15, z: 402.1}
   - {x: 482.55, y: 15, z: 405.68}
   - {x: 472.08, y: 15, z: 407.17}
   - {x: 481.82, y: 15, z: 411.03}
   - {x: 473.66, y: 15, z: 412.15}
+  TwoHandedItemSpawnPoints:
+  - {x: 476.441, y: 20, z: 406.541}
+  - {x: 460.6, y: 20, z: 407.8}
+  RangedItemSpawnPoints:
+  - {x: 478.16, y: 20, z: 393.72}
+  - {x: 471.17, y: 20, z: 395.25}
+  - {x: 443.3, y: 20, z: 420.7}
+  - {x: 450.7, y: 20, z: 412.2}
+  ConsumableItemSpawnPoints:
+  - {x: 486.98, y: 20, z: 408.49}
+  - {x: 480.49, y: 20, z: 422.68}
+  - {x: 469.49, y: 20, z: 414.05}
+  - {x: 452.4, y: 20, z: 426.6}
+  - {x: 456.5, y: 20, z: 409.7}
+  - {x: 443.6, y: 20, z: 412.2}
   ActorViewIDs: 
   Actors: []
   MyGraveStone: {fileID: 0}
@@ -70,10 +85,9 @@ MonoBehaviour:
   ImageHPBar: {fileID: 0}
   ImageStaminaBar: {fileID: 0}
   Portrait: {fileID: 0}
-  DelayInGhostSpawn: 4
-  DelayInRoundEnd: 7
-  DelayInUpdateScoreBoard: 2
-  DelayInDestroyObjects: 2
+  GhostSpawnDelay: 4
+  RoundEndDelay: 7
+  ItemSpawnInterval: 30
   MyActor: {fileID: 0}
   MyActorViewID: 0
   AlivePlayerCount: 1
@@ -83,6 +97,9 @@ MonoBehaviour:
   EndingCount: 0
   IsMeowNyangPunch: 0
   winner: 0
+  Items: []
+  ItemSpawnCount: 
+  ItemSpawnPhaseCount: 5
 --- !u!114 &-6182396937385309685
 MonoBehaviour:
   m_ObjectHideFlags: 0

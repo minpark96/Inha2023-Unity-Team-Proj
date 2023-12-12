@@ -8,6 +8,8 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using static Actor;
 using System.Reflection;
+using System.Linq;
+using Unity.VisualScripting;
 
 public class GameCenter : BaseScene
 {
@@ -108,7 +110,7 @@ public class GameCenter : BaseScene
 
     public int AlivePlayerCount = 1;
     public int RoundCount = 1;
-    public const int MAX_ROUND = 3;
+    public const int MAX_ROUND = 2;
 
     public int LoadingCompleteCount = 0;
     public int DestroyingCompleteCount = 0;
@@ -118,8 +120,10 @@ public class GameCenter : BaseScene
     public int winner;
 
     public List<Transform> Items = new List<Transform>();
-    public List<int> ItemSpawnCount = new List<int>((int)Define.SpawnableItemType.End);
+    public List<int> ItemSpawnCount = new List<int>();
     public int ItemSpawnPhaseCount = 5;
+
+    private Coroutine StartItemSpawnTimerCoroutine;
 
     #endregion
 
@@ -166,7 +170,6 @@ public class GameCenter : BaseScene
 
                 Managers.Sound.ChangeVolume();
             }
-
         }
     }
 
@@ -241,6 +244,7 @@ public class GameCenter : BaseScene
     void InitRoomUI()
     {
         _roomUI = GameObject.Find("Control Panel").transform.GetComponent<RoomUI>();
+        Debug.Log(_roomUI);
 
         if (PhotonNetwork.LocalPlayer.IsMasterClient)
             _roomUI.ReadyButton.SetActive(false);
@@ -263,6 +267,7 @@ public class GameCenter : BaseScene
         }
 
         photonView.RPC("UpdateMasterStatus", RpcTarget.MasterClient);
+        Debug.Log(_roomUI.PlayerCount);
         photonView.RPC("UpdatePlayerNumber", RpcTarget.All, _roomUI.PlayerCount);
     }
 
@@ -287,6 +292,7 @@ public class GameCenter : BaseScene
     [PunRPC]
     void UpdatePlayerNumber(int totalPlayerNumber)
     {
+        Debug.Log(totalPlayerNumber);
         _roomUI.UpdatePlayerNumber(totalPlayerNumber);
     }
 
@@ -387,6 +393,7 @@ public class GameCenter : BaseScene
 
     void InitItems()
     {
+        ItemSpawnCount = Enumerable.Repeat(0, (int)Define.SpawnableItemType.End).ToList();
         Transform items = GameObject.Find("Items").transform;
         for (int i = 0; i < items.childCount; i++)
         {
@@ -402,10 +409,9 @@ public class GameCenter : BaseScene
     void SetItemsAllInactive(int itemType)
     {
         int rootItemsCount = GetRootItemsCount(itemType);
-
         for (int i = 0; i < rootItemsCount; i++)
         {
-            Transform rootItem = Items[i].transform;
+            Transform rootItem = Items[itemType].GetChild(i).transform;
             for (int j = 0; j < rootItem.childCount; j++)
             {
                 rootItem.GetChild(j).gameObject.SetActive(false);
@@ -474,7 +480,7 @@ public class GameCenter : BaseScene
             Debug.Log("Start Game");
             AlivePlayerCount = PhotonNetwork.CurrentRoom.PlayerCount;
             photonView.RPC("CreatePlayer", RpcTarget.All);
-            StartCoroutine(StartItemSpawnTimer());
+            StartItemSpawnTimerCoroutine = StartCoroutine(StartItemSpawnTimer());
             LoadingCompleteCount = 0;
         }
     }
@@ -494,38 +500,94 @@ public class GameCenter : BaseScene
         {
             case 0:
                 {
-                    SetItemsActive(ChooseRandomItemRootTypes((int)Define.SpawnableItemType.TwoHanded, 1));
+                    SetItemsActive((int)Define.SpawnableItemType.TwoHanded, ChooseRandomItemRootTypes((int)Define.SpawnableItemType.TwoHanded, 1));
                 }
                 break;
             case 1:
                 {
-                    ChooseRandomItemRootTypes((int)Define.SpawnableItemType.Consumable, 3);
-                    ChooseRandomItemRootTypes((int)Define.SpawnableItemType.Ranged, 2);
+                    SetItemsActive((int)Define.SpawnableItemType.Consumable, ChooseRandomItemRootTypes((int)Define.SpawnableItemType.Consumable, 3));
+                    List<int> rootTypes = ChooseRandomItemRootTypes((int)Define.SpawnableItemType.Ranged, 2);
+                    rootTypes[0] = 0;
+                    SetItemsActive((int)Define.SpawnableItemType.Ranged, rootTypes);
                 }
                 break;
             case 2:
                 {
-                    ChooseRandomItemRootTypes((int)Define.SpawnableItemType.Consumable, 1);
-                    ChooseRandomItemRootTypes((int)Define.SpawnableItemType.Ranged, 1);
+                    SetItemsActive((int)Define.SpawnableItemType.Consumable, ChooseRandomItemRootTypes((int)Define.SpawnableItemType.Consumable, 1));
+                    SetItemsActive((int)Define.SpawnableItemType.Ranged, ChooseRandomItemRootTypes((int)Define.SpawnableItemType.Ranged, 1));
                 }
                 break;
             case 3:
                 {
-                    ChooseRandomItemRootTypes((int)Define.SpawnableItemType.Consumable, 2);
+                    SetItemsActive((int)Define.SpawnableItemType.Consumable, ChooseRandomItemRootTypes((int)Define.SpawnableItemType.Consumable, 2));
                 }
                 break;
             case 4:
                 {
-                    ChooseRandomItemRootTypes((int)Define.SpawnableItemType.TwoHanded, 1);
-                    ChooseRandomItemRootTypes((int)Define.SpawnableItemType.Ranged, 1);
+                    SetItemsActive((int)Define.SpawnableItemType.TwoHanded, ChooseRandomItemRootTypes((int)Define.SpawnableItemType.TwoHanded, 1));
+                    SetItemsActive((int)Define.SpawnableItemType.Ranged, ChooseRandomItemRootTypes((int)Define.SpawnableItemType.Ranged, 1));
                 }
                 break;
         }
     }
 
-    void SetItemsActive(List<int> rootTypes)
+    void SetItemsActive(int itemType, List<int> rootTypes)
     {
+        for (int i = 0; i < rootTypes.Count; i++)
+        {
+            Transform targetItem = null;
+            Transform targetItemRoot = Items[itemType].GetChild(rootTypes[i]);
+            for (int j = 0; j < targetItemRoot.childCount; j++)
+            {
+                targetItem = targetItemRoot.GetChild(j);
+                if (!targetItem.GetComponent<Item>().IsSpawned) break;
+            }
 
+            if (targetItem != null)
+            {
+                int viewID = targetItem.GetComponent<PhotonView>().ViewID;
+                Debug.Log("[1] " + viewID);
+                Vector3 spawnPoint = GetItemSpawnPoints(itemType, ItemSpawnCount[itemType]);
+                ItemSpawnCount[itemType]++;
+                photonView.RPC("SetItemsActiveInLocal", RpcTarget.All, viewID, spawnPoint);
+            }
+        }
+    }
+
+    Vector3 GetItemSpawnPoints(int itemType, int spawnCount)
+    {
+        Vector3 spawnPoint = Vector3.zero;
+
+        switch (itemType)
+        {
+            case 0:
+                {
+                    spawnPoint = TwoHandedItemSpawnPoints[spawnCount];
+                }
+                break;
+            case 1:
+                {
+                    spawnPoint = RangedItemSpawnPoints[spawnCount];
+                }
+                break;
+            case 2:
+                {
+                    spawnPoint = ConsumableItemSpawnPoints[spawnCount];
+                }
+                break;
+        }
+
+        return spawnPoint;
+    }
+
+    [PunRPC]
+    void SetItemsActiveInLocal(int viewID, Vector3 spawnPos)
+    {
+        Transform item = PhotonNetwork.GetPhotonView(viewID).transform;
+        item.gameObject.SetActive(true);
+        Debug.Log("[NAME] " + item.name + ", [ID] " + viewID + " Spawn!!");
+        item.position = spawnPos;
+        item.GetComponent<Item>().IsSpawned = true;
     }
 
     List<int> ChooseRandomItemRootTypes(int itemType, int amount)
@@ -834,6 +896,7 @@ public class GameCenter : BaseScene
     {
         Debug.Log(RoundEndDelay + "초 뒤 라운드 종료 예정");
         photonView.RPC("FindWinner", RpcTarget.All);
+        StopCoroutine(StartItemSpawnTimerCoroutine);
         yield return new WaitForSeconds(RoundEndDelay);
 
         Debug.Log("라운드 종료 오브젝트 삭제");
@@ -902,14 +965,19 @@ public class GameCenter : BaseScene
             _magneticField.UpdateMagneticStack -= SendPlayerMagneticStack;
             _floor.CheckFloor -= CheckPlayerLocation;
         }
-
-        Debug.Log("리스트 초기화");
-        ActorViewIDs.Clear();
-        Actors.Clear();
-
+        ClearList();
         RoundCount++;
 
         photonView.RPC("SendDestroyingComplete", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber);
+    }
+
+    void ClearList()
+    {
+        Debug.Log("리스트 초기화");
+        ActorViewIDs.Clear();
+        Actors.Clear();
+        Items.Clear();
+        ItemSpawnCount.Clear();
     }
 
     [PunRPC]
