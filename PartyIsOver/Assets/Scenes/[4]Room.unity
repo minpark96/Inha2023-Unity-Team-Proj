@@ -453,8 +453,8 @@ MonoBehaviour:
   PlayerReadyCount: 1
   SkillChange: 0
   SkillChangeButton: {fileID: 1308242964}
-  Skill1: {fileID: 21300000, guid: 4a8741a8bb35fc9419bf84d54d1d8928, type: 3}
-  Skill2: {fileID: 21300000, guid: 9a6b43221103e524eb6e2bbd21d69440, type: 3}
+  Skill1: {fileID: 21300000, guid: 41d8a19bcd43ae14fab067f1c32b8d2e, type: 3}
+  Skill2: {fileID: 21300000, guid: 664b1a6de213ce448a66c878e8960ad3, type: 3}
   SkillName: {fileID: 600104049}
   PlayButton: {fileID: 27030158}
   GamePlayOff: {fileID: 21300000, guid: 0ce0be1bdfce1394da992329fafa563f, type: 3}
@@ -2574,7 +2574,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 4a8741a8bb35fc9419bf84d54d1d8928, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 664b1a6de213ce448a66c878e8960ad3, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
