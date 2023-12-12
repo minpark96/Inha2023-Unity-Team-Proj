@@ -22,6 +22,7 @@ public class ProjectileBase : MonoBehaviourPun
         Gun = item;
         InitialPosition = transform.position;
         InitialDirection = transform.forward;
+        gameObject.layer = Owner.gameObject.layer;
 
         if (OnShoot != null)
             OnShoot.Invoke();
