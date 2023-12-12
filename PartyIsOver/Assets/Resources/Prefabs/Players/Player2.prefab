@@ -12327,7 +12327,7 @@ MonoBehaviour:
   PowerUpTime: 3
   Drunktime: 5
   Slowtime: 5
-  Shocktime: 5
+  ShockTime: 5
   _hasFreeze: 0
   _hasShock: 0
   HasDrunk: 0

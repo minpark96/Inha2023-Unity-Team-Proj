@@ -36,7 +36,7 @@ public class StatusHandler : MonoBehaviourPun
     public float PowerUpTime = 3f;
     public float Drunktime = 5f;
     public float Slowtime = 5f;
-    public float Shocktime = 5f;
+    public float ShockTime = 5f;
 
 
     // 버프 확인용 플래그
@@ -315,13 +315,13 @@ public class StatusHandler : MonoBehaviourPun
                     break;
                 case Actor.DebuffState.Shock:
                     if (!_hasShock)
-                        photonView.RPC("Shock", RpcTarget.All, _shockTime);
+                        photonView.RPC("RPCShockCreate", RpcTarget.All);
                     break;
                 case Actor.DebuffState.Stun:
                     if (!_hasStun)
                     {
                         StartCoroutine(ResetBodySpring());
-                        photonView.RPC("Stun", RpcTarget.All, _stunTime);
+                        //photonView.RPC("Stun", RpcTarget.All, _stunTime);
                     }
                     break;
                 case Actor.DebuffState.Ghost:
@@ -340,6 +340,11 @@ public class StatusHandler : MonoBehaviourPun
         }
     }
 
+    [PunRPC]
+    void RPCShockCreate()
+    {
+        _context.ChangeState(shockInStance, ShockTime);
+    }
 
     [PunRPC]
     void RPCExhaustedCreate()

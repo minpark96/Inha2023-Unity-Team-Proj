@@ -9,10 +9,12 @@ public class Shock : MonoBehaviourPun, IDebuffState
     public float CoolTime { get; set; }
     public GameObject effectObject { get; set; }
     public Transform playerTransform { get; set; }
+
     AudioClip _audioClip = null;
     AudioSource _audioSource;
     private List<float> _xPosSpringAry = new List<float>();
     private List<float> _yzPosSpringAry = new List<float>();
+
     public void EnterState()
     {
         effectObject = null;
@@ -83,12 +85,13 @@ public class Shock : MonoBehaviourPun, IDebuffState
 
     public void ExitState()
     {
-        //StartCoroutine(Stun(0.5f));
+        StartCoroutine("RestoreBodySpring");
 
-        photonView.RPC("ResetBodySpring", RpcTarget.All);
         TransferDebuffToPlayer((int)InteractableObject.Damage.Default);
 
         MyActor.actorState = Actor.ActorState.Stand;
+        MyActor.debuffState = Actor.DebuffState.Default;
+
         RemoveObject("Lightning_aura");
         _audioClip = null;
     }
@@ -169,14 +172,28 @@ public class Shock : MonoBehaviourPun, IDebuffState
         }
     }
 
-    [PunRPC]
-    public IEnumerator ResetBodySpring()
+    public IEnumerator RestoreBodySpring()
     {
-        photonView.RPC("SetJointSpring", RpcTarget.All, 0f);
+        float startTime = Time.time;
+        float springLerpDuration = 0.07f;
+
+        while (Time.time < startTime + springLerpDuration)
+        {
+            float elapsed = Time.time - startTime;
+            float percentage = elapsed / springLerpDuration;
+            photonView.RPC("ASetJointSpring", RpcTarget.All, percentage);
+            yield return null;
+        }
+    }
+
+    [PunRPC]
+    public IEnumerator AResetBodySpring()
+    {
+        photonView.RPC("ASetJointSpring", RpcTarget.All, 0f);
         yield return null;
     }
     [PunRPC]
-    void SetJointSpring(float percentage)
+    void ASetJointSpring(float percentage)
     {
         JointDrive angularXDrive;
         JointDrive angularYZDrive;

@@ -225,7 +225,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
     private void FixedUpdate()
     {
-        if(PhotonNetwork.LocalPlayer.IsMasterClient)
+        /*if(PhotonNetwork.LocalPlayer.IsMasterClient)
         {
             if (Stamina <= 0)
             {
@@ -267,13 +267,11 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
                 accumulatedTime = 0f;
             }
-
-            OnChangeStaminaBar();
-        }
+        }*/
 
         if (!photonView.IsMine || actorState == ActorState.Dead) return;
 
-        
+        OnChangeStaminaBar();
 
         if (actorState != lastActorState)
         {
