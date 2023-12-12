@@ -110,7 +110,9 @@ public class GameCenter : BaseScene
 
     public int AlivePlayerCount = 1;
     public int RoundCount = 1;
-    public const int MAX_ROUND = 2;
+    public const int MAX_ROUND = 3;
+    public const int MAX_POINTS = 3;
+    public bool IsFinished = false;
 
     public int LoadingCompleteCount = 0;
     public int DestroyingCompleteCount = 0;
@@ -770,15 +772,15 @@ public class GameCenter : BaseScene
 
     #region 플레이어 동기화
 
-    void SendInfo(float hp, Actor.ActorState actorState, Actor.DebuffState debuffstate, int viewID)
+    void SendInfo(float hp, float stamina, Actor.ActorState actorState, Actor.DebuffState debuffstate, int viewID)
     {
         if (!PhotonNetwork.LocalPlayer.IsMasterClient) return;
 
-        photonView.RPC("SyncInfo", RpcTarget.All, hp, actorState, debuffstate, viewID);
+        photonView.RPC("SyncInfo", RpcTarget.All, hp, stamina, actorState, debuffstate, viewID);
     }
 
     [PunRPC]
-    void SyncInfo(float hp, Actor.ActorState actorState, Actor.DebuffState debuffstate, int viewID)
+    void SyncInfo(float hp, float stamina, Actor.ActorState actorState, Actor.DebuffState debuffstate, int viewID)
     {
         for (int i = 0; i < Actors.Count; i++)
         {
@@ -787,6 +789,7 @@ public class GameCenter : BaseScene
                 Actors[i].Health = hp;
                 Actors[i].actorState = actorState;
                 Actors[i].debuffState = debuffstate;
+                Actors[i].Stamina = stamina;
 
                 if (Actors[i].photonView.IsMine && ImageHPBar != null)
                 {
@@ -923,6 +926,10 @@ public class GameCenter : BaseScene
             {
                 Debug.Log("승자: " + _actorNumbers[i]);
                 _scores[i]++;
+                if (_scores[i] == MAX_POINTS)
+                {
+                    IsFinished = true;
+                }
             }
         }
 
@@ -991,7 +998,8 @@ public class GameCenter : BaseScene
         {
             Debug.Log("Round 찐 종료");
             DestroyingCompleteCount = 0;
-            if (RoundCount == MAX_ROUND)
+            //if (RoundCount == MAX_ROUND)
+            if (IsFinished)
             {
                 photonView.RPC("QuitRoom", RpcTarget.All);
             }

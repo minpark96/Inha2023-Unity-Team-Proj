@@ -12322,6 +12322,12 @@ MonoBehaviour:
   invulnerable: 0
   _isDead: 0
   StunTime: 2
+  BurnTime: 3
+  IceTime: 3
+  PowerUpTime: 3
+  Drunktime: 5
+  Slowtime: 5
+  ShockTime: 5
   _hasFreeze: 0
   _hasShock: 0
   HasDrunk: 0
