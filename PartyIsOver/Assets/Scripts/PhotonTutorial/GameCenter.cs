@@ -45,6 +45,9 @@ public class GameCenter : BaseScene
     public string[] _nicknames = new string[Define.MAX_PLAYERS_PER_ROOM] { "", "", "", "", "", "" };
     public int[] _actorNumbers = new int[Define.MAX_PLAYERS_PER_ROOM] { 0, 0, 0, 0, 0, 0 };
 
+
+    int[] _checkArea = new int[Define.MAX_PLAYERS_PER_ROOM];
+
     #endregion
 
     #region Public Fields
@@ -90,7 +93,7 @@ public class GameCenter : BaseScene
 
     #endregion
 
-    #region Private Methods
+    
 
     void Awake()
     {
@@ -170,7 +173,7 @@ public class GameCenter : BaseScene
             ImageStaminaBar.fillAmount = MyActor.Stamina / MyActor.MaxStamina;
     }
 
-
+    #region ScoreBoard
     void SetScoreBoard()
     {
         _scoreBoardUI.ChangeScoreBoard(_scores, _nicknames, _actorNumbers);
@@ -196,22 +199,25 @@ public class GameCenter : BaseScene
     {
         for (int i = 0; i < _scores.Length; i++)
         {
-            if (i == actorNumber - 1)
+            if (i == (actorNumber - 1))
             {
                 _scores[i] = 0;
                 _nicknames[i] = nickname;
                 _actorNumbers[i] = actorNumber;
+
+                SetScoreBoard();
             }
         }
 
-        SetScoreBoard();
     }
+    #endregion
 
     void Start()
     {
         InitRoomUI();
     }
 
+    #region RoomUI
     void InitRoomUI()
     {
         _roomUI = GameObject.Find("Control Panel").transform.GetComponent<RoomUI>();
@@ -508,7 +514,6 @@ public class GameCenter : BaseScene
     {
         yield return new WaitForSeconds(5f);
 
-        //Debug.Log("InitArenaScene");
         _scoreBoardUI.SetScoreBoard();
 
         _magneticField = GameObject.Find("Magnetic Field").GetComponent<MagneticField>();
@@ -520,8 +525,12 @@ public class GameCenter : BaseScene
         {
             _magneticField.CheckMagneticFieldArea -= CheckPlayerLocation;
             _magneticField.CheckMagneticFieldArea += CheckPlayerLocation;
-            //_floor.CheckMagneticFieldArea -= CheckPlayerLocation;
-           // _floor.CheckMagneticFieldArea += CheckPlayerLocation;
+
+            _magneticField.UpdateMagneticStack -= SendPlayerMagneticStack;
+            _magneticField.UpdateMagneticStack += SendPlayerMagneticStack;
+
+            _floor.CheckFloor -= CheckPlayerLocation;
+            _floor.CheckFloor += CheckPlayerLocation;
         }
 
 
@@ -627,39 +636,49 @@ public class GameCenter : BaseScene
 
 
     #region 자기장 스택 체크
-
-    int[] checkArea = new int[Define.MAX_PLAYERS_PER_ROOM] { -1, -1, -1, -1, -1, -1 };
-  
-    void DamageByMagneticField()
-    {
-        for (int i = 0; i < Actors.Count; i++)
-        {
-            if(checkArea[i] == (int)Define.Area.Floor)
-            {
-                StartCoroutine(_magneticField.DamagedByFloor(i));
-            }
-            else if(checkArea[i] == (int)Define.Area.Inside)
-            {
-                StartCoroutine(_magneticField.RestoreMagneticDamage(i));
-
-            }
-            else if(checkArea[i] ==(int)Define.Area.Outside)
-            {
-                StartCoroutine(_magneticField.DamagedByMagnetic(i));
-            }
-        }
-    }
-
-    void CheckPlayerLocation(int areaName, int index)
+    void CheckPlayerLocation(int[] areaName, int index)
     {
         if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
-            checkArea[index] = areaName;
+            _checkArea[index] = areaName[index];
+            DamageByMagneticField(index);
         }
-
-        DamageByMagneticField();
     }
 
+    void DamageByMagneticField(int index)
+    {
+        if (_checkArea[index] == (int)Define.Area.Floor)
+        {
+            StartCoroutine(_magneticField.DamagedByFloor(index));
+        }
+        else if (_checkArea[index] == (int)Define.Area.Inside)
+        {
+            StartCoroutine(_magneticField.RestoreMagneticDamage(index));
+        }
+        else if (_checkArea[index] == (int)Define.Area.Outside)
+        {
+            StartCoroutine(_magneticField.DamagedByMagnetic(index));
+        }
+    }
+
+    
+    void SendPlayerMagneticStack(int[] magneticStack)
+    {
+        _magneticField.ChangeMainPanel();
+
+        photonView.RPC("SyncPlayerMagneticStack", RpcTarget.Others, magneticStack);
+    }
+
+    [PunRPC]
+    void SyncPlayerMagneticStack(int[] magneticStack)
+    {
+        _magneticField.ChangeMainPanel();
+
+        for (int i = 0; i < Actors.Count; i++)
+        {
+            Actors[i].MagneticStack = magneticStack[i];
+        }
+    }
 
     #endregion
 
@@ -732,6 +751,10 @@ public class GameCenter : BaseScene
                 actor.OnChangePlayerStatus -= SendInfo;
                 actor.OnKillPlayer -= AnnounceDeath;
             }
+
+            _magneticField.CheckMagneticFieldArea -= CheckPlayerLocation;
+            _magneticField.UpdateMagneticStack -= SendPlayerMagneticStack;
+            _floor.CheckFloor -= CheckPlayerLocation;
         }
 
         Debug.Log("리스트 초기화");

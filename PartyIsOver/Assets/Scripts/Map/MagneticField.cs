@@ -9,17 +9,14 @@ public class MagneticField : MonoBehaviour
 {
     public float[] PhaseStartTime = { 0f, 45f, 45f, 45f };
     public float[] PhaseDuration = { 0f, 15f, 15f, 10f };
-
-    private float[] _radius = { 0f, 52f, 22f, 11f };
     private float[] _scale = { 0f, 103.2f, 43.1f, 20.0f };
     private Vector3[] _point = { Vector3.zero, new Vector3(465.9f, 6.8f, 414.6f), new Vector3(444.3f, 6.8f, 422.1f), new Vector3(453.9f, 6.8f, 410.5f) };
 
-    private float[] _magneticFieldStack = { 0f, 10f, 14f, 20f, 33f };
-    private float _stackRestore = 10f;
-    private float _floorStack = 20f;
-    private float _delay = 1f;
-    private float _stack;
-
+    private int[] _magneticFieldStack = { 0, 10, 14, 20, 33 };
+    private int _stackRestore = 10;
+    private int _floorStack = 20;
+    private int _delay = 1;
+    private int _stack;
 
     private GameObject MagneticFieldEffect;
     private Vector3[] _effect1Position = { new Vector3(-103.46f, -14.85f, -9.04f), new Vector3(-68f, -9.26f, -2.31f), new Vector3(-52.08f, -4.03f, 3.97f)};
@@ -29,22 +26,23 @@ public class MagneticField : MonoBehaviour
     private Transform _effect3;
     private Transform _effect4;
 
+
     public GameObject FreezeImage;
 
     bool _isSynced;
 
-    // 1ÃÊ°£ ½ºÅÃ ½×´Â Á¶°Ç
-    public bool IsInside;
-    public bool IsFloor;
-
 
     public List<Actor> ActorList;
+    public int[] AreaNames = new int[Define.MAX_PLAYERS_PER_ROOM];
+    public int[] ActorStack = new int[Define.MAX_PLAYERS_PER_ROOM];
 
     public bool Checking;
-    public int AreaName;
 
-    public delegate void CheckArea(int areaName, int index);
+    public delegate void CheckArea(int[] areaName, int index);
     public event CheckArea CheckMagneticFieldArea;
+    public delegate void UpdateStack(int[] stacks);
+    public event UpdateStack UpdateMagneticStack;
+
 
     private void Start()
     {
@@ -71,43 +69,38 @@ public class MagneticField : MonoBehaviour
             StartCoroutine(WaitForSync());
             return;
         }
-
-        //ChangeMainPanel();
-
-      
     }
 
-    void InvokeDeath()
+    void InvokeDeath(int index)
     {
-        for(int i = 0; i < ActorList.Count; i++)
-        {
-            if (ActorList[i].MagneticStack >= 100f)
-            {
-                ActorList[i].MagneticStack = 100f;
-
-                // player Á×À½ Ã³¸®
-                Debug.Log("½ºÅÃ ½×¿©¼­ »ç¸Á");
-            }
-        }
+        StartCoroutine(ActorList[index].StatusHandler.ResetBodySpring());
+        ActorList[index].actorState = Actor.ActorState.Dead;
+        ActorList[index].StatusHandler._isDead = true;
+        ActorList[index].Health = 0;
+        ActorList[index].InvokeDeathEvent();
+        ActorList[index].InvokeStatusChangeEvent();
     }
 
-    void ChangeMainPanel()
+    public void ChangeMainPanel()
     {
         for (int i = 0; i < 5; i++)
             FreezeImage.transform.GetChild(i).gameObject.SetActive(false);
 
         for (int i = 0; i < ActorList.Count; i++)
         {
-            if (ActorList[i].MagneticStack >= 20 && ActorList[i].MagneticStack < 40)
-                FreezeImage.transform.GetChild(0).gameObject.SetActive(true);
-            else if (ActorList[i].MagneticStack >= 40 && ActorList[i].MagneticStack < 60)
-                FreezeImage.transform.GetChild(1).gameObject.SetActive(true);
-            else if (ActorList[i].MagneticStack >= 60 && ActorList[i].MagneticStack < 80)
-                FreezeImage.transform.GetChild(2).gameObject.SetActive(true);
-            else if (ActorList[i].MagneticStack >= 80 && ActorList[i].MagneticStack < 100)
-                FreezeImage.transform.GetChild(3).gameObject.SetActive(true);
-            else if (ActorList[i].MagneticStack >= 100)
-                FreezeImage.transform.GetChild(4).gameObject.SetActive(true);
+            if(ActorList[i].photonView.IsMine)
+            {
+                if (ActorList[i].MagneticStack >= 20 && ActorList[i].MagneticStack < 40)
+                    FreezeImage.transform.GetChild(0).gameObject.SetActive(true);
+                else if (ActorList[i].MagneticStack >= 40 && ActorList[i].MagneticStack < 60)
+                    FreezeImage.transform.GetChild(1).gameObject.SetActive(true);
+                else if (ActorList[i].MagneticStack >= 60 && ActorList[i].MagneticStack < 80)
+                    FreezeImage.transform.GetChild(2).gameObject.SetActive(true);
+                else if (ActorList[i].MagneticStack >= 80 && ActorList[i].MagneticStack < 100)
+                    FreezeImage.transform.GetChild(3).gameObject.SetActive(true);
+                else if (ActorList[i].MagneticStack >= 100)
+                    FreezeImage.transform.GetChild(4).gameObject.SetActive(true);
+            }
         }
     }
 
@@ -116,7 +109,6 @@ public class MagneticField : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (!PhotonNetwork.LocalPlayer.IsMasterClient && PhotonNetwork.IsConnected == true) return;
-
         if (ActorList == null) return;
 
 
@@ -124,24 +116,36 @@ public class MagneticField : MonoBehaviour
         {
             if (other.name == ActorList[i].BodyHandler.Hip.name)
             {
-                AreaName = (int)Define.Area.Inside;
-                CheckMagneticFieldArea(AreaName, i);
+                Transform collided = other.gameObject.transform.parent;
+
+                if (collided.name == ActorList[i].name)
+                {
+                    AreaNames[i] = (int)Define.Area.Inside;
+                    CheckMagneticFieldArea(AreaNames, i);
+                    break;
+                }
             }
         }
-
-       
     }
 
     private void OnTriggerExit(Collider other)
     {
         if (!PhotonNetwork.LocalPlayer.IsMasterClient && PhotonNetwork.IsConnected == true) return;
+        if (ActorList == null) return;
+
 
         for (int i = 0; i < ActorList.Count; i++)
         {
             if (other.name == ActorList[i].BodyHandler.Hip.name)
             {
-                AreaName = (int)Define.Area.Outside;
-                CheckMagneticFieldArea(AreaName, i);
+                Transform collided = other.gameObject.transform.parent;
+
+                if (collided.name == ActorList[i].name)
+                {
+                    AreaNames[i] = (int)Define.Area.Outside;
+                    CheckMagneticFieldArea(AreaNames, i);
+                    break;
+                }
             }
         }
     }
@@ -226,34 +230,72 @@ public class MagneticField : MonoBehaviour
 
     public IEnumerator DamagedByFloor(int index)
     {
-        while (ActorList[index].MagneticStack <= 100 && AreaName == (int)Define.Area.Floor)
-        {
-            ActorList[index].MagneticStack += _floorStack;
+        if (ActorList[index].actorState == Actor.ActorState.Dead) yield return null;
 
-            yield return new WaitForSeconds(_delay);
+        if (PhotonNetwork.IsMasterClient)
+        {
+            while (ActorList[index].MagneticStack <= 100 && AreaNames[index] == (int)Define.Area.Floor)
+            {
+                ActorList[index].MagneticStack += _floorStack;
+
+                if (ActorList[index].MagneticStack > 100)
+                {
+                    ActorList[index].MagneticStack = 100;
+                    AreaNames[index] = (int)Define.Area.Default;
+                    InvokeDeath(index);
+                }
+
+                ActorStack[index] = ActorList[index].MagneticStack;
+                UpdateMagneticStack(ActorStack);
+
+                yield return new WaitForSeconds(_delay);
+            }
         }
     }
 
     public IEnumerator DamagedByMagnetic(int index)
     {
-        while (ActorList[index].MagneticStack <= 100 && AreaName == (int)Define.Area.Outside)
+        if (ActorList[index].actorState == Actor.ActorState.Dead) yield return null;
+
+        if (PhotonNetwork.IsMasterClient)
         {
-            ActorList[index].MagneticStack += _stack;
-            
-            yield return new WaitForSeconds(_delay);
+            while (ActorList[index].MagneticStack <= 100 && AreaNames[index] == (int)Define.Area.Outside)
+            {
+                ActorList[index].MagneticStack += _stack;
+
+                if (ActorList[index].MagneticStack > 100)
+                {
+                    ActorList[index].MagneticStack = 100;
+                    AreaNames[index] = (int)Define.Area.Default;
+                    InvokeDeath(index);
+                }
+
+                ActorStack[index] = ActorList[index].MagneticStack;
+                UpdateMagneticStack(ActorStack);
+
+                yield return new WaitForSeconds(_delay);
+            }
         }
     }
 
     public IEnumerator RestoreMagneticDamage(int index)
     {
-        while (ActorList[index].MagneticStack > 0 && AreaName == (int)Define.Area.Inside)
+        if (ActorList[index].actorState == Actor.ActorState.Dead) yield return null;
+
+        if (PhotonNetwork.IsMasterClient)
         {
-            ActorList[index].MagneticStack -= _stackRestore;
+            while (ActorList[index].MagneticStack > 0 && AreaNames[index] == (int)Define.Area.Inside)
+            {
+                ActorList[index].MagneticStack -= _stackRestore;
 
-            if (ActorList[index].MagneticStack < 0)
-                ActorList[index].MagneticStack = 0;
+                if (ActorList[index].MagneticStack < 0)
+                    ActorList[index].MagneticStack = 0;
 
-            yield return new WaitForSeconds(_delay);
+                ActorStack[index] = ActorList[index].MagneticStack;
+                UpdateMagneticStack(ActorStack);
+
+                yield return new WaitForSeconds(_delay);
+            }
         }
     }
 

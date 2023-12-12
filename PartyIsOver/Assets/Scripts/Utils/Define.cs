@@ -150,6 +150,7 @@ public class Define
         Floor,
         Inside,
         Outside,
+        Default,
     }
 }
 
