@@ -16,11 +16,17 @@ MonoBehaviour:
   _punchDamage: 1000
   _dropkickDamage: 2000
   _headbuttDamage: 2300
+  _nuclearPunchDamage: 1000
+  _meowNyangPunchDamage: 1000
   _objectForceNormal: 35
   _punchForceNormal: 40
   _dropkickForceNormal: 100
   _headbuttForceNormal: 50
+  _nuclearPunchForceNormal: 40
+  _meowNyangPunchForceNormal: 40
   _objectForceUp: 20
   _punchForceUp: 20
   _headbuttForceUp: 50
   _dropkickForceUp: 30
+  _nuclearPunchForceUp: 20
+  _meowNyangPunchForceUp: 20

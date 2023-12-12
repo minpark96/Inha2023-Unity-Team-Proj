@@ -1321,7 +1321,15 @@ public class PlayerController : MonoBehaviourPun
         {
             aniFrameDatas = LeftPunchingAniData;
             transform2 = _bodyHandler.LeftHand.transform;
-            _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+            if (_isRSkillCheck)
+            {
+                if (isMeowNyangPunch)
+                    _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.MeowNyangPunch;
+                else
+                    _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.NuclearPunch;
+            }
+            else
+                _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
             _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
             _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
 
@@ -1331,7 +1339,15 @@ public class PlayerController : MonoBehaviourPun
         {
             aniFrameDatas = RightPunchingAniData;
             transform2 = _bodyHandler.RightHand.transform;
-            _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+            if (_isRSkillCheck)
+            {
+                if (isMeowNyangPunch)
+                    _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.MeowNyangPunch;
+                else
+                    _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.NuclearPunch;
+            }
+            else
+                _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
             _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
             _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
 
