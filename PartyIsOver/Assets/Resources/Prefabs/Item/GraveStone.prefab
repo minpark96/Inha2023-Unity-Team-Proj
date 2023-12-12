@@ -170,6 +170,7 @@ MonoBehaviour:
   TwoHandedPos: {fileID: 0}
   Head: {fileID: 0}
   Body: {fileID: 0}
+  IsSpawned: 0
 --- !u!54 &-2531625790693639705
 Rigidbody:
   m_ObjectHideFlags: 0
