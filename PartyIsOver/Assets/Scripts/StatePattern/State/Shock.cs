@@ -1,9 +1,9 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Photon.Pun;
 
-public class Burn : MonoBehaviourPun , IDebuffState
+public class Shock : MonoBehaviourPun, IDebuffState
 {
     public Actor MyActor { get; set; }
     public float CoolTime { get; set; }
@@ -12,83 +12,89 @@ public class Burn : MonoBehaviourPun , IDebuffState
 
     AudioClip _audioClip = null;
     AudioSource _audioSource;
-
-    float _burnDamage = 5f;
-    float lastBurnTime;
+    private List<float> _xPosSpringAry = new List<float>();
+    private List<float> _yzPosSpringAry = new List<float>();
 
     public void EnterState()
     {
         effectObject = null;
-        lastBurnTime = Time.time;
-
         playerTransform = this.transform.Find("GreenHip").GetComponent<Transform>();
         Transform SoundSourceTransform = transform.Find("GreenHip");
         _audioSource = SoundSourceTransform.GetComponent<AudioSource>();
 
-        InstantiateEffect("Effects/Fire_large");
-        PlayerDebuffSound("PlayerEffect/SFX_FireBall_Projectile");
-        TransferDebuffToPlayer((int)InteractableObject.Damage.Burn);
-        //StartCoroutine("BurnDmanage");
+        for (int i = 0; i < MyActor.BodyHandler.BodyParts.Count; i++)
+        {
+            if (i == (int)Define.BodyPart.Hip)
+                continue;
 
+            _xPosSpringAry.Add(MyActor.BodyHandler.BodyParts[i].PartJoint.angularXDrive.positionSpring);
+            _yzPosSpringAry.Add(MyActor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive.positionSpring);
+        }
+
+        TransferDebuffToPlayer((int)InteractableObject.Damage.Shock);
+        PlayerDebuffSound("PlayerEffect/electronic_02");
+        InstantiateEffect("Effects/Lightning_aura");
+
+        JointDrive angularXDrive;
+        JointDrive angularYZDrive;
+
+        for (int i = 0; i < MyActor.BodyHandler.BodyParts.Count; i++)
+        {
+            if (i >= (int)Define.BodyPart.Hip && i <= (int)Define.BodyPart.Head) continue;
+            if (i == (int)Define.BodyPart.Ball) continue;
+
+            angularXDrive = MyActor.BodyHandler.BodyParts[i].PartJoint.angularXDrive;
+            angularXDrive.positionSpring = 0f;
+            MyActor.BodyHandler.BodyParts[i].PartJoint.angularXDrive = angularXDrive;
+
+            angularYZDrive = MyActor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive;
+            angularYZDrive.positionSpring = 0f;
+            MyActor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive = angularYZDrive;
+        }
     }
 
     public void UpdateState()
     {
         if (effectObject != null)
             effectObject.transform.position = playerTransform.position;
-
-        if (Time.time - lastBurnTime >= 1.0f) // 1초간 데미지+액션
+        
+        if (Random.Range(0, 20) > 10)
         {
-            MyActor.Health -= _burnDamage;
-            MyActor.BodyHandler.Waist.PartRigidbody.AddForce((MyActor.BodyHandler.Hip.transform.right) * 40f, ForceMode.VelocityChange);
-            MyActor.BodyHandler.Hip.PartRigidbody.AddForce((MyActor.BodyHandler.Hip.transform.right) * 40f, ForceMode.VelocityChange);
-            lastBurnTime = Time.time;
+            for (int i = 0; i < MyActor.BodyHandler.BodyParts.Count; i++)
+            {
+                if (i >= (int)Define.BodyPart.Hip && i <= (int)Define.BodyPart.Head) continue;
+                if (i == (int)Define.BodyPart.LeftFoot ||
+                    i == (int)Define.BodyPart.RightFoot ||
+                    i == (int)Define.BodyPart.Ball) continue;
+
+                MyActor.BodyHandler.BodyParts[i].transform.rotation = Quaternion.Euler(20, 0, 0);
+            }
+        }
+        else
+        {
+            for (int i = 0; i < MyActor.BodyHandler.BodyParts.Count; i++)
+            {
+                if (i >= (int)Define.BodyPart.Hip && i <= (int)Define.BodyPart.Head) continue;
+                if (i == (int)Define.BodyPart.LeftFoot ||
+                    i == (int)Define.BodyPart.RightFoot ||
+                    i == (int)Define.BodyPart.Ball) continue;
+                MyActor.BodyHandler.BodyParts[i].transform.rotation = Quaternion.Euler(-20, 0, 0);
+            }
         }
     }
 
     public void ExitState()
     {
+        StartCoroutine("RestoreBodySpring");
+
         TransferDebuffToPlayer((int)InteractableObject.Damage.Default);
+
         MyActor.actorState = Actor.ActorState.Stand;
         MyActor.debuffState = Actor.DebuffState.Default;
 
-        RemoveObject("Fire_large");
-        MyActor.InvokeStatusChangeEvent();
+        RemoveObject("Lightning_aura");
         _audioClip = null;
     }
-
-    //추후 Ice 상태를 체크하여 Burn 상태를 종료 한다.
-/*    IEnumerator BurnDmanage() 
-    {
-        float elapsedTime = 0f;
-        float lastBurnTime = Time.time;
-        float startTime = Time.time;
-
-        while (elapsedTime <= delay)
-        {
-            if (MyActor.debuffState == Actor.DebuffState.Ice)
-            {
-                //_hasBurn = false;
-                //상태가 Ice 가 들어오면 종료를 해야한다.
-                MyActor.actorState = Actor.ActorState.Stand;
-                //StopCoroutine(Burn(delay));
-                //상태가 들어오면 그냥 종료
-                ExitState();
-            }
-
-            if (Time.time - lastBurnTime >= 1.0f) // 1초간 데미지+액션
-            {
-                MyActor.Health -= _burnDamage;
-                MyActor.BodyHandler.Waist.PartRigidbody.AddForce((MyActor.BodyHandler.Hip.transform.right) * 40f, ForceMode.VelocityChange);
-                MyActor.BodyHandler.Hip.PartRigidbody.AddForce((MyActor.BodyHandler.Hip.transform.right) * 40f, ForceMode.VelocityChange);
-                lastBurnTime = Time.time;
-            }
-
-            elapsedTime = Time.time - startTime;
-            yield return null;
-        }
-    }*/
-
     public void InstantiateEffect(string path)
     {
         effectObject = Managers.Resource.PhotonNetworkInstantiate($"{path}");
@@ -108,6 +114,7 @@ public class Burn : MonoBehaviourPun , IDebuffState
         _audioSource.spatialBlend = 1;
         Managers.Sound.Play(_audioClip, Define.Sound.PlayerEffect, _audioSource);
     }
+
     public void TransferDebuffToPlayer(int DamageType)
     {
         ChangeDamageModifier((int)Define.BodyPart.LeftFoot, DamageType);
@@ -118,6 +125,7 @@ public class Burn : MonoBehaviourPun , IDebuffState
         ChangeDamageModifier((int)Define.BodyPart.LeftHand, DamageType);
         ChangeDamageModifier((int)Define.BodyPart.RightHand, DamageType);
     }
+
     private void ChangeDamageModifier(int bodyPart, int DamageType)
     {
         switch ((Define.BodyPart)bodyPart)
@@ -161,6 +169,51 @@ public class Burn : MonoBehaviourPun , IDebuffState
             case Define.BodyPart.RightHand:
                 MyActor.BodyHandler.RightHand.PartInteractable.damageModifier = (InteractableObject.Damage)DamageType;
                 break;
+        }
+    }
+
+    public IEnumerator RestoreBodySpring()
+    {
+        float startTime = Time.time;
+        float springLerpDuration = 0.07f;
+
+        while (Time.time < startTime + springLerpDuration)
+        {
+            float elapsed = Time.time - startTime;
+            float percentage = elapsed / springLerpDuration;
+            photonView.RPC("ASetJointSpring", RpcTarget.All, percentage);
+            yield return null;
+        }
+    }
+
+    [PunRPC]
+    public IEnumerator AResetBodySpring()
+    {
+        photonView.RPC("ASetJointSpring", RpcTarget.All, 0f);
+        yield return null;
+    }
+    [PunRPC]
+    void ASetJointSpring(float percentage)
+    {
+        JointDrive angularXDrive;
+        JointDrive angularYZDrive;
+        int j = 0;
+
+        //기절과 회복에 모두 관여 기절시엔 퍼센티지를 0으로해서 사용
+        for (int i = 0; i < MyActor.BodyHandler.BodyParts.Count; i++)
+        {
+            if (i == (int)Define.BodyPart.Hip)
+                continue;
+
+            angularXDrive = MyActor.BodyHandler.BodyParts[i].PartJoint.angularXDrive;
+            angularXDrive.positionSpring = _xPosSpringAry[j] * percentage;
+            MyActor.BodyHandler.BodyParts[i].PartJoint.angularXDrive = angularXDrive;
+
+            angularYZDrive = MyActor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive;
+            angularYZDrive.positionSpring = _yzPosSpringAry[j] * percentage;
+            MyActor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive = angularYZDrive;
+
+            j++;
         }
     }
 }

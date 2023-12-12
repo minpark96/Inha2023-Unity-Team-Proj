@@ -30,7 +30,13 @@ public class StatusHandler : MonoBehaviourPun
     private float _maxSpeed;
 
     // 추후 DebuffTime Actor에서만 사용할 예정
-    public float StunTime = 2;
+    public float StunTime = 2f;
+    public float BurnTime = 3f;
+    public float IceTime = 3f;
+    public float PowerUpTime = 3f;
+    public float Drunktime = 5f;
+    public float Slowtime = 5f;
+    public float ShockTime = 5f;
 
 
     // 버프 확인용 플래그
@@ -74,6 +80,15 @@ public class StatusHandler : MonoBehaviourPun
 
     public Context _context;
     Stun stunInStance;
+    Burn burnInStance;
+    Ice IceInStance;
+    PowerUp powerUpInStance;
+    Drunk drunkInStance;
+    Slow slowInStance;
+    Shock shockInStance;
+    Exhausted exhaustedInStance;
+
+
 
     private void Awake()
     {
@@ -82,6 +97,13 @@ public class StatusHandler : MonoBehaviourPun
         _audioSource = SoundSourceTransform.GetComponent<AudioSource>();
         _context = GetComponent<Context>();
         stunInStance = gameObject.AddComponent<Stun>();
+        burnInStance = gameObject.AddComponent<Burn>();
+        IceInStance = gameObject.AddComponent<Ice>();
+        powerUpInStance = gameObject.AddComponent<PowerUp>();
+        drunkInStance = gameObject.AddComponent<Drunk>();
+        slowInStance = gameObject.AddComponent<Slow>();
+        shockInStance = gameObject.AddComponent<Shock>();
+        exhaustedInStance = gameObject.AddComponent<Exhausted>();
     }
 
     void Start()
@@ -105,27 +127,31 @@ public class StatusHandler : MonoBehaviourPun
     void Update()
     {
         // 지침 디버프 활성화/비활성화
-        if (actor.Stamina <= 0)
+        if(PhotonNetwork.LocalPlayer.IsMasterClient)
         {
-            if (!_hasExhausted)
+            if (actor.Stamina <= 0)
             {
-                actor.debuffState |= Actor.DebuffState.Exhausted;
-                if(actor.GrabState != Define.GrabState.PlayerLift)
+                if (!_hasExhausted)
                 {
-                    actor.GrabState = Define.GrabState.None;
-                    actor.Grab.GrabResetTrigger();
+                    actor.debuffState |= Actor.DebuffState.Exhausted;
+                    if (actor.GrabState != Define.GrabState.PlayerLift)
+                    {
+                        actor.GrabState = Define.GrabState.None;
+                        actor.Grab.GrabResetTrigger();
+                    }
+                    //_context.ChangeState(exhaustedInStance);
+                    photonView.RPC("RPCExhaustedCreate", RpcTarget.All);
                 }
-                photonView.RPC("Exhausted", RpcTarget.All, _exhaustedTime);
             }
-        }
-        else
-        {
-            if(_hasExhausted)
+            else
             {
-                if (actor.GrabState != Define.GrabState.PlayerLift)
+                if (_hasExhausted)
                 {
-                    actor.GrabState = Define.GrabState.None;
-                    actor.Grab.GrabResetTrigger();
+                    if (actor.GrabState != Define.GrabState.PlayerLift)
+                    {
+                        actor.GrabState = Define.GrabState.None;
+                        actor.Grab.GrabResetTrigger();
+                    }
                 }
             }
         }
@@ -277,11 +303,11 @@ public class StatusHandler : MonoBehaviourPun
                     break;
                 case Actor.DebuffState.PowerUp:
                     if (!_hasPowerUp)
-                        photonView.RPC("PowerUp", RpcTarget.All, _powerUpTime);
+                        photonView.RPC("RPCPowerUpCreate", RpcTarget.All);
                     break;
                 case Actor.DebuffState.Burn:
                     if (!_hasBurn)
-                        photonView.RPC("Burn", RpcTarget.All, _burnTime);
+                        photonView.RPC("RPCBurnCreate", RpcTarget.All);
                     break;
                 case Actor.DebuffState.Slow:
                     if (!_hasSlow)
@@ -289,13 +315,13 @@ public class StatusHandler : MonoBehaviourPun
                     break;
                 case Actor.DebuffState.Shock:
                     if (!_hasShock)
-                        photonView.RPC("Shock", RpcTarget.All, _shockTime);
+                        photonView.RPC("RPCShockCreate", RpcTarget.All);
                     break;
                 case Actor.DebuffState.Stun:
                     if (!_hasStun)
                     {
                         StartCoroutine(ResetBodySpring());
-                        photonView.RPC("Stun", RpcTarget.All, _stunTime);
+                        //photonView.RPC("Stun", RpcTarget.All, _stunTime);
                     }
                     break;
                 case Actor.DebuffState.Ghost:
@@ -308,10 +334,39 @@ public class StatusHandler : MonoBehaviourPun
                     break;
                 case Actor.DebuffState.Ice:
                     if (!_hasFreeze)
-                        photonView.RPC("Freeze", RpcTarget.All, _freezeTime);
+                        photonView.RPC("RPCIceCreate", RpcTarget.All);
                     break;
             }
         }
+    }
+
+    [PunRPC]
+    void RPCShockCreate()
+    {
+        _context.ChangeState(shockInStance, ShockTime);
+    }
+
+    [PunRPC]
+    void RPCExhaustedCreate()
+    {
+        _context.ChangeState(exhaustedInStance);
+    }
+    [PunRPC]
+    void RPCPowerUpCreate()
+    {
+        _context.ChangeState(powerUpInStance, PowerUpTime);
+    }
+
+    [PunRPC]
+    void RPCBurnCreate()
+    {
+        _context.ChangeState(burnInStance, BurnTime);
+    }
+
+    [PunRPC]
+    void RPCIceCreate()
+    {
+        _context.ChangeState(IceInStance, IceTime);
     }
 
     [PunRPC]
