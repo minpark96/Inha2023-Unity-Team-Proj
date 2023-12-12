@@ -12325,7 +12325,7 @@ MonoBehaviour:
   BurnTime: 3
   IceTime: 3
   PowerUpTime: 3
-  Drunktime: 5
+  Drunktime: 10
   Slowtime: 3
   ShockTime: 3
   _hasFreeze: 0
@@ -12385,7 +12385,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5873236424662451676}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 533221557a1a98c4db9903655536764b, type: 3}
   m_Name: 

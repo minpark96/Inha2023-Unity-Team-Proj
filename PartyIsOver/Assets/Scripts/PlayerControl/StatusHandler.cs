@@ -173,14 +173,14 @@ public class StatusHandler : MonoBehaviourPun
 
     private void LateUpdate()
     {
-
+/*
         if (effectObject != null && effectObject.name == "Stun_loop")
             photonView.RPC("MoveEffect", RpcTarget.All);
         else if (effectObject != null && effectObject.name == "Fog_frost")
             photonView.RPC("MoveEffect", RpcTarget.All);
         else if (effectObject != null)
             photonView.RPC("PlayerEffect", RpcTarget.All);
-
+*/
     }
 
     // 충격이 가해지면(trigger)

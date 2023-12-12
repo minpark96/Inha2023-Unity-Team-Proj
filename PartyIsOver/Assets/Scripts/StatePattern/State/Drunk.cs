@@ -10,12 +10,10 @@ public class Drunk : MonoBehaviourPun, IDebuffState
     public float CoolTime { get; set; }
     public GameObject effectObject { get; set; }
     public Transform playerTransform { get; set; }
-    GameObject drunkEffectObject;
     AudioClip _audioClip = null;
     AudioSource _audioSource;
     public void EnterState()
     {
-        drunkEffectObject = Managers.Resource.PhotonNetworkInstantiate("Flamethrower");
         effectObject = null;
         playerTransform = this.transform.Find("GreenHip").GetComponent<Transform>();
         Transform SoundSourceTransform = transform.Find("GreenHip");
@@ -23,7 +21,7 @@ public class Drunk : MonoBehaviourPun, IDebuffState
 
         PlayerDebuffSound("PlayerEffect/Cartoon-UI-049");
         InstantiateEffect("Effects/Fog_poison");
-
+        MyActor.PlayerController.IsFlambe = true;
     }
 
     public void UpdateState()
@@ -32,28 +30,11 @@ public class Drunk : MonoBehaviourPun, IDebuffState
         {
             effectObject.transform.position = playerTransform.position;
         }
-        if(drunkEffectObject != null)
-        {
-            drunkEffectObject.transform.position = playerTransform.position + playerTransform.forward;
-            drunkEffectObject.transform.rotation = Quaternion.LookRotation(-playerTransform.right);
-        }
-        if(MyActor.PlayerController.isDrunk)
-        {
-            MyActor.BodyHandler.Head.PartRigidbody.AddForce(-MyActor.BodyHandler.Hip.PartTransform.up * 100f);
-            MyActor.BodyHandler.Head.PartRigidbody.AddForce(-MyActor.BodyHandler.Hip.PartTransform.forward * 30f);
-        }
-        else
-        {
-            MyActor.PlayerController.IsFlambe = false;
-            RemoveObject("Flamethrower");
-        }
-
     }
 
     public void ExitState()
     {
         RemoveObject("Fog_poison");
-        MyActor.PlayerController.isDrunk = false;
 
         MyActor.debuffState = Actor.DebuffState.Default;
         _audioClip = null;

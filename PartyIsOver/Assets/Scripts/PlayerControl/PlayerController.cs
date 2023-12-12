@@ -470,8 +470,6 @@ public class PlayerController : MonoBehaviourPun
 
     public void OnKeyboardEvent_Move(Define.KeyboardEvent evt)
     {
-        if (IsFlambe)
-            return;
 
         switch (evt)
         {
@@ -593,10 +591,9 @@ public class PlayerController : MonoBehaviourPun
                 break;
             case Define.KeyboardEvent.Charge:
                 {
-                    if (Input.GetKeyUp(KeyCode.R) && _actor.debuffState == DebuffState.Drunk)
+                    if (Input.GetKeyUp(KeyCode.R) && _actor.debuffState == DebuffState.Drunk && IsFlambe)
                     {
-                        IsFlambe = true;
-                        photonView.RPC("DrunkAction", RpcTarget.All);
+                        StartCoroutine("DrunkAction");
                     }
                     else
                     {
@@ -620,6 +617,7 @@ public class PlayerController : MonoBehaviourPun
                     {
                         if (_actor.debuffState == DebuffState.Drunk)
                         {
+                            //취함 애니메이션
                             StartCoroutine(DrunkActionReady());
                         }
                     }
@@ -642,20 +640,66 @@ public class PlayerController : MonoBehaviourPun
         _actor.StatusHandler.DestroyEffect(name);
     }
 
-    [PunRPC]
-    void DrunkAction()
-    {
-        StartCoroutine(_drunkState.DrunkAction());
-    }
+    /*    [PunRPC]
+        void DrunkAction()
+        {
+            StartCoroutine(DrunkAction());
+        }*/
 
     #endregion
 
-    #region
+    #region Drunk
+
+    GameObject effectObject = null;
+    Transform _playerTransform = null;
+    float _drunkActionDuration = 3f;
     IEnumerator DrunkActionReady()
     {
         _actor.BodyHandler.Head.PartRigidbody.AddForce(_actor.BodyHandler.Hip.PartTransform.up * 100f);
         yield return null;
     }
+
+    [PunRPC]
+    IEnumerator DrunkAction()
+    {
+        photonView.RPC("StatusCreateEffect", RpcTarget.All, "Effects/Flamethrower");
+        float startTime = Time.time;
+        _playerTransform = this.transform.Find("GreenHip").GetComponent<Transform>();
+        while (Time.time - startTime < _drunkActionDuration)
+        {
+            //_actor.BodyHandler.Head.PartRigidbody.AddForce(-_actor.BodyHandler.Hip.PartTransform.up * 100f);
+            //_actor.BodyHandler.Head.PartRigidbody.AddForce(-_actor.BodyHandler.Hip.PartTransform.forward * 30f);
+            yield return null;
+        }
+        IsFlambe = false;
+
+        photonView.RPC("StatusDestroyEffect", RpcTarget.All, "Flamethrower");
+    }
+    [PunRPC]
+    void StatusCreateEffect(string path)
+    {
+        effectObject = Managers.Resource.PhotonNetworkInstantiate($"{path}");
+    }
+
+    [PunRPC]
+    void StatusDestroyEffect(string name)
+    {
+        GameObject go = GameObject.Find($"{name}");
+        Managers.Resource.Destroy(go);
+        effectObject = null;
+    }
+
+    [PunRPC]
+    public void ASDStatusMoveEffect()
+    {
+        Debug.Log(effectObject.name);
+        if (effectObject != null && effectObject.name == "Flamethrower")
+        {
+            effectObject.transform.position = _playerTransform.position + _playerTransform.forward;
+            effectObject.transform.rotation = Quaternion.LookRotation(-_playerTransform.right);
+        }
+    }
+
     #endregion
 
     #region ChargeSkill
@@ -809,7 +853,14 @@ public class PlayerController : MonoBehaviourPun
     #region FixedUpdate
     private void FixedUpdate()
     {
-        if(_isRSkillCheck == true)
+        if(PhotonNetwork.LocalPlayer.IsMasterClient)
+        {
+            if (effectObject != null && IsFlambe)
+                photonView.RPC("ASDStatusMoveEffect", RpcTarget.All);
+        }
+        
+
+        if (_isRSkillCheck == true)
         {
             if (_actor.debuffState == DebuffState.Stun || _actor.debuffState == DebuffState.Ice || _actor.debuffState == DebuffState.Shock || _actor.debuffState == DebuffState.Drunk)
             {
@@ -829,8 +880,8 @@ public class PlayerController : MonoBehaviourPun
             photonView.RPC("_balloonState.BalloonShapeOn", RpcTarget.All);
             //StartCoroutine(_balloonState.BalloonShapeOn());
         }
-/*
-        if (_actor.debuffState == Actor.DebuffState.Drunk && isDrunk == false)
+
+        /*if (_actor.debuffState == Actor.DebuffState.Drunk && isDrunk == false)
         {
             isDrunk = true;
             StartCoroutine(_drunkState.DrunkOff());

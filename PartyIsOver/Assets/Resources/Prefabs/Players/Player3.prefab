@@ -12233,6 +12233,7 @@ MonoBehaviour:
   MoveInput: {x: 0, y: 0, z: 0}
   _isCoroutineDrop: 0
   RotationsForBalloon: []
+  _drunkState: {fileID: 0}
   _audioSource: {fileID: 0}
   isAI: 0
 --- !u!114 &5878509405600198236
@@ -12319,6 +12320,13 @@ MonoBehaviour:
   actor: {fileID: 0}
   invulnerable: 0
   _isDead: 0
+  StunTime: 2
+  BurnTime: 3
+  IceTime: 3
+  PowerUpTime: 3
+  Drunktime: 5
+  Slowtime: 5
+  ShockTime: 5
   _hasFreeze: 0
   _hasShock: 0
   HasDrunk: 0
@@ -12333,6 +12341,7 @@ MonoBehaviour:
   _stunTime: 3
   _iceDamage: 0
   _burnDamage: 5
+  _context: {fileID: 0}
 --- !u!114 &1602883286494261838
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12375,11 +12384,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5873236424662451676}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 533221557a1a98c4db9903655536764b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playerTransform: {fileID: 0}
+  effectObject: {fileID: 0}
   DrunkDuration: 10
 --- !u!1 &5873269987166717472
 GameObject:
