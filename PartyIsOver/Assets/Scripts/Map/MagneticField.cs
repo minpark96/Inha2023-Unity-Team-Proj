@@ -26,19 +26,16 @@ public class MagneticField : MonoBehaviour
     private Transform _effect3;
     private Transform _effect4;
 
-
     public GameObject FreezeImage;
-
-    bool _isSynced;
 
 
     public List<Actor> ActorList;
     public int[] AreaNames = new int[Define.MAX_PLAYERS_PER_ROOM];
     public int[] ActorStack = new int[Define.MAX_PLAYERS_PER_ROOM];
+    public bool[] IsInside = new bool[Define.MAX_PLAYERS_PER_ROOM] { true, true, true, true, true, true };
 
-    public bool Checking;
 
-    public delegate void CheckArea(int[] areaName, int index);
+    public delegate void CheckArea(int[] areaName, int actorNum, bool[] isInside);
     public event CheckArea CheckMagneticFieldArea;
     public delegate void UpdateStack(int[] stacks);
     public event UpdateStack UpdateMagneticStack;
@@ -57,19 +54,11 @@ public class MagneticField : MonoBehaviour
         GameObject mainPanel = GameObject.Find("Main Panel");
         FreezeImage = mainPanel.transform.GetChild(0).gameObject;
 
-        Checking = true;
 
         StartCoroutine(FirstPhase(1));
     }
 
-    private void Update()
-    {
-        if(!_isSynced)
-        {
-            StartCoroutine(WaitForSync());
-            return;
-        }
-    }
+  
 
     void InvokeDeath(int index)
     {
@@ -79,9 +68,6 @@ public class MagneticField : MonoBehaviour
         ActorList[index].Health = 0;
         ActorList[index].InvokeDeathEvent();
         ActorList[index].InvokeStatusChangeEvent();
-
-        for (int i = 0; i < 5; i++)
-            FreezeImage.transform.GetChild(i).gameObject.SetActive(false);
     }
 
     public void ChangeMainPanel()
@@ -93,6 +79,12 @@ public class MagneticField : MonoBehaviour
         {
             if(ActorList[i].photonView.IsMine)
             {
+                if (ActorList[i].actorState == Actor.ActorState.Dead)
+                {
+                    FreezeImage.SetActive(false);
+                    return;
+                }
+
                 if (ActorList[i].MagneticStack >= 20 && ActorList[i].MagneticStack < 40)
                     FreezeImage.transform.GetChild(0).gameObject.SetActive(true);
                 else if (ActorList[i].MagneticStack >= 40 && ActorList[i].MagneticStack < 60)
@@ -124,7 +116,8 @@ public class MagneticField : MonoBehaviour
                 if (collided.name == ActorList[i].name)
                 {
                     AreaNames[i] = (int)Define.Area.Inside;
-                    CheckMagneticFieldArea(AreaNames, i);
+                    IsInside[i] = true;
+                    CheckMagneticFieldArea(AreaNames, i, IsInside);
                     break;
                 }
             }
@@ -146,20 +139,17 @@ public class MagneticField : MonoBehaviour
                 if (collided.name == ActorList[i].name)
                 {
                     AreaNames[i] = (int)Define.Area.Outside;
-                    CheckMagneticFieldArea(AreaNames, i);
+                    IsInside[i] = false;
+                    CheckMagneticFieldArea(AreaNames, i, IsInside);
                     break;
                 }
             }
         }
     }
 
+
     #endregion
 
-    IEnumerator WaitForSync()
-    {
-        yield return new WaitForSeconds(7.0f); // actor정보 받기 위한 시간
-        _isSynced = true;
-    }
 
     #region 자기장 Phase
     IEnumerator FirstPhase(int index)

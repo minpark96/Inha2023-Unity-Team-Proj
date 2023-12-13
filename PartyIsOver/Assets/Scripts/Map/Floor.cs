@@ -8,8 +8,8 @@ public class Floor : MonoBehaviour
     MagneticField _magneticField;
     int _beforeAreaName;
 
-    public delegate void CheckArea(int[] areaName, int index);
-    public event CheckArea CheckFloor;
+    public delegate void CheckFloor(int[] areaName, int actorNum);
+    public event CheckFloor CheckFloorStack;
 
     private void Start()
     {
@@ -36,7 +36,7 @@ public class Floor : MonoBehaviour
 
                     _beforeAreaName = _magneticField.AreaNames[i];
                     _magneticField.AreaNames[i] = (int)Define.Area.Floor;
-                    CheckFloor(_magneticField.AreaNames, i);
+                    CheckFloorStack(_magneticField.AreaNames, i);
                     break;
                 }
             }
@@ -57,9 +57,13 @@ public class Floor : MonoBehaviour
 
                 if (collided.name == _magneticField.ActorList[i].name)
                 {
+                   if(_magneticField.IsInside[i])
+                        _magneticField.AreaNames[i] = (int)Define.Area.Inside;
+                   else
+                        _magneticField.AreaNames[i] = (int)Define.Area.Outside;
+
                     _beforeAreaName = _magneticField.AreaNames[i];
-                    _magneticField.AreaNames[i] = (int)Define.Area.Default;
-                    CheckFloor(_magneticField.AreaNames, i);
+                    CheckFloorStack(_magneticField.AreaNames, i);
                     break;
                 }
             }
