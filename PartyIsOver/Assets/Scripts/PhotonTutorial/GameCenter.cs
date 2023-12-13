@@ -376,6 +376,7 @@ public class GameCenter : BaseScene
             SetSceneBgmSound("BigBangBattleLOOPING");
 
             InitItems();
+            Actor.LayerCnt = (int)Define.Layer.Player1;
 
             photonView.RPC("SendLoadingComplete", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber);
 
@@ -481,8 +482,6 @@ public class GameCenter : BaseScene
 
         if (LoadingCompleteCount == PhotonNetwork.CurrentRoom.PlayerCount)
         {
-            Debug.Log("Start Game");
-            Actor.LayerCnt = (int)Define.Layer.Player1;
             AlivePlayerCount = PhotonNetwork.CurrentRoom.PlayerCount;
             photonView.RPC("CreatePlayer", RpcTarget.All);
             StartItemSpawnTimerCoroutine = StartCoroutine(StartItemSpawnTimer());
@@ -506,7 +505,7 @@ public class GameCenter : BaseScene
             case 0:
                 {
                     SetItemsActive((int)Define.SpawnableItemType.TwoHanded, ChooseRandomItemRootTypes((int)Define.SpawnableItemType.TwoHanded, 1));
-                    SetItemsActiveForTest(); // 정식판에선 주석
+                    //SetItemsActiveForTest(); // 정식판에선 주석
                 }
                 break;
             case 1:
@@ -724,8 +723,6 @@ public class GameCenter : BaseScene
     [PunRPC]
     void SyncActorsList(int[] ids)
     {
-        Debug.Log("여기까지 오셨을까요?");
-
         for (int i = ActorViewIDs.Count; i < ids.Length; i++)
         {
             ActorViewIDs.Add(ids[i]);
