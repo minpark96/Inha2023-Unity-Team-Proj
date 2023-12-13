@@ -7,6 +7,7 @@ using Photon.Pun;
 
 public class MagneticField : MonoBehaviour
 {
+    // 자기장 수치
     public float[] PhaseStartTime = { 0f, 45f, 45f, 45f };
     public float[] PhaseDuration = { 0f, 15f, 15f, 10f };
     private float[] _scale = { 0f, 103.2f, 43.1f, 20.0f };
@@ -18,10 +19,12 @@ public class MagneticField : MonoBehaviour
     private int _delay = 1;
     private int _stack;
 
+    // 사운드
     private bool _isPlayingStackSound;
     private bool _isPlayingPhaseSound;
 
 
+    // 이펙트
     private GameObject MagneticFieldEffect;
     private Vector3[] _effect1Position = { new Vector3(-103.46f, -14.85f, -9.04f), new Vector3(-68f, -9.26f, -2.31f), new Vector3(-52.08f, -4.03f, 3.97f)};
     private Vector3[] _effect3Position = { new Vector3(31.1f, -56.3f, -45), new Vector3(34.41f, -34.21f, -18.44f) };
@@ -33,6 +36,7 @@ public class MagneticField : MonoBehaviour
     public GameObject FreezeImage;
 
 
+    // 서버를 통해 받는 정보
     public List<Actor> ActorList;
     public int[] AreaNames = new int[Define.MAX_PLAYERS_PER_ROOM];
     public int[] ActorStack = new int[Define.MAX_PLAYERS_PER_ROOM];
@@ -57,7 +61,6 @@ public class MagneticField : MonoBehaviour
 
         GameObject mainPanel = GameObject.Find("Main Panel");
         FreezeImage = mainPanel.transform.GetChild(0).gameObject;
-
 
         StartCoroutine(FirstPhase(1));
     }
