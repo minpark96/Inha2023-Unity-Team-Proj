@@ -49,6 +49,7 @@ public class Define
         UISound,
         UIInGameSound,
         PlayerEffect,
+        InGameSound,
         Maxcount,
     }
 

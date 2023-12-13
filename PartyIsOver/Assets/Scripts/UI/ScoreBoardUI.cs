@@ -8,8 +8,6 @@ using UnityEngine.UI;
 
 public class ScoreBoardUI : MonoBehaviour
 {
-    public bool isSetup;
-
     public GameObject Info;
     public Sprite PointStar;
     public GameObject Tab;

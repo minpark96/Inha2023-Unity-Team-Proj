@@ -58,7 +58,7 @@ public class CollisionHandler : MonoBehaviourPun
     {
         CollisionData data = Managers.Resource.Load<CollisionData>("ScriptableObject/CollisionData");
         PlayerStatData statData = Managers.Resource.Load<PlayerStatData>("ScriptableObject/PlayerStatData");
-        _objectDamage = data._ObjectDamage;
+        _objectDamage = data.ObjectDamage;
         _punchDamage = data.PunchDamage;
         _dropkickDamage = data.DropkickDamage;
         _headbuttDamage = data.HeadbuttDamage;

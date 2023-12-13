@@ -47,7 +47,8 @@ public class GameCenter : BaseScene
     public int[] _actorNumbers = new int[Define.MAX_PLAYERS_PER_ROOM] { 0, 0, 0, 0, 0, 0 };
 
 
-    int[] _checkArea = new int[Define.MAX_PLAYERS_PER_ROOM];
+    int[] _checkAreaName = new int[Define.MAX_PLAYERS_PER_ROOM];
+    bool[] _checkInside = new bool[Define.MAX_PLAYERS_PER_ROOM];
 
     #endregion
 
@@ -727,20 +728,20 @@ public class GameCenter : BaseScene
         _scoreBoardUI.SetScoreBoard();
 
         _magneticField = GameObject.Find("Magnetic Field").GetComponent<MagneticField>();
-        _floor = GameObject.Find("mainFloor").GetComponent<Floor>();
+        _floor = GameObject.Find("Trigger Floor").GetComponent<Floor>();
         //_snowStorm = GameObject.Find("Snow Storm").GetComponent<SnowStorm>();
 
 
-        if(PhotonNetwork.LocalPlayer.IsMasterClient)
+        if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
-            _magneticField.CheckMagneticFieldArea -= CheckPlayerLocation;
-            _magneticField.CheckMagneticFieldArea += CheckPlayerLocation;
+            _magneticField.CheckMagneticFieldArea -= CheckPlayerArea;
+            _magneticField.CheckMagneticFieldArea += CheckPlayerArea;
 
             _magneticField.UpdateMagneticStack -= SendPlayerMagneticStack;
             _magneticField.UpdateMagneticStack += SendPlayerMagneticStack;
 
-            _floor.CheckFloor -= CheckPlayerLocation;
-            _floor.CheckFloor += CheckPlayerLocation;
+            _floor.CheckFloorStack -= CheckPlayerFloor;
+            _floor.CheckFloorStack += CheckPlayerFloor;
         }
 
 
@@ -847,26 +848,39 @@ public class GameCenter : BaseScene
 
 
     #region 자기장 스택 체크
-    void CheckPlayerLocation(int[] areaName, int index)
+    void CheckPlayerArea(int[] areaName, int actorNum, bool[] isInside)
     {
         if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
-            _checkArea[index] = areaName[index];
-            DamageByMagneticField(index);
+            _checkAreaName[actorNum] = areaName[actorNum];
+            _checkInside[actorNum] = isInside[actorNum];
+
+            DamageByMagneticField(actorNum);
+
+            photonView.RPC("SendInsideCheck", RpcTarget.All, _checkInside);
+        }
+    }
+    
+    void CheckPlayerFloor(int[] areaName, int actorNum)
+    {
+        if (PhotonNetwork.LocalPlayer.IsMasterClient)
+        {
+            _checkAreaName[actorNum] = areaName[actorNum];
+            DamageByMagneticField(actorNum);
         }
     }
 
     void DamageByMagneticField(int index)
     {
-        if (_checkArea[index] == (int)Define.Area.Floor)
+        if (_checkAreaName[index] == (int)Define.Area.Floor)
         {
             StartCoroutine(_magneticField.DamagedByFloor(index));
         }
-        else if (_checkArea[index] == (int)Define.Area.Inside)
+        else if (_checkAreaName[index] == (int)Define.Area.Inside)
         {
             StartCoroutine(_magneticField.RestoreMagneticDamage(index));
         }
-        else if (_checkArea[index] == (int)Define.Area.Outside)
+        else if (_checkAreaName[index] == (int)Define.Area.Outside)
         {
             StartCoroutine(_magneticField.DamagedByMagnetic(index));
         }
@@ -883,12 +897,18 @@ public class GameCenter : BaseScene
     [PunRPC]
     void SyncPlayerMagneticStack(int[] magneticStack)
     {
-        _magneticField.ChangeMainPanel();
-
         for (int i = 0; i < Actors.Count; i++)
         {
             Actors[i].MagneticStack = magneticStack[i];
         }
+
+        _magneticField.ChangeMainPanel();
+    }
+
+    [PunRPC]
+    void SendInsideCheck(bool[] inside)
+    {
+        _magneticField.IsInside = inside;
     }
 
     #endregion
@@ -968,9 +988,9 @@ public class GameCenter : BaseScene
                 actor.OnKillPlayer -= AnnounceDeath;
             }
 
-            _magneticField.CheckMagneticFieldArea -= CheckPlayerLocation;
+            _magneticField.CheckMagneticFieldArea -= CheckPlayerArea;
             _magneticField.UpdateMagneticStack -= SendPlayerMagneticStack;
-            _floor.CheckFloor -= CheckPlayerLocation;
+            _floor.CheckFloorStack -= CheckPlayerFloor;
         }
         ClearList();
         RoundCount++;
