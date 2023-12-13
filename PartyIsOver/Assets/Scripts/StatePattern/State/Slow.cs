@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class Slow : MonoBehaviour , IDebuffState
+public class Slow : MonoBehaviourPun , IDebuffState
 {
     public Actor MyActor { get; set; }
     public float CoolTime { get; set; }

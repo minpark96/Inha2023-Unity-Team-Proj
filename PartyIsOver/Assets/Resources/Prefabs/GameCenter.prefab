@@ -92,6 +92,7 @@ MonoBehaviour:
   MyActorViewID: 0
   AlivePlayerCount: 1
   RoundCount: 1
+  IsFinished: 0
   LoadingCompleteCount: 0
   DestroyingCompleteCount: 0
   EndingCount: 0

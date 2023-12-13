@@ -173,14 +173,14 @@ public class StatusHandler : MonoBehaviourPun
 
     private void LateUpdate()
     {
-
+/*
         if (effectObject != null && effectObject.name == "Stun_loop")
             photonView.RPC("MoveEffect", RpcTarget.All);
         else if (effectObject != null && effectObject.name == "Fog_frost")
             photonView.RPC("MoveEffect", RpcTarget.All);
         else if (effectObject != null)
             photonView.RPC("PlayerEffect", RpcTarget.All);
-
+*/
     }
 
     // 충격이 가해지면(trigger)
@@ -283,9 +283,7 @@ public class StatusHandler : MonoBehaviourPun
                     break;
                 else
                 {
-                    effectObject = null;
                     actor.debuffState |= Actor.DebuffState.Drunk;
-                    photonView.RPC("PlayerDebuffSound", RpcTarget.All, "PlayerEffect/Cartoon-UI-049");
                 }
                 break;
         }
@@ -328,9 +326,7 @@ public class StatusHandler : MonoBehaviourPun
                     break;
                 case Actor.DebuffState.Drunk:
                     if(!HasDrunk)
-                    {
-                        photonView.RPC("PoisonCreate", RpcTarget.All);
-                    }
+                        photonView.RPC("RPCPoisonCreate", RpcTarget.All);
                     break;
                 case Actor.DebuffState.Ice:
                     if (!_hasFreeze)
@@ -338,6 +334,12 @@ public class StatusHandler : MonoBehaviourPun
                     break;
             }
         }
+    }
+
+    [PunRPC]
+    void RPCPoisonCreate()
+    {
+        _context.ChangeState(drunkInStance, Drunktime);
     }
 
     [PunRPC]
