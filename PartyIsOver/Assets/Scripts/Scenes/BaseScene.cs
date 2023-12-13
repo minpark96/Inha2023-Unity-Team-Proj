@@ -5,9 +5,9 @@ using UnityEngine;
 
 public abstract class BaseScene : MonoBehaviourPunCallbacks
 {
-    Define.Scene _sceneType = Define.Scene.Unknown;
+    Define.SceneType _sceneType = Define.SceneType.Unknown;
 
-    public Define.Scene SceneType { get; protected set; } = Define.Scene.Unknown;
+    public Define.SceneType SceneType { get; protected set; } = Define.SceneType.Unknown;
 
     void Awake()
     {

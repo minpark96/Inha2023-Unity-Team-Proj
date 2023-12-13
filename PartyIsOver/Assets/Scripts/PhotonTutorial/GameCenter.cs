@@ -10,6 +10,7 @@ using static Actor;
 using System.Reflection;
 using System.Linq;
 using Unity.VisualScripting;
+using static Define;
 
 public class GameCenter : BaseScene
 {
@@ -371,10 +372,11 @@ public class GameCenter : BaseScene
             _scoreBoardUI = GameObject.Find("ScoreBoard Panel").GetComponent<ScoreBoardUI>();
             _scoreBoardUI.InitScoreBoard();
 
-            SceneType = Define.Scene.Game;
+            SceneType = Define.SceneType.Game;
             SetSceneBgmSound("BigBangBattleLOOPING");
 
             InitItems();
+            Actor.LayerCnt = (int)Define.Layer.Player1;
 
             photonView.RPC("SendLoadingComplete", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber);
 
@@ -480,7 +482,6 @@ public class GameCenter : BaseScene
 
         if (LoadingCompleteCount == PhotonNetwork.CurrentRoom.PlayerCount)
         {
-            Debug.Log("Start Game");
             AlivePlayerCount = PhotonNetwork.CurrentRoom.PlayerCount;
             photonView.RPC("CreatePlayer", RpcTarget.All);
             StartItemSpawnTimerCoroutine = StartCoroutine(StartItemSpawnTimer());
@@ -504,14 +505,13 @@ public class GameCenter : BaseScene
             case 0:
                 {
                     SetItemsActive((int)Define.SpawnableItemType.TwoHanded, ChooseRandomItemRootTypes((int)Define.SpawnableItemType.TwoHanded, 1));
+                    //SetItemsActiveForTest(); // 정식판에선 주석
                 }
                 break;
             case 1:
                 {
                     SetItemsActive((int)Define.SpawnableItemType.Consumable, ChooseRandomItemRootTypes((int)Define.SpawnableItemType.Consumable, 3));
-                    List<int> rootTypes = ChooseRandomItemRootTypes((int)Define.SpawnableItemType.Ranged, 2);
-                    rootTypes[0] = 0;
-                    SetItemsActive((int)Define.SpawnableItemType.Ranged, rootTypes);
+                    SetItemsActive((int)Define.SpawnableItemType.Ranged, ChooseRandomItemRootTypes((int)Define.SpawnableItemType.Ranged, 2));
                 }
                 break;
             case 2:
@@ -534,6 +534,18 @@ public class GameCenter : BaseScene
         }
     }
 
+    void SetItemsActiveForTest()
+    {
+        Transform targetItem1 = Items[1].GetChild(0).GetChild(0); // ICE
+        Transform targetItem2 = Items[1].GetChild(1).GetChild(0); // TASER
+        int viewID1 = targetItem1.GetComponent<PhotonView>().ViewID;
+        int viewID2 = targetItem2.GetComponent<PhotonView>().ViewID;
+        Vector3 spawnPoint1 = new Vector3(478.16f, 20f, 393.72f);
+        Vector3 spawnPoint2 = new Vector3(486.98f, 20f, 408.49f);
+        photonView.RPC("SetItemsActiveInLocal", RpcTarget.All, viewID1, spawnPoint1);
+        photonView.RPC("SetItemsActiveInLocal", RpcTarget.All, viewID2, spawnPoint2);
+    }
+
     void SetItemsActive(int itemType, List<int> rootTypes)
     {
         for (int i = 0; i < rootTypes.Count; i++)
@@ -549,7 +561,6 @@ public class GameCenter : BaseScene
             if (targetItem != null)
             {
                 int viewID = targetItem.GetComponent<PhotonView>().ViewID;
-                Debug.Log("[1] " + viewID);
                 Vector3 spawnPoint = GetItemSpawnPoints(itemType, ItemSpawnCount[itemType]);
                 ItemSpawnCount[itemType]++;
                 photonView.RPC("SetItemsActiveInLocal", RpcTarget.All, viewID, spawnPoint);
@@ -712,8 +723,6 @@ public class GameCenter : BaseScene
     [PunRPC]
     void SyncActorsList(int[] ids)
     {
-        Debug.Log("여기까지 오셨을까요?");
-
         for (int i = ActorViewIDs.Count; i < ids.Length; i++)
         {
             ActorViewIDs.Add(ids[i]);
