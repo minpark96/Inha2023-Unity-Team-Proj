@@ -264,6 +264,12 @@ public class PlayerController : MonoBehaviourPun
     float startChargeTime;
     float endChargeTime = 0f;
     int _checkHoldTimeCount = 0;
+
+    GameObject effectObject = null;
+    Transform _playerTransform = null;
+    float _drunkActionDuration = 3f;
+    bool isTestCheck;
+
     public enum Side
     {
         Left = 0,
@@ -531,7 +537,6 @@ public class PlayerController : MonoBehaviourPun
     public void OnKeyboardEvent_Skill(Define.KeyboardEvent evt)
     {
 
-
         switch (evt)
         {
             case Define.KeyboardEvent.PointerDown:
@@ -593,7 +598,8 @@ public class PlayerController : MonoBehaviourPun
                 {
                     if (Input.GetKeyUp(KeyCode.R) && _actor.debuffState == DebuffState.Drunk && IsFlambe)
                     {
-                        StartCoroutine("DrunkAction");
+                        photonView.RPC("DrunkAction", RpcTarget.All);
+                        //StartCoroutine("DrunkAction");
                     }
                     else
                     {
@@ -650,50 +656,60 @@ public class PlayerController : MonoBehaviourPun
 
     #region Drunk
 
-    GameObject effectObject = null;
-    Transform _playerTransform = null;
-    float _drunkActionDuration = 3f;
+
     IEnumerator DrunkActionReady()
     {
         _actor.BodyHandler.Head.PartRigidbody.AddForce(_actor.BodyHandler.Hip.PartTransform.up * 100f);
+
         yield return null;
     }
 
     [PunRPC]
     IEnumerator DrunkAction()
     {
-        photonView.RPC("StatusCreateEffect", RpcTarget.All, "Effects/Flamethrower");
-        float startTime = Time.time;
         _playerTransform = this.transform.Find("GreenHip").GetComponent<Transform>();
-        while (Time.time - startTime < _drunkActionDuration)
-        {
-            //_actor.BodyHandler.Head.PartRigidbody.AddForce(-_actor.BodyHandler.Hip.PartTransform.up * 100f);
-            //_actor.BodyHandler.Head.PartRigidbody.AddForce(-_actor.BodyHandler.Hip.PartTransform.forward * 30f);
-            yield return null;
-        }
+        yield return StatusCreateEffect("Effects/Flamethrower");
+
+        float startTime = Time.time;
+
+        yield return Flamethrower(startTime, _drunkActionDuration);
+
         IsFlambe = false;
 
-        photonView.RPC("StatusDestroyEffect", RpcTarget.All, "Flamethrower");
-    }
-    [PunRPC]
-    void StatusCreateEffect(string path)
-    {
-        effectObject = Managers.Resource.PhotonNetworkInstantiate($"{path}");
+        yield return StatusDestroyEffect("Flamethrower");
+        isTestCheck = false;
     }
 
-    [PunRPC]
-    void StatusDestroyEffect(string name)
+    IEnumerator Flamethrower(float startTime, float drunkDuration)
+    {
+        isTestCheck = true;
+        while (Time.time - startTime < drunkDuration)
+        {
+            yield return null;
+        }
+    }
+
+    IEnumerator StatusCreateEffect(string path)
+    {
+        effectObject = Managers.Resource.PhotonNetworkInstantiate($"{path}");
+        effectObject.transform.position = _playerTransform.position + _playerTransform.forward;
+        effectObject.transform.rotation = Quaternion.LookRotation(-_playerTransform.right);
+
+        yield return null;
+    }
+
+    IEnumerator StatusDestroyEffect(string name)
     {
         GameObject go = GameObject.Find($"{name}");
         Managers.Resource.Destroy(go);
         effectObject = null;
+        yield return null;
     }
 
     [PunRPC]
     public void ASDStatusMoveEffect()
     {
-        Debug.Log(effectObject.name);
-        if (effectObject != null && effectObject.name == "Flamethrower")
+        if (effectObject != null && _playerTransform.position != null)
         {
             effectObject.transform.position = _playerTransform.position + _playerTransform.forward;
             effectObject.transform.rotation = Quaternion.LookRotation(-_playerTransform.right);
@@ -853,12 +869,12 @@ public class PlayerController : MonoBehaviourPun
     #region FixedUpdate
     private void FixedUpdate()
     {
-        if(PhotonNetwork.LocalPlayer.IsMasterClient)
-        {
-            if (effectObject != null && IsFlambe)
-                photonView.RPC("ASDStatusMoveEffect", RpcTarget.All);
-        }
         
+        if (effectObject != null && IsFlambe && isTestCheck)
+        {
+            Debug.Log(effectObject);
+            photonView.RPC("ASDStatusMoveEffect", RpcTarget.All);
+        }
 
         if (_isRSkillCheck == true)
         {
