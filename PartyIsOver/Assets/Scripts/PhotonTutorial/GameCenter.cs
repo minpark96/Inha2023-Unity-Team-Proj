@@ -897,12 +897,12 @@ public class GameCenter : BaseScene
     [PunRPC]
     void SyncPlayerMagneticStack(int[] magneticStack)
     {
-        _magneticField.ChangeMainPanel();
-
         for (int i = 0; i < Actors.Count; i++)
         {
             Actors[i].MagneticStack = magneticStack[i];
         }
+
+        _magneticField.ChangeMainPanel();
     }
 
     [PunRPC]
