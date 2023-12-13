@@ -133,7 +133,7 @@ public class RoomUI : MonoBehaviour
 
             if (Ready == false)
             {
-                AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-160");
+                AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("UI/Funny-UI-160");
                 Managers.Sound.Play(uiSound, Define.Sound.UISound);
 
                 ReadyButton.GetComponent<Image>().sprite = ReadyOff;
@@ -142,7 +142,7 @@ public class RoomUI : MonoBehaviour
             }
             else
             {
-                AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-160");
+                AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("UI/Funny-UI-160");
                 Managers.Sound.Play(uiSound, Define.Sound.UISound);
 
                 ReadyButton.GetComponent<Image>().sprite = ReadyOn;
@@ -166,7 +166,7 @@ public class RoomUI : MonoBehaviour
 
         SkillChange = !SkillChange;
         OnChangeSkiilEvent(SkillChange);
-        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-050");
+        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("UI/Funny-UI-050");
         Managers.Sound.Play(uiSound, Define.Sound.UISound);
 
         if (SkillChange)

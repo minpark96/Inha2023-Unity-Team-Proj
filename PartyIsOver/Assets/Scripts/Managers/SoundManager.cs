@@ -41,6 +41,8 @@ public class SoundManager
                 go.transform.parent = root.transform;
             }
             _audioSources[(int)Define.Sound.Bgm].loop = true;
+            _audioSources[(int)Define.Sound.InGameSound].loop = true;
+
 
             SoundVolume[(int)Define.Sound.Bgm] = 0.1f;
             SoundVolume[(int)Define.Sound.UISound] = 1f;
@@ -108,6 +110,14 @@ public class SoundManager
             audioSource.pitch = pitch;*/
             playaudioSource.PlayOneShot(audioClip);
         }
+        else if(type == Define.Sound.InGameSound)
+        {
+            AudioSource audioSource = _audioSources[(int)Define.Sound.InGameSound];
+
+            audioSource.pitch = pitch;
+            audioSource.clip = audioClip;
+            audioSource.Play();
+        }
     }
 
     //방금 전에 사용한 내용이 중복되면 Resource로 찾지 않고 캐싱을 하여 사용하여 더 빠르게 사용한다.
@@ -148,6 +158,15 @@ public class SoundManager
                 _audioClip.Add(path, audioClip);
             }
         }
+        else if (type == Define.Sound.InGameSound)
+        {
+            if (_audioClip.TryGetValue(path, out audioClip) == false)
+            {
+                audioClip = Managers.Resource.Load<AudioClip>(path);
+                _audioClip.Add(path, audioClip);
+            }
+        }
+
         if (audioClip == null)
             Debug.Log($"AudioClip Missing : {path}");
         
