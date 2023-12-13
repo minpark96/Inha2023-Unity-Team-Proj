@@ -1,22 +1,16 @@
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
-using Photon.Realtime;
-using static RoomUI;
+
 
 public class RoomUI : MonoBehaviour
 {
-    [Tooltip("플레이어 이름 표시 텍스트")]
-    [SerializeField]
-    private TMP_Text _playerNameText;
-
     string _arenaName = "[5]Arena";
 
+    public Text PlayerNameText;
 
     public int PlayerReadyCount = 1;
 
@@ -51,7 +45,7 @@ public class RoomUI : MonoBehaviour
 
     void Start()
     {
-        _playerNameText.text = PhotonNetwork.NickName;
+        PlayerNameText.text = PhotonNetwork.NickName;
         Ready = false;
 
         Managers.Input.KeyboardAction -= OnKeyboardEvent;

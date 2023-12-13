@@ -729,7 +729,7 @@ public class GameCenter : BaseScene
 
         _magneticField = GameObject.Find("Magnetic Field").GetComponent<MagneticField>();
         _floor = GameObject.Find("Trigger Floor").GetComponent<Floor>();
-        //_snowStorm = GameObject.Find("Snow Storm").GetComponent<SnowStorm>();
+        _snowStorm = GameObject.Find("Snow Storm").GetComponent<SnowStorm>();
 
 
         if (PhotonNetwork.LocalPlayer.IsMasterClient)
@@ -743,7 +743,6 @@ public class GameCenter : BaseScene
             _floor.CheckFloorStack -= CheckPlayerFloor;
             _floor.CheckFloorStack += CheckPlayerFloor;
         }
-
 
 
 
@@ -766,7 +765,8 @@ public class GameCenter : BaseScene
         }
 
         _magneticField.ActorList = Actors;
-
+        _snowStorm.ActorList = Actors;
+    
     }
 
     #endregion
