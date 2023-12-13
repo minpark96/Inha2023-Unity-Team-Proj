@@ -34,7 +34,7 @@ public class Define
         PlayerEffect,
     }
 
-    public enum Scene
+    public enum SceneType
     {
         Unknown,
         Login,

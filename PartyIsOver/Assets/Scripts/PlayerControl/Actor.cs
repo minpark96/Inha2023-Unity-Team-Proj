@@ -161,9 +161,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
         PlayerController = GetComponent<PlayerController>();
         Grab = GetComponent<Grab>();
         BalloonState = GetComponent<BalloonState>();
-
         ChangeLayerRecursively(gameObject, LayerCnt++);
-
         Init();
     }
 
