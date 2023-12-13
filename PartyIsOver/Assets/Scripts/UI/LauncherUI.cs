@@ -56,7 +56,7 @@ public class LauncherUI : MonoBehaviour
     {
         if (PhotonNetwork.NickName.Length < 2 || PhotonNetwork.NickName.Length > 13)
         {
-            AudioClip uiSound1 = Managers.Sound.GetOrAddAudioClip("Effect/Cartoon-UI-092");
+            AudioClip uiSound1 = Managers.Sound.GetOrAddAudioClip("UI/Cartoon-UI-092");
             Managers.Sound.Play(uiSound1, Define.Sound.UISound);
 
             _errorPanel.SetActive(true);
@@ -66,7 +66,7 @@ public class LauncherUI : MonoBehaviour
 
         if (specialRegex.IsMatch(PhotonNetwork.NickName))
         {
-            AudioClip uiSound1 = Managers.Sound.GetOrAddAudioClip("Effect/Cartoon-UI-092");
+            AudioClip uiSound1 = Managers.Sound.GetOrAddAudioClip("UI/Cartoon-UI-092");
             Managers.Sound.Play(uiSound1, Define.Sound.UISound);
 
             _errorPanel.SetActive(true);
@@ -74,7 +74,7 @@ public class LauncherUI : MonoBehaviour
             return;
         }
 
-        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-030");
+        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("UI/Funny-UI-030");
         Managers.Sound.Play(uiSound, Define.Sound.UISound);
 
         _nickName = PhotonNetwork.NickName;
@@ -84,7 +84,7 @@ public class LauncherUI : MonoBehaviour
 
     public void OnClickFeedbackOK()
     {
-        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-160");
+        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("UI/Funny-UI-160");
         Managers.Sound.Play(uiSound, Define.Sound.UISound);
 
         PhotonManager.Instance.Connect();
@@ -93,7 +93,7 @@ public class LauncherUI : MonoBehaviour
 
     public void OnClickFeedbackPanelCancel()
     {
-        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-030");
+        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("UI/Funny-UI-030");
         Managers.Sound.Play(uiSound, Define.Sound.UISound);
 
         _feedbackPanel.SetActive(false);
@@ -101,7 +101,7 @@ public class LauncherUI : MonoBehaviour
 
     public void OnClickErrorOK()
     {
-        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-030");
+        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("UI/Funny-UI-030");
         Managers.Sound.Play(uiSound, Define.Sound.UISound);
 
         _errorPanel.SetActive(false);
@@ -109,7 +109,7 @@ public class LauncherUI : MonoBehaviour
 
     public void OnClickCancelPanel()
     {
-        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-030");
+        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("UI/Funny-UI-030");
         Managers.Sound.Play(uiSound, Define.Sound.UISound);
 
         _cancelPanel.SetActive(true);
@@ -117,7 +117,7 @@ public class LauncherUI : MonoBehaviour
 
     public void OnClickCancelPanelCancel()
     {
-        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-030");
+        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("UI/Funny-UI-030");
         Managers.Sound.Play(uiSound, Define.Sound.UISound);
 
         _cancelPanel.SetActive(false);
@@ -125,7 +125,7 @@ public class LauncherUI : MonoBehaviour
 
     public void OnClickGameQuit()
     {
-        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-030");
+        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("UI/Funny-UI-030");
         Managers.Sound.Play(uiSound, Define.Sound.UISound);
 
         #if UNITY_EDITOR
