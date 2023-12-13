@@ -264,6 +264,12 @@ public class PlayerController : MonoBehaviourPun
     float startChargeTime;
     float endChargeTime = 0f;
     int _checkHoldTimeCount = 0;
+
+    GameObject effectObject = null;
+    Transform _playerTransform = null;
+    float _drunkActionDuration = 3f;
+    bool isTestCheck;
+
     public enum Side
     {
         Left = 0,
@@ -470,8 +476,6 @@ public class PlayerController : MonoBehaviourPun
 
     public void OnKeyboardEvent_Move(Define.KeyboardEvent evt)
     {
-        if (IsFlambe)
-            return;
 
         switch (evt)
         {
@@ -533,7 +537,6 @@ public class PlayerController : MonoBehaviourPun
     public void OnKeyboardEvent_Skill(Define.KeyboardEvent evt)
     {
 
-
         switch (evt)
         {
             case Define.KeyboardEvent.PointerDown:
@@ -593,10 +596,10 @@ public class PlayerController : MonoBehaviourPun
                 break;
             case Define.KeyboardEvent.Charge:
                 {
-                    if (Input.GetKeyUp(KeyCode.R) && _actor.debuffState == DebuffState.Drunk)
+                    if (Input.GetKeyUp(KeyCode.R) && _actor.debuffState == DebuffState.Drunk && IsFlambe)
                     {
-                        IsFlambe = true;
                         photonView.RPC("DrunkAction", RpcTarget.All);
+                        //StartCoroutine("DrunkAction");
                     }
                     else
                     {
@@ -620,7 +623,8 @@ public class PlayerController : MonoBehaviourPun
                     {
                         if (_actor.debuffState == DebuffState.Drunk)
                         {
-                            StartCoroutine(_drunkState.DrunkActionReady());
+                            //취함 애니메이션
+                            StartCoroutine(DrunkActionReady());
                         }
                     }
                     //중일때 확인 ex 이펙트 출현하는 코드를 넣어주면 기모아지는 것 첨 될듯
@@ -642,10 +646,74 @@ public class PlayerController : MonoBehaviourPun
         _actor.StatusHandler.DestroyEffect(name);
     }
 
-    [PunRPC]
-    void DrunkAction()
+    /*    [PunRPC]
+        void DrunkAction()
+        {
+            StartCoroutine(DrunkAction());
+        }*/
+
+    #endregion
+
+    #region Drunk
+
+
+    IEnumerator DrunkActionReady()
     {
-        StartCoroutine(_drunkState.DrunkAction());
+        _actor.BodyHandler.Head.PartRigidbody.AddForce(_actor.BodyHandler.Hip.PartTransform.up * 100f);
+
+        yield return null;
+    }
+
+    [PunRPC]
+    IEnumerator DrunkAction()
+    {
+        _playerTransform = this.transform.Find("GreenHip").GetComponent<Transform>();
+        yield return StatusCreateEffect("Effects/Flamethrower");
+
+        float startTime = Time.time;
+
+        yield return Flamethrower(startTime, _drunkActionDuration);
+
+        IsFlambe = false;
+
+        yield return StatusDestroyEffect("Flamethrower");
+        isTestCheck = false;
+    }
+
+    IEnumerator Flamethrower(float startTime, float drunkDuration)
+    {
+        isTestCheck = true;
+        while (Time.time - startTime < drunkDuration)
+        {
+            yield return null;
+        }
+    }
+
+    IEnumerator StatusCreateEffect(string path)
+    {
+        effectObject = Managers.Resource.PhotonNetworkInstantiate($"{path}");
+        effectObject.transform.position = _playerTransform.position + _playerTransform.forward;
+        effectObject.transform.rotation = Quaternion.LookRotation(-_playerTransform.right);
+
+        yield return null;
+    }
+
+    IEnumerator StatusDestroyEffect(string name)
+    {
+        GameObject go = GameObject.Find($"{name}");
+        Managers.Resource.Destroy(go);
+        effectObject = null;
+        yield return null;
+    }
+
+    [PunRPC]
+    public void ASDStatusMoveEffect()
+    {
+        if (effectObject != null && _playerTransform.position != null)
+        {
+            effectObject.transform.position = _playerTransform.position + _playerTransform.forward;
+            effectObject.transform.rotation = Quaternion.LookRotation(-_playerTransform.right);
+        }
     }
 
     #endregion
@@ -801,7 +869,14 @@ public class PlayerController : MonoBehaviourPun
     #region FixedUpdate
     private void FixedUpdate()
     {
-        if(_isRSkillCheck == true)
+        
+        if (effectObject != null && IsFlambe && isTestCheck)
+        {
+            Debug.Log(effectObject);
+            photonView.RPC("ASDStatusMoveEffect", RpcTarget.All);
+        }
+
+        if (_isRSkillCheck == true)
         {
             if (_actor.debuffState == DebuffState.Stun || _actor.debuffState == DebuffState.Ice || _actor.debuffState == DebuffState.Shock || _actor.debuffState == DebuffState.Drunk)
             {
@@ -822,11 +897,11 @@ public class PlayerController : MonoBehaviourPun
             //StartCoroutine(_balloonState.BalloonShapeOn());
         }
 
-        if (_actor.debuffState == Actor.DebuffState.Drunk && isDrunk == false)
+        /*if (_actor.debuffState == Actor.DebuffState.Drunk && isDrunk == false)
         {
             isDrunk = true;
             StartCoroutine(_drunkState.DrunkOff());
-        }
+        }*/
 
 
         if (_actor.actorState != Actor.ActorState.Jump && _actor.actorState != Actor.ActorState.Roll 

@@ -15,7 +15,7 @@ public class LauncherUI : MonoBehaviour
     private GameObject _cancelPanel;
     private GameObject _errorPanel;
     private GameObject _feedbackPanel;
-    private Regex specialRegex = new Regex(@"[~!@\#$%^&*\()\=+|\\/:;?""<>'\[\]]");
+    private Regex specialRegex = new Regex(@"[~!@\#$%^&*\()\=+|\\/:;?""<>'\[\].,]");
     private string _nickName;
 
     public Text ErrorText;
