@@ -79,7 +79,7 @@ public class PhotonManager : BaseScene
         GameCenter gameCenter = new GameCenter();
         if (scene.name == "[4]Room")
         {
-            SceneType = Define.Scene.Lobby;
+            SceneType = Define.SceneType.Lobby;
             gameCenter.SetSceneBgmSound("LaxLayoverLOOPING");
         }
     }

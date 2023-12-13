@@ -372,7 +372,7 @@ public class GameCenter : BaseScene
             _scoreBoardUI = GameObject.Find("ScoreBoard Panel").GetComponent<ScoreBoardUI>();
             _scoreBoardUI.InitScoreBoard();
 
-            SceneType = Define.Scene.Game;
+            SceneType = Define.SceneType.Game;
             SetSceneBgmSound("BigBangBattleLOOPING");
 
             InitItems();
@@ -482,6 +482,7 @@ public class GameCenter : BaseScene
         if (LoadingCompleteCount == PhotonNetwork.CurrentRoom.PlayerCount)
         {
             Debug.Log("Start Game");
+            Actor.LayerCnt = (int)Define.Layer.Player1;
             AlivePlayerCount = PhotonNetwork.CurrentRoom.PlayerCount;
             photonView.RPC("CreatePlayer", RpcTarget.All);
             StartItemSpawnTimerCoroutine = StartCoroutine(StartItemSpawnTimer());
