@@ -12228,6 +12228,8 @@ MonoBehaviour:
   NuclearPunchReadyPunch: 0.1
   NuclearPunching: 0.1
   NuclearPunchResetPunch: 0.1
+  HeadingCoolTime: 1
+  DropkickCoolTime: 2
   ChargeTime: 1.3
   BalloonJump: 0
   BalloonDrop: 0
