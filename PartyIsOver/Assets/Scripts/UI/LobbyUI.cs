@@ -46,7 +46,7 @@ public class LobbyUI : MonoBehaviour
 
     public void OnClickRandomJoin()
     {
-        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-050");
+        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("UI/Funny-UI-050");
         Managers.Sound.Play(uiSound, Define.Sound.UISound);
 
         PhotonNetwork.JoinRandomRoom();
@@ -54,7 +54,7 @@ public class LobbyUI : MonoBehaviour
 
     public void OnClickLeaveLobby()
     {
-        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-030");
+        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("UI/Funny-UI-030");
         Managers.Sound.Play(uiSound, Define.Sound.UISound);
 
         PhotonManager.Instance.LeaveLobby();
@@ -63,7 +63,7 @@ public class LobbyUI : MonoBehaviour
 
     public void OnClickCreatePopup()
     {
-        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-050");
+        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("UI/Funny-UI-050");
         Managers.Sound.Play(uiSound, Define.Sound.UISound);
 
         CreateRoomPanel.SetActive(true);
@@ -71,7 +71,7 @@ public class LobbyUI : MonoBehaviour
 
     public void OnClickCreate()
     {
-        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-030");
+        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("UI/Funny-UI-030");
         Managers.Sound.Play(uiSound, Define.Sound.UISound);
 
         CreateRoomPanel.SetActive(false);
@@ -92,7 +92,7 @@ public class LobbyUI : MonoBehaviour
 
     public void OnClickJoinRoom(string roomName)
     {
-        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-030");
+        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("UI/Funny-UI-030");
         Managers.Sound.Play(uiSound, Define.Sound.UISound);
 
         PhotonNetwork.JoinRoom(roomName);
@@ -100,31 +100,9 @@ public class LobbyUI : MonoBehaviour
 
     public void OnClickCancel()
     {
-        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-030");
+        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("UI/Funny-UI-030");
         Managers.Sound.Play(uiSound, Define.Sound.UISound);
 
         CreateRoomPanel.SetActive(false);
     }
-
-
-    //public void OnClickPrivate()
-    //{
-    //    IsClicked = !IsClicked;
-
-    //    if (IsClicked)
-    //    {
-    //        PrivateButton.sprite = PrivateOn;
-    //        Password.image.sprite = PasswordOn;
-    //        Password.textComponent.gameObject.SetActive(true);
-    //        Password.textComponent.text = "";
-    //    }
-    //    else
-    //    {
-    //        PrivateButton.sprite = PrivateOff;
-    //        Password.image.sprite = PasswordOff;
-    //        Password.textComponent.gameObject.SetActive(false);
-    //        Password.textComponent.text = "";
-    //    }
-    //}
-
 }

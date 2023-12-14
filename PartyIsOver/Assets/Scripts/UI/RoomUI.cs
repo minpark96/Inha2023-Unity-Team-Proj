@@ -1,22 +1,16 @@
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
-using Photon.Realtime;
-using static RoomUI;
+
 
 public class RoomUI : MonoBehaviour
 {
-    [Tooltip("플레이어 이름 표시 텍스트")]
-    [SerializeField]
-    private TMP_Text _playerNameText;
-
     string _arenaName = "[5]Arena";
 
+    public Text PlayerNameText;
 
     public int PlayerReadyCount = 1;
 
@@ -51,7 +45,7 @@ public class RoomUI : MonoBehaviour
 
     void Start()
     {
-        _playerNameText.text = PhotonNetwork.NickName;
+        PlayerNameText.text = PhotonNetwork.NickName;
         Ready = false;
 
         Managers.Input.KeyboardAction -= OnKeyboardEvent;
@@ -133,7 +127,7 @@ public class RoomUI : MonoBehaviour
 
             if (Ready == false)
             {
-                AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-160");
+                AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("UI/Funny-UI-160");
                 Managers.Sound.Play(uiSound, Define.Sound.UISound);
 
                 ReadyButton.GetComponent<Image>().sprite = ReadyOff;
@@ -142,7 +136,7 @@ public class RoomUI : MonoBehaviour
             }
             else
             {
-                AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-160");
+                AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("UI/Funny-UI-160");
                 Managers.Sound.Play(uiSound, Define.Sound.UISound);
 
                 ReadyButton.GetComponent<Image>().sprite = ReadyOn;
@@ -166,7 +160,7 @@ public class RoomUI : MonoBehaviour
 
         SkillChange = !SkillChange;
         OnChangeSkiilEvent(SkillChange);
-        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("Effect/Funny-UI-050");
+        AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("UI/Funny-UI-050");
         Managers.Sound.Play(uiSound, Define.Sound.UISound);
 
         if (SkillChange)
