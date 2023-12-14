@@ -9,7 +9,7 @@ using System.Numerics;
 
 public class Actor : MonoBehaviourPun, IPunObservable
 {
-    public delegate void ChangePlayerStatus(float HP,float Stamina, ActorState actorState, DebuffState debuffstate, int viewID);
+    public delegate void ChangePlayerStatus(float HP,float Stamina, DebuffState debuffstate, int viewID);
     public event ChangePlayerStatus OnChangePlayerStatus;
     public delegate void KillPlayer(int viewID);
     public event KillPlayer OnKillPlayer;
@@ -28,7 +28,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
     public enum ActorState
     {
         Dead = 0x1,
-        Unconscious = 0x2,
+        //Unconscious = 0x2,
         Stand = 0x4,
         Walk = 0x8,
         Run = 0x10,
@@ -117,7 +117,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
             return;
         }
 
-        OnChangePlayerStatus(_health, _stamina, actorState, debuffState, photonView.ViewID);
+        OnChangePlayerStatus(_health, _stamina, debuffState, photonView.ViewID);
     }
 
     public void InvokeDeathEvent()
@@ -257,35 +257,35 @@ public class Actor : MonoBehaviourPun, IPunObservable
                     //뛰거나 잡기 상태일때 만약 특수 디버프 상태가 들어오면 계속 까이는 현상이 있는데 조건을 걸어서 방지
                     if (debuffState == Actor.DebuffState.Ice || debuffState == Actor.DebuffState.Shock)
                     {
-                        //_stamina -= 0;
-                        photonView.RPC("DecreaseStamina", RpcTarget.All, 0f);
+                        _stamina -= 0;
+                        //photonView.RPC("DecreaseStamina", RpcTarget.All, 0f);
                         Grab.GrabResetTrigger();
                         GrabState = GrabState.None;
                         //PlayerController.isRun = false;
                     }
                     else
                     {
-                        photonView.RPC("DecreaseStamina", RpcTarget.All, 1f);
-                        //_stamina -= 1;
+                        _stamina -= 1;
                     }
+                        //photonView.RPC("DecreaseStamina", RpcTarget.All, 1f);
                 }
                 else if (PlayerController._isRSkillCheck || PlayerController.isHeading || PlayerController._isCoroutineDrop)
                     //스킬 사용시 회복 불가능
-                    photonView.RPC("RecoverStamina",RpcTarget.All, 0f);
-                    //_stamina += 0;
+                    //photonView.RPC("RecoverStamina",RpcTarget.All, 0f);
+                    _stamina += 0;
                 else
                     //상태에 맞는 회복하기
-                    photonView.RPC("RecoverStamina", RpcTarget.All, currentRecoveryStaminaValue);
-                    //_stamina += currentRecoveryStaminaValue;
+                    //photonView.RPC("RecoverStamina", RpcTarget.All, currentRecoveryStaminaValue);
+                    _stamina += currentRecoveryStaminaValue;
                 accumulatedTime = 0f;
             }
             //스테미너가 최대치는 넘는거 방지
             if (_stamina > MaxStamina)
                 _stamina = MaxStamina;
 
+            OnChangePlayerStatus(_health, _stamina,  debuffState, photonView.ViewID);
         }
-        Debug.Log(OnChangePlayerStatus);
-        //OnChangePlayerStatus(_health, _stamina, actorState, debuffState, photonView.ViewID);
+
 
         if (!photonView.IsMine) return;
 
@@ -303,9 +303,9 @@ public class Actor : MonoBehaviourPun, IPunObservable
         {
             case ActorState.Dead:
                 break;
-            case ActorState.Unconscious:
+            //case ActorState.Unconscious:
                 //PlayerController.Stun();
-                break;
+                //break;
             case ActorState.Stand:
                 PlayerController.Stand();
                 break;

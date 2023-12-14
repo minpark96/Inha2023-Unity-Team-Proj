@@ -581,9 +581,8 @@ public class PlayerController : MonoBehaviourPun
                 break;
             case Define.KeyboardEvent.Press:
                 {
-                    if (Input.GetKey(KeyCode.LeftShift) && _actor.actorState != ActorState.Jump && MoveInput.magnitude != 0)
+                    if (Input.GetKey(KeyCode.LeftShift) && _actor.actorState!=ActorState.Jump && MoveInput.magnitude != 0)
                     {
-                        
                         _actor.actorState = Actor.ActorState.Run;
                         isRun = true;
                     }
@@ -916,20 +915,23 @@ public class PlayerController : MonoBehaviourPun
 
 
         if (_actor.actorState != Actor.ActorState.Jump && _actor.actorState != Actor.ActorState.Roll 
-            && _actor.actorState != Actor.ActorState.Run && _actor.actorState != ActorState.Unconscious)
+            && _actor.actorState != Actor.ActorState.Run )//&& _actor.actorState != ActorState.Unconscious)
         {
-            if (MoveInput.magnitude == 0f)
+            if(!((_actor.debuffState & Actor.DebuffState.Stun) == DebuffState.Stun))
             {
-                _actor.actorState = Actor.ActorState.Stand;
-            }
-            else
-            {
-                if (_actor.debuffState == Actor.DebuffState.Balloon)
-                    _actor.actorState = Actor.ActorState.BalloonWalk;
+                if (MoveInput.magnitude == 0f)
+                {
+                    _actor.actorState = Actor.ActorState.Stand;
+                }
                 else
-                    _actor.actorState = Actor.ActorState.Walk;
+                {
+                    if (_actor.debuffState == Actor.DebuffState.Balloon)
+                        _actor.actorState = Actor.ActorState.BalloonWalk;
+                    else
+                        _actor.actorState = Actor.ActorState.Walk;
 
-                //Stand();
+                    //Stand();
+                }
             }
         }
     }
@@ -1590,7 +1592,6 @@ public class PlayerController : MonoBehaviourPun
         {
             if (isStateChange)
             {
-                Debug.Log("asd");
                 isGrounded = false;
                 for (int i = 0; i < MoveForceJumpAniData.Length; i++)
                 {

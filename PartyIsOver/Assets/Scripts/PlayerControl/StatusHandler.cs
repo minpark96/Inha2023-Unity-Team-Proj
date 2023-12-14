@@ -2,9 +2,9 @@ using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using static Actor;
 using static InteractableObject;
 
 public class StatusHandler : MonoBehaviourPun
@@ -162,7 +162,7 @@ public class StatusHandler : MonoBehaviourPun
         // 데미지 체크
         damage *= _damageModifer;
 
-        if (!invulnerable && actor.actorState != Actor.ActorState.Dead && actor.actorState != Actor.ActorState.Unconscious)
+        if (!invulnerable && actor.actorState != Actor.ActorState.Dead && !((actor.debuffState & Actor.DebuffState.Stun) == DebuffState.Stun))
         {
             _healthDamage += damage;
         }
@@ -415,14 +415,15 @@ public class StatusHandler : MonoBehaviourPun
         else
         {
             //기절상태가 아닐때 일정 이상의 데미지를 받으면 기절
-            if (actor.actorState != Actor.ActorState.Unconscious)
+            if (!((actor.debuffState & Actor.DebuffState.Stun) == DebuffState.Stun))
             {
 
                 if (realDamage >= _knockoutThreshold)
                 {
                     if (actor.debuffState == Actor.DebuffState.Ice) //상태이상 후에 추가
                         return;
-                    actor.actorState = Actor.ActorState.Unconscious;
+                    actor.debuffState = Actor.DebuffState.Stun;
+                    //actor.actorState = Actor.ActorState.Unconscious;
                     //photonView.RPC("StunCreate", RpcTarget.All);
                     EnterUnconsciousState();
                 }
