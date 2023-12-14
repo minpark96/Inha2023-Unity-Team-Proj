@@ -6,7 +6,7 @@ public class SnowStorm : MonoBehaviour
 {
     public float[] PhaseDuration = { 0f, 3f, 3f, 3f };
     public float[] PhaseStartTime = { 0f, 30f, 30f, 30f };
-    public float StormForce = 15f;
+    private float _stormForce = 7.5f;
 
 
     public List<Actor> ActorList;
@@ -49,7 +49,7 @@ public class SnowStorm : MonoBehaviour
         {
             for (int i = 0; i < MyActor.BodyHandler.BodyParts.Count; i++)
             {
-                MyActor.BodyHandler.BodyParts[i].PartRigidbody.AddForce(transform.right * StormForce * Time.deltaTime, ForceMode.VelocityChange);
+                MyActor.BodyHandler.BodyParts[i].PartRigidbody.AddForce(transform.right * _stormForce * Time.deltaTime, ForceMode.VelocityChange);
             }
 
             yield return null;
@@ -78,7 +78,7 @@ public class SnowStorm : MonoBehaviour
         {
             for (int i = 0; i < MyActor.BodyHandler.BodyParts.Count; i++)
             {
-                MyActor.BodyHandler.BodyParts[i].PartRigidbody.AddForce(transform.right * StormForce * Time.deltaTime, ForceMode.VelocityChange);
+                MyActor.BodyHandler.BodyParts[i].PartRigidbody.AddForce(transform.right * _stormForce * Time.deltaTime, ForceMode.VelocityChange);
             }
 
             yield return null;
@@ -107,7 +107,7 @@ public class SnowStorm : MonoBehaviour
         {
             for (int i = 0; i < MyActor.BodyHandler.BodyParts.Count; i++)
             {
-                MyActor.BodyHandler.BodyParts[i].PartRigidbody.AddForce(transform.right * StormForce * Time.deltaTime, ForceMode.VelocityChange);
+                MyActor.BodyHandler.BodyParts[i].PartRigidbody.AddForce(transform.right * _stormForce * Time.deltaTime, ForceMode.VelocityChange);
             }
 
             yield return null;
