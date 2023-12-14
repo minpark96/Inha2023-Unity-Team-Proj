@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 
@@ -73,10 +74,10 @@ public class RoomUI : MonoBehaviour
                         OnClickReady();
                     }
 
-                    //if (Input.GetKeyDown(KeyCode.Escape))
-                    //{
-                    //    OnClickLeaveRoom();
-                    //}
+                    if (Input.GetKeyDown(KeyCode.Escape))
+                    {
+                        OnClickLeaveRoom();
+                    }
                 }
                 break;
             case Define.KeyboardEvent.PointerDown:
@@ -147,11 +148,11 @@ public class RoomUI : MonoBehaviour
 
 
 
-    //public void OnClickLeaveRoom()
-    //{
-    //    if(SceneManager.GetActiveScene().name != _arenaName)
-    //        PhotonManager.Instance.LeaveRoom();
-    //}
+    public void OnClickLeaveRoom()
+    {
+        if (SceneManager.GetActiveScene().name != _arenaName)
+            PhotonManager.Instance.LeaveRoom();
+    }
 
     public void OnClickSkillChange()
     {
