@@ -189,9 +189,15 @@ public class SoundManager
     }
 
 
-    public void ChangeVolume()
+    public void ChangeVolumeInMain()
     {
         _audioSources[(int)Define.Sound.Bgm].volume = SoundVolume[(int)Define.Sound.Bgm];
         _audioSources[(int)Define.Sound.UISound].volume = SoundVolume[(int)Define.Sound.UISound];
+    }
+
+    public void ChangeVolumeInArena()
+    {
+        _audioSources[(int)Define.Sound.Bgm].volume = SoundVolume[(int)Define.Sound.Bgm];
+        _audioSources[(int)Define.Sound.UISound].volume = SoundVolume[(int)Define.Sound.UIInGameSound];
     }
 }

@@ -161,7 +161,7 @@ public class GameCenter : BaseScene
                 _audioSources.volume = 0.1f;
                 Managers.Sound.Play(audioClip, Define.Sound.Bgm);
 
-                Managers.Sound.ChangeVolume();
+                Managers.Sound.ChangeVolumeInMain();
             }
 
             if (_roomName == currentSceneName)
@@ -172,7 +172,7 @@ public class GameCenter : BaseScene
                 _audioSources.volume = 0.1f;
                 Managers.Sound.Play(audioClip, Define.Sound.Bgm);
 
-                Managers.Sound.ChangeVolume();
+                Managers.Sound.ChangeVolumeInMain();
             }
         }
     }
