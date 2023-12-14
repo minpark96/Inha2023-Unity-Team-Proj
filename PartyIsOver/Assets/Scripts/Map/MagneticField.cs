@@ -11,10 +11,10 @@ public class MagneticField : MonoBehaviour
     public float[] _phaseStartTime = { 0f, 120f, 60f, 60f };
     private float[] _phaseDuration = { 0f, 15f, 15f, 10f };
     private float[] _scale = { 0f, 103.2f, 43.1f, 20.0f };
-    private Vector3[] _point = { Vector3.zero, new Vector3(465.9f, 6.8f, 414.6f), new Vector3(444.3f, 6.8f, 422.1f), new Vector3(453.9f, 6.8f, 410.5f) };
+    private Vector3[] _point = { Vector3.zero, new Vector3(465.9f, 5f, 414.6f), new Vector3(444.3f, 5f, 422.1f), new Vector3(453.9f, 5f, 410.5f) };
 
     private int _stackRestore = 1;
-    public int _magneticFieldStack = 1;
+    private int _magneticFieldStack = 1;
     private int _floorStack = 1;
     private float _magneticDelay = 0.1f;
     private float _floorDelay = 0.1f;
@@ -51,7 +51,7 @@ public class MagneticField : MonoBehaviour
     private void Start()
     {
         transform.position = _point[1];
-        transform.localScale = new Vector3(_scale[1], _scale[1]/5, _scale[1]);
+        transform.localScale = new Vector3(_scale[1], _scale[1], _scale[1]);
 
         MagneticFieldEffect = GameObject.Find("Magnetic Field Effect");
         _effect1 = MagneticFieldEffect.transform.GetChild(0);
