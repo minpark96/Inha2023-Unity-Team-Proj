@@ -18,9 +18,12 @@ public class GameCenter : BaseScene
 
     [SerializeField]
     RoomUI _roomUI;
-    ScoreBoardUI _scoreBoardUI;
+    
     [SerializeField]
     EndingUI _endingUI;
+
+    ScoreBoardUI _scoreBoardUI;
+    ArenaSettingsUI _arenaSettingsUI;
 
     MagneticField _magneticField;
     Floor _floor;
@@ -371,6 +374,8 @@ public class GameCenter : BaseScene
 
             _scoreBoardUI = GameObject.Find("ScoreBoard Panel").GetComponent<ScoreBoardUI>();
             _scoreBoardUI.InitScoreBoard();
+
+            _arenaSettingsUI = GameObject.Find("Settings Panel").GetComponent<ArenaSettingsUI>();
 
             SceneType = Define.SceneType.Game;
             SetSceneBgmSound("BigBangBattleLOOPING");
@@ -986,6 +991,13 @@ public class GameCenter : BaseScene
 
         SetScoreBoard();
         photonView.RPC("FixScoreBoard", RpcTarget.All);
+        photonView.RPC("UnsubscribeSettings", RpcTarget.All);
+    }
+
+    [PunRPC]
+    void UnsubscribeSettings()
+    {
+        _arenaSettingsUI.ReloadArenaSettingsUI();
     }
 
     [PunRPC]

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SnowStorm : MonoBehaviour
 {
-    public float[] PhaseDuration = { 0f, 3f, 3f, 3f };
+    public float[] PhaseDuration = { 0f, 8f, 8f, 8f };
     public float[] PhaseStartTime = { 0f, 30f, 30f, 30f };
     private float _stormForce = 7.5f;
 

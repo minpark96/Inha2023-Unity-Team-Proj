@@ -118,7 +118,6 @@ MonoBehaviour:
   - 120
   - 60
   - 60
-  _magneticFieldStack: 0
   FreezeImage: {fileID: 0}
   ActorList: []
   AreaNames: 000000000000000000000000000000000000000000000000

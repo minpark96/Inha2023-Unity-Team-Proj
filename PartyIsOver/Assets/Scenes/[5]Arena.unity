@@ -83930,7 +83930,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8141352195969263258, guid: 00af849adc73941489bd85f1c58c1c56, type: 3}
       propertyPath: sceneViewId
-      value: 2
+      value: 29
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 00af849adc73941489bd85f1c58c1c56, type: 3}
@@ -83945,13 +83945,9 @@ PrefabInstance:
       propertyPath: m_Name
       value: Magnetic Field
       objectReference: {fileID: 0}
-    - target: {fileID: 8742255016228364133, guid: d218cd593a8458d43ae3386ea2b263aa, type: 3}
-      propertyPath: _phaseStartTime.Array.data[1]
-      value: 10
-      objectReference: {fileID: 0}
     - target: {fileID: 8742255016228364134, guid: d218cd593a8458d43ae3386ea2b263aa, type: 3}
       propertyPath: sceneViewId
-      value: 29
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8742255016228364153, guid: d218cd593a8458d43ae3386ea2b263aa, type: 3}
       propertyPath: m_RootOrder

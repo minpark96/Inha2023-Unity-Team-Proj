@@ -135,6 +135,10 @@ public class ArenaSettingsUI : MonoBehaviour
         Managers.Sound.Play(uiSound, Define.Sound.UIInGameSound);
         _cancelPanel.SetActive(false);
     }
-
     #endregion
+
+    public void ReloadArenaSettingsUI()
+    {
+        Managers.Input.KeyboardAction -= OnKeyboardEvents;
+    }
 }
