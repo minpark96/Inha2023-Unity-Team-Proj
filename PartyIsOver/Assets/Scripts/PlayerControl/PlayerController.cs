@@ -394,8 +394,6 @@ public class PlayerController : MonoBehaviourPun
 
     public void OnMouseEvent_Skill(Define.MouseEvent evt)
     {
-
-
         switch (evt)
         {
             case Define.MouseEvent.PointerDown:
@@ -583,8 +581,9 @@ public class PlayerController : MonoBehaviourPun
                 break;
             case Define.KeyboardEvent.Press:
                 {
-                    if (Input.GetKey(KeyCode.LeftShift) && _actor.actorState!=ActorState.Jump && MoveInput.magnitude != 0)
+                    if (Input.GetKey(KeyCode.LeftShift) && _actor.actorState != ActorState.Jump && MoveInput.magnitude != 0)
                     {
+                        
                         _actor.actorState = Actor.ActorState.Run;
                         isRun = true;
                     }
@@ -1591,6 +1590,7 @@ public class PlayerController : MonoBehaviourPun
         {
             if (isStateChange)
             {
+                Debug.Log("asd");
                 isGrounded = false;
                 for (int i = 0; i < MoveForceJumpAniData.Length; i++)
                 {

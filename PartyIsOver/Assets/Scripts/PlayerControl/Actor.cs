@@ -236,7 +236,6 @@ public class Actor : MonoBehaviourPun, IPunObservable
             
         if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
-            Debug.Log(photonView.ViewID + " : " + actorState);
             if (_stamina <= 0)
             {
                 //벽타기 불가능
@@ -258,36 +257,35 @@ public class Actor : MonoBehaviourPun, IPunObservable
                     //뛰거나 잡기 상태일때 만약 특수 디버프 상태가 들어오면 계속 까이는 현상이 있는데 조건을 걸어서 방지
                     if (debuffState == Actor.DebuffState.Ice || debuffState == Actor.DebuffState.Shock)
                     {
-                        _stamina -= 0;
-                        //photonView.RPC("DecreaseStamina", RpcTarget.All, 0f);
+                        //_stamina -= 0;
+                        photonView.RPC("DecreaseStamina", RpcTarget.All, 0f);
                         Grab.GrabResetTrigger();
                         GrabState = GrabState.None;
                         //PlayerController.isRun = false;
                     }
                     else
                     {
-                        Debug.Log("뛰고 있어요");
-                        _stamina -= 1;
+                        photonView.RPC("DecreaseStamina", RpcTarget.All, 1f);
+                        //_stamina -= 1;
                     }
-                        //photonView.RPC("DecreaseStamina", RpcTarget.All, 1f);
                 }
                 else if (PlayerController._isRSkillCheck || PlayerController.isHeading || PlayerController._isCoroutineDrop)
                     //스킬 사용시 회복 불가능
-                    //photonView.RPC("RecoverStamina",RpcTarget.All, 0f);
-                    _stamina += 0;
+                    photonView.RPC("RecoverStamina",RpcTarget.All, 0f);
+                    //_stamina += 0;
                 else
                     //상태에 맞는 회복하기
-                    //photonView.RPC("RecoverStamina", RpcTarget.All, currentRecoveryStaminaValue);
-                    _stamina += currentRecoveryStaminaValue;
+                    photonView.RPC("RecoverStamina", RpcTarget.All, currentRecoveryStaminaValue);
+                    //_stamina += currentRecoveryStaminaValue;
                 accumulatedTime = 0f;
             }
             //스테미너가 최대치는 넘는거 방지
             if (_stamina > MaxStamina)
                 _stamina = MaxStamina;
 
-            OnChangePlayerStatus(_health, _stamina, actorState, debuffState, photonView.ViewID);
         }
-
+        Debug.Log(OnChangePlayerStatus);
+        //OnChangePlayerStatus(_health, _stamina, actorState, debuffState, photonView.ViewID);
 
         if (!photonView.IsMine) return;
 
