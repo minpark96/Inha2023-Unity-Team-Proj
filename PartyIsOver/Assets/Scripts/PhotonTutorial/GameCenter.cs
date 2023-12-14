@@ -161,7 +161,7 @@ public class GameCenter : BaseScene
                 _audioSources.volume = 0.1f;
                 Managers.Sound.Play(audioClip, Define.Sound.Bgm);
 
-                Managers.Sound.ChangeVolume();
+                Managers.Sound.ChangeVolumeInMain();
             }
 
             if (_roomName == currentSceneName)
@@ -172,7 +172,7 @@ public class GameCenter : BaseScene
                 _audioSources.volume = 0.1f;
                 Managers.Sound.Play(audioClip, Define.Sound.Bgm);
 
-                Managers.Sound.ChangeVolume();
+                Managers.Sound.ChangeVolumeInMain();
             }
         }
     }
@@ -505,7 +505,7 @@ public class GameCenter : BaseScene
             case 0:
                 {
                     SetItemsActive((int)Define.SpawnableItemType.TwoHanded, ChooseRandomItemRootTypes((int)Define.SpawnableItemType.TwoHanded, 1));
-                    //SetItemsActiveForTest(); // 정식판에선 주석
+                    SetItemsActiveForTest(); // 정식판에선 주석
                 }
                 break;
             case 1:
@@ -537,13 +537,29 @@ public class GameCenter : BaseScene
     void SetItemsActiveForTest()
     {
         Transform targetItem1 = Items[1].GetChild(0).GetChild(0); // ICE
-        Transform targetItem2 = Items[1].GetChild(1).GetChild(0); // TASER
         int viewID1 = targetItem1.GetComponent<PhotonView>().ViewID;
-        int viewID2 = targetItem2.GetComponent<PhotonView>().ViewID;
         Vector3 spawnPoint1 = new Vector3(478.16f, 20f, 393.72f);
-        Vector3 spawnPoint2 = new Vector3(486.98f, 20f, 408.49f);
         photonView.RPC("SetItemsActiveInLocal", RpcTarget.All, viewID1, spawnPoint1);
+
+        Transform targetItem2 = Items[1].GetChild(1).GetChild(0); // TASER
+        int viewID2 = targetItem2.GetComponent<PhotonView>().ViewID;
+        Vector3 spawnPoint2 = new Vector3(486.98f, 20f, 408.49f);
         photonView.RPC("SetItemsActiveInLocal", RpcTarget.All, viewID2, spawnPoint2);
+
+        Transform targetItem3 = Items[2].GetChild(3).GetChild(0); // DONUTS
+        int viewID3 = targetItem3.GetComponent<PhotonView>().ViewID;
+        Vector3 spawnPoint3 = new Vector3(476.98f, 20f, 408.49f);
+        photonView.RPC("SetItemsActiveInLocal", RpcTarget.All, viewID3, spawnPoint3);
+
+        Transform targetItem4 = Items[2].GetChild(3).GetChild(1); // DONUTS
+        int viewID4 = targetItem4.GetComponent<PhotonView>().ViewID;
+        Vector3 spawnPoint4 = new Vector3(471.98f, 20f, 408.49f);
+        photonView.RPC("SetItemsActiveInLocal", RpcTarget.All, viewID4, spawnPoint4);
+
+        Transform targetItem5 = Items[2].GetChild(3).GetChild(2); // DONUTS
+        int viewID5 = targetItem5.GetComponent<PhotonView>().ViewID;
+        Vector3 spawnPoint5 = new Vector3(468.98f, 20f, 408.49f);
+        photonView.RPC("SetItemsActiveInLocal", RpcTarget.All, viewID5, spawnPoint5);
     }
 
     void SetItemsActive(int itemType, List<int> rootTypes)
@@ -822,13 +838,19 @@ public class GameCenter : BaseScene
     {
         for (int i = 0; i < Actors.Count; i++)
         {
-            if (Actors[i].photonView.ViewID == viewID && Actors[i].photonView.IsMine == true)
+            if (Actors[i].photonView.ViewID == viewID)
             {
-                Actors[i].CameraControl.Camera.GetComponent<GrayscaleEffect>().StartGrayscalseEffect();
-                photonView.RPC("ReduceAlivePlayerCount", RpcTarget.MasterClient, viewID);
-                Vector3 deadPos = Actors[i].BodyHandler.Hip.transform.position;
-                Debug.Log("HandleDeath: " + Actors[i].actorState);
-                StartCoroutine(InstantiateGhost(deadPos));
+                Actors[i].actorState = ActorState.Dead;
+
+                if (Actors[i].photonView.IsMine == true)
+                //if (Actors[i].photonView.ViewID == viewID && Actors[i].photonView.IsMine == true)
+                {
+                    Actors[i].CameraControl.Camera.GetComponent<GrayscaleEffect>().StartGrayscalseEffect();
+                    photonView.RPC("ReduceAlivePlayerCount", RpcTarget.MasterClient, viewID);
+                    Vector3 deadPos = Actors[i].BodyHandler.Hip.transform.position;
+                    Debug.Log("HandleDeath: " + Actors[i].actorState);
+                    StartCoroutine(InstantiateGhost(deadPos));
+                }
             }
         }
     }

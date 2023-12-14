@@ -4,10 +4,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
 
 
 public class RoomUI : MonoBehaviour
 {
+    string _roomName = "[4]Room";
     string _arenaName = "[5]Arena";
 
     public Text PlayerNameText;
@@ -115,6 +118,7 @@ public class RoomUI : MonoBehaviour
         {
             if (CanPlay)
             {
+                Managers.Input.KeyboardAction -= OnKeyboardEvent;
                 OnLeaveRoom();
                 PhotonNetwork.LoadLevel(_arenaName);
                 PhotonNetwork.CurrentRoom.IsOpen = false;
@@ -155,8 +159,11 @@ public class RoomUI : MonoBehaviour
 
     public void OnClickSkillChange()
     {
-        if (!SkillChangeButton || !SkillName)
+        if (SceneManager.GetActiveScene().name != _roomName)
+        {
+            Managers.Input.KeyboardAction -= OnKeyboardEvent;
             return;
+        }
 
         SkillChange = !SkillChange;
         OnChangeSkiilEvent(SkillChange);

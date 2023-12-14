@@ -8,20 +8,19 @@ using Photon.Pun;
 public class MagneticField : MonoBehaviour
 {
     // 자기장 수치
-    public float[] PhaseStartTime = { 0f, 45f, 45f, 45f };
-    public float[] PhaseDuration = { 0f, 15f, 15f, 10f };
+    public float[] _phaseStartTime = { 0f, 120f, 60f, 60f };
+    private float[] _phaseDuration = { 0f, 15f, 15f, 10f };
     private float[] _scale = { 0f, 103.2f, 43.1f, 20.0f };
     private Vector3[] _point = { Vector3.zero, new Vector3(465.9f, 6.8f, 414.6f), new Vector3(444.3f, 6.8f, 422.1f), new Vector3(453.9f, 6.8f, 410.5f) };
 
-    public int[] _magneticFieldStack = { 0, 10, 10, 10, 10 };
-    private int _stackRestore = 10;
-    private int _floorStack = 10;
-    private int _delay = 1;
-    private int _stack;
+    private int _stackRestore = 1;
+    public int _magneticFieldStack = 1;
+    private int _floorStack = 1;
+    private float _magneticDelay = 0.1f;
+    private float _floorDelay = 0.1f;
 
     // 사운드
     private bool _isPlayingStackSound;
-    private bool _isPlayingPhaseSound;
 
 
     // 이펙트
@@ -92,7 +91,7 @@ public class MagneticField : MonoBehaviour
 
                     if (_isPlayingStackSound == true)
                     {
-                        GameObject sound = GameObject.Find("@Sound").transform.GetChild((int)Define.Sound.InGameSound).gameObject;
+                        GameObject sound = GameObject.Find("@Sound").transform.GetChild((int)Define.Sound.InGameStackSound).gameObject;
                         sound.GetComponent<AudioSource>().Stop();
                         _isPlayingStackSound = false;
                     }
@@ -117,7 +116,7 @@ public class MagneticField : MonoBehaviour
                     if(_isPlayingStackSound == false)
                     {
                         AudioClip magneticWarning = Managers.Sound.GetOrAddAudioClip("MagneticField/stack beep");
-                        Managers.Sound.Play(magneticWarning, Define.Sound.InGameSound);
+                        Managers.Sound.Play(magneticWarning, Define.Sound.InGameStackSound);
                         _isPlayingStackSound = true;
                     }
                 }
@@ -125,7 +124,7 @@ public class MagneticField : MonoBehaviour
                 {
                     if(_isPlayingStackSound == true)
                     {
-                        GameObject sound = GameObject.Find("@Sound").transform.GetChild((int)Define.Sound.InGameSound).gameObject;
+                        GameObject sound = GameObject.Find("@Sound").transform.GetChild((int)Define.Sound.InGameStackSound).gameObject;
                         sound.GetComponent<AudioSource>().Stop();
                         _isPlayingStackSound = false;
                     }
@@ -189,26 +188,21 @@ public class MagneticField : MonoBehaviour
     #region 자기장 Phase
     IEnumerator FirstPhase(int index)
     {
-        yield return new WaitForSeconds(PhaseStartTime[index]);
+        yield return new WaitForSeconds(_phaseStartTime[index]);
 
-        _stack = _magneticFieldStack[1];
+        // Sound
+        AudioClip warningSound = Managers.Sound.GetOrAddAudioClip("MagneticField/magnetic field warning sound");
+        Managers.Sound.Play(warningSound, Define.Sound.InGameWarning);
 
         float startTime = Time.time;
-        while (Time.time - startTime < PhaseDuration[index])
+        while (Time.time - startTime < _phaseDuration[index])
         {
-            float t = (Time.time - startTime) / PhaseDuration[index];
+            float t = (Time.time - startTime) / _phaseDuration[index];
             transform.localScale = new Vector3(Mathf.Lerp(_scale[index], _scale[index + 1], t), Mathf.Lerp(_scale[index], _scale[index + 1], t), Mathf.Lerp(_scale[index], _scale[index + 1], t));
             transform.position = new Vector3(Mathf.Lerp(_point[index].x, _point[index + 1].x, t), 6.8f, Mathf.Lerp(_point[index].z, _point[index + 1].z, t));
 
             _effect1.localPosition = new Vector3(Mathf.Lerp(_effect1Position[0].x, _effect1Position[1].x, t), Mathf.Lerp(_effect1Position[0].y, _effect1Position[1].y, t), Mathf.Lerp(_effect1Position[0].z, _effect1Position[1].z, t));
 
-            if (_isPlayingPhaseSound == false)
-            {
-                AudioClip magneticWarning = Managers.Sound.GetOrAddAudioClip("MagneticField/magnetic field warning sound");
-                Managers.Sound.Play(magneticWarning, Define.Sound.Bgm);
-                _isPlayingPhaseSound = true;
-            }
-           
             yield return null;
         }
 
@@ -217,32 +211,22 @@ public class MagneticField : MonoBehaviour
 
     IEnumerator SecondPhase(int index)
     {
-        if (_isPlayingPhaseSound == true)
-        {
-            AudioClip magneticWarning = Managers.Sound.GetOrAddAudioClip("Bgm/BigBangBattleLOOPING");
-            Managers.Sound.Play(magneticWarning, Define.Sound.Bgm);
-            _isPlayingStackSound = false;
-        }
-        yield return new WaitForSeconds(PhaseStartTime[index]);
+        yield return new WaitForSeconds(_phaseStartTime[index]);
 
-        _stack = _magneticFieldStack[2];
+        // Sound
+        AudioClip warningSound = Managers.Sound.GetOrAddAudioClip("MagneticField/magnetic field warning sound");
+        Managers.Sound.Play(warningSound, Define.Sound.InGameWarning);
+
 
         float startTime = Time.time;
-        while (Time.time - startTime < PhaseDuration[index])
+        while (Time.time - startTime < _phaseDuration[index])
         {
-            float t = (Time.time - startTime) / PhaseDuration[index];
+            float t = (Time.time - startTime) / _phaseDuration[index];
             transform.localScale = new Vector3(Mathf.Lerp(_scale[index], _scale[index + 1], t), Mathf.Lerp(_scale[index], _scale[index + 1], t), Mathf.Lerp(_scale[index], _scale[index + 1], t));
             transform.position = new Vector3(Mathf.Lerp(_point[index].x, _point[index + 1].x, t), 6.8f, Mathf.Lerp(_point[index].z, _point[index + 1].z, t));
 
             _effect3.localPosition = new Vector3(Mathf.Lerp(_effect3Position[0].x, _effect3Position[1].x, t), Mathf.Lerp(_effect3Position[0].y, _effect3Position[1].y, t), Mathf.Lerp(_effect3Position[0].z, _effect3Position[1].z, t));
             _effect4.localPosition = new Vector3(Mathf.Lerp(_effect4Position[0].x, _effect4Position[1].x, t), Mathf.Lerp(_effect4Position[0].y, _effect4Position[1].y, t), Mathf.Lerp(_effect4Position[0].z, _effect4Position[1].z, t));
-
-            if (_isPlayingPhaseSound == false)
-            {
-                AudioClip magneticWarning = Managers.Sound.GetOrAddAudioClip("MagneticField/magnetic field warning sound");
-                Managers.Sound.Play(magneticWarning, Define.Sound.Bgm);
-                _isPlayingPhaseSound = true;
-            }
 
             yield return null;
         }
@@ -252,36 +236,24 @@ public class MagneticField : MonoBehaviour
 
     IEnumerator ThirdPhase(int index)
     {
-        if (_isPlayingPhaseSound == true)
-        {
-            AudioClip magneticWarning = Managers.Sound.GetOrAddAudioClip("Bgm/BigBangBattleLOOPING");
-            Managers.Sound.Play(magneticWarning, Define.Sound.Bgm);
-            _isPlayingStackSound = false;
-        }
-        yield return new WaitForSeconds(PhaseStartTime[index]);
+        yield return new WaitForSeconds(_phaseStartTime[index]);
 
-        _stack = _magneticFieldStack[3];
+        // Sound
+        AudioClip warningSound = Managers.Sound.GetOrAddAudioClip("MagneticField/magnetic field warning sound");
+        Managers.Sound.Play(warningSound, Define.Sound.InGameWarning);
+
 
         float startTime = Time.time;
-        while (Time.time - startTime < PhaseDuration[index])
+        while (Time.time - startTime < _phaseDuration[index])
         {
-            float t = (Time.time - startTime) / PhaseDuration[index];
+            float t = (Time.time - startTime) / _phaseDuration[index];
             transform.localScale = new Vector3(Mathf.Lerp(_scale[index], 0, t), Mathf.Lerp(_scale[index], 0, t), Mathf.Lerp(_scale[index], 0, t));
 
             _effect1.localPosition = new Vector3(Mathf.Lerp(_effect1Position[1].x, _effect1Position[2].x, t), Mathf.Lerp(_effect1Position[1].y, _effect1Position[2].y, t), Mathf.Lerp(_effect1Position[1].z, _effect1Position[2].z, t));
             _effect4.localPosition = new Vector3(Mathf.Lerp(_effect4Position[1].x, _effect4Position[2].x, t), Mathf.Lerp(_effect4Position[1].y, _effect4Position[2].y, t), Mathf.Lerp(_effect4Position[1].z, _effect4Position[2].z, t));
 
-            if (_isPlayingPhaseSound == false)
-            {
-                AudioClip magneticWarning = Managers.Sound.GetOrAddAudioClip("MagneticField/magnetic field warning sound");
-                Managers.Sound.Play(magneticWarning, Define.Sound.Bgm);
-                _isPlayingPhaseSound = true;
-            }
-
             yield return null;
         }
-
-        _stack = _magneticFieldStack[4];
     }
     #endregion
 
@@ -308,7 +280,7 @@ public class MagneticField : MonoBehaviour
                 ActorStack[index] = ActorList[index].MagneticStack;
                 UpdateMagneticStack(ActorStack);
 
-                yield return new WaitForSeconds(_delay);
+                yield return new WaitForSeconds(_floorDelay);
             }
         }
     }
@@ -321,7 +293,7 @@ public class MagneticField : MonoBehaviour
         {
             while (ActorList[index].MagneticStack <= 100 && AreaNames[index] == (int)Define.Area.Outside)
             {
-                ActorList[index].MagneticStack += _stack;
+                ActorList[index].MagneticStack += _magneticFieldStack;
 
                 if (ActorList[index].MagneticStack > 100)
                 {
@@ -333,7 +305,7 @@ public class MagneticField : MonoBehaviour
                 ActorStack[index] = ActorList[index].MagneticStack;
                 UpdateMagneticStack(ActorStack);
 
-                yield return new WaitForSeconds(_delay);
+                yield return new WaitForSeconds(_magneticDelay);
             }
         }
     }
@@ -354,7 +326,7 @@ public class MagneticField : MonoBehaviour
                 ActorStack[index] = ActorList[index].MagneticStack;
                 UpdateMagneticStack(ActorStack);
 
-                yield return new WaitForSeconds(_delay);
+                yield return new WaitForSeconds(_magneticDelay);
             }
         }
     }

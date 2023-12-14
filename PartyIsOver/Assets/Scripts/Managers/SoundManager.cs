@@ -41,12 +41,11 @@ public class SoundManager
                 go.transform.parent = root.transform;
             }
             _audioSources[(int)Define.Sound.Bgm].loop = true;
-            _audioSources[(int)Define.Sound.InGameSound].loop = true;
+            _audioSources[(int)Define.Sound.InGameStackSound].loop = true;
 
 
             SoundVolume[(int)Define.Sound.Bgm] = 0.1f;
             SoundVolume[(int)Define.Sound.UISound] = 1f;
-
         }
 
         if (currentSceneName == _launcher)
@@ -110,13 +109,21 @@ public class SoundManager
             audioSource.pitch = pitch;*/
             playaudioSource.PlayOneShot(audioClip);
         }
-        else if(type == Define.Sound.InGameSound)
+        else if(type == Define.Sound.InGameStackSound)
         {
-            AudioSource audioSource = _audioSources[(int)Define.Sound.InGameSound];
+            AudioSource audioSource = _audioSources[(int)Define.Sound.InGameStackSound];
 
             audioSource.pitch = pitch;
             audioSource.clip = audioClip;
+            audioSource.volume = 0.4f;
             audioSource.Play();
+        }
+        else if(type == Define.Sound.InGameWarning)
+        {
+            AudioSource audioSource = _audioSources[(int)Define.Sound.InGameWarning];
+            audioSource.pitch = pitch;
+            audioSource.volume = 0.3f;
+            audioSource.PlayOneShot(audioClip);
         }
     }
 
@@ -158,7 +165,15 @@ public class SoundManager
                 _audioClip.Add(path, audioClip);
             }
         }
-        else if (type == Define.Sound.InGameSound)
+        else if (type == Define.Sound.InGameStackSound)
+        {
+            if (_audioClip.TryGetValue(path, out audioClip) == false)
+            {
+                audioClip = Managers.Resource.Load<AudioClip>(path);
+                _audioClip.Add(path, audioClip);
+            }
+        }
+        else if (type == Define.Sound.InGameWarning)
         {
             if (_audioClip.TryGetValue(path, out audioClip) == false)
             {
@@ -174,9 +189,15 @@ public class SoundManager
     }
 
 
-    public void ChangeVolume()
+    public void ChangeVolumeInMain()
     {
         _audioSources[(int)Define.Sound.Bgm].volume = SoundVolume[(int)Define.Sound.Bgm];
         _audioSources[(int)Define.Sound.UISound].volume = SoundVolume[(int)Define.Sound.UISound];
+    }
+
+    public void ChangeVolumeInArena()
+    {
+        _audioSources[(int)Define.Sound.Bgm].volume = SoundVolume[(int)Define.Sound.Bgm];
+        _audioSources[(int)Define.Sound.UISound].volume = SoundVolume[(int)Define.Sound.UIInGameSound];
     }
 }
