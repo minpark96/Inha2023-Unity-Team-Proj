@@ -301,9 +301,6 @@ public class Actor : MonoBehaviourPun, IPunObservable
         {
             case ActorState.Dead:
                 break;
-            //case ActorState.Unconscious:
-                //PlayerController.Stun();
-                //break;
             case ActorState.Stand:
                 PlayerController.Stand();
                 break;

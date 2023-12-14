@@ -209,6 +209,9 @@ public class PlayerController : MonoBehaviourPun
     public float NuclearPunching = 0.1f;
     public float NuclearPunchResetPunch = 0.3f;
 
+    public float HeadingCoolTime = 1f;
+    public float DropkickCoolTime = 2f;
+
     //차지 시간
     public float ChargeTime = 1.3f;
 
@@ -402,7 +405,6 @@ public class PlayerController : MonoBehaviourPun
                     {
                         if (_actor.debuffState == DebuffState.Exhausted)
                             return;
-                        photonView.RPC("DecreaseStamina", RpcTarget.MasterClient, 5f);
                         //_actor.Stamina -= 5;
 
 
@@ -411,9 +413,9 @@ public class PlayerController : MonoBehaviourPun
 
                         //_actor.Stamina = 0;
 
-                        if (_actor.debuffState != DebuffState.Balloon && !isGrounded)
+                        if (_actor.debuffState != DebuffState.Balloon && _actor.actorState == Actor.ActorState.Jump && !_isCoroutineDrop)
                         {
-                            isDropkick = true;
+                            photonView.RPC("DecreaseStamina", RpcTarget.MasterClient, 5f);
                             DropKickTrigger();
                         }
                     }
@@ -438,26 +440,6 @@ public class PlayerController : MonoBehaviourPun
                             PunchAndGrab();
                     }
 
-                    if (Input.GetMouseButtonUp(1) && _actor.Stamina >= 0)
-                    {
-                        if (_actor.debuffState == DebuffState.Exhausted)
-                            return;
-                        photonView.RPC("DecreaseStamina", RpcTarget.MasterClient, 5f);
-
-                        //_actor.Stamina -= 5;
-
-                        if(_actor.Stamina <= 0)
-                            photonView.RPC("SetStemina", RpcTarget.MasterClient, 0f);
-
-                        //_actor.Stamina = 0;
-
-                        if (_actor.debuffState == DebuffState.Balloon)
-                        {
-                            //StartCoroutine(_balloonState.BalloonSpin());
-                        }
-
-                    }
-
                     if (_actor.debuffState == DebuffState.Balloon)
                         return;
 
@@ -465,16 +447,17 @@ public class PlayerController : MonoBehaviourPun
                     {
                         if (_actor.debuffState == DebuffState.Exhausted)
                             return;
-                        photonView.RPC("DecreaseStamina", RpcTarget.MasterClient, 5f);
-
-                       // _actor.Stamina -= 5;
 
                         if (_actor.Stamina <= 0)
                             photonView.RPC("SetStemina", RpcTarget.MasterClient, 0f);
 
                         //_actor.Stamina = 0;
-                        isHeading = true;
-                        StartCoroutine(Heading());
+                        if(!isHeading)
+                        {
+                            // _actor.Stamina -= 5;
+                            photonView.RPC("DecreaseStamina", RpcTarget.MasterClient, 5f);
+                            StartCoroutine(Heading());
+                        }
                     }
                 }
                 break;
@@ -882,7 +865,6 @@ public class PlayerController : MonoBehaviourPun
         
         if (effectObject != null && IsFlambe && isTestCheck)
         {
-            Debug.Log(effectObject);
             photonView.RPC("ASDStatusMoveEffect", RpcTarget.All);
         }
 
@@ -904,7 +886,6 @@ public class PlayerController : MonoBehaviourPun
         if (_actor.debuffState == Actor.DebuffState.Balloon && isBalloon == false)
         {
             photonView.RPC("_balloonState.BalloonShapeOn", RpcTarget.All);
-            //StartCoroutine(_balloonState.BalloonShapeOn());
         }
 
         /*if (_actor.debuffState == Actor.DebuffState.Drunk && isDrunk == false)
@@ -1262,7 +1243,7 @@ public class PlayerController : MonoBehaviourPun
     private void DropKickTrigger()
     {
         if (!_isCoroutineDrop)
-            StartCoroutine(DropKickDelay(2f));
+            StartCoroutine(DropKickDelay(HeadingCoolTime));
     }
 
     IEnumerator DropKickDelay(float delay)
@@ -1635,6 +1616,8 @@ public class PlayerController : MonoBehaviourPun
     #region Heading
     IEnumerator Heading()
     {
+        isHeading = true;
+
         this._bodyHandler.Head.PartInteractable.damageModifier = InteractableObject.Damage.Headbutt;
         photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.Head, true);
 
@@ -1650,9 +1633,10 @@ public class PlayerController : MonoBehaviourPun
                 AniAngleForce(HeadingAngleAniData, i, _moveDir + new Vector3(0f, 0.2f, 0f));
         }
 
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(HeadingCoolTime);
         this._bodyHandler.Head.PartInteractable.damageModifier = InteractableObject.Damage.Default;
         photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.Head, false);
+
         isHeading = false;
     }
     #endregion
