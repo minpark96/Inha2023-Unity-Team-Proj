@@ -838,13 +838,19 @@ public class GameCenter : BaseScene
     {
         for (int i = 0; i < Actors.Count; i++)
         {
-            if (Actors[i].photonView.ViewID == viewID && Actors[i].photonView.IsMine == true)
+            if (Actors[i].photonView.ViewID == viewID)
             {
-                Actors[i].CameraControl.Camera.GetComponent<GrayscaleEffect>().StartGrayscalseEffect();
-                photonView.RPC("ReduceAlivePlayerCount", RpcTarget.MasterClient, viewID);
-                Vector3 deadPos = Actors[i].BodyHandler.Hip.transform.position;
-                Debug.Log("HandleDeath: " + Actors[i].actorState);
-                StartCoroutine(InstantiateGhost(deadPos));
+                Actors[i].actorState = ActorState.Dead;
+
+                if (Actors[i].photonView.IsMine == true)
+                //if (Actors[i].photonView.ViewID == viewID && Actors[i].photonView.IsMine == true)
+                {
+                    Actors[i].CameraControl.Camera.GetComponent<GrayscaleEffect>().StartGrayscalseEffect();
+                    photonView.RPC("ReduceAlivePlayerCount", RpcTarget.MasterClient, viewID);
+                    Vector3 deadPos = Actors[i].BodyHandler.Hip.transform.position;
+                    Debug.Log("HandleDeath: " + Actors[i].actorState);
+                    StartCoroutine(InstantiateGhost(deadPos));
+                }
             }
         }
     }
