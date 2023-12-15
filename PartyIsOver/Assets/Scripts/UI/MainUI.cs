@@ -104,7 +104,7 @@ public class MainUI : MonoBehaviour
                             OnClickCreditExit();
                             _creditOn = false;
 
-                            ChangeBgmSound("Sounds/Bgm/LaxLayoverLOOPING");
+                            ChangeBgmSound("Sounds/Bgm/BongoBoogieMenuLOOPING");
                         }
 
                         if (_keyBoardOn)
@@ -125,7 +125,7 @@ public class MainUI : MonoBehaviour
                             StoryBoardPanel.SetActive(false);
                             _storyBoardOn = false;
 
-                            ChangeBgmSound("Sounds/Bgm/LaxLayoverLOOPING");
+                            ChangeBgmSound("Sounds/Bgm/BongoBoogieMenuLOOPING");
                         }
                     }
                 }
@@ -318,7 +318,7 @@ public class MainUI : MonoBehaviour
         {
             StoryBoardPanel.SetActive(false);
 
-            ChangeBgmSound("Sounds/Bgm/LaxLayoverLOOPING");
+            ChangeBgmSound("Sounds/Bgm/BongoBoogieMenuLOOPING");
         }
 
         for (int i = 0; i < 8; i++)
