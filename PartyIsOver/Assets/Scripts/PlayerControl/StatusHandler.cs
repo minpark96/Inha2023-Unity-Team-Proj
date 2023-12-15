@@ -378,10 +378,6 @@ public class StatusHandler : MonoBehaviourPun
         Managers.Resource.Destroy(go);
         effectObject = null;
     }
-    public void WetCreate()
-    {
-        EffectObjectCreate("Effects/Wet");
-    }
 
     public void EffectObjectCreate(string path)
     {

@@ -635,15 +635,8 @@ public class PlayerController : MonoBehaviourPun
     [PunRPC]
     void RSkillDestroyEffect(string name)
     {
-        Debug.Log("RSkillDestroyEffect : " + name);
         _actor.StatusHandler.DestroyEffect(name);
     }
-
-    /*    [PunRPC]
-        void DrunkAction()
-        {
-            StartCoroutine(DrunkAction());
-        }*/
 
     #endregion
 
