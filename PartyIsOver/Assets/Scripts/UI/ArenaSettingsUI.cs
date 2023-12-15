@@ -125,6 +125,8 @@ public class ArenaSettingsUI : MonoBehaviour
         Managers.Sound.Play(uiSound, Define.Sound.UIInGameSound);
         _cancelPanel.SetActive(false);
         PhotonManager.Instance.LeaveRoom();
+
+        ChangeBgmSound("Sounds/Bgm/BongoBoogieMenuLOOPING");
     }
 
     public void OnClickGameQuitCancel()
@@ -138,5 +140,14 @@ public class ArenaSettingsUI : MonoBehaviour
     public void ReloadArenaSettingsUI()
     {
         Managers.Input.KeyboardAction -= OnKeyboardEvents;
+    }
+
+    void ChangeBgmSound(string path)
+    {
+        AudioSource endingBgm = Managers.Sound.GetBgmAudioSource();
+        AudioClip audioClip = Managers.Resource.Load<AudioClip>(path);
+        endingBgm.clip = audioClip;
+        endingBgm.volume = Managers.Sound.SoundVolume[(int)Define.Sound.Bgm];
+        Managers.Sound.Play(audioClip, Define.Sound.Bgm);
     }
 }
