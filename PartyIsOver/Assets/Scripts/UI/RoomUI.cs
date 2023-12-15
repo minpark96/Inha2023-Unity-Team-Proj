@@ -119,7 +119,6 @@ public class RoomUI : MonoBehaviour
         {
             if (CanPlay)
             {
-                Managers.Input.KeyboardAction -= OnKeyboardEvent;
                 OnLeaveRoom();
                 PhotonNetwork.LoadLevel(_arenaName);
                 PhotonNetwork.CurrentRoom.IsOpen = false;
@@ -150,6 +149,10 @@ public class RoomUI : MonoBehaviour
         }
     }
 
+    public void UnsubscribeKeyboardEvent()
+    {
+        Managers.Input.KeyboardAction -= OnKeyboardEvent;
+    }
 
 
     public void OnClickLeaveRoom()
