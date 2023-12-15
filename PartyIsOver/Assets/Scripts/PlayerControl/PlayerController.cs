@@ -209,6 +209,9 @@ public class PlayerController : MonoBehaviourPun
     public float NuclearPunching = 0.1f;
     public float NuclearPunchResetPunch = 0.3f;
 
+    public float HeadingCoolTime = 1f;
+    public float DropkickCoolTime = 2f;
+
     //차지 시간
     public float ChargeTime = 1.3f;
 
@@ -394,8 +397,6 @@ public class PlayerController : MonoBehaviourPun
 
     public void OnMouseEvent_Skill(Define.MouseEvent evt)
     {
-
-
         switch (evt)
         {
             case Define.MouseEvent.PointerDown:
@@ -404,14 +405,17 @@ public class PlayerController : MonoBehaviourPun
                     {
                         if (_actor.debuffState == DebuffState.Exhausted)
                             return;
-                        _actor.Stamina -= 5;
+                        //_actor.Stamina -= 5;
+
 
                         if (_actor.Stamina <= 0)
-                            _actor.Stamina = 0;
+                            photonView.RPC("SetStemina", RpcTarget.MasterClient, 0f);
 
-                        if (_actor.debuffState != DebuffState.Balloon && !isGrounded)
+                        //_actor.Stamina = 0;
+
+                        if (_actor.debuffState != DebuffState.Balloon && _actor.actorState == Actor.ActorState.Jump && !_isCoroutineDrop)
                         {
-                            isDropkick = true;
+                            photonView.RPC("DecreaseStamina", RpcTarget.MasterClient, 5f);
                             DropKickTrigger();
                         }
                     }
@@ -436,22 +440,6 @@ public class PlayerController : MonoBehaviourPun
                             PunchAndGrab();
                     }
 
-                    if (Input.GetMouseButtonUp(1) && _actor.Stamina >= 0)
-                    {
-                        if (_actor.debuffState == DebuffState.Exhausted)
-                            return;
-                        _actor.Stamina -= 5;
-
-                        if(_actor.Stamina <= 0)
-                            _actor.Stamina = 0;
-
-                        if (_actor.debuffState == DebuffState.Balloon)
-                        {
-                            //StartCoroutine(_balloonState.BalloonSpin());
-                        }
-
-                    }
-
                     if (_actor.debuffState == DebuffState.Balloon)
                         return;
 
@@ -459,12 +447,17 @@ public class PlayerController : MonoBehaviourPun
                     {
                         if (_actor.debuffState == DebuffState.Exhausted)
                             return;
-                        _actor.Stamina -= 5;
 
                         if (_actor.Stamina <= 0)
-                            _actor.Stamina = 0;
-                        isHeading = true;
-                        StartCoroutine(Heading());
+                            photonView.RPC("SetStemina", RpcTarget.MasterClient, 0f);
+
+                        //_actor.Stamina = 0;
+                        if(!isHeading)
+                        {
+                            // _actor.Stamina -= 5;
+                            photonView.RPC("DecreaseStamina", RpcTarget.MasterClient, 5f);
+                            StartCoroutine(Heading());
+                        }
                     }
                 }
                 break;
@@ -476,7 +469,6 @@ public class PlayerController : MonoBehaviourPun
 
     public void OnKeyboardEvent_Move(Define.KeyboardEvent evt)
     {
-
         switch (evt)
         {
             case Define.KeyboardEvent.Press:
@@ -543,11 +535,12 @@ public class PlayerController : MonoBehaviourPun
                 {
                     if (Input.GetKeyDown(KeyCode.R) && _actor.Stamina >= 0)
                     {
-                        _actor.Stamina -= 30;
+                        photonView.RPC("DecreaseStamina", RpcTarget.MasterClient, 30f);
 
                         if (_actor.Stamina <= 0)
                         {
-                            _actor.Stamina = 0;
+                            //_actor.Stamina = 0;
+                            photonView.RPC("SetStemina", RpcTarget.MasterClient, 0f);
                             _actor.debuffState = DebuffState.Exhausted;
                         }
 
@@ -571,7 +564,7 @@ public class PlayerController : MonoBehaviourPun
                 break;
             case Define.KeyboardEvent.Press:
                 {
-                    if (Input.GetKey(KeyCode.LeftShift) && _actor.actorState!=ActorState.Jump)
+                    if (Input.GetKey(KeyCode.LeftShift) && _actor.actorState!=ActorState.Jump && MoveInput.magnitude != 0)
                     {
                         _actor.actorState = Actor.ActorState.Run;
                         isRun = true;
@@ -872,7 +865,6 @@ public class PlayerController : MonoBehaviourPun
         
         if (effectObject != null && IsFlambe && isTestCheck)
         {
-            Debug.Log(effectObject);
             photonView.RPC("ASDStatusMoveEffect", RpcTarget.All);
         }
 
@@ -894,7 +886,6 @@ public class PlayerController : MonoBehaviourPun
         if (_actor.debuffState == Actor.DebuffState.Balloon && isBalloon == false)
         {
             photonView.RPC("_balloonState.BalloonShapeOn", RpcTarget.All);
-            //StartCoroutine(_balloonState.BalloonShapeOn());
         }
 
         /*if (_actor.debuffState == Actor.DebuffState.Drunk && isDrunk == false)
@@ -905,20 +896,23 @@ public class PlayerController : MonoBehaviourPun
 
 
         if (_actor.actorState != Actor.ActorState.Jump && _actor.actorState != Actor.ActorState.Roll 
-            && _actor.actorState != Actor.ActorState.Run && _actor.actorState != ActorState.Unconscious)
+            && _actor.actorState != Actor.ActorState.Run )//&& _actor.actorState != ActorState.Unconscious)
         {
-            if (MoveInput.magnitude == 0f)
+            if(!((_actor.debuffState & Actor.DebuffState.Stun) == DebuffState.Stun))
             {
-                _actor.actorState = Actor.ActorState.Stand;
-            }
-            else
-            {
-                if (_actor.debuffState == Actor.DebuffState.Balloon)
-                    _actor.actorState = Actor.ActorState.BalloonWalk;
+                if (MoveInput.magnitude == 0f)
+                {
+                    _actor.actorState = Actor.ActorState.Stand;
+                }
                 else
-                    _actor.actorState = Actor.ActorState.Walk;
+                {
+                    if (_actor.debuffState == Actor.DebuffState.Balloon)
+                        _actor.actorState = Actor.ActorState.BalloonWalk;
+                    else
+                        _actor.actorState = Actor.ActorState.Walk;
 
-                //Stand();
+                    //Stand();
+                }
             }
         }
     }
@@ -926,163 +920,163 @@ public class PlayerController : MonoBehaviourPun
     #endregion
 
     #region ForwardRoll
-    private void ForwardRollTrigger()
-    {
-        if (!_isCoroutineRoll)
-        {
-            //자식들의 오브젝터 rotation을 뛰기 전에 저장
-            Transform[] childTransforms = GetComponentsInChildren<Transform>();
-            foreach (Transform childTransform in childTransforms)
-            {
-                _initialRotations[childTransform] = childTransform.localRotation;
-            }
-            //점프를 해야 잘 굴러서 점프를 한번 한 다음에 구르기 시작
-            _actor.actorState = Actor.ActorState.Jump;
-            StartCoroutine(ForwardRollDelay(3f));
-        }
-    }
+    //private void ForwardRollTrigger()
+    //{
+    //    if (!_isCoroutineRoll)
+    //    {
+    //        //자식들의 오브젝터 rotation을 뛰기 전에 저장
+    //        Transform[] childTransforms = GetComponentsInChildren<Transform>();
+    //        foreach (Transform childTransform in childTransforms)
+    //        {
+    //            _initialRotations[childTransform] = childTransform.localRotation;
+    //        }
+    //        //점프를 해야 잘 굴러서 점프를 한번 한 다음에 구르기 시작
+    //        _actor.actorState = Actor.ActorState.Jump;
+    //        StartCoroutine(ForwardRollDelay(3f));
+    //    }
+    //}
 
-    IEnumerator ForwardRollDelay(float delay)
-    {
-        _isCoroutineRoll = true;
-        yield return ForwardRoll(0.07f, 1.5f);
-        yield return new WaitForSeconds(delay);
-        _isCoroutineRoll = false;
-    }
+    //IEnumerator ForwardRollDelay(float delay)
+    //{
+    //    _isCoroutineRoll = true;
+    //    yield return ForwardRoll(0.07f, 1.5f);
+    //    yield return new WaitForSeconds(delay);
+    //    _isCoroutineRoll = false;
+    //}
 
-    IEnumerator ForwardRoll(float duration, float readyRoll)
-    {
-        //최고 속도를 구를 때 마다 일정하게 값을 넣을려고
-        _hips.velocity = -_hips.transform.up.normalized * MaxSpeed * 1.5f;
-        //연산이 너무 빨라서 잠깐 멈춰줘야함
-        yield return new WaitForSeconds(0.08f);
-        //상태를 Roll 상태로 전환
-        _actor.actorState = ActorState.Roll;
+    //IEnumerator ForwardRoll(float duration, float readyRoll)
+    //{
+    //    //최고 속도를 구를 때 마다 일정하게 값을 넣을려고
+    //    _hips.velocity = -_hips.transform.up.normalized * MaxSpeed * 1.5f;
+    //    //연산이 너무 빨라서 잠깐 멈춰줘야함
+    //    yield return new WaitForSeconds(0.08f);
+    //    //상태를 Roll 상태로 전환
+    //    _actor.actorState = ActorState.Roll;
 
-        //spring을 풀어서 구르기가 자연스럽게 할 수 있게 한다.
-        _actor.StatusHandler.StartCoroutine("ResetBodySpring");
-        //hip의 잠겨 있는 FreezeRotationX 축을 풀음
-        _hipRB.constraints &= ~RigidbodyConstraints.FreezeRotationX;
+    //    //spring을 풀어서 구르기가 자연스럽게 할 수 있게 한다.
+    //    _actor.StatusHandler.StartCoroutine("ResetBodySpring");
+    //    //hip의 잠겨 있는 FreezeRotationX 축을 풀음
+    //    _hipRB.constraints &= ~RigidbodyConstraints.FreezeRotationX;
 
-        float rollTime = Time.time;
+    //    float rollTime = Time.time;
 
-        //실제로 회전 하는 것
-        while (Time.time - rollTime < readyRoll)
-        {
-            AniAngleForce(RollAngleAniData, 0);
-            AniForce(RollAniData, 0);
-            yield return new WaitForSeconds(duration);
-        }
+    //    //실제로 회전 하는 것
+    //    while (Time.time - rollTime < readyRoll)
+    //    {
+    //        AniAngleForce(RollAngleAniData, 0);
+    //        AniForce(RollAniData, 0);
+    //        yield return new WaitForSeconds(duration);
+    //    }
 
-        //힘은 0, Rotation 복구 하기
-        foreach (Transform child in _children)
-        {
-            yield return RestoreRotations(child);
-        }
-        //yield return StartSlerp(duration);
+    //    //힘은 0, Rotation 복구 하기
+    //    foreach (Transform child in _children)
+    //    {
+    //        yield return RestoreRotations(child);
+    //    }
+    //    //yield return StartSlerp(duration);
 
-        _actor.actorState = Actor.ActorState.Stand;
-    }
+    //    _actor.actorState = Actor.ActorState.Stand;
+    //}
 
-    IEnumerator StartSlerp(float duration)
-    {
-        float startRollTime = Time.time;
+    //IEnumerator StartSlerp(float duration)
+    //{
+    //    float startRollTime = Time.time;
 
-        while (Time.time - startRollTime < 0.07f)
-        {
-            foreach (Transform child in _children)
-            {
-                if (_initialRotations.ContainsKey(child))
-                {
-                    Debug.Log("Slerp아직 잘 안됨 수정 부분임");
-                    Vector3 lerpedDirecion = Vector3.Slerp(child.localRotation.eulerAngles, _initialRotations[child].eulerAngles, 0.1f);
-                    child.localRotation = Quaternion.LookRotation(lerpedDirecion);
-                }
-            }
-            yield return new WaitForSeconds(duration);
-        }
-    }
+    //    while (Time.time - startRollTime < 0.07f)
+    //    {
+    //        foreach (Transform child in _children)
+    //        {
+    //            if (_initialRotations.ContainsKey(child))
+    //            {
+    //                Debug.Log("Slerp아직 잘 안됨 수정 부분임");
+    //                Vector3 lerpedDirecion = Vector3.Slerp(child.localRotation.eulerAngles, _initialRotations[child].eulerAngles, 0.1f);
+    //                child.localRotation = Quaternion.LookRotation(lerpedDirecion);
+    //            }
+    //        }
+    //        yield return new WaitForSeconds(duration);
+    //    }
+    //}
 
-    IEnumerator ForwardRollOld(float duration, float readyRoll)
-    {
-        _hips.velocity = -_hips.transform.up.normalized * MaxSpeed * 1.5f;
-        yield return new WaitForSeconds(0.08f);
-        _actor.actorState = ActorState.Roll;
+    //IEnumerator ForwardRollOld(float duration, float readyRoll)
+    //{
+    //    _hips.velocity = -_hips.transform.up.normalized * MaxSpeed * 1.5f;
+    //    yield return new WaitForSeconds(0.08f);
+    //    _actor.actorState = ActorState.Roll;
 
-        _actor.StatusHandler.StartCoroutine("ResetBodySpring");
-        _hipRB.constraints &= ~RigidbodyConstraints.FreezeRotationX;
+    //    _actor.StatusHandler.StartCoroutine("ResetBodySpring");
+    //    _hipRB.constraints &= ~RigidbodyConstraints.FreezeRotationX;
 
-        float rollTime = Time.time;
-        float startRollTime = Time.time;
+    //    float rollTime = Time.time;
+    //    float startRollTime = Time.time;
 
-        while (Time.time - rollTime < readyRoll)
-        {
-            AniAngleForce(RollAngleAniData, 0);
-            AniForce(RollAniData, 0);
-            yield return new WaitForSeconds(duration);
-        }
+    //    while (Time.time - rollTime < readyRoll)
+    //    {
+    //        AniAngleForce(RollAngleAniData, 0);
+    //        AniForce(RollAniData, 0);
+    //        yield return new WaitForSeconds(duration);
+    //    }
 
-        //힘은 0, Rotation, 스프링 복구 하기
-        //RestoreRotations();
-        _actor.actorState = Actor.ActorState.Stand;
-    }
+    //    //힘은 0, Rotation, 스프링 복구 하기
+    //    //RestoreRotations();
+    //    _actor.actorState = Actor.ActorState.Stand;
+    //}
 
-    IEnumerator RestoreRotations(Transform child)
-    {
-        _childRigidbody = child.GetComponent<Rigidbody>();
-        if (_childRigidbody != null)
-        {
-            //Debug.Log(_initialRotations[child]);
-            // 초기 회전값 복원 Dictionary에서 특정 키의 존재 여부를 확인
-            if (_initialRotations.ContainsKey(child))
-            {
-                //회전 힘과 AddForce 힘을 벡터 0으로 해서 값 빼기
-                _childRigidbody.velocity = Vector3.zero;
-                _childRigidbody.angularVelocity = Vector3.zero;
-                child.localRotation = _initialRotations[child];
-                //int count= 0;
-                //while (Quaternion.Angle(child.localRotation, _initialRotations[child]) > 1f)
-                /*while(count <10)
-                {
-                    //_initialRotations[child] 목표값
-                    //child.localRotation 시작 값
-                    child.localRotation = Quaternion.Slerp(child.localRotation, _initialRotations[child], 0.4f);
-                    Debug.Log(string.Format("{0}     :  {1:N2}", child.name, Quaternion.Angle(child.localRotation, _initialRotations[child])));
-                    count++;
-                    yield return new WaitForSeconds(0.07f);
-                }*/
-            }
-            //다시 잠금
-            if (_childRigidbody.name == "GreenHip")
-                _hipRB.constraints |= RigidbodyConstraints.FreezeRotationX;
-        }
-        yield return _actor.StatusHandler.RestoreBodySpring(0.07f);
-    }
+    //IEnumerator RestoreRotations(Transform child)
+    //{
+    //    _childRigidbody = child.GetComponent<Rigidbody>();
+    //    if (_childRigidbody != null)
+    //    {
+    //        //Debug.Log(_initialRotations[child]);
+    //        // 초기 회전값 복원 Dictionary에서 특정 키의 존재 여부를 확인
+    //        if (_initialRotations.ContainsKey(child))
+    //        {
+    //            //회전 힘과 AddForce 힘을 벡터 0으로 해서 값 빼기
+    //            _childRigidbody.velocity = Vector3.zero;
+    //            _childRigidbody.angularVelocity = Vector3.zero;
+    //            child.localRotation = _initialRotations[child];
+    //            //int count= 0;
+    //            //while (Quaternion.Angle(child.localRotation, _initialRotations[child]) > 1f)
+    //            /*while(count <10)
+    //            {
+    //                //_initialRotations[child] 목표값
+    //                //child.localRotation 시작 값
+    //                child.localRotation = Quaternion.Slerp(child.localRotation, _initialRotations[child], 0.4f);
+    //                Debug.Log(string.Format("{0}     :  {1:N2}", child.name, Quaternion.Angle(child.localRotation, _initialRotations[child])));
+    //                count++;
+    //                yield return new WaitForSeconds(0.07f);
+    //            }*/
+    //        }
+    //        //다시 잠금
+    //        if (_childRigidbody.name == "GreenHip")
+    //            _hipRB.constraints |= RigidbodyConstraints.FreezeRotationX;
+    //    }
+    //    yield return _actor.StatusHandler.RestoreBodySpring(0.07f);
+    //}
 
-    public void RestoreRotationsOld()
-    {
-        _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
+    //public void RestoreRotationsOld()
+    //{
+    //    _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
 
-        foreach (Transform child in _children)
-        {
-            _childRigidbody = child.GetComponent<Rigidbody>();
-            if (_childRigidbody != null)
-            {
-                //회전 힘과 AddForce 힘을 벡터 0으로 해서 값 빼기
-                _childRigidbody.velocity = Vector3.zero;
-                _childRigidbody.angularVelocity = Vector3.zero;
-                // 초기 회전값 복원 Dictionary에서 특정 키의 존재 여부를 확인
-                if (_initialRotations.ContainsKey(child))
-                {
-                    child.localRotation = _initialRotations[child];
-                }
+    //    foreach (Transform child in _children)
+    //    {
+    //        _childRigidbody = child.GetComponent<Rigidbody>();
+    //        if (_childRigidbody != null)
+    //        {
+    //            //회전 힘과 AddForce 힘을 벡터 0으로 해서 값 빼기
+    //            _childRigidbody.velocity = Vector3.zero;
+    //            _childRigidbody.angularVelocity = Vector3.zero;
+    //            // 초기 회전값 복원 Dictionary에서 특정 키의 존재 여부를 확인
+    //            if (_initialRotations.ContainsKey(child))
+    //            {
+    //                child.localRotation = _initialRotations[child];
+    //            }
 
-                //다시 잠금
-                if (_childRigidbody.name == "GreenHip")
-                    _hipRB.constraints |= RigidbodyConstraints.FreezeRotationX;
-            }
-        }
-    }
+    //            //다시 잠금
+    //            if (_childRigidbody.name == "GreenHip")
+    //                _hipRB.constraints |= RigidbodyConstraints.FreezeRotationX;
+    //        }
+    //    }
+    //}
 
     #endregion
 
@@ -1249,7 +1243,7 @@ public class PlayerController : MonoBehaviourPun
     private void DropKickTrigger()
     {
         if (!_isCoroutineDrop)
-            StartCoroutine(DropKickDelay(2f));
+            StartCoroutine(DropKickDelay(HeadingCoolTime));
     }
 
     IEnumerator DropKickDelay(float delay)
@@ -1622,6 +1616,8 @@ public class PlayerController : MonoBehaviourPun
     #region Heading
     IEnumerator Heading()
     {
+        isHeading = true;
+
         this._bodyHandler.Head.PartInteractable.damageModifier = InteractableObject.Damage.Headbutt;
         photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.Head, true);
 
@@ -1637,17 +1633,22 @@ public class PlayerController : MonoBehaviourPun
                 AniAngleForce(HeadingAngleAniData, i, _moveDir + new Vector3(0f, 0.2f, 0f));
         }
 
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(HeadingCoolTime);
         this._bodyHandler.Head.PartInteractable.damageModifier = InteractableObject.Damage.Default;
         photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.Head, false);
+
         isHeading = false;
     }
     #endregion
 
     #region MoveAnimation
+
     [PunRPC]
     public void Move()
     {
+        if(MoveInput.magnitude == 0f)
+            _actor.actorState = Actor.ActorState.Stand;
+        
         if (_actor.actorState == ActorState.Run)
         {
             _cycleSpeed = 0.1f;

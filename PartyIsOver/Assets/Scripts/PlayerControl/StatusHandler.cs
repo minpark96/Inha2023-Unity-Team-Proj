@@ -2,9 +2,9 @@ using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using static Actor;
 using static InteractableObject;
 
 public class StatusHandler : MonoBehaviourPun
@@ -134,11 +134,10 @@ public class StatusHandler : MonoBehaviourPun
         }
     }
 
-
-    void Update()
+    private void LateUpdate()
     {
         // 지침 디버프 활성화/비활성화
-        if(PhotonNetwork.LocalPlayer.IsMasterClient)
+        if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
             if (actor.Stamina <= 0)
             {
@@ -168,39 +167,13 @@ public class StatusHandler : MonoBehaviourPun
         }
     }
 
-    [PunRPC]
-    void PlayerEffect()
-    {
-        photonView.RPC("TestPlayerEffect",RpcTarget.All);
-    }
-
-    [PunRPC]
-    void TestPlayerEffect()
-    {
-        //참여자는 방장한테 이펙트가 생기는 버그
-        actor.PlayerController._drunkState.effectObject = effectObject;
-        actor.PlayerController._drunkState.StatusMoveEffect();
-    }
-
-    private void LateUpdate()
-    {
-/*
-        if (effectObject != null && effectObject.name == "Stun_loop")
-            photonView.RPC("MoveEffect", RpcTarget.All);
-        else if (effectObject != null && effectObject.name == "Fog_frost")
-            photonView.RPC("MoveEffect", RpcTarget.All);
-        else if (effectObject != null)
-            photonView.RPC("PlayerEffect", RpcTarget.All);
-*/
-    }
-
     // 충격이 가해지면(trigger)
     public void AddDamage(InteractableObject.Damage type, float damage, GameObject causer=null)
     {
         // 데미지 체크
         damage *= _damageModifer;
 
-        if (!invulnerable && actor.actorState != Actor.ActorState.Dead && actor.actorState != Actor.ActorState.Unconscious)
+        if (!invulnerable && actor.actorState != Actor.ActorState.Dead && !((actor.debuffState & Actor.DebuffState.Stun) == DebuffState.Stun))
         {
             _healthDamage += damage;
         }
@@ -328,10 +301,7 @@ public class StatusHandler : MonoBehaviourPun
                     break;
                 case Actor.DebuffState.Stun:
                     if (!_hasStun)
-                    {
                         StartCoroutine(ResetBodySpring());
-                        //photonView.RPC("Stun", RpcTarget.All, _stunTime);
-                    }
                     break;
                 case Actor.DebuffState.Ghost:
                     break;
@@ -383,111 +353,6 @@ public class StatusHandler : MonoBehaviourPun
     }
 
     [PunRPC]
-    IEnumerator PowerUp(float delay)
-    {
-
-        // 불끈
-        _hasPowerUp = true;
-        actor.actorState = Actor.ActorState.Debuff;
-        actor.PlayerController.RunSpeed += _maxSpeed * 0.1f;
-        PlayerDebuffSound("PlayerEffect/Cartoon-UI-037");
-        PowerUpCreate();
-
-        yield return new WaitForSeconds(delay);
-
-        // 불끈 해제
-        _hasPowerUp = false;
-        actor.actorState = Actor.ActorState.Stand;
-        actor.debuffState &= ~Actor.DebuffState.PowerUp;
-        actor.PlayerController.RunSpeed -= _maxSpeed * 0.1f;
-        DestroyEffect("Aura_acceleration");
-
-        actor.InvokeStatusChangeEvent();
-        _audioClip = null;
-    }
-
-    [PunRPC]
-    IEnumerator Burn(float delay)
-    {
-        // 화상
-        _hasBurn = true;
-        actor.actorState = Actor.ActorState.Debuff;
-        photonView.RPC("TransferDebuffToPlayer", RpcTarget.MasterClient, (int)InteractableObject.Damage.Burn);
-
-
-        PlayerDebuffSound("PlayerEffect/SFX_FireBall_Projectile");
-        BurnCreate();
-
-        float elapsedTime = 0f;
-        float lastBurnTime = Time.time;
-        float startTime = Time.time;
-
-        while (elapsedTime <= delay)
-        {
-            if (actor.debuffState == Actor.DebuffState.Ice)
-            {
-                _hasBurn = false;
-                actor.actorState = Actor.ActorState.Stand;
-                StopCoroutine(Burn(delay));
-            }
-
-            if (Time.time - lastBurnTime >= 1.0f) // 1초간 데미지+액션
-            {
-                actor.Health -= _burnDamage;
-                actor.BodyHandler.Waist.PartRigidbody.AddForce((actor.BodyHandler.Hip.transform.right) * 40f, ForceMode.VelocityChange);
-                actor.BodyHandler.Hip.PartRigidbody.AddForce((actor.BodyHandler.Hip.transform.right) * 40f, ForceMode.VelocityChange);
-                lastBurnTime = Time.time;
-            }
-
-            elapsedTime = Time.time - startTime;
-            yield return null;
-        }
-        _burnCount = 0;
-        // 화상 해제
-        _hasBurn = false;
-        photonView.RPC("TransferDebuffToPlayer", RpcTarget.MasterClient, (int)InteractableObject.Damage.Default);
-        actor.actorState = Actor.ActorState.Stand;
-        actor.debuffState &= ~Actor.DebuffState.Burn;
-
-        DestroyEffect("Fire_large");
-        actor.InvokeStatusChangeEvent();
-        _audioClip = null;
-    }
-
-
-    [PunRPC]
-    IEnumerator Exhausted(float delay)
-    {
-        // 지침
-        _hasExhausted = true;
-        WetCreate();
-        actor.actorState = Actor.ActorState.Debuff;
-        JointDrive angularXDrive;
-
-        angularXDrive = actor.BodyHandler.BodyParts[(int)Define.BodyPart.Head].PartJoint.angularXDrive;
-        angularXDrive.positionSpring = 0f;
-        actor.BodyHandler.BodyParts[(int)Define.BodyPart.Head].PartJoint.angularXDrive = angularXDrive;
-
-        while (actor.Stamina != 100)
-        {
-            yield return null;
-        }
-
-        // 지침 해제
-        _hasExhausted = false;
-        DestroyEffect("Wet");
-
-        actor.actorState = Actor.ActorState.Stand;
-        actor.debuffState &= ~Actor.DebuffState.Exhausted;
-        angularXDrive.positionSpring = _xPosSpringAry[0];
-
-        actor.BodyHandler.BodyParts[(int)Define.BodyPart.Head].PartJoint.angularXDrive = angularXDrive;
-
-        actor.InvokeStatusChangeEvent();
-        _audioClip = null;
-    }
-
-    [PunRPC]
     IEnumerator Slow(float delay)
     {
         // 둔화
@@ -507,211 +372,12 @@ public class StatusHandler : MonoBehaviourPun
     }
 
     [PunRPC]
-    IEnumerator Freeze(float delay)
-    {
-        _hasFreeze = true;
-
-        yield return new WaitForSeconds(0.2f);
-
-        PlayerDebuffSound("PlayerEffect/Cartoon-UI-047");
-        IceCubeCreate();
-        IceSmokeCreate();
-
-        // 빙결
-        actor.actorState = Actor.ActorState.Debuff;
-
-        for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
-        {
-            actor.BodyHandler.BodyParts[i].PartRigidbody.isKinematic = true;
-        }
-
-        yield return new WaitForSeconds(delay);
-
-        // 빙결 해제
-        _hasFreeze = false;
-        actor.actorState = Actor.ActorState.Stand;
-        actor.debuffState &= ~Actor.DebuffState.Ice;
-
-        actor.InvokeStatusChangeEvent();
-        DestroyEffect("Fog_frost");
-        DestroyEffect("IceCube");
-       
-        for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
-        {
-            actor.BodyHandler.BodyParts[i].PartRigidbody.isKinematic = false;
-        }
-        _audioClip = null;
-    }
-
-    [PunRPC]
-    IEnumerator Shock(float delay)
-    {
-        _hasShock = true;
-        
-
-        if (actor.debuffState == Actor.DebuffState.Ice)
-            photonView.RPC("StopShock", RpcTarget.All, delay);
-
-        
-        // 감전
-        actor.actorState = Actor.ActorState.Debuff;
-        photonView.RPC("TransferDebuffToPlayer", RpcTarget.MasterClient, (int)InteractableObject.Damage.Shock);
-        PlayerDebuffSound("PlayerEffect/electronic_02");
-        ShockCreate();
-
-        JointDrive angularXDrive;
-        JointDrive angularYZDrive;
-
-        for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
-        {
-            if (i >= (int)Define.BodyPart.Hip && i <= (int)Define.BodyPart.Head) continue;
-            if (i == (int)Define.BodyPart.Ball) continue;
-
-            angularXDrive = actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive;
-            angularXDrive.positionSpring = 0f;
-            actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive = angularXDrive;
-
-            angularYZDrive = actor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive;
-            angularYZDrive.positionSpring = 0f;
-            actor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive = angularYZDrive;
-        }
-
-        float startTime = Time.time;
-
-        while (Time.time - startTime < delay)
-        {
-            if (actor.debuffState == Actor.DebuffState.Ice)
-            {
-                _hasShock = false;
-                actor.actorState = Actor.ActorState.Stand;
-                StartCoroutine(Stun(0.5f));
-                //photonView.RPC("Stun", RpcTarget.All, _stunTime);
-                photonView.RPC("StopShock", RpcTarget.All, delay);
-            }
-
-            yield return new WaitForSeconds(0.2f);
-
-            if (UnityEngine.Random.Range(0, 20) > 10)
-            {
-                for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
-                {
-                    if (i >= (int)Define.BodyPart.Hip && i <= (int)Define.BodyPart.Head) continue;
-                    if (i == (int)Define.BodyPart.LeftFoot || 
-                        i == (int)Define.BodyPart.RightFoot ||
-                        i == (int)Define.BodyPart.Ball) continue;
-
-                    actor.BodyHandler.BodyParts[i].transform.rotation = Quaternion.Euler(20, 0, 0);
-                }
-            }
-            else
-            {
-                for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
-                {
-                    if (i >= (int)Define.BodyPart.Hip && i <= (int)Define.BodyPart.Head) continue;
-                    if (i == (int)Define.BodyPart.LeftFoot ||
-                        i == (int)Define.BodyPart.RightFoot ||
-                        i == (int)Define.BodyPart.Ball) continue;
-                    actor.BodyHandler.BodyParts[i].transform.rotation = Quaternion.Euler(-20, 0, 0);
-                }
-            }
-            yield return null;
-        }
-
-        // 감전 해제
-        _hasShock = false;
-        StartCoroutine(ResetBodySpring());
-        photonView.RPC("TransferDebuffToPlayer", RpcTarget.MasterClient, (int)InteractableObject.Damage.Default);
-
-        //photonView.RPC("Stun", RpcTarget.All, 0.5f);
-        StartCoroutine(Stun(0.5f));
-        
-        actor.actorState = Actor.ActorState.Stand;
-        actor.debuffState &= ~Actor.DebuffState.Shock;
-
-        DestroyEffect("Lightning_aura");
-
-        actor.InvokeStatusChangeEvent();
-        _audioClip = null;
-    }
-
-    [PunRPC]
-    void StopShock()
-    {
-        StopCoroutine("Shock");
-        // 감전 해제
-        _hasShock = false;
-        StartCoroutine(ResetBodySpring());
-        photonView.RPC("Stun", RpcTarget.All, 0.5f);
-        actor.actorState = Actor.ActorState.Stand;
-        actor.debuffState &= ~Actor.DebuffState.Shock;
-        photonView.RPC("DestroyEffect", RpcTarget.All, "Lightning_aura");
-
-        actor.InvokeStatusChangeEvent();
-        _audioClip = null;
-    }
-
-
-    [PunRPC]
-    IEnumerator Stun(float delay)
-    {
-        _hasStun = true;
-        yield return new WaitForSeconds(delay);
-        yield return RestoreBodySpring();
-        _hasStun = false;
-        actor.actorState = Actor.ActorState.Stand;
-        actor.debuffState &= ~Actor.DebuffState.Stun;
-
-        actor.InvokeStatusChangeEvent();
-        DestroyEffect("Stun_loop");
-    }
-
-    [PunRPC]
     public void DestroyEffect(string name)
     {
         GameObject go = GameObject.Find($"{name}");
         Managers.Resource.Destroy(go);
         effectObject = null;
     }
-
-    [PunRPC]
-    public void StunCreate()
-    {
-        //Effects/Stun_loop 생성 
-        EffectObjectCreate("Effects/Stun_loop");
-    }
-
-    public void BurnCreate()
-    {
-        EffectObjectCreate("Effects/Fire_large");
-    }
-
-    public void ShockCreate()
-    {
-        EffectObjectCreate("Effects/Lightning_aura");
-    }
-
-    public void PowerUpCreate()
-    {
-        EffectObjectCreate("Effects/Aura_acceleration");
-    }
-
-    public void IceCubeCreate()
-    {
-        EffectObjectCreate("Effects/IceCube");
-    }
-
-    public void IceSmokeCreate()
-    {
-        EffectObjectCreate("Effects/Fog_frost");
-    }
-
-    [PunRPC]
-    public void PoisonCreate()
-    {
-        HasDrunk = true;
-        EffectObjectCreate("Effects/Fog_poison");
-    }
-
     public void WetCreate()
     {
         EffectObjectCreate("Effects/Wet");
@@ -760,14 +426,15 @@ public class StatusHandler : MonoBehaviourPun
         else
         {
             //기절상태가 아닐때 일정 이상의 데미지를 받으면 기절
-            if (actor.actorState != Actor.ActorState.Unconscious)
+            if (!((actor.debuffState & Actor.DebuffState.Stun) == DebuffState.Stun))
             {
 
                 if (realDamage >= _knockoutThreshold)
                 {
                     if (actor.debuffState == Actor.DebuffState.Ice) //상태이상 후에 추가
                         return;
-                    actor.actorState = Actor.ActorState.Unconscious;
+                    actor.debuffState = Actor.DebuffState.Stun;
+                    //actor.actorState = Actor.ActorState.Unconscious;
                     //photonView.RPC("StunCreate", RpcTarget.All);
                     EnterUnconsciousState();
                 }
@@ -813,50 +480,34 @@ public class StatusHandler : MonoBehaviourPun
         _context.ChangeState(stunInStance, durationTime);
     }
 
-    /*    [PunRPC]
-        void SetJointSpring(float percentage)
+    void SetJointSpring(float percentage)
+    {
+        JointDrive angularXDrive;
+        JointDrive angularYZDrive;
+        int j = 0;
+
+        //기절과 회복에 모두 관여 기절시엔 퍼센티지를 0으로해서 사용
+        for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
         {
-            JointDrive angularXDrive;
-            JointDrive angularYZDrive;
-            int j = 0;
+            if (i == (int)Define.BodyPart.Hip)
+                continue;
 
-            //기절과 회복에 모두 관여 기절시엔 퍼센티지를 0으로해서 사용
-            for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
-            {
-                if (i == (int)Define.BodyPart.Hip)
-                    continue;
+            angularXDrive = actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive;
+            angularXDrive.positionSpring = _xPosSpringAry[j] * percentage;
+            actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive = angularXDrive;
 
-                angularXDrive = actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive;
-                angularXDrive.positionSpring = _xPosSpringAry[j] * percentage;
-                actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive = angularXDrive;
+            angularYZDrive = actor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive;
+            angularYZDrive.positionSpring = _yzPosSpringAry[j] * percentage;
+            actor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive = angularYZDrive;
 
-                angularYZDrive = actor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive;
-                angularYZDrive.positionSpring = _yzPosSpringAry[j] * percentage;
-                actor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive = angularYZDrive;
-
-                j++;
-            }
-
-        }*/
+            j++;
+        }
+    }
 
     public IEnumerator ResetBodySpring()
     {
-        //photonView.RPC("SetJointSpring", RpcTarget.All, 0f);
+        SetJointSpring(0f);
         yield return null;
-    }
-
-    public IEnumerator RestoreBodySpring()
-    {
-        float startTime = Time.time;
-        float springLerpDuration = 0.07f;
-
-        while (Time.time < startTime + springLerpDuration)
-        {
-            float elapsed = Time.time - startTime;
-            float percentage = elapsed / springLerpDuration;
-            //photonView.RPC("SetJointSpring", RpcTarget.All, percentage);
-            yield return null;
-        }
     }
 
     public IEnumerator RestoreBodySpring(float _springLerpTime = 1f)
@@ -868,70 +519,8 @@ public class StatusHandler : MonoBehaviourPun
         {
             float elapsed = Time.time - startTime;
             float percentage = elapsed / springLerpDuration;
-           // photonView.RPC("SetJointSpring", RpcTarget.All, percentage);
+            SetJointSpring(percentage);
             yield return null;
         }
     }
-
-    [PunRPC]
-    public void TransferDebuffToPlayer(int DamageType)
-    {
-        ChangeDamageModifier((int)Define.BodyPart.LeftFoot, DamageType);
-        ChangeDamageModifier((int)Define.BodyPart.RightFoot, DamageType);
-        ChangeDamageModifier((int)Define.BodyPart.LeftLeg, DamageType);
-        ChangeDamageModifier((int)Define.BodyPart.RightLeg, DamageType);
-        ChangeDamageModifier((int)Define.BodyPart.Head, DamageType);
-        ChangeDamageModifier((int)Define.BodyPart.LeftHand, DamageType);
-        ChangeDamageModifier((int)Define.BodyPart.RightHand, DamageType);
-    }
-
-
-
-    private void ChangeDamageModifier(int bodyPart, int DamageType)
-    {
-        switch ((Define.BodyPart)bodyPart)
-        {
-            case Define.BodyPart.LeftFoot:
-                actor.BodyHandler.LeftFoot.PartInteractable.damageModifier = (InteractableObject.Damage)DamageType;
-                break;
-            case Define.BodyPart.RightFoot:
-                actor.BodyHandler.RightFoot.PartInteractable.damageModifier = (InteractableObject.Damage)DamageType;
-                break;
-            case Define.BodyPart.LeftLeg:
-                actor.BodyHandler.LeftLeg.PartInteractable.damageModifier = (InteractableObject.Damage)DamageType;
-                break;
-            case Define.BodyPart.RightLeg:
-                actor.BodyHandler.RightLeg.PartInteractable.damageModifier = (InteractableObject.Damage)DamageType;
-                break;
-            case Define.BodyPart.LeftThigh:
-                break;
-            case Define.BodyPart.RightThigh:
-                break;
-            case Define.BodyPart.Hip:
-                break;
-            case Define.BodyPart.Waist:
-                break;
-            case Define.BodyPart.Chest:
-                break;
-            case Define.BodyPart.Head:
-                actor.BodyHandler.Head.PartInteractable.damageModifier = (InteractableObject.Damage)DamageType;
-                break;
-            case Define.BodyPart.LeftArm:
-                break;
-            case Define.BodyPart.RightArm:
-                break;
-            case Define.BodyPart.LeftForeArm:
-                break;
-            case Define.BodyPart.RightForeArm:
-                break;
-            case Define.BodyPart.LeftHand:
-                actor.BodyHandler.LeftHand.PartInteractable.damageModifier = (InteractableObject.Damage)DamageType;
-                break;
-            case Define.BodyPart.RightHand:
-                actor.BodyHandler.RightHand.PartInteractable.damageModifier = (InteractableObject.Damage)DamageType;
-                break;
-        }
-    }
-
-
 }

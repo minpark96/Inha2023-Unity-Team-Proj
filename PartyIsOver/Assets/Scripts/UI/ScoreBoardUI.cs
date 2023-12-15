@@ -61,9 +61,6 @@ public class ScoreBoardUI : MonoBehaviour
 
         for (int i = 0; i < _playerNumber; i++)
         {
-            if (_portrait[i] == null)
-                Debug.LogError("portrait is null");
-
             for (int j = 0; j < Define.MAX_PLAYERS_PER_ROOM; j++)
             {
                 _portrait[i].transform.GetChild(j).gameObject.SetActive(false);
@@ -72,6 +69,12 @@ public class ScoreBoardUI : MonoBehaviour
 
         for (int i = 0; i < _playerNumber; i++)
         {
+            //if(rank[i] == 0)
+            //{
+            //    i = -1;
+            //    continue;
+            //}    
+                
             _portrait[i].transform.GetChild(rank[i] - 1).gameObject.SetActive(true);
         }
 
