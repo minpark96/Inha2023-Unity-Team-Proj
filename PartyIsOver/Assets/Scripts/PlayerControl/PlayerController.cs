@@ -344,6 +344,8 @@ public class PlayerController : MonoBehaviourPun
         MaxSpeed = statData.MaxSpeed;
         RunSpeed = statData.RunSpeed;
         _itemSwingPower = statData.ItemSwingPower;
+        _playerTransform = this.transform.Find("GreenHip").GetComponent<Transform>();
+
     }
 
     [PunRPC]
@@ -629,13 +631,21 @@ public class PlayerController : MonoBehaviourPun
     [PunRPC]
     void EffectCreate(string path)
     {
-        _actor.StatusHandler.EffectObjectCreate($"{path}");
+        effectObject = Managers.Resource.PhotonNetworkInstantiate($"{path}");
     }
 
     [PunRPC]
     void RSkillDestroyEffect(string name)
     {
-        _actor.StatusHandler.DestroyEffect(name);
+        GameObject go = GameObject.Find($"{name}");
+        Managers.Resource.Destroy(go);
+        effectObject = null;
+    }
+
+    [PunRPC]
+    void RSkillMoveEffect()
+    {
+        effectObject.transform.position = _playerTransform.position;
     }
 
     #endregion
@@ -855,10 +865,14 @@ public class PlayerController : MonoBehaviourPun
     #region FixedUpdate
     private void FixedUpdate()
     {
-        
+        Debug.Log(effectObject);
         if (effectObject != null && IsFlambe && isTestCheck)
         {
             photonView.RPC("ASDStatusMoveEffect", RpcTarget.All);
+        }
+        else if(effectObject != null)
+        {
+            photonView.RPC("RSkillMoveEffect", RpcTarget.All);
         }
 
         if (_isRSkillCheck == true)

@@ -52,6 +52,7 @@ public class Exhausted : MonoBehaviourPun, IDebuffState
     public void InstantiateEffect(string path)
     {
         effectObject = Managers.Resource.PhotonNetworkInstantiate($"{path}");
+        Debug.Log(effectObject);
     }
     public void RemoveObject(string name)
     {

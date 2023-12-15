@@ -261,10 +261,13 @@ public class Actor : MonoBehaviourPun, IPunObservable
                         GrabState = GrabState.None;
                         //PlayerController.isRun = false;
                     }
-                    else
+                    else if(_stamina == 0)
                     {
-                        _stamina -= 1;
+                        _stamina = -1f;
+                        actorState = ActorState.Walk;
                     }
+                    else
+                        _stamina -= 1;
                         //photonView.RPC("DecreaseStamina", RpcTarget.All, 1f);
                 }
                 else if (PlayerController._isRSkillCheck || PlayerController.isHeading || PlayerController._isCoroutineDrop)

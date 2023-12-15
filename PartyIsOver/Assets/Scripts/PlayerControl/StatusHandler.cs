@@ -278,7 +278,7 @@ public class StatusHandler : MonoBehaviourPun
         foreach (Actor.DebuffState state in System.Enum.GetValues(typeof(Actor.DebuffState)))
         {
             Actor.DebuffState checking = actor.debuffState & state;
-
+            Debug.Log(checking);
             switch (checking)
             {
                 case Actor.DebuffState.Default:
@@ -343,6 +343,7 @@ public class StatusHandler : MonoBehaviourPun
     [PunRPC]
     void RPCBurnCreate()
     {
+        Debug.Log("RPCBurnCreate");
         _context.ChangeState(burnInStance, BurnTime);
     }
 

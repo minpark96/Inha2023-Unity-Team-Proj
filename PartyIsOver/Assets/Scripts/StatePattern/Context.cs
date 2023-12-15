@@ -24,7 +24,7 @@ public class Context : MonoBehaviourPun
 
             if (state != null)
             {
-                //지침 상태면은 100이 아니라면 계속 업데이트
+                /*//지침 상태면은 100이 아니라면 계속 업데이트
                 if (state.ToString().Contains("Exhausted") && state.MyActor.Stamina != 100)
                 {
                     state.UpdateState();
@@ -32,27 +32,34 @@ public class Context : MonoBehaviourPun
                 //지침 상태가 아니라면 일반 적인 지속시간으로 확인
                 else
                 {
-                    if(state.ToString().Contains("Exhausted") && state.MyActor.Stamina == 100)
-                        state.ExitState();
+                    
+                }*/
+                if (state.ToString().Contains("Exhausted") && state.MyActor.Stamina == 100)
+                {
+                    state.ExitState();
+                    _currentStateList[i] = null;
+                }
 
-                    if (state.CoolTime > 0f)
-                        state.CoolTime -= Time.deltaTime;
+                if (state.CoolTime > 0f)
+                    state.CoolTime -= Time.deltaTime;
 
-                    if (state.CoolTime <= 0f)
+                if (state.CoolTime <= 0f)
+                {
+                    if(!state.ToString().Contains("Exhausted"))
                     {
                         state.ExitState();
                         _currentStateList[i] = null;
                     }
-
-                    state.UpdateState();
                 }
+                state.UpdateState();
             }
         }
         _currentStateList.RemoveAll(state => state == null);
     }
 
     public void ChangeState(IDebuffState newState, float time = 0)
-    {        
+    {
+        Debug.Log(newState);
         //같은 상태가 중복되면 쿨을 늘리는 것보다 그냥 있던 것을 끝내는 것 같은 상태이면 return
         foreach(var state in _currentStateList)
         {
