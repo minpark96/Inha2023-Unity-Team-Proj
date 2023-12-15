@@ -11,6 +11,7 @@ public class EndingUI : MonoBehaviour
     public GameObject Winner;
     public int WinnerNumber;
 
+
     private void Start()
     {
         PopUpPanel.SetActive(false);
@@ -18,7 +19,7 @@ public class EndingUI : MonoBehaviour
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
 
-        // sound
+
         AudioSource endingBgm = Managers.Sound.GetBgmAudioSource();
         AudioClip audioClip = Managers.Resource.Load<AudioClip>("Sounds/Bgm/Runaway Train LOOPING");
         endingBgm.clip = audioClip;
@@ -37,8 +38,12 @@ public class EndingUI : MonoBehaviour
 
     public void OnClickMain()
     {
-        //SceneManager.LoadScene("[2]Main");
-        //PhotonManager.Instance.Connect();
+        AudioSource endingBgm = Managers.Sound.GetBgmAudioSource();
+        AudioClip audioClip = Managers.Resource.Load<AudioClip>("Sounds/Bgm/LaxLayoverLOOPING");
+        endingBgm.clip = audioClip;
+        endingBgm.volume = Managers.Sound.SoundVolume[(int)Define.Sound.Bgm];
+        Managers.Sound.Play(audioClip, Define.Sound.Bgm);
+       
 
         PhotonManager.Instance.Connect();
         PhotonManager.Instance.LoadNextScene("[2]Main");

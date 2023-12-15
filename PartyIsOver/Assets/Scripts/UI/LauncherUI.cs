@@ -16,10 +16,15 @@ public class LauncherUI : MonoBehaviour
     private GameObject _errorPanel;
     private GameObject _feedbackPanel;
     private Regex specialRegex = new Regex(@"[~!@\#$%^&*\()\=+|\\/:;?""<>'\[\].,]");
+    
     private string _nickName;
+    private string _mainSceneName = "[2]Main";
+    
+    private GameObject _bgmSound;
 
     public Text ErrorText;
     public VideoPlayer Video;
+
 
     void Awake()
     {
@@ -42,6 +47,8 @@ public class LauncherUI : MonoBehaviour
         Screen.SetResolution(960, 540, false);
 
         Video.loopPointReached += EndReached;
+        _bgmSound = GameObject.Find("@Sound").transform.GetChild((int)Define.Sound.Bgm).gameObject;
+        _bgmSound.GetComponent<AudioSource>().Stop();
     }
 
    
@@ -49,6 +56,7 @@ public class LauncherUI : MonoBehaviour
     {
         _startPanel.SetActive(false);
         _controlPanel.SetActive(true);
+        _bgmSound.GetComponent<AudioSource>().Play();
     }
 
 
@@ -87,8 +95,10 @@ public class LauncherUI : MonoBehaviour
         AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("UI/Funny-UI-160");
         Managers.Sound.Play(uiSound, Define.Sound.UISound);
 
+        Video.loopPointReached -= EndReached;
+
         PhotonManager.Instance.Connect();
-        SceneManager.LoadSceneAsync("[2]Main");
+        SceneManager.LoadSceneAsync(_mainSceneName);
     }
 
     public void OnClickFeedbackPanelCancel()
