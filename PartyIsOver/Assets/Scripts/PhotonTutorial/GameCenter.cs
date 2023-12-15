@@ -146,6 +146,35 @@ public class GameCenter : BaseScene
         DontDestroyOnLoad(this.gameObject);
     }
 
+    private void OnDestroy()
+    {
+        if (SceneManager.GetActiveScene().name == _roomName)
+        {
+            _roomUI.UnsubscribeKeyboardEvent();
+            _roomUI.OnChangeSkiilEvent -= ToggleSkillSelection;
+            _roomUI.OnLeaveRoom -= LeaveRoom;
+            _roomUI.OnReadyEvent -= AnnouncePlayerReady;
+        }
+        else if (SceneManager.GetActiveScene().name == _arenaName)
+        {
+            MyActor.OnChangeStaminaBar -= UpdateStaminaBar;
+            _arenaSettingsUI.ReloadArenaSettingsUI();
+
+            if (PhotonNetwork.LocalPlayer.IsMasterClient)
+            {
+                foreach (Actor actor in Actors)
+                {
+                    actor.OnChangePlayerStatus -= SendInfo;
+                    actor.OnKillPlayer -= AnnounceDeath;
+                }
+
+                _magneticField.CheckMagneticFieldArea -= CheckPlayerArea;
+                _magneticField.UpdateMagneticStack -= SendPlayerMagneticStack;
+                _floor.CheckFloorStack -= CheckPlayerFloor;
+            }
+        }
+    }
+
     public void SetSceneBgmSound(string path)
     {
         GameObject root = GameObject.Find("@Sound");
@@ -291,6 +320,7 @@ public class GameCenter : BaseScene
     [PunRPC]
     void UnsubscribeRoomEvent()
     {
+        _roomUI.UnsubscribeKeyboardEvent();
         _roomUI.OnChangeSkiilEvent -= ToggleSkillSelection;
         _roomUI.OnLeaveRoom -= LeaveRoom;
         _roomUI.OnReadyEvent -= AnnouncePlayerReady;
