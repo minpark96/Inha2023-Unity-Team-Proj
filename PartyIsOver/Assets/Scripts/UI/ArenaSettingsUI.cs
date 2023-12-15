@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -123,10 +124,7 @@ public class ArenaSettingsUI : MonoBehaviour
         AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("UI/Funny-UI-030");
         Managers.Sound.Play(uiSound, Define.Sound.UIInGameSound);
         _cancelPanel.SetActive(false);
-
-        // [3]Lobby ·Î ¿¬°á
-        Managers.Input.KeyboardAction -= OnKeyboardEvents;
-
+        PhotonManager.Instance.LeaveRoom();
     }
 
     public void OnClickGameQuitCancel()
