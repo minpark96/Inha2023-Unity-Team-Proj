@@ -365,7 +365,6 @@ public class PlayerController : MonoBehaviourPun
     {
         _audioClip = Managers.Sound.GetOrAddAudioClip(path, Define.Sound.PlayerEffect);
         _audioSource.clip = _audioClip;
-        _audioSource.volume = 0.2f;
         _audioSource.spatialBlend = 1;
         Managers.Sound.Play(_audioClip, Define.Sound.PlayerEffect, _audioSource);
 
