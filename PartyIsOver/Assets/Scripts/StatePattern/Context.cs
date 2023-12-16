@@ -24,16 +24,6 @@ public class Context : MonoBehaviourPun
 
             if (state != null)
             {
-                /*//지침 상태면은 100이 아니라면 계속 업데이트
-                if (state.ToString().Contains("Exhausted") && state.MyActor.Stamina != 100)
-                {
-                    state.UpdateState();
-                }
-                //지침 상태가 아니라면 일반 적인 지속시간으로 확인
-                else
-                {
-                    
-                }*/
                 if (state.ToString().Contains("Exhausted") && state.MyActor.Stamina == 100)
                 {
                     state.ExitState();
@@ -72,6 +62,7 @@ public class Context : MonoBehaviourPun
             if(newState.ToString().Contains("Ice"))
             {
                 state.ExitState();
+                _currentStateList.Remove(state);
             }
 
             //감전 상태인데 스턴이 들어오면 return;
