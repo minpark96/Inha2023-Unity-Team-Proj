@@ -543,7 +543,8 @@ public class PlayerController : MonoBehaviourPun
                         {
                             //_actor.Stamina = 0;
                             photonView.RPC("SetStemina", RpcTarget.MasterClient, 0f);
-                            _actor.debuffState = DebuffState.Exhausted;
+                            _actor.debuffState |= Actor.DebuffState.Exhausted;
+                            //_actor.debuffState = DebuffState.Exhausted;
                         }
 
                         if (_actor.debuffState == DebuffState.Exhausted)
@@ -865,7 +866,6 @@ public class PlayerController : MonoBehaviourPun
     #region FixedUpdate
     private void FixedUpdate()
     {
-        Debug.Log(effectObject);
         if (effectObject != null && IsFlambe && isTestCheck)
         {
             photonView.RPC("ASDStatusMoveEffect", RpcTarget.All);

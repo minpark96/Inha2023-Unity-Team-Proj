@@ -141,27 +141,14 @@ public class StatusHandler : MonoBehaviourPun
         {
             if (actor.Stamina <= 0)
             {
-                if (!_hasExhausted)
+                if ((actor.debuffState & DebuffState.Exhausted) == DebuffState.Exhausted)
                 {
-                    actor.debuffState |= Actor.DebuffState.Exhausted;
                     if (actor.GrabState != Define.GrabState.PlayerLift)
                     {
                         actor.GrabState = Define.GrabState.None;
                         actor.Grab.GrabResetTrigger();
                     }
-                    //_context.ChangeState(exhaustedInStance);
                     photonView.RPC("RPCExhaustedCreate", RpcTarget.All);
-                }
-            }
-            else
-            {
-                if (_hasExhausted)
-                {
-                    if (actor.GrabState != Define.GrabState.PlayerLift)
-                    {
-                        actor.GrabState = Define.GrabState.None;
-                        actor.Grab.GrabResetTrigger();
-                    }
                 }
             }
         }
@@ -213,37 +200,11 @@ public class StatusHandler : MonoBehaviourPun
 
     public void DebuffCheck(InteractableObject.Damage type)
     {
-        if (actor.debuffState != Actor.DebuffState.Default)
-            return;
-
-        if (actor.debuffState == Actor.DebuffState.Ice) return;
-        //if (actor.debuffState == Actor.DebuffState.Balloon) return;
-
         switch (type)
         {
             case Damage.Ice: // ºù°á
                 actor.debuffState |= Actor.DebuffState.Ice;
-                //foreach (Actor.DebuffState state in System.Enum.GetValues(typeof(Actor.DebuffState)))
-                //{
-                //    if (state != Actor.DebuffState.Ice && (actor.debuffState & state) != 0)
-                //    {
-                //        actor.debuffState &= ~state;
-                //    }
-                //}
                 break;
-            //case Damage.Balloon: // Ç³¼±
-            //    {
-            //        actor.debuffState |= Actor.DebuffState.Balloon;
-            //        photonView.RPC("PlayerDebuffSound", RpcTarget.All, "PlayerEffect/Cartoon-UI-049");
-            //        foreach (Actor.DebuffState state in System.Enum.GetValues(typeof(Actor.DebuffState)))
-            //        {
-            //            if (state != Actor.DebuffState.Balloon && (actor.debuffState & state) != 0)
-            //            {
-            //                actor.debuffState &= ~state;
-            //            }
-            //        }
-            //    }
-            //    break;
             case Damage.PowerUp: // ºÒ²ö
                 actor.debuffState |= Actor.DebuffState.PowerUp;
                 break;
@@ -278,7 +239,6 @@ public class StatusHandler : MonoBehaviourPun
         foreach (Actor.DebuffState state in System.Enum.GetValues(typeof(Actor.DebuffState)))
         {
             Actor.DebuffState checking = actor.debuffState & state;
-            Debug.Log(checking);
             switch (checking)
             {
                 case Actor.DebuffState.Default:
@@ -343,7 +303,6 @@ public class StatusHandler : MonoBehaviourPun
     [PunRPC]
     void RPCBurnCreate()
     {
-        Debug.Log("RPCBurnCreate");
         _context.ChangeState(burnInStance, BurnTime);
     }
 
