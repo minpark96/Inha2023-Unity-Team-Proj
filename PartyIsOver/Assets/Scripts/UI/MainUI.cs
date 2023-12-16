@@ -234,7 +234,8 @@ public class MainUI : MonoBehaviour
 
         Managers.Sound.SoundVolume[(int)Define.Sound.Bgm] = 0.1f * BGMAudioSlider.value;
         Managers.Sound.SoundVolume[(int)Define.Sound.UISound] = 1f * EffectAudioSlider.value;
-        Managers.Sound.ChangeVolumeInMain();
+        Managers.Sound.ChangeVolume(Define.Sound.Bgm, Define.Sound.UISound);
+
         SettingsPanel.SetActive(false);
     }
 
@@ -245,10 +246,11 @@ public class MainUI : MonoBehaviour
         
         Managers.Sound.SoundVolume[(int)Define.Sound.Bgm] = 0.1f * 1;
         Managers.Sound.SoundVolume[(int)Define.Sound.UISound] = 1f * 1;
-        Managers.Sound.ChangeVolumeInMain();
+        Managers.Sound.ChangeVolume(Define.Sound.Bgm, Define.Sound.UISound);
 
         BGMAudioSlider.value = 1;
         EffectAudioSlider.value = 1;
+
         SettingsPanel.SetActive(false);
     }
 

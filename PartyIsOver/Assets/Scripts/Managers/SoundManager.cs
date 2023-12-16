@@ -107,6 +107,7 @@ public class SoundManager
         {
             AudioSource audioSource = _audioSources[(int)Define.Sound.PlayerEffect];
             audioSource.pitch = pitch;
+            audioSource.volume = 0.2f;
             playaudioSource.PlayOneShot(audioClip);
         }
         else if(type == Define.Sound.InGameStackSound)
@@ -157,16 +158,9 @@ public class SoundManager
     }
 
 
-    public void ChangeVolumeInMain()
+    public void ChangeVolume(Define.Sound sound1, Define.Sound sound2)
     {
-        _audioSources[(int)Define.Sound.Bgm].volume = SoundVolume[(int)Define.Sound.Bgm];
-        _audioSources[(int)Define.Sound.UISound].volume = SoundVolume[(int)Define.Sound.UISound];
-    }
-
-    public void ChangeVolumeInArena()
-    {
-        _audioSources[(int)Define.Sound.Bgm].volume = SoundVolume[(int)Define.Sound.Bgm];
-        _audioSources[(int)Define.Sound.UIInGameSound].volume = SoundVolume[(int)Define.Sound.UIInGameSound];
-        _audioSources[(int)Define.Sound.PlayerEffect].volume = SoundVolume[(int)Define.Sound.PlayerEffect];
+        _audioSources[(int)sound1].volume = SoundVolume[(int)sound1];
+        _audioSources[(int)sound2].volume = SoundVolume[(int)sound2];
     }
 }
