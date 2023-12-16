@@ -22,7 +22,6 @@ public class Actor : MonoBehaviourPun, IPunObservable
     public BodyHandler BodyHandler;
     public PlayerController PlayerController;
     public Grab Grab;
-    public BalloonState BalloonState;
     public CameraControl CameraControl;
 
     public enum ActorState
@@ -37,8 +36,6 @@ public class Actor : MonoBehaviourPun, IPunObservable
         Fall = 0x80,
         Climb = 0x100,
         Debuff = 0x200,
-        BalloonWalk = 0x400,
-     
     }
 
     public enum DebuffState
@@ -52,7 +49,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
         Shock =     0x20, 
         Stun =      0x40, 
         Drunk =     0x80,  
-        Balloon =   0x100, 
+        //Balloon =   0x100, 
         Ghost =     0x200,
     }
 
@@ -160,7 +157,6 @@ public class Actor : MonoBehaviourPun, IPunObservable
         StatusHandler = GetComponent<StatusHandler>();
         PlayerController = GetComponent<PlayerController>();
         Grab = GetComponent<Grab>();
-        BalloonState = GetComponent<BalloonState>();
         ChangeLayerRecursively(gameObject, LayerCnt++);
         Init();
     }

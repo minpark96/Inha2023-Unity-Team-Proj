@@ -16,22 +16,18 @@ public class LauncherUI : MonoBehaviour
     private GameObject _errorPanel;
     private GameObject _feedbackPanel;
     private Regex specialRegex = new Regex(@"[~!@\#$%^&*\()\=+|\\/:;?""<>'\[\].,]");
-    
+    private GameObject _bgmSound;
+
     private string _nickName;
     private string _mainSceneName = "[2]Main";
     
-    private GameObject _bgmSound;
-
     public Text ErrorText;
     public VideoPlayer Video;
+    public GameObject PlaceHolder;
+    public InputField InputField;
 
-
-    void Awake()
-    {
-        Init();
-    }
-
-    void Init()
+  
+    void Start()
     {
         _startPanel = GameObject.Find("Start Panel");
         _controlPanel = GameObject.Find("Control Panel");
@@ -43,6 +39,9 @@ public class LauncherUI : MonoBehaviour
         _cancelPanel.SetActive(false);
         _errorPanel.SetActive(false);
         _feedbackPanel.SetActive(false);
+
+        PlaceHolder.SetActive(true);
+        InputField.onValueChanged.AddListener(SetPlayerName);
 
         Screen.SetResolution(960, 540, false);
 
@@ -59,6 +58,17 @@ public class LauncherUI : MonoBehaviour
         _bgmSound.GetComponent<AudioSource>().Play();
     }
 
+    void SetPlayerName(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            PlaceHolder.SetActive(true);
+        }
+
+        PlaceHolder.SetActive(false);
+
+        PhotonNetwork.NickName = value;
+    }
 
     public void OnClickGameStart()
     {
