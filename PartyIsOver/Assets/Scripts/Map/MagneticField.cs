@@ -62,6 +62,11 @@ public class MagneticField : MonoBehaviour
         FreezeImage = mainPanel.transform.GetChild(0).gameObject;
 
         StartCoroutine(FirstPhase(1));
+
+        // 라운드 재시작시
+        GameObject sound = GameObject.Find("@Sound").transform.GetChild((int)Define.Sound.InGameStackSound).gameObject;
+        sound.GetComponent<AudioSource>().Stop();
+        _isPlayingStackSound = false;
     }
 
   
@@ -72,8 +77,10 @@ public class MagneticField : MonoBehaviour
         ActorList[index].actorState = Actor.ActorState.Dead;
         ActorList[index].StatusHandler._isDead = true;
         ActorList[index].Health = 0;
+        ActorList[index].MagneticStack = 0;
         ActorList[index].InvokeDeathEvent();
         ActorList[index].InvokeStatusChangeEvent();
+
     }
 
     public void ChangeMainPanel()

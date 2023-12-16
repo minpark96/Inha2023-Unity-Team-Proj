@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 
@@ -9,8 +8,7 @@ public class EndingUI : MonoBehaviour
 {
     public GameObject PopUpPanel;
     public GameObject Winner;
-    public int WinnerNumber;
-
+    public Text WinnerName;
 
     private void Start()
     {
@@ -43,11 +41,8 @@ public class EndingUI : MonoBehaviour
         endingBgm.clip = audioClip;
         endingBgm.volume = Managers.Sound.SoundVolume[(int)Define.Sound.Bgm];
         Managers.Sound.Play(audioClip, Define.Sound.Bgm);
-       
 
-        PhotonManager.Instance.Connect();
-        PhotonManager.Instance.LoadNextScene("[2]Main");
-        SceneManager.LoadSceneAsync("[2]Main");
+        PhotonManager.Instance.LeaveRoom();
     }
 
     public void OnClickCancel()

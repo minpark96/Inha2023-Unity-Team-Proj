@@ -506,6 +506,7 @@ public class GameCenter : BaseScene
 
         _endingUI = GameObject.Find("Canvas").GetComponent<EndingUI>();
         _endingUI.SetWinner(winner);
+        _endingUI.WinnerName.text = _nicknames[winner];
     }
 
     [PunRPC]

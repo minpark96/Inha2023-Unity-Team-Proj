@@ -140,16 +140,7 @@ public class SoundManager
             //.Bgm만 관련한 사운드 제어
             audioClip = Managers.Resource.Load<AudioClip>(path);
         }
-        else if(type == Define.Sound.UISound) 
-        {
-            //effect 관련한 사운드 제어
-            if (_audioClip.TryGetValue(path, out audioClip) == false)
-            {
-                audioClip = Managers.Resource.Load<AudioClip>(path);
-                _audioClip.Add(path, audioClip);
-            }
-        }
-        else if(type == Define.Sound.UIInGameSound)
+        else
         {
             if (_audioClip.TryGetValue(path, out audioClip) == false)
             {
@@ -157,30 +148,7 @@ public class SoundManager
                 _audioClip.Add(path, audioClip);
             }
         }
-        else if(type == Define.Sound.PlayerEffect)
-        {
-            if (_audioClip.TryGetValue(path, out audioClip) == false)
-            {
-                audioClip = Managers.Resource.Load<AudioClip>(path);
-                _audioClip.Add(path, audioClip);
-            }
-        }
-        else if (type == Define.Sound.InGameStackSound)
-        {
-            if (_audioClip.TryGetValue(path, out audioClip) == false)
-            {
-                audioClip = Managers.Resource.Load<AudioClip>(path);
-                _audioClip.Add(path, audioClip);
-            }
-        }
-        else if (type == Define.Sound.InGameWarning)
-        {
-            if (_audioClip.TryGetValue(path, out audioClip) == false)
-            {
-                audioClip = Managers.Resource.Load<AudioClip>(path);
-                _audioClip.Add(path, audioClip);
-            }
-        }
+        
 
         if (audioClip == null)
             Debug.Log($"AudioClip Missing : {path}");
@@ -199,5 +167,6 @@ public class SoundManager
     {
         _audioSources[(int)Define.Sound.Bgm].volume = SoundVolume[(int)Define.Sound.Bgm];
         _audioSources[(int)Define.Sound.UIInGameSound].volume = SoundVolume[(int)Define.Sound.UIInGameSound];
+        _audioSources[(int)Define.Sound.PlayerEffect].volume = SoundVolume[(int)Define.Sound.PlayerEffect];
     }
 }

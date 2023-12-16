@@ -13,7 +13,9 @@ public class ArenaSettingsUI : MonoBehaviour
     private bool _isClicked;
 
     public Slider BGMAudioSlider;
+    public Slider UIAudioSlider;
     public Slider EffectAudioSlider;
+
 
 
     void Start()
@@ -89,7 +91,9 @@ public class ArenaSettingsUI : MonoBehaviour
         Managers.Sound.Play(uiSound, Define.Sound.UIInGameSound);
 
         Managers.Sound.SoundVolume[(int)Define.Sound.Bgm] = 0.1f * BGMAudioSlider.value;
-        Managers.Sound.SoundVolume[(int)Define.Sound.UIInGameSound] = 1f * EffectAudioSlider.value;
+        Managers.Sound.SoundVolume[(int)Define.Sound.UIInGameSound] = 1f * UIAudioSlider.value;
+        Managers.Sound.SoundVolume[(int)Define.Sound.PlayerEffect] = 1f * EffectAudioSlider.value;
+
         Managers.Sound.ChangeVolumeInArena();
         _soundPanel.SetActive(false);
     }
@@ -101,10 +105,13 @@ public class ArenaSettingsUI : MonoBehaviour
 
         Managers.Sound.SoundVolume[(int)Define.Sound.Bgm] = 0.1f * 1;
         Managers.Sound.SoundVolume[(int)Define.Sound.UIInGameSound] = 1f * 1;
-        Managers.Sound.ChangeVolumeInArena();
+        Managers.Sound.SoundVolume[(int)Define.Sound.PlayerEffect] = 1f * 1;
 
         BGMAudioSlider.value = 1;
+        UIAudioSlider.value = 1;
         EffectAudioSlider.value = 1;
+
+        Managers.Sound.ChangeVolumeInArena();
         _soundPanel.SetActive(false);
     }
 

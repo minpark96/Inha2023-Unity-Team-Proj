@@ -18,6 +18,7 @@ public class PhotonManager : BaseScene
     string _sceneMain = "[2]Main";
     string _sceneLobby = "[3]Lobby";
     string _sceneRoom = "[4]Room";
+    string _sceneEnding = "[6]Ending";
 
     float _nextUpdateTime = 1f;
     float _timeBetweenUpdate = 1.5f;
@@ -201,8 +202,14 @@ public class PhotonManager : BaseScene
     public override void OnLeftRoom()
     {
         Debug.Log("[OnLeftRoom()]");
-        StartCoroutine(LoadNextScene(_sceneLobby));
-        //SceneManager.LoadSceneAsync("[3]Lobby");
+        if(SceneManager.GetActiveScene().name == _sceneEnding)
+        {
+            StartCoroutine(LoadNextScene(_sceneMain));
+        }
+        else
+        {
+            StartCoroutine(LoadNextScene(_sceneLobby));
+        }
     }
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
