@@ -10,33 +10,31 @@ using static InteractableObject;
 public class StatusHandler : MonoBehaviourPun
 {
     private float _damageModifer = 1f;
+    private float _knockoutThreshold = 15f;
+    private float _healthDamage;
+    private float _maxSpeed;
 
     public Actor actor;
 
     public bool invulnerable = false;
-
-    private float _healthDamage;
     public bool _isDead;
 
-
-    private float _knockoutThreshold = 15f;
 
     // 초기 관절값
     private List<float> _xPosSpringAry = new List<float>();
     private List<float> _yzPosSpringAry = new List<float>();
 
-   
-    // 초기 속도
-    private float _maxSpeed;
 
     // 추후 DebuffTime Actor에서만 사용할 예정
-    public float StunTime = 2f;
-    public float BurnTime = 3f;
-    public float IceTime = 3f;
-    public float PowerUpTime = 3f;
-    public float Drunktime = 5f;
-    public float Slowtime = 5f;
-    public float ShockTime = 5f;
+    public float StunTime;
+    public float BurnTime;
+    public float FreezeTime;
+    public float PowerUpTime;
+    public float DrunkTime;
+    public float SlowTime;
+    public float ShockTime;
+
+    public float BurnDamage;
 
 
     // 버프 확인용 플래그
@@ -56,27 +54,6 @@ public class StatusHandler : MonoBehaviourPun
     AudioClip _audioClip = null;
     AudioSource _audioSource;
 
-    [Header("Debuff Duration")]
-    [SerializeField]
-    private float _powerUpTime;
-    [SerializeField]
-    private float _burnTime;
-    [SerializeField]
-    private float _exhaustedTime;
-    [SerializeField]
-    private float _slowTime;
-    [SerializeField]
-    private float _freezeTime;
-    [SerializeField]
-    private float _shockTime;
-    [SerializeField]
-    private float _stunTime;
-
-    [Header("Debuff Damage")]
-    [SerializeField]
-    public float _iceDamage;
-    [SerializeField]
-    public float _burnDamage;
 
     public Context _context;
     Stun stunInStance;
@@ -92,13 +69,13 @@ public class StatusHandler : MonoBehaviourPun
     private void Init()
     {
         StatusData data = Managers.Resource.Load<StatusData>("ScriptableObject/StatusData");
-        _stunTime = data.StunTime;
-        _burnTime = data.BurnTime;
-        _freezeTime = data.FreezeTime;
-        _powerUpTime = data.PowerUpTime;
-        //_drunkTime = data.DrunkTime; // _drunkTime 없음
-        _slowTime = data.SlowTime;
-        _shockTime = data.ShockTime;
+        StunTime = data.StunTime;
+        BurnTime = data.BurnTime;
+        FreezeTime = data.FreezeTime;
+        PowerUpTime = data.PowerUpTime;
+        DrunkTime = data.DrunkTime;
+        SlowTime = data.SlowTime;
+        ShockTime = data.ShockTime;
     }
 
     private void Awake()
@@ -252,7 +229,7 @@ public class StatusHandler : MonoBehaviourPun
                     break;
                 case Actor.DebuffState.Slow:
                     if (!_hasSlow)
-                        photonView.RPC("Slow", RpcTarget.All, _slowTime);
+                        photonView.RPC("Slow", RpcTarget.All, SlowTime);
                     break;
                 case Actor.DebuffState.Shock:
                     if (!_hasShock)
@@ -279,7 +256,7 @@ public class StatusHandler : MonoBehaviourPun
     [PunRPC]
     void RPCPoisonCreate()
     {
-        _context.ChangeState(drunkInStance, Drunktime);
+        _context.ChangeState(drunkInStance, DrunkTime);
     }
 
     [PunRPC]
@@ -308,7 +285,7 @@ public class StatusHandler : MonoBehaviourPun
     [PunRPC]
     void RPCIceCreate()
     {
-        _context.ChangeState(IceInStance, IceTime);
+        _context.ChangeState(IceInStance, FreezeTime);
     }
 
     [PunRPC]
@@ -421,7 +398,7 @@ public class StatusHandler : MonoBehaviourPun
         //데미지 이펙트나 사운드 추후 추가
 
         //actor.debuffState = Actor.DebuffState.Stun;
-        photonView.RPC("ChangeStateMachines", RpcTarget.All, _stunTime);
+        photonView.RPC("ChangeStateMachines", RpcTarget.All, StunTime);
         //StartCoroutine(ResetBodySpring());
         actor.Grab.GrabResetTrigger();
         actor.BodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
