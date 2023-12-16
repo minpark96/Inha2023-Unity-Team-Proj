@@ -59,12 +59,25 @@ public class Context : MonoBehaviourPun
 
     public void ChangeState(IDebuffState newState, float time = 0)
     {
-        //같은 상태가 중복되면 쿨을 늘리는 것보다 그냥 있던 것을 끝내는 것 같은 상태이면 return
         foreach(var state in _currentStateList)
         {
-            if(state != null)
+            //같은 상태가 중복되면 쿨을 늘리는 것보다 그냥 있던 것을 끝내는 것 같은 상태이면 return
+            if (state != null)
             {
                 if (state == newState)
+                    return;
+            }
+
+            //새로 들어온 상태가 Ice 면은 나머지 상태들은 일단 다 종료
+            if(newState.ToString().Contains("Ice"))
+            {
+                state.ExitState();
+            }
+
+            //감전 상태인데 스턴이 들어오면 return;
+            if(state.ToString().Contains("Shock"))
+            {
+                if (newState.ToString().Contains("Stun"))
                     return;
             }
         }
