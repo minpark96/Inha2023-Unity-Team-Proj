@@ -53,7 +53,7 @@ public class DrunkState : MonoBehaviourPun
     public IEnumerator DrunkOff()
     {
         yield return new WaitForSeconds(DrunkDuration);
-        _actor.debuffState = Actor.DebuffState.Default;
+        _actor.debuffState &= Actor.DebuffState.Drunk;
 
         _playerController.isDrunk = false;
         _actor.StatusHandler.HasDrunk = false;

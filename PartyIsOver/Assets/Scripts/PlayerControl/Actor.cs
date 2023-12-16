@@ -198,7 +198,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
     void RecoveryStamina()
     {
         //회복해주는 수치
-        if (debuffState != Actor.DebuffState.Exhausted)
+        if (!((debuffState & DebuffState.Exhausted) == DebuffState.Exhausted))
         {
             currentRecoveryTime = RecoveryTime;
             currentRecoveryStaminaValue = RecoveryStaminaValue;
@@ -253,7 +253,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
                 if (actorState == ActorState.Run || GrabState == GrabState.Climb)
                 {
                     //뛰거나 잡기 상태일때 만약 특수 디버프 상태가 들어오면 계속 까이는 현상이 있는데 조건을 걸어서 방지
-                    if (debuffState == Actor.DebuffState.Ice || debuffState == Actor.DebuffState.Shock)
+                    if ((debuffState & DebuffState.Ice) == DebuffState.Ice || (debuffState & DebuffState.Shock) == DebuffState.Shock)
                     {
                         _stamina -= 0;
                         //photonView.RPC("DecreaseStamina", RpcTarget.All, 0f);
@@ -261,10 +261,13 @@ public class Actor : MonoBehaviourPun, IPunObservable
                         GrabState = GrabState.None;
                         //PlayerController.isRun = false;
                     }
-                    else
+                    else if(_stamina == 0)
                     {
-                        _stamina -= 1;
+                        _stamina = -1f;
+                        actorState = ActorState.Walk;
                     }
+                    else
+                        _stamina -= 1;
                         //photonView.RPC("DecreaseStamina", RpcTarget.All, 1f);
                 }
                 else if (PlayerController._isRSkillCheck || PlayerController.isHeading || PlayerController._isCoroutineDrop)

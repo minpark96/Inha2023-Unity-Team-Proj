@@ -36,7 +36,7 @@ public class Drunk : MonoBehaviourPun, IDebuffState
     {
         RemoveObject("Fog_poison");
 
-        MyActor.debuffState = Actor.DebuffState.Default;
+        MyActor.debuffState &= ~Actor.DebuffState.Drunk;
         _audioClip = null;
     }
     public void InstantiateEffect(string path)
