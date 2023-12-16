@@ -19,13 +19,13 @@ MonoBehaviour:
   _nuclearPunchDamage: 1000
   _meowNyangPunchDamage: 1000
   _objectForceNormal: 35
-  _punchForceNormal: 40
+  _punchForceNormal: 10
   _dropkickForceNormal: 100
   _headbuttForceNormal: 50
   _nuclearPunchForceNormal: 40
-  _meowNyangPunchForceNormal: 40
+  _meowNyangPunchForceNormal: 20
   _objectForceUp: 20
-  _punchForceUp: 20
+  _punchForceUp: 5
   _headbuttForceUp: 50
   _dropkickForceUp: 30
   _nuclearPunchForceUp: 20

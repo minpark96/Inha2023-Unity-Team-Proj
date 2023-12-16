@@ -50,8 +50,8 @@ public class ArenaSettingsUI : MonoBehaviour
     {
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
-
-        _settingsPanel.SetActive(true);
+        if (_settingsPanel != null)
+            _settingsPanel.SetActive(true);
     }
 
     void SetSettingsInactive()
@@ -59,7 +59,8 @@ public class ArenaSettingsUI : MonoBehaviour
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
 
-        _settingsPanel.SetActive(false);
+        if(_settingsPanel !=null)
+            _settingsPanel.SetActive(false);
     }
 
 
