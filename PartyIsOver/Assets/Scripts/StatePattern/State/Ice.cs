@@ -47,7 +47,7 @@ public class Ice : MonoBehaviour, IDebuffState
         }
 
         MyActor.actorState = Actor.ActorState.Stand;
-        MyActor.debuffState &= Actor.DebuffState.Ice;
+        MyActor.debuffState &= ~Actor.DebuffState.Ice;
 
         MyActor.InvokeStatusChangeEvent();
         RemoveObject("Fog_frost");

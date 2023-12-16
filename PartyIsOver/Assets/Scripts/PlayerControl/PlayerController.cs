@@ -542,7 +542,7 @@ public class PlayerController : MonoBehaviourPun
                         if (_actor.Stamina <= 0)
                         {
                             photonView.RPC("SetStemina", RpcTarget.MasterClient, 0f);
-                            _actor.debuffState |= Actor.DebuffState.Exhausted;
+                            _actor.debuffState |= DebuffState.Exhausted;
                         }
 
                         if ((_actor.debuffState & DebuffState.Exhausted) == DebuffState.Exhausted)

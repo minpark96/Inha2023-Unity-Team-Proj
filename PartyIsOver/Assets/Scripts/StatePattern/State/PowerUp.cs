@@ -35,7 +35,7 @@ public class PowerUp : MonoBehaviourPun, IDebuffState
 
     public void ExitState()
     {
-        MyActor.debuffState &= Actor.DebuffState.PowerUp;
+        MyActor.debuffState &= ~Actor.DebuffState.PowerUp;
         MyActor.PlayerController.RunSpeed -= _maxSpeed * 0.1f;
         RemoveObject("Aura_acceleration");
         MyActor.InvokeStatusChangeEvent();

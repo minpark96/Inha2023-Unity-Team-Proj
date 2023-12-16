@@ -45,7 +45,7 @@ public class Stun : MonoBehaviourPun , IDebuffState
 
         RemoveObject("Stun_loop");
         MyActor.actorState = Actor.ActorState.Stand;
-        MyActor.debuffState &= Actor.DebuffState.Stun;
+        MyActor.debuffState &= ~Actor.DebuffState.Stun;
         //MyActor.InvokeStatusChangeEvent();
 
     }

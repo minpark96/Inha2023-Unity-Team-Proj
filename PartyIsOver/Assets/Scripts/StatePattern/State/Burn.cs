@@ -50,7 +50,7 @@ public class Burn : MonoBehaviourPun , IDebuffState
     {
         TransferDebuffToPlayer((int)InteractableObject.Damage.Default);
         MyActor.actorState = Actor.ActorState.Stand;
-        MyActor.debuffState &= Actor.DebuffState.Burn;
+        MyActor.debuffState &= ~Actor.DebuffState.Burn;
 
         RemoveObject("Fire_large");
         MyActor.InvokeStatusChangeEvent();
