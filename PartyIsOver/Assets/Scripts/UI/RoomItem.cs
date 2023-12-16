@@ -12,17 +12,11 @@ public class RoomItem : MonoBehaviour
     public Sprite PublicImage;
     public Sprite PrivateImage;
 
-
     LobbyUI Lobby;
 
     private void Start()
     {
         Lobby = FindObjectOfType<LobbyUI>();
-
-        if (Lobby.IsClicked)
-            RoomPrefabImage.sprite = PrivateImage;
-        else
-            RoomPrefabImage.sprite = PublicImage;
     }
 
     public void SetRoomName(string roomName, int member)

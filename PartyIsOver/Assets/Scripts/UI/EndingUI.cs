@@ -17,11 +17,9 @@ public class EndingUI : MonoBehaviour
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
 
-
         AudioSource endingBgm = Managers.Sound.GetBgmAudioSource();
         AudioClip audioClip = Managers.Resource.Load<AudioClip>("Sounds/Bgm/Runaway Train LOOPING");
         endingBgm.clip = audioClip;
-        endingBgm.volume = 0.1f;
         Managers.Sound.Play(audioClip, Define.Sound.Bgm);
 
         StartCoroutine(PopUp());
