@@ -11464,20 +11464,20 @@ MonoBehaviour:
     ActionRigidbodies:
     - {fileID: 5853449777567680612}
     - {fileID: 4074442034416599436}
-    ForceDirections: 0000000000000000
+    ForceDirections: 0200000002000000
     ForcePowerValues:
-    - 100
-    - 100
+    - 450
+    - 450
   - StandardRigidbodies:
     - {fileID: 5856347132035830517}
     - {fileID: 5856347132035830517}
     ActionRigidbodies:
     - {fileID: 5855912155739742608}
     - {fileID: 4616642209230047272}
-    ForceDirections: 0000000000000000
+    ForceDirections: 0200000002000000
     ForcePowerValues:
-    - 100
-    - 100
+    - 450
+    - 450
   - StandardRigidbodies:
     - {fileID: 5856379624502544924}
     - {fileID: 5856379624502544924}
@@ -12228,6 +12228,8 @@ MonoBehaviour:
   NuclearPunchReadyPunch: 0.1
   NuclearPunching: 0.1
   NuclearPunchResetPunch: 0.1
+  HeadingCoolTime: 1
+  DropkickCoolTime: 2
   ChargeTime: 1.3
   BalloonJump: 0
   BalloonDrop: 0

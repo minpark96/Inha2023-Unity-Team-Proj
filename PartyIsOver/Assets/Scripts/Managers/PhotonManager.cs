@@ -68,10 +68,6 @@ public class PhotonManager : BaseScene
     public void LeaveRoom()
     {
         PhotonNetwork.LeaveRoom();
-
-        Connect();
-        StartCoroutine(LoadNextScene(_sceneLobby));
-        SceneManager.LoadSceneAsync("[3]Lobby");
     }
 
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -79,7 +75,7 @@ public class PhotonManager : BaseScene
         GameCenter gameCenter = new GameCenter();
         if (scene.name == "[4]Room")
         {
-            SceneType = Define.Scene.Lobby;
+            SceneType = Define.SceneType.Lobby;
             gameCenter.SetSceneBgmSound("LaxLayoverLOOPING");
         }
     }
@@ -206,7 +202,7 @@ public class PhotonManager : BaseScene
     {
         Debug.Log("[OnLeftRoom()]");
         StartCoroutine(LoadNextScene(_sceneLobby));
-        SceneManager.LoadSceneAsync("[3]Lobby");
+        //SceneManager.LoadSceneAsync("[3]Lobby");
     }
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)

@@ -47,9 +47,10 @@ public class Ice : MonoBehaviour, IDebuffState
         }
 
         MyActor.actorState = Actor.ActorState.Stand;
-        MyActor.debuffState = Actor.DebuffState.Default;
+        MyActor.debuffState &= ~Actor.DebuffState.Ice;
 
         MyActor.InvokeStatusChangeEvent();
+        PlayerDebuffSound("PlayerEffect/Item_UI_033");
         RemoveObject("Fog_frost");
         RemoveObject("IceCube");
 
@@ -75,7 +76,6 @@ public class Ice : MonoBehaviour, IDebuffState
     {
         _audioClip = Managers.Sound.GetOrAddAudioClip(path);
         _audioSource.clip = _audioClip;
-        _audioSource.volume = 0.2f;
         _audioSource.spatialBlend = 1;
         Managers.Sound.Play(_audioClip, Define.Sound.PlayerEffect, _audioSource);
     }

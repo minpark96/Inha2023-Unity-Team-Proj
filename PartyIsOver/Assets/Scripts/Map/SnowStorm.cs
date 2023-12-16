@@ -4,82 +4,118 @@ using UnityEngine;
 
 public class SnowStorm : MonoBehaviour
 {
-    public float FirstPhaseDuration = 20f;
-    public float SecondPhaseDuration = 20f;
-    public float ThirdPhaseDuration = 20f;
+    public float[] PhaseDuration = { 0f, 8f, 8f, 8f };
+    public float[] PhaseStartTime = { 0f, 30f, 30f, 30f };
+    private float _stormForce = 7.5f;
 
-    public float FirstPhaseStartTime = 20f;
-    public float SecondPhaseStartTime = 40f;
-    public float ThirdPhaseStartTime = 40f;
 
-    public Actor Actor;
+    public List<Actor> ActorList;
+    public Actor MyActor;
 
-    private float _stormForce = 7f;
+    private int _childCount = 3;
+    private GameObject[] _snowStormChild = new GameObject[3];
 
     private void Start()
     {
-        StartCoroutine(FirstPhase());
+        for (int i = 0; i < _childCount; i++)
+        {
+            _snowStormChild[i] = this.transform.GetChild(i).gameObject;
+            _snowStormChild[i].SetActive(false);
+        }
+
+        StartCoroutine(FirstPhase(1));
     }
 
-    IEnumerator FirstPhase()
+    IEnumerator FirstPhase(int index)
     {
-        yield return new WaitForSeconds(FirstPhaseStartTime);
-        
-        //Actor.PlayerController.RunSpeed = 200;
+        yield return new WaitForSeconds(PhaseStartTime[index]);
 
-        float startTime = Time.time;
-        while(Time.time - startTime < FirstPhaseDuration)
+        for (int i = 0; i < _childCount; i++)
         {
-            for (int i = 0; i < Actor.BodyHandler.BodyParts.Count; i++)
+            _snowStormChild[i].SetActive(true);
+        }
+
+        for (int i = 0; i  < ActorList.Count; i++)
+        {
+            if (ActorList[i].photonView.IsMine)
             {
-                Actor.BodyHandler.BodyParts[i].PartRigidbody.AddForce(transform.right * _stormForce * Time.deltaTime, ForceMode.VelocityChange);
+                MyActor = ActorList[i];
+                break;
+            }
+        }
+       
+        float startTime = Time.time;
+        while(Time.time - startTime < PhaseDuration[index])
+        {
+            for (int i = 0; i < MyActor.BodyHandler.BodyParts.Count; i++)
+            {
+                MyActor.BodyHandler.BodyParts[i].PartRigidbody.AddForce(transform.right * _stormForce * Time.deltaTime, ForceMode.VelocityChange);
             }
 
             yield return null;
         }
 
-        StartCoroutine(SecondPhase());
+        StartCoroutine(SecondPhase(2));
     }
 
-    IEnumerator SecondPhase()
+    IEnumerator SecondPhase(int index)
     {
-        //Actor.PlayerController.RunSpeed = 100;
+        for (int i = 0; i < _childCount; i++)
+        {
+            _snowStormChild[i].SetActive(false);
+        }
 
-        yield return new WaitForSeconds(SecondPhaseStartTime);
+        yield return new WaitForSeconds(PhaseStartTime[index]);
 
-        //Actor.PlayerController.RunSpeed = 200;
+        for (int i = 0; i < _childCount; i++)
+        {
+            _snowStormChild[i].SetActive(true);
+        }
+
 
         float startTime = Time.time;
-        while (Time.time - startTime < SecondPhaseDuration)
+        while (Time.time - startTime < PhaseDuration[index])
         {
-            for (int i = 0; i < Actor.BodyHandler.BodyParts.Count; i++)
+            for (int i = 0; i < MyActor.BodyHandler.BodyParts.Count; i++)
             {
-                Actor.BodyHandler.BodyParts[i].PartRigidbody.AddForce(transform.right * _stormForce * Time.deltaTime, ForceMode.VelocityChange);
+                MyActor.BodyHandler.BodyParts[i].PartRigidbody.AddForce(transform.right * _stormForce * Time.deltaTime, ForceMode.VelocityChange);
             }
 
             yield return null;
         }
 
-        StartCoroutine(ThirdPhase());
+        StartCoroutine(ThirdPhase(3));
     }
 
-    IEnumerator ThirdPhase()
+    IEnumerator ThirdPhase(int index)
     {
-        //Actor.PlayerController.RunSpeed = 100;
+        for (int i = 0; i < _childCount; i++)
+        {
+            _snowStormChild[i].SetActive(false);
+        }
 
-        yield return new WaitForSeconds(ThirdPhaseStartTime);
+        yield return new WaitForSeconds(PhaseStartTime[index]);
 
-        //Actor.PlayerController.RunSpeed = 200;
+        for (int i = 0; i < _childCount; i++)
+        {
+            _snowStormChild[i].SetActive(true);
+        }
+
 
         float startTime = Time.time;
-        while (Time.time - startTime < ThirdPhaseDuration)
+        while (Time.time - startTime < PhaseDuration[index])
         {
-            for (int i = 0; i < Actor.BodyHandler.BodyParts.Count; i++)
+            for (int i = 0; i < MyActor.BodyHandler.BodyParts.Count; i++)
             {
-                Actor.BodyHandler.BodyParts[i].PartRigidbody.AddForce(transform.right * _stormForce * Time.deltaTime, ForceMode.VelocityChange);
+                MyActor.BodyHandler.BodyParts[i].PartRigidbody.AddForce(transform.right * _stormForce * Time.deltaTime, ForceMode.VelocityChange);
             }
 
             yield return null;
+        }
+
+        for (int i = 0; i < _childCount; i++)
+        {
+            _snowStormChild[i].SetActive(false);
         }
     }
 }

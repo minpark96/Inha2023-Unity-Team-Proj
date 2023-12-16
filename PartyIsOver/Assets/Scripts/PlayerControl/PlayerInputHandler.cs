@@ -36,14 +36,16 @@ public class PlayerInputHandler : MonoBehaviourPun
         if (!photonView.IsMine || _actor.actorState == ActorState.Dead)
             return;
 
-        if (_actor.debuffState == DebuffState.Ice || _actor.debuffState == DebuffState.Shock || _actor.debuffState == DebuffState.Stun)
+        if ((_actor.debuffState & DebuffState.Ice) == DebuffState.Ice ||
+            (_actor.debuffState & DebuffState.Shock) == DebuffState.Shock ||
+            (_actor.debuffState & DebuffState.Stun) == DebuffState.Stun)
             return;
 
         _actor.PlayerController.OnKeyboardEvent_Move(evt);
 
         if (_actor.GrabState != Define.GrabState.EquipItem)
         {
-            if(_actor.debuffState != DebuffState.Exhausted)
+            if(!((_actor.debuffState & DebuffState.Exhausted) == DebuffState.Exhausted))
                 _actor.PlayerController.OnKeyboardEvent_Skill(evt);
         }
 
@@ -79,7 +81,9 @@ public class PlayerInputHandler : MonoBehaviourPun
         if (!photonView.IsMine || _actor.actorState == ActorState.Dead)
             return;
 
-        if (_actor.debuffState == DebuffState.Ice || _actor.debuffState == DebuffState.Shock || _actor.debuffState == DebuffState.Stun)
+        if ((_actor.debuffState & DebuffState.Ice) == DebuffState.Ice ||
+            (_actor.debuffState & DebuffState.Shock) == DebuffState.Shock ||
+            (_actor.debuffState & DebuffState.Stun) == DebuffState.Stun)
             return;
 
         if (_actor.GrabState != Define.GrabState.EquipItem)
@@ -89,7 +93,7 @@ public class PlayerInputHandler : MonoBehaviourPun
             if (_actor.debuffState == DebuffState.Balloon)
                 return;
 
-            if (_actor.debuffState != DebuffState.Burn)
+            if (!((_actor.debuffState & DebuffState.Burn) == DebuffState.Burn))
                 if (_actor.GrabState == Define.GrabState.PlayerLift)
                 {
                     _actor.Grab.OnMouseEvent_LiftPlayer(evt);

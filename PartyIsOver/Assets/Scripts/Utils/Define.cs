@@ -34,7 +34,7 @@ public class Define
         PlayerEffect,
     }
 
-    public enum Scene
+    public enum SceneType
     {
         Unknown,
         Login,
@@ -49,6 +49,8 @@ public class Define
         UISound,
         UIInGameSound,
         PlayerEffect,
+        InGameStackSound,
+        InGameWarning,
         Maxcount,
     }
 

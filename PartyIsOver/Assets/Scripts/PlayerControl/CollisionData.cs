@@ -7,7 +7,7 @@ public class CollisionData : ScriptableObject
 {
     [Header("DamageMultiple")]
     [SerializeField] private float _objectDamage;
-    public float _ObjectDamage { get { return _objectDamage; } }
+    public float ObjectDamage { get { return _objectDamage; } }
     [SerializeField] private float _punchDamage;
     public float PunchDamage { get { return _punchDamage; } }
     [SerializeField] private float _dropkickDamage;

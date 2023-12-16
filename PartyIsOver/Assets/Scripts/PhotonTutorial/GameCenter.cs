@@ -10,6 +10,7 @@ using static Actor;
 using System.Reflection;
 using System.Linq;
 using Unity.VisualScripting;
+using static Define;
 
 public class GameCenter : BaseScene
 {
@@ -17,9 +18,12 @@ public class GameCenter : BaseScene
 
     [SerializeField]
     RoomUI _roomUI;
-    ScoreBoardUI _scoreBoardUI;
+    
     [SerializeField]
     EndingUI _endingUI;
+
+    ScoreBoardUI _scoreBoardUI;
+    ArenaSettingsUI _arenaSettingsUI;
 
     MagneticField _magneticField;
     Floor _floor;
@@ -47,7 +51,8 @@ public class GameCenter : BaseScene
     public int[] _actorNumbers = new int[Define.MAX_PLAYERS_PER_ROOM] { 0, 0, 0, 0, 0, 0 };
 
 
-    int[] _checkArea = new int[Define.MAX_PLAYERS_PER_ROOM];
+    int[] _checkAreaName = new int[Define.MAX_PLAYERS_PER_ROOM];
+    bool[] _checkInside = new bool[Define.MAX_PLAYERS_PER_ROOM];
 
     #endregion
 
@@ -141,6 +146,35 @@ public class GameCenter : BaseScene
         DontDestroyOnLoad(this.gameObject);
     }
 
+    private void OnDestroy()
+    {
+        if (SceneManager.GetActiveScene().name == _roomName)
+        {
+            _roomUI.UnsubscribeKeyboardEvent();
+            _roomUI.OnChangeSkiilEvent -= ToggleSkillSelection;
+            _roomUI.OnLeaveRoom -= LeaveRoom;
+            _roomUI.OnReadyEvent -= AnnouncePlayerReady;
+        }
+        else if (SceneManager.GetActiveScene().name == _arenaName)
+        {
+            MyActor.OnChangeStaminaBar -= UpdateStaminaBar;
+            _arenaSettingsUI.ReloadArenaSettingsUI();
+
+            if (PhotonNetwork.LocalPlayer.IsMasterClient)
+            {
+                foreach (Actor actor in Actors)
+                {
+                    actor.OnChangePlayerStatus -= SendInfo;
+                    actor.OnKillPlayer -= AnnounceDeath;
+                }
+
+                _magneticField.CheckMagneticFieldArea -= CheckPlayerArea;
+                _magneticField.UpdateMagneticStack -= SendPlayerMagneticStack;
+                _floor.CheckFloorStack -= CheckPlayerFloor;
+            }
+        }
+    }
+
     public void SetSceneBgmSound(string path)
     {
         GameObject root = GameObject.Find("@Sound");
@@ -159,7 +193,7 @@ public class GameCenter : BaseScene
                 _audioSources.volume = 0.1f;
                 Managers.Sound.Play(audioClip, Define.Sound.Bgm);
 
-                Managers.Sound.ChangeVolume();
+                Managers.Sound.ChangeVolumeInMain();
             }
 
             if (_roomName == currentSceneName)
@@ -170,7 +204,7 @@ public class GameCenter : BaseScene
                 _audioSources.volume = 0.1f;
                 Managers.Sound.Play(audioClip, Define.Sound.Bgm);
 
-                Managers.Sound.ChangeVolume();
+                Managers.Sound.ChangeVolumeInMain();
             }
         }
     }
@@ -286,6 +320,7 @@ public class GameCenter : BaseScene
     [PunRPC]
     void UnsubscribeRoomEvent()
     {
+        _roomUI.UnsubscribeKeyboardEvent();
         _roomUI.OnChangeSkiilEvent -= ToggleSkillSelection;
         _roomUI.OnLeaveRoom -= LeaveRoom;
         _roomUI.OnReadyEvent -= AnnouncePlayerReady;
@@ -370,10 +405,13 @@ public class GameCenter : BaseScene
             _scoreBoardUI = GameObject.Find("ScoreBoard Panel").GetComponent<ScoreBoardUI>();
             _scoreBoardUI.InitScoreBoard();
 
-            SceneType = Define.Scene.Game;
+            _arenaSettingsUI = GameObject.Find("Settings Panel").GetComponent<ArenaSettingsUI>();
+
+            SceneType = Define.SceneType.Game;
             SetSceneBgmSound("BigBangBattleLOOPING");
 
             InitItems();
+            Actor.LayerCnt = (int)Define.Layer.Player1;
 
             photonView.RPC("SendLoadingComplete", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber);
 
@@ -479,7 +517,6 @@ public class GameCenter : BaseScene
 
         if (LoadingCompleteCount == PhotonNetwork.CurrentRoom.PlayerCount)
         {
-            Debug.Log("Start Game");
             AlivePlayerCount = PhotonNetwork.CurrentRoom.PlayerCount;
             photonView.RPC("CreatePlayer", RpcTarget.All);
             StartItemSpawnTimerCoroutine = StartCoroutine(StartItemSpawnTimer());
@@ -503,14 +540,13 @@ public class GameCenter : BaseScene
             case 0:
                 {
                     SetItemsActive((int)Define.SpawnableItemType.TwoHanded, ChooseRandomItemRootTypes((int)Define.SpawnableItemType.TwoHanded, 1));
+                    SetItemsActiveForTest(); // 정식판에선 주석
                 }
                 break;
             case 1:
                 {
                     SetItemsActive((int)Define.SpawnableItemType.Consumable, ChooseRandomItemRootTypes((int)Define.SpawnableItemType.Consumable, 3));
-                    List<int> rootTypes = ChooseRandomItemRootTypes((int)Define.SpawnableItemType.Ranged, 2);
-                    rootTypes[0] = 0;
-                    SetItemsActive((int)Define.SpawnableItemType.Ranged, rootTypes);
+                    SetItemsActive((int)Define.SpawnableItemType.Ranged, ChooseRandomItemRootTypes((int)Define.SpawnableItemType.Ranged, 2));
                 }
                 break;
             case 2:
@@ -533,6 +569,34 @@ public class GameCenter : BaseScene
         }
     }
 
+    void SetItemsActiveForTest()
+    {
+        Transform targetItem1 = Items[1].GetChild(0).GetChild(0); // ICE
+        int viewID1 = targetItem1.GetComponent<PhotonView>().ViewID;
+        Vector3 spawnPoint1 = new Vector3(478.16f, 20f, 393.72f);
+        photonView.RPC("SetItemsActiveInLocal", RpcTarget.All, viewID1, spawnPoint1);
+
+        Transform targetItem2 = Items[1].GetChild(1).GetChild(0); // TASER
+        int viewID2 = targetItem2.GetComponent<PhotonView>().ViewID;
+        Vector3 spawnPoint2 = new Vector3(486.98f, 20f, 408.49f);
+        photonView.RPC("SetItemsActiveInLocal", RpcTarget.All, viewID2, spawnPoint2);
+
+        Transform targetItem3 = Items[2].GetChild(3).GetChild(0); // DONUTS
+        int viewID3 = targetItem3.GetComponent<PhotonView>().ViewID;
+        Vector3 spawnPoint3 = new Vector3(476.98f, 20f, 408.49f);
+        photonView.RPC("SetItemsActiveInLocal", RpcTarget.All, viewID3, spawnPoint3);
+
+        Transform targetItem4 = Items[2].GetChild(3).GetChild(1); // DONUTS
+        int viewID4 = targetItem4.GetComponent<PhotonView>().ViewID;
+        Vector3 spawnPoint4 = new Vector3(471.98f, 20f, 408.49f);
+        photonView.RPC("SetItemsActiveInLocal", RpcTarget.All, viewID4, spawnPoint4);
+
+        Transform targetItem5 = Items[2].GetChild(3).GetChild(2); // DONUTS
+        int viewID5 = targetItem5.GetComponent<PhotonView>().ViewID;
+        Vector3 spawnPoint5 = new Vector3(468.98f, 20f, 408.49f);
+        photonView.RPC("SetItemsActiveInLocal", RpcTarget.All, viewID5, spawnPoint5);
+    }
+
     void SetItemsActive(int itemType, List<int> rootTypes)
     {
         for (int i = 0; i < rootTypes.Count; i++)
@@ -548,7 +612,6 @@ public class GameCenter : BaseScene
             if (targetItem != null)
             {
                 int viewID = targetItem.GetComponent<PhotonView>().ViewID;
-                Debug.Log("[1] " + viewID);
                 Vector3 spawnPoint = GetItemSpawnPoints(itemType, ItemSpawnCount[itemType]);
                 ItemSpawnCount[itemType]++;
                 photonView.RPC("SetItemsActiveInLocal", RpcTarget.All, viewID, spawnPoint);
@@ -711,8 +774,6 @@ public class GameCenter : BaseScene
     [PunRPC]
     void SyncActorsList(int[] ids)
     {
-        Debug.Log("여기까지 오셨을까요?");
-
         for (int i = ActorViewIDs.Count; i < ids.Length; i++)
         {
             ActorViewIDs.Add(ids[i]);
@@ -727,22 +788,21 @@ public class GameCenter : BaseScene
         _scoreBoardUI.SetScoreBoard();
 
         _magneticField = GameObject.Find("Magnetic Field").GetComponent<MagneticField>();
-        _floor = GameObject.Find("mainFloor").GetComponent<Floor>();
-        //_snowStorm = GameObject.Find("Snow Storm").GetComponent<SnowStorm>();
+        _floor = GameObject.Find("Trigger Floor").GetComponent<Floor>();
+        _snowStorm = GameObject.Find("Snow Storm").GetComponent<SnowStorm>();
 
 
-        if(PhotonNetwork.LocalPlayer.IsMasterClient)
+        if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
-            _magneticField.CheckMagneticFieldArea -= CheckPlayerLocation;
-            _magneticField.CheckMagneticFieldArea += CheckPlayerLocation;
+            _magneticField.CheckMagneticFieldArea -= CheckPlayerArea;
+            _magneticField.CheckMagneticFieldArea += CheckPlayerArea;
 
             _magneticField.UpdateMagneticStack -= SendPlayerMagneticStack;
             _magneticField.UpdateMagneticStack += SendPlayerMagneticStack;
 
-            _floor.CheckFloor -= CheckPlayerLocation;
-            _floor.CheckFloor += CheckPlayerLocation;
+            _floor.CheckFloorStack -= CheckPlayerFloor;
+            _floor.CheckFloorStack += CheckPlayerFloor;
         }
-
 
 
 
@@ -765,29 +825,30 @@ public class GameCenter : BaseScene
         }
 
         _magneticField.ActorList = Actors;
-
+        _snowStorm.ActorList = Actors;
+    
     }
 
     #endregion
 
     #region 플레이어 동기화
 
-    void SendInfo(float hp, float stamina, Actor.ActorState actorState, Actor.DebuffState debuffstate, int viewID)
+    void SendInfo(float hp, float stamina,  Actor.DebuffState debuffstate, int viewID)
     {
         if (!PhotonNetwork.LocalPlayer.IsMasterClient) return;
 
-        photonView.RPC("SyncInfo", RpcTarget.All, hp, stamina, actorState, debuffstate, viewID);
+        photonView.RPC("SyncInfo", RpcTarget.All, hp, stamina, debuffstate, viewID);
     }
 
     [PunRPC]
-    void SyncInfo(float hp, float stamina, Actor.ActorState actorState, Actor.DebuffState debuffstate, int viewID)
+    void SyncInfo(float hp, float stamina,  Actor.DebuffState debuffstate, int viewID)
     {
         for (int i = 0; i < Actors.Count; i++)
         {
             if (Actors[i].photonView.ViewID == viewID)
             {
                 Actors[i].Health = hp;
-                Actors[i].actorState = actorState;
+                //Actors[i].actorState = actorState;
                 Actors[i].debuffState = debuffstate;
                 Actors[i].Stamina = stamina;
 
@@ -812,13 +873,19 @@ public class GameCenter : BaseScene
     {
         for (int i = 0; i < Actors.Count; i++)
         {
-            if (Actors[i].photonView.ViewID == viewID && Actors[i].photonView.IsMine == true)
+            if (Actors[i].photonView.ViewID == viewID)
             {
-                Actors[i].CameraControl.Camera.GetComponent<GrayscaleEffect>().StartGrayscalseEffect();
-                photonView.RPC("ReduceAlivePlayerCount", RpcTarget.MasterClient, viewID);
-                Vector3 deadPos = Actors[i].BodyHandler.Hip.transform.position;
-                Debug.Log("HandleDeath: " + Actors[i].actorState);
-                StartCoroutine(InstantiateGhost(deadPos));
+                Actors[i].actorState = ActorState.Dead;
+
+                if (Actors[i].photonView.IsMine == true)
+                //if (Actors[i].photonView.ViewID == viewID && Actors[i].photonView.IsMine == true)
+                {
+                    Actors[i].CameraControl.Camera.GetComponent<GrayscaleEffect>().StartGrayscalseEffect();
+                    photonView.RPC("ReduceAlivePlayerCount", RpcTarget.MasterClient, viewID);
+                    Vector3 deadPos = Actors[i].BodyHandler.Hip.transform.position;
+                    Debug.Log("HandleDeath: " + Actors[i].actorState);
+                    StartCoroutine(InstantiateGhost(deadPos));
+                }
             }
         }
     }
@@ -847,26 +914,39 @@ public class GameCenter : BaseScene
 
 
     #region 자기장 스택 체크
-    void CheckPlayerLocation(int[] areaName, int index)
+    void CheckPlayerArea(int[] areaName, int actorNum, bool[] isInside)
     {
         if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
-            _checkArea[index] = areaName[index];
-            DamageByMagneticField(index);
+            _checkAreaName[actorNum] = areaName[actorNum];
+            _checkInside[actorNum] = isInside[actorNum];
+
+            DamageByMagneticField(actorNum);
+
+            photonView.RPC("SendInsideCheck", RpcTarget.All, _checkInside);
+        }
+    }
+    
+    void CheckPlayerFloor(int[] areaName, int actorNum)
+    {
+        if (PhotonNetwork.LocalPlayer.IsMasterClient)
+        {
+            _checkAreaName[actorNum] = areaName[actorNum];
+            DamageByMagneticField(actorNum);
         }
     }
 
     void DamageByMagneticField(int index)
     {
-        if (_checkArea[index] == (int)Define.Area.Floor)
+        if (_checkAreaName[index] == (int)Define.Area.Floor)
         {
             StartCoroutine(_magneticField.DamagedByFloor(index));
         }
-        else if (_checkArea[index] == (int)Define.Area.Inside)
+        else if (_checkAreaName[index] == (int)Define.Area.Inside)
         {
             StartCoroutine(_magneticField.RestoreMagneticDamage(index));
         }
-        else if (_checkArea[index] == (int)Define.Area.Outside)
+        else if (_checkAreaName[index] == (int)Define.Area.Outside)
         {
             StartCoroutine(_magneticField.DamagedByMagnetic(index));
         }
@@ -883,12 +963,18 @@ public class GameCenter : BaseScene
     [PunRPC]
     void SyncPlayerMagneticStack(int[] magneticStack)
     {
-        _magneticField.ChangeMainPanel();
-
         for (int i = 0; i < Actors.Count; i++)
         {
             Actors[i].MagneticStack = magneticStack[i];
         }
+
+        _magneticField.ChangeMainPanel();
+    }
+
+    [PunRPC]
+    void SendInsideCheck(bool[] inside)
+    {
+        _magneticField.IsInside = inside;
     }
 
     #endregion
@@ -935,6 +1021,13 @@ public class GameCenter : BaseScene
 
         SetScoreBoard();
         photonView.RPC("FixScoreBoard", RpcTarget.All);
+        photonView.RPC("UnsubscribeSettings", RpcTarget.All);
+    }
+
+    [PunRPC]
+    void UnsubscribeSettings()
+    {
+        _arenaSettingsUI.ReloadArenaSettingsUI();
     }
 
     [PunRPC]
@@ -968,9 +1061,9 @@ public class GameCenter : BaseScene
                 actor.OnKillPlayer -= AnnounceDeath;
             }
 
-            _magneticField.CheckMagneticFieldArea -= CheckPlayerLocation;
+            _magneticField.CheckMagneticFieldArea -= CheckPlayerArea;
             _magneticField.UpdateMagneticStack -= SendPlayerMagneticStack;
-            _floor.CheckFloor -= CheckPlayerLocation;
+            _floor.CheckFloorStack -= CheckPlayerFloor;
         }
         ClearList();
         RoundCount++;

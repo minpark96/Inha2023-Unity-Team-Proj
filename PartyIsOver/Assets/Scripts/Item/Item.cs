@@ -37,11 +37,6 @@ public class Item : MonoBehaviourPun
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-    
-    }
 
     
     public virtual void Use()

@@ -7,17 +7,23 @@ using Photon.Pun;
 
 public class MagneticField : MonoBehaviour
 {
-    public float[] PhaseStartTime = { 0f, 45f, 45f, 45f };
-    public float[] PhaseDuration = { 0f, 15f, 15f, 10f };
+    // 자기장 수치
+    public float[] _phaseStartTime = { 0f, 120f, 60f, 60f };
+    private float[] _phaseDuration = { 0f, 15f, 15f, 10f };
     private float[] _scale = { 0f, 103.2f, 43.1f, 20.0f };
-    private Vector3[] _point = { Vector3.zero, new Vector3(465.9f, 6.8f, 414.6f), new Vector3(444.3f, 6.8f, 422.1f), new Vector3(453.9f, 6.8f, 410.5f) };
+    private Vector3[] _point = { Vector3.zero, new Vector3(465.9f, 5f, 414.6f), new Vector3(444.3f, 5f, 422.1f), new Vector3(453.9f, 5f, 410.5f) };
 
-    private int[] _magneticFieldStack = { 0, 10, 14, 20, 33 };
-    private int _stackRestore = 10;
-    private int _floorStack = 20;
-    private int _delay = 1;
-    private int _stack;
+    private int _stackRestore = 1;
+    private int _magneticFieldStack = 1;
+    private int _floorStack = 1;
+    private float _magneticDelay = 0.1f;
+    private float _floorDelay = 0.1f;
 
+    // 사운드
+    private bool _isPlayingStackSound;
+
+
+    // 이펙트
     private GameObject MagneticFieldEffect;
     private Vector3[] _effect1Position = { new Vector3(-103.46f, -14.85f, -9.04f), new Vector3(-68f, -9.26f, -2.31f), new Vector3(-52.08f, -4.03f, 3.97f)};
     private Vector3[] _effect3Position = { new Vector3(31.1f, -56.3f, -45), new Vector3(34.41f, -34.21f, -18.44f) };
@@ -26,19 +32,17 @@ public class MagneticField : MonoBehaviour
     private Transform _effect3;
     private Transform _effect4;
 
-
     public GameObject FreezeImage;
 
-    bool _isSynced;
 
-
+    // 서버를 통해 받는 정보
     public List<Actor> ActorList;
     public int[] AreaNames = new int[Define.MAX_PLAYERS_PER_ROOM];
     public int[] ActorStack = new int[Define.MAX_PLAYERS_PER_ROOM];
+    public bool[] IsInside = new bool[Define.MAX_PLAYERS_PER_ROOM] { true, true, true, true, true, true };
 
-    public bool Checking;
 
-    public delegate void CheckArea(int[] areaName, int index);
+    public delegate void CheckArea(int[] areaName, int actorNum, bool[] isInside);
     public event CheckArea CheckMagneticFieldArea;
     public delegate void UpdateStack(int[] stacks);
     public event UpdateStack UpdateMagneticStack;
@@ -57,19 +61,10 @@ public class MagneticField : MonoBehaviour
         GameObject mainPanel = GameObject.Find("Main Panel");
         FreezeImage = mainPanel.transform.GetChild(0).gameObject;
 
-        Checking = true;
-
         StartCoroutine(FirstPhase(1));
     }
 
-    private void Update()
-    {
-        if(!_isSynced)
-        {
-            StartCoroutine(WaitForSync());
-            return;
-        }
-    }
+  
 
     void InvokeDeath(int index)
     {
@@ -90,6 +85,20 @@ public class MagneticField : MonoBehaviour
         {
             if(ActorList[i].photonView.IsMine)
             {
+                if (ActorList[i].actorState == Actor.ActorState.Dead)
+                {
+                    FreezeImage.SetActive(false);
+
+                    if (_isPlayingStackSound == true)
+                    {
+                        GameObject sound = GameObject.Find("@Sound").transform.GetChild((int)Define.Sound.InGameStackSound).gameObject;
+                        sound.GetComponent<AudioSource>().Stop();
+                        _isPlayingStackSound = false;
+                    }
+
+                    return;
+                }
+
                 if (ActorList[i].MagneticStack >= 20 && ActorList[i].MagneticStack < 40)
                     FreezeImage.transform.GetChild(0).gameObject.SetActive(true);
                 else if (ActorList[i].MagneticStack >= 40 && ActorList[i].MagneticStack < 60)
@@ -100,6 +109,26 @@ public class MagneticField : MonoBehaviour
                     FreezeImage.transform.GetChild(3).gameObject.SetActive(true);
                 else if (ActorList[i].MagneticStack >= 100)
                     FreezeImage.transform.GetChild(4).gameObject.SetActive(true);
+
+
+                if(ActorList[i].MagneticStack >= 50)
+                {
+                    if(_isPlayingStackSound == false)
+                    {
+                        AudioClip magneticWarning = Managers.Sound.GetOrAddAudioClip("MagneticField/stack beep");
+                        Managers.Sound.Play(magneticWarning, Define.Sound.InGameStackSound);
+                        _isPlayingStackSound = true;
+                    }
+                }
+                else
+                {
+                    if(_isPlayingStackSound == true)
+                    {
+                        GameObject sound = GameObject.Find("@Sound").transform.GetChild((int)Define.Sound.InGameStackSound).gameObject;
+                        sound.GetComponent<AudioSource>().Stop();
+                        _isPlayingStackSound = false;
+                    }
+                }
             }
         }
     }
@@ -121,7 +150,8 @@ public class MagneticField : MonoBehaviour
                 if (collided.name == ActorList[i].name)
                 {
                     AreaNames[i] = (int)Define.Area.Inside;
-                    CheckMagneticFieldArea(AreaNames, i);
+                    IsInside[i] = true;
+                    CheckMagneticFieldArea(AreaNames, i, IsInside);
                     break;
                 }
             }
@@ -143,32 +173,31 @@ public class MagneticField : MonoBehaviour
                 if (collided.name == ActorList[i].name)
                 {
                     AreaNames[i] = (int)Define.Area.Outside;
-                    CheckMagneticFieldArea(AreaNames, i);
+                    IsInside[i] = false;
+                    CheckMagneticFieldArea(AreaNames, i, IsInside);
                     break;
                 }
             }
         }
     }
 
+
     #endregion
 
-    IEnumerator WaitForSync()
-    {
-        yield return new WaitForSeconds(7.0f); // actor정보 받기 위한 시간
-        _isSynced = true;
-    }
 
     #region 자기장 Phase
     IEnumerator FirstPhase(int index)
     {
-        yield return new WaitForSeconds(PhaseStartTime[index]);
+        yield return new WaitForSeconds(_phaseStartTime[index]);
 
-        _stack = _magneticFieldStack[1];
+        // Sound
+        AudioClip warningSound = Managers.Sound.GetOrAddAudioClip("MagneticField/magnetic field warning sound");
+        Managers.Sound.Play(warningSound, Define.Sound.InGameWarning);
 
         float startTime = Time.time;
-        while (Time.time - startTime < PhaseDuration[index])
+        while (Time.time - startTime < _phaseDuration[index])
         {
-            float t = (Time.time - startTime) / PhaseDuration[index];
+            float t = (Time.time - startTime) / _phaseDuration[index];
             transform.localScale = new Vector3(Mathf.Lerp(_scale[index], _scale[index + 1], t), Mathf.Lerp(_scale[index], _scale[index + 1], t), Mathf.Lerp(_scale[index], _scale[index + 1], t));
             transform.position = new Vector3(Mathf.Lerp(_point[index].x, _point[index + 1].x, t), 6.8f, Mathf.Lerp(_point[index].z, _point[index + 1].z, t));
 
@@ -182,14 +211,17 @@ public class MagneticField : MonoBehaviour
 
     IEnumerator SecondPhase(int index)
     {
-        yield return new WaitForSeconds(PhaseStartTime[index]);
+        yield return new WaitForSeconds(_phaseStartTime[index]);
 
-        _stack = _magneticFieldStack[2];
+        // Sound
+        AudioClip warningSound = Managers.Sound.GetOrAddAudioClip("MagneticField/magnetic field warning sound");
+        Managers.Sound.Play(warningSound, Define.Sound.InGameWarning);
+
 
         float startTime = Time.time;
-        while (Time.time - startTime < PhaseDuration[index])
+        while (Time.time - startTime < _phaseDuration[index])
         {
-            float t = (Time.time - startTime) / PhaseDuration[index];
+            float t = (Time.time - startTime) / _phaseDuration[index];
             transform.localScale = new Vector3(Mathf.Lerp(_scale[index], _scale[index + 1], t), Mathf.Lerp(_scale[index], _scale[index + 1], t), Mathf.Lerp(_scale[index], _scale[index + 1], t));
             transform.position = new Vector3(Mathf.Lerp(_point[index].x, _point[index + 1].x, t), 6.8f, Mathf.Lerp(_point[index].z, _point[index + 1].z, t));
 
@@ -204,14 +236,17 @@ public class MagneticField : MonoBehaviour
 
     IEnumerator ThirdPhase(int index)
     {
-        yield return new WaitForSeconds(PhaseStartTime[index]);
+        yield return new WaitForSeconds(_phaseStartTime[index]);
 
-        _stack = _magneticFieldStack[3];
+        // Sound
+        AudioClip warningSound = Managers.Sound.GetOrAddAudioClip("MagneticField/magnetic field warning sound");
+        Managers.Sound.Play(warningSound, Define.Sound.InGameWarning);
+
 
         float startTime = Time.time;
-        while (Time.time - startTime < PhaseDuration[index])
+        while (Time.time - startTime < _phaseDuration[index])
         {
-            float t = (Time.time - startTime) / PhaseDuration[index];
+            float t = (Time.time - startTime) / _phaseDuration[index];
             transform.localScale = new Vector3(Mathf.Lerp(_scale[index], 0, t), Mathf.Lerp(_scale[index], 0, t), Mathf.Lerp(_scale[index], 0, t));
 
             _effect1.localPosition = new Vector3(Mathf.Lerp(_effect1Position[1].x, _effect1Position[2].x, t), Mathf.Lerp(_effect1Position[1].y, _effect1Position[2].y, t), Mathf.Lerp(_effect1Position[1].z, _effect1Position[2].z, t));
@@ -219,9 +254,6 @@ public class MagneticField : MonoBehaviour
 
             yield return null;
         }
-
-
-        _stack = _magneticFieldStack[4];
     }
     #endregion
 
@@ -248,7 +280,7 @@ public class MagneticField : MonoBehaviour
                 ActorStack[index] = ActorList[index].MagneticStack;
                 UpdateMagneticStack(ActorStack);
 
-                yield return new WaitForSeconds(_delay);
+                yield return new WaitForSeconds(_floorDelay);
             }
         }
     }
@@ -261,7 +293,7 @@ public class MagneticField : MonoBehaviour
         {
             while (ActorList[index].MagneticStack <= 100 && AreaNames[index] == (int)Define.Area.Outside)
             {
-                ActorList[index].MagneticStack += _stack;
+                ActorList[index].MagneticStack += _magneticFieldStack;
 
                 if (ActorList[index].MagneticStack > 100)
                 {
@@ -273,7 +305,7 @@ public class MagneticField : MonoBehaviour
                 ActorStack[index] = ActorList[index].MagneticStack;
                 UpdateMagneticStack(ActorStack);
 
-                yield return new WaitForSeconds(_delay);
+                yield return new WaitForSeconds(_magneticDelay);
             }
         }
     }
@@ -294,7 +326,7 @@ public class MagneticField : MonoBehaviour
                 ActorStack[index] = ActorList[index].MagneticStack;
                 UpdateMagneticStack(ActorStack);
 
-                yield return new WaitForSeconds(_delay);
+                yield return new WaitForSeconds(_magneticDelay);
             }
         }
     }
