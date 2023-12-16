@@ -212,19 +212,19 @@ public class StatusHandler : MonoBehaviourPun
                 actor.debuffState |= Actor.DebuffState.Burn;
                 break;
             case Damage.Shock: // 감전
-                if (actor.debuffState == Actor.DebuffState.Stun || actor.debuffState == Actor.DebuffState.Drunk)
+                    if ((actor.debuffState & DebuffState.Stun) == DebuffState.Stun || (actor.debuffState & DebuffState.Drunk) == DebuffState.Drunk)
                     break;
                 else
                     actor.debuffState |= Actor.DebuffState.Shock;
                 break;
             case Damage.Stun: // 기절
-                if (actor.debuffState == Actor.DebuffState.Shock || actor.debuffState == Actor.DebuffState.Drunk )
+                if ((actor.debuffState & DebuffState.Shock) == DebuffState.Shock || (actor.debuffState & DebuffState.Drunk) == DebuffState.Drunk)
                     break;
                 else
                     actor.debuffState |= Actor.DebuffState.Stun;
                 break;
             case Damage.Drunk: // 취함
-                if (actor.debuffState == Actor.DebuffState.Stun || actor.debuffState == Actor.DebuffState.Shock)
+                if ((actor.debuffState & DebuffState.Stun) == DebuffState.Stun || (actor.debuffState & DebuffState.Shock) == DebuffState.Shock)
                     break;
                 else
                 {
@@ -387,9 +387,10 @@ public class StatusHandler : MonoBehaviourPun
 
                 if (realDamage >= _knockoutThreshold)
                 {
-                    if (actor.debuffState == Actor.DebuffState.Ice) //상태이상 후에 추가
+                    if ((actor.debuffState & DebuffState.Ice) == DebuffState.Ice) //상태이상 후에 추가
                         return;
-                    actor.debuffState = Actor.DebuffState.Stun;
+                    //여기 원래 스턴이였는데 콜리전에서 관리를 하면 굳이 필요할까?
+                    //actor.debuffState = Actor.DebuffState.Stun;
                     //actor.actorState = Actor.ActorState.Unconscious;
                     //photonView.RPC("StunCreate", RpcTarget.All);
                     EnterUnconsciousState();

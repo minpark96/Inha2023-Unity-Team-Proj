@@ -405,7 +405,7 @@ public class PlayerController : MonoBehaviourPun
                 {
                     if (Input.GetMouseButtonDown(1) && _actor.Stamina >= 0)
                     {
-                        if (_actor.debuffState == DebuffState.Exhausted)
+                        if ((_actor.debuffState & DebuffState.Exhausted) == DebuffState.Exhausted)
                             return;
                         //_actor.Stamina -= 5;
 
@@ -447,7 +447,7 @@ public class PlayerController : MonoBehaviourPun
 
                     if (Input.GetMouseButtonUp(2) && _actor.Stamina >= 0)
                     {
-                        if (_actor.debuffState == DebuffState.Exhausted)
+                        if ((_actor.debuffState & DebuffState.Exhausted) == DebuffState.Exhausted)
                             return;
 
                         if (_actor.Stamina <= 0)
@@ -497,7 +497,7 @@ public class PlayerController : MonoBehaviourPun
                             }
                         }
                     }
-                    else if(_actor.debuffState == Actor.DebuffState.Drunk)
+                    else if ((_actor.debuffState & DebuffState.Drunk) == DebuffState.Drunk)
                     {
                         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
                         {
@@ -541,17 +541,16 @@ public class PlayerController : MonoBehaviourPun
 
                         if (_actor.Stamina <= 0)
                         {
-                            //_actor.Stamina = 0;
                             photonView.RPC("SetStemina", RpcTarget.MasterClient, 0f);
                             _actor.debuffState |= Actor.DebuffState.Exhausted;
-                            //_actor.debuffState = DebuffState.Exhausted;
                         }
 
-                        if (_actor.debuffState == DebuffState.Exhausted)
+                        if ((_actor.debuffState & DebuffState.Exhausted) == DebuffState.Exhausted)
                             return;
                         else
                         {
-                            if (_actor.debuffState != DebuffState.Drunk)
+                            if (!((_actor.debuffState & DebuffState.Drunk) == DebuffState.Drunk))
+                            //if (_actor.debuffState != DebuffState.Drunk)
                             {
                                 if (!_isRSkillCheck)
                                 {
@@ -592,7 +591,7 @@ public class PlayerController : MonoBehaviourPun
                 break;
             case Define.KeyboardEvent.Charge:
                 {
-                    if (Input.GetKeyUp(KeyCode.R) && _actor.debuffState == DebuffState.Drunk && IsFlambe)
+                    if (Input.GetKeyUp(KeyCode.R) && (_actor.debuffState & DebuffState.Drunk) == DebuffState.Drunk && IsFlambe)
                     {
                         photonView.RPC("DrunkAction", RpcTarget.All);
                         //StartCoroutine("DrunkAction");
@@ -617,7 +616,7 @@ public class PlayerController : MonoBehaviourPun
 
                     if (Input.GetKey(KeyCode.R) && _actor.Stamina >= 0)
                     {
-                        if (_actor.debuffState == DebuffState.Drunk)
+                        if ((_actor.debuffState & DebuffState.Drunk) == DebuffState.Drunk)
                         {
                             //취함 애니메이션
                             StartCoroutine(DrunkActionReady());
@@ -877,7 +876,11 @@ public class PlayerController : MonoBehaviourPun
 
         if (_isRSkillCheck == true)
         {
-            if (_actor.debuffState == DebuffState.Stun || _actor.debuffState == DebuffState.Ice || _actor.debuffState == DebuffState.Shock || _actor.debuffState == DebuffState.Drunk)
+            if ((_actor.debuffState & DebuffState.Stun) == DebuffState.Stun ||
+                (_actor.debuffState & DebuffState.Ice) == DebuffState.Ice ||
+                (_actor.debuffState & DebuffState.Shock) == DebuffState.Shock ||
+                (_actor.debuffState & DebuffState.Drunk) == DebuffState.Drunk
+                )
             {
                 photonView.RPC("ResetCharge", RpcTarget.All);
                 _isRSkillCheck = false;
@@ -905,7 +908,7 @@ public class PlayerController : MonoBehaviourPun
         if (_actor.actorState != Actor.ActorState.Jump && _actor.actorState != Actor.ActorState.Roll 
             && _actor.actorState != Actor.ActorState.Run )//&& _actor.actorState != ActorState.Unconscious)
         {
-            if(!((_actor.debuffState & Actor.DebuffState.Stun) == DebuffState.Stun))
+            if(!((_actor.debuffState & DebuffState.Stun) == DebuffState.Stun))
             {
                 if (MoveInput.magnitude == 0f)
                 {

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using Unity.VisualScripting;
 using UnityEngine;
+using static Actor;
 using static InteractableObject;
 
 public class CollisionHandler : MonoBehaviourPun
@@ -281,7 +282,7 @@ public class CollisionHandler : MonoBehaviourPun
     private void OnTriggerStay(Collider other)
     {
         if(other.gameObject.layer == (int)Define.Layer.TriggerObject 
-            && !actor.StatusHandler.invulnerable && actor.debuffState != Actor.DebuffState.Burn)
+            && !actor.StatusHandler.invulnerable && !((actor.debuffState & DebuffState.Burn) == DebuffState.Burn))
         {
             TriggerCheck(other);
         }
