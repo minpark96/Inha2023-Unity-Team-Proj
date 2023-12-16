@@ -9,8 +9,6 @@ public class RoomItem : MonoBehaviour
     public Text RoomName;
     public Text MemberNumber;
     public Image RoomPrefabImage;
-    public Sprite PublicImage;
-    public Sprite PrivateImage;
 
     LobbyUI Lobby;
 

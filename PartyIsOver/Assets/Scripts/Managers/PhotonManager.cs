@@ -181,7 +181,7 @@ public class PhotonManager : BaseScene
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
         string roomName = "설산 속의 아지트";
-        PhotonNetwork.CreateRoom(roomName, new RoomOptions { MaxPlayers = Define.MAX_PLAYERS_PER_ROOM });
+        PhotonNetwork.CreateRoom(roomName, new RoomOptions { IsVisible = true, IsOpen = true, MaxPlayers = Define.MAX_PLAYERS_PER_ROOM });
     }
 
     public override void OnJoinedLobby()
@@ -220,10 +220,10 @@ public class PhotonManager : BaseScene
             _nextUpdateTime = Time.time + _timeBetweenUpdate;
         }
 
-        if (roomList.Count == 0 && PhotonNetwork.InLobby)
-        {
-            RoomItemsList.Clear();
-        }
+        //if (roomList.Count == 0 && PhotonNetwork.InLobby)
+        //{
+        //    RoomItemsList.Clear();
+        //}
     }
 
     public override void OnPlayerEnteredRoom(Player other)
