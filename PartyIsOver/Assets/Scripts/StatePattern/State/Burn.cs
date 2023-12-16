@@ -50,44 +50,12 @@ public class Burn : MonoBehaviourPun , IDebuffState
     {
         TransferDebuffToPlayer((int)InteractableObject.Damage.Default);
         MyActor.actorState = Actor.ActorState.Stand;
-        MyActor.debuffState = Actor.DebuffState.Default;
+        MyActor.debuffState &= ~Actor.DebuffState.Burn;
 
         RemoveObject("Fire_large");
         MyActor.InvokeStatusChangeEvent();
         _audioClip = null;
     }
-
-    //추후 Ice 상태를 체크하여 Burn 상태를 종료 한다.
-/*    IEnumerator BurnDmanage() 
-    {
-        float elapsedTime = 0f;
-        float lastBurnTime = Time.time;
-        float startTime = Time.time;
-
-        while (elapsedTime <= delay)
-        {
-            if (MyActor.debuffState == Actor.DebuffState.Ice)
-            {
-                //_hasBurn = false;
-                //상태가 Ice 가 들어오면 종료를 해야한다.
-                MyActor.actorState = Actor.ActorState.Stand;
-                //StopCoroutine(Burn(delay));
-                //상태가 들어오면 그냥 종료
-                ExitState();
-            }
-
-            if (Time.time - lastBurnTime >= 1.0f) // 1초간 데미지+액션
-            {
-                MyActor.Health -= _burnDamage;
-                MyActor.BodyHandler.Waist.PartRigidbody.AddForce((MyActor.BodyHandler.Hip.transform.right) * 40f, ForceMode.VelocityChange);
-                MyActor.BodyHandler.Hip.PartRigidbody.AddForce((MyActor.BodyHandler.Hip.transform.right) * 40f, ForceMode.VelocityChange);
-                lastBurnTime = Time.time;
-            }
-
-            elapsedTime = Time.time - startTime;
-            yield return null;
-        }
-    }*/
 
     public void InstantiateEffect(string path)
     {

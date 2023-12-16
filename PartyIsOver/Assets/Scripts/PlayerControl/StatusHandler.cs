@@ -141,27 +141,14 @@ public class StatusHandler : MonoBehaviourPun
         {
             if (actor.Stamina <= 0)
             {
-                if (!_hasExhausted)
+                if ((actor.debuffState & DebuffState.Exhausted) == DebuffState.Exhausted)
                 {
-                    actor.debuffState |= Actor.DebuffState.Exhausted;
                     if (actor.GrabState != Define.GrabState.PlayerLift)
                     {
                         actor.GrabState = Define.GrabState.None;
                         actor.Grab.GrabResetTrigger();
                     }
-                    //_context.ChangeState(exhaustedInStance);
                     photonView.RPC("RPCExhaustedCreate", RpcTarget.All);
-                }
-            }
-            else
-            {
-                if (_hasExhausted)
-                {
-                    if (actor.GrabState != Define.GrabState.PlayerLift)
-                    {
-                        actor.GrabState = Define.GrabState.None;
-                        actor.Grab.GrabResetTrigger();
-                    }
                 }
             }
         }
@@ -213,37 +200,11 @@ public class StatusHandler : MonoBehaviourPun
 
     public void DebuffCheck(InteractableObject.Damage type)
     {
-        if (actor.debuffState != Actor.DebuffState.Default)
-            return;
-
-        if (actor.debuffState == Actor.DebuffState.Ice) return;
-        //if (actor.debuffState == Actor.DebuffState.Balloon) return;
-
         switch (type)
         {
             case Damage.Ice: // 빙결
                 actor.debuffState |= Actor.DebuffState.Ice;
-                //foreach (Actor.DebuffState state in System.Enum.GetValues(typeof(Actor.DebuffState)))
-                //{
-                //    if (state != Actor.DebuffState.Ice && (actor.debuffState & state) != 0)
-                //    {
-                //        actor.debuffState &= ~state;
-                //    }
-                //}
                 break;
-            //case Damage.Balloon: // 풍선
-            //    {
-            //        actor.debuffState |= Actor.DebuffState.Balloon;
-            //        photonView.RPC("PlayerDebuffSound", RpcTarget.All, "PlayerEffect/Cartoon-UI-049");
-            //        foreach (Actor.DebuffState state in System.Enum.GetValues(typeof(Actor.DebuffState)))
-            //        {
-            //            if (state != Actor.DebuffState.Balloon && (actor.debuffState & state) != 0)
-            //            {
-            //                actor.debuffState &= ~state;
-            //            }
-            //        }
-            //    }
-            //    break;
             case Damage.PowerUp: // 불끈
                 actor.debuffState |= Actor.DebuffState.PowerUp;
                 break;
@@ -251,19 +212,19 @@ public class StatusHandler : MonoBehaviourPun
                 actor.debuffState |= Actor.DebuffState.Burn;
                 break;
             case Damage.Shock: // 감전
-                if (actor.debuffState == Actor.DebuffState.Stun || actor.debuffState == Actor.DebuffState.Drunk)
+                    if ((actor.debuffState & DebuffState.Stun) == DebuffState.Stun || (actor.debuffState & DebuffState.Drunk) == DebuffState.Drunk)
                     break;
                 else
                     actor.debuffState |= Actor.DebuffState.Shock;
                 break;
             case Damage.Stun: // 기절
-                if (actor.debuffState == Actor.DebuffState.Shock || actor.debuffState == Actor.DebuffState.Drunk )
+                if ((actor.debuffState & DebuffState.Shock) == DebuffState.Shock || (actor.debuffState & DebuffState.Drunk) == DebuffState.Drunk)
                     break;
                 else
                     actor.debuffState |= Actor.DebuffState.Stun;
                 break;
             case Damage.Drunk: // 취함
-                if (actor.debuffState == Actor.DebuffState.Stun || actor.debuffState == Actor.DebuffState.Shock)
+                if ((actor.debuffState & DebuffState.Stun) == DebuffState.Stun || (actor.debuffState & DebuffState.Shock) == DebuffState.Shock)
                     break;
                 else
                 {
@@ -278,7 +239,6 @@ public class StatusHandler : MonoBehaviourPun
         foreach (Actor.DebuffState state in System.Enum.GetValues(typeof(Actor.DebuffState)))
         {
             Actor.DebuffState checking = actor.debuffState & state;
-
             switch (checking)
             {
                 case Actor.DebuffState.Default:
@@ -378,10 +338,6 @@ public class StatusHandler : MonoBehaviourPun
         Managers.Resource.Destroy(go);
         effectObject = null;
     }
-    public void WetCreate()
-    {
-        EffectObjectCreate("Effects/Wet");
-    }
 
     public void EffectObjectCreate(string path)
     {
@@ -431,9 +387,10 @@ public class StatusHandler : MonoBehaviourPun
 
                 if (realDamage >= _knockoutThreshold)
                 {
-                    if (actor.debuffState == Actor.DebuffState.Ice) //상태이상 후에 추가
+                    if ((actor.debuffState & DebuffState.Ice) == DebuffState.Ice) //상태이상 후에 추가
                         return;
-                    actor.debuffState = Actor.DebuffState.Stun;
+                    //여기 원래 스턴이였는데 콜리전에서 관리를 하면 굳이 필요할까?
+                    //actor.debuffState = Actor.DebuffState.Stun;
                     //actor.actorState = Actor.ActorState.Unconscious;
                     //photonView.RPC("StunCreate", RpcTarget.All);
                     EnterUnconsciousState();

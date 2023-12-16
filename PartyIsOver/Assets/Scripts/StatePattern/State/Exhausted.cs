@@ -41,7 +41,7 @@ public class Exhausted : MonoBehaviourPun, IDebuffState
 
     public void ExitState()
     {
-        MyActor.debuffState = Actor.DebuffState.Default;
+        MyActor.debuffState &= ~Actor.DebuffState.Exhausted;
         RemoveObject("Wet");
 
         angularXDrive.positionSpring = _xPosSpringAry[0];
