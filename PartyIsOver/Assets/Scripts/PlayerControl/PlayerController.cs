@@ -813,7 +813,7 @@ public class PlayerController : MonoBehaviourPun
         _readySide = Side.Right;
         while (_punchcount < 5)
         {
-            photonView.RPC("PlayerEffectSound", RpcTarget.All, "Sounds/Effect/SFX_ArrowShot_Hit");
+            photonView.RPC("PlayerEffectSound", RpcTarget.All, "Sounds/PlayerEffect/WEAPON_Spear");
             if (_readySide == Side.Left)
             {
                 yield return MeowPunch(Side.Left, 0.07f, MeowPunchReadyPunch, MeowPunchPunching, MeowPunchResetPunch);
@@ -887,7 +887,6 @@ public class PlayerController : MonoBehaviourPun
             }
         }
         
-
         if (!photonView.IsMine || _actor.actorState == ActorState.Dead) return;
 
         if (isAI)
@@ -897,13 +896,6 @@ public class PlayerController : MonoBehaviourPun
         {
             photonView.RPC("_balloonState.BalloonShapeOn", RpcTarget.All);
         }
-
-        /*if (_actor.debuffState == Actor.DebuffState.Drunk && isDrunk == false)
-        {
-            isDrunk = true;
-            StartCoroutine(_drunkState.DrunkOff());
-        }*/
-
 
         if (_actor.actorState != Actor.ActorState.Jump && _actor.actorState != Actor.ActorState.Roll 
             && _actor.actorState != Actor.ActorState.Run )//&& _actor.actorState != ActorState.Unconscious)
@@ -2005,6 +1997,7 @@ public class PlayerController : MonoBehaviourPun
 
     public IEnumerator ItemTwoHand(Side side, float duration, float readyTime, float punchTime, float resetTime, float itemPower)
     {
+        photonView.RPC("PlayerEffectSound", RpcTarget.All, "Sounds/PlayerEffect/WEAPON_Axe");
         float checkTime = Time.time;
 
         while (Time.time - checkTime < readyTime)
@@ -2172,6 +2165,8 @@ public class PlayerController : MonoBehaviourPun
     #region Potion
     public IEnumerator Potion(Side side, float duration, float ready, float start, float drinking, float end)
     {
+        photonView.RPC("PlayerEffectSound", RpcTarget.All, "Sounds/PlayerEffect/Item_UI_042");
+
         float checkTime = Time.time;
 
         while (Time.time - checkTime < ready)

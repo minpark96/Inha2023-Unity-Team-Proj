@@ -50,6 +50,7 @@ public class Ice : MonoBehaviour, IDebuffState
         MyActor.debuffState &= ~Actor.DebuffState.Ice;
 
         MyActor.InvokeStatusChangeEvent();
+        PlayerDebuffSound("PlayerEffect/Item_UI_033");
         RemoveObject("Fog_frost");
         RemoveObject("IceCube");
 
