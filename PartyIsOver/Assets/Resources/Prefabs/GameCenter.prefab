@@ -45,7 +45,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6f63ac4c9d10a648938e213e6549e8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _roomUI: {fileID: 0}
   _endingUI: {fileID: 0}
   _scores: 000000000000000000000000000000000000000000000000
   _nicknames:
@@ -56,6 +55,9 @@ MonoBehaviour:
   - 
   - 
   _actorNumbers: 000000000000000000000000000000000000000000000000
+  RoomUI: {fileID: 0}
+  PlayerJoinedList: 000000000000
+  MyJoinedIndex: 0
   PlayerSpawnPoints:
   - {x: 480.5, y: 15, z: 401.23}
   - {x: 473.24, y: 15, z: 402.1}
@@ -117,7 +119,7 @@ MonoBehaviour:
   Group: 0
   prefixField: -1
   Synchronization: 3
-  OwnershipTransfer: 0
+  OwnershipTransfer: 1
   observableSearch: 0
   ObservedComponents:
   - {fileID: 0}

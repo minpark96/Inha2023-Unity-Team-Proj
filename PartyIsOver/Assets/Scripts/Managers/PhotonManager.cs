@@ -6,7 +6,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.SceneManagement;
 using System;
-
+using System.Runtime.InteropServices.WindowsRuntime;
 
 public class PhotonManager : BaseScene 
 {
@@ -27,6 +27,8 @@ public class PhotonManager : BaseScene
     public LobbyUI LobbyUI;
 
     public AudioSource[] AudioSources;
+
+    public GameCenter GameCenter = null;
 
     
     void Awake()
@@ -123,7 +125,6 @@ public class PhotonManager : BaseScene
             p_instance = _go.GetComponent<PhotonManager>();
 
             PhotonNetwork.AutomaticallySyncScene = true;
-
             PhotonNetwork.SerializationRate = 20;
             PhotonNetwork.SendRate = 20;
 
@@ -201,6 +202,7 @@ public class PhotonManager : BaseScene
     public override void OnLeftRoom()
     {
         Debug.Log("[OnLeftRoom()]");
+        GameCenter = null;
         StartCoroutine(LoadNextScene(_sceneLobby));
         //SceneManager.LoadSceneAsync("[3]Lobby");
     }
@@ -226,7 +228,15 @@ public class PhotonManager : BaseScene
 
     public override void OnPlayerLeftRoom(Player other)
     {
-        //Debug.LogFormat("[OnPlayerLeftRoom()] {0}", other.NickName);
+        if (SceneManager.GetActiveScene().name == _sceneRoom) 
+        {
+            if (PhotonNetwork.LocalPlayer.IsMasterClient)
+            {
+                GameCenter.RoomUI.ReadyButton.SetActive(false);
+                GameCenter.RoomUI.PlayButton.SetActive(true);
+                GameCenter.UpdateMasterStatus();
+            }
+        }
     }
 
     #endregion

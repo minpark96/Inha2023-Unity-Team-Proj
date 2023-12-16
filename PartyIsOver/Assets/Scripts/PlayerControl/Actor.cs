@@ -332,7 +332,8 @@ public class Actor : MonoBehaviourPun, IPunObservable
         }
         else
         {
-            this.actorState = (ActorState)stream.ReceiveNext();
+            if (this.actorState != ActorState.Dead)
+                this.actorState = (ActorState)stream.ReceiveNext();
         }
     }
 }

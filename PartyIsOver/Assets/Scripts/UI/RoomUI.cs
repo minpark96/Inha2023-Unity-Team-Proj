@@ -32,37 +32,34 @@ public class RoomUI : MonoBehaviour
     public GameObject ReadyButton;
     public Sprite ReadyOff;
     public Sprite ReadyOn;
-    public bool Ready;
+    public bool IsReady;
 
     public GameObject SpawnPoint;
-    public int PlayerCount;
     public int ActorNumber;
-
 
     public delegate void ChangeSkillEvent(bool isChange);
     public event ChangeSkillEvent OnChangeSkiilEvent;
-    public delegate void LeaveRoom();
-    public event LeaveRoom OnLeaveRoom;
+    public delegate void LoadArena();
+    public event LoadArena OnLoadArena;
     public delegate void ReadyEvent(bool isReady);
     public event ReadyEvent OnReadyEvent;
-
+    public delegate void LeaveRoom();
+    public event LeaveRoom OnLeaveRoom;
 
     void Start()
     {
         PlayerNameText.text = PhotonNetwork.NickName;
-        Ready = false;
+        IsReady = false;
 
         Managers.Input.KeyboardAction -= OnKeyboardEvent;
         Managers.Input.KeyboardAction += OnKeyboardEvent;
 
         SpawnPoint = GameObject.Find("Spawn Point");
-        PlayerCount = PhotonNetwork.CurrentRoom.PlayerCount;
-        ActorNumber = PhotonNetwork.LocalPlayer.ActorNumber;
 
-        for (int i = 0; i < PlayerCount; i++)
-        {
-            SpawnPoint.transform.GetChild(i).gameObject.SetActive(true);
-        }
+        if (PhotonNetwork.LocalPlayer.IsMasterClient)
+            SpawnPoint.transform.GetChild(0).GetChild(0).gameObject.SetActive(true);
+
+        ActorNumber = PhotonNetwork.LocalPlayer.ActorNumber;
     }
 
 
@@ -102,14 +99,19 @@ public class RoomUI : MonoBehaviour
             PlayButton.GetComponentInChildren<Image>().sprite = GamePlayOff;
     }
 
-    public void UpdatePlayerNumber(int totalPlayerNumber)
+    public void UpdatePlayerNumber(bool[] playerJoinedList)
     {
-        for (int i = 0; i < totalPlayerNumber; i++)
+        for (int i = 0; i < playerJoinedList.Length; i++)
         {
-            SpawnPoint.transform.GetChild(i).gameObject.SetActive(true);
+            if (playerJoinedList[i])
+            {
+                SpawnPoint.transform.GetChild(i).gameObject.SetActive(true);
+            }
+            else
+            {
+                SpawnPoint.transform.GetChild(i).gameObject.SetActive(false);
+            }
         }
-
-        PlayerCount = totalPlayerNumber;
     }
 
    
@@ -119,17 +121,17 @@ public class RoomUI : MonoBehaviour
         {
             if (CanPlay)
             {
-                OnLeaveRoom();
+                OnLoadArena();
                 PhotonNetwork.LoadLevel(_arenaName);
                 PhotonNetwork.CurrentRoom.IsOpen = false;
             }
         }
         else
         {
-            Ready = !Ready;
-            OnReadyEvent(Ready);
+            IsReady = !IsReady;
+            OnReadyEvent(IsReady);
 
-            if (Ready == false)
+            if (IsReady == false)
             {
                 AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("UI/Funny-UI-160");
                 Managers.Sound.Play(uiSound, Define.Sound.UISound);
@@ -158,7 +160,11 @@ public class RoomUI : MonoBehaviour
     public void OnClickLeaveRoom()
     {
         if (SceneManager.GetActiveScene().name != _arenaName)
-            PhotonManager.Instance.LeaveRoom();
+        {
+            OnLeaveRoom();
+
+            //PhotonManager.Instance.LeaveRoom();
+        }
     }
 
     public void OnClickSkillChange()
