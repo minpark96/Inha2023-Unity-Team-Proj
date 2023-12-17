@@ -646,7 +646,6 @@ public class PlayerController : MonoBehaviourPun
     void RSkillMoveEffect()
     {
         effectObject.transform.position = _playerTransform.position;
-        Debug.Log(_playerTransform.parent);
     }
 
     #endregion
@@ -869,10 +868,10 @@ public class PlayerController : MonoBehaviourPun
         {
             photonView.RPC("ASDStatusMoveEffect", RpcTarget.All);
         }
-        else if(effectObject != null)
+        else if(effectObject != null && _isRSkillCheck)
         {
-            RSkillMoveEffect();
-            //photonView.RPC("RSkillMoveEffect", RpcTarget.All);
+            //RSkillMoveEffect();
+            photonView.RPC("RSkillMoveEffect", RpcTarget.All);
         }
 
         if (_isRSkillCheck == true)
