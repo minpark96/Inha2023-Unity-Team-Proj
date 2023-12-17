@@ -10,6 +10,8 @@ using static InteractableObject;
 public class CollisionHandler : MonoBehaviourPun
 {
     public float damageMinimumVelocity = 0.25f;
+    public float ImpactThreshold = 10f;
+    private float _itemImfactForce = 0f;
 
     public Actor actor;
     private Transform rootTransform;
@@ -134,6 +136,14 @@ public class CollisionHandler : MonoBehaviourPun
                     if (collisionInteractable != null)
                     {
                         actor.StatusHandler.AddDamage(collisionInteractable.damageModifier, damage, collisionCollider.gameObject);
+                        int thisViewID;
+                        if (contact.thisCollider.gameObject.GetComponent<PhotonView>() != null && _itemImfactForce != 0f)
+                        {
+                            thisViewID = contact.thisCollider.gameObject.GetComponent<PhotonView>().ViewID;
+                            photonView.RPC("AddForceAttackedTarget", RpcTarget.All, thisViewID, NormalChange(contact.normal), (int)collisionInteractable.damageModifier, _itemImfactForce);
+                            _itemImfactForce = 0f;
+                        }
+
                     }
                 }
             }
@@ -254,12 +264,8 @@ public class CollisionHandler : MonoBehaviourPun
                 itemDamage = 1f;
         }
 
-        int thisViewID;
-        if (contact.thisCollider.gameObject.GetComponent<PhotonView>() != null)
-        {
-            thisViewID = contact.thisCollider.gameObject.GetComponent<PhotonView>().ViewID;
-            photonView.RPC("AddForceAttackedTarget", RpcTarget.All, thisViewID, NormalChange(contact.normal), (int)collisionInteractable.damageModifier, itemDamage);
-        }
+        _itemImfactForce = itemDamage;
+
 
         damage = Mathf.Clamp(damage, 0f, 25f);
         return damage;
@@ -274,6 +280,18 @@ public class CollisionHandler : MonoBehaviourPun
 
     private void OnCollisionEnter(Collision collision)
     {
+        Rigidbody rb = GetComponent<Rigidbody>();
+        float impactForce = 0f;
+        if (rb != null && collision.rigidbody != null)
+            impactForce = collision.relativeVelocity.magnitude * collision.rigidbody.mass;
+
+        // 일정 충격량 이상일 때만 속도 감소 적용
+        if (impactForce > ImpactThreshold && rb != null)
+        {
+            Vector3 newVelocity = Vector3.ClampMagnitude(rb.velocity, 15f);
+            rb.velocity = newVelocity;
+        }
+
         if (!PhotonNetwork.LocalPlayer.IsMasterClient && PhotonNetwork.IsConnected == true) return;
 
         if (collision.collider.gameObject.layer != LayerMask.NameToLayer("Ground") && !actor.StatusHandler.invulnerable)
@@ -325,18 +343,25 @@ public class CollisionHandler : MonoBehaviourPun
                          AddForce(normal * _objectForceNormal * itemDamage, ForceMode.VelocityChange);
                     body.AddForce(Vector3.up * _objectForceUp, ForceMode.VelocityChange);
                     body.AddForce(normal * _objectForceNormal * itemDamage, ForceMode.VelocityChange);
-
-                    Debug.Log("objcol  Hip");
                 }
                 else
                 {
                     thisRb.AddForce(Vector3.up * _objectForceUp, ForceMode.VelocityChange);
                     thisRb.AddForce(normal * _objectForceNormal * itemDamage, ForceMode.VelocityChange);
+                    Debug.Log("Not objcol  Hip");
                 }
                 break;
             case InteractableObject.Damage.Punch:
-                thisRb.AddForce(normal * _punchForceNormal, ForceMode.VelocityChange);
-                thisRb.AddForce(Vector3.up * _punchForceUp, ForceMode.VelocityChange);
+                //if (body != null)
+                //{
+                //    body.AddForce(normal * _punchForceNormal, ForceMode.VelocityChange);
+                //    body.AddForce(Vector3.up * _punchForceUp, ForceMode.VelocityChange);
+                //    Debug.Log("punch hip");
+                //}
+                {
+                    thisRb.AddForce(normal * _punchForceNormal, ForceMode.VelocityChange);
+                    thisRb.AddForce(Vector3.up * _punchForceUp, ForceMode.VelocityChange);
+                }
                 break;
             case InteractableObject.Damage.DropKick:
                 if (body != null)
@@ -345,12 +370,12 @@ public class CollisionHandler : MonoBehaviourPun
                          AddForce(normal * _dropkickForceNormal, ForceMode.VelocityChange);
                     body.AddForce(Vector3.up * _dropkickForceUp, ForceMode.VelocityChange);
                     body.AddForce(normal * _dropkickForceNormal, ForceMode.VelocityChange);
-                    Debug.Log("Dropcol  Hip");
                 }
                 else
                 {
                     thisRb.AddForce(normal * _dropkickForceNormal, ForceMode.VelocityChange);
                     thisRb.AddForce(Vector3.up * _dropkickForceUp, ForceMode.VelocityChange);
+                    Debug.Log("NotDropHip");
                 }
                 break;
             case InteractableObject.Damage.Headbutt:
@@ -369,14 +394,15 @@ public class CollisionHandler : MonoBehaviourPun
                 break;
         }
 
-        if (thisRb.velocity.magnitude > 15f)
+        if (thisRb.velocity.magnitude > 10f)
         {
-            thisRb.velocity = thisRb.velocity.normalized * 15f;
+            thisRb.velocity = thisRb.velocity.normalized * 10f;
+            Debug.Log("maxVelThisRb");
         }
-        if (body != null && body.velocity.magnitude > 10f)
+        if (body != null && body.velocity.magnitude > 12f)
         {
-            body.velocity = body.velocity.normalized * 10f;
-            Debug.Log("maxVel");
+            body.velocity = body.velocity.normalized * 12f;
+            Debug.Log("maxVelHip");
 
         }
 

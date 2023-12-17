@@ -260,7 +260,7 @@ public class StatusHandler : MonoBehaviourPun
                     break;
                 case Actor.DebuffState.Stun:
                     if (!_hasStun)
-                        StartCoroutine(ResetBodySpring());
+                        EnterUnconsciousState();
                     break;
                 case Actor.DebuffState.Ghost:
                     break;
@@ -285,6 +285,7 @@ public class StatusHandler : MonoBehaviourPun
     [PunRPC]
     void RPCShockCreate()
     {
+        actor.Grab.GrabResetTrigger();
         _context.ChangeState(shockInStance, ShockTime);
     }
 
@@ -302,6 +303,7 @@ public class StatusHandler : MonoBehaviourPun
     [PunRPC]
     void RPCBurnCreate()
     {
+        actor.Grab.GrabResetTrigger();
         _context.ChangeState(burnInStance, BurnTime);
     }
 
@@ -375,7 +377,6 @@ public class StatusHandler : MonoBehaviourPun
         //계산한 체력이 0보다 작으면 Death로
         if (tempHealth <= 0f)
         {
-            EnterUnconsciousState();
             KillPlayer();
         }
         else
@@ -388,11 +389,8 @@ public class StatusHandler : MonoBehaviourPun
                 {
                     if ((actor.debuffState & DebuffState.Ice) == DebuffState.Ice) //상태이상 후에 추가
                         return;
-                    //여기 원래 스턴이였는데 콜리전에서 관리를 하면 굳이 필요할까?
-                    //actor.debuffState = Actor.DebuffState.Stun;
-                    //actor.actorState = Actor.ActorState.Unconscious;
-                    //photonView.RPC("StunCreate", RpcTarget.All);
-                    EnterUnconsciousState();
+
+                    actor.debuffState |= Actor.DebuffState.Stun;
                 }
             }
         }
@@ -410,9 +408,9 @@ public class StatusHandler : MonoBehaviourPun
 
     void KillPlayer()
     {
-        StartCoroutine(ResetBodySpring());
         actor.actorState = Actor.ActorState.Dead;
         _isDead = true;
+        actor.Grab.GrabResetTrigger();
         actor.InvokeDeathEvent();
     }
 
@@ -421,13 +419,13 @@ public class StatusHandler : MonoBehaviourPun
         //데미지 이펙트나 사운드 추후 추가
 
         //actor.debuffState = Actor.DebuffState.Stun;
+        actor.Grab.GrabResetTrigger();
         photonView.RPC("ChangeStateMachines", RpcTarget.All, _stunTime);
         //StartCoroutine(ResetBodySpring());
-        actor.Grab.GrabResetTrigger();
-        actor.BodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
-        actor.BodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
-        actor.BodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
-        actor.BodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+        actor.BodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+        actor.BodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+        actor.BodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+        actor.BodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
     }
 
     [PunRPC]

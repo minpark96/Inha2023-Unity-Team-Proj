@@ -372,7 +372,6 @@ public class PlayerController : MonoBehaviourPun
     #region OnMouseEvent_Grab
     public void OnMouseEvent_Grab(Define.MouseEvent evt)
     {
-
         switch (evt)
         {
             case Define.MouseEvent.Press:
@@ -1273,8 +1272,8 @@ public class PlayerController : MonoBehaviourPun
                 if (i == 0)
                 {
                     Transform transform2 = _bodyHandler.RightFoot.transform;
-                    _bodyHandler.RightFoot.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-                    _bodyHandler.RightThigh.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+                    _bodyHandler.RightFoot.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+                    _bodyHandler.RightThigh.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
                     _bodyHandler.RightLeg.PartInteractable.damageModifier = InteractableObject.Damage.DropKick; //데미지
                     Vector3 dir = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
                     AniForce(DropAniData, i, dir);
@@ -1283,8 +1282,8 @@ public class PlayerController : MonoBehaviourPun
                 else if (i == 1)
                 {
                     Transform transform2 = _bodyHandler.LeftFoot.transform;
-                    _bodyHandler.LeftFoot.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-                    _bodyHandler.LeftThigh.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+                    _bodyHandler.LeftFoot.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+                    _bodyHandler.LeftThigh.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
                     _bodyHandler.LeftLeg.PartInteractable.damageModifier = InteractableObject.Damage.DropKick; //데미지
                     Vector3 dir = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
                     AniForce(DropAniData, i, dir);
@@ -1417,8 +1416,8 @@ public class PlayerController : MonoBehaviourPun
             }
             else
                 _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
-            _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-            _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+            _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+            _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
 
             photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LeftHand, true);
         }
@@ -1435,8 +1434,8 @@ public class PlayerController : MonoBehaviourPun
             }
             else
                 _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
-            _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-            _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+            _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+            _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
 
             photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.RightHand, true);
         }
@@ -1467,16 +1466,16 @@ public class PlayerController : MonoBehaviourPun
         AniFrameData[] aniFrameDatas = LeftPunchingAniData;
         Transform transform2 = _bodyHandler.LeftHand.transform;
         _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
-        _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-        _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+        _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+        _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
 
         if (side == Side.Right)
         {
             aniFrameDatas = RightPunchingAniData;
             transform2 = _bodyHandler.RightHand.transform;
             _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
-            _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-            _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+            _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+            _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
         }
 
         for (int i = 0; i < aniFrameDatas.Length; i++)
@@ -1495,8 +1494,8 @@ public class PlayerController : MonoBehaviourPun
         if (side == Side.Left)
         {
             _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
-            _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
-            _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+            _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+            _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
 
             photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LeftHand, false);
         }
@@ -1504,8 +1503,8 @@ public class PlayerController : MonoBehaviourPun
         {
             aniAngleDatas = RightPunchResettingAniData;
             _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
-            _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
-            _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+            _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+            _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
 
             photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.RightHand, false);
         }
@@ -2046,16 +2045,16 @@ public class PlayerController : MonoBehaviourPun
         AniFrameData[] itemTwoHands = ItemTwoHandLeftAniData;
         Transform transform2 = _bodyHandler.LeftHand.transform;
         _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
-        _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-        _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+        _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+        _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
 
         if (side == Side.Right)
         {
             itemTwoHands = ItemTwoHandAniData;
             transform2 = _bodyHandler.RightHand.transform;
             _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
-            _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-            _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+            _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+            _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
         }
 
         for (int i = 0; i < itemTwoHands.Length; i++)
@@ -2071,15 +2070,15 @@ public class PlayerController : MonoBehaviourPun
 
         AniAngleData[] itemTwoHands = ItemTwoHandLeftAngleData;
         _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
-        _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
-        _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+        _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+        _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
 
         if (side == Side.Right)
         {
             itemTwoHands = ItemTwoHandAngleData;
             _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
-            _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
-            _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+            _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+            _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
         }
 
         for (int i = 0; i < itemTwoHands.Length; i++)
