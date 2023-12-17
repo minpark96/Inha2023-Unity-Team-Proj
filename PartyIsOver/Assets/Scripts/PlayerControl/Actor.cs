@@ -191,6 +191,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
     {
         if (!photonView.IsMine || actorState == ActorState.Dead) return;
 
+        if(CameraControl == null || BodyHandler == null) return;
         CameraControl.LookAround(BodyHandler.Hip.transform.position);
         CameraControl.CursorControl();
     }
