@@ -13,7 +13,6 @@ public class ScoreBoardUI : MonoBehaviour
     public GameObject Tab;
 
     private GameObject _scoreBoardPanel;
-    private GameObject[] _portrait = new GameObject[6];
     private GameObject[] _score = new GameObject[6];
     private Text[] _nickName = new Text[6];
     private int _playerNumber;
@@ -34,7 +33,6 @@ public class ScoreBoardUI : MonoBehaviour
         for (int i = 0; i < _playerNumber; i++)
         {
             Info.transform.GetChild(i).gameObject.SetActive(true);
-            _portrait[i] = Info.transform.GetChild(i).GetChild(0).gameObject;
             _score[i] = Info.transform.GetChild(i).GetChild(1).gameObject;
             _nickName[i] = Info.transform.GetChild(i).GetChild(2).GetComponent<Text>();
         }
@@ -54,24 +52,10 @@ public class ScoreBoardUI : MonoBehaviour
         for (int i = 0; i < _playerNumber; i++)
         {
             Info.transform.GetChild(i).gameObject.SetActive(true);
-            _portrait[i] = Info.transform.GetChild(i).GetChild(0).gameObject;
             _score[i] = Info.transform.GetChild(i).GetChild(1).gameObject;
             _nickName[i] = Info.transform.GetChild(i).GetChild(2).GetComponent<Text>();
         }
 
-        for (int i = 0; i < _playerNumber; i++)
-        {
-            for (int j = 0; j < Define.MAX_PLAYERS_PER_ROOM; j++)
-            {
-                _portrait[i].transform.GetChild(j).gameObject.SetActive(false);
-            }
-        }
-
-        for (int i = 0; i < _playerNumber; i++)
-        {
-            Debug.Log("ChangeScoreBoard: rank[" + i + "] = " + rank[i]);
-            _portrait[i].transform.GetChild(rank[i] - 1).gameObject.SetActive(true);
-        }
 
         for (int i = 0; i < _playerNumber; i++)
         {
