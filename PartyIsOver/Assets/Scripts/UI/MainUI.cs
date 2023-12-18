@@ -103,6 +103,8 @@ public class MainUI : MonoBehaviour
 
                             OnClickCreditExit();
                             _creditOn = false;
+
+                            ChangeBgmSound("Sounds/Bgm/BongoBoogieMenuLOOPING");
                         }
 
                         if (_keyBoardOn)
@@ -122,6 +124,8 @@ public class MainUI : MonoBehaviour
                             _clickedNumber = 0;
                             StoryBoardPanel.SetActive(false);
                             _storyBoardOn = false;
+
+                            ChangeBgmSound("Sounds/Bgm/BongoBoogieMenuLOOPING");
                         }
                     }
                 }
@@ -165,9 +169,12 @@ public class MainUI : MonoBehaviour
             _delayTime = 0;
             _gameStartFlag = false;
             _loadingFlag = false;
+
             PhotonManager.Instance.Connect();
             PhotonManager.Instance.LoadNextScene("[3]Lobby");
             SceneManager.LoadSceneAsync("[3]Lobby");
+
+            Managers.Input.KeyboardAction -= OnKeyboardEvent;
         }
     }
 
@@ -227,7 +234,8 @@ public class MainUI : MonoBehaviour
 
         Managers.Sound.SoundVolume[(int)Define.Sound.Bgm] = 0.1f * BGMAudioSlider.value;
         Managers.Sound.SoundVolume[(int)Define.Sound.UISound] = 1f * EffectAudioSlider.value;
-        Managers.Sound.ChangeVolumeInMain();
+        Managers.Sound.ChangeVolume(Define.Sound.Bgm, Define.Sound.UISound);
+
         SettingsPanel.SetActive(false);
     }
 
@@ -238,10 +246,11 @@ public class MainUI : MonoBehaviour
         
         Managers.Sound.SoundVolume[(int)Define.Sound.Bgm] = 0.1f * 1;
         Managers.Sound.SoundVolume[(int)Define.Sound.UISound] = 1f * 1;
-        Managers.Sound.ChangeVolumeInMain();
+        Managers.Sound.ChangeVolume(Define.Sound.Bgm, Define.Sound.UISound);
 
         BGMAudioSlider.value = 1;
         EffectAudioSlider.value = 1;
+
         SettingsPanel.SetActive(false);
     }
 
@@ -258,6 +267,8 @@ public class MainUI : MonoBehaviour
     #region Credit
     public void OnClickCredit()
     {
+        ChangeBgmSound("Sounds/Credit/Duck Funk Looping");
+
         AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("UI/Funny-UI-030");
         Managers.Sound.Play(uiSound, Define.Sound.UISound);
 
@@ -279,6 +290,8 @@ public class MainUI : MonoBehaviour
     // StoryBoard
     public void OnClickStoryBoard()
     {
+        ChangeBgmSound("Sounds/StoryBoard Sound/Freaky Factory LOOPING");
+
         AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("UI/Funny-UI-030");
         Managers.Sound.Play(uiSound, Define.Sound.UISound);
 
@@ -306,6 +319,8 @@ public class MainUI : MonoBehaviour
         if (_clickedNumber >= 8)
         {
             StoryBoardPanel.SetActive(false);
+
+            ChangeBgmSound("Sounds/Bgm/BongoBoogieMenuLOOPING");
         }
 
         for (int i = 0; i < 8; i++)
@@ -350,5 +365,15 @@ public class MainUI : MonoBehaviour
         if(_clickedNumber < 7)
             _nextButton.GetComponent<Image>().sprite = NextButtonImage;
 
+    }
+
+
+    void ChangeBgmSound(string path)
+    {
+        AudioSource endingBgm = Managers.Sound.GetBgmAudioSource();
+        AudioClip audioClip = Managers.Resource.Load<AudioClip>(path);
+        endingBgm.clip = audioClip;
+        endingBgm.volume = Managers.Sound.SoundVolume[(int)Define.Sound.Bgm];
+        Managers.Sound.Play(audioClip, Define.Sound.Bgm);
     }
 }

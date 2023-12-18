@@ -90,9 +90,6 @@ public class PlayerInputHandler : MonoBehaviourPun
         {
             _actor.PlayerController.OnMouseEvent_Skill(evt);
 
-            if (_actor.debuffState == DebuffState.Balloon)
-                return;
-
             if (!((_actor.debuffState & DebuffState.Burn) == DebuffState.Burn))
                 if (_actor.GrabState == Define.GrabState.PlayerLift)
                 {
