@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 using System;
 using System.Runtime.InteropServices.WindowsRuntime;
 
-public class PhotonManager : BaseScene 
+public class PhotonManager : MonoBehaviourPunCallbacks 
 {
     static PhotonManager p_instance;
 
@@ -52,7 +52,7 @@ public class PhotonManager : BaseScene
         }
 
         SceneManagerEx sceneManagerEx = new SceneManagerEx();
-        string currentSceneName = sceneManagerEx.GetCurrentSceneName();
+        string currentSceneName = SceneManager.GetActiveScene().name;
         if (currentSceneName == _sceneLobby)
         {
             AudioSource[] _audioSources = new AudioSource[(int)Define.Sound.Maxcount];
@@ -78,7 +78,6 @@ public class PhotonManager : BaseScene
         GameCenter gameCenter = new GameCenter();
         if (scene.name == _sceneRoom)
         {
-            SceneType = Define.SceneType.Lobby;
             gameCenter.SetSceneBgmSound("LaxLayoverLOOPING");
         }
     }
@@ -235,7 +234,7 @@ public class PhotonManager : BaseScene
 
     public override void OnPlayerLeftRoom(Player other)
     {
-        if (SceneManager.GetActiveScene().name == _sceneRoom) 
+        if (SceneManager.GetActiveScene().name == _sceneRoom)
         {
             if (PhotonNetwork.LocalPlayer.IsMasterClient)
             {
@@ -247,9 +246,5 @@ public class PhotonManager : BaseScene
     }
 
     #endregion
-
-    public override void Clear()
-    {
-    }
 
 }

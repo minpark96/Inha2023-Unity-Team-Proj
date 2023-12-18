@@ -65,7 +65,7 @@ public class PoolManager
             //_poolStack.Push(poolable);
 
             if (parent == null)
-                poolable.transform.parent = Managers.Scene.GetCurrentSceneRootGameObject().transform;
+                poolable.transform.parent = SceneManager.GetActiveScene().GetRootGameObjects()[0].transform;
             //else
             //    poolable.transform.parent = parent;
             poolable.transform.parent = parent;

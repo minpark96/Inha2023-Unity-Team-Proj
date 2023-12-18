@@ -24,7 +24,7 @@ public class SoundManager
         GameObject root = GameObject.Find("@Sound");
 
         SceneManagerEx sceneManagerEx = new SceneManagerEx();
-        string currentSceneName = sceneManagerEx.GetCurrentSceneName();
+        string currentSceneName = SceneManager.GetActiveScene().name;
         AudioClip audioClip = null;
 
         if (root == null) 

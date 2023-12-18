@@ -1,9 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
 
-public abstract class BaseScene : MonoBehaviourPunCallbacks
+public abstract class BaseScene : MonoBehaviour
 {
     Define.SceneType _sceneType = Define.SceneType.Unknown;
 
@@ -23,5 +24,4 @@ public abstract class BaseScene : MonoBehaviourPunCallbacks
     }
 
     public abstract void Clear();
-
 }

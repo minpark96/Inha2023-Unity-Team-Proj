@@ -1,6 +1,5 @@
 using Photon.Pun;
 using Photon.Realtime;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,12 +8,8 @@ using UnityEngine.UI;
 using static Actor;
 using System.Reflection;
 using System.Linq;
-using Unity.VisualScripting;
-using static Define;
-using static UnityEngine.Rendering.VolumeComponent;
-using static RoomUI;
 
-public class GameCenter : BaseScene
+public class GameCenter : MonoBehaviourPunCallbacks, IPunOwnershipCallbacks
 {
     #region Private Serializable Fields
 
@@ -192,7 +187,7 @@ public class GameCenter : BaseScene
             AudioSource _audioSources = Managers.Sound.GetBgmAudioSource();
 
             SceneManagerEx sceneManagerEx = new SceneManagerEx();
-            string currentSceneName = sceneManagerEx.GetCurrentSceneName();
+            string currentSceneName = SceneManager.GetActiveScene().name;
 
             if (_arenaName == currentSceneName)
             {
@@ -325,7 +320,7 @@ public class GameCenter : BaseScene
         {
             if (PhotonNetwork.LocalPlayer.IsMasterClient)
             {
-
+                ChangeMasterClient();
             }
             else
             {
@@ -340,7 +335,7 @@ public class GameCenter : BaseScene
         }
     }
 
-    IEnumerator ChangeMasterClient()
+    void ChangeMasterClient()
     {
         transform.GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.LocalPlayer.GetNext());
         PhotonNetwork.SetMasterClient(PhotonNetwork.LocalPlayer.GetNext());
@@ -474,7 +469,6 @@ public class GameCenter : BaseScene
 
             _arenaSettingsUI = GameObject.Find("Settings Panel").GetComponent<ArenaSettingsUI>();
 
-            SceneType = Define.SceneType.Game;
             SetSceneBgmSound("BigBangBattleLOOPING");
 
             InitItems();
@@ -1191,10 +1185,6 @@ public class GameCenter : BaseScene
 
     #region MonoBehaviourPunCallbacks Methods
 
-    public override void Clear()
-    {
-    }
-
     public override void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -1203,6 +1193,28 @@ public class GameCenter : BaseScene
     public override void OnDisable()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    public void OnOwnershipRequest(PhotonView targetView, Player requestingPlayer)
+    {
+        Debug.Log("OnOwnershipRequest" + targetView);
+        Debug.Log("OnOwnershipRequest" + requestingPlayer);
+    }
+
+    public void OnOwnershipTransfered(PhotonView targetView, Player previousOwner)
+    {
+        Debug.Log("OnOwnershipTransfered" + targetView);
+        Debug.Log("OnOwnershipTransfered" + previousOwner);
+        if (previousOwner.IsLocal)
+        {
+            PhotonManager.Instance.LeaveRoom();
+        }
+    }
+
+    public void OnOwnershipTransferFailed(PhotonView targetView, Player senderOfFailedRequest)
+    {
+        Debug.Log("OnOwnershipTransferFailed" + targetView);
+        Debug.Log("OnOwnershipTransferFailed" + senderOfFailedRequest);
     }
 
     #endregion
