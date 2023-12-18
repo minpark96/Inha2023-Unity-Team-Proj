@@ -72,11 +72,33 @@ public class PhotonManager : BaseScene
 
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        GameCenter gameCenter = new GameCenter();
         if (scene.name == "[4]Room")
         {
             SceneType = Define.SceneType.Lobby;
-            gameCenter.SetSceneBgmSound("LaxLayoverLOOPING");
+            SetSceneBgmSound("LaxLayoverLOOPING");
+        }
+    }
+
+    public void SetSceneBgmSound(string path)
+    {
+        GameObject root = GameObject.Find("@Sound");
+        if (root != null)
+        {
+            AudioSource _audioSources = Managers.Sound.GetBgmAudioSource();
+
+            SceneManagerEx sceneManagerEx = new SceneManagerEx();
+            string currentSceneName = sceneManagerEx.GetCurrentSceneName();
+
+            if ("[4]Room" == currentSceneName)
+            {
+                _audioSources.Stop();
+                AudioClip audioClip = Managers.Resource.Load<AudioClip>($"Sounds/Bgm/{path}");
+                _audioSources.clip = audioClip;
+                _audioSources.volume = 0.1f;
+                Managers.Sound.Play(audioClip, Define.Sound.Bgm);
+
+                Managers.Sound.ChangeVolumeInMain();
+            }
         }
     }
 

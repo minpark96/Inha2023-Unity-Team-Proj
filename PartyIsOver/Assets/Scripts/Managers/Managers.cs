@@ -9,16 +9,12 @@ public class Managers : MonoBehaviourPun
      static Managers _instance;
      static Managers Instance { get { return _instance; } }
 
-    CoolTimeMnaager _coolTime = new CoolTimeMnaager();
-    DurationTimeManager _durationTime = new DurationTimeManager();
     InputManager _input = new InputManager();
     PoolManager _pool = new PoolManager();
     ResourceManager _resource = new ResourceManager();
     SceneManagerEx _scene = new SceneManagerEx();
     SoundManager _sound = new SoundManager();
 
-    public static CoolTimeMnaager CoolTime { get { return Instance._coolTime; } }
-    public static DurationTimeManager DurationTime { get { return Instance._durationTime; } }
     public static InputManager Input { get { return Instance._input; } }
     public static PoolManager Pool { get { return Instance._pool; } }
     public static ResourceManager Resource { get { return Instance._resource; } }

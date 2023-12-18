@@ -84,7 +84,6 @@ public class StatusHandler : MonoBehaviourPun
     Ice IceInStance;
     PowerUp powerUpInStance;
     Drunk drunkInStance;
-    Slow slowInStance;
     Shock shockInStance;
     Exhausted exhaustedInStance;
 
@@ -97,7 +96,6 @@ public class StatusHandler : MonoBehaviourPun
         _freezeTime = data.FreezeTime;
         _powerUpTime = data.PowerUpTime;
         //_drunkTime = data.DrunkTime; // _drunkTime ¾øÀ½
-        _slowTime = data.SlowTime;
         _shockTime = data.ShockTime;
     }
 
@@ -112,7 +110,6 @@ public class StatusHandler : MonoBehaviourPun
         IceInStance = gameObject.AddComponent<Ice>();
         powerUpInStance = gameObject.AddComponent<PowerUp>();
         drunkInStance = gameObject.AddComponent<Drunk>();
-        slowInStance = gameObject.AddComponent<Slow>();
         shockInStance = gameObject.AddComponent<Shock>();
         exhaustedInStance = gameObject.AddComponent<Exhausted>();
     }
