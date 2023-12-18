@@ -141,27 +141,14 @@ public class StatusHandler : MonoBehaviourPun
         {
             if (actor.Stamina <= 0)
             {
-                if (!_hasExhausted)
+                if ((actor.debuffState & DebuffState.Exhausted) == DebuffState.Exhausted)
                 {
-                    actor.debuffState |= Actor.DebuffState.Exhausted;
                     if (actor.GrabState != Define.GrabState.PlayerLift)
                     {
                         actor.GrabState = Define.GrabState.None;
                         actor.Grab.GrabResetTrigger();
                     }
-                    //_context.ChangeState(exhaustedInStance);
                     photonView.RPC("RPCExhaustedCreate", RpcTarget.All);
-                }
-            }
-            else
-            {
-                if (_hasExhausted)
-                {
-                    if (actor.GrabState != Define.GrabState.PlayerLift)
-                    {
-                        actor.GrabState = Define.GrabState.None;
-                        actor.Grab.GrabResetTrigger();
-                    }
                 }
             }
         }
@@ -206,44 +193,17 @@ public class StatusHandler : MonoBehaviourPun
     {
         _audioClip = Managers.Sound.GetOrAddAudioClip(path);
         _audioSource.clip = _audioClip;
-        _audioSource.volume = 0.2f;
         _audioSource.spatialBlend = 1;
         Managers.Sound.Play(_audioClip, Define.Sound.PlayerEffect, _audioSource);
     }
 
     public void DebuffCheck(InteractableObject.Damage type)
     {
-        if (actor.debuffState != Actor.DebuffState.Default)
-            return;
-
-        if (actor.debuffState == Actor.DebuffState.Ice) return;
-        //if (actor.debuffState == Actor.DebuffState.Balloon) return;
-
         switch (type)
         {
             case Damage.Ice: // 빙결
                 actor.debuffState |= Actor.DebuffState.Ice;
-                //foreach (Actor.DebuffState state in System.Enum.GetValues(typeof(Actor.DebuffState)))
-                //{
-                //    if (state != Actor.DebuffState.Ice && (actor.debuffState & state) != 0)
-                //    {
-                //        actor.debuffState &= ~state;
-                //    }
-                //}
                 break;
-            //case Damage.Balloon: // 풍선
-            //    {
-            //        actor.debuffState |= Actor.DebuffState.Balloon;
-            //        photonView.RPC("PlayerDebuffSound", RpcTarget.All, "PlayerEffect/Cartoon-UI-049");
-            //        foreach (Actor.DebuffState state in System.Enum.GetValues(typeof(Actor.DebuffState)))
-            //        {
-            //            if (state != Actor.DebuffState.Balloon && (actor.debuffState & state) != 0)
-            //            {
-            //                actor.debuffState &= ~state;
-            //            }
-            //        }
-            //    }
-            //    break;
             case Damage.PowerUp: // 불끈
                 actor.debuffState |= Actor.DebuffState.PowerUp;
                 break;
@@ -251,19 +211,19 @@ public class StatusHandler : MonoBehaviourPun
                 actor.debuffState |= Actor.DebuffState.Burn;
                 break;
             case Damage.Shock: // 감전
-                if (actor.debuffState == Actor.DebuffState.Stun || actor.debuffState == Actor.DebuffState.Drunk)
+                    if ((actor.debuffState & DebuffState.Stun) == DebuffState.Stun || (actor.debuffState & DebuffState.Drunk) == DebuffState.Drunk)
                     break;
                 else
                     actor.debuffState |= Actor.DebuffState.Shock;
                 break;
             case Damage.Stun: // 기절
-                if (actor.debuffState == Actor.DebuffState.Shock || actor.debuffState == Actor.DebuffState.Drunk )
+                if ((actor.debuffState & DebuffState.Shock) == DebuffState.Shock || (actor.debuffState & DebuffState.Drunk) == DebuffState.Drunk)
                     break;
                 else
                     actor.debuffState |= Actor.DebuffState.Stun;
                 break;
             case Damage.Drunk: // 취함
-                if (actor.debuffState == Actor.DebuffState.Stun || actor.debuffState == Actor.DebuffState.Shock)
+                if ((actor.debuffState & DebuffState.Stun) == DebuffState.Stun || (actor.debuffState & DebuffState.Shock) == DebuffState.Shock)
                     break;
                 else
                 {
@@ -278,7 +238,6 @@ public class StatusHandler : MonoBehaviourPun
         foreach (Actor.DebuffState state in System.Enum.GetValues(typeof(Actor.DebuffState)))
         {
             Actor.DebuffState checking = actor.debuffState & state;
-
             switch (checking)
             {
                 case Actor.DebuffState.Default:
@@ -301,7 +260,7 @@ public class StatusHandler : MonoBehaviourPun
                     break;
                 case Actor.DebuffState.Stun:
                     if (!_hasStun)
-                        StartCoroutine(ResetBodySpring());
+                        EnterUnconsciousState();
                     break;
                 case Actor.DebuffState.Ghost:
                     break;
@@ -326,6 +285,7 @@ public class StatusHandler : MonoBehaviourPun
     [PunRPC]
     void RPCShockCreate()
     {
+        actor.Grab.GrabResetTrigger();
         _context.ChangeState(shockInStance, ShockTime);
     }
 
@@ -343,6 +303,7 @@ public class StatusHandler : MonoBehaviourPun
     [PunRPC]
     void RPCBurnCreate()
     {
+        actor.Grab.GrabResetTrigger();
         _context.ChangeState(burnInStance, BurnTime);
     }
 
@@ -377,10 +338,6 @@ public class StatusHandler : MonoBehaviourPun
         GameObject go = GameObject.Find($"{name}");
         Managers.Resource.Destroy(go);
         effectObject = null;
-    }
-    public void WetCreate()
-    {
-        EffectObjectCreate("Effects/Wet");
     }
 
     public void EffectObjectCreate(string path)
@@ -420,7 +377,6 @@ public class StatusHandler : MonoBehaviourPun
         //계산한 체력이 0보다 작으면 Death로
         if (tempHealth <= 0f)
         {
-            EnterUnconsciousState();
             KillPlayer();
         }
         else
@@ -431,12 +387,10 @@ public class StatusHandler : MonoBehaviourPun
 
                 if (realDamage >= _knockoutThreshold)
                 {
-                    if (actor.debuffState == Actor.DebuffState.Ice) //상태이상 후에 추가
+                    if ((actor.debuffState & DebuffState.Ice) == DebuffState.Ice) //상태이상 후에 추가
                         return;
-                    actor.debuffState = Actor.DebuffState.Stun;
-                    //actor.actorState = Actor.ActorState.Unconscious;
-                    //photonView.RPC("StunCreate", RpcTarget.All);
-                    EnterUnconsciousState();
+
+                    actor.debuffState |= Actor.DebuffState.Stun;
                 }
             }
         }
@@ -454,9 +408,9 @@ public class StatusHandler : MonoBehaviourPun
 
     void KillPlayer()
     {
-        StartCoroutine(ResetBodySpring());
         actor.actorState = Actor.ActorState.Dead;
         _isDead = true;
+        actor.Grab.GrabResetTrigger();
         actor.InvokeDeathEvent();
     }
 
@@ -465,13 +419,13 @@ public class StatusHandler : MonoBehaviourPun
         //데미지 이펙트나 사운드 추후 추가
 
         //actor.debuffState = Actor.DebuffState.Stun;
+        actor.Grab.GrabResetTrigger();
         photonView.RPC("ChangeStateMachines", RpcTarget.All, _stunTime);
         //StartCoroutine(ResetBodySpring());
-        actor.Grab.GrabResetTrigger();
-        actor.BodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
-        actor.BodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
-        actor.BodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
-        actor.BodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+        actor.BodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+        actor.BodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+        actor.BodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+        actor.BodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
     }
 
     [PunRPC]

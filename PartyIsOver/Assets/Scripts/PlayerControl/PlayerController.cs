@@ -344,6 +344,8 @@ public class PlayerController : MonoBehaviourPun
         MaxSpeed = statData.MaxSpeed;
         RunSpeed = statData.RunSpeed;
         _itemSwingPower = statData.ItemSwingPower;
+        _playerTransform = this.transform.Find("GreenHip").GetComponent<Transform>();
+
     }
 
     [PunRPC]
@@ -363,7 +365,6 @@ public class PlayerController : MonoBehaviourPun
     {
         _audioClip = Managers.Sound.GetOrAddAudioClip(path, Define.Sound.PlayerEffect);
         _audioSource.clip = _audioClip;
-        _audioSource.volume = 0.2f;
         _audioSource.spatialBlend = 1;
         Managers.Sound.Play(_audioClip, Define.Sound.PlayerEffect, _audioSource);
 
@@ -372,7 +373,6 @@ public class PlayerController : MonoBehaviourPun
     #region OnMouseEvent_Grab
     public void OnMouseEvent_Grab(Define.MouseEvent evt)
     {
-
         switch (evt)
         {
             case Define.MouseEvent.Press:
@@ -403,7 +403,7 @@ public class PlayerController : MonoBehaviourPun
                 {
                     if (Input.GetMouseButtonDown(1) && _actor.Stamina >= 0)
                     {
-                        if (_actor.debuffState == DebuffState.Exhausted)
+                        if ((_actor.debuffState & DebuffState.Exhausted) == DebuffState.Exhausted)
                             return;
                         //_actor.Stamina -= 5;
 
@@ -445,7 +445,7 @@ public class PlayerController : MonoBehaviourPun
 
                     if (Input.GetMouseButtonUp(2) && _actor.Stamina >= 0)
                     {
-                        if (_actor.debuffState == DebuffState.Exhausted)
+                        if ((_actor.debuffState & DebuffState.Exhausted) == DebuffState.Exhausted)
                             return;
 
                         if (_actor.Stamina <= 0)
@@ -495,7 +495,7 @@ public class PlayerController : MonoBehaviourPun
                             }
                         }
                     }
-                    else if(_actor.debuffState == Actor.DebuffState.Drunk)
+                    else if ((_actor.debuffState & DebuffState.Drunk) == DebuffState.Drunk)
                     {
                         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
                         {
@@ -539,16 +539,16 @@ public class PlayerController : MonoBehaviourPun
 
                         if (_actor.Stamina <= 0)
                         {
-                            //_actor.Stamina = 0;
                             photonView.RPC("SetStemina", RpcTarget.MasterClient, 0f);
-                            _actor.debuffState = DebuffState.Exhausted;
+                            _actor.debuffState |= DebuffState.Exhausted;
                         }
 
-                        if (_actor.debuffState == DebuffState.Exhausted)
+                        if ((_actor.debuffState & DebuffState.Exhausted) == DebuffState.Exhausted)
                             return;
                         else
                         {
-                            if (_actor.debuffState != DebuffState.Drunk)
+                            if (!((_actor.debuffState & DebuffState.Drunk) == DebuffState.Drunk))
+                            //if (_actor.debuffState != DebuffState.Drunk)
                             {
                                 if (!_isRSkillCheck)
                                 {
@@ -589,7 +589,7 @@ public class PlayerController : MonoBehaviourPun
                 break;
             case Define.KeyboardEvent.Charge:
                 {
-                    if (Input.GetKeyUp(KeyCode.R) && _actor.debuffState == DebuffState.Drunk && IsFlambe)
+                    if (Input.GetKeyUp(KeyCode.R) && (_actor.debuffState & DebuffState.Drunk) == DebuffState.Drunk && IsFlambe)
                     {
                         photonView.RPC("DrunkAction", RpcTarget.All);
                         //StartCoroutine("DrunkAction");
@@ -614,7 +614,7 @@ public class PlayerController : MonoBehaviourPun
 
                     if (Input.GetKey(KeyCode.R) && _actor.Stamina >= 0)
                     {
-                        if (_actor.debuffState == DebuffState.Drunk)
+                        if ((_actor.debuffState & DebuffState.Drunk) == DebuffState.Drunk)
                         {
                             //취함 애니메이션
                             StartCoroutine(DrunkActionReady());
@@ -629,21 +629,22 @@ public class PlayerController : MonoBehaviourPun
     [PunRPC]
     void EffectCreate(string path)
     {
-        _actor.StatusHandler.EffectObjectCreate($"{path}");
+        effectObject = Managers.Resource.PhotonNetworkInstantiate($"{path}");
     }
 
     [PunRPC]
     void RSkillDestroyEffect(string name)
     {
-        Debug.Log("RSkillDestroyEffect : " + name);
-        _actor.StatusHandler.DestroyEffect(name);
+        GameObject go = GameObject.Find($"{name}");
+        Managers.Resource.Destroy(go);
+        effectObject = null;
     }
 
-    /*    [PunRPC]
-        void DrunkAction()
-        {
-            StartCoroutine(DrunkAction());
-        }*/
+    [PunRPC]
+    void RSkillMoveEffect()
+    {
+        effectObject.transform.position = _playerTransform.position;
+    }
 
     #endregion
 
@@ -810,7 +811,7 @@ public class PlayerController : MonoBehaviourPun
         _readySide = Side.Right;
         while (_punchcount < 5)
         {
-            photonView.RPC("PlayerEffectSound", RpcTarget.All, "Sounds/Effect/SFX_ArrowShot_Hit");
+            photonView.RPC("PlayerEffectSound", RpcTarget.All, "Sounds/PlayerEffect/WEAPON_Spear");
             if (_readySide == Side.Left)
             {
                 yield return MeowPunch(Side.Left, 0.07f, MeowPunchReadyPunch, MeowPunchPunching, MeowPunchResetPunch);
@@ -862,22 +863,28 @@ public class PlayerController : MonoBehaviourPun
     #region FixedUpdate
     private void FixedUpdate()
     {
-        
         if (effectObject != null && IsFlambe && isTestCheck)
         {
             photonView.RPC("ASDStatusMoveEffect", RpcTarget.All);
         }
+        else if(effectObject != null)
+        {
+            photonView.RPC("RSkillMoveEffect", RpcTarget.All);
+        }
 
         if (_isRSkillCheck == true)
         {
-            if (_actor.debuffState == DebuffState.Stun || _actor.debuffState == DebuffState.Ice || _actor.debuffState == DebuffState.Shock || _actor.debuffState == DebuffState.Drunk)
+            if ((_actor.debuffState & DebuffState.Stun) == DebuffState.Stun ||
+                (_actor.debuffState & DebuffState.Ice) == DebuffState.Ice ||
+                (_actor.debuffState & DebuffState.Shock) == DebuffState.Shock ||
+                (_actor.debuffState & DebuffState.Drunk) == DebuffState.Drunk
+                )
             {
                 photonView.RPC("ResetCharge", RpcTarget.All);
                 _isRSkillCheck = false;
             }
         }
         
-
         if (!photonView.IsMine || _actor.actorState == ActorState.Dead) return;
 
         if (isAI)
@@ -888,17 +895,10 @@ public class PlayerController : MonoBehaviourPun
             photonView.RPC("_balloonState.BalloonShapeOn", RpcTarget.All);
         }
 
-        /*if (_actor.debuffState == Actor.DebuffState.Drunk && isDrunk == false)
-        {
-            isDrunk = true;
-            StartCoroutine(_drunkState.DrunkOff());
-        }*/
-
-
         if (_actor.actorState != Actor.ActorState.Jump && _actor.actorState != Actor.ActorState.Roll 
             && _actor.actorState != Actor.ActorState.Run )//&& _actor.actorState != ActorState.Unconscious)
         {
-            if(!((_actor.debuffState & Actor.DebuffState.Stun) == DebuffState.Stun))
+            if(!((_actor.debuffState & DebuffState.Stun) == DebuffState.Stun))
             {
                 if (MoveInput.magnitude == 0f)
                 {
@@ -1269,8 +1269,8 @@ public class PlayerController : MonoBehaviourPun
                 if (i == 0)
                 {
                     Transform transform2 = _bodyHandler.RightFoot.transform;
-                    _bodyHandler.RightFoot.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-                    _bodyHandler.RightThigh.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+                    _bodyHandler.RightFoot.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+                    _bodyHandler.RightThigh.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
                     _bodyHandler.RightLeg.PartInteractable.damageModifier = InteractableObject.Damage.DropKick; //데미지
                     Vector3 dir = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
                     AniForce(DropAniData, i, dir);
@@ -1279,8 +1279,8 @@ public class PlayerController : MonoBehaviourPun
                 else if (i == 1)
                 {
                     Transform transform2 = _bodyHandler.LeftFoot.transform;
-                    _bodyHandler.LeftFoot.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-                    _bodyHandler.LeftThigh.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+                    _bodyHandler.LeftFoot.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+                    _bodyHandler.LeftThigh.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
                     _bodyHandler.LeftLeg.PartInteractable.damageModifier = InteractableObject.Damage.DropKick; //데미지
                     Vector3 dir = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
                     AniForce(DropAniData, i, dir);
@@ -1413,8 +1413,8 @@ public class PlayerController : MonoBehaviourPun
             }
             else
                 _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
-            _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-            _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+            _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+            _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
 
             photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LeftHand, true);
         }
@@ -1431,8 +1431,8 @@ public class PlayerController : MonoBehaviourPun
             }
             else
                 _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
-            _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-            _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+            _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+            _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
 
             photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.RightHand, true);
         }
@@ -1463,16 +1463,16 @@ public class PlayerController : MonoBehaviourPun
         AniFrameData[] aniFrameDatas = LeftPunchingAniData;
         Transform transform2 = _bodyHandler.LeftHand.transform;
         _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
-        _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-        _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+        _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+        _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
 
         if (side == Side.Right)
         {
             aniFrameDatas = RightPunchingAniData;
             transform2 = _bodyHandler.RightHand.transform;
             _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
-            _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-            _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+            _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+            _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
         }
 
         for (int i = 0; i < aniFrameDatas.Length; i++)
@@ -1491,8 +1491,8 @@ public class PlayerController : MonoBehaviourPun
         if (side == Side.Left)
         {
             _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
-            _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
-            _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+            _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+            _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
 
             photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LeftHand, false);
         }
@@ -1500,8 +1500,8 @@ public class PlayerController : MonoBehaviourPun
         {
             aniAngleDatas = RightPunchResettingAniData;
             _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
-            _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
-            _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+            _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+            _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
 
             photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.RightHand, false);
         }
@@ -1995,6 +1995,7 @@ public class PlayerController : MonoBehaviourPun
 
     public IEnumerator ItemTwoHand(Side side, float duration, float readyTime, float punchTime, float resetTime, float itemPower)
     {
+        photonView.RPC("PlayerEffectSound", RpcTarget.All, "Sounds/PlayerEffect/WEAPON_Axe");
         float checkTime = Time.time;
 
         while (Time.time - checkTime < readyTime)
@@ -2041,16 +2042,16 @@ public class PlayerController : MonoBehaviourPun
         AniFrameData[] itemTwoHands = ItemTwoHandLeftAniData;
         Transform transform2 = _bodyHandler.LeftHand.transform;
         _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
-        _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-        _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+        _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+        _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
 
         if (side == Side.Right)
         {
             itemTwoHands = ItemTwoHandAniData;
             transform2 = _bodyHandler.RightHand.transform;
             _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
-            _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-            _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+            _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+            _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
         }
 
         for (int i = 0; i < itemTwoHands.Length; i++)
@@ -2066,15 +2067,15 @@ public class PlayerController : MonoBehaviourPun
 
         AniAngleData[] itemTwoHands = ItemTwoHandLeftAngleData;
         _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
-        _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
-        _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+        _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+        _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
 
         if (side == Side.Right)
         {
             itemTwoHands = ItemTwoHandAngleData;
             _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
-            _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
-            _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+            _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+            _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
         }
 
         for (int i = 0; i < itemTwoHands.Length; i++)
@@ -2162,6 +2163,8 @@ public class PlayerController : MonoBehaviourPun
     #region Potion
     public IEnumerator Potion(Side side, float duration, float ready, float start, float drinking, float end)
     {
+        photonView.RPC("PlayerEffectSound", RpcTarget.All, "Sounds/PlayerEffect/Item_UI_042");
+
         float checkTime = Time.time;
 
         while (Time.time - checkTime < ready)

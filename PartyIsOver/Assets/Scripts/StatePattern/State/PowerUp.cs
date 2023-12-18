@@ -35,7 +35,7 @@ public class PowerUp : MonoBehaviourPun, IDebuffState
 
     public void ExitState()
     {
-        MyActor.debuffState = Actor.DebuffState.Default;
+        MyActor.debuffState &= ~Actor.DebuffState.PowerUp;
         MyActor.PlayerController.RunSpeed -= _maxSpeed * 0.1f;
         RemoveObject("Aura_acceleration");
         MyActor.InvokeStatusChangeEvent();
@@ -57,7 +57,6 @@ public class PowerUp : MonoBehaviourPun, IDebuffState
         //사운드 문제 있음
         _audioClip = Managers.Sound.GetOrAddAudioClip(path);
         _audioSource.clip = _audioClip;
-        _audioSource.volume = 0.2f;
         _audioSource.spatialBlend = 1;
         Managers.Sound.Play(_audioClip, Define.Sound.PlayerEffect, _audioSource);
     }
