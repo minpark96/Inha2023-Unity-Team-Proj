@@ -18,6 +18,7 @@ public class PhotonManager : BaseScene
     string _sceneMain = "[2]Main";
     string _sceneLobby = "[3]Lobby";
     string _sceneRoom = "[4]Room";
+    string _sceneEnding = "[6]Ending";
 
     float _nextUpdateTime = 1f;
     float _timeBetweenUpdate = 1.5f;
@@ -72,33 +73,11 @@ public class PhotonManager : BaseScene
 
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name == "[4]Room")
+        GameCenter gameCenter = new GameCenter();
+        if (scene.name == _sceneRoom)
         {
             SceneType = Define.SceneType.Lobby;
-            SetSceneBgmSound("LaxLayoverLOOPING");
-        }
-    }
-
-    public void SetSceneBgmSound(string path)
-    {
-        GameObject root = GameObject.Find("@Sound");
-        if (root != null)
-        {
-            AudioSource _audioSources = Managers.Sound.GetBgmAudioSource();
-
-            SceneManagerEx sceneManagerEx = new SceneManagerEx();
-            string currentSceneName = sceneManagerEx.GetCurrentSceneName();
-
-            if ("[4]Room" == currentSceneName)
-            {
-                _audioSources.Stop();
-                AudioClip audioClip = Managers.Resource.Load<AudioClip>($"Sounds/Bgm/{path}");
-                _audioSources.clip = audioClip;
-                _audioSources.volume = 0.1f;
-                Managers.Sound.Play(audioClip, Define.Sound.Bgm);
-
-                Managers.Sound.ChangeVolumeInMain();
-            }
+            gameCenter.SetSceneBgmSound("LaxLayoverLOOPING");
         }
     }
 
@@ -202,7 +181,7 @@ public class PhotonManager : BaseScene
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
         string roomName = "설산 속의 아지트";
-        PhotonNetwork.CreateRoom(roomName, new RoomOptions { MaxPlayers = Define.MAX_PLAYERS_PER_ROOM });
+        PhotonNetwork.CreateRoom(roomName, new RoomOptions { IsVisible = true, IsOpen = true, MaxPlayers = Define.MAX_PLAYERS_PER_ROOM });
     }
 
     public override void OnJoinedLobby()
@@ -223,8 +202,14 @@ public class PhotonManager : BaseScene
     public override void OnLeftRoom()
     {
         Debug.Log("[OnLeftRoom()]");
-        StartCoroutine(LoadNextScene(_sceneLobby));
-        //SceneManager.LoadSceneAsync("[3]Lobby");
+        if(SceneManager.GetActiveScene().name == _sceneEnding)
+        {
+            StartCoroutine(LoadNextScene(_sceneMain));
+        }
+        else
+        {
+            StartCoroutine(LoadNextScene(_sceneLobby));
+        }
     }
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
@@ -235,10 +220,10 @@ public class PhotonManager : BaseScene
             _nextUpdateTime = Time.time + _timeBetweenUpdate;
         }
 
-        if (roomList.Count == 0 && PhotonNetwork.InLobby)
-        {
-            RoomItemsList.Clear();
-        }
+        //if (roomList.Count == 0 && PhotonNetwork.InLobby)
+        //{
+        //    RoomItemsList.Clear();
+        //}
     }
 
     public override void OnPlayerEnteredRoom(Player other)

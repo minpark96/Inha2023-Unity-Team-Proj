@@ -49,7 +49,8 @@ public class SnowStorm : MonoBehaviour
         {
             for (int i = 0; i < MyActor.BodyHandler.BodyParts.Count; i++)
             {
-                MyActor.BodyHandler.BodyParts[i].PartRigidbody.AddForce(transform.right * _stormForce * Time.deltaTime, ForceMode.VelocityChange);
+                if(MyActor != null)
+                    MyActor.BodyHandler.BodyParts[i].PartRigidbody.AddForce(transform.right * _stormForce * Time.deltaTime, ForceMode.VelocityChange);
             }
 
             yield return null;
@@ -78,7 +79,8 @@ public class SnowStorm : MonoBehaviour
         {
             for (int i = 0; i < MyActor.BodyHandler.BodyParts.Count; i++)
             {
-                MyActor.BodyHandler.BodyParts[i].PartRigidbody.AddForce(transform.right * _stormForce * Time.deltaTime, ForceMode.VelocityChange);
+                if (MyActor != null)
+                    MyActor.BodyHandler.BodyParts[i].PartRigidbody.AddForce(transform.right * _stormForce * Time.deltaTime, ForceMode.VelocityChange);
             }
 
             yield return null;
@@ -107,7 +109,8 @@ public class SnowStorm : MonoBehaviour
         {
             for (int i = 0; i < MyActor.BodyHandler.BodyParts.Count; i++)
             {
-                MyActor.BodyHandler.BodyParts[i].PartRigidbody.AddForce(transform.right * _stormForce * Time.deltaTime, ForceMode.VelocityChange);
+                if (MyActor != null)
+                    MyActor.BodyHandler.BodyParts[i].PartRigidbody.AddForce(transform.right * _stormForce * Time.deltaTime, ForceMode.VelocityChange);
             }
 
             yield return null;

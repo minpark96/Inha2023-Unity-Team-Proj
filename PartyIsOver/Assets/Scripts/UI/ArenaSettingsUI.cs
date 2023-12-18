@@ -13,7 +13,12 @@ public class ArenaSettingsUI : MonoBehaviour
     private bool _isClicked;
 
     public Slider BGMAudioSlider;
+    public Slider UIAudioSlider;
     public Slider EffectAudioSlider;
+
+    public List<Actor> ActorList;
+    public Actor MyActor;
+    private AudioSource _myAudioSource;
 
 
     void Start()
@@ -28,8 +33,22 @@ public class ArenaSettingsUI : MonoBehaviour
 
         Managers.Input.KeyboardAction -= OnKeyboardEvents;
         Managers.Input.KeyboardAction += OnKeyboardEvents;
+
+        
     }
 
+    public void SetInitSettings()
+    {
+        for (int i = 0; i < Define.MAX_PLAYERS_PER_ROOM; i++)
+        {
+            if (ActorList[i].photonView.IsMine == true)
+            {
+                MyActor = ActorList[i];
+                _myAudioSource = MyActor.transform.Find("GreenHip").GetComponent<AudioSource>();
+                break;
+            }
+        }
+    }
 
     void OnKeyboardEvents(Define.KeyboardEvent evt)
     {
@@ -74,6 +93,9 @@ public class ArenaSettingsUI : MonoBehaviour
             SetSettingsActive();
         else
             SetSettingsInactive();
+
+      
+
     }
 
     #region Sound Settings
@@ -82,6 +104,8 @@ public class ArenaSettingsUI : MonoBehaviour
         AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("UI/Funny-UI-030");
         Managers.Sound.Play(uiSound, Define.Sound.UIInGameSound);
         _soundPanel.SetActive(true);
+
+        _cancelPanel.SetActive(false);
     }
 
     public void OnClickSettingsOK()
@@ -90,8 +114,10 @@ public class ArenaSettingsUI : MonoBehaviour
         Managers.Sound.Play(uiSound, Define.Sound.UIInGameSound);
 
         Managers.Sound.SoundVolume[(int)Define.Sound.Bgm] = 0.1f * BGMAudioSlider.value;
-        Managers.Sound.SoundVolume[(int)Define.Sound.UIInGameSound] = 1f * EffectAudioSlider.value;
-        Managers.Sound.ChangeVolumeInArena();
+        Managers.Sound.SoundVolume[(int)Define.Sound.UIInGameSound] = 1f * UIAudioSlider.value;
+        Managers.Sound.ChangeVolume(Define.Sound.Bgm, Define.Sound.UIInGameSound);
+        _myAudioSource.volume = 1f * EffectAudioSlider.value;
+
         _soundPanel.SetActive(false);
     }
 
@@ -102,10 +128,13 @@ public class ArenaSettingsUI : MonoBehaviour
 
         Managers.Sound.SoundVolume[(int)Define.Sound.Bgm] = 0.1f * 1;
         Managers.Sound.SoundVolume[(int)Define.Sound.UIInGameSound] = 1f * 1;
-        Managers.Sound.ChangeVolumeInArena();
+        Managers.Sound.ChangeVolume(Define.Sound.Bgm, Define.Sound.UIInGameSound);
+        _myAudioSource.volume = 1f * 1;
 
         BGMAudioSlider.value = 1;
+        UIAudioSlider.value = 1;
         EffectAudioSlider.value = 1;
+
         _soundPanel.SetActive(false);
     }
 
@@ -118,6 +147,8 @@ public class ArenaSettingsUI : MonoBehaviour
         AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("UI/Funny-UI-030");
         Managers.Sound.Play(uiSound, Define.Sound.UIInGameSound);
         _cancelPanel.SetActive(true);
+
+        _soundPanel.SetActive(false);
     }
 
     public void OnClickGameQuitOK()
@@ -126,6 +157,8 @@ public class ArenaSettingsUI : MonoBehaviour
         Managers.Sound.Play(uiSound, Define.Sound.UIInGameSound);
         _cancelPanel.SetActive(false);
         PhotonManager.Instance.LeaveRoom();
+
+        ChangeBgmSound("Sounds/Bgm/BongoBoogieMenuLOOPING");
     }
 
     public void OnClickGameQuitCancel()
@@ -139,5 +172,14 @@ public class ArenaSettingsUI : MonoBehaviour
     public void ReloadArenaSettingsUI()
     {
         Managers.Input.KeyboardAction -= OnKeyboardEvents;
+    }
+
+    void ChangeBgmSound(string path)
+    {
+        AudioSource endingBgm = Managers.Sound.GetBgmAudioSource();
+        AudioClip audioClip = Managers.Resource.Load<AudioClip>(path);
+        endingBgm.clip = audioClip;
+        endingBgm.volume = Managers.Sound.SoundVolume[(int)Define.Sound.Bgm];
+        Managers.Sound.Play(audioClip, Define.Sound.Bgm);
     }
 }
