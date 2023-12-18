@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: PlayerStatData
   m_EditorClassIdentifier: 
   _runSpeed: 100
-  _maxSpeed: 5
+  _maxSpeed: 3.5
   _playerAttackPoint: 1
   _health: 200
   _maxHealth: 200

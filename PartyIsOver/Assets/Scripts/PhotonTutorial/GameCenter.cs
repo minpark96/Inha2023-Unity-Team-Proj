@@ -848,6 +848,9 @@ public class GameCenter : BaseScene
     {
         for (int i = 0; i < Actors.Count; i++)
         {
+            if (Actors[i] == null || Actors[i].photonView == null)
+                continue;
+
             if (Actors[i].photonView.ViewID == viewID)
             {
                 Actors[i].Health = hp;
