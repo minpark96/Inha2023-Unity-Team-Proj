@@ -468,8 +468,8 @@ public class PlayerController : MonoBehaviourPun
                     {
                         _isRSkillCheck = false;
                         photonView.RPC("ResetCharge", RpcTarget.All);
-                        RSkillDestroyEffect("Love_aura");
-                        //photonView.RPC("RSkillDestroyEffect", RpcTarget.All, "Love_aura");
+                        //RSkillDestroyEffect("Love_aura");
+                        photonView.RPC("RSkillDestroyEffect", RpcTarget.All, "Love_aura");
                     }
                 }
                 break;
