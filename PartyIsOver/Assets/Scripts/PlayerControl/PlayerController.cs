@@ -259,7 +259,6 @@ public class PlayerController : MonoBehaviourPun
         MaxSpeed = statData.MaxSpeed;
         RunSpeed = statData.RunSpeed;
         _itemSwingPower = statData.ItemSwingPower;
-        _playerTransform = this.transform.Find("GreenHip").GetComponent<Transform>();
 
     }
 
@@ -437,6 +436,7 @@ public class PlayerController : MonoBehaviourPun
                             {
                                 if (!_isRSkillCheck)
                                 {
+                                    //EffectCreate("Effects/Love_aura");
                                     photonView.RPC("EffectCreate", RpcTarget.All, "Effects/Love_aura");
                                     photonView.RPC("PlayerEffectSound", RpcTarget.All, "Sounds/PlayerEffect/ACTION_Changing_Smoke");
                                     _isRSkillCheck = true;
@@ -468,7 +468,8 @@ public class PlayerController : MonoBehaviourPun
                     {
                         _isRSkillCheck = false;
                         photonView.RPC("ResetCharge", RpcTarget.All);
-                        photonView.RPC("RSkillDestroyEffect", RpcTarget.All, "Love_aura");
+                        RSkillDestroyEffect("Love_aura");
+                        //photonView.RPC("RSkillDestroyEffect", RpcTarget.All, "Love_aura");
                     }
                 }
                 break;
@@ -515,6 +516,7 @@ public class PlayerController : MonoBehaviourPun
     void EffectCreate(string path)
     {
         effectObject = Managers.Resource.PhotonNetworkInstantiate($"{path}");
+        _playerTransform = this.transform.Find("GreenHip").GetComponent<Transform>();
     }
 
     [PunRPC]
@@ -534,7 +536,6 @@ public class PlayerController : MonoBehaviourPun
     #endregion
 
     #region Drunk
-
 
     IEnumerator DrunkActionReady()
     {
@@ -752,8 +753,9 @@ public class PlayerController : MonoBehaviourPun
         {
             photonView.RPC("ASDStatusMoveEffect", RpcTarget.All);
         }
-        else if(effectObject != null)
+        else if(effectObject != null && _isRSkillCheck)
         {
+            //RSkillMoveEffect();
             photonView.RPC("RSkillMoveEffect", RpcTarget.All);
         }
 
