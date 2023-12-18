@@ -193,7 +193,7 @@ public class GameCenter : BaseScene
                 _audioSources.volume = 0.1f;
                 Managers.Sound.Play(audioClip, Define.Sound.Bgm);
 
-                Managers.Sound.ChangeVolumeInMain();
+                Managers.Sound.ChangeVolume(Define.Sound.Bgm, Define.Sound.UISound);
             }
 
             if (_roomName == currentSceneName)
@@ -204,7 +204,7 @@ public class GameCenter : BaseScene
                 _audioSources.volume = 0.1f;
                 Managers.Sound.Play(audioClip, Define.Sound.Bgm);
 
-                Managers.Sound.ChangeVolumeInMain();
+                Managers.Sound.ChangeVolume(Define.Sound.Bgm, Define.Sound.UISound);
             }
         }
     }
@@ -506,6 +506,7 @@ public class GameCenter : BaseScene
 
         _endingUI = GameObject.Find("Canvas").GetComponent<EndingUI>();
         _endingUI.SetWinner(winner);
+        _endingUI.WinnerName.text = _nicknames[winner];
     }
 
     [PunRPC]
@@ -826,7 +827,9 @@ public class GameCenter : BaseScene
 
         _magneticField.ActorList = Actors;
         _snowStorm.ActorList = Actors;
-    
+        _arenaSettingsUI.ActorList = Actors;
+
+        _arenaSettingsUI.SetInitSettings();
     }
 
     #endregion

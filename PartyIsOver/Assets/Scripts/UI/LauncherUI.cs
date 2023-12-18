@@ -16,17 +16,18 @@ public class LauncherUI : MonoBehaviour
     private GameObject _errorPanel;
     private GameObject _feedbackPanel;
     private Regex specialRegex = new Regex(@"[~!@\#$%^&*\()\=+|\\/:;?""<>'\[\].,]");
-    private string _nickName;
+    private GameObject _bgmSound;
 
+    private string _nickName;
+    private string _mainSceneName = "[2]Main";
+    
     public Text ErrorText;
     public VideoPlayer Video;
+    public GameObject PlaceHolder;
+    public InputField InputField;
 
-    void Awake()
-    {
-        Init();
-    }
-
-    void Init()
+  
+    void Start()
     {
         _startPanel = GameObject.Find("Start Panel");
         _controlPanel = GameObject.Find("Control Panel");
@@ -39,9 +40,14 @@ public class LauncherUI : MonoBehaviour
         _errorPanel.SetActive(false);
         _feedbackPanel.SetActive(false);
 
+        PlaceHolder.SetActive(true);
+        InputField.onValueChanged.AddListener(SetPlayerName);
+
         Screen.SetResolution(960, 540, false);
 
         Video.loopPointReached += EndReached;
+        _bgmSound = GameObject.Find("@Sound").transform.GetChild((int)Define.Sound.Bgm).gameObject;
+        _bgmSound.GetComponent<AudioSource>().Stop();
     }
 
    
@@ -49,8 +55,20 @@ public class LauncherUI : MonoBehaviour
     {
         _startPanel.SetActive(false);
         _controlPanel.SetActive(true);
+        _bgmSound.GetComponent<AudioSource>().Play();
     }
 
+    void SetPlayerName(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            PlaceHolder.SetActive(true);
+        }
+
+        PlaceHolder.SetActive(false);
+
+        PhotonNetwork.NickName = value;
+    }
 
     public void OnClickGameStart()
     {
@@ -87,8 +105,10 @@ public class LauncherUI : MonoBehaviour
         AudioClip uiSound = Managers.Sound.GetOrAddAudioClip("UI/Funny-UI-160");
         Managers.Sound.Play(uiSound, Define.Sound.UISound);
 
+        Video.loopPointReached -= EndReached;
+
         PhotonManager.Instance.Connect();
-        SceneManager.LoadSceneAsync("[2]Main");
+        SceneManager.LoadSceneAsync(_mainSceneName);
     }
 
     public void OnClickFeedbackPanelCancel()

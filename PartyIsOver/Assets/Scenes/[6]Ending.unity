@@ -276,7 +276,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PopUpPanel: {fileID: 1374859242}
   Winner: {fileID: 0}
-  WinnerNumber: 0
+  WinnerName: {fileID: 1574463550}
 --- !u!1 &524620008
 GameObject:
   m_ObjectHideFlags: 0

@@ -10,25 +10,12 @@ public class LobbyUI : MonoBehaviour
     // UI
     public GameObject CreateRoomPanel;
     public GameObject EnterPasswordPanel;
-
-    public Sprite PrivateOn;
-    public Sprite PrivateOff;
-    public Sprite PasswordOn;
-    public Sprite PasswordOff;
-
-    public Image PrivateButton;
-
     public InputField RoomInputField;
-    public InputField Password;
-    public InputField InviteCode;
 
     // RoomItem Prefab
     public RoomItem RoomItemPrefab;
     public Transform ContentObject;
 
-    public bool IsClicked;
-    public bool hasPassword;
-    
 
     private void Start()
     {
@@ -37,11 +24,6 @@ public class LobbyUI : MonoBehaviour
 
         PhotonManager.Instance.LobbyUI = GameObject.Find("Canvas_Lobby").GetComponent<LobbyUI>();
     }
-
-    //public void OnClickJoinRoomCancel()
-    //{
-    //    EnterPasswordPanel.SetActive(false);
-    //}
 
 
     public void OnClickRandomJoin()

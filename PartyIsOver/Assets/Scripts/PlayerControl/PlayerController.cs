@@ -54,105 +54,39 @@ public class AniAngleData
 public class PlayerController : MonoBehaviourPun
 {
     [Header("AnimationControll")]
-    [SerializeField]
-    public AniFrameData[] RollAniData;
-
-    [SerializeField]
-    public AniAngleData[] RollAngleAniData;
-
-    [SerializeField]
-    public AniFrameData[] DropAniData;
-
-    [SerializeField]
-    public AniAngleData[] RightPunchAniData;
-
-    [SerializeField]
-    public AniAngleData[] LeftPunchAniData;
-
-    [SerializeField]
-    public AniFrameData[] RightPunchingAniData;
-
-    [SerializeField]
-    public AniFrameData[] LeftPunchingAniData;
-
-    [SerializeField]
-    public AniAngleData[] RightPunchResettingAniData;
-
-    [SerializeField]
-    public AniAngleData[] LeftPunchResettingAniData;
-
-    [SerializeField]
-    public AniFrameData[] MoveForceJumpAniData;
-
-    [SerializeField]
-    public AniAngleData[] MoveAngleJumpAniData;
-
-    [SerializeField]
-    public AniFrameData[] HeadingAniData;
-
-    [SerializeField]
-    public AniAngleData[] HeadingAngleAniData;
-
-    [SerializeField]
-    public AniFrameData[] RSkillAniData;
-
-    [SerializeField]
-    public AniAngleData[] RSkillAngleAniData;
-
-    [SerializeField]
-    public AniFrameData[] ItemTwoHandAniData;
-
-    [SerializeField]
-    public AniAngleData[] ItemTwoHandAngleData;
-
-    [SerializeField]
-    public AniAngleData[] ItemOneHandAngleAniData;
-
-    [SerializeField]
-    public AniFrameData[] ItemOneHandReadyAniData;
-
-    [SerializeField]
-    public AniFrameData[] ItemOneHandSwingAniData;
-
-    [SerializeField]
-    public AniFrameData[] PotionReadyAniData;
-
-    [SerializeField]
-    public AniFrameData[] PotionDrinkingAniData;
-
-    [SerializeField]
-    public AniAngleData[] PotionAngleAniData;
-
-    [SerializeField]
-    public AniFrameData[] PickUpRipAniData;
-
-    [SerializeField]
-    public AniFrameData[] ShootDownRipAniData;
-
-    [SerializeField]
-    public AniAngleData[] RipAngleAniData;
-
-    [SerializeField]
-    public AniFrameData[] ItemTwoHandLeftAniData;
-
-    [SerializeField]
-    public AniAngleData[] ItemTwoHandLeftAngleData;
-
-    [SerializeField]
-    public AniFrameData[] PotionThrowAniData;
-
-    [SerializeField]
-    public AniAngleData[] PotionThrowAngleData;
-
-    [SerializeField]
-    public AniFrameData[] TestRready1;
-
-    [SerializeField]
-    public AniFrameData[] TestDrinking;
-
-    [SerializeField]
-    public AniAngleData[] TestRready2;
-
+    [SerializeField]    public AniFrameData[] RollAniData;
+    [SerializeField]    public AniAngleData[] RollAngleAniData;
+    [SerializeField]    public AniFrameData[] DropAniData;
+    [SerializeField]    public AniAngleData[] RightPunchAniData;
+    [SerializeField]    public AniAngleData[] LeftPunchAniData;
+    [SerializeField]    public AniFrameData[] RightPunchingAniData;
+    [SerializeField]    public AniFrameData[] LeftPunchingAniData;
+    [SerializeField]    public AniAngleData[] RightPunchResettingAniData;
+    [SerializeField]    public AniAngleData[] LeftPunchResettingAniData;
+    [SerializeField]    public AniFrameData[] MoveForceJumpAniData;
+    [SerializeField]    public AniAngleData[] MoveAngleJumpAniData;
+    [SerializeField]    public AniFrameData[] HeadingAniData;
+    [SerializeField]    public AniAngleData[] HeadingAngleAniData;
+    [SerializeField]    public AniFrameData[] RSkillAniData;
+    [SerializeField]    public AniAngleData[] RSkillAngleAniData;
+    [SerializeField]    public AniFrameData[] ItemTwoHandAniData;
+    [SerializeField]    public AniAngleData[] ItemTwoHandAngleData;
+    [SerializeField]    public AniAngleData[] ItemOneHandAngleAniData;
+    [SerializeField]    public AniFrameData[] ItemOneHandReadyAniData;
+    [SerializeField]    public AniFrameData[] ItemOneHandSwingAniData;
+    [SerializeField]    public AniFrameData[] PotionReadyAniData;
+    [SerializeField]    public AniFrameData[] PotionDrinkingAniData;
+    [SerializeField]    public AniAngleData[] PotionAngleAniData;
+    [SerializeField]    public AniFrameData[] PickUpRipAniData;
+    [SerializeField]    public AniFrameData[] ShootDownRipAniData;
+    [SerializeField]    public AniAngleData[] RipAngleAniData;
+    [SerializeField]    public AniFrameData[] ItemTwoHandLeftAniData;
+    [SerializeField]    public AniAngleData[] ItemTwoHandLeftAngleData;
+    [SerializeField]    public AniFrameData[] PotionThrowAniData;
+    [SerializeField]    public AniAngleData[] PotionThrowAngleData;
+    [SerializeField]    public AniFrameData[] TestRready1;
+    [SerializeField]    public AniFrameData[] TestDrinking;
+    [SerializeField]    public AniAngleData[] TestRready2;
 
 
     [Header("Speed")]
@@ -189,7 +123,6 @@ public class PlayerController : MonoBehaviourPun
     public bool isStateChange;
     public bool isMeowNyangPunch = false;
     public bool _isRSkillCheck;
-    public bool isBalloon;
     public bool isDrunk;
     public bool isHeading;
     public bool isDropkick;
@@ -215,9 +148,6 @@ public class PlayerController : MonoBehaviourPun
     //차지 시간
     public float ChargeTime = 1.3f;
 
-    public bool BalloonJump;
-    public bool BalloonDrop;
-
     public bool IsFlambe;
 
 
@@ -239,9 +169,6 @@ public class PlayerController : MonoBehaviourPun
     private Vector3 _runVectorForce5 = new Vector3(0f, 0f, 0.4f);
     private Vector3 _runVectorForce10 = new Vector3(0f, 0f, 0.8f);
 
-    public List<Quaternion> RotationsForBalloon = new List<Quaternion>();
-    private BalloonState _balloonState;
-    public DrunkState _drunkState;
 
     public static PlayerController Instance;
     public AudioSource _audioSource;
@@ -295,20 +222,10 @@ public class PlayerController : MonoBehaviourPun
     void Start()
     {
         _bodyHandler.BodySetup();
-        for (int i = 0; i < _bodyHandler.BodyParts.Count - 1; i++)
-        {
-            if (i == (int)Define.BodyPart.Hip)
-                RotationsForBalloon.Add(Quaternion.Euler(-90, 0, 0));
-            else
-                RotationsForBalloon.Add(_bodyHandler.BodyParts[i].PartTransform.localRotation);
-
-        }
 
         if (photonView.IsMine)
             _cameraArm = _actor.CameraControl.CameraArm;
     }
-
-
 
     private ConfigurableJoint[] childJoints;
     private ConfigurableJointMotion[] originalYMotions;
@@ -335,8 +252,6 @@ public class PlayerController : MonoBehaviourPun
         }
         _grab = GetComponent<Grab>();
 
-        _balloonState = GetComponent<BalloonState>();
-        _drunkState = GetComponent<DrunkState>();
 
         Instance = this;
 
@@ -344,7 +259,6 @@ public class PlayerController : MonoBehaviourPun
         MaxSpeed = statData.MaxSpeed;
         RunSpeed = statData.RunSpeed;
         _itemSwingPower = statData.ItemSwingPower;
-        _playerTransform = this.transform.Find("GreenHip").GetComponent<Transform>();
 
     }
 
@@ -413,7 +327,7 @@ public class PlayerController : MonoBehaviourPun
 
                         //_actor.Stamina = 0;
 
-                        if (_actor.debuffState != DebuffState.Balloon && _actor.actorState == Actor.ActorState.Jump && !_isCoroutineDrop)
+                        if ( _actor.actorState == Actor.ActorState.Jump && !_isCoroutineDrop)
                         {
                             photonView.RPC("DecreaseStamina", RpcTarget.MasterClient, 5f);
                             DropKickTrigger();
@@ -425,23 +339,8 @@ public class PlayerController : MonoBehaviourPun
                 {
                     if (Input.GetMouseButtonUp(0))
                     {
-                        if(_actor.debuffState == DebuffState.Balloon)
-                        {
-                            BalloonDrop = false;
-
-                            if (BalloonJump == true && BalloonDrop == false)
-                            {
-                                BalloonJump = false;
-                                BalloonDrop = true;
-                                _bodyHandler.Hip.PartRigidbody.AddForce(Vector3.down * 200000f);
-                            }
-                        }
-                        else
-                            PunchAndGrab();
+                        PunchAndGrab();
                     }
-
-                    if (_actor.debuffState == DebuffState.Balloon)
-                        return;
 
                     if (Input.GetMouseButtonUp(2) && _actor.Stamina >= 0)
                     {
@@ -478,24 +377,9 @@ public class PlayerController : MonoBehaviourPun
                         if (_actor.GrabState == Define.GrabState.Climb)
                             _actor.Grab.Climb();
                         _actor.actorState = Actor.ActorState.Jump;
-
-                        if (_actor.debuffState == Actor.DebuffState.Balloon)
-                        {
-                            BalloonJump = true;
-                        }
                     }
 
-                    if (_actor.debuffState == Actor.DebuffState.Balloon)
-                    {
-                        if (isBalloon)
-                        {
-                            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
-                            {
-                                MoveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-                            }
-                        }
-                    }
-                    else if ((_actor.debuffState & DebuffState.Drunk) == DebuffState.Drunk)
+                    if ((_actor.debuffState & DebuffState.Drunk) == DebuffState.Drunk)
                     {
                         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
                         {
@@ -552,6 +436,7 @@ public class PlayerController : MonoBehaviourPun
                             {
                                 if (!_isRSkillCheck)
                                 {
+                                    //EffectCreate("Effects/Love_aura");
                                     photonView.RPC("EffectCreate", RpcTarget.All, "Effects/Love_aura");
                                     photonView.RPC("PlayerEffectSound", RpcTarget.All, "Sounds/PlayerEffect/ACTION_Changing_Smoke");
                                     _isRSkillCheck = true;
@@ -583,7 +468,8 @@ public class PlayerController : MonoBehaviourPun
                     {
                         _isRSkillCheck = false;
                         photonView.RPC("ResetCharge", RpcTarget.All);
-                        photonView.RPC("RSkillDestroyEffect", RpcTarget.All, "Love_aura");
+                        RSkillDestroyEffect("Love_aura");
+                        //photonView.RPC("RSkillDestroyEffect", RpcTarget.All, "Love_aura");
                     }
                 }
                 break;
@@ -630,6 +516,7 @@ public class PlayerController : MonoBehaviourPun
     void EffectCreate(string path)
     {
         effectObject = Managers.Resource.PhotonNetworkInstantiate($"{path}");
+        _playerTransform = this.transform.Find("GreenHip").GetComponent<Transform>();
     }
 
     [PunRPC]
@@ -649,7 +536,6 @@ public class PlayerController : MonoBehaviourPun
     #endregion
 
     #region Drunk
-
 
     IEnumerator DrunkActionReady()
     {
@@ -867,8 +753,9 @@ public class PlayerController : MonoBehaviourPun
         {
             photonView.RPC("ASDStatusMoveEffect", RpcTarget.All);
         }
-        else if(effectObject != null)
+        else if(effectObject != null && _isRSkillCheck)
         {
+            //RSkillMoveEffect();
             photonView.RPC("RSkillMoveEffect", RpcTarget.All);
         }
 
@@ -890,11 +777,6 @@ public class PlayerController : MonoBehaviourPun
         if (isAI)
             return;
 
-        if (_actor.debuffState == Actor.DebuffState.Balloon && isBalloon == false)
-        {
-            photonView.RPC("_balloonState.BalloonShapeOn", RpcTarget.All);
-        }
-
         if (_actor.actorState != Actor.ActorState.Jump && _actor.actorState != Actor.ActorState.Roll 
             && _actor.actorState != Actor.ActorState.Run )//&& _actor.actorState != ActorState.Unconscious)
         {
@@ -906,10 +788,7 @@ public class PlayerController : MonoBehaviourPun
                 }
                 else
                 {
-                    if (_actor.debuffState == Actor.DebuffState.Balloon)
-                        _actor.actorState = Actor.ActorState.BalloonWalk;
-                    else
-                        _actor.actorState = Actor.ActorState.Walk;
+                    _actor.actorState = Actor.ActorState.Walk;
 
                     //Stand();
                 }
@@ -1549,45 +1428,21 @@ public class PlayerController : MonoBehaviourPun
     #region Jump
     public void Jump()
     {
-        if(_actor.debuffState == Actor.DebuffState.Balloon)
+        if (isStateChange)
         {
-            if(_actor.actorState == Actor.ActorState.Jump)
+            isGrounded = false;
+            for (int i = 0; i < MoveForceJumpAniData.Length; i++)
             {
-                for (int i = 0; i < MoveForceJumpAniData.Length; i++)
-                {
-                    AniForce(MoveForceJumpAniData, i, Vector3.up);
-                    
-                    if (i == 2)
-                        AniForce(MoveForceJumpAniData, i, Vector3.down);
-                    else
-                        MoveForceJumpAniData[i].ForcePowerValues[0] = 500f;
-
-                }
-                for (int i = 0; i < MoveAngleJumpAniData.Length; i++)
-                {
-                    AniAngleForce(MoveAngleJumpAniData, i, _moveDir + new Vector3(0, 0.2f, 0f));
-                }
+                AniForceVelocityChange(MoveForceJumpAniData, i, Vector3.up);
+                if (i == 2)
+                    AniForce(MoveForceJumpAniData, i, Vector3.down);
+            }
+            for (int i = 0; i < MoveAngleJumpAniData.Length; i++)
+            {
+                AniAngleForce(MoveAngleJumpAniData, i, _moveDir + new Vector3(0, 0.2f, 0f));
             }
         }
-        else
-        {
-            if (isStateChange)
-            {
-                isGrounded = false;
-                for (int i = 0; i < MoveForceJumpAniData.Length; i++)
-                {
-                    AniForceVelocityChange(MoveForceJumpAniData, i, Vector3.up);
-                    if (i == 2)
-                        AniForce(MoveForceJumpAniData, i, Vector3.down);
-                }
-                for (int i = 0; i < MoveAngleJumpAniData.Length; i++)
-                {
-                    AniAngleForce(MoveAngleJumpAniData, i, _moveDir + new Vector3(0, 0.2f, 0f));
-                }
-
-               
-            }
-        }
+        
         Vector3 lookForward = new Vector3(_cameraArm.forward.x, 0f, _cameraArm.forward.z).normalized;
         Vector3 lookRight = new Vector3(_cameraArm.right.x, 0f, _cameraArm.right.z).normalized;
         _moveDir = lookForward * MoveInput.z + lookRight * MoveInput.x;
