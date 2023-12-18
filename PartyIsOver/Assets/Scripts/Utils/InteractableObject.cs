@@ -70,6 +70,10 @@ public class InteractableObject : MonoBehaviourPun
         }
         else if(GetComponent<ProjectileStandard>() != null)
         {
+            if(GetComponent<ProjectileStandard>().Gun == null)
+            {
+                GetComponent<ProjectileStandard>().Gun = PhotonNetwork.GetPhotonView((int)photonView.InstantiationData[0]).GetComponent<Item>();
+            }
             damageModifier = GetComponent<ProjectileStandard>().Gun.GetComponent<Item>().ItemData.UseDamageType;
         }
         else

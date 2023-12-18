@@ -163,7 +163,7 @@ public class RoomUI : MonoBehaviour
         {
             OnLeaveRoom();
 
-            //PhotonManager.Instance.LeaveRoom();
+            ChangeBgmSound("Sounds/Bgm/BongoBoogieMenuLOOPING");
         }
     }
 
@@ -190,5 +190,14 @@ public class RoomUI : MonoBehaviour
             SkillChangeButton.sprite = Skill2;
             SkillName.text = "Â÷Â¡ ½ºÅ³\n\n\n\nÇÙÆÝÄ¡";
         }
+    }
+
+    void ChangeBgmSound(string path)
+    {
+        AudioSource endingBgm = Managers.Sound.GetBgmAudioSource();
+        AudioClip audioClip = Managers.Resource.Load<AudioClip>(path);
+        endingBgm.clip = audioClip;
+        endingBgm.volume = Managers.Sound.SoundVolume[(int)Define.Sound.Bgm];
+        Managers.Sound.Play(audioClip, Define.Sound.Bgm);
     }
 }

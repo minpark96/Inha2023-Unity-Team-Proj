@@ -99,14 +99,15 @@ public class SoundManager
         }
         else if (type == Define.Sound.UIInGameSound)
         {
-            AudioSource audioSource = PlayerController.Instance._audioSource;
+            AudioSource audioSource = _audioSources[(int)Define.Sound.UIInGameSound];
             audioSource.pitch = pitch;
             audioSource.PlayOneShot(audioClip);
         }
         else if((type == Define.Sound.PlayerEffect))
         {
-            /*AudioSource audioSource = PlayerController.Instance._audioSource;
-            audioSource.pitch = pitch;*/
+            AudioSource audioSource = _audioSources[(int)Define.Sound.PlayerEffect];
+            audioSource.pitch = pitch;
+            audioSource.volume = 0.2f;
             playaudioSource.PlayOneShot(audioClip);
         }
         else if(type == Define.Sound.InGameStackSound)
@@ -140,16 +141,7 @@ public class SoundManager
             //.Bgm만 관련한 사운드 제어
             audioClip = Managers.Resource.Load<AudioClip>(path);
         }
-        else if(type == Define.Sound.UISound) 
-        {
-            //effect 관련한 사운드 제어
-            if (_audioClip.TryGetValue(path, out audioClip) == false)
-            {
-                audioClip = Managers.Resource.Load<AudioClip>(path);
-                _audioClip.Add(path, audioClip);
-            }
-        }
-        else if(type == Define.Sound.UIInGameSound)
+        else
         {
             if (_audioClip.TryGetValue(path, out audioClip) == false)
             {
@@ -157,30 +149,7 @@ public class SoundManager
                 _audioClip.Add(path, audioClip);
             }
         }
-        else if(type == Define.Sound.PlayerEffect)
-        {
-            if (_audioClip.TryGetValue(path, out audioClip) == false)
-            {
-                audioClip = Managers.Resource.Load<AudioClip>(path);
-                _audioClip.Add(path, audioClip);
-            }
-        }
-        else if (type == Define.Sound.InGameStackSound)
-        {
-            if (_audioClip.TryGetValue(path, out audioClip) == false)
-            {
-                audioClip = Managers.Resource.Load<AudioClip>(path);
-                _audioClip.Add(path, audioClip);
-            }
-        }
-        else if (type == Define.Sound.InGameWarning)
-        {
-            if (_audioClip.TryGetValue(path, out audioClip) == false)
-            {
-                audioClip = Managers.Resource.Load<AudioClip>(path);
-                _audioClip.Add(path, audioClip);
-            }
-        }
+        
 
         if (audioClip == null)
             Debug.Log($"AudioClip Missing : {path}");
@@ -189,15 +158,9 @@ public class SoundManager
     }
 
 
-    public void ChangeVolumeInMain()
+    public void ChangeVolume(Define.Sound sound1, Define.Sound sound2)
     {
-        _audioSources[(int)Define.Sound.Bgm].volume = SoundVolume[(int)Define.Sound.Bgm];
-        _audioSources[(int)Define.Sound.UISound].volume = SoundVolume[(int)Define.Sound.UISound];
-    }
-
-    public void ChangeVolumeInArena()
-    {
-        _audioSources[(int)Define.Sound.Bgm].volume = SoundVolume[(int)Define.Sound.Bgm];
-        _audioSources[(int)Define.Sound.UISound].volume = SoundVolume[(int)Define.Sound.UIInGameSound];
+        _audioSources[(int)sound1].volume = SoundVolume[(int)sound1];
+        _audioSources[(int)sound2].volume = SoundVolume[(int)sound2];
     }
 }

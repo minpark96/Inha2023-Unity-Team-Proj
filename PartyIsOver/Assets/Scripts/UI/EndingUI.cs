@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 
@@ -9,7 +8,7 @@ public class EndingUI : MonoBehaviour
 {
     public GameObject PopUpPanel;
     public GameObject Winner;
-    public int WinnerNumber;
+    public Text WinnerName;
 
     private void Start()
     {
@@ -18,11 +17,9 @@ public class EndingUI : MonoBehaviour
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
 
-        // sound
         AudioSource endingBgm = Managers.Sound.GetBgmAudioSource();
         AudioClip audioClip = Managers.Resource.Load<AudioClip>("Sounds/Bgm/Runaway Train LOOPING");
         endingBgm.clip = audioClip;
-        endingBgm.volume = 0.1f;
         Managers.Sound.Play(audioClip, Define.Sound.Bgm);
 
         StartCoroutine(PopUp());
@@ -37,12 +34,13 @@ public class EndingUI : MonoBehaviour
 
     public void OnClickMain()
     {
-        //SceneManager.LoadScene("[2]Main");
-        //PhotonManager.Instance.Connect();
+        AudioSource endingBgm = Managers.Sound.GetBgmAudioSource();
+        AudioClip audioClip = Managers.Resource.Load<AudioClip>("Sounds/Bgm/LaxLayoverLOOPING");
+        endingBgm.clip = audioClip;
+        endingBgm.volume = Managers.Sound.SoundVolume[(int)Define.Sound.Bgm];
+        Managers.Sound.Play(audioClip, Define.Sound.Bgm);
 
-        PhotonManager.Instance.Connect();
-        PhotonManager.Instance.LoadNextScene("[2]Main");
-        SceneManager.LoadSceneAsync("[2]Main");
+        PhotonManager.Instance.LeaveRoom();
     }
 
     public void OnClickCancel()
