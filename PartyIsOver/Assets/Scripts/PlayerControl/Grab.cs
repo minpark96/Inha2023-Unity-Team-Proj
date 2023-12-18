@@ -958,6 +958,8 @@ public class Grab : MonoBehaviourPun
     {
         if(PhotonNetwork.IsMasterClient)
             EquipItem.GetComponent<InteractableObject>().ChangeUseTypeTrigger(0f, 1.1f);
+        if (!photonView.IsMine)
+            yield break;
 
         _jointLeft.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 3, 0, 0));
         _jointRight.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 3, 0, 0));
