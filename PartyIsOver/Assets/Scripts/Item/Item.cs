@@ -63,7 +63,9 @@ public class Item : MonoBehaviourPun
         {
             //ProjectileBase projectile = Managers.Pool.Pop(ItemData.Projectile.gameObject).GetComponent<ProjectileBase>();
             object[] instantiationData = new object[] { photonView.ViewID };
-            ProjectileBase projectile = PhotonNetwork.Instantiate($"Prefabs/Projectiles/MushroomProjectile", Vector3.zero, Quaternion.identity, 0,instantiationData).GetComponent<ProjectileBase>();
+            string str = $"Prefabs/Projectiles/";
+            str += ItemData.Projectile.name;
+            ProjectileBase projectile = PhotonNetwork.Instantiate(str, Vector3.zero, Quaternion.identity, 0,instantiationData).GetComponent<ProjectileBase>();
 
             projectile.gameObject.layer = Owner.gameObject.layer;
 
