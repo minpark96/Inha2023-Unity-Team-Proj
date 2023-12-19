@@ -36,7 +36,7 @@ public class TaskAttack : Node
         if(_attackCounter >= _attackTime)
         {
             playerstatu = playerController.GetComponent<StatusHandler>();
-            bool playerIsDead = playerstatu._hasFreeze;
+            //bool playerIsDead = playerstatu.HasFreeze;
             // hip 하는 스크립트 추가
 
             //bool playerIsDead 가 참이면은

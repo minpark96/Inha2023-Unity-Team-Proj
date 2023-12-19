@@ -199,7 +199,7 @@ public class MagneticField : MonoBehaviour
 
         // Sound
         AudioClip warningSound = Managers.Sound.GetOrAddAudioClip("MagneticField/magnetic field warning sound");
-        Managers.Sound.Play(warningSound, Define.Sound.InGameWarning);
+        Managers.Sound.Play(warningSound, Define.Sound.MagneticWarning);
 
         float startTime = Time.time;
         while (Time.time - startTime < _phaseDuration[index])
@@ -222,7 +222,7 @@ public class MagneticField : MonoBehaviour
 
         // Sound
         AudioClip warningSound = Managers.Sound.GetOrAddAudioClip("MagneticField/magnetic field warning sound");
-        Managers.Sound.Play(warningSound, Define.Sound.InGameWarning);
+        Managers.Sound.Play(warningSound, Define.Sound.MagneticWarning);
 
 
         float startTime = Time.time;
@@ -247,7 +247,7 @@ public class MagneticField : MonoBehaviour
 
         // Sound
         AudioClip warningSound = Managers.Sound.GetOrAddAudioClip("MagneticField/magnetic field warning sound");
-        Managers.Sound.Play(warningSound, Define.Sound.InGameWarning);
+        Managers.Sound.Play(warningSound, Define.Sound.MagneticWarning);
 
 
         float startTime = Time.time;
