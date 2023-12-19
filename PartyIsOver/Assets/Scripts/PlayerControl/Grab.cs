@@ -393,9 +393,9 @@ public class Grab : MonoBehaviourPun
         if (photonView.IsMine)
         {
             int playerID = PhotonNetwork.MasterClient.ActorNumber;
-            if (leftPV != null)
+            if (leftPV != null && leftPV.GetComponent<Item>() !=null)
                 leftPV.TransferOwnership(playerID);
-            if (rightPV != null)
+            if (rightPV != null && rightPV.GetComponent<Item>() != null)
                 rightPV.TransferOwnership(playerID);
         }
 

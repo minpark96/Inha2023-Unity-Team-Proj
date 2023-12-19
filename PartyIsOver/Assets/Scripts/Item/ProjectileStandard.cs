@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using TMPro;
 
 public class ProjectileStandard : ProjectileBase
 {
@@ -33,16 +34,31 @@ public class ProjectileStandard : ProjectileBase
         projectileBase.InteractableObject = GetComponent<InteractableObject>();
         projectileBase.OnShoot += OnShoot;
 
+
+        if(GetComponent<PhotonView>()!=null && photonView.ViewID != 0)
+        {
+            Owner = PhotonNetwork.GetPhotonView((int)photonView.InstantiationData[0]).GetComponent<Item>().Owner;
+            gameObject.layer = Owner.gameObject.layer;
+            GetComponent<Poolable>().IsUsing = false;
+        }
         StartCoroutine(SelfDestroy());
     }
 
     IEnumerator SelfDestroy()
     {
         yield return new WaitForSeconds(maxLifeTime);
-
-        if (gameObject.activeSelf)
-            Managers.Resource.Destroy(gameObject);
         GetComponent<InteractableObject>().ResetType();
+
+        if (GetComponent<Poolable>() != null && !GetComponent<Poolable>().IsUsing)
+        {
+            if(photonView.IsMine)
+                PhotonNetwork.Destroy(gameObject);
+        }
+        else
+        {
+            if (gameObject.activeSelf)
+                Managers.Resource.Destroy(gameObject);
+        }
     }
 
     new void OnShoot()
@@ -129,7 +145,19 @@ public class ProjectileStandard : ProjectileBase
     public void DestroyProjectile()
     {
         GetComponent<InteractableObject>().ResetType();
-        Managers.Resource.Destroy(gameObject);
+
+        if (GetComponent<Poolable>() != null && !GetComponent<Poolable>().IsUsing)
+        {
+            if (photonView.IsMine)
+                PhotonNetwork.Destroy(gameObject);
+            //Destroy(gameObject, 0.3f);
+        }
+        else
+        {
+           Managers.Resource.Destroy(gameObject);
+        }
+
+        //Managers.Resource.Destroy(gameObject);
     }
 
     private bool IsHitValid(RaycastHit hit)
