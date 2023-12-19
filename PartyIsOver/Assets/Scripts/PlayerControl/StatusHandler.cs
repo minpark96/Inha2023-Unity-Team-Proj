@@ -61,7 +61,6 @@ public class StatusHandler : MonoBehaviourPun
     Ice IceInStance;
     PowerUp powerUpInStance;
     Drunk drunkInStance;
-    Slow slowInStance;
     Shock shockInStance;
     Exhausted exhaustedInStance;
 
@@ -69,12 +68,12 @@ public class StatusHandler : MonoBehaviourPun
     private void Init()
     {
         StatusData data = Managers.Resource.Load<StatusData>("ScriptableObject/StatusData");
+        
         StunTime = data.StunTime;
         BurnTime = data.BurnTime;
         FreezeTime = data.FreezeTime;
         PowerUpTime = data.PowerUpTime;
         DrunkTime = data.DrunkTime;
-        SlowTime = data.SlowTime;
         ShockTime = data.ShockTime;
     }
 
@@ -89,7 +88,6 @@ public class StatusHandler : MonoBehaviourPun
         IceInStance = gameObject.AddComponent<Ice>();
         powerUpInStance = gameObject.AddComponent<PowerUp>();
         drunkInStance = gameObject.AddComponent<Drunk>();
-        slowInStance = gameObject.AddComponent<Slow>();
         shockInStance = gameObject.AddComponent<Shock>();
         exhaustedInStance = gameObject.AddComponent<Exhausted>();
     }
@@ -125,6 +123,7 @@ public class StatusHandler : MonoBehaviourPun
                         actor.GrabState = Define.GrabState.None;
                         actor.Grab.GrabResetTrigger();
                     }
+                    actor.debuffState |= Actor.DebuffState.Exhausted;
                     photonView.RPC("RPCExhaustedCreate", RpcTarget.All);
                 }
             }

@@ -747,8 +747,19 @@ public class PlayerController : MonoBehaviourPun
     #endregion
 
     #region FixedUpdate
+    [PunRPC]
+    void CheckSever()
+    {
+        if (PhotonNetwork.IsConnected)
+            Debug.Log("Photon is Connected!");
+        else
+            Debug.Log("Photon is not Connected!");
+    }
+
     private void FixedUpdate()
     {
+        photonView.RPC("CheckSever", RpcTarget.All);
+
         if (effectObject != null && IsFlambe && isTestCheck)
         {
             photonView.RPC("ASDStatusMoveEffect", RpcTarget.All);

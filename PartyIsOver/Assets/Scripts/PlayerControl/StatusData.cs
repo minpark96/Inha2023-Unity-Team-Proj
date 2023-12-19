@@ -16,8 +16,6 @@ public class StatusData : ScriptableObject
     public float PowerUpTime { get { return _powerUpTime; } }
     [SerializeField] private float _drunktime;
     public float DrunkTime { get { return _drunktime; } }
-    [SerializeField] private float _slowTime;
-    public float SlowTime { get { return _slowTime; } }
     [SerializeField] private float _shockTime;
     public float ShockTime { get { return _shockTime; } }
 }
