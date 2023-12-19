@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
 
 
@@ -46,20 +45,26 @@ public class RoomUI : MonoBehaviour
     public delegate void LeaveRoom();
     public event LeaveRoom OnLeaveRoom;
 
-    void Start()
+    private void Awake()
     {
         PlayerNameText.text = PhotonNetwork.NickName;
         IsReady = false;
 
-        Managers.Input.KeyboardAction -= OnKeyboardEvent;
-        Managers.Input.KeyboardAction += OnKeyboardEvent;
-
         SpawnPoint = GameObject.Find("Spawn Point");
 
         if (PhotonNetwork.LocalPlayer.IsMasterClient)
+        {
             SpawnPoint.transform.GetChild(0).GetChild(0).gameObject.SetActive(true);
+            IsReady = true;
+        }
 
         ActorNumber = PhotonNetwork.LocalPlayer.ActorNumber;
+    }
+
+    void Start()
+    {
+        Managers.Input.KeyboardAction -= OnKeyboardEvent;
+        Managers.Input.KeyboardAction += OnKeyboardEvent;
     }
 
 

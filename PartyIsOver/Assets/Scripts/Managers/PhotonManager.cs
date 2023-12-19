@@ -70,6 +70,8 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     public void LeaveRoom()
     {
+        Destroy(GameCenter.gameObject);
+        GameCenter = null;
         PhotonNetwork.LeaveRoom();
     }
 
@@ -148,7 +150,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
         if (sceneName == _sceneRoom)
         {
-            InstantiateGameCenter();
+            //InstantiateGameCenter();
         }
     }
 
@@ -202,8 +204,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     public override void OnLeftRoom()
     {
         Debug.Log("[OnLeftRoom()]");
-        GameCenter = null;
-        if(SceneManager.GetActiveScene().name == _sceneEnding)
+        if (SceneManager.GetActiveScene().name == _sceneEnding)
         {
             StartCoroutine(LoadNextScene(_sceneMain));
         }
@@ -240,6 +241,13 @@ public class PhotonManager : MonoBehaviourPunCallbacks
             {
                 GameCenter.RoomUI.ReadyButton.SetActive(false);
                 GameCenter.RoomUI.PlayButton.SetActive(true);
+
+                if (!GameCenter.RoomUI.IsReady)
+                {
+                    GameCenter.RoomUI.IsReady = true;
+                    GameCenter.RoomUI.PlayerReadyCount++;
+                }
+
                 GameCenter.UpdateMasterStatus();
             }
         }

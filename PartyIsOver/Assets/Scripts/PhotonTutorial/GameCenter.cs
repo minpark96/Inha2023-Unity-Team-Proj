@@ -138,13 +138,12 @@ public class GameCenter : MonoBehaviourPunCallbacks, IPunOwnershipCallbacks
 
     void Awake()
     {
-        if (photonView.IsMine)
-        {
-            LocalGameCenterInstance = this.gameObject;
-        }
+        //if (photonView.IsMine)
+        //{
+        //    LocalGameCenterInstance = this.gameObject;
+        //}
 
         DontDestroyOnLoad(this.gameObject);
-
 
     }
 
@@ -277,7 +276,17 @@ public class GameCenter : MonoBehaviourPunCallbacks, IPunOwnershipCallbacks
 
     void Start()
     {
-        PhotonManager.Instance.GameCenter = GameObject.Find("GameCenter(Clone)").GetComponent<GameCenter>();
+        PhotonManager.Instance.GameCenter = this;
+
+        StartCoroutine(CheckInRoom());
+    }
+
+    IEnumerator CheckInRoom()
+    {
+        while (!PhotonNetwork.InRoom)
+        {
+            yield return null;
+        }
 
         InitRoomUI();
     }
@@ -324,21 +333,36 @@ public class GameCenter : MonoBehaviourPunCallbacks, IPunOwnershipCallbacks
             }
             else
             {
-                if (RoomUI.IsReady)
-                {
-                    photonView.RPC("UpdateCount", RpcTarget.MasterClient, false);
-                    photonView.RPC("UpdatePlayerReady", RpcTarget.All, RoomUI.ActorNumber, false);
-                }
-
-                photonView.RPC("UpdatePlayerJoinedList", RpcTarget.All, false, MyJoinedIndex, RoomUI.ActorNumber, null);
+                UpdateOnLeaveRoomScene();
             }
         }
+
+        StartCoroutine(Sibal());
+    }
+
+    void UpdateOnLeaveRoomScene()
+    {
+        if (RoomUI.IsReady)
+        {
+            photonView.RPC("UpdateCount", RpcTarget.MasterClient, false);
+            photonView.RPC("UpdatePlayerReady", RpcTarget.All, RoomUI.ActorNumber, false);
+        }
+
+        photonView.RPC("UpdatePlayerJoinedList", RpcTarget.All, false, MyJoinedIndex, RoomUI.ActorNumber, null);
     }
 
     void ChangeMasterClient()
     {
         transform.GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.LocalPlayer.GetNext());
         PhotonNetwork.SetMasterClient(PhotonNetwork.LocalPlayer.GetNext());
+        UpdateOnLeaveRoomScene();
+    }
+    
+    IEnumerator Sibal()
+    {
+        yield return new WaitForSeconds(0f);
+
+        PhotonManager.Instance.LeaveRoom();
     }
 
     void LoadArenaScene()
@@ -602,7 +626,7 @@ public class GameCenter : MonoBehaviourPunCallbacks, IPunOwnershipCallbacks
             case 0:
                 {
                     SetItemsActive((int)Define.SpawnableItemType.TwoHanded, ChooseRandomItemRootTypes((int)Define.SpawnableItemType.TwoHanded, 1));
-                    SetItemsActiveForTest(); // 정식판에선 주석
+                    //SetItemsActiveForTest(); // 정식판에선 주석
                 }
                 break;
             case 1:
@@ -1187,11 +1211,13 @@ public class GameCenter : MonoBehaviourPunCallbacks, IPunOwnershipCallbacks
 
     public override void OnEnable()
     {
+        PhotonNetwork.AddCallbackTarget(this);
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     public override void OnDisable()
     {
+        PhotonNetwork.RemoveCallbackTarget(this);
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
