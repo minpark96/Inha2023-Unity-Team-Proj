@@ -26,27 +26,15 @@ public class StatusHandler : MonoBehaviourPun
 
    
     // 추후 DebuffTime Actor에서만 사용할 예정
-    public float StunTime;
-    public float BurnTime;
-    public float FreezeTime;
-    public float PowerUpTime;
-    public float DrunkTime;
-    public float SlowTime;
-    public float ShockTime;
+    private float _stunTime;
+    private float _burnTime;
+    private float _freezeTime;
+    private float _powerUpTime;
+    private float _drunkTime;
+    private float _shockTime;
 
     public float BurnDamage;
 
-
-    // 버프 확인용 플래그
-    private bool _hasPowerUp;
-    private bool _hasBurn;
-    private bool _hasExhausted;
-    private bool _hasSlow;
-    private bool _hasStun;
-
-    public bool HasFreeze;
-    public bool HasShock;
-    public bool HasDrunk;
 
     public Transform PlayerTransform;
     public GameObject EffectObject = null;
@@ -64,21 +52,23 @@ public class StatusHandler : MonoBehaviourPun
     Shock shockInStance;
     Exhausted exhaustedInStance;
 
-
+ 
     private void Init()
     {
         StatusData data = Managers.Resource.Load<StatusData>("ScriptableObject/StatusData");
         
-        StunTime = data.StunTime;
-        BurnTime = data.BurnTime;
-        FreezeTime = data.FreezeTime;
-        PowerUpTime = data.PowerUpTime;
-        DrunkTime = data.DrunkTime;
-        ShockTime = data.ShockTime;
+        _stunTime = data.StunTime;
+        _burnTime = data.BurnTime;
+        _freezeTime = data.FreezeTime;
+        _powerUpTime = data.PowerUpTime;
+        _drunkTime = data.DrunkTime;
+        _shockTime = data.ShockTime;
     }
 
     private void Awake()
     {
+        Init();
+
         PlayerTransform = this.transform.Find("GreenHip").GetComponent<Transform>();
         Transform SoundSourceTransform = transform.Find("GreenHip");
         _audioSource = SoundSourceTransform.GetComponent<AudioSource>();
@@ -111,6 +101,8 @@ public class StatusHandler : MonoBehaviourPun
 
     private void LateUpdate()
     {
+        Debug.Log("DrunkTime: " + _drunkTime);
+
         // 지침 디버프 활성화/비활성화
         if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
@@ -219,34 +211,24 @@ public class StatusHandler : MonoBehaviourPun
                 case Actor.DebuffState.Default:
                     break;
                 case Actor.DebuffState.PowerUp:
-                    if (!_hasPowerUp)
-                        photonView.RPC("RPCPowerUpCreate", RpcTarget.All);
+                    photonView.RPC("RPCPowerUpCreate", RpcTarget.All);
                     break;
                 case Actor.DebuffState.Burn:
-                    if (!_hasBurn)
-                        photonView.RPC("RPCBurnCreate", RpcTarget.All);
-                    break;
-                case Actor.DebuffState.Slow:
-                    if (!_hasSlow)
-                        photonView.RPC("Slow", RpcTarget.All, SlowTime);
+                    photonView.RPC("RPCBurnCreate", RpcTarget.All);
                     break;
                 case Actor.DebuffState.Shock:
-                    if (!HasShock)
-                        photonView.RPC("RPCShockCreate", RpcTarget.All);
+                    photonView.RPC("RPCShockCreate", RpcTarget.All);
                     break;
                 case Actor.DebuffState.Stun:
-                    if (!_hasStun)
-                        EnterUnconsciousState();
+                    EnterUnconsciousState();
                     break;
                 case Actor.DebuffState.Ghost:
                     break;
                 case Actor.DebuffState.Drunk:
-                    if(!HasDrunk)
-                        photonView.RPC("RPCPoisonCreate", RpcTarget.All);
+                    photonView.RPC("RPCPoisonCreate", RpcTarget.All);
                     break;
                 case Actor.DebuffState.Ice:
-                    if (!HasFreeze)
-                        photonView.RPC("RPCIceCreate", RpcTarget.All);
+                    photonView.RPC("RPCIceCreate", RpcTarget.All);
                     break;
             }
         }
@@ -255,14 +237,14 @@ public class StatusHandler : MonoBehaviourPun
     [PunRPC]
     void RPCPoisonCreate()
     {
-        Context.ChangeState(drunkInStance, DrunkTime);
+        Context.ChangeState(drunkInStance, _drunkTime);
     }
 
     [PunRPC]
     void RPCShockCreate()
     {
         actor.Grab.GrabResetTrigger();
-        Context.ChangeState(shockInStance, ShockTime);
+        Context.ChangeState(shockInStance, _shockTime);
     }
 
     [PunRPC]
@@ -273,39 +255,20 @@ public class StatusHandler : MonoBehaviourPun
     [PunRPC]
     void RPCPowerUpCreate()
     {
-        Context.ChangeState(powerUpInStance, PowerUpTime);
+        Context.ChangeState(powerUpInStance, _powerUpTime);
     }
 
     [PunRPC]
     void RPCBurnCreate()
     {
         actor.Grab.GrabResetTrigger();
-        Context.ChangeState(burnInStance, BurnTime);
+        Context.ChangeState(burnInStance, _burnTime);
     }
 
     [PunRPC]
     void RPCIceCreate()
     {
-        Context.ChangeState(IceInStance, FreezeTime);
-    }
-
-    [PunRPC]
-    IEnumerator Slow(float delay)
-    {
-        // 둔화
-        _hasSlow = true;
-        actor.actorState = Actor.ActorState.Debuff;
-        actor.PlayerController.RunSpeed -= _maxSpeed * 0.1f;
-
-        yield return new WaitForSeconds(delay);
-
-        // 둔화 해제
-        _hasSlow = false;
-        actor.actorState = Actor.ActorState.Stand;
-        actor.debuffState &= ~Actor.DebuffState.Slow;
-        actor.PlayerController.RunSpeed += _maxSpeed * 0.1f;
-
-        actor.InvokeStatusChangeEvent();
+        Context.ChangeState(IceInStance, _freezeTime);
     }
 
     [PunRPC]
@@ -396,7 +359,7 @@ public class StatusHandler : MonoBehaviourPun
 
         //actor.debuffState = Actor.DebuffState.Stun;
         actor.Grab.GrabResetTrigger();
-        photonView.RPC("ChangeStateMachines", RpcTarget.All, StunTime);
+        photonView.RPC("ChangeStateMachines", RpcTarget.All, _stunTime);
         //StartCoroutine(ResetBodySpring());
         actor.BodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
         actor.BodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
