@@ -320,7 +320,7 @@ public class CollisionHandler : MonoBehaviourPun
     [PunRPC]
     void AddForceAttackedTarget(int objViewId, Vector3 normal, int damageModifier, float itemDamage)
     {
-        if (actor.StatusHandler._hasShock)
+        if ((actor.debuffState & DebuffState.Shock) == DebuffState.Shock)
             return;
         if (!photonView.IsMine)
             return;

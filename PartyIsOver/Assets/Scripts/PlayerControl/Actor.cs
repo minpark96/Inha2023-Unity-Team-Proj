@@ -27,7 +27,6 @@ public class Actor : MonoBehaviourPun, IPunObservable
     public enum ActorState
     {
         Dead = 0x1,
-        //Unconscious = 0x2,
         Stand = 0x4,
         Walk = 0x8,
         Run = 0x10,
@@ -49,7 +48,6 @@ public class Actor : MonoBehaviourPun, IPunObservable
         Shock =     0x20, 
         Stun =      0x40, 
         Drunk =     0x80,  
-        //Balloon =   0x100, 
         Ghost =     0x200,
     }
 

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dc258b7da5a7b7d4d904d0834a7c0ef8, type: 3}
-  m_Name: Status Data
+  m_Name: StatusData
   m_EditorClassIdentifier: 
   _stunTime: 2
   _burnTime: 3
