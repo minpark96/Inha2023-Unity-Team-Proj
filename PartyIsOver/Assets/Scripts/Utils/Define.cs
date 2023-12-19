@@ -50,7 +50,8 @@ public class Define
         UIInGameSound,
         PlayerEffect,
         InGameStackSound,
-        InGameWarning,
+        MagneticWarning,
+        SnowStormWarning,
         Maxcount,
     }
 
