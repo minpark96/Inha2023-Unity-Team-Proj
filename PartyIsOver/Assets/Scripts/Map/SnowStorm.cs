@@ -30,10 +30,7 @@ public class SnowStorm : MonoBehaviour
     {
         yield return new WaitForSeconds(PhaseStartTime[index]);
 
-        for (int i = 0; i < _childCount; i++)
-        {
-            _snowStormChild[i].SetActive(true);
-        }
+        ActivateSnowStorm();
 
         for (int i = 0; i  < ActorList.Count; i++)
         {
@@ -56,23 +53,16 @@ public class SnowStorm : MonoBehaviour
             yield return null;
         }
 
+        DeActivateSnowStorm();
+
         StartCoroutine(SecondPhase(2));
     }
 
     IEnumerator SecondPhase(int index)
     {
-        for (int i = 0; i < _childCount; i++)
-        {
-            _snowStormChild[i].SetActive(false);
-        }
-
         yield return new WaitForSeconds(PhaseStartTime[index]);
 
-        for (int i = 0; i < _childCount; i++)
-        {
-            _snowStormChild[i].SetActive(true);
-        }
-
+        ActivateSnowStorm();
 
         float startTime = Time.time;
         while (Time.time - startTime < PhaseDuration[index])
@@ -85,24 +75,17 @@ public class SnowStorm : MonoBehaviour
 
             yield return null;
         }
+
+        DeActivateSnowStorm();
 
         StartCoroutine(ThirdPhase(3));
     }
 
     IEnumerator ThirdPhase(int index)
     {
-        for (int i = 0; i < _childCount; i++)
-        {
-            _snowStormChild[i].SetActive(false);
-        }
-
         yield return new WaitForSeconds(PhaseStartTime[index]);
 
-        for (int i = 0; i < _childCount; i++)
-        {
-            _snowStormChild[i].SetActive(true);
-        }
-
+        ActivateSnowStorm();
 
         float startTime = Time.time;
         while (Time.time - startTime < PhaseDuration[index])
@@ -116,9 +99,29 @@ public class SnowStorm : MonoBehaviour
             yield return null;
         }
 
+        DeActivateSnowStorm();
+    }
+
+    void ActivateSnowStorm()
+    {
+        for (int i = 0; i < _childCount; i++)
+        {
+            _snowStormChild[i].SetActive(true);
+        }
+
+        AudioClip warningSound = Managers.Sound.GetOrAddAudioClip("MagneticField/SandStormOutside4");
+        Managers.Sound.Play(warningSound, Define.Sound.SnowStormWarning);
+    }
+
+    void DeActivateSnowStorm()
+    {
         for (int i = 0; i < _childCount; i++)
         {
             _snowStormChild[i].SetActive(false);
         }
+
+        GameObject sound = GameObject.Find("@Sound").transform.GetChild((int)Define.Sound.SnowStormWarning).gameObject;
+        sound.GetComponent<AudioSource>().Stop();
     }
 }
+

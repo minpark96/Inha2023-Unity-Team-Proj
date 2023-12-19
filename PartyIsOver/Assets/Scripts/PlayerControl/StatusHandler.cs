@@ -10,75 +10,40 @@ using static InteractableObject;
 public class StatusHandler : MonoBehaviourPun
 {
     private float _damageModifer = 1f;
+    private float _knockoutThreshold = 15f;
+    private float _healthDamage;
+    private float _maxSpeed;
 
     public Actor actor;
 
     public bool invulnerable = false;
-
-    private float _healthDamage;
     public bool _isDead;
 
-
-    private float _knockoutThreshold = 15f;
 
     // 초기 관절값
     private List<float> _xPosSpringAry = new List<float>();
     private List<float> _yzPosSpringAry = new List<float>();
 
    
-    // 초기 속도
-    private float _maxSpeed;
-
     // 추후 DebuffTime Actor에서만 사용할 예정
-    public float StunTime = 2f;
-    public float BurnTime = 3f;
-    public float IceTime = 3f;
-    public float PowerUpTime = 3f;
-    public float Drunktime = 5f;
-    public float Slowtime = 5f;
-    public float ShockTime = 5f;
+    private float _stunTime;
+    private float _burnTime;
+    private float _freezeTime;
+    private float _powerUpTime;
+    private float _drunkTime;
+    private float _shockTime;
+
+    public float BurnDamage;
 
 
-    // 버프 확인용 플래그
-    private bool _hasPowerUp;
-    private bool _hasBurn;
-    private bool _hasExhausted;
-    private bool _hasSlow;
-    public bool _hasFreeze;
-    public bool _hasShock;
-    private bool _hasStun;
-    public bool HasDrunk;
-
-    public Transform playerTransform;
-    public GameObject effectObject = null;
-    int _burnCount = 0;
+    public Transform PlayerTransform;
+    public GameObject EffectObject = null;
 
     AudioClip _audioClip = null;
     AudioSource _audioSource;
 
-    [Header("Debuff Duration")]
-    [SerializeField]
-    private float _powerUpTime;
-    [SerializeField]
-    private float _burnTime;
-    [SerializeField]
-    private float _exhaustedTime;
-    [SerializeField]
-    private float _slowTime;
-    [SerializeField]
-    private float _freezeTime;
-    [SerializeField]
-    private float _shockTime;
-    [SerializeField]
-    private float _stunTime;
 
-    [Header("Debuff Damage")]
-    [SerializeField]
-    public float _iceDamage;
-    [SerializeField]
-    public float _burnDamage;
-
-    public Context _context;
+    public Context Context;
     Stun stunInStance;
     Burn burnInStance;
     Ice IceInStance;
@@ -87,24 +52,27 @@ public class StatusHandler : MonoBehaviourPun
     Shock shockInStance;
     Exhausted exhaustedInStance;
 
-
+ 
     private void Init()
     {
         StatusData data = Managers.Resource.Load<StatusData>("ScriptableObject/StatusData");
+        
         _stunTime = data.StunTime;
         _burnTime = data.BurnTime;
         _freezeTime = data.FreezeTime;
         _powerUpTime = data.PowerUpTime;
-        //_drunkTime = data.DrunkTime; // _drunkTime 없음
+        _drunkTime = data.DrunkTime;
         _shockTime = data.ShockTime;
     }
 
     private void Awake()
     {
-        playerTransform = this.transform.Find("GreenHip").GetComponent<Transform>();
+        Init();
+
+        PlayerTransform = this.transform.Find("GreenHip").GetComponent<Transform>();
         Transform SoundSourceTransform = transform.Find("GreenHip");
         _audioSource = SoundSourceTransform.GetComponent<AudioSource>();
-        _context = GetComponent<Context>();
+        Context = GetComponent<Context>();
         stunInStance = gameObject.AddComponent<Stun>();
         burnInStance = gameObject.AddComponent<Burn>();
         IceInStance = gameObject.AddComponent<Ice>();
@@ -133,6 +101,8 @@ public class StatusHandler : MonoBehaviourPun
 
     private void LateUpdate()
     {
+        Debug.Log("DrunkTime: " + _drunkTime);
+
         // 지침 디버프 활성화/비활성화
         if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
@@ -241,34 +211,24 @@ public class StatusHandler : MonoBehaviourPun
                 case Actor.DebuffState.Default:
                     break;
                 case Actor.DebuffState.PowerUp:
-                    if (!_hasPowerUp)
-                        photonView.RPC("RPCPowerUpCreate", RpcTarget.All);
+                    photonView.RPC("RPCPowerUpCreate", RpcTarget.All);
                     break;
                 case Actor.DebuffState.Burn:
-                    if (!_hasBurn)
-                        photonView.RPC("RPCBurnCreate", RpcTarget.All);
-                    break;
-                case Actor.DebuffState.Slow:
-                    if (!_hasSlow)
-                        photonView.RPC("Slow", RpcTarget.All, _slowTime);
+                    photonView.RPC("RPCBurnCreate", RpcTarget.All);
                     break;
                 case Actor.DebuffState.Shock:
-                    if (!_hasShock)
-                        photonView.RPC("RPCShockCreate", RpcTarget.All);
+                    photonView.RPC("RPCShockCreate", RpcTarget.All);
                     break;
                 case Actor.DebuffState.Stun:
-                    if (!_hasStun)
-                        EnterUnconsciousState();
+                    EnterUnconsciousState();
                     break;
                 case Actor.DebuffState.Ghost:
                     break;
                 case Actor.DebuffState.Drunk:
-                    if(!HasDrunk)
-                        photonView.RPC("RPCPoisonCreate", RpcTarget.All);
+                    photonView.RPC("RPCPoisonCreate", RpcTarget.All);
                     break;
                 case Actor.DebuffState.Ice:
-                    if (!_hasFreeze)
-                        photonView.RPC("RPCIceCreate", RpcTarget.All);
+                    photonView.RPC("RPCIceCreate", RpcTarget.All);
                     break;
             }
         }
@@ -277,57 +237,38 @@ public class StatusHandler : MonoBehaviourPun
     [PunRPC]
     void RPCPoisonCreate()
     {
-        _context.ChangeState(drunkInStance, Drunktime);
+        Context.ChangeState(drunkInStance, _drunkTime);
     }
 
     [PunRPC]
     void RPCShockCreate()
     {
         actor.Grab.GrabResetTrigger();
-        _context.ChangeState(shockInStance, ShockTime);
+        Context.ChangeState(shockInStance, _shockTime);
     }
 
     [PunRPC]
     void RPCExhaustedCreate()
     {
-        _context.ChangeState(exhaustedInStance);
+        Context.ChangeState(exhaustedInStance);
     }
     [PunRPC]
     void RPCPowerUpCreate()
     {
-        _context.ChangeState(powerUpInStance, PowerUpTime);
+        Context.ChangeState(powerUpInStance, _powerUpTime);
     }
 
     [PunRPC]
     void RPCBurnCreate()
     {
         actor.Grab.GrabResetTrigger();
-        _context.ChangeState(burnInStance, BurnTime);
+        Context.ChangeState(burnInStance, _burnTime);
     }
 
     [PunRPC]
     void RPCIceCreate()
     {
-        _context.ChangeState(IceInStance, IceTime);
-    }
-
-    [PunRPC]
-    IEnumerator Slow(float delay)
-    {
-        // 둔화
-        _hasSlow = true;
-        actor.actorState = Actor.ActorState.Debuff;
-        actor.PlayerController.RunSpeed -= _maxSpeed * 0.1f;
-
-        yield return new WaitForSeconds(delay);
-
-        // 둔화 해제
-        _hasSlow = false;
-        actor.actorState = Actor.ActorState.Stand;
-        actor.debuffState &= ~Actor.DebuffState.Slow;
-        actor.PlayerController.RunSpeed += _maxSpeed * 0.1f;
-
-        actor.InvokeStatusChangeEvent();
+        Context.ChangeState(IceInStance, _freezeTime);
     }
 
     [PunRPC]
@@ -335,26 +276,26 @@ public class StatusHandler : MonoBehaviourPun
     {
         GameObject go = GameObject.Find($"{name}");
         Managers.Resource.Destroy(go);
-        effectObject = null;
+        EffectObject = null;
     }
 
     public void EffectObjectCreate(string path)
     {
-        effectObject = Managers.Resource.PhotonNetworkInstantiate($"{path}");
+        EffectObject = Managers.Resource.PhotonNetworkInstantiate($"{path}");
         //effectObject.transform.position = playerTransform.position;
     }
     [PunRPC]
     public void MoveEffect()
     {
         //LateUpdate여서 늦게 갱신이 되어서 NullReference가 떠서 같은 if 문을 넣어줌
-        if (effectObject != null && effectObject.name == "Stun_loop")
-            effectObject.transform.position = new Vector3(playerTransform.position.x, playerTransform.position.y + 1, playerTransform.position.z);
-        else if (effectObject != null && effectObject.name == "Fog_frost")
+        if (EffectObject != null && EffectObject.name == "Stun_loop")
+            EffectObject.transform.position = new Vector3(PlayerTransform.position.x, PlayerTransform.position.y + 1, PlayerTransform.position.z);
+        else if (EffectObject != null && EffectObject.name == "Fog_frost")
         {
-            effectObject.transform.position = new Vector3(playerTransform.position.x, playerTransform.position.y - 2, playerTransform.position.z);
+            EffectObject.transform.position = new Vector3(PlayerTransform.position.x, PlayerTransform.position.y - 2, PlayerTransform.position.z);
         }
         else
-            effectObject.transform.position = playerTransform.position;
+            EffectObject.transform.position = PlayerTransform.position;
     }
 
 
@@ -429,7 +370,7 @@ public class StatusHandler : MonoBehaviourPun
     [PunRPC]
     void ChangeStateMachines(float durationTime)
     {
-        _context.ChangeState(stunInStance, durationTime);
+        Context.ChangeState(stunInStance, durationTime);
     }
 
     void SetJointSpring(float percentage)

@@ -119,9 +119,16 @@ public class SoundManager
             audioSource.volume = 0.4f;
             audioSource.Play();
         }
-        else if(type == Define.Sound.InGameWarning)
+        else if(type == Define.Sound.MagneticWarning)
         {
-            AudioSource audioSource = _audioSources[(int)Define.Sound.InGameWarning];
+            AudioSource audioSource = _audioSources[(int)Define.Sound.MagneticWarning];
+            audioSource.pitch = pitch;
+            audioSource.volume = 0.3f;
+            audioSource.PlayOneShot(audioClip);
+        }
+        else if (type == Define.Sound.SnowStormWarning)
+        {
+            AudioSource audioSource = _audioSources[(int)Define.Sound.SnowStormWarning];
             audioSource.pitch = pitch;
             audioSource.volume = 0.3f;
             audioSource.PlayOneShot(audioClip);
