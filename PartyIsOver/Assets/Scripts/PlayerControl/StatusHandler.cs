@@ -145,6 +145,7 @@ public class StatusHandler : MonoBehaviourPun
                         actor.GrabState = Define.GrabState.None;
                         actor.Grab.GrabResetTrigger();
                     }
+                    actor.debuffState |= Actor.DebuffState.Exhausted;
                     photonView.RPC("RPCExhaustedCreate", RpcTarget.All);
                 }
             }
