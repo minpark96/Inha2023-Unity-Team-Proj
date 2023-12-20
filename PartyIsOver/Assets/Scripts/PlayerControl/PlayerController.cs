@@ -424,7 +424,6 @@ public class PlayerController : MonoBehaviourPun
                         if (_actor.Stamina <= 0)
                         {
                             photonView.RPC("SetStemina", RpcTarget.MasterClient, 0f);
-                            _actor.debuffState |= DebuffState.Exhausted;
                         }
 
                         if ((_actor.debuffState & DebuffState.Exhausted) == DebuffState.Exhausted)
@@ -747,18 +746,9 @@ public class PlayerController : MonoBehaviourPun
     #endregion
 
     #region FixedUpdate
-    [PunRPC]
-    void CheckSever()
-    {
-        if (PhotonNetwork.IsConnected)
-            Debug.Log("Photon is Connected!");
-        else
-            Debug.Log("Photon is not Connected!");
-    }
 
     private void FixedUpdate()
     {
-        photonView.RPC("CheckSever", RpcTarget.All);
 
         if (effectObject != null && IsFlambe && isTestCheck)
         {
