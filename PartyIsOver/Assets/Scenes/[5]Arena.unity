@@ -12106,6 +12106,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Mushroom (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 3864865463976168288, guid: ddb8b95ab4851664fb6a6b58e35bb636, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5732006597520359230, guid: ddb8b95ab4851664fb6a6b58e35bb636, type: 3}
       propertyPath: sceneViewId
       value: 52
@@ -34592,6 +34596,10 @@ PrefabInstance:
     - target: {fileID: 3864865463976168288, guid: ddb8b95ab4851664fb6a6b58e35bb636, type: 3}
       propertyPath: m_Name
       value: Mushroom (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3864865463976168288, guid: ddb8b95ab4851664fb6a6b58e35bb636, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5732006597520359230, guid: ddb8b95ab4851664fb6a6b58e35bb636, type: 3}
       propertyPath: sceneViewId
@@ -63458,6 +63466,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Mushroom
       objectReference: {fileID: 0}
+    - target: {fileID: 3864865463976168288, guid: ddb8b95ab4851664fb6a6b58e35bb636, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5732006597520359230, guid: ddb8b95ab4851664fb6a6b58e35bb636, type: 3}
       propertyPath: sceneViewId
       value: 50
@@ -68593,6 +68605,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Mushroom (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 3864865463976168288, guid: ddb8b95ab4851664fb6a6b58e35bb636, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5732006597520359230, guid: ddb8b95ab4851664fb6a6b58e35bb636, type: 3}
       propertyPath: sceneViewId
       value: 54
@@ -71567,6 +71583,10 @@ PrefabInstance:
     - target: {fileID: 3864865463976168288, guid: ddb8b95ab4851664fb6a6b58e35bb636, type: 3}
       propertyPath: m_Name
       value: Mushroom (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3864865463976168288, guid: ddb8b95ab4851664fb6a6b58e35bb636, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5732006597520359230, guid: ddb8b95ab4851664fb6a6b58e35bb636, type: 3}
       propertyPath: sceneViewId

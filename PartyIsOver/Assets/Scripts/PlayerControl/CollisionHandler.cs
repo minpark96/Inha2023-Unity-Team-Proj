@@ -322,6 +322,8 @@ public class CollisionHandler : MonoBehaviourPun
     {
         if ((actor.debuffState & DebuffState.Shock) == DebuffState.Shock)
             return;
+        if (!photonView.IsMine)
+            return;
         //Debug.Log("[AddForceAttackedTarget] id: " + objViewId);
         Rigidbody thisRb = PhotonNetwork.GetPhotonView(objViewId).transform.GetComponent<Rigidbody>();
 

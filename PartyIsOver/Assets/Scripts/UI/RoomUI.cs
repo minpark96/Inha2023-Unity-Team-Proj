@@ -95,6 +95,8 @@ public class RoomUI : MonoBehaviour
 
     public void ChangeMasterButton(bool canPlay)
     {
+        if (PlayButton == null || PlayButton.GetComponentInChildren<Image>() == null)
+            return;
         if (canPlay)
             PlayButton.GetComponentInChildren<Image>().sprite = GamePlayOn;
         else

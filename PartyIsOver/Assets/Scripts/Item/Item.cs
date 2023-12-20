@@ -62,24 +62,26 @@ public class Item : MonoBehaviourPun
         if(photonView.IsMine)
         {
             //ProjectileBase projectile = Managers.Pool.Pop(ItemData.Projectile.gameObject).GetComponent<ProjectileBase>();
-            object[] instantiationData = new object[] { photonView.ViewID };
+            object[] instantiationData = new object[] { photonView.ViewID,false };
             string str = $"Prefabs/Projectiles/";
             str += ItemData.Projectile.name;
             ProjectileBase projectile = PhotonNetwork.Instantiate(str, Vector3.zero, Quaternion.identity, 0,instantiationData).GetComponent<ProjectileBase>();
 
-            projectile.gameObject.layer = Owner.gameObject.layer;
+            //projectile.gameObject.layer = Owner.gameObject.layer;
 
 
             Vector3 forward = new Vector3(-Owner.BodyHandler.Head.PartTransform.up.x, 0f, -Owner.BodyHandler.Head.PartTransform.up.z).normalized;
             Vector3 right = new Vector3(Owner.BodyHandler.Head.PartTransform.right.z, 0f, Owner.BodyHandler.Head.PartTransform.right.z).normalized;
             projectile.transform.position = Owner.BodyHandler.Chest.transform.position + (forward * 0.2f) + (Vector3.up * 0.1f) + (right * 0.2f);
 
-            Vector3 pos1 = Owner.BodyHandler.Chest.transform.position + forward * 10f + Vector3.up * 2f + right * 3f;
+            //Vector3 pos1 = Owner.BodyHandler.Chest.transform.position + forward * 10f + Vector3.up * 2f + right * 3f;
 
 
             Transform camArm = Owner.CameraControl.CameraArm;
             Vector3 lookForward = new Vector3(camArm.forward.x, 0f, camArm.forward.z).normalized;
             Vector3 lookRight = new Vector3(camArm.right.x, 0f, camArm.right.z).normalized;
+
+            Vector3 pos1 = Owner.BodyHandler.Chest.transform.position + lookForward.normalized * 10f + Vector3.up * 3f;
 
             Vector3 input = Owner.PlayerController.MoveInput;
             Vector3 moveDir = lookForward * input.z + lookRight * input.x;
@@ -89,7 +91,7 @@ public class Item : MonoBehaviourPun
             Vector3 pos2 = Owner.BodyHandler.Chest.transform.position + moveDir.normalized * 10f + Vector3.up * 3f;
 
             if (input.magnitude == 0f)
-                projectile.transform.LookAt(pos2);
+                projectile.transform.LookAt(pos1);
             else
                 projectile.transform.LookAt(pos2);
             projectile.Shoot(this);
