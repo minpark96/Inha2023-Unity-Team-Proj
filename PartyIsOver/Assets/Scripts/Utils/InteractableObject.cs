@@ -7,8 +7,8 @@ using UnityEngine;
 public class InteractableObject : MonoBehaviourPun
 {
     Rigidbody _rb;
-    public Damage damageModifier = Damage.Default;
     Damage _initialDamage;
+    public Damage damageModifier = Damage.Default;
     private void Start()
     {
         _rb = GetComponent<Rigidbody>();
@@ -45,7 +45,7 @@ public class InteractableObject : MonoBehaviourPun
     }
 
     [PunRPC]
-    public void ApplyPullingForce(Vector3 dir, float power)
+    private void ApplyPullingForce(Vector3 dir, float power)
     {
         if (!photonView.IsMine)
             return;

@@ -7,7 +7,9 @@ using TMPro;
 public class ProjectileStandard : ProjectileBase
 {
     public Transform root;
-    public float speed = 15f;
+
+    [SerializeField]
+    private float _speed = 15f;
     public float maxLifeTime = 5f;
 
     private ProjectileBase projectileBase;
@@ -64,7 +66,7 @@ public class ProjectileStandard : ProjectileBase
     new void OnShoot()
     {
         lastRootPosition = root.position;
-        velocity = transform.forward * speed;
+        velocity = transform.forward * _speed;
 
         //무시되는 충돌체 가져오기
         _ignoredColliders = new List<Collider>();
@@ -150,14 +152,11 @@ public class ProjectileStandard : ProjectileBase
         {
             if (photonView.IsMine)
                 PhotonNetwork.Destroy(gameObject);
-            //Destroy(gameObject, 0.3f);
         }
         else
         {
            Managers.Resource.Destroy(gameObject);
         }
-
-        //Managers.Resource.Destroy(gameObject);
     }
 
     private bool IsHitValid(RaycastHit hit)

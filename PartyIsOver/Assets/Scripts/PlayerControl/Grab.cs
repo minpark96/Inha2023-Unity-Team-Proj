@@ -147,12 +147,12 @@ public class Grab : MonoBehaviourPun
         if(LeftGrabObject != null && LeftGrabObject.GetComponent<PhotonView>() != null)
         {
             LeftGrabObject.GetComponent<InteractableObject>().
-                ApplyPullingForce(Vector3.up,4f);
+                PullingForceTrigger(Vector3.up,4f);
         }
         if (RightGrabObject != null && RightGrabObject.GetComponent<PhotonView>() != null)
         {
             RightGrabObject.GetComponent<InteractableObject>().
-                ApplyPullingForce(Vector3.up, 4f);
+                PullingForceTrigger(Vector3.up, 4f);
         }
 
     }
