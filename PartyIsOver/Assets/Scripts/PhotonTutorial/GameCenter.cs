@@ -22,7 +22,6 @@ public class GameCenter : MonoBehaviourPunCallbacks, IPunOwnershipCallbacks
 
     ScoreBoardUI _scoreBoardUI;
     ArenaSettingsUI _arenaSettingsUI;
-
     MagneticField _magneticField;
     Floor _floor;
     SnowStorm _snowStorm;
@@ -40,14 +39,10 @@ public class GameCenter : MonoBehaviourPunCallbacks, IPunOwnershipCallbacks
     string _ghostPath = "Players/Ghost";
     string _graveStonePath = "Item/GraveStone";
 
-
-    public int[] _scores = new int[Define.MAX_PLAYERS_PER_ROOM] { 0, 0, 0, 0, 0, 0 };
-    public string[] _nicknames = new string[Define.MAX_PLAYERS_PER_ROOM] { "", "", "", "", "", "" };
-    public int[] _actorNumbers = new int[Define.MAX_PLAYERS_PER_ROOM] { 0, 0, 0, 0, 0, 0 };
-
-
     int[] _checkAreaName = new int[Define.MAX_PLAYERS_PER_ROOM];
     bool[] _checkInside = new bool[Define.MAX_PLAYERS_PER_ROOM];
+
+    private Coroutine _startItemSpawnTimerCoroutine;
 
     #endregion
 
@@ -124,13 +119,15 @@ public class GameCenter : MonoBehaviourPunCallbacks, IPunOwnershipCallbacks
     public int EndingCount = 0;
 
     public bool IsMeowNyangPunch = false;
-    public int winner;
+    public int Winner;
 
     public List<Transform> Items = new List<Transform>();
     public List<int> ItemSpawnCount = new List<int>();
     public int ItemSpawnPhaseCount = 5;
 
-    private Coroutine StartItemSpawnTimerCoroutine;
+    public int[] Scores = new int[Define.MAX_PLAYERS_PER_ROOM] { 0, 0, 0, 0, 0, 0 };
+    public string[] Nicknames = new string[Define.MAX_PLAYERS_PER_ROOM] { "", "", "", "", "", "" };
+    public int[] ActorNumbers = new int[Define.MAX_PLAYERS_PER_ROOM] { 0, 0, 0, 0, 0, 0 };
 
     #endregion
 
@@ -238,9 +235,9 @@ public class GameCenter : MonoBehaviourPunCallbacks, IPunOwnershipCallbacks
     #region ScoreBoard
     void SetScoreBoard()
     {
-        _scoreBoardUI.ChangeScoreBoard(_scores, _nicknames, _actorNumbers);
+        _scoreBoardUI.ChangeScoreBoard(Scores, Nicknames, ActorNumbers);
 
-        photonView.RPC("SyncScoreBoard", RpcTarget.Others, _scores, _nicknames, _actorNumbers);
+        photonView.RPC("SyncScoreBoard", RpcTarget.Others, Scores, Nicknames, ActorNumbers);
     }
 
     [PunRPC]
@@ -248,24 +245,24 @@ public class GameCenter : MonoBehaviourPunCallbacks, IPunOwnershipCallbacks
     {
         for (int i = 0; i < scores.Length; i++)
         {
-            _scores[i] = scores[i];
-            _nicknames[i] = nicknames[i];
-            _actorNumbers[i] = actorNumbers[i];
+            Scores[i] = scores[i];
+            Nicknames[i] = nicknames[i];
+            ActorNumbers[i] = actorNumbers[i];
         }
         
-        _scoreBoardUI.ChangeScoreBoard(_scores, _nicknames, _actorNumbers);
+        _scoreBoardUI.ChangeScoreBoard(Scores, Nicknames, ActorNumbers);
     }
 
     [PunRPC]
     void InitUIInfo(string nickname, int actorNumber)
     {
-        for (int i = 0; i < _scores.Length; i++)
+        for (int i = 0; i < Scores.Length; i++)
         {
             if (i == (actorNumber - 1))
             {
-                _scores[i] = 0;
-                _nicknames[i] = nickname;
-                _actorNumbers[i] = actorNumber;
+                Scores[i] = 0;
+                Nicknames[i] = nickname;
+                ActorNumbers[i] = actorNumber;
 
                 SetScoreBoard();
             }
@@ -581,17 +578,17 @@ public class GameCenter : MonoBehaviourPunCallbacks, IPunOwnershipCallbacks
     [PunRPC]
     void InitEndingScene()
     {
-        int max = _scores[0];
+        int max = Scores[0];
 
-        for (int i = 0; i < _scores.Length; i++)
+        for (int i = 0; i < Scores.Length; i++)
         {
-            if (max < _scores[i]) 
-                winner = i;
+            if (max < Scores[i]) 
+                Winner = i;
         }
 
         _endingUI = GameObject.Find("Canvas").GetComponent<EndingUI>();
-        _endingUI.SetWinner(winner);
-        _endingUI.WinnerName.text = _nicknames[winner];
+        _endingUI.SetWinner(Winner);
+        _endingUI.WinnerName.text = Nicknames[Winner];
     }
 
     [PunRPC]
@@ -605,7 +602,7 @@ public class GameCenter : MonoBehaviourPunCallbacks, IPunOwnershipCallbacks
         {
             AlivePlayerCount = PhotonNetwork.CurrentRoom.PlayerCount;
             photonView.RPC("CreatePlayer", RpcTarget.All);
-            StartItemSpawnTimerCoroutine = StartCoroutine(StartItemSpawnTimer());
+            _startItemSpawnTimerCoroutine = StartCoroutine(StartItemSpawnTimer());
             LoadingCompleteCount = 0;
         }
     }
@@ -895,9 +892,9 @@ public class GameCenter : MonoBehaviourPunCallbacks, IPunOwnershipCallbacks
         {
             if (PhotonNetwork.LocalPlayer.IsMasterClient)
             {
-                _scores[PhotonNetwork.LocalPlayer.ActorNumber - 1] = 0;
-                _nicknames[PhotonNetwork.LocalPlayer.ActorNumber - 1] = PhotonNetwork.NickName;
-                _actorNumbers[PhotonNetwork.LocalPlayer.ActorNumber - 1] = PhotonNetwork.LocalPlayer.ActorNumber;
+                Scores[PhotonNetwork.LocalPlayer.ActorNumber - 1] = 0;
+                Nicknames[PhotonNetwork.LocalPlayer.ActorNumber - 1] = PhotonNetwork.NickName;
+                ActorNumbers[PhotonNetwork.LocalPlayer.ActorNumber - 1] = PhotonNetwork.LocalPlayer.ActorNumber;
             }
             else
             {
@@ -906,7 +903,7 @@ public class GameCenter : MonoBehaviourPunCallbacks, IPunOwnershipCallbacks
         }
         else
         {
-            _scoreBoardUI.ChangeScoreBoard(_scores, _nicknames, _actorNumbers);
+            _scoreBoardUI.ChangeScoreBoard(Scores, Nicknames, ActorNumbers);
         }
 
         _magneticField.ActorList = Actors;
@@ -1075,7 +1072,7 @@ public class GameCenter : MonoBehaviourPunCallbacks, IPunOwnershipCallbacks
     {
         Debug.Log(RoundEndDelay + "초 뒤 라운드 종료 예정");
         photonView.RPC("FindWinner", RpcTarget.All);
-        StopCoroutine(StartItemSpawnTimerCoroutine);
+        StopCoroutine(_startItemSpawnTimerCoroutine);
         yield return new WaitForSeconds(RoundEndDelay);
 
         Debug.Log("라운드 종료 오브젝트 삭제");
@@ -1095,14 +1092,14 @@ public class GameCenter : MonoBehaviourPunCallbacks, IPunOwnershipCallbacks
     [PunRPC]
     void GiveScoreToWinner(int ActorNum)
     {
-        for (int i = 0; i < _actorNumbers.Length; i++)
+        for (int i = 0; i < ActorNumbers.Length; i++)
         {
-            Debug.Log(_actorNumbers[i]);
-            if (_actorNumbers[i] == ActorNum)
+            Debug.Log(ActorNumbers[i]);
+            if (ActorNumbers[i] == ActorNum)
             {
-                Debug.Log("승자: " + _actorNumbers[i]);
-                _scores[i]++;
-                if (_scores[i] == MAX_POINTS)
+                Debug.Log("승자: " + ActorNumbers[i]);
+                Scores[i]++;
+                if (Scores[i] == MAX_POINTS)
                 {
                     IsFinished = true;
                 }

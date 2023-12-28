@@ -19,23 +19,16 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     string _sceneLobby = "[3]Lobby";
     string _sceneRoom = "[4]Room";
     string _sceneEnding = "[6]Ending";
-
     float _nextUpdateTime = 1f;
     float _timeBetweenUpdate = 1.5f;
 
     public static PhotonManager Instance { get { return p_instance; } }
     public List<RoomItem> RoomItemsList = new List<RoomItem>();
     public LobbyUI LobbyUI;
-
     public AudioSource[] AudioSources;
-
     public GameCenter GameCenter = null;
 
     
-    void Awake()
-    {
-        Init();
-    }
 
     #region Public Methods
 
@@ -109,9 +102,29 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         }
     }
 
+    public IEnumerator LoadNextScene(string sceneName)
+    {
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
+
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
+
+        if (sceneName == _sceneRoom)
+        {
+            //InstantiateGameCenter();
+        }
+    }
+
     #endregion
 
     #region Private Methods
+
+    void Awake()
+    {
+        Init();
+    }
 
     void Init()
     {
@@ -136,21 +149,6 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         {
             SceneManager.sceneLoaded -= OnSceneLoaded;
             Destroy(gameObject);
-        }
-    }
-
-    public IEnumerator LoadNextScene(string sceneName)
-    {
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
-
-        while (!asyncLoad.isDone)
-        {
-            yield return null;
-        }
-
-        if (sceneName == _sceneRoom)
-        {
-            //InstantiateGameCenter();
         }
     }
 
