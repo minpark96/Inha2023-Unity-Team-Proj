@@ -114,18 +114,10 @@ public class PlayerController : MonoBehaviourPun
     public bool isGrounded;
     public bool isRun;
     public bool isMove;
-    public bool isDuck;
-    public bool isKickDuck;
-    public bool leftGrab;
-    public bool rightGrab;
-    public bool leftKick;
-    public bool rightKick;
     public bool isStateChange;
     public bool isMeowNyangPunch = false;
     public bool _isRSkillCheck;
-    public bool isDrunk;
     public bool isHeading;
-    public bool isDropkick;
 
     [Header("SkillControll")]
     public float RSkillCoolTime = 10;
@@ -150,7 +142,6 @@ public class PlayerController : MonoBehaviourPun
 
     public bool IsFlambe;
 
-
     private float _itemSwingPower;
 
     [Header("MoveControll")]
@@ -159,8 +150,6 @@ public class PlayerController : MonoBehaviourPun
     private Vector3 _moveDir;
     private bool _isCoroutineRunning;
     public bool _isCoroutineDrop;
-    private bool _isCoroutineRoll;
-    private float _idleTimer = 0;
     private float _cycleTimer = 0;
     private float _cycleSpeed;
     private float _applyedForce = 800f;
@@ -169,8 +158,6 @@ public class PlayerController : MonoBehaviourPun
     private Vector3 _runVectorForce5 = new Vector3(0f, 0f, 0.4f);
     private Vector3 _runVectorForce10 = new Vector3(0f, 0f, 0.8f);
 
-
-    public static PlayerController Instance;
     public AudioSource _audioSource;
     AudioClip _audioClip;
 
@@ -186,9 +173,6 @@ public class PlayerController : MonoBehaviourPun
 
     Side _readySide = Side.Left;
 
-    InteractableObject target;
-    Rigidbody _childRigidbody;
-    Transform[] _children;
     private Dictionary<Transform, Quaternion> _initialRotations = new Dictionary<Transform, Quaternion>();
 
     float startChargeTime;
@@ -242,7 +226,6 @@ public class PlayerController : MonoBehaviourPun
         originalYMotions = new ConfigurableJointMotion[childJoints.Length];
         originalZMotions = new ConfigurableJointMotion[childJoints.Length];
 
-        _children = GetComponentsInChildren<Transform>();
 
         // 원래의 angularXMotion 값을 저장
         for (int i = 0; i < childJoints.Length; i++)
@@ -252,8 +235,6 @@ public class PlayerController : MonoBehaviourPun
         }
         _grab = GetComponent<Grab>();
 
-
-        Instance = this;
 
         PlayerStatData statData = Managers.Resource.Load<PlayerStatData>("ScriptableObject/PlayerStatData");
         MaxSpeed = statData.MaxSpeed;
@@ -1346,9 +1327,6 @@ public class PlayerController : MonoBehaviourPun
     // 아이템 때문에 추가
     public void ArmActionPunching(Side side, float itemPower)
     {
-        if (target)
-            return;
-
         Transform partTransform = _bodyHandler.Chest.transform;
         AniFrameData[] aniFrameDatas = LeftPunchingAniData;
         Transform transform2 = _bodyHandler.LeftHand.transform;
@@ -1408,28 +1386,14 @@ public class PlayerController : MonoBehaviourPun
     #region Stand
     public void Stand()
     {
-        if (isStateChange)
-        {
-            _idleTimer = 0f;
-        }
-        if (_idleTimer < 30f)
-        {
-            _idleTimer = Mathf.Clamp(_idleTimer + Time.deltaTime, -60f, 30f);
-        }
-        if (_actor.actorState == Actor.ActorState.Run && !leftGrab && !rightGrab)
-        {
-        }
-        else
-        {
-            AlignToVector(_bodyHandler.Head.PartRigidbody, -_bodyHandler.Head.transform.up, _moveDir + new Vector3(0f, 0.2f, 0f), 0.1f, 2.5f * 1);
-            AlignToVector(_bodyHandler.Head.PartRigidbody, _bodyHandler.Head.transform.forward, Vector3.up, 0.1f, 2.5f * 1);
-            AlignToVector(_bodyHandler.Chest.PartRigidbody, -_bodyHandler.Chest.transform.up, _moveDir, 0.1f, 4f * 1);
-            AlignToVector(_bodyHandler.Chest.PartRigidbody, _bodyHandler.Chest.transform.forward, Vector3.up, 0.1f, 4f * 1);
-            AlignToVector(_bodyHandler.Waist.PartRigidbody, -_bodyHandler.Waist.transform.up, _moveDir, 0.1f, 4f * 1);
-            AlignToVector(_bodyHandler.Waist.PartRigidbody, _bodyHandler.Waist.transform.forward, Vector3.up, 0.1f, 4f * 1);
-            AlignToVector(_bodyHandler.Hip.PartRigidbody, _bodyHandler.Hip.transform.forward, Vector3.up, 0.1f, 3f * 1);
-        }
-        
+        AlignToVector(_bodyHandler.Head.PartRigidbody, -_bodyHandler.Head.transform.up, _moveDir + new Vector3(0f, 0.2f, 0f), 0.1f, 2.5f * 1);
+        AlignToVector(_bodyHandler.Head.PartRigidbody, _bodyHandler.Head.transform.forward, Vector3.up, 0.1f, 2.5f * 1);
+        AlignToVector(_bodyHandler.Chest.PartRigidbody, -_bodyHandler.Chest.transform.up, _moveDir, 0.1f, 4f * 1);
+        AlignToVector(_bodyHandler.Chest.PartRigidbody, _bodyHandler.Chest.transform.forward, Vector3.up, 0.1f, 4f * 1);
+        AlignToVector(_bodyHandler.Waist.PartRigidbody, -_bodyHandler.Waist.transform.up, _moveDir, 0.1f, 4f * 1);
+        AlignToVector(_bodyHandler.Waist.PartRigidbody, _bodyHandler.Waist.transform.forward, Vector3.up, 0.1f, 4f * 1);
+        AlignToVector(_bodyHandler.Hip.PartRigidbody, _bodyHandler.Hip.transform.forward, Vector3.up, 0.1f, 3f * 1);
+
         //빙판이 아닐때 조건추가해야함
         if (_hips.velocity.magnitude > 1f)
             _hips.velocity = _hips.velocity.normalized * _hips.velocity.magnitude* 0.6f;
@@ -1509,7 +1473,6 @@ public class PlayerController : MonoBehaviourPun
 
     #region MoveAnimation
 
-    [PunRPC]
     public void Move()
     {
         if(MoveInput.magnitude == 0f)
@@ -1609,31 +1572,21 @@ public class PlayerController : MonoBehaviourPun
             case Pose.Forward:
                 AlignToVector(thighRigid, -thighTrans.forward, _moveDir + -hip.up / 2f, 0.1f, 4f * _applyedForce);
                 AlignToVector(legRigid, -legTrans.forward, _moveDir + -hip.up / 2f, 0.1f, 4f * _applyedForce);
-                if (!isDuck)
-                {
-                    thighRigid.AddForce(-_moveDir / 2f, ForceMode.VelocityChange);
-                    legRigid.AddForce(_moveDir / 2f, ForceMode.VelocityChange);
-                }
+                thighRigid.AddForce(-_moveDir / 2f, ForceMode.VelocityChange);
+                legRigid.AddForce(_moveDir / 2f, ForceMode.VelocityChange);
+
                 break;
             case Pose.Straight:
                 AlignToVector(thighRigid, thighTrans.forward, Vector3.up, 0.1f, 2f * _applyedForce);
                 AlignToVector(legRigid, legTrans.forward, Vector3.up, 0.1f, 2f * _applyedForce);
-                if (!isDuck)
-                {
-                    thighRigid.AddForce(hip.up * 2f * _applyedForce);
-                    legRigid.AddForce(-hip.up * 2f * _applyedForce);
-                    legRigid.AddForce(-_runVectorForce2, ForceMode.VelocityChange);
-                }
+                thighRigid.AddForce(hip.up * 2f * _applyedForce);
+                legRigid.AddForce(-hip.up * 2f * _applyedForce);
+                legRigid.AddForce(-_runVectorForce2, ForceMode.VelocityChange);
+
                 break;
             case Pose.Behind:
                 AlignToVector(thighRigid, thighTrans.forward, _moveDir * 2f, 0.1f, 2f * _applyedForce);
                 AlignToVector(legRigid, -legTrans.forward, -_moveDir * 2f, 0.1f, 2f * _applyedForce);
-                if (isDuck)
-                {
-                    _bodyHandler.Hip.PartRigidbody.AddForce(_runVectorForce2, ForceMode.VelocityChange);
-                    _bodyHandler.Ball.PartRigidbody.AddForce(-_runVectorForce2, ForceMode.VelocityChange);
-                    legRigid.AddForce(-_runVectorForce2, ForceMode.VelocityChange);
-                }
                 break;
         }
     }
@@ -1669,7 +1622,7 @@ public class PlayerController : MonoBehaviourPun
                 vector = -_bodyHandler.Chest.transform.right;
                 break;
         }
-        if (!isDuck && !isKickDuck && !isRun)
+        if (!isRun)
         {
             switch (pose)
             {
@@ -1901,8 +1854,6 @@ public class PlayerController : MonoBehaviourPun
 
     public void ItemTwoHandSwing(Side side, float itemSwingPower)
     {
-        if (target)
-            return;
 
         Transform partTransform = _bodyHandler.Chest.transform;
         AniFrameData[] itemTwoHands = ItemTwoHandLeftAniData;
