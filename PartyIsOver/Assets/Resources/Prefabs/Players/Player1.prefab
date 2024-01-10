@@ -12183,18 +12183,10 @@ MonoBehaviour:
   isGrounded: 0
   isRun: 0
   isMove: 0
-  isDuck: 0
-  isKickDuck: 0
-  leftGrab: 0
-  rightGrab: 0
-  leftKick: 0
-  rightKick: 0
   isStateChange: 0
   isMeowNyangPunch: 0
   _isRSkillCheck: 0
-  isDrunk: 0
   isHeading: 0
-  isDropkick: 0
   RSkillCoolTime: 5
   MeowPunchPower: 3
   MeowPunchReadyPunch: 0.05

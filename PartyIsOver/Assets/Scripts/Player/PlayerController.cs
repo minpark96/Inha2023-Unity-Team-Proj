@@ -356,7 +356,7 @@ public class PlayerController : MonoBehaviourPun
                     if (Input.GetKeyDown(KeyCode.Space))
                     {
                         if (_actor.GrabState == Define.GrabState.Climb)
-                            _actor.Grab.Climb();
+                            _actor.Grab.ClimbJump();
                         _actor.actorState = Actor.ActorState.Jump;
                     }
 
