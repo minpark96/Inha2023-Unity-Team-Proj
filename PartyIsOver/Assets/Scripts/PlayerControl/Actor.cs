@@ -9,10 +9,14 @@ using System.Numerics;
 
 public class Actor : MonoBehaviourPun, IPunObservable
 {
+    //델리게이트 정의
     public delegate void ChangePlayerStatus(float HP,float Stamina, DebuffState debuffstate, int viewID);
+    //델리게이트를 이용한 이벤트 선언
     public event ChangePlayerStatus OnChangePlayerStatus;
+
     public delegate void KillPlayer(int viewID);
     public event KillPlayer OnKillPlayer;
+
     public delegate void ChangeStaminaBar();
     public event ChangeStaminaBar OnChangeStaminaBar;
 
@@ -60,7 +64,6 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
     [SerializeField]
     private float _playerAttackPoint = 1f;
-
     public float PlayerAttackPoint { get { return _playerAttackPoint; } set { _damageReduction = value; } }
 
 
@@ -71,7 +74,6 @@ public class Actor : MonoBehaviourPun, IPunObservable
     private float _maxHealth = 200f;
     public float Health { get { return _health; } set { _health = value; } }
     public float MaxHealth { get { return _maxHealth; } }
-
 
     [Header("Stamina Recovery")]
     public float RecoveryTime = 0.1f;
@@ -93,26 +95,29 @@ public class Actor : MonoBehaviourPun, IPunObservable
     [SerializeField]
     private int _magneticStack = 0;
     public int MagneticStack { get { return _magneticStack; } set { _magneticStack = value; } }
-    
 
-
+    //기본 초기화
     public ActorState actorState = ActorState.Stand;
     public ActorState lastActorState = ActorState.Run;
     public DebuffState debuffState = DebuffState.Default;
 
     public static GameObject LocalPlayerInstance;
 
+    //Layer 추가
     public static int LayerCnt = (int)Define.Layer.Player1;
 
+    //상태 변환 이벤트
     public void InvokeStatusChangeEvent()
     {
-        if (OnChangePlayerStatus == null)
+        if (OnChangePlayerStatus != null)
+        {
+            OnChangePlayerStatus(_health, _stamina, debuffState, photonView.ViewID);
+        }
+        else
         {
             Debug.Log(photonView.ViewID + " OnChangePlayerStatus 이벤트 null");
             return;
         }
-
-        OnChangePlayerStatus(_health, _stamina, debuffState, photonView.ViewID);
     }
 
     public void InvokeDeathEvent()
