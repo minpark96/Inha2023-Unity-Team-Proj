@@ -83,7 +83,8 @@ ai는 행동트리 컴포넌트가 actor의 input을 누르고 controller_ai가 
 
 
 커맨드패턴
-c클라이언트가 입력하면(Input.getKeyDown 등이 눌리면 클릭, 버튼다운,홀드 등)
+1번째 클라이언트가 마스터 클라이언트고
+3번째 클라이언트가 입력하면(Input.getKeyDown 등이 눌리면 클릭, 버튼다운,홀드 등)
 이를 클라이언트가 어떤 입력인지 판단하여 
 마스터에게 보내면 (커맨드의 enum값을 보냄)
 마스터는 입력받은 값(enum)을 큐로 받아놨다가(?미정) 해당하는 커맨드를 3번 캐릭터에 RPC-ALL로 쏜다
@@ -93,6 +94,13 @@ c클라이언트가 입력하면(Input.getKeyDown 등이 눌리면 클릭, 버�
 -행동들을 커맨드로 빼야함
 	이동,점프,펀치(클릭버튼 구현해야 할수도),스킬,그랩(고민해서짤것),
 
+
+
+
+플레이어 각 상태마다 Update에서 Input을 통제하고 입력을 받는다.
+InputHandler나 InputManager에서 받은 Input을 플레이어 상태의 Update에서 감지하고
+해당하는 커맨드 enum을 master클라이언트로 보내고 마스터는 입력받은 커맨드의
+excute함수를 RPC-ALL를 쏴서 각 클라이언트를 움직인다
 
 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ행동트리ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 actor가 ai인지 확인하고 ai일 경우  actor에 행동트리 컴포넌트를 붙이는 방식
@@ -120,6 +128,30 @@ ai일 경우 controller를 human 이 아니라 ai걸로 사용한다.
 가져야될 정보
 양손이 뭘하는지, 들고있는지, 아이템 장착상태인지, 
 여러 타겟, 최우선 타겟, 낙사감지, 벽 감지, 플레이어정보, 자기장 정보, 상대플레이어 상태정보,
+
+
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ상태패턴ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+상태에서 특정 Input을 대기하다 Input이 들어오면  
+
+상체 - 펀치, Gabbing , Equip, Climb, 스킬, 헤딩
+하체 - Stand, Move, Jump, Fall, 
+
+커맨드 - DropKick
+
+
+
+ ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ커맨드ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+PlayerController
+
+Move
+	RunCycleUpdate();
+        	RunCyclePoseBody();
+       	 RunCyclePoseArm(Side.Left, leftArmPose);
+       	 RunCyclePoseArm(Side.Right, rightArmPose);
+       	 RunCyclePoseLeg(Side.Left, leftLegPose); Thigh2개 leg 2개
+       	 RunCyclePoseLeg(Side.Right, rightLegPose);
+
+
 
 
 안한거ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ

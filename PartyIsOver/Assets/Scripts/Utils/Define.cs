@@ -198,6 +198,29 @@ public class Define
         Outside,
         Default,
     }
+
+    public enum GetKeyType
+    {
+        Press,
+        Down,
+        Up,
+        None,
+    }
+
+    public enum COMMAND_KEY
+    {
+        W,
+        A,
+        S,
+        D,
+        LeftBtn,
+        RightBtn,
+        Wheel,
+        Jump,
+
+    }
+
+
 }
 
 

@@ -221,15 +221,11 @@ public class Grab : MonoBehaviourPun
                         switch (type)
                         {
                             case ItemType.OneHanded:
-                                StartCoroutine(OwnHandAttack());
                                 break;
                             case ItemType.TwoHanded:
                                 photonView.RPC("HorizontalAtkTrigger", RpcTarget.All);
-                                //HorizontalAtkTrigger();
-                                //StartCoroutine(HorizontalAttack());
                                 break;
                             case ItemType.Gravestone:
-                                StartCoroutine(VerticalAttack());
                                 break;
                             case ItemType.Ranged:
                                 photonView.RPC("UseItem", RpcTarget.All);
@@ -904,18 +900,6 @@ public class Grab : MonoBehaviourPun
         _jointRightUpperArm.angularZMotion = ConfigurableJointMotion.Limited;
     }
 
-
-    IEnumerator VerticalAttack()
-    {
-        yield return _actor.PlayerController.DropRip(PlayerController.Side.Right, 0.07f, 0.1f, 0.5f, 0.5f, 0.1f);
-    }
-
-    IEnumerator OwnHandAttack()
-    {
-        _jointLeft.GetComponent<Rigidbody>().AddForce(new Vector3(0, _turnForce, 0));
-        _jointRight.GetComponent<Rigidbody>().AddForce(new Vector3(0, _turnForce, 0));
-        yield return _actor.PlayerController.ItemOwnHand(PlayerController.Side.Right, 0.07f, 0.1f, 0.5f, 0.5f, 0.1f);
-    }
 
     [PunRPC]
     void HorizontalAtkTrigger()

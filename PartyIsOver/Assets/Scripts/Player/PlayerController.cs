@@ -71,22 +71,13 @@ public class PlayerController : MonoBehaviourPun
     [SerializeField]    public AniAngleData[] RSkillAngleAniData;
     [SerializeField]    public AniFrameData[] ItemTwoHandAniData;
     [SerializeField]    public AniAngleData[] ItemTwoHandAngleData;
-    [SerializeField]    public AniAngleData[] ItemOneHandAngleAniData;
-    [SerializeField]    public AniFrameData[] ItemOneHandReadyAniData;
-    [SerializeField]    public AniFrameData[] ItemOneHandSwingAniData;
     [SerializeField]    public AniFrameData[] PotionReadyAniData;
     [SerializeField]    public AniFrameData[] PotionDrinkingAniData;
     [SerializeField]    public AniAngleData[] PotionAngleAniData;
-    [SerializeField]    public AniFrameData[] PickUpRipAniData;
-    [SerializeField]    public AniFrameData[] ShootDownRipAniData;
-    [SerializeField]    public AniAngleData[] RipAngleAniData;
     [SerializeField]    public AniFrameData[] ItemTwoHandLeftAniData;
     [SerializeField]    public AniAngleData[] ItemTwoHandLeftAngleData;
     [SerializeField]    public AniFrameData[] PotionThrowAniData;
     [SerializeField]    public AniAngleData[] PotionThrowAngleData;
-    [SerializeField]    public AniFrameData[] TestRready1;
-    [SerializeField]    public AniFrameData[] TestDrinking;
-    [SerializeField]    public AniAngleData[] TestRready2;
 
 
     [Header("Speed")]
@@ -164,16 +155,12 @@ public class PlayerController : MonoBehaviourPun
     [Header("Dummy")]
     public bool isAI = false;
 
-    Rigidbody _hipRB;
-
     Pose leftArmPose;
     Pose rightArmPose;
     Pose leftLegPose;
     Pose rightLegPose;
 
     Side _readySide = Side.Left;
-
-    private Dictionary<Transform, Quaternion> _initialRotations = new Dictionary<Transform, Quaternion>();
 
     float startChargeTime;
     float endChargeTime = 0f;
@@ -218,7 +205,6 @@ public class PlayerController : MonoBehaviourPun
     {
         _bodyHandler = GetComponent<BodyHandler>();
         _actor = GetComponent<Actor>();
-        _hipRB = transform.Find("GreenHip").GetComponent<Rigidbody>();
         Transform SoundSourceTransform = transform.Find("GreenHip");
         _audioSource = SoundSourceTransform.GetComponent<AudioSource>();
          
@@ -787,167 +773,6 @@ public class PlayerController : MonoBehaviourPun
             }
         }
     }
-
-    #endregion
-
-    #region ForwardRoll
-    //private void ForwardRollTrigger()
-    //{
-    //    if (!_isCoroutineRoll)
-    //    {
-    //        //자식들의 오브젝터 rotation을 뛰기 전에 저장
-    //        Transform[] childTransforms = GetComponentsInChildren<Transform>();
-    //        foreach (Transform childTransform in childTransforms)
-    //        {
-    //            _initialRotations[childTransform] = childTransform.localRotation;
-    //        }
-    //        //점프를 해야 잘 굴러서 점프를 한번 한 다음에 구르기 시작
-    //        _actor.actorState = Actor.ActorState.Jump;
-    //        StartCoroutine(ForwardRollDelay(3f));
-    //    }
-    //}
-
-    //IEnumerator ForwardRollDelay(float delay)
-    //{
-    //    _isCoroutineRoll = true;
-    //    yield return ForwardRoll(0.07f, 1.5f);
-    //    yield return new WaitForSeconds(delay);
-    //    _isCoroutineRoll = false;
-    //}
-
-    //IEnumerator ForwardRoll(float duration, float readyRoll)
-    //{
-    //    //최고 속도를 구를 때 마다 일정하게 값을 넣을려고
-    //    _hips.velocity = -_hips.transform.up.normalized * MaxSpeed * 1.5f;
-    //    //연산이 너무 빨라서 잠깐 멈춰줘야함
-    //    yield return new WaitForSeconds(0.08f);
-    //    //상태를 Roll 상태로 전환
-    //    _actor.actorState = ActorState.Roll;
-
-    //    //spring을 풀어서 구르기가 자연스럽게 할 수 있게 한다.
-    //    _actor.StatusHandler.StartCoroutine("ResetBodySpring");
-    //    //hip의 잠겨 있는 FreezeRotationX 축을 풀음
-    //    _hipRB.constraints &= ~RigidbodyConstraints.FreezeRotationX;
-
-    //    float rollTime = Time.time;
-
-    //    //실제로 회전 하는 것
-    //    while (Time.time - rollTime < readyRoll)
-    //    {
-    //        AniAngleForce(RollAngleAniData, 0);
-    //        AniForce(RollAniData, 0);
-    //        yield return new WaitForSeconds(duration);
-    //    }
-
-    //    //힘은 0, Rotation 복구 하기
-    //    foreach (Transform child in _children)
-    //    {
-    //        yield return RestoreRotations(child);
-    //    }
-    //    //yield return StartSlerp(duration);
-
-    //    _actor.actorState = Actor.ActorState.Stand;
-    //}
-
-    //IEnumerator StartSlerp(float duration)
-    //{
-    //    float startRollTime = Time.time;
-
-    //    while (Time.time - startRollTime < 0.07f)
-    //    {
-    //        foreach (Transform child in _children)
-    //        {
-    //            if (_initialRotations.ContainsKey(child))
-    //            {
-    //                Debug.Log("Slerp아직 잘 안됨 수정 부분임");
-    //                Vector3 lerpedDirecion = Vector3.Slerp(child.localRotation.eulerAngles, _initialRotations[child].eulerAngles, 0.1f);
-    //                child.localRotation = Quaternion.LookRotation(lerpedDirecion);
-    //            }
-    //        }
-    //        yield return new WaitForSeconds(duration);
-    //    }
-    //}
-
-    //IEnumerator ForwardRollOld(float duration, float readyRoll)
-    //{
-    //    _hips.velocity = -_hips.transform.up.normalized * MaxSpeed * 1.5f;
-    //    yield return new WaitForSeconds(0.08f);
-    //    _actor.actorState = ActorState.Roll;
-
-    //    _actor.StatusHandler.StartCoroutine("ResetBodySpring");
-    //    _hipRB.constraints &= ~RigidbodyConstraints.FreezeRotationX;
-
-    //    float rollTime = Time.time;
-    //    float startRollTime = Time.time;
-
-    //    while (Time.time - rollTime < readyRoll)
-    //    {
-    //        AniAngleForce(RollAngleAniData, 0);
-    //        AniForce(RollAniData, 0);
-    //        yield return new WaitForSeconds(duration);
-    //    }
-
-    //    //힘은 0, Rotation, 스프링 복구 하기
-    //    //RestoreRotations();
-    //    _actor.actorState = Actor.ActorState.Stand;
-    //}
-
-    //IEnumerator RestoreRotations(Transform child)
-    //{
-    //    _childRigidbody = child.GetComponent<Rigidbody>();
-    //    if (_childRigidbody != null)
-    //    {
-    //        //Debug.Log(_initialRotations[child]);
-    //        // 초기 회전값 복원 Dictionary에서 특정 키의 존재 여부를 확인
-    //        if (_initialRotations.ContainsKey(child))
-    //        {
-    //            //회전 힘과 AddForce 힘을 벡터 0으로 해서 값 빼기
-    //            _childRigidbody.velocity = Vector3.zero;
-    //            _childRigidbody.angularVelocity = Vector3.zero;
-    //            child.localRotation = _initialRotations[child];
-    //            //int count= 0;
-    //            //while (Quaternion.Angle(child.localRotation, _initialRotations[child]) > 1f)
-    //            /*while(count <10)
-    //            {
-    //                //_initialRotations[child] 목표값
-    //                //child.localRotation 시작 값
-    //                child.localRotation = Quaternion.Slerp(child.localRotation, _initialRotations[child], 0.4f);
-    //                Debug.Log(string.Format("{0}     :  {1:N2}", child.name, Quaternion.Angle(child.localRotation, _initialRotations[child])));
-    //                count++;
-    //                yield return new WaitForSeconds(0.07f);
-    //            }*/
-    //        }
-    //        //다시 잠금
-    //        if (_childRigidbody.name == "GreenHip")
-    //            _hipRB.constraints |= RigidbodyConstraints.FreezeRotationX;
-    //    }
-    //    yield return _actor.StatusHandler.RestoreBodySpring(0.07f);
-    //}
-
-    //public void RestoreRotationsOld()
-    //{
-    //    _actor.StatusHandler.StartCoroutine("RestoreBodySpring");
-
-    //    foreach (Transform child in _children)
-    //    {
-    //        _childRigidbody = child.GetComponent<Rigidbody>();
-    //        if (_childRigidbody != null)
-    //        {
-    //            //회전 힘과 AddForce 힘을 벡터 0으로 해서 값 빼기
-    //            _childRigidbody.velocity = Vector3.zero;
-    //            _childRigidbody.angularVelocity = Vector3.zero;
-    //            // 초기 회전값 복원 Dictionary에서 특정 키의 존재 여부를 확인
-    //            if (_initialRotations.ContainsKey(child))
-    //            {
-    //                child.localRotation = _initialRotations[child];
-    //            }
-
-    //            //다시 잠금
-    //            if (_childRigidbody.name == "GreenHip")
-    //                _hipRB.constraints |= RigidbodyConstraints.FreezeRotationX;
-    //        }
-    //    }
-    //}
 
     #endregion
 
@@ -1542,7 +1367,6 @@ public class PlayerController : MonoBehaviourPun
 
         Rigidbody thighRigid = null;
         Rigidbody legRigid = null;
-        Rigidbody footRigid = null;
 
         switch (side)
         {
@@ -1552,14 +1376,12 @@ public class PlayerController : MonoBehaviourPun
 
                 thighRigid = _bodyHandler.LeftThigh.GetComponent<Rigidbody>();
                 legRigid = _bodyHandler.LeftLeg.PartRigidbody;
-                footRigid = _bodyHandler.LeftFoot.PartRigidbody;
                 break;
             case Side.Right:
                 thighTrans = _bodyHandler.RightThigh.transform;
                 legTrans = _bodyHandler.RightLeg.transform;
                 thighRigid = _bodyHandler.RightThigh.PartRigidbody;
                 legRigid = _bodyHandler.RightLeg.PartRigidbody;
-                footRigid = _bodyHandler.RightFoot.PartRigidbody;
                 break;
         }
 
@@ -1904,79 +1726,6 @@ public class PlayerController : MonoBehaviourPun
 
     #endregion
 
-    #region ItemOneHand
-    public IEnumerator ItemOwnHand(Side side, float duration, float readyTime, float punchTime, float retime, float resetTime)
-    {
-        float checkTime = Time.time;
-
-        while (Time.time - checkTime < readyTime)
-        {
-            ItemOneHandReady(side);
-            yield return new WaitForSeconds(duration);
-        }
-        checkTime = Time.time;
-
-        while (Time.time - checkTime < punchTime)
-        {
-            ItemOneHandSwingReady(side);
-            yield return new WaitForSeconds(duration);
-        }
-        checkTime = Time.time;
-
-        while (Time.time - checkTime < retime)
-        {
-            ItemOneHandSwing(side);
-            yield return new WaitForSeconds(duration);
-        }
-        checkTime = Time.time;
-
-        while (Time.time - checkTime < resetTime)
-        {
-            ItemOneHandReSet(side);
-            yield return new WaitForSeconds(duration);
-        }
-    }
-    #endregion
-
-    #region ItemOneHandAni
-    public void ItemOneHandReady(Side side)
-    {
-        AniAngleData[] itemTwoHands = (side == Side.Right) ? ItemOneHandAngleAniData : ItemOneHandAngleAniData;
-        for (int i = 0; i < itemTwoHands.Length; i++)
-        {
-            AniAngleForce(itemTwoHands, i);
-        }
-    }
-    public void ItemOneHandSwingReady(Side side)
-    {
-        AniFrameData[] itemOneHands = ItemOneHandReadyAniData;
-        for (int i = 0; i < itemOneHands.Length; i++)
-        {
-            AniForce(itemOneHands, i);
-        }
-    }
-    public void ItemOneHandSwing(Side side)
-    {
-        AniFrameData[] itemOneHands = ItemOneHandSwingAniData;
-
-        for (int i = 0; i < itemOneHands.Length; i++)
-        {
-            AniForce(itemOneHands, i);
-        }
-    }
-
-    public void ItemOneHandReSet(Side side)
-    {
-        AniAngleData[] itemOneHands = ItemOneHandAngleAniData;
-
-        for (int i = 0; i < itemOneHands.Length; i++)
-        {
-
-            AniAngleForce(itemOneHands, i);
-        }
-    }
-    #endregion
-
     #region Potion
     public IEnumerator Potion(Side side, float duration, float ready, float start, float drinking, float end)
     {
@@ -2107,83 +1856,6 @@ public class PlayerController : MonoBehaviourPun
         for (int i = 0; i < potionThrowEnds.Length; i++)
         {
             AniAngleForce(potionThrowEnds, i);
-        }
-    }
-    #endregion
-
-    #region RIP
-
-    public IEnumerator DropRip(Side side, float duration, float readyTime, float punchTime, float retime, float resetTime)
-    {
-        float checkTime = Time.time;
-
-        while (Time.time - checkTime < readyTime)
-        {
-            DropRipReady(side);
-            yield return new WaitForSeconds(duration);
-        }
-        checkTime = Time.time;
-
-        while (Time.time - checkTime < punchTime)
-        {
-            DropRipUp(side);
-            yield return new WaitForSeconds(duration);
-        }
-        checkTime = Time.time;
-
-        while (Time.time - checkTime < retime)
-        {
-            DropRipDown(side);
-            yield return new WaitForSeconds(duration);
-        }
-        checkTime = Time.time;
-
-        while (Time.time - checkTime < resetTime)
-        {
-            DropRipReSet(side);
-            yield return new WaitForSeconds(duration);
-        }
-
-    }
-
-    #endregion
-
-    #region RipAni
-
-    void DropRipReady(Side side)
-    {
-        AniAngleData[] DropRips = (side == Side.Right) ? RipAngleAniData : RipAngleAniData;
-        for (int i = 0; i < DropRips.Length; i++)
-        {
-            AniAngleForce(DropRips, i);
-        }
-    }
-
-    void DropRipUp(Side side)
-    {
-        AniFrameData[] DropRips = PickUpRipAniData;
-        for (int i = 0; i < DropRips.Length; i++)
-        {
-            AniForce(DropRips, i);
-        }
-    }
-
-    void DropRipDown(Side side)
-    {
-        AniFrameData[] DropRips = ShootDownRipAniData;
-        for (int i = 0; i < DropRips.Length; i++)
-        {
-            AniForce(DropRips, i);
-        }
-    }
-
-    void DropRipReSet(Side side)
-    {
-        AniAngleData[] itemOneHands = RipAngleAniData;
-
-        for (int i = 0; i < itemOneHands.Length; i++)
-        {
-            AniAngleForce(itemOneHands, i);
         }
     }
     #endregion
