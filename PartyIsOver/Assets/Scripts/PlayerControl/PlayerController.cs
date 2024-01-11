@@ -177,8 +177,6 @@ public class PlayerController : MonoBehaviourPun
     [Header("Dummy")]
     public bool isAI = false;
 
-    Rigidbody _hipRB;
-
     Pose leftArmPose;
     Pose rightArmPose;
     Pose leftLegPose;
@@ -234,7 +232,6 @@ public class PlayerController : MonoBehaviourPun
     {
         _bodyHandler = GetComponent<BodyHandler>();
         _actor = GetComponent<Actor>();
-        _hipRB = transform.Find("GreenHip").GetComponent<Rigidbody>();
         Transform SoundSourceTransform = transform.Find("GreenHip");
         _audioSource = SoundSourceTransform.GetComponent<AudioSource>();
          
