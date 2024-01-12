@@ -177,8 +177,6 @@ public class PlayerController : MonoBehaviourPun
     [Header("Dummy")]
     public bool isAI = false;
 
-    Rigidbody _hipRB;
-
     Pose leftArmPose;
     Pose rightArmPose;
     Pose leftLegPose;
@@ -234,7 +232,6 @@ public class PlayerController : MonoBehaviourPun
     {
         _bodyHandler = GetComponent<BodyHandler>();
         _actor = GetComponent<Actor>();
-        _hipRB = transform.Find("GreenHip").GetComponent<Rigidbody>();
         Transform SoundSourceTransform = transform.Find("GreenHip");
         _audioSource = SoundSourceTransform.GetComponent<AudioSource>();
          
@@ -424,7 +421,6 @@ public class PlayerController : MonoBehaviourPun
                         if (_actor.Stamina <= 0)
                         {
                             photonView.RPC("SetStemina", RpcTarget.MasterClient, 0f);
-                            _actor.debuffState |= DebuffState.Exhausted;
                         }
 
                         if ((_actor.debuffState & DebuffState.Exhausted) == DebuffState.Exhausted)
@@ -747,18 +743,9 @@ public class PlayerController : MonoBehaviourPun
     #endregion
 
     #region FixedUpdate
-    [PunRPC]
-    void CheckSever()
-    {
-        if (PhotonNetwork.IsConnected)
-            Debug.Log("Photon is Connected!");
-        else
-            Debug.Log("Photon is not Connected!");
-    }
 
     private void FixedUpdate()
     {
-        photonView.RPC("CheckSever", RpcTarget.All);
 
         if (effectObject != null && IsFlambe && isTestCheck)
         {

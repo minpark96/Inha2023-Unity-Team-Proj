@@ -52,7 +52,7 @@ public class StatusHandler : MonoBehaviourPun
     Shock shockInStance;
     Exhausted exhaustedInStance;
 
- 
+
     private void Init()
     {
         StatusData data = Managers.Resource.Load<StatusData>("ScriptableObject/StatusData");
@@ -101,13 +101,15 @@ public class StatusHandler : MonoBehaviourPun
 
     private void LateUpdate()
     {
-        Debug.Log("DrunkTime: " + _drunkTime);
 
         // 지침 디버프 활성화/비활성화
         if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
             if (actor.Stamina <= 0)
             {
+                actor.debuffState |= DebuffState.Exhausted;
+
+                Debug.Log((actor.debuffState & DebuffState.Exhausted) == DebuffState.Exhausted);
                 if ((actor.debuffState & DebuffState.Exhausted) == DebuffState.Exhausted)
                 {
                     if (actor.GrabState != Define.GrabState.PlayerLift)
