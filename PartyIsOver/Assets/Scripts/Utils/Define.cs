@@ -177,12 +177,6 @@ public class Define
         Charge,
     }
 
-
-    public enum CameraMode
-    {
-
-    }
-
     public enum AIState
     {
         Idle,
@@ -220,6 +214,39 @@ public class Define
 
     }
 
+    public enum AniFrameData
+    {
+        DropAniData,
+        RightPunchingAniData,
+        LeftPunchingAniData,
+        MoveForceJumpAniData,
+        HeadingAniData,
+        RSkillAniData,
+        ItemTwoHandAniData,
+        PotionReadyAniData,
+        PotionDrinkingAniData,
+        ItemTwoHandLeftAniData,
+        PotionThrowAniData,
+        
+        End,
+    }
+
+    public enum AniAngleData
+    {
+        RightPunchAniData,
+        LeftPunchAniData,
+        RightPunchResettingAniData,
+        LeftPunchResettingAniData,
+        MoveAngleJumpAniData,
+        HeadingAngleAniData,
+        RSkillAngleAniData,
+        ItemTwoHandAngleData,
+        PotionAngleAniData,
+        ItemTwoHandLeftAngleData,
+        PotionThrowAngleData,
+
+        End,
+    }
 
 }
 

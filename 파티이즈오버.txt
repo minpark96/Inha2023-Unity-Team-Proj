@@ -105,8 +105,10 @@ excute함수를 RPC-ALL를 쏴서 각 클라이언트를 움직인다
 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ행동트리ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 actor가 ai인지 확인하고 ai일 경우  actor에 행동트리 컴포넌트를 붙이는 방식
 ai일 경우 controller를 human 이 아니라 ai걸로 사용한다.
-행동트리 컴포넌트가 actor의 input을 누르고 controller_ai가 상시체크 돌리다 이를 실행하는 방식
-
+(행동트리 컴포넌트가 actor의 input을 누르고 controller_ai가 상시체크 돌리다 이를 실행하는 방식
+ai는 마스터클라이언트라 마스터로 커맨드를 보낼필요 없이 바로 RPC_ALL로 실행하면 될듯)보류
+플레이어는 상태패턴으로 관리하고 AI는 상태를 재끼고 트리로만하거나
+상태 내부에 트리를 하나씩 만들어서 조종
 
 시퀸스
 
@@ -152,6 +154,94 @@ Move
        	 RunCyclePoseLeg(Side.Right, rightLegPose);
 
 
+FootL
+FootR
+LegL2
+LegR2
+LegL1
+LegR1
+Hip
+Waist
+Chest
+Head
+UpperArmL
+UpperArmR
+ForeArmL
+ForeArmR
+FistL
+FistR
+
+        Zero,
+        ZeroReverse,
+        Forward,
+        Backward,
+        Up,
+        Down,
+        Right,
+        Left,
+
+
+
+AniData
+1. 행동갯수 리스트 
+{ 행동갯수 반복
+	움직일파츠data갯수
+	{움직일파츠갯수 반복
+		Standard Rigidbodies
+		ActionRigidbodies
+		Force Directions
+		Force Power Values
+	}
+}
+
+Angle Ani Data
+1. 토탈 data갯수
+{ 토탈data갯수 반복
+	내부data갯수
+	{내부data갯수 반복 //1말고는 안씀
+		Standard Rigidbodies
+		ActionRigidbodies
+		TargetDirection
+		Action Angle Directions
+		Target Angle Directions
+		Angle Stability
+		Angle Power Values
+	}
+}
+
+
+
+
+
+    public enum AniForceData
+    {
+        DropAniData,
+        RightPunchingAniData,
+        LeftPunchingAniData,
+        MoveForceJumpAniData,
+        HeadingAniData,
+        RSkillAniData,
+        ItemTwoHandAniData,
+        PotionReadyAniData,
+        PotionDrinkingAniData,
+        ItemTwoHandLeftAniData,
+        PotionThrowAniData,
+    }
+
+    public enum AniAngleData
+    {
+        RightPunchAniData,
+        LeftPunchAniData,
+        RightPunchResettingAniData,
+        LeftPunchResettingAniData,
+        MoveAngleJumpAniData,
+        HeadingAngleAniData,
+        RSkillAngleAniData,
+        ItemTwoHandAngleData,
+        PotionAngleAniData,
+        ItemTwoHandLeftAngleData,
+        PotionThrowAngleData,
+    }
 
 
 안한거ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
