@@ -63,7 +63,6 @@ public class PlayerCharacter : MonoBehaviour, ICharacterBase
     public ActorState lastActorState = ActorState.Default;
     public DebuffState debuffState = DebuffState.Default;
     public GrabState GrabState = GrabState.None;
-
     #endregion
 
     #region 변수
@@ -77,6 +76,7 @@ public class PlayerCharacter : MonoBehaviour, ICharacterBase
 
     #region 컴포넌트
 
+    public Grab Grab;
     Rigidbody _hip;
     BodyHandler _bodyHandler;
     
@@ -84,6 +84,7 @@ public class PlayerCharacter : MonoBehaviour, ICharacterBase
     void Awake()
     {
         _bodyHandler = GetComponent<BodyHandler>();
+        Grab = GetComponent<Grab>();
     }
 
     void Start()

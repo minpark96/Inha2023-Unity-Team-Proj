@@ -6,10 +6,12 @@ using Photon.Pun;
 public class PlayerInputHandler : MonoBehaviourPun
 {
     private Actor _actor;
+    private Moving _moving;
 
     private void Awake()
     {
         _actor = GetComponent<Actor>();
+        _moving = GetComponent<Moving>();
     }
 
     void Start()
@@ -42,7 +44,8 @@ public class PlayerInputHandler : MonoBehaviourPun
             return;
 
         _actor.PlayerController.OnKeyboardEvent_Move(evt);
-
+        // TODO : _moving.OnKeyboardEvent_Move(evt); 로 변경 예정
+        //_moving.OnKeyboardEvent_Move(evt);
         if (_actor.GrabState != Define.GrabState.EquipItem)
         {
             if(!((_actor.debuffState & DebuffState.Exhausted) == DebuffState.Exhausted))

@@ -15,7 +15,6 @@ public class StateMachine : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
         if(currentState != null)
@@ -29,6 +28,10 @@ public class StateMachine : MonoBehaviour
         if(currentState != null)
         {
             currentState.UpdatePhysics();
+            if(currentState.name == "Idle")
+            {
+
+            }
         }
     }
 
