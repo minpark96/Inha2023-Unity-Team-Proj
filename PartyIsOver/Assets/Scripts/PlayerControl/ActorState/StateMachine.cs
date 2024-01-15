@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class StateMachine : MonoBehaviour
 {
-    BaseState currentState;
+    private BaseState currentState;
+    public PlayerCharacter PlayerCharacter;
 
     void Start()
     {
@@ -28,10 +29,6 @@ public class StateMachine : MonoBehaviour
         if(currentState != null)
         {
             currentState.UpdatePhysics();
-            if(currentState.name == "Idle")
-            {
-
-            }
         }
     }
 

@@ -5,7 +5,9 @@ using UnityEngine;
 public class Idle : BaseState
 {
     float inputSpeed;
-    public Idle(MovementSM stateMachine, CameraControl cameraControl) : base("Idel", stateMachine) { }
+    public Idle(MovementSM stateMachine) : base("Idel", stateMachine) 
+    {
+    }
     public override void Enter()
     {
         base.Enter();

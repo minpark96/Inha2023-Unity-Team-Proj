@@ -79,6 +79,8 @@ public class PlayerCharacter : MonoBehaviour, ICharacterBase
     public Grab Grab;
     Rigidbody _hip;
     BodyHandler _bodyHandler;
+    public Transform CameraTransform;
+    public CameraControl CameraControl;
     
     #endregion
     void Awake()
@@ -121,7 +123,12 @@ public class PlayerCharacter : MonoBehaviour, ICharacterBase
         lastActorState = actorState;
     }
 
-    // << : Stand 상태로 전환 하면 천천히 멈추는 상태 / 
+    void LateUpdate()
+    {
+
+    }
+
+    // << : Stand 상태로 전환 하면 천천히 멈추는 상태 / 추후 Idle 에다가 넣을 예정
     public void Stand()
     {
         if (isStateChange)

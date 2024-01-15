@@ -1,30 +1,32 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditorInternal;
 using UnityEngine;
 
 public class Moving : BaseState
 {
     private MovementSM _sm;
-    private MovementSM msm;
-    private float inputspeed;
-    private Vector3 MoveInput;
+    //private PlayerCharacter _playerCharacter;
+    private float _inputspeed;
     private float _runSpeedOffset = 350f;
-    float RunSpeed = 1.5f;
-    float MaxSpeed = 2f;
-    Vector3 _moveDir;
+    private float _runSpeed = 1.5f;
+    private float _maxSpeed = 2f;
+    private Vector3 _moveInput;
+    private Vector3 _moveDir;
 
     //GetComponent를 못하니까 public으로 해야할 듯
 
     public Moving(MovementSM stateMachine) : base("Moving", stateMachine) 
     {
         _sm = (MovementSM)stateMachine;
+        
     }
     public override void Enter()
     {
         base.Enter();
         //TODO : 속도 0으로 설정
-        inputspeed = 0f;
+        _inputspeed = 0f;
     }
     public override void UpdateLogic()
     {
@@ -33,12 +35,12 @@ public class Moving : BaseState
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
 
-        MoveInput = new Vector3(horizontalInput, 0, verticalInput);
+        _moveInput = new Vector3(horizontalInput, 0, verticalInput);
 
-        if (MoveInput != Vector3.zero)
+        if (_moveInput != Vector3.zero)
         {
             // 키 입력이 감지되면 Moving 상태 유지
-            inputspeed = 1f;
+            _inputspeed = 1f;
         }
         else
         {
@@ -50,15 +52,15 @@ public class Moving : BaseState
     {
         base.UpdatePhysics();
 
-        Vector3 lookForward = new Vector3(msm.Camera.forward.x, 0f, msm.Camera.forward.z).normalized;
-        Vector3 lookRight = new Vector3(msm.Camera.right.x, 0f, msm.Camera.right.z).normalized;
-        _moveDir = lookForward * MoveInput.z + lookRight * MoveInput.x;
+        Vector3 lookForward = new Vector3(stateMachine.PlayerCharacter.CameraTransform.forward.x, 0f, stateMachine.PlayerCharacter.CameraTransform.forward.z).normalized;
+        Vector3 lookRight = new Vector3(stateMachine.PlayerCharacter.CameraTransform.right.x, 0f, stateMachine.PlayerCharacter.CameraTransform.right.z).normalized;
+        _moveDir = lookForward * _moveInput.z + lookRight * _moveInput.x;
 
-        Vector3 vel = MoveInput * _sm.speed;
+        Vector3 vel = _moveInput * _sm.speed;
         _sm.rigidbody.velocity = vel;
 
-        _sm.rigidbody.AddForce(_moveDir.normalized * RunSpeed * _runSpeedOffset * Time.deltaTime);
-        if (_sm.rigidbody.velocity.magnitude > MaxSpeed)
-            _sm.rigidbody.velocity = _sm.rigidbody.velocity.normalized * MaxSpeed;
+        _sm.rigidbody.AddForce(_moveDir.normalized * _runSpeed * _runSpeedOffset * Time.deltaTime);
+        if (_sm.rigidbody.velocity.magnitude > _maxSpeed)
+            _sm.rigidbody.velocity = _sm.rigidbody.velocity.normalized * _maxSpeed;
     }
 }

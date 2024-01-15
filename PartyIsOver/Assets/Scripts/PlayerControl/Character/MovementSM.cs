@@ -11,12 +11,9 @@ public class MovementSM : StateMachine
     //speed는 ScriptableObject 로 변경해서 받아야함
     public float speed = 4;
 
-    public Transform Camera;
-    public CameraControl CameraControl;
-
     private void Awake()
     {
-        idleState = new Idle(this, CameraControl);
+        idleState = new Idle(this);
         movingState = new Moving(this);
 
         Init();
@@ -24,13 +21,12 @@ public class MovementSM : StateMachine
 
     private void Start()
     {
-        Camera = CameraControl.CameraArm;
+
     }
 
     private void Init()
     {
-        if(CameraControl !=null)
-            CameraControl =GetComponent<CameraControl>();
+
     }
 
     protected override BaseState GetInitialState()
