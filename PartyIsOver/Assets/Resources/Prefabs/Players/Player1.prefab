@@ -11348,41 +11348,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Root: {fileID: 5878509405600198244}
-  BodyParts:
-  - {fileID: 4616642209230047273}
-  - {fileID: 4074442034416599437}
-  - {fileID: 6027537323537704771}
-  - {fileID: 6024570387246841957}
-  - {fileID: 6024579687958324800}
-  - {fileID: 6024558764439804542}
-  - {fileID: 5791695438189561170}
-  - {fileID: 6027716095811647498}
-  - {fileID: 6027726315639851353}
-  - {fileID: 6027291665667414568}
-  - {fileID: 6027468480375051584}
-  - {fileID: 6024610416201767259}
-  - {fileID: 6027179755378068457}
-  - {fileID: 6027138676993605620}
-  - {fileID: 5793545070783210249}
-  - {fileID: 5793437608505534346}
-  - {fileID: 6027670702515666106}
-  LeftFoot: {fileID: 4616642209230047273}
-  RightFoot: {fileID: 4074442034416599437}
-  LeftLeg: {fileID: 6027537323537704771}
-  RightLeg: {fileID: 6024570387246841957}
-  LeftThigh: {fileID: 6024579687958324800}
-  RightThigh: {fileID: 6024558764439804542}
-  Hip: {fileID: 5791695438189561170}
-  Waist: {fileID: 6027716095811647498}
-  Chest: {fileID: 6027726315639851353}
-  Head: {fileID: 6027291665667414568}
-  LeftArm: {fileID: 6027468480375051584}
-  RightArm: {fileID: 6024610416201767259}
-  LeftForearm: {fileID: 6027179755378068457}
-  RightForearm: {fileID: 6027138676993605620}
-  LeftHand: {fileID: 5793545070783210249}
-  RightHand: {fileID: 5793437608505534346}
-  Ball: {fileID: 6027670702515666106}
+  BodyParts: []
 --- !u!114 &5878509405600198232
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11395,40 +11361,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 163aac5c61a559942a4c0ff8013e0a41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DropAniData:
-  - StandardRigidbodies:
-    - {fileID: 5856347132035830517}
-    - {fileID: 5856347132035830517}
-    ActionRigidbodies:
-    - {fileID: 5853449777567680612}
-    - {fileID: 4074442034416599436}
-    ForceDirections: 0200000002000000
-    ForcePowerValues:
-    - 450
-    - 450
-  - StandardRigidbodies:
-    - {fileID: 5856347132035830517}
-    - {fileID: 5856347132035830517}
-    ActionRigidbodies:
-    - {fileID: 5855912155739742608}
-    - {fileID: 4616642209230047272}
-    ForceDirections: 0200000002000000
-    ForcePowerValues:
-    - 450
-    - 450
-  - StandardRigidbodies:
-    - {fileID: 5856379624502544924}
-    - {fileID: 5856379624502544924}
-    - {fileID: 5856379624502544924}
-    ActionRigidbodies:
-    - {fileID: 5856379624502544924}
-    - {fileID: 5855867809452644878}
-    - {fileID: 5855901305319867200}
-    ForceDirections: 030000000300000003000000
-    ForcePowerValues:
-    - 50
-    - 50
-    - 50
   RightPunchingAniData:
   - StandardRigidbodies:
     - {fileID: 5856729462922818502}

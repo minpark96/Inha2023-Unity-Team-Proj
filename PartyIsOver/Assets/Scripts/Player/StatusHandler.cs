@@ -87,7 +87,7 @@ public class StatusHandler : MonoBehaviourPun
         actor = transform.GetComponent<Actor>();
         _maxSpeed = actor.PlayerController.RunSpeed;
 
-        actor.BodyHandler.BodySetup();
+        //actor.BodyHandler.BodySetup();
 
         for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
         {
@@ -101,7 +101,6 @@ public class StatusHandler : MonoBehaviourPun
 
     private void LateUpdate()
     {
-        Debug.Log("DrunkTime: " + _drunkTime);
 
         // 지침 디버프 활성화/비활성화
         if (PhotonNetwork.LocalPlayer.IsMasterClient)
@@ -362,9 +361,9 @@ public class StatusHandler : MonoBehaviourPun
         photonView.RPC("ChangeStateMachines", RpcTarget.All, _stunTime);
         //StartCoroutine(ResetBodySpring());
         actor.BodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
-        actor.BodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+        actor.BodyHandler.LeftForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
         actor.BodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
-        actor.BodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+        actor.BodyHandler.RightForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
     }
 
     [PunRPC]

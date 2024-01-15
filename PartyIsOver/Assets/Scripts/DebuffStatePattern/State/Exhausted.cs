@@ -26,9 +26,9 @@ public class Exhausted : MonoBehaviourPun, IDebuffState
 
         InstantiateEffect("Effects/Wet");
 
-        angularXDrive = MyActor.BodyHandler.BodyParts[(int)Define.BodyPart.Head].PartJoint.angularXDrive;
+        angularXDrive = MyActor.BodyHandler.Head.PartJoint.angularXDrive;
         angularXDrive.positionSpring = 0f;
-        MyActor.BodyHandler.BodyParts[(int)Define.BodyPart.Head].PartJoint.angularXDrive = angularXDrive;
+        MyActor.BodyHandler.Head.PartJoint.angularXDrive = angularXDrive;
     }
 
     public void UpdateState()
@@ -45,7 +45,7 @@ public class Exhausted : MonoBehaviourPun, IDebuffState
         RemoveObject("Wet");
 
         angularXDrive.positionSpring = _xPosSpringAry[0];
-        MyActor.BodyHandler.BodyParts[(int)Define.BodyPart.Head].PartJoint.angularXDrive = angularXDrive;
+        MyActor.BodyHandler.Head.PartJoint.angularXDrive = angularXDrive;
         MyActor.InvokeStatusChangeEvent();
 
     }

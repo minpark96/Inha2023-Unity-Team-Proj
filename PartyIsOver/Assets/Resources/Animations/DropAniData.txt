@@ -2,41 +2,41 @@ ActionCount : 3
 
 PartCount : 2
 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
-StandardPart :Hip
-ActionPart :LegR1
-ForceDirection :Forward
-ForcePowerValues : 4501
+StandardPart : Hip
+ActionPart : LegUpperR
+ForceDirection : Forward
+ForcePowerValues : 450
 
 StandardPart : Hip
 ActionPart : FootR
 ForceDirection : Forward
-ForcePowerValues : 4501
+ForcePowerValues : 450
 
 PartCount : 2
 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
-StandardPart :Hip
-ActionPart :LegL1
-ForceDirection :Forward
-ForcePowerValues : 4501
+StandardPart : Hip
+ActionPart : LegUpperL
+ForceDirection : Forward
+ForcePowerValues : 450
 
 StandardPart : Hip
 ActionPart : FootL
 ForceDirection : Forward
-ForcePowerValues : 4501
+ForcePowerValues : 450
 
 PartCount : 3
 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 StandardPart : Head
 ActionPart : Head
 ForceDirection : Backward
-ForcePowerValues : 501
+ForcePowerValues : 50
 
 StandardPart : Head
 ActionPart : Chest
 ForceDirection : Backward
-ForcePowerValues : 501
+ForcePowerValues : 50
 
 StandardPart : Head
 ActionPart : Waist
 ForceDirection : Backward
-ForcePowerValues : 501
+ForcePowerValues : 50

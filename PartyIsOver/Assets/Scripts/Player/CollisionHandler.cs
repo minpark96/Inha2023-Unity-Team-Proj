@@ -164,8 +164,8 @@ public class CollisionHandler : MonoBehaviourPun
         if (transform == actor.BodyHandler.RightArm.transform ||
             transform == actor.BodyHandler.LeftArm.transform)
             damage *= _armMultiple;
-        else if (transform == actor.BodyHandler.RightForearm.transform ||
-            transform == actor.BodyHandler.LeftForearm.transform)
+        else if (transform == actor.BodyHandler.RightForeArm.transform ||
+            transform == actor.BodyHandler.LeftForeArm.transform)
             damage *= _armMultiple;
         else if (transform == actor.BodyHandler.RightHand.transform ||
             transform == actor.BodyHandler.LeftHand.transform)

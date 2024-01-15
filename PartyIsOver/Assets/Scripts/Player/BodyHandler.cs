@@ -10,73 +10,53 @@ public class BodyHandler : MonoBehaviourPun
     public Transform Root;
     public List<BodyPart> BodyParts = new List<BodyPart>(17);
 
-    public BodyPart LeftFoot;
-    public BodyPart RightFoot;
-    public BodyPart LeftLeg;
-    public BodyPart RightLeg;
-    public BodyPart LeftThigh;
-    public BodyPart RightThigh;
+    public BodyPart LeftFoot => GetBodyPart(Define.BodyPart.FootL);
+    public BodyPart RightFoot => GetBodyPart(Define.BodyPart.FootR);
+    public BodyPart LeftLeg => GetBodyPart(Define.BodyPart.LegLowerL);
+    public BodyPart RightLeg => GetBodyPart(Define.BodyPart.LegLowerR);
+    public BodyPart LeftThigh => GetBodyPart(Define.BodyPart.LegUpperL);
+    public BodyPart RightThigh => GetBodyPart(Define.BodyPart.LegUpperR);
 
-    public BodyPart Hip;
-    public BodyPart Waist;
-    public BodyPart Chest;
-    public BodyPart Head;
+    public BodyPart Hip => GetBodyPart(Define.BodyPart.Hip);
+    public BodyPart Waist => GetBodyPart(Define.BodyPart.Waist);
+    public BodyPart Chest => GetBodyPart(Define.BodyPart.Chest);
+    public BodyPart Head => GetBodyPart(Define.BodyPart.Head);
 
-    public BodyPart LeftArm;
-    public BodyPart RightArm;
-    public BodyPart LeftForearm;
-    public BodyPart RightForearm;
-    public BodyPart LeftHand;
-    public BodyPart RightHand;
 
-    public BodyPart Ball;
+    public BodyPart LeftArm => GetBodyPart(Define.BodyPart.LeftArm);
+    public BodyPart RightArm => GetBodyPart(Define.BodyPart.RightArm);
+    public BodyPart LeftForeArm => GetBodyPart(Define.BodyPart.LeftForeArm);
+    public BodyPart RightForeArm => GetBodyPart(Define.BodyPart.RightForeArm);
+    public BodyPart LeftHand => GetBodyPart(Define.BodyPart.LeftHand);
+    public BodyPart RightHand => GetBodyPart(Define.BodyPart.RightHand);
 
-    //public Transform Spring;
+    public BodyPart Ball => GetBodyPart(Define.BodyPart.Ball);
 
-    private bool _isSetting = false;
 
-    public void BodySetup()
+    private void Awake()
     {
-        if (_isSetting)
-            return;
-
-        _isSetting = true;
-
-        if (BodyParts.Count == 0 )
+        if(BodyParts.Count ==0)
         {
-            BodyParts.Add(LeftFoot);
-            BodyParts.Add(RightFoot);
-
-            BodyParts.Add(LeftLeg);
-            BodyParts.Add(RightLeg);
-
-            BodyParts.Add(LeftThigh);
-            BodyParts.Add(RightThigh);
-
-            BodyParts.Add(Hip);
-            BodyParts.Add(Waist);
-            BodyParts.Add(Chest);
-            BodyParts.Add(Head);
-
-            BodyParts.Add(LeftArm);
-            BodyParts.Add(RightArm);
-
-            BodyParts.Add(LeftForearm);
-            BodyParts.Add(RightForearm);
-
-            BodyParts.Add(LeftHand);
-            BodyParts.Add(RightHand);
-
-            BodyParts.Add(Ball);
+            foreach (Transform child in transform)
+            {
+                var component = child.GetComponent<BodyPart>();
+                if (component != null)
+                {
+                    BodyParts.Add(component);
+                }
+            }
         }
+
 
         foreach (BodyPart part in BodyParts)
         {
-            part.PartRigidbody.maxAngularVelocity = 15f;
-            part.PartRigidbody.solverIterations = 12;
-            part.PartRigidbody.solverVelocityIterations = 12;
-            part.GetComponent<PhotonRigidbodyView>().m_SynchronizeVelocity = true;
-            part.GetComponent<PhotonRigidbodyView>().m_SynchronizeAngularVelocity = true;
+            part.PartSetup();
         }
     }
+
+    private BodyPart GetBodyPart(Define.BodyPart part)
+    {
+        return BodyParts[(int)part];
+    }
 }
+

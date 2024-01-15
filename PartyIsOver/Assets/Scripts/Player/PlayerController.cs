@@ -9,6 +9,7 @@ using Photon.Realtime;
 using Unity.VisualScripting;
 using System.IO;
 using System;
+using UnityEditor.Experimental.GraphView;
 
 [System.Serializable]
 public class AniFrameData
@@ -56,7 +57,6 @@ public class AniAngleData
 public class PlayerController : MonoBehaviourPun
 {
     [Header("AnimationControll")]
-    [SerializeField]    public AniFrameData[] DropAniData;
     [SerializeField]    public AniFrameData[] RightPunchingAniData;
     [SerializeField]    public AniFrameData[] LeftPunchingAniData;
     [SerializeField]    public AniFrameData[] MoveForceJumpAniData;
@@ -80,80 +80,91 @@ public class PlayerController : MonoBehaviourPun
     [SerializeField]    public AniAngleData[] ItemTwoHandLeftAngleData;
     [SerializeField]    public AniAngleData[] PotionThrowAngleData;
 
-
-    List<AniFrameData> aniFrameDataTemp = new List<AniFrameData>();
+    Dictionary<string, AniFrameData[]> frameDataLists = new Dictionary<string, AniFrameData[]>();
+    Dictionary<string, AniAngleData[]> angleDataLists = new Dictionary<string, AniAngleData[]>();
 
     Rigidbody StringToRigid(string text)
     {
         Rigidbody rb = new Rigidbody();
-        switch(text)
+        Define.BodyPart part;
+        if(Enum.TryParse(text, out part))
         {
-            case ("FootL"):
-                rb = _bodyHandler.LeftFoot.PartRigidbody; break;
-            case ("FootR"):
-                rb = _bodyHandler.RightFoot.PartRigidbody; break;
-            case ("LegL2"):
-                rb = _bodyHandler.LeftLeg.PartRigidbody; break;
-            case ("LegR2"):
-                rb = _bodyHandler.RightLeg.PartRigidbody; break;
-            case ("LegL1"):
-                rb = _bodyHandler.LeftThigh.PartRigidbody; break;
-            case ("LegR1"):
-                rb = _bodyHandler.RightThigh.PartRigidbody; break;
-            case ("Hip"):
-                rb = _bodyHandler.Hip.PartRigidbody; break;
-            case ("Waist"):
-                rb = _bodyHandler.Waist.PartRigidbody; break;
-            case ("Chest"):
-                rb = _bodyHandler.Chest.PartRigidbody; break;
-            case ("Head"):
-                rb = _bodyHandler.Head.PartRigidbody; break;
-            case ("UpperArmL"):
-                rb = _bodyHandler.LeftArm.PartRigidbody; break;
-            case ("UpperArmR"):
-                rb = _bodyHandler.RightArm.PartRigidbody; break;
-            case ("FistL"):
-                rb = _bodyHandler.LeftHand.PartRigidbody; break;
-            case ("FistR"):
-                rb = _bodyHandler.RightHand.PartRigidbody; break;
-            default:
-                Debug.Log("애니메이션 파츠 불러오기 에러"); break;
+            switch (part)
+            {
+                case Define.BodyPart.FootL:
+                    rb = _bodyHandler.LeftFoot.PartRigidbody; break;
+                case Define.BodyPart.FootR:
+                    rb = _bodyHandler.RightFoot.PartRigidbody; break;
+                case Define.BodyPart.LegLowerL:
+                    rb = _bodyHandler.LeftLeg.PartRigidbody; break;
+                case Define.BodyPart.LegLowerR:
+                    rb = _bodyHandler.RightLeg.PartRigidbody; break;
+                case Define.BodyPart.LegUpperL:
+                    rb = _bodyHandler.LeftThigh.PartRigidbody; break;
+                case Define.BodyPart.LegUpperR:
+                    rb = _bodyHandler.RightThigh.PartRigidbody; break;
+                case Define.BodyPart.Hip:
+                    rb = _bodyHandler.Hip.PartRigidbody; break;
+                case Define.BodyPart.Waist:
+                    rb = _bodyHandler.Waist.PartRigidbody; break;
+                case Define.BodyPart.Chest:
+                    rb = _bodyHandler.Chest.PartRigidbody; break;
+                case Define.BodyPart.Head:
+                    rb = _bodyHandler.Head.PartRigidbody; break;
+                case Define.BodyPart.LeftArm:
+                    rb = _bodyHandler.LeftArm.PartRigidbody; break;
+                case Define.BodyPart.RightArm:
+                    rb = _bodyHandler.RightArm.PartRigidbody; break;
+                case Define.BodyPart.LeftHand:
+                    rb = _bodyHandler.LeftHand.PartRigidbody; break;
+                case Define.BodyPart.RightHand:
+                    rb = _bodyHandler.RightHand.PartRigidbody; break;
+                default:
+                    Debug.Log("애니메이션 파츠 불러오기 에러1");
+                    break;
+            }
         }
+        else
+            Debug.Log("애니메이션 파츠 불러오기 에러2" + text);
         return rb;
     }
     ForceDirection StringToForceDir(string text)
     {
         ForceDirection dir = new ForceDirection();
-        switch (text)
+        Define.AnimDirection eDirection;
+        if (Enum.TryParse(text, out eDirection))
         {
-            case ("Zero"):
-                dir = ForceDirection.Zero; break;
-            case ("ZeroReverse"):
-                dir = ForceDirection.ZeroReverse; break;
-            case ("Forward"):
-                dir = ForceDirection.Forward; break;
-            case ("Backward"):
-                dir = ForceDirection.Backward; break;
-            case ("Up"):
-                dir = ForceDirection.Up; break;
-            case ("Down"):
-                dir = ForceDirection.Down; break;
-            case ("Right"):
-                dir = ForceDirection.Right; break;
-            case ("Left"):
-                dir = ForceDirection.Left; break;
-            default:
-                Debug.Log("포스방향 불러오기 에러"); break;
+            switch (eDirection)
+            {
+                case Define.AnimDirection.Zero:
+                    dir = ForceDirection.Zero; break;
+                case Define.AnimDirection.ZeroReverse:
+                    dir = ForceDirection.ZeroReverse; break;
+                case Define.AnimDirection.Forward:
+                    dir = ForceDirection.Forward; break;
+                case Define.AnimDirection.Backward:
+                    dir = ForceDirection.Backward; break;
+                case Define.AnimDirection.Up:
+                    dir = ForceDirection.Up; break;
+                case Define.AnimDirection.Down:
+                    dir = ForceDirection.Down; break;
+                case Define.AnimDirection.Right:
+                    dir = ForceDirection.Right; break;
+                case Define.AnimDirection.Left:
+                    dir = ForceDirection.Left; break;
+                default:
+                    Debug.Log("포스방향 불러오기 에러1"); break;
+            }
         }
+        else
+            Debug.Log("포스방향 불러오기 에러2"+text);
+
         return dir;
     }
-    Dictionary<string, AniFrameData[]> frameDataLists = new Dictionary<string, AniFrameData[]>();
-    Dictionary<string, AniAngleData[]> angleDataLists = new Dictionary<string, AniAngleData[]>();
 
 
     void AnimationsSetup()
     {
-        frameDataLists[Define.AniFrameData.DropAniData.ToString()] = DropAniData;
         frameDataLists[Define.AniFrameData.RightPunchingAniData.ToString()] = RightPunchingAniData;
         frameDataLists[Define.AniFrameData.LeftPunchingAniData.ToString()] = LeftPunchingAniData;
         frameDataLists[Define.AniFrameData.MoveForceJumpAniData.ToString()] = MoveForceJumpAniData;
@@ -195,9 +206,14 @@ public class PlayerController : MonoBehaviourPun
         {
             string filePath = $"Animations/{frameDataNames[i]}";
             TextAsset textAsset = Resources.Load<TextAsset>(filePath);
-            aniFrameDataTemp.Clear();
             //리스트들 클리어해야함
-            
+            partCount.Clear();
+            standardRb.Clear();
+            actionRb.Clear();
+            forceDir.Clear();
+            forceVal.Clear();
+            int index = 0;
+
             if (textAsset != null)
             {
                 string[] lines = textAsset.text.Split('\n');
@@ -209,20 +225,25 @@ public class PlayerController : MonoBehaviourPun
                         string key = parts[0].Trim();
                         string value = parts[1].Trim();
 
-                        if (key == "ActionCount")
+                        Define.AnimFrameValue frameValue;
+                        Enum.TryParse(key, out frameValue);
+
+                        if (frameValue == Define.AnimFrameValue.ActionCount)
                             actionCount = int.Parse(value);
-                        else if (key == "PartCount")
+                        else if (frameValue == Define.AnimFrameValue.PartCount)
                             partCount.Add(int.Parse(value));
-                        else if (key == "StandardPart")
+                        else if (frameValue == Define.AnimFrameValue.StandardPart)
                             standardRb.Add(StringToRigid(value));
-                        else if (key == "ActionPart")
+                        else if (frameValue == Define.AnimFrameValue.ActionPart)
                             actionRb.Add(StringToRigid(value));
-                        else if (key == "ForceDirection")
+                        else if (frameValue == Define.AnimFrameValue.ForceDirection)
                             forceDir.Add(StringToForceDir(value));
-                        else if (key == "ForcePowerValues")
+                        else if (frameValue == Define.AnimFrameValue.ForcePowerValues)
                             forceVal.Add(int.Parse(value));
                     }
                 }
+
+                AniFrameData[] datas = new AniFrameData[actionCount];
 
                 for (int j = 0; j < actionCount; j++)
                 {
@@ -234,18 +255,15 @@ public class PlayerController : MonoBehaviourPun
 
                     for (int k = 0; k < partCount[j]; k++)
                     {
-                        data.StandardRigidbodies[k] = standardRb[k];
-                        data.ActionRigidbodies[k] = actionRb[k];
-                        data.ForceDirections[k] = forceDir[k];
-                        data.ForcePowerValues[k] = forceVal[k];
-
+                        data.StandardRigidbodies[k] = standardRb[index];
+                        data.ActionRigidbodies[k] = actionRb[index];
+                        data.ForceDirections[k] = forceDir[index];
+                        data.ForcePowerValues[k] = forceVal[index];
+                        index++;
                     }
-                    aniFrameDataTemp.Add(data);
-
-                    frameDataLists[frameDataNames[i].ToString()][j] = data;
+                    datas[j] = data;
                 }
-
-
+                frameDataLists[frameDataNames[i].ToString()] = datas;
             }
             else
                 Debug.LogError("File not found: " + filePath);
@@ -364,8 +382,6 @@ public class PlayerController : MonoBehaviourPun
 
     void Start()
     {
-        _bodyHandler.BodySetup();
-
         if (photonView.IsMine)
             _cameraArm = _actor.CameraControl.CameraArm;
     }
@@ -376,6 +392,7 @@ public class PlayerController : MonoBehaviourPun
     void Init()
     {
         _bodyHandler = GetComponent<BodyHandler>();
+        //_bodyHandler.BodySetup();
         _actor = GetComponent<Actor>();
         Transform SoundSourceTransform = transform.Find("GreenHip");
         _audioSource = SoundSourceTransform.GetComponent<AudioSource>();
@@ -1085,7 +1102,7 @@ public class PlayerController : MonoBehaviourPun
         Transform partTransform = _bodyHandler.Hip.transform;
         if (!isGrounded)
         {
-            for (int i = 0; i < DropAniData.Length; i++)
+            for (int i = 0; i < frameDataLists[Define.AniFrameData.DropAniData.ToString()].Length; i++)
             {
                 _actor.StatusHandler.StartCoroutine("ResetBodySpring");
 
@@ -1096,8 +1113,8 @@ public class PlayerController : MonoBehaviourPun
                     _bodyHandler.RightThigh.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
                     _bodyHandler.RightLeg.PartInteractable.damageModifier = InteractableObject.Damage.DropKick; //데미지
                     Vector3 dir = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
-                    AniForce(DropAniData, i, dir);
-                    photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.RightLeg, true);
+                    AniForce(frameDataLists[Define.AniFrameData.DropAniData.ToString()], i, dir);
+                    photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LegLowerR, true);
                 }
                 else if (i == 1)
                 {
@@ -1106,12 +1123,12 @@ public class PlayerController : MonoBehaviourPun
                     _bodyHandler.LeftThigh.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
                     _bodyHandler.LeftLeg.PartInteractable.damageModifier = InteractableObject.Damage.DropKick; //데미지
                     Vector3 dir = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
-                    AniForce(DropAniData, i, dir);
-                    photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LeftLeg, true);
+                    AniForce(frameDataLists[Define.AniFrameData.DropAniData.ToString()], i, dir);
+                    photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LegLowerL, true);
                 }
                 else
                 {
-                    AniForce(DropAniData, i);
+                    AniForce(frameDataLists[Define.AniFrameData.DropAniData.ToString()], i);
                 }
             }
 
@@ -1119,8 +1136,8 @@ public class PlayerController : MonoBehaviourPun
             _actor.StatusHandler.StartCoroutine("RestoreBodySpring", 1f);
             _bodyHandler.LeftLeg.PartInteractable.damageModifier = InteractableObject.Damage.Default;
             _bodyHandler.RightLeg.PartInteractable.damageModifier = InteractableObject.Damage.Default;
-            photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LeftLeg, false);
-            photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.RightLeg, false);
+            photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LegLowerL, false);
+            photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LegLowerR, false);
         }
         yield return null;
     }
@@ -1237,7 +1254,7 @@ public class PlayerController : MonoBehaviourPun
             else
                 _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
             _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
-            _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+            _bodyHandler.LeftForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
 
             photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LeftHand, true);
         }
@@ -1255,7 +1272,7 @@ public class PlayerController : MonoBehaviourPun
             else
                 _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
             _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
-            _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+            _bodyHandler.RightForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
 
             photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.RightHand, true);
         }
@@ -1284,7 +1301,7 @@ public class PlayerController : MonoBehaviourPun
         Transform transform2 = _bodyHandler.LeftHand.transform;
         _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
         _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
-        _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+        _bodyHandler.LeftForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
 
         if (side == Side.Right)
         {
@@ -1292,7 +1309,7 @@ public class PlayerController : MonoBehaviourPun
             transform2 = _bodyHandler.RightHand.transform;
             _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
             _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
-            _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+            _bodyHandler.RightForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
         }
 
         for (int i = 0; i < aniFrameDatas.Length; i++)
@@ -1312,7 +1329,7 @@ public class PlayerController : MonoBehaviourPun
         {
             _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
             _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
-            _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+            _bodyHandler.LeftForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
 
             photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LeftHand, false);
         }
@@ -1321,7 +1338,7 @@ public class PlayerController : MonoBehaviourPun
             aniAngleDatas = RightPunchResettingAniData;
             _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
             _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
-            _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+            _bodyHandler.RightForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
 
             photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.RightHand, false);
         }
@@ -1370,6 +1387,8 @@ public class PlayerController : MonoBehaviourPun
             }
         }
         
+
+        //방향서치,상태에서 하는게 아니라 _moveDir만 actor등에서 알아서 업데이트 하면서 가지고 있어야함
         Vector3 lookForward = new Vector3(_cameraArm.forward.x, 0f, _cameraArm.forward.z).normalized;
         Vector3 lookRight = new Vector3(_cameraArm.right.x, 0f, _cameraArm.right.z).normalized;
         _moveDir = lookForward * MoveInput.z + lookRight * MoveInput.x;
@@ -1384,10 +1403,13 @@ public class PlayerController : MonoBehaviourPun
         AlignToVector(_bodyHandler.Hip.PartRigidbody, -_bodyHandler.Hip.transform.up, _moveDir, 0.1f, 8f * _applyedForce);
         AlignToVector(_bodyHandler.Hip.PartRigidbody, _bodyHandler.Hip.transform.forward, Vector3.up, 0.1f, 8f * _applyedForce);
 
-
+        //Fall상태로 빼야 할수도
         _hips.AddForce(_moveDir.normalized * RunSpeed * _runSpeedOffset * Time.deltaTime * 0.5f);
+
         if (_hips.velocity.magnitude > MaxSpeed)
             _hips.velocity = _hips.velocity.normalized * MaxSpeed;
+
+        //상태나가기
         if (isGrounded)
         {
             _actor.actorState = Actor.ActorState.Stand;
@@ -1556,17 +1578,17 @@ public class PlayerController : MonoBehaviourPun
         {
             case Side.Left:
                 transform = _bodyHandler.LeftArm.transform;
-                transform2 = _bodyHandler.LeftForearm.transform;
+                transform2 = _bodyHandler.LeftForeArm.transform;
                 rigidbody = _bodyHandler.LeftArm.PartRigidbody;
-                rigidbody2 = _bodyHandler.LeftForearm.PartRigidbody;
+                rigidbody2 = _bodyHandler.LeftForeArm.PartRigidbody;
                 rigidbody3 = _bodyHandler.LeftHand.PartRigidbody;
                 vector = _bodyHandler.Chest.transform.right;
                 break;
             case Side.Right:
                 transform = _bodyHandler.RightArm.transform;
-                transform2 = _bodyHandler.RightForearm.transform;
+                transform2 = _bodyHandler.RightForeArm.transform;
                 rigidbody = _bodyHandler.RightArm.PartRigidbody;
-                rigidbody2 = _bodyHandler.RightForearm.PartRigidbody;
+                rigidbody2 = _bodyHandler.RightForeArm.PartRigidbody;
                 rigidbody3 = _bodyHandler.RightHand.PartRigidbody;
                 vector = -_bodyHandler.Chest.transform.right;
                 break;
@@ -1684,33 +1706,33 @@ public class PlayerController : MonoBehaviourPun
 
         switch((Define.BodyPart)bodyPart)
         {
-            case Define.BodyPart.LeftFoot:
+            case Define.BodyPart.FootL:
                 if (isAttack)
                     this._bodyHandler.LeftFoot.PartInteractable.damageModifier = InteractableObject.Damage.DropKick;
                 else
                     this._bodyHandler.LeftFoot.PartInteractable.damageModifier = InteractableObject.Damage.Default;
                 break;
-            case Define.BodyPart.RightFoot:
+            case Define.BodyPart.FootR:
                 if (isAttack)
                     this._bodyHandler.RightFoot.PartInteractable.damageModifier = InteractableObject.Damage.DropKick;
                 else
                     this._bodyHandler.RightFoot.PartInteractable.damageModifier = InteractableObject.Damage.Default;
                 break;
-            case Define.BodyPart.LeftLeg:
+            case Define.BodyPart.LegLowerL:
                 if (isAttack)
                     this._bodyHandler.LeftLeg.PartInteractable.damageModifier = InteractableObject.Damage.DropKick;
                 else
                     this._bodyHandler.LeftLeg.PartInteractable.damageModifier = InteractableObject.Damage.Default;
                 break;
-            case Define.BodyPart.RightLeg: 
+            case Define.BodyPart.LegLowerR: 
                 if (isAttack)
                     this._bodyHandler.RightLeg.PartInteractable.damageModifier = InteractableObject.Damage.DropKick;
                 else
                     this._bodyHandler.RightLeg.PartInteractable.damageModifier = InteractableObject.Damage.Default;
                 break;
-            case Define.BodyPart.LeftThigh: 
+            case Define.BodyPart.LegUpperL: 
                 break;
-            case Define.BodyPart.RightThigh: 
+            case Define.BodyPart.LegUpperR: 
                 break;
             case Define.BodyPart.Hip: 
                 break;
@@ -1809,7 +1831,7 @@ public class PlayerController : MonoBehaviourPun
         Transform transform2 = _bodyHandler.LeftHand.transform;
         _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
         _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
-        _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+        _bodyHandler.LeftForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
 
         if (side == Side.Right)
         {
@@ -1817,7 +1839,7 @@ public class PlayerController : MonoBehaviourPun
             transform2 = _bodyHandler.RightHand.transform;
             _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
             _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
-            _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+            _bodyHandler.RightForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
         }
 
         for (int i = 0; i < itemTwoHands.Length; i++)
@@ -1834,14 +1856,14 @@ public class PlayerController : MonoBehaviourPun
         AniAngleData[] itemTwoHands = ItemTwoHandLeftAngleData;
         _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
         _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
-        _bodyHandler.LeftForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+        _bodyHandler.LeftForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
 
         if (side == Side.Right)
         {
             itemTwoHands = ItemTwoHandAngleData;
             _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
             _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
-            _bodyHandler.RightForearm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+            _bodyHandler.RightForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
         }
 
         for (int i = 0; i < itemTwoHands.Length; i++)

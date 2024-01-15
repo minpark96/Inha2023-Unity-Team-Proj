@@ -77,10 +77,10 @@ public class Burn : MonoBehaviourPun , IDebuffState
     }
     public void TransferDebuffToPlayer(int DamageType)
     {
-        ChangeDamageModifier((int)Define.BodyPart.LeftFoot, DamageType);
-        ChangeDamageModifier((int)Define.BodyPart.RightFoot, DamageType);
-        ChangeDamageModifier((int)Define.BodyPart.LeftLeg, DamageType);
-        ChangeDamageModifier((int)Define.BodyPart.RightLeg, DamageType);
+        ChangeDamageModifier((int)Define.BodyPart.FootL, DamageType);
+        ChangeDamageModifier((int)Define.BodyPart.FootR, DamageType);
+        ChangeDamageModifier((int)Define.BodyPart.LegLowerL, DamageType);
+        ChangeDamageModifier((int)Define.BodyPart.LegLowerR, DamageType);
         ChangeDamageModifier((int)Define.BodyPart.Head, DamageType);
         ChangeDamageModifier((int)Define.BodyPart.LeftHand, DamageType);
         ChangeDamageModifier((int)Define.BodyPart.RightHand, DamageType);
@@ -89,21 +89,21 @@ public class Burn : MonoBehaviourPun , IDebuffState
     {
         switch ((Define.BodyPart)bodyPart)
         {
-            case Define.BodyPart.LeftFoot:
+            case Define.BodyPart.FootL:
                 MyActor.BodyHandler.LeftFoot.PartInteractable.damageModifier = (InteractableObject.Damage)DamageType;
                 break;
-            case Define.BodyPart.RightFoot:
+            case Define.BodyPart.FootR:
                 MyActor.BodyHandler.RightFoot.PartInteractable.damageModifier = (InteractableObject.Damage)DamageType;
                 break;
-            case Define.BodyPart.LeftLeg:
+            case Define.BodyPart.LegLowerL:
                 MyActor.BodyHandler.LeftLeg.PartInteractable.damageModifier = (InteractableObject.Damage)DamageType;
                 break;
-            case Define.BodyPart.RightLeg:
+            case Define.BodyPart.LegLowerR:
                 MyActor.BodyHandler.RightLeg.PartInteractable.damageModifier = (InteractableObject.Damage)DamageType;
                 break;
-            case Define.BodyPart.LeftThigh:
+            case Define.BodyPart.LegUpperL:
                 break;
-            case Define.BodyPart.RightThigh:
+            case Define.BodyPart.LegUpperR:
                 break;
             case Define.BodyPart.Hip:
                 break;

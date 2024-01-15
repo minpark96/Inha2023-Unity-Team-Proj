@@ -17,7 +17,7 @@ public class PlayerInputHandler : MonoBehaviourPun
         if (_actor.PlayerController.isAI)
             return;
 
-        _actor.BodyHandler.BodySetup();
+        //_actor.BodyHandler.BodySetup();
                                                   
         Managers.Input.MouseAction -= OnMouseEvent;
         Managers.Input.MouseAction += OnMouseEvent;

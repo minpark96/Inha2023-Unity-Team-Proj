@@ -9,12 +9,12 @@ public class Define
 
     public enum BodyPart
     {
-        LeftFoot,
-        RightFoot,
-        LeftLeg,
-        RightLeg,
-        LeftThigh,
-        RightThigh,
+        FootL,
+        FootR,
+        LegLowerL,
+        LegLowerR,
+        LegUpperL,
+        LegUpperR,
         Hip,
         Waist,
         Chest,
@@ -138,10 +138,10 @@ public class Define
 
     public enum Layer
     {
-        Ground=9,
+        Ground = 9,
         Item = 10,
         ClimbObject = 11,
-        InteractableObject =12,
+        InteractableObject = 12,
         TriggerObject = 13,
         IceFloor = 14,
 
@@ -227,7 +227,7 @@ public class Define
         PotionDrinkingAniData,
         ItemTwoHandLeftAniData,
         PotionThrowAniData,
-        
+
         End,
     }
 
@@ -248,6 +248,27 @@ public class Define
         End,
     }
 
+    public enum AnimDirection
+    {
+        Zero,
+        ZeroReverse,
+        Forward,
+        Backward,
+        Up,
+        Down,
+        Right,
+        Left,
+    }
+
+    public enum AnimFrameValue
+    {
+        ActionCount,
+        PartCount,
+        StandardPart,
+        ActionPart,
+        ForceDirection,
+        ForcePowerValues,
+    }
 }
 
 

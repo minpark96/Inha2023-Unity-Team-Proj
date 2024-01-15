@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,13 +12,34 @@ public class BodyPart : MonoBehaviour
     public ConfigurableJoint PartJoint;
     public Transform PartTransform;
 
-    private void Awake()
+    public void PartSetup()
     {
-        _partCollisionHandler = gameObject.AddComponent<CollisionHandler>();
+        _partCollisionHandler = GetOrAddComponent<CollisionHandler>();
+        PartRigidbody = GetOrAddComponent<Rigidbody>();
+        PartInteractable = GetOrAddComponent<InteractableObject>();
+        PartJoint = GetOrAddComponent<ConfigurableJoint>();
+        PartTransform = transform;
 
-        PartRigidbody = GetComponent<Rigidbody>();
-        PartInteractable = gameObject.AddComponent<InteractableObject>();
-        PartJoint = GetComponent<ConfigurableJoint>();
-        PartTransform = GetComponent<Transform>();
+        SetPhotonRigidbody();
+    }
+
+    private T GetOrAddComponent<T>() where T : Component
+    {
+        T component = GetComponent<T>();
+        if (component == null)
+        {
+            component = gameObject.AddComponent<T>();
+        }
+        return component;
+    }
+
+    private void SetPhotonRigidbody()
+    {
+        PartRigidbody.maxAngularVelocity = 15f;
+        PartRigidbody.solverIterations = 12;
+        PartRigidbody.solverVelocityIterations = 12;
+        var photonView = GetOrAddComponent<PhotonRigidbodyView>();
+        photonView.m_SynchronizeVelocity = true;
+        photonView.m_SynchronizeAngularVelocity = true;
     }
 }

@@ -143,6 +143,8 @@ ai는 마스터클라이언트라 마스터로 커맨드를 보낼필요 없이 
 
 
  ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ커맨드ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+https://welcomeheesuk.tistory.com/72
+
 PlayerController
 
 Move
@@ -154,22 +156,6 @@ Move
        	 RunCyclePoseLeg(Side.Right, rightLegPose);
 
 
-FootL
-FootR
-LegL2
-LegR2
-LegL1
-LegR1
-Hip
-Waist
-Chest
-Head
-UpperArmL
-UpperArmR
-ForeArmL
-ForeArmR
-FistL
-FistR
 
         Zero,
         ZeroReverse,
@@ -180,7 +166,23 @@ FistR
         Right,
         Left,
 
-
+  FootL,
+        FootR,
+        LegLowerL,
+        LegLowerR,
+        LegUpperL,
+        LegUpperR,
+        Hip,
+        Waist,
+        Chest,
+        Head,
+        LeftArm,
+        RightArm,
+        LeftForeArm,
+        RightForeArm,
+        LeftHand,
+        RightHand,
+        Ball,
 
 AniData
 1. 행동갯수 리스트 

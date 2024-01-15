@@ -97,7 +97,7 @@ public class Grab : MonoBehaviourPun
         _actor = GetComponent<Actor>();
         _actor.BodyHandler = transform.root.GetComponent<BodyHandler>();
         _targetingHandler = GetComponent<TargetingHandler>();
-        _actor.BodyHandler.BodySetup();
+        //_actor.BodyHandler.BodySetup();
 
 
         _leftHandRigid = _actor.BodyHandler.LeftHand.PartRigidbody;
@@ -107,11 +107,11 @@ public class Grab : MonoBehaviourPun
         _configurableJoints.Add(_jointChest = _actor.BodyHandler.Chest.PartJoint);
 
         _configurableJoints.Add(_jointLeftUpperArm = _actor.BodyHandler.LeftArm.PartJoint);
-        _configurableJoints.Add(_jointLeftForeArm = _actor.BodyHandler.LeftForearm.PartJoint);
+        _configurableJoints.Add(_jointLeftForeArm = _actor.BodyHandler.LeftForeArm.PartJoint);
         _configurableJoints.Add(_jointLeft = _actor.BodyHandler.LeftHand.PartJoint);
 
         _configurableJoints.Add(_jointRightUpperArm = _actor.BodyHandler.RightArm.PartJoint);
-        _configurableJoints.Add(_jointRightForeArm = _actor.BodyHandler.RightForearm.PartJoint);
+        _configurableJoints.Add(_jointRightForeArm = _actor.BodyHandler.RightForeArm.PartJoint);
         _configurableJoints.Add(_jointRight = _actor.BodyHandler.RightHand.PartJoint);
 
         PlayerStatData statData = Managers.Resource.Load<PlayerStatData>("ScriptableObject/PlayerStatData");
@@ -156,10 +156,10 @@ public class Grab : MonoBehaviourPun
                 _actor.GrabState = GrabState.PlayerLift;
 
                 AlignToVector(_actor.BodyHandler.LeftArm.PartRigidbody, _actor.BodyHandler.LeftArm.PartTransform.forward, -_actor.BodyHandler.Waist.PartTransform.forward + _actor.BodyHandler.Chest.PartTransform.right / 2f + -_actor.PlayerController.MoveInput / 8f, 0.01f, 8f);
-                AlignToVector(_actor.BodyHandler.LeftForearm.PartRigidbody, _actor.BodyHandler.LeftForearm.PartTransform.forward, -_actor.BodyHandler.Waist.PartTransform.forward, 0.01f, 8f);
+                AlignToVector(_actor.BodyHandler.LeftForeArm.PartRigidbody, _actor.BodyHandler.LeftForeArm.PartTransform.forward, -_actor.BodyHandler.Waist.PartTransform.forward, 0.01f, 8f);
 
                 AlignToVector(_actor.BodyHandler.RightArm.PartRigidbody, _actor.BodyHandler.RightArm.PartTransform.forward, -_actor.BodyHandler.Waist.PartTransform.forward + -_actor.BodyHandler.Chest.PartTransform.right / 2f + -_actor.PlayerController.MoveInput / 8f, 0.01f, 8f);
-                AlignToVector(_actor.BodyHandler.RightForearm.PartRigidbody, _actor.BodyHandler.RightForearm.PartTransform.forward, -_actor.BodyHandler.Waist.PartTransform.forward, 0.01f, 8f);
+                AlignToVector(_actor.BodyHandler.RightForeArm.PartRigidbody, _actor.BodyHandler.RightForeArm.PartTransform.forward, -_actor.BodyHandler.Waist.PartTransform.forward, 0.01f, 8f);
 
                 // _actor.BodyHandler.Chest.PartRigidbody.AddForce(Vector3.down * 30, ForceMode.VelocityChange);
 
