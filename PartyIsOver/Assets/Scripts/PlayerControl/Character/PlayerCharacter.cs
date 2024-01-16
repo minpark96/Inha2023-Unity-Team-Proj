@@ -28,7 +28,11 @@ public class PlayerCharacter : MonoBehaviour, ICharacterBase
 
     private float _currentStamina = 200f;
     public float CurrentStamina { get { return _currentStamina; } set { _currentStamina = value; } }
+
     #endregion
+
+/*    public delegate void ChangeStaminaBar();
+    public event ChangeStaminaBar OnChangeStaminaBar;*/
 
     #region 상태 변수 선언
     public enum ActorState
@@ -76,22 +80,34 @@ public class PlayerCharacter : MonoBehaviour, ICharacterBase
 
     #region 컴포넌트
 
-    public Grab Grab;
     Rigidbody _hip;
     BodyHandler _bodyHandler;
+    //Moving에서 참조중
     public Transform CameraTransform;
     public CameraControl CameraControl;
-    
+    AudioListener _audioListener;
     #endregion
     void Awake()
     {
+        Init();
+
+        //null이 아니라면 AudioListener 생성
+        Transform SoundListenerTransform = transform.Find("GreenHead");
+        if (SoundListenerTransform != null)
+            _audioListener = SoundListenerTransform.gameObject.AddComponent<AudioListener>();
+    }
+
+    void Init()
+    {
+        _audioListener = GetComponent<AudioListener>();
         _bodyHandler = GetComponent<BodyHandler>();
-        Grab = GetComponent<Grab>();
+        CameraControl = GetComponent<CameraControl>();
+
     }
 
     void Start()
     {
-        
+        CameraTransform = CameraControl.CameraArm;
     }
 
     void FixedUpdate()
@@ -121,11 +137,14 @@ public class PlayerCharacter : MonoBehaviour, ICharacterBase
         }
 
         lastActorState = actorState;
+
+        //OnChangeStaminaBar();
     }
 
     void LateUpdate()
     {
-
+        CameraControl.LookAround(_bodyHandler.Hip.transform.position);
+        CameraControl.CursorControl();
     }
 
     // << : Stand 상태로 전환 하면 천천히 멈추는 상태 / 추후 Idle 에다가 넣을 예정
@@ -144,6 +163,7 @@ public class PlayerCharacter : MonoBehaviour, ICharacterBase
         }
         else
         {
+            // Ilde -> UpdatePhysics에 넣어야 할듯
             AlignToVector(_bodyHandler.Head.PartRigidbody, -_bodyHandler.Head.transform.up, _moveDir + new Vector3(0f, 0.2f, 0f), 0.1f, 2.5f * 1);
             AlignToVector(_bodyHandler.Head.PartRigidbody, _bodyHandler.Head.transform.forward, Vector3.up, 0.1f, 2.5f * 1);
             AlignToVector(_bodyHandler.Chest.PartRigidbody, -_bodyHandler.Chest.transform.up, _moveDir, 0.1f, 4f * 1);
@@ -154,8 +174,8 @@ public class PlayerCharacter : MonoBehaviour, ICharacterBase
         }
 
         //빙판이 아닐때 조건추가해야함
-        if (_hip.velocity.magnitude > 1f)
-            _hip.velocity = _hip.velocity.normalized * _hip.velocity.magnitude * 0.6f;
+        /*if (_hip.velocity.magnitude > 1f)
+            _hip.velocity = _hip.velocity.normalized * _hip.velocity.magnitude * 0.6f;*/
     }
     // >> : Stand
 

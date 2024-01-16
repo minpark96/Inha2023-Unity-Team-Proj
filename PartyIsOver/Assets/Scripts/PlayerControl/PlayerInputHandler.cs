@@ -6,12 +6,12 @@ using Photon.Pun;
 public class PlayerInputHandler : MonoBehaviourPun
 {
     private Actor _actor;
-    private Moving _moving;
+    //private Moving _moving;
 
     private void Awake()
     {
         _actor = GetComponent<Actor>();
-        _moving = GetComponent<Moving>();
+        //_moving = GetComponent<Moving>();
     }
 
     void Start()

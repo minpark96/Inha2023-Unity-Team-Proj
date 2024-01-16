@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraControl : MonoBehaviourPun
+public class CameraControl : MonoBehaviourPun ,ICameraControllable
 {
     public Transform CameraArm;
     public Camera Camera;
@@ -20,9 +20,9 @@ public class CameraControl : MonoBehaviourPun
     }
 
     //카메라 컨트롤
-    public void LookAround(Vector3 Pos)
+    public void LookAround(Vector3 position)
     {
-        CameraArm.position = Pos;
+        CameraArm.position = position;
 
         Vector2 mouseDelta = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
         Vector3 camAngle = CameraArm.rotation.eulerAngles;

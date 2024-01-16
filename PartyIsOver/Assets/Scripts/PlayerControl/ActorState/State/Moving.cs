@@ -8,6 +8,8 @@ public class Moving : BaseState
 {
     private MovementSM _sm;
     //private PlayerCharacter _playerCharacter;
+    private PlayerCharacter PlayerCharacter;
+
     private float _inputspeed;
     private float _runSpeedOffset = 350f;
     private float _runSpeed = 1.5f;
@@ -52,8 +54,8 @@ public class Moving : BaseState
     {
         base.UpdatePhysics();
 
-        Vector3 lookForward = new Vector3(stateMachine.PlayerCharacter.CameraTransform.forward.x, 0f, stateMachine.PlayerCharacter.CameraTransform.forward.z).normalized;
-        Vector3 lookRight = new Vector3(stateMachine.PlayerCharacter.CameraTransform.right.x, 0f, stateMachine.PlayerCharacter.CameraTransform.right.z).normalized;
+        Vector3 lookForward = new Vector3(PlayerCharacter.CameraTransform.forward.x, 0f, PlayerCharacter.CameraTransform.forward.z).normalized;
+        Vector3 lookRight = new Vector3(PlayerCharacter.CameraTransform.right.x, 0f, PlayerCharacter.CameraTransform.right.z).normalized;
         _moveDir = lookForward * _moveInput.z + lookRight * _moveInput.x;
 
         Vector3 vel = _moveInput * _sm.speed;
