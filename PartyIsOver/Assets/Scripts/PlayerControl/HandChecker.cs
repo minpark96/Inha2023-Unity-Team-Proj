@@ -28,8 +28,8 @@ public class HandChecker : MonoBehaviourPun
         if (!photonView.IsMine) return;
         if(collision.collider == null) return;
 
-
-        if(_actor.Grab._isGrabbingInProgress && collision.gameObject.GetComponent<InteractableObject>() != null)
+        // Null 때문에 일단 주석처리
+        /*if(_actor.Grab._isGrabbingInProgress && collision.gameObject.GetComponent<InteractableObject>() != null)
         {
             CollisionObject = collision.gameObject;
 
@@ -44,7 +44,7 @@ public class HandChecker : MonoBehaviourPun
                 return;
             }
             CollisionObjectType = Define.GrabObjectType.Object;
-        }
+        }*/
 
 
     }

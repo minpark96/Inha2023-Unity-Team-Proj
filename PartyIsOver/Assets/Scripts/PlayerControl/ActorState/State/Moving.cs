@@ -49,6 +49,8 @@ public class Moving : BaseState
             // 키 입력이 없으면 Idle 상태로 전환
             stateMachine.ChangeState(_sm.idleState);
         }
+        Debug.Log("키 입력");
+
     }
     public override void UpdatePhysics()
     {

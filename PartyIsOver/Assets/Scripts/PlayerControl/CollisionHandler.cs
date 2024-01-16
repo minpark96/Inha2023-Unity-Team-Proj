@@ -293,9 +293,9 @@ public class CollisionHandler : MonoBehaviourPun
         }
 
         if (!PhotonNetwork.LocalPlayer.IsMasterClient && PhotonNetwork.IsConnected == true) return;
-
-        if (collision.collider.gameObject.layer != LayerMask.NameToLayer("Ground") && !actor.StatusHandler.invulnerable)
-            DamageCheck(collision);
+        // Null 때문에 일단 주석처리
+        /*if (collision.collider.gameObject.layer != LayerMask.NameToLayer("Ground") && !actor.StatusHandler.invulnerable)
+            DamageCheck(collision);*/
     }
     private void OnTriggerStay(Collider other)
     {
