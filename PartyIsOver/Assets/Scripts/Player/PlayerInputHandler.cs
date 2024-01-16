@@ -3,13 +3,74 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Actor;
 using Photon.Pun;
+using static Define;
+
 public class PlayerInputHandler : MonoBehaviourPun
 {
     private Actor _actor;
-
+    private Dictionary<COMMAND_KEY, ICommand> commands = new Dictionary<COMMAND_KEY, ICommand>();
+    private ICommand _activeCommand;
     private void Awake()
     {
         _actor = GetComponent<Actor>();
+    }
+    private void Update()
+    {
+        if (!Input.anyKey) return;
+        InputGetDownKey(KeyCode.Space, GetKeyType.Down);
+    }
+    private void FixedUpdate()
+    {
+        if(_activeCommand != null)
+        {
+            _activeCommand.Execute();
+            _activeCommand = null;
+        }
+    }
+
+    //키 매핑
+    private void InitCommnad(AnimationData data)
+    {
+        commands.Add(COMMAND_KEY.Jump, new CommandJump(data));
+    }
+    private void InputGetDownKey(KeyCode keyCode, GetKeyType keyType)
+    {
+        // 어떤 키값 호출 분기
+        COMMAND_KEY commandKey = COMMAND_KEY.None;
+        switch (keyCode)
+        {
+            case KeyCode.Space:
+                commandKey = COMMAND_KEY.Jump;
+                break;
+            default:
+                commandKey = COMMAND_KEY.None;
+                break;
+        }
+
+        // 키 활성화 타입 분기
+        bool isEnabledKey = false;
+        switch (keyType)
+        {
+            case GetKeyType.Press:
+                isEnabledKey = Input.GetKey(keyCode);
+                break;
+            case GetKeyType.Down:
+                isEnabledKey = Input.GetKeyDown(keyCode);
+                break;
+            case GetKeyType.Up:
+                isEnabledKey = Input.GetKeyUp(keyCode);
+                break;
+            default:
+                isEnabledKey = false;
+                break;
+        }
+
+        if (isEnabledKey && commandKey != COMMAND_KEY.None && commands.ContainsKey(commandKey))
+        {
+            // 커맨드 execute 호출
+            //this.commands[commandKey].Execute();
+            _activeCommand = commands[commandKey];
+        }
     }
 
     void Start()
@@ -27,10 +88,12 @@ public class PlayerInputHandler : MonoBehaviourPun
 
     void OnDestroy()
     {
+        commands.Clear();
         Managers.Input.MouseAction -= OnMouseEvent;
         Managers.Input.KeyboardAction -= OnKeyboardEvent;
     }
 
+   
     void OnKeyboardEvent(Define.KeyboardEvent evt)
     {
         if (!photonView.IsMine || _actor.actorState == ActorState.Dead)

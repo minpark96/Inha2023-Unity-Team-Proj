@@ -1,5 +1,10 @@
 c3af2b93-76cf-49ec-be74-fc8ae9170dde
 튕기는 조건 - 벽타다가, R쓰다가, 물약먹다가
+
+PlantUML 개발문서
+
+
+
 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ리팩요소 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 인풋 check식으로 플레이어 동작시키기
 물리관련 FIxed로 빼기
@@ -133,7 +138,14 @@ ai는 마스터클라이언트라 마스터로 커맨드를 보낼필요 없이 
 
 
 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ상태패턴ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
-상태에서 특정 Input을 대기하다 Input이 들어오면  
+각 상태 Update에서 InputGetDownKey로 커맨드를 받고 마스터로 해당 커맨드를 보냄
+마스터Fixed에서 해당 커맨드를 보낸 플레이어에게 RPC로 excute하고 커맨드 저장
+
+마스터에서 커맨드 기록을 저장할경우 클라이언트나 상태가 _activeCommnad같은 커맨드저장
+변수를 가질 필요가 없음
+
+상태마다 InputGetDownKey를 사용하니 이 함수는 상태클래스의 부모에 넣어놓던가
+InputManager나 PlayerInputHandler에서 가져와서 쓰는식으로 해도 괜찮을듯
 
 상체 - 펀치, Gabbing , Equip, Climb, 스킬, 헤딩
 하체 - Stand, Move, Jump, Fall, 
@@ -142,8 +154,22 @@ ai는 마스터클라이언트라 마스터로 커맨드를 보낼필요 없이 
 
 
 
+플레이어의 상태가 _activeCommand를 가지고 비교할 수 있어야함
+그리고 그 상태에서 가능한 커맨드면 실행
+
  ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ커맨드ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 https://welcomeheesuk.tistory.com/72
+
+현재 AnimationData가 커맨드 안에 있는데 이를 actor가 가지고 있게 하고
+Execute에 매개변수로 actor를 받는 방법으로 바꿀수도 있음
+
+
+InitCommand 함수로 키 매핑을 PlayerInputHandler에서 하고있음
+
+command.Excute는 마스터에서 각 클라이언트를 넣어서 RPC ALL로 사용해야함
+그리고 그 command는 클라이언트가 마스터에게 보낸 커맨드여야 함
+(기존프로젝트 InputManager의 이벤트 방식을 참고해도 좋을거같음,
+ 인풋 기다리다가 인풋 들어오면 RPCALL로 실행시키는 방식)
 
 PlayerController
 

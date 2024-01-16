@@ -162,34 +162,6 @@ public class PlayerController : MonoBehaviourPun
         return dir;
     }
 
-
-    void AnimationsSetup()
-    {
-        frameDataLists[Define.AniFrameData.RightPunchingAniData.ToString()] = RightPunchingAniData;
-        frameDataLists[Define.AniFrameData.LeftPunchingAniData.ToString()] = LeftPunchingAniData;
-        frameDataLists[Define.AniFrameData.MoveForceJumpAniData.ToString()] = MoveForceJumpAniData;
-        frameDataLists[Define.AniFrameData.HeadingAniData.ToString()] = HeadingAniData;
-        frameDataLists[Define.AniFrameData.RSkillAniData.ToString()] = RSkillAniData;
-        frameDataLists[Define.AniFrameData.ItemTwoHandAniData.ToString()] = ItemTwoHandAniData;
-        frameDataLists[Define.AniFrameData.PotionReadyAniData.ToString()] = PotionReadyAniData;
-        frameDataLists[Define.AniFrameData.PotionDrinkingAniData.ToString()] = PotionDrinkingAniData;
-        frameDataLists[Define.AniFrameData.ItemTwoHandLeftAniData.ToString()] = ItemTwoHandLeftAniData;
-        frameDataLists[Define.AniFrameData.PotionThrowAniData.ToString()] = PotionThrowAniData;
-
-        angleDataLists[Define.AniAngleData. RightPunchAniData.ToString()] = RightPunchAniData;
-        angleDataLists[Define.AniAngleData. LeftPunchAniData.ToString()] = LeftPunchAniData;
-        angleDataLists[Define.AniAngleData. RightPunchResettingAniData.ToString()] = RightPunchResettingAniData;
-        angleDataLists[Define.AniAngleData. LeftPunchResettingAniData.ToString()] = LeftPunchResettingAniData;
-        angleDataLists[Define.AniAngleData. MoveAngleJumpAniData.ToString()] = MoveAngleJumpAniData;
-        angleDataLists[Define.AniAngleData. HeadingAngleAniData.ToString()] = HeadingAngleAniData;
-        angleDataLists[Define.AniAngleData. RSkillAngleAniData.ToString()] = RSkillAngleAniData;
-        angleDataLists[Define.AniAngleData. ItemTwoHandAngleData.ToString()] = ItemTwoHandAngleData;
-        angleDataLists[Define.AniAngleData. PotionAngleAniData.ToString()] = PotionAngleAniData;
-        angleDataLists[Define.AniAngleData. ItemTwoHandLeftAngleData.ToString()] = ItemTwoHandLeftAngleData;
-        angleDataLists[Define.AniAngleData.PotionThrowAngleData.ToString()] = PotionThrowAngleData;
-    }
-
-
     void LoadAnimFrameData()
     {
         Define.AniFrameData[] frameDataNames = (Define.AniFrameData[])Enum.GetValues(typeof(Define.AniFrameData));
@@ -200,7 +172,7 @@ public class PlayerController : MonoBehaviourPun
         List<ForceDirection> forceDir = new List<ForceDirection>();
         List<int> forceVal = new List<int>();
 
-            
+
 
         for (int i = 0; i < (int)Define.AniFrameData.End; i++)
         {
@@ -269,6 +241,34 @@ public class PlayerController : MonoBehaviourPun
                 Debug.LogError("File not found: " + filePath);
         }
     }
+
+    void AnimationsSetup()
+    {
+        frameDataLists[Define.AniFrameData.RightPunchingAniData.ToString()] = RightPunchingAniData;
+        frameDataLists[Define.AniFrameData.LeftPunchingAniData.ToString()] = LeftPunchingAniData;
+        frameDataLists[Define.AniFrameData.MoveForceJumpAniData.ToString()] = MoveForceJumpAniData;
+        frameDataLists[Define.AniFrameData.HeadingAniData.ToString()] = HeadingAniData;
+        frameDataLists[Define.AniFrameData.RSkillAniData.ToString()] = RSkillAniData;
+        frameDataLists[Define.AniFrameData.ItemTwoHandAniData.ToString()] = ItemTwoHandAniData;
+        frameDataLists[Define.AniFrameData.PotionReadyAniData.ToString()] = PotionReadyAniData;
+        frameDataLists[Define.AniFrameData.PotionDrinkingAniData.ToString()] = PotionDrinkingAniData;
+        frameDataLists[Define.AniFrameData.ItemTwoHandLeftAniData.ToString()] = ItemTwoHandLeftAniData;
+        frameDataLists[Define.AniFrameData.PotionThrowAniData.ToString()] = PotionThrowAniData;
+
+        angleDataLists[Define.AniAngleData. RightPunchAniData.ToString()] = RightPunchAniData;
+        angleDataLists[Define.AniAngleData. LeftPunchAniData.ToString()] = LeftPunchAniData;
+        angleDataLists[Define.AniAngleData. RightPunchResettingAniData.ToString()] = RightPunchResettingAniData;
+        angleDataLists[Define.AniAngleData. LeftPunchResettingAniData.ToString()] = LeftPunchResettingAniData;
+        angleDataLists[Define.AniAngleData. MoveAngleJumpAniData.ToString()] = MoveAngleJumpAniData;
+        angleDataLists[Define.AniAngleData. HeadingAngleAniData.ToString()] = HeadingAngleAniData;
+        angleDataLists[Define.AniAngleData. RSkillAngleAniData.ToString()] = RSkillAngleAniData;
+        angleDataLists[Define.AniAngleData. ItemTwoHandAngleData.ToString()] = ItemTwoHandAngleData;
+        angleDataLists[Define.AniAngleData. PotionAngleAniData.ToString()] = PotionAngleAniData;
+        angleDataLists[Define.AniAngleData. ItemTwoHandLeftAngleData.ToString()] = ItemTwoHandLeftAngleData;
+        angleDataLists[Define.AniAngleData.PotionThrowAngleData.ToString()] = PotionThrowAngleData;
+    }
+
+
 
     [Header("Speed")]
     public float RunSpeed;
@@ -392,7 +392,6 @@ public class PlayerController : MonoBehaviourPun
     void Init()
     {
         _bodyHandler = GetComponent<BodyHandler>();
-        //_bodyHandler.BodySetup();
         _actor = GetComponent<Actor>();
         Transform SoundSourceTransform = transform.Find("GreenHip");
         _audioSource = SoundSourceTransform.GetComponent<AudioSource>();

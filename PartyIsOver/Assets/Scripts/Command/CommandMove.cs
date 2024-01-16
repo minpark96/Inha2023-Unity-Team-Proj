@@ -15,7 +15,7 @@ public class CommandMove : ICommand
         this.rb = rb;
     }
 
-    public void Execute()
+    public void Execute(Vector3 moveDir = default)
     {
         rb.AddForce(direction);
     }

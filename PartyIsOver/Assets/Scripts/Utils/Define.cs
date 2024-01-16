@@ -211,7 +211,7 @@ public class Define
         RightBtn,
         Wheel,
         Jump,
-
+        None,
     }
 
     public enum AniFrameData
@@ -269,6 +269,8 @@ public class Define
         ForceDirection,
         ForcePowerValues,
     }
+
+
 }
 
 
