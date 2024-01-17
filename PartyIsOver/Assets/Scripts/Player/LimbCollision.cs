@@ -5,17 +5,17 @@ using UnityEngine;
 
 public class LimbCollision : MonoBehaviourPun
 {
-    public PlayerController PlayerController;
+    private LowerBodySM bodySM;
 
     private void Start()
     {
-         PlayerController = GetComponentInParent<PlayerController>();
+        bodySM = GetComponentInParent<LowerBodySM>();
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!photonView.IsMine || PlayerController == null) return;
-        if (!PlayerController.isGrounded)
-            PlayerController.isGrounded = true;
+        if (!photonView.IsMine || bodySM == null) return;
+        if (!bodySM.isGrounded)
+            bodySM.isGrounded = true;
     }
 }

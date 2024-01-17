@@ -2,11 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CommandJump : PlayerCommand
+public class CmdJump : PlayerCommand
 {
-    AnimationData animData;
-
-    public CommandJump(AnimationData data)
+    public CmdJump(AnimationData data)
     {
         animData = data;
        
@@ -24,5 +22,6 @@ public class CommandJump : PlayerCommand
         {
             animData.AniAngleForce(animData.AngleAniData, i, moveDir + new Vector3(0, 0.2f, 0f));
         }
+        Debug.Log("jump");
     }
 }

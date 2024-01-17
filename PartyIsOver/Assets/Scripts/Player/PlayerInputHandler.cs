@@ -13,27 +13,30 @@ public class PlayerInputHandler : MonoBehaviourPun
     private void Awake()
     {
         _actor = GetComponent<Actor>();
+        
     }
     private void Update()
     {
-        if (!Input.anyKey) return;
-        InputGetDownKey(KeyCode.Space, GetKeyType.Down);
+
+      
     }
     private void FixedUpdate()
     {
+        //Master클라이어트의 PlayerController에서 받은 커맨드로 해당하는 actor들을 컨트롤하는 방향으로
         if(_activeCommand != null)
         {
             _activeCommand.Execute();
             _activeCommand = null;
+            Debug.Log("commnad");
         }
     }
 
     //키 매핑
     private void InitCommnad(AnimationData data)
     {
-        commands.Add(COMMAND_KEY.Jump, new CommandJump(data));
+        commands.Add(COMMAND_KEY.Jump, new CmdJump(data));
     }
-    private void InputGetDownKey(KeyCode keyCode, GetKeyType keyType)
+    public void InputGetDownKey(KeyCode keyCode, GetKeyType keyType)
     {
         // 어떤 키값 호출 분기
         COMMAND_KEY commandKey = COMMAND_KEY.None;

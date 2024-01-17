@@ -219,7 +219,7 @@ public class Define
         DropAniData,
         RightPunchingAniData,
         LeftPunchingAniData,
-        MoveForceJumpAniData,
+        JumpAniForceData,
         HeadingAniData,
         RSkillAniData,
         ItemTwoHandAniData,

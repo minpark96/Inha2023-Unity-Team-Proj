@@ -1,0 +1,26 @@
+ActionCount : 3
+
+PartCount : 1
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+StandardPart : Hip
+ActionPart : Chest
+ForceDirection : Zero
+ForcePowerValues : 170
+
+
+
+PartCount : 1
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+StandardPart : Hip
+ActionPart : Waist
+ForceDirection : Zero
+ForcePowerValues : 170
+
+
+PartCount : 1
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+StandardPart : Hip
+ActionPart : Hip
+ForceDirection : Zero
+ForcePowerValues : 6
+
