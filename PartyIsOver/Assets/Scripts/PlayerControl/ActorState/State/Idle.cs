@@ -17,6 +17,7 @@ public class Idle : BaseState
     public override void UpdateLogic()
     {
         base.UpdateLogic();
+        inputSpeed = Input.GetAxis("Horizontal");
         //TODO : Å° ÀÔ·Â 
         if (Mathf.Abs(inputSpeed) > Mathf.Epsilon)
             stateMachine.ChangeState(((MovementSM)stateMachine).movingState);

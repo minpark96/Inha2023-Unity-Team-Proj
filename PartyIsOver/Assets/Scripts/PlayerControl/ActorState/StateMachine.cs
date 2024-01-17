@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml.Serialization;
 using UnityEngine;
 
 public class StateMachine : MonoBehaviour
@@ -8,6 +9,7 @@ public class StateMachine : MonoBehaviour
 
     void Start()
     {
+        Debug.Log("Not null");
         currentState = GetInitialState();
         if(currentState != null )
         {
@@ -42,6 +44,12 @@ public class StateMachine : MonoBehaviour
     protected virtual BaseState GetInitialState()
     {
         return null;
+    }
+
+    private void OnGUI()
+    {
+        string content = currentState != null ? currentState.name : "(no current state)";
+        GUILayout.Label($"<color='black'><size=40>{content}</size></color>");
     }
     
 }

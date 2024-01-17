@@ -13,6 +13,7 @@ public class MovementSM : StateMachine
 
     private void Awake()
     {
+        Debug.Log("Awake");
         idleState = new Idle(this);
         movingState = new Moving(this);
 
