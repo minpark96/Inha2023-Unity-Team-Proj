@@ -1,0 +1,46 @@
+ActionCount : 2
+
+PartCount : 4
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+StandardPart : Chest
+ActionPart : RightArm
+ForceDirection : Right
+ForcePowerValues : 15
+
+StandardPart : Chest
+ActionPart : RightArm
+ForceDirection : Backward
+ForcePowerValues : 50
+
+StandardPart : Chest
+ActionPart : RightArm
+ForceDirection : Up
+ForcePowerValues : 15
+
+StandardPart : Chest
+ActionPart : RightForeArm
+ForceDirection : Left
+ForcePowerValues : 5
+
+PartCount : 4
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+StandardPart : Chest
+ActionPart : LeftArm
+ForceDirection : Forward
+ForcePowerValues : 2
+
+StandardPart : Chest
+ActionPart : LeftForeArm
+ForceDirection :  Forward
+ForcePowerValues : 2
+
+StandardPart : Chest
+ActionPart : LeftHand
+ForceDirection :  Forward
+ForcePowerValues : 2
+
+StandardPart : Chest
+ActionPart : Chest
+ForceDirection :  Forward
+ForcePowerValues : 2
+

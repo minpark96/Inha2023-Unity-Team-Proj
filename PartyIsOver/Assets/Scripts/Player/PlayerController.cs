@@ -114,13 +114,17 @@ public class PlayerController : MonoBehaviourPun
                 case Define.BodyPart.LeftArm:
                     rb = _bodyHandler.LeftArm.PartRigidbody; break;
                 case Define.BodyPart.RightArm:
-                    rb = _bodyHandler.RightArm.PartRigidbody; break;
+                    rb = _bodyHandler.Head.PartRigidbody; break;
+                case Define.BodyPart.LeftForeArm:
+                    rb = _bodyHandler.LeftForeArm.PartRigidbody; break;
+                case Define.BodyPart.RightForeArm:
+                    rb = _bodyHandler.RightForeArm.PartRigidbody; break;
                 case Define.BodyPart.LeftHand:
                     rb = _bodyHandler.LeftHand.PartRigidbody; break;
                 case Define.BodyPart.RightHand:
                     rb = _bodyHandler.RightHand.PartRigidbody; break;
                 default:
-                    Debug.Log("애니메이션 파츠 불러오기 에러1");
+                    Debug.Log("애니메이션 파츠 불러오기 에러1" + part.ToString());
                     break;
             }
         }
@@ -417,6 +421,18 @@ public class PlayerController : MonoBehaviourPun
 
         AnimationsSetup();
         LoadAnimFrameData();
+
+
+        RightPunchingAniData = frameDataLists[Define.AniFrameData.RightPunchingAniData.ToString()];
+        LeftPunchingAniData = frameDataLists[Define.AniFrameData.LeftPunchingAniData.ToString()];
+        JumpAniForceData = frameDataLists[Define.AniFrameData.JumpAniForceData.ToString()];
+        HeadingAniData = frameDataLists[Define.AniFrameData.HeadingAniData.ToString()]; ;
+        RSkillAniData = frameDataLists[Define.AniFrameData.RSkillAniData.ToString()];
+        ItemTwoHandAniData = frameDataLists[Define.AniFrameData.ItemTwoHandAniData.ToString()];
+        PotionReadyAniData = frameDataLists[Define.AniFrameData.PotionReadyAniData.ToString()];
+        PotionDrinkingAniData = frameDataLists[Define.AniFrameData.PotionDrinkingAniData.ToString()];
+        ItemTwoHandLeftAniData = frameDataLists[Define.AniFrameData.ItemTwoHandLeftAniData.ToString()];
+        PotionThrowAniData = frameDataLists[Define.AniFrameData.PotionThrowAniData.ToString()];
     }
 
     [PunRPC]

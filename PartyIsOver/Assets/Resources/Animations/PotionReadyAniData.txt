@@ -1,0 +1,33 @@
+ActionCount : 1
+
+PartCount : 6
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+StandardPart : Head
+ActionPart : Head
+ForceDirection : Forward
+ForcePowerValues : 10
+
+StandardPart : Head
+ActionPart : RightArm
+ForceDirection : Forward
+ForcePowerValues : 10
+
+StandardPart : Head
+ActionPart : RightForeArm
+ForceDirection : Forward
+ForcePowerValues : 10
+
+StandardPart : Head
+ActionPart : RightForeArm
+ForceDirection : Left
+ForcePowerValues : 10
+
+StandardPart : Head
+ActionPart : RightHand
+ForceDirection : Up
+ForcePowerValues : 5
+
+StandardPart : Head
+ActionPart : RightHand
+ForceDirection : Backward
+ForcePowerValues : 5

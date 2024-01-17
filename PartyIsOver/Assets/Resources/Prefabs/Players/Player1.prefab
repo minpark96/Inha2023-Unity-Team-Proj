@@ -11371,17 +11371,7 @@ MonoBehaviour:
     ForcePowerValues:
     - 40
     - 60
-  LeftPunchingAniData:
-  - StandardRigidbodies:
-    - {fileID: 5856411775826887216}
-    - {fileID: 5793545070783210251}
-    ActionRigidbodies:
-    - {fileID: 5856411775826887216}
-    - {fileID: 5793545070783210251}
-    ForceDirections: 0000000000000000
-    ForcePowerValues:
-    - 40
-    - 60
+  LeftPunchingAniData: []
   JumpAniForceData: []
   HeadingAniData:
   - StandardRigidbodies:
@@ -11942,7 +11932,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5873236424662451676}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: af45a714b0c24a24ea2691ec8d21cc67, type: 3}
   m_Name: 

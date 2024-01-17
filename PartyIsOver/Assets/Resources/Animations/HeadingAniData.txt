@@ -1,0 +1,19 @@
+ActionCount : 2
+
+PartCount : 1
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+StandardPart : Head
+ActionPart : Head
+ForceDirection : Forward
+ForcePowerValues : 100
+
+
+PartCount : 1
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+StandardPart : Head
+ActionPart : Chest
+ForceDirection : Forward
+ForcePowerValues : 100
+
+
+

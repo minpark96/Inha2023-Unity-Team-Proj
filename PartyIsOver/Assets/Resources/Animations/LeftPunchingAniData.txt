@@ -1,0 +1,13 @@
+ActionCount : 1
+
+PartCount : 2
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+StandardPart : LeftArm
+ActionPart : LeftArm
+ForceDirection : Zero
+ForcePowerValues : 40
+
+StandardPart : LeftHand
+ActionPart : LeftHand
+ForceDirection : Zero
+ForcePowerValues : 60
