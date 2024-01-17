@@ -1882,7 +1882,7 @@ public class PlayerController : MonoBehaviourPun
     #endregion
 
     #region Potion
-    public IEnumerator Potion(Side side, float duration, float ready, float start, float drinking, float end)
+    public IEnumerator Potion(float duration, float ready, float start, float drinking, float end)
     {
         photonView.RPC("PlayerEffectSound", RpcTarget.All, "Sounds/PlayerEffect/Item_UI_042");
 
@@ -1890,28 +1890,28 @@ public class PlayerController : MonoBehaviourPun
 
         while (Time.time - checkTime < ready)
         {
-            PotionReady(side);
+            PotionReady();
             yield return new WaitForSeconds(duration);
         }
         checkTime = Time.time;
 
         while (Time.time - checkTime < start)
         {
-            PotionStart(side);
+            PotionStart();
             yield return new WaitForSeconds(duration);
         }
         checkTime = Time.time;
 
         while (Time.time - checkTime < drinking)
         {
-            PotionDrinking(side);
+            PotionDrinking();
             yield return new WaitForSeconds(duration);
         }
         checkTime = Time.time;
 
         while (Time.time - checkTime < end)
         {
-            PotionEnd(side);
+            PotionEnd();
             yield return new WaitForSeconds(duration);
         }
     }
@@ -1919,16 +1919,15 @@ public class PlayerController : MonoBehaviourPun
     #endregion
 
     #region PotionAni
-    void PotionReady(Side side)
+    void PotionReady()
     {
-        AniAngleData[] potionReadys = (side == Side.Right) ? PotionAngleAniData : PotionAngleAniData;
-        for (int i = 0; i < potionReadys.Length; i++)
+        for (int i = 0; i < PotionAngleAniData.Length; i++)
         {
-            AniAngleForce(potionReadys, i);
+            AniAngleForce(PotionAngleAniData, i);
         }
     }
 
-    void PotionStart(Side side)
+    void PotionStart()
     {
         for (int i = 0; i < PotionReadyAniData.Length; i++)
         {
@@ -1936,7 +1935,7 @@ public class PlayerController : MonoBehaviourPun
         }
     }
 
-    void PotionDrinking(Side side)
+    void PotionDrinking()
     {
         for (int i = 0; i < PotionDrinkingAniData.Length; i++)
         {
@@ -1944,7 +1943,7 @@ public class PlayerController : MonoBehaviourPun
         }
     }
 
-    void PotionEnd(Side side)
+    void PotionEnd()
     {
         for (int i = 0; i < PotionAngleAniData.Length; i++)
         {

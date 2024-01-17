@@ -925,7 +925,7 @@ public class Grab : MonoBehaviourPun
         _jointLeft.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 3, 0, 0));
         _jointRight.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 3, 0, 0));
 
-        yield return _actor.PlayerController.Potion(PlayerController.Side.Right, 0.07f, 0.1f, 0.5f, 0.5f, 0.1f);
+        yield return _actor.PlayerController.Potion(0.07f, 0.1f, 0.5f, 0.5f, 0.1f);
 
         photonView.RPC("UseItem", RpcTarget.All);
         GrabResetTrigger();
