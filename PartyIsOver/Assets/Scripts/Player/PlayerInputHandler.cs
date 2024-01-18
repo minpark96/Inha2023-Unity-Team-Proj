@@ -13,7 +13,7 @@ public class PlayerInputHandler : MonoBehaviourPun
     private void Awake()
     {
         _actor = GetComponent<Actor>();
-        
+        InitCommnad(_actor);
     }
     private void Update()
     {
@@ -32,16 +32,36 @@ public class PlayerInputHandler : MonoBehaviourPun
     }
 
     //키 매핑
-    private void InitCommnad(AnimationData data)
+    private void InitCommnad(Actor actor)
     {
-        commands.Add(COMMAND_KEY.Jump, new CmdJump(data));
+        commands.Add(COMMAND_KEY.Jump, new CmdJump(actor));
     }
-    public void InputGetDownKey(KeyCode keyCode, GetKeyType keyType)
+
+    public bool InputGetMoveKey()
+    {
+        
+
+        return false;
+    }
+
+    public bool InputGetDownKey(KeyCode keyCode, GetKeyType keyType)
     {
         // 어떤 키값 호출 분기
         COMMAND_KEY commandKey = COMMAND_KEY.None;
         switch (keyCode)
         {
+            case KeyCode.W:
+                commandKey = COMMAND_KEY.Move;
+                break;
+            case KeyCode.A:
+                commandKey = COMMAND_KEY.Move;
+                break;
+            case KeyCode.S:
+                commandKey = COMMAND_KEY.Move;
+                break;
+            case KeyCode.D:
+                commandKey = COMMAND_KEY.Move;
+                break;
             case KeyCode.Space:
                 commandKey = COMMAND_KEY.Jump;
                 break;
@@ -73,7 +93,9 @@ public class PlayerInputHandler : MonoBehaviourPun
             // 커맨드 execute 호출
             //this.commands[commandKey].Execute();
             _activeCommand = commands[commandKey];
+            return true;
         }
+        return false;
     }
 
     void Start()
@@ -81,8 +103,7 @@ public class PlayerInputHandler : MonoBehaviourPun
         if (_actor.PlayerController.isAI)
             return;
 
-        //_actor.BodyHandler.BodySetup();
-                                                  
+        return;
         Managers.Input.MouseAction -= OnMouseEvent;
         Managers.Input.MouseAction += OnMouseEvent;
         Managers.Input.KeyboardAction -= OnKeyboardEvent;

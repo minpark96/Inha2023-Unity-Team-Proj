@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerCommand : ICommand
 {
     protected BodyHandler bodyHandler;
+    protected AnimationPlayer animPlayer;
     protected AnimationData animData;
 
 

@@ -203,6 +203,7 @@ public class Define
 
     public enum COMMAND_KEY
     {
+        Move,
         W,
         A,
         S,

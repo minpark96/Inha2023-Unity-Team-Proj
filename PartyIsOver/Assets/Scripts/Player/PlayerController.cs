@@ -55,29 +55,7 @@ public class AniAngleData
 
 public class PlayerController : MonoBehaviourPun
 {
-    [Header("AnimationControll")]
-    [SerializeField]    public AniFrameData[] RightPunchingAniData;
-    [SerializeField]    public AniFrameData[] LeftPunchingAniData;
-    [SerializeField]    public AniFrameData[] JumpAniForceData;
-    [SerializeField]    public AniFrameData[] HeadingAniData;
-    [SerializeField]    public AniFrameData[] RSkillAniData;
-    [SerializeField]    public AniFrameData[] ItemTwoHandAniData;
-    [SerializeField]    public AniFrameData[] PotionReadyAniData;
-    [SerializeField]    public AniFrameData[] PotionDrinkingAniData;
-    [SerializeField]    public AniFrameData[] ItemTwoHandLeftAniData;
-    [SerializeField]    public AniFrameData[] PotionThrowAniData;
 
-    [SerializeField]    public AniAngleData[] RightPunchAniData;
-    [SerializeField]    public AniAngleData[] LeftPunchAniData;
-    [SerializeField]    public AniAngleData[] RightPunchResettingAniData;
-    [SerializeField]    public AniAngleData[] LeftPunchResettingAniData;
-    [SerializeField]    public AniAngleData[] MoveAngleJumpAniData;
-    [SerializeField]    public AniAngleData[] HeadingAngleAniData;
-    [SerializeField]    public AniAngleData[] RSkillAngleAniData;
-    [SerializeField]    public AniAngleData[] ItemTwoHandAngleData;
-    [SerializeField]    public AniAngleData[] PotionAngleAniData;
-    [SerializeField]    public AniAngleData[] ItemTwoHandLeftAngleData;
-    [SerializeField]    public AniAngleData[] PotionThrowAngleData;
 
     Dictionary<string, AniFrameData[]> frameDataLists = new Dictionary<string, AniFrameData[]>();
     Dictionary<string, AniAngleData[]> angleDataLists = new Dictionary<string, AniAngleData[]>();
@@ -378,31 +356,7 @@ public class PlayerController : MonoBehaviourPun
                 Debug.LogError("File not found: " + filePath);
         }
     }
-    void AnimationsSetup()
-    {
-        RightPunchingAniData = frameDataLists[Define.AniFrameData.RightPunchingAniData.ToString()];
-        LeftPunchingAniData = frameDataLists[Define.AniFrameData.LeftPunchingAniData.ToString()];
-        JumpAniForceData = frameDataLists[Define.AniFrameData.JumpAniForceData.ToString()];
-        HeadingAniData = frameDataLists[Define.AniFrameData.HeadingAniData.ToString()]; ;
-        RSkillAniData = frameDataLists[Define.AniFrameData.RSkillAniData.ToString()];
-        ItemTwoHandAniData = frameDataLists[Define.AniFrameData.ItemTwoHandAniData.ToString()];
-        PotionReadyAniData = frameDataLists[Define.AniFrameData.PotionReadyAniData.ToString()];
-        PotionDrinkingAniData = frameDataLists[Define.AniFrameData.PotionDrinkingAniData.ToString()];
-        ItemTwoHandLeftAniData = frameDataLists[Define.AniFrameData.ItemTwoHandLeftAniData.ToString()];
-        PotionThrowAniData = frameDataLists[Define.AniFrameData.PotionThrowAniData.ToString()];
-
-        RightPunchAniData = angleDataLists[Define.AniAngleData.RightPunchAniData.ToString()];
-        LeftPunchAniData = angleDataLists[Define.AniAngleData.LeftPunchAniData.ToString()];
-        RightPunchResettingAniData = angleDataLists[Define.AniAngleData.RightPunchResettingAniData.ToString()];
-        LeftPunchResettingAniData = angleDataLists[Define.AniAngleData.LeftPunchResettingAniData.ToString()];
-        MoveAngleJumpAniData = angleDataLists[Define.AniAngleData.MoveAngleJumpAniData.ToString()];
-        HeadingAngleAniData = angleDataLists[Define.AniAngleData.HeadingAngleAniData.ToString()];
-        RSkillAngleAniData = angleDataLists[Define.AniAngleData.RSkillAngleAniData.ToString()];
-        ItemTwoHandAngleData = angleDataLists[Define.AniAngleData.ItemTwoHandAngleData.ToString()];
-        PotionAngleAniData = angleDataLists[Define.AniAngleData.PotionAngleAniData.ToString()];
-        ItemTwoHandLeftAngleData = angleDataLists[Define.AniAngleData.ItemTwoHandLeftAngleData.ToString()];
-        PotionThrowAngleData = angleDataLists[Define.AniAngleData.PotionThrowAngleData.ToString()];
-    }
+   
 
 
 
@@ -554,9 +508,6 @@ public class PlayerController : MonoBehaviourPun
 
         LoadAnimForceData();
         LoadAnimRotateData();
-        AnimationsSetup();
-
-
     }
 
     [PunRPC]
@@ -905,9 +856,9 @@ public class PlayerController : MonoBehaviourPun
             childJoints[i].angularZMotion = ConfigurableJointMotion.Locked;
         }
 
-        for (int i = 0; i < RSkillAngleAniData.Length; i++)
+        for (int i = 0; i < angleDataLists[Define.AniAngleData.RSkillAngleAniData.ToString()].Length; i++)
         {
-            AniAngleForce(RSkillAngleAniData, i);
+            AniAngleForce(angleDataLists[Define.AniAngleData.RSkillAngleAniData.ToString()], i);
         }
         StartCoroutine(ForceRready(ChargeAniHoldTime));
         yield return null;
@@ -916,18 +867,18 @@ public class PlayerController : MonoBehaviourPun
     IEnumerator ForceRready(float _delay)
     {
         startChargeTime = Time.time;
-        for (int i = 0; i < RSkillAniData.Length; i++)
+        for (int i = 0; i < frameDataLists[Define.AniFrameData.RSkillAniData.ToString()].Length; i++)
         {
-            AniForce(RSkillAniData, i);
+            AniForce(frameDataLists[Define.AniFrameData.RSkillAniData.ToString()], i);
         }
         yield return new WaitForSeconds(_delay);
         //물체의 모션을 고정
         Rigidbody _RPartRigidbody;
-        for (int i = 0; i < RSkillAniData.Length; i++)
+        for (int i = 0; i < frameDataLists[Define.AniFrameData.RSkillAniData.ToString()].Length; i++)
         {
-            for (int j = 0; j < RSkillAniData[i].StandardRigidbodies.Length; j++)
+            for (int j = 0; j < frameDataLists[Define.AniFrameData.RSkillAniData.ToString()][i].StandardRigidbodies.Length; j++)
             {
-                _RPartRigidbody = RSkillAniData[i].ActionRigidbodies[j];
+                _RPartRigidbody = frameDataLists[Define.AniFrameData.RSkillAniData.ToString()][i].ActionRigidbodies[j];
                 _RPartRigidbody.constraints = RigidbodyConstraints.FreezeAll;
                 //키를 짧게 누르면 락 걸리는걸 방지 하기 위한 
                 if (endChargeTime - startChargeTime > 0.0001f)
@@ -949,11 +900,11 @@ public class PlayerController : MonoBehaviourPun
         endChargeTime = Time.time;
         Rigidbody _RPartRigidbody;
 
-        for (int i = 0; i < RSkillAniData.Length; i++)
+        for (int i = 0; i < frameDataLists[Define.AniFrameData.RSkillAniData.ToString()].Length; i++)
         {
-            for (int j = 0; j < RSkillAniData[i].StandardRigidbodies.Length; j++)
+            for (int j = 0; j < frameDataLists[Define.AniFrameData.RSkillAniData.ToString()][i].StandardRigidbodies.Length; j++)
             {
-                _RPartRigidbody = RSkillAniData[i].ActionRigidbodies[j];
+                _RPartRigidbody = frameDataLists[Define.AniFrameData.RSkillAniData.ToString()][i].ActionRigidbodies[j];
                 //Debug.Log("Freeze풀기 : "+ _RPartRigidbody);
                 _RPartRigidbody.constraints = RigidbodyConstraints.None;
                 _RPartRigidbody.velocity = Vector3.zero;
@@ -1359,7 +1310,7 @@ public class PlayerController : MonoBehaviourPun
 
     public void ArmActionReadying(Side side)
     {
-        AniAngleData[] aniAngleDatas = (side == Side.Right) ? RightPunchAniData : LeftPunchAniData;
+        AniAngleData[] aniAngleDatas = (side == Side.Right) ? angleDataLists[Define.AniAngleData.RightPunchAniData.ToString()] : angleDataLists[Define.AniAngleData.LeftPunchAniData.ToString()];
         for (int i = 0; i < aniAngleDatas.Length; i++)
         {
             AniAngleForce(aniAngleDatas, i);
@@ -1375,7 +1326,7 @@ public class PlayerController : MonoBehaviourPun
 
         if (side == Side.Left)
         {
-            aniFrameDatas = LeftPunchingAniData;
+            aniFrameDatas = frameDataLists[Define.AniFrameData.LeftPunchingAniData.ToString()];
             transform2 = _bodyHandler.LeftHand.transform;
             if (_isRSkillCheck)
             {
@@ -1393,7 +1344,7 @@ public class PlayerController : MonoBehaviourPun
         }
         else
         {
-            aniFrameDatas = RightPunchingAniData;
+            aniFrameDatas = frameDataLists[Define.AniFrameData.RightPunchingAniData.ToString()];
             transform2 = _bodyHandler.RightHand.transform;
             if (_isRSkillCheck)
             {
@@ -1430,7 +1381,7 @@ public class PlayerController : MonoBehaviourPun
     public void ArmActionPunching(Side side, float itemPower)
     {
         Transform partTransform = _bodyHandler.Chest.transform;
-        AniFrameData[] aniFrameDatas = LeftPunchingAniData;
+        AniFrameData[] aniFrameDatas = frameDataLists[Define.AniFrameData.LeftPunchingAniData.ToString()];
         Transform transform2 = _bodyHandler.LeftHand.transform;
         _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
         _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
@@ -1438,7 +1389,7 @@ public class PlayerController : MonoBehaviourPun
 
         if (side == Side.Right)
         {
-            aniFrameDatas = RightPunchingAniData;
+            aniFrameDatas = frameDataLists[Define.AniFrameData.RightPunchingAniData.ToString()];
             transform2 = _bodyHandler.RightHand.transform;
             _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
             _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
@@ -1456,7 +1407,7 @@ public class PlayerController : MonoBehaviourPun
     {
         Transform partTransform = _bodyHandler.Chest.transform;
 
-        AniAngleData[] aniAngleDatas = LeftPunchResettingAniData;
+        AniAngleData[] aniAngleDatas = angleDataLists[Define.AniAngleData.LeftPunchResettingAniData.ToString()];
         
         if (side == Side.Left)
         {
@@ -1468,7 +1419,7 @@ public class PlayerController : MonoBehaviourPun
         }
         else
         {
-            aniAngleDatas = RightPunchResettingAniData;
+            aniAngleDatas = angleDataLists[Define.AniAngleData.RightPunchResettingAniData.ToString()];
             _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
             _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
             _bodyHandler.RightForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
@@ -1479,7 +1430,7 @@ public class PlayerController : MonoBehaviourPun
         for (int i = 0; i < aniAngleDatas.Length; i++)
         {
             Vector3 dir = partTransform.transform.right / 2f;
-            AniAngleForce(LeftPunchResettingAniData, i, dir);
+            AniAngleForce(angleDataLists[Define.AniAngleData.LeftPunchResettingAniData.ToString()], i, dir);
         }
     }
 
@@ -1515,9 +1466,9 @@ public class PlayerController : MonoBehaviourPun
                 if (i == 2)
                     AniForce(frameDataLists[Define.AniFrameData.JumpAniForceData.ToString()], i, Vector3.down);
             }
-            for (int i = 0; i < MoveAngleJumpAniData.Length; i++)
+            for (int i = 0; i < angleDataLists[Define.AniAngleData.MoveAngleJumpAniData.ToString()].Length; i++)
             {
-                AniAngleForce(MoveAngleJumpAniData, i, _moveDir + new Vector3(0, 0.2f, 0f));
+                AniAngleForce(angleDataLists[Define.AniAngleData.MoveAngleJumpAniData.ToString()], i, _moveDir + new Vector3(0, 0.2f, 0f));
             }
         }
         
@@ -1559,16 +1510,16 @@ public class PlayerController : MonoBehaviourPun
         this._bodyHandler.Head.PartInteractable.damageModifier = InteractableObject.Damage.Headbutt;
         photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.Head, true);
 
-        for (int i = 0; i < HeadingAniData.Length; i++)
+        for (int i = 0; i < frameDataLists[Define.AniFrameData.HeadingAniData.ToString()].Length; i++)
         {
-            AniForce(HeadingAniData, i);
+            AniForce(frameDataLists[Define.AniFrameData.HeadingAniData.ToString()], i);
         }
-        for (int i = 0; i < HeadingAngleAniData.Length; i++)
+        for (int i = 0; i < angleDataLists[Define.AniAngleData.HeadingAngleAniData.ToString()].Length; i++)
         {
             if (i == 0)
-                AniAngleForce(HeadingAngleAniData, i, _moveDir + new Vector3(0f, 0.2f, 0f));
+                AniAngleForce(angleDataLists[Define.AniAngleData.HeadingAngleAniData.ToString()], i, _moveDir + new Vector3(0f, 0.2f, 0f));
             if (i == 1)
-                AniAngleForce(HeadingAngleAniData, i, _moveDir + new Vector3(0f, 0.2f, 0f));
+                AniAngleForce(angleDataLists[Define.AniAngleData.HeadingAngleAniData.ToString()], i, _moveDir + new Vector3(0f, 0.2f, 0f));
         }
 
         yield return new WaitForSeconds(HeadingCoolTime);
@@ -1941,7 +1892,7 @@ public class PlayerController : MonoBehaviourPun
     {
         //upperArm 2 chest1 up right 0.01 20 foreArm chest up back 
         //TestRready 오른쪽 왼쪽 구별해서 좌우로 휘두룰수 있음
-        AniAngleData[] itemTwoHands = (side == Side.Right) ? ItemTwoHandAngleData : ItemTwoHandLeftAngleData;
+        AniAngleData[] itemTwoHands = (side == Side.Right) ? angleDataLists[Define.AniAngleData.ItemTwoHandAngleData.ToString()] : angleDataLists[Define.AniAngleData.ItemTwoHandLeftAngleData.ToString()];
         for (int i = 0; i < itemTwoHands.Length; i++)
         {
             AniAngleForce(itemTwoHands, i);
@@ -1952,7 +1903,7 @@ public class PlayerController : MonoBehaviourPun
     {
 
         Transform partTransform = _bodyHandler.Chest.transform;
-        AniFrameData[] itemTwoHands = ItemTwoHandLeftAniData;
+        AniFrameData[] itemTwoHands = frameDataLists[Define.AniFrameData.ItemTwoHandLeftAniData.ToString()];
         Transform transform2 = _bodyHandler.LeftHand.transform;
         _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
         _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
@@ -1960,7 +1911,7 @@ public class PlayerController : MonoBehaviourPun
 
         if (side == Side.Right)
         {
-            itemTwoHands = ItemTwoHandAniData;
+            itemTwoHands = frameDataLists[Define.AniFrameData.ItemTwoHandAniData.ToString()];
             transform2 = _bodyHandler.RightHand.transform;
             _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
             _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
@@ -1978,14 +1929,14 @@ public class PlayerController : MonoBehaviourPun
     {
         Transform partTransform = _bodyHandler.Chest.transform;
 
-        AniAngleData[] itemTwoHands = ItemTwoHandLeftAngleData;
+        AniAngleData[] itemTwoHands = angleDataLists[Define.AniAngleData.ItemTwoHandLeftAngleData.ToString()];
         _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
         _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
         _bodyHandler.LeftForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
 
         if (side == Side.Right)
         {
-            itemTwoHands = ItemTwoHandAngleData;
+            itemTwoHands = angleDataLists[Define.AniAngleData.ItemTwoHandAngleData.ToString()];
             _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
             _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
             _bodyHandler.RightForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
@@ -2040,33 +1991,33 @@ public class PlayerController : MonoBehaviourPun
     #region PotionAni
     void PotionReady()
     {
-        for (int i = 0; i < PotionAngleAniData.Length; i++)
+        for (int i = 0; i < angleDataLists[Define.AniAngleData.PotionAngleAniData.ToString()].Length; i++)
         {
-            AniAngleForce(PotionAngleAniData, i);
+            AniAngleForce(angleDataLists[Define.AniAngleData.PotionAngleAniData.ToString()], i);
         }
     }
 
     void PotionStart()
     {
-        for (int i = 0; i < PotionReadyAniData.Length; i++)
+        for (int i = 0; i < frameDataLists[Define.AniFrameData.PotionReadyAniData.ToString()].Length; i++)
         {
-            AniForce(PotionReadyAniData, i);
+            AniForce(frameDataLists[Define.AniFrameData.PotionReadyAniData.ToString()], i);
         }
     }
 
     void PotionDrinking()
     {
-        for (int i = 0; i < PotionDrinkingAniData.Length; i++)
+        for (int i = 0; i < frameDataLists[Define.AniFrameData.PotionDrinkingAniData.ToString()].Length; i++)
         {
-            AniForce(PotionDrinkingAniData, i);
+            AniForce(frameDataLists[Define.AniFrameData.PotionDrinkingAniData.ToString()], i);
         }
     }
 
     void PotionEnd()
     {
-        for (int i = 0; i < PotionAngleAniData.Length; i++)
+        for (int i = 0; i < angleDataLists[Define.AniAngleData.PotionAngleAniData.ToString()].Length; i++)
         {
-            AniAngleForce(PotionAngleAniData, i);
+            AniAngleForce(angleDataLists[Define.AniAngleData.PotionAngleAniData.ToString()], i);
         }
     }
     #endregion
@@ -2104,25 +2055,25 @@ public class PlayerController : MonoBehaviourPun
 
     void PotionThrowReady()
     {
-        for (int i = 0; i < PotionAngleAniData.Length; i++)
+        for (int i = 0; i < angleDataLists[Define.AniAngleData.PotionAngleAniData.ToString()].Length; i++)
         {
-            AniAngleForce(PotionAngleAniData, i);
+            AniAngleForce(angleDataLists[Define.AniAngleData.PotionAngleAniData.ToString()], i);
         }
     }
 
     void PotionThrowing()
     {
-        for (int i = 0; i < PotionThrowAniData.Length; i++)
+        for (int i = 0; i < frameDataLists[Define.AniFrameData.PotionThrowAniData.ToString()].Length; i++)
         {
-            AniForce(PotionThrowAniData, i);
+            AniForce(frameDataLists[Define.AniFrameData.PotionThrowAniData.ToString()], i);
         }
     }
 
     void PotionThrowEnd()
     {
-        for (int i = 0; i < PotionThrowAngleData.Length; i++)
+        for (int i = 0; i < angleDataLists[Define.AniAngleData.PotionThrowAngleData.ToString()].Length; i++)
         {
-            AniAngleForce(PotionThrowAngleData, i);
+            AniAngleForce(angleDataLists[Define.AniAngleData.PotionThrowAngleData.ToString()], i);
         }
     }
     #endregion

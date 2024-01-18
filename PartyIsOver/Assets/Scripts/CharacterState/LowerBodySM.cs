@@ -20,7 +20,6 @@ public class LowerBodySM : StateMachine
         idleState = new LowerIdle(this);
         jumpingState = new Jumping(this);
         inputHandler = GetComponent<PlayerInputHandler>();
-        Debug.Log("input"+ inputHandler);
     }
 
     protected override IBaseState GetInitialState()

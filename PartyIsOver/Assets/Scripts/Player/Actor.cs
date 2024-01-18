@@ -24,6 +24,9 @@ public class Actor : MonoBehaviourPun, IPunObservable
     public Grab Grab;
     public CameraControl CameraControl;
 
+    public AnimationPlayer animPlayer = new AnimationPlayer();
+    public AnimationData animData;
+
     public enum ActorState
     {
         Dead = 0x1,
@@ -169,6 +172,8 @@ public class Actor : MonoBehaviourPun, IPunObservable
         _maxStamina = statData.MaxStamina;
         _damageReduction = statData.DamageReduction;
         _playerAttackPoint = statData.PlayerAttackPoint;
+
+        animData = new AnimationData(BodyHandler);
     }
 
     private void ChangeLayerRecursively(GameObject obj, int layer)

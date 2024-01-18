@@ -5,11 +5,9 @@ using UnityEngine;
 
 public class CmdInAirMove : PlayerCommand
 {
-
-    public CmdInAirMove(AnimationData data, BodyHandler bodyHandler)
+    public CmdInAirMove(Actor actor)
     {
-        animData = data;
-        this.bodyHandler = bodyHandler;
+        bodyHandler = actor.BodyHandler;
     }
 
     public override void Execute(Vector3 moveDir = default)

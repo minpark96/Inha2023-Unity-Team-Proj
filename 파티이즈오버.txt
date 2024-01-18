@@ -160,6 +160,10 @@ InputManager나 PlayerInputHandler에서 가져와서 쓰는식으로 해도 괜
  ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ커맨드ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 https://welcomeheesuk.tistory.com/72
 
+
+AnimationData를 커맨드는 깡통만 가지고 있고 actor의 AnimationData를 생성자에서
+참조받는 식으로
+
 현재 AnimationData가 커맨드 안에 있는데 이를 actor가 가지고 있게 하고
 Execute에 매개변수로 actor를 받는 방법으로 바꿀수도 있음
 
@@ -238,7 +242,7 @@ Angle Ani Data
 }
 
 
-
+frameDataLists[Define.AniFrameData.RightPunchingAniData.ToString()]
 
 
     public enum AniForceData
