@@ -17,7 +17,6 @@ public class AniFrameData
     public enum ForceDirection
     {
         Zero,
-        ZeroReverse,
         Forward,
         Backward,
         Up,
@@ -44,11 +43,11 @@ public class AniAngleData
         Right,
         Left,
     }
-    public Rigidbody[] StandardRigidbodies;
-    public Transform[] ActionDirection;
-    public Transform[] TargetDirection;
-    public AniAngle[] ActionAngleDirections;
-    public AniAngle[] TargetAngleDirections;
+    public Rigidbody[] ActionRigidbodies;
+    public Transform[] StandardPart;
+    public Transform[] TargetPart;
+    public AniAngle[] StandardDirections;
+    public AniAngle[] TargetDirections;
     public float[] AngleStability;
     public float[] AnglePowerValues;
 
@@ -142,8 +141,6 @@ public class PlayerController : MonoBehaviourPun
             {
                 case Define.AnimDirection.Zero:
                     dir = ForceDirection.Zero; break;
-                case Define.AnimDirection.ZeroReverse:
-                    dir = ForceDirection.ZeroReverse; break;
                 case Define.AnimDirection.Forward:
                     dir = ForceDirection.Forward; break;
                 case Define.AnimDirection.Backward:
@@ -166,7 +163,39 @@ public class PlayerController : MonoBehaviourPun
         return dir;
     }
 
-    void LoadAnimFrameData()
+    AniAngle StringToRotateDir(string text)
+    {
+        AniAngle dir = new AniAngle();
+        Define.AnimDirection eDirection;
+        if (Enum.TryParse(text, out eDirection))
+        {
+            switch (eDirection)
+            {
+                case Define.AnimDirection.Zero:
+                    dir = AniAngle.Zero; break;
+                case Define.AnimDirection.Forward:
+                    dir = AniAngle.Forward; break;
+                case Define.AnimDirection.Backward:
+                    dir = AniAngle.Backward; break;
+                case Define.AnimDirection.Up:
+                    dir = AniAngle.Up; break;
+                case Define.AnimDirection.Down:
+                    dir = AniAngle.Down; break;
+                case Define.AnimDirection.Right:
+                    dir = AniAngle.Right; break;
+                case Define.AnimDirection.Left:
+                    dir = AniAngle.Left; break;
+                default:
+                    Debug.Log("포스방향 불러오기 에러1"); break;
+            }
+        }
+        else
+            Debug.Log("포스방향 불러오기 에러2" + text);
+
+        return dir;
+    }
+
+    void LoadAnimForceData()
     {
         Define.AniFrameData[] frameDataNames = (Define.AniFrameData[])Enum.GetValues(typeof(Define.AniFrameData));
         int actionCount = 0;
@@ -201,20 +230,20 @@ public class PlayerController : MonoBehaviourPun
                         string key = parts[0].Trim();
                         string value = parts[1].Trim();
 
-                        Define.AnimFrameValue frameValue;
+                        Define.AnimForceValue frameValue;
                         Enum.TryParse(key, out frameValue);
 
-                        if (frameValue == Define.AnimFrameValue.ActionCount)
+                        if (frameValue == Define.AnimForceValue.ActionCount)
                             actionCount = int.Parse(value);
-                        else if (frameValue == Define.AnimFrameValue.PartCount)
+                        else if (frameValue == Define.AnimForceValue.PartCount)
                             partCount.Add(int.Parse(value));
-                        else if (frameValue == Define.AnimFrameValue.StandardPart)
+                        else if (frameValue == Define.AnimForceValue.StandardPart)
                             standardRb.Add(StringToRigid(value));
-                        else if (frameValue == Define.AnimFrameValue.ActionPart)
+                        else if (frameValue == Define.AnimForceValue.ActionPart)
                             actionRb.Add(StringToRigid(value));
-                        else if (frameValue == Define.AnimFrameValue.ForceDirection)
+                        else if (frameValue == Define.AnimForceValue.ForceDirection)
                             forceDir.Add(StringToForceDir(value));
-                        else if (frameValue == Define.AnimFrameValue.ForcePowerValues)
+                        else if (frameValue == Define.AnimForceValue.ForcePowerValues)
                             forceVal.Add(int.Parse(value));
                     }
                 }
@@ -245,18 +274,122 @@ public class PlayerController : MonoBehaviourPun
                 Debug.LogError("File not found: " + filePath);
         }
     }
+    void LoadAnimRotateData()
+    {
+        Define.AniAngleData[] rotateDataNames = (Define.AniAngleData[])Enum.GetValues(typeof(Define.AniAngleData));
+        int actionCount = 0;
+        List<int> partCount = new List<int>();
+        List<Rigidbody> actionRb = new List<Rigidbody>();
+        List<Transform> standardPart = new List<Transform>();
+        List<Transform> targetPart = new List<Transform>();
+        List<AniAngle> standardDir = new List<AniAngle>();
+        List<AniAngle> targetDir = new List<AniAngle>();
+        List<int> stability = new List<int>();
+        List<int> forceVal = new List<int>();
 
+
+
+        for (int i = 0; i < (int)Define.AniFrameData.End; i++)
+        {
+            string filePath = $"Animations/{rotateDataNames[i]}";
+            TextAsset textAsset = Resources.Load<TextAsset>(filePath);
+            //리스트들 클리어해야함
+            partCount.Clear();
+
+            actionRb.Clear();
+            standardPart.Clear();
+            targetPart.Clear();
+            standardDir.Clear();
+            targetDir.Clear();
+
+            stability.Clear();
+            forceVal.Clear();
+
+            int index = 0;
+
+            if (textAsset != null)
+            {
+                string[] lines = textAsset.text.Split('\n');
+                foreach (string line in lines)
+                {
+                    string[] parts = line.Split(':');
+                    if (parts.Length == 2)
+                    {
+                        string key = parts[0].Trim();
+                        string value = parts[1].Trim();
+
+                        Define.AnimRotateValue frameValue;
+                        Enum.TryParse(key, out frameValue);
+
+                        if (frameValue == Define.AnimRotateValue.ActionCount)
+                            actionCount = int.Parse(value);
+                        else if (frameValue == Define.AnimRotateValue.PartCount)
+                            partCount.Add(int.Parse(value));
+                        else if (frameValue == Define.AnimRotateValue.ActionRigidbodies)
+                            actionRb.Add(StringToRigid(value));
+                        else if (frameValue == Define.AnimRotateValue.StandardPart)
+                            standardPart.Add(StringToRigid(value).transform);
+                        else if (frameValue == Define.AnimRotateValue.TartgetPart)
+                            targetPart.Add(StringToRigid(value).transform);
+                        else if (frameValue == Define.AnimRotateValue.StandardDirections)
+                            standardDir.Add(StringToRotateDir(value));
+                        else if (frameValue == Define.AnimRotateValue.TargetDirections)
+                            targetDir.Add(StringToRotateDir(value));
+                        else if (frameValue == Define.AnimRotateValue.AngleStability)
+                            stability.Add(int.Parse(value));
+                        else if (frameValue == Define.AnimRotateValue.AnglePowerValues)
+                            forceVal.Add(int.Parse(value));
+
+
+                    }
+                }
+
+                AniAngleData[] datas = new AniAngleData[actionCount];
+
+                for (int j = 0; j < actionCount; j++)
+                {
+                    AniAngleData data = new AniAngleData();
+                    data.ActionRigidbodies = new Rigidbody[partCount[j]];
+                    data.StandardPart = new Transform[partCount[j]];
+                    data.TargetPart = new Transform[partCount[j]];
+                    data.StandardDirections = new AniAngle[partCount[j]];
+                    data.TargetDirections = new AniAngle[partCount[j]];
+                    data.AngleStability = new float[partCount[j]];
+                    data.AnglePowerValues = new float[partCount[j]];
+
+
+                    for (int k = 0; k < partCount[j]; k++)
+                    {
+                        data.ActionRigidbodies[k] = actionRb[index];
+                        data.StandardPart[k] = standardPart[index];
+                        data.TargetPart[k] = targetPart[index];
+                        data.StandardDirections[k] = standardDir[index];
+
+                        data.TargetDirections[k] = targetDir[index];
+                        data.AngleStability[k] = stability[index];
+                        data.AnglePowerValues[k] = forceVal[index];
+                        index++;
+                    }
+                    datas[j] = data;
+                }
+                angleDataLists[rotateDataNames[i].ToString()] = datas;
+            }
+            else
+                Debug.LogError("File not found: " + filePath);
+        }
+    }
     void AnimationsSetup()
     {
-        frameDataLists[Define.AniFrameData.RightPunchingAniData.ToString()] = RightPunchingAniData;
-        frameDataLists[Define.AniFrameData.LeftPunchingAniData.ToString()] = LeftPunchingAniData;
-        frameDataLists[Define.AniFrameData.HeadingAniData.ToString()] = HeadingAniData;
-        frameDataLists[Define.AniFrameData.RSkillAniData.ToString()] = RSkillAniData;
-        frameDataLists[Define.AniFrameData.ItemTwoHandAniData.ToString()] = ItemTwoHandAniData;
-        frameDataLists[Define.AniFrameData.PotionReadyAniData.ToString()] = PotionReadyAniData;
-        frameDataLists[Define.AniFrameData.PotionDrinkingAniData.ToString()] = PotionDrinkingAniData;
-        frameDataLists[Define.AniFrameData.ItemTwoHandLeftAniData.ToString()] = ItemTwoHandLeftAniData;
-        frameDataLists[Define.AniFrameData.PotionThrowAniData.ToString()] = PotionThrowAniData;
+        RightPunchingAniData = frameDataLists[Define.AniFrameData.RightPunchingAniData.ToString()];
+        LeftPunchingAniData = frameDataLists[Define.AniFrameData.LeftPunchingAniData.ToString()];
+        JumpAniForceData = frameDataLists[Define.AniFrameData.JumpAniForceData.ToString()];
+        HeadingAniData = frameDataLists[Define.AniFrameData.HeadingAniData.ToString()]; ;
+        RSkillAniData = frameDataLists[Define.AniFrameData.RSkillAniData.ToString()];
+        ItemTwoHandAniData = frameDataLists[Define.AniFrameData.ItemTwoHandAniData.ToString()];
+        PotionReadyAniData = frameDataLists[Define.AniFrameData.PotionReadyAniData.ToString()];
+        PotionDrinkingAniData = frameDataLists[Define.AniFrameData.PotionDrinkingAniData.ToString()];
+        ItemTwoHandLeftAniData = frameDataLists[Define.AniFrameData.ItemTwoHandLeftAniData.ToString()];
+        PotionThrowAniData = frameDataLists[Define.AniFrameData.PotionThrowAniData.ToString()];
 
         angleDataLists[Define.AniAngleData. RightPunchAniData.ToString()] = RightPunchAniData;
         angleDataLists[Define.AniAngleData. LeftPunchAniData.ToString()] = LeftPunchAniData;
@@ -419,20 +552,11 @@ public class PlayerController : MonoBehaviourPun
         _itemSwingPower = statData.ItemSwingPower;
 
 
+        LoadAnimForceData();
+        LoadAnimRotateData();
         AnimationsSetup();
-        LoadAnimFrameData();
 
 
-        RightPunchingAniData = frameDataLists[Define.AniFrameData.RightPunchingAniData.ToString()];
-        LeftPunchingAniData = frameDataLists[Define.AniFrameData.LeftPunchingAniData.ToString()];
-        JumpAniForceData = frameDataLists[Define.AniFrameData.JumpAniForceData.ToString()];
-        HeadingAniData = frameDataLists[Define.AniFrameData.HeadingAniData.ToString()]; ;
-        RSkillAniData = frameDataLists[Define.AniFrameData.RSkillAniData.ToString()];
-        ItemTwoHandAniData = frameDataLists[Define.AniFrameData.ItemTwoHandAniData.ToString()];
-        PotionReadyAniData = frameDataLists[Define.AniFrameData.PotionReadyAniData.ToString()];
-        PotionDrinkingAniData = frameDataLists[Define.AniFrameData.PotionDrinkingAniData.ToString()];
-        ItemTwoHandLeftAniData = frameDataLists[Define.AniFrameData.ItemTwoHandLeftAniData.ToString()];
-        PotionThrowAniData = frameDataLists[Define.AniFrameData.PotionThrowAniData.ToString()];
     }
 
     [PunRPC]
@@ -994,9 +1118,6 @@ public class PlayerController : MonoBehaviourPun
             case ForceDirection.Zero:
                 _direction = new Vector3(0, 0, 0);
                 break;
-            case ForceDirection.ZeroReverse:
-                _direction = new Vector3(-1, -1, -1);
-                break;
             case ForceDirection.Forward:
                 _direction = -data.StandardRigidbodies[index].transform.up;
                 break;
@@ -1021,6 +1142,8 @@ public class PlayerController : MonoBehaviourPun
         }
         return _direction;
     }
+
+
     Vector3 GetAngleDirection(AniAngle _angleState, Transform _Transformdirection)
     {
         Vector3 _direction;
@@ -1060,7 +1183,7 @@ public class PlayerController : MonoBehaviourPun
     {
         for (int i = 0; i < aniForceData[_elementCount].StandardRigidbodies.Length; i++)
         {
-            if (aniForceData[_elementCount].ForceDirections[i] == ForceDirection.Zero || aniForceData[_elementCount].ForceDirections[i] == ForceDirection.ZeroReverse)
+            if (aniForceData[_elementCount].ForceDirections[i] == ForceDirection.Zero)
             {
                 aniForceData[_elementCount].ActionRigidbodies[i].AddForce(_dir * aniForceData[_elementCount].ForcePowerValues[i] * _punchpower, ForceMode.Impulse);
             }
@@ -1072,20 +1195,16 @@ public class PlayerController : MonoBehaviourPun
         }
     }
 
-
-
-    
-
     public void AniAngleForce(AniAngleData[] _aniAngleData, int _elementCount, Vector3 _vector = default)//default는 vector3.zero
     {
-        for (int i = 0; i < _aniAngleData[_elementCount].StandardRigidbodies.Length; i++)
+        for (int i = 0; i < _aniAngleData[_elementCount].ActionRigidbodies.Length; i++)
         {
-            Vector3 _angleDirection = GetAngleDirection(_aniAngleData[_elementCount].ActionAngleDirections[i],
-                _aniAngleData[_elementCount].ActionDirection[i]);
-            Vector3 _targetDirection = GetAngleDirection(_aniAngleData[_elementCount].TargetAngleDirections[i],
-                _aniAngleData[_elementCount].TargetDirection[i]);
+            Vector3 _angleDirection = GetAngleDirection(_aniAngleData[_elementCount].StandardDirections[i],
+                _aniAngleData[_elementCount].StandardPart[i]);
+            Vector3 _targetDirection = GetAngleDirection(_aniAngleData[_elementCount].TargetDirections[i],
+                _aniAngleData[_elementCount].TargetPart[i]);
 
-            AlignToVector(_aniAngleData[_elementCount].StandardRigidbodies[i], _angleDirection, _vector + _targetDirection,
+            AlignToVector(_aniAngleData[_elementCount].ActionRigidbodies[i], _angleDirection, _vector + _targetDirection,
                 _aniAngleData[_elementCount].AngleStability[i], _aniAngleData[_elementCount].AnglePowerValues[i]);
         }
     }

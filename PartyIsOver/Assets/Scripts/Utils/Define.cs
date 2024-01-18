@@ -251,7 +251,6 @@ public class Define
     public enum AnimDirection
     {
         Zero,
-        ZeroReverse,
         Forward,
         Backward,
         Up,
@@ -260,7 +259,7 @@ public class Define
         Left,
     }
 
-    public enum AnimFrameValue
+    public enum AnimForceValue
     {
         ActionCount,
         PartCount,
@@ -270,7 +269,18 @@ public class Define
         ForcePowerValues,
     }
 
-
+    public enum AnimRotateValue
+    {
+        ActionCount,
+        PartCount,
+        ActionRigidbodies,
+        StandardPart,
+        TartgetPart,
+        StandardDirections,
+        TargetDirections,
+        AngleStability,
+        AnglePowerValues,
+    }
 }
 
 

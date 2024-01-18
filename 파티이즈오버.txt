@@ -227,13 +227,13 @@ Angle Ani Data
 { 토탈data갯수 반복
 	내부data갯수
 	{내부data갯수 반복 //1말고는 안씀
-		Standard Rigidbodies
-		ActionRigidbodies
-		TargetDirection
-		Action Angle Directions
-		Target Angle Directions
-		Angle Stability
-		Angle Power Values
+        ActionRigidbodies,
+        StandardPart,
+        TartgetPart,
+        StandardDirections,
+        TargetDirections,
+        AngleStability,
+        AnglePowerValues,
 	}
 }
 
