@@ -8,7 +8,6 @@ public class StateMachine : MonoBehaviour
     private BaseState currentState;
     public PlayerCharacter PlayerCharacter;
 
-
     public void Start()
     {
         PlayerCharacter = GetComponent<PlayerCharacter>();
@@ -49,7 +48,7 @@ public class StateMachine : MonoBehaviour
 
     private void OnGUI()
     {
-        string content = currentState != null ? currentState.name : "(no current state)";
+        string content = currentState != null ? currentState.Name : "(no current state)";
         GUILayout.Label($"<color='black'><size=40>{content}</size></color>");
     }
     

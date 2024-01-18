@@ -6,18 +6,19 @@ using UnityEngine;
 public class MovementSM : StateMachine
 {
     [HideInInspector]
-    public Idle idleState;
+    public Idle IdleState;
     [HideInInspector]
-    public Moving movingState;
+    public Moving MovingState;
 
-    public Rigidbody rigidbody;
+    public Rigidbody Rigidbody;
     //speed는 ScriptableObject 로 변경해서 받아야함
-    public float speed = 4;
+    public float Speed = 4;
+    public float RunSpeed = 1.35f;
 
     private void Awake()
     {
-        idleState = new Idle(this);
-        movingState = new Moving(this);
+        IdleState = new Idle(this);
+        MovingState = new Moving(this);
 
         Init();
     }
@@ -25,11 +26,11 @@ public class MovementSM : StateMachine
     private void Init()
     {
         Transform Hip = transform.Find("GreenHip");
-        rigidbody = Hip.GetComponent<Rigidbody>();
+        Rigidbody = Hip.GetComponent<Rigidbody>();
     }
 
     protected override BaseState GetInitialState()
     {
-        return idleState;
+        return IdleState;
     }
 }

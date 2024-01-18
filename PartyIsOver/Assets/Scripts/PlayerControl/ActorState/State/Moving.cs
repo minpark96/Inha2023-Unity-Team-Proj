@@ -6,50 +6,52 @@ using UnityEngine;
 
 public class Moving : BaseState
 {
-    private MovementSM _sm;
+    private MovementSM sm;
 
-    private float _inputspeed;
-    private float _runSpeedOffset = 350f;
-    private float _runSpeed = 1.5f;
-    private float _maxSpeed = 2f;
+    private float inputspeed;
+    private float maxSpeed = 2f;
+    private float horizontalInput;
+    private float verticalInput;
 
-    float horizontalInput;
-    float verticalInput;
+    private bool isRun;
 
-    private Vector3 _moveInput;
-    private Vector3 _moveDir;
-
-    //GetComponent를 못하니까 public으로 해야할 듯
+    private Vector3 moveInput;
+    private Vector3 moveDir;
 
     public Moving(MovementSM stateMachine) : base("Moving", stateMachine) 
     {
-        _sm = (MovementSM)stateMachine;
+        sm = (MovementSM)stateMachine;
         
     }
     public override void Enter()
     {
         base.Enter();
-        //TODO : 속도 0으로 설정
-        _inputspeed = 0f;
+        inputspeed = 0f;
     }
     public override void UpdateLogic()
     {
         base.UpdateLogic();
-        //TODO : 키 입력 추가
         horizontalInput = Input.GetAxis("Horizontal");
         verticalInput = Input.GetAxis("Vertical");
 
-        _moveInput = new Vector3(horizontalInput, 0, verticalInput);
+        moveInput = new Vector3(horizontalInput, 0, verticalInput);
 
-        if (_moveInput != Vector3.zero)
+        if(Input.GetKey(KeyCode.LeftShift))
         {
-            // 키 입력이 감지되면 Moving 상태 유지
-            _inputspeed = 1f;
+            isRun = true;
         }
         else
         {
-            // 키 입력이 없으면 Idle 상태로 전환
-            stateMachine.ChangeState(_sm.idleState);
+            isRun = false;
+        }
+
+        if (moveInput != Vector3.zero)
+        {
+            inputspeed = 1f;
+        }
+        else
+        {
+            stateMachine.ChangeState(sm.IdleState);
         }
     }
     public override void UpdatePhysics()
@@ -57,13 +59,19 @@ public class Moving : BaseState
         base.UpdatePhysics();
         Vector3 lookForward = new Vector3(stateMachine.PlayerCharacter.CameraTransform.forward.x, 0f, stateMachine.PlayerCharacter.CameraTransform.forward.z).normalized;
         Vector3 lookRight = new Vector3(stateMachine.PlayerCharacter.CameraTransform.right.x, 0f, stateMachine.PlayerCharacter.CameraTransform.right.z).normalized;
-        _moveDir = lookForward * _moveInput.z + lookRight * _moveInput.x;
+        moveDir = lookForward * moveInput.z + lookRight * moveInput.x;
 
-        Vector3 vel = _moveInput * _sm.speed;
-        _sm.rigidbody.velocity = vel;
-
-        _sm.rigidbody.AddForce(_moveDir.normalized * _runSpeed * _runSpeedOffset * Time.deltaTime);
-        if (_sm.rigidbody.velocity.magnitude > _maxSpeed)
-            _sm.rigidbody.velocity = _sm.rigidbody.velocity.normalized * _maxSpeed;
+        if(isRun)
+        {
+            sm.Rigidbody.AddForce(moveDir.normalized * sm.Speed * Time.deltaTime * sm.RunSpeed);
+            if (sm.Rigidbody.velocity.magnitude > maxSpeed)
+                sm.Rigidbody.velocity = sm.Rigidbody.velocity.normalized * maxSpeed * 1.15f;
+        }
+        else
+        {
+            sm.Rigidbody.AddForce(moveDir.normalized * sm.Speed * Time.deltaTime);
+            if (sm.Rigidbody.velocity.magnitude > maxSpeed)
+                sm.Rigidbody.velocity = sm.Rigidbody.velocity.normalized * maxSpeed;
+        }
     }
 }

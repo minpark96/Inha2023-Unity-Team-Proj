@@ -5,8 +5,8 @@ using UnityEngine;
 public class Idle : BaseState
 {
 
-    float horizontalInput;
-    float verticalInput;
+    private float horizontalInput;
+    private float verticalInput;
     public Idle(MovementSM stateMachine) : base("Idel", stateMachine) 
     {
     }
@@ -24,6 +24,6 @@ public class Idle : BaseState
         verticalInput = Input.GetAxis("Vertical");
         //TODO : Å° ÀÔ·Â 
         if (Mathf.Abs(horizontalInput) > Mathf.Epsilon || Mathf.Abs(verticalInput) > Mathf.Epsilon)
-            stateMachine.ChangeState(((MovementSM)stateMachine).movingState);
+            stateMachine.ChangeState(((MovementSM)stateMachine).MovingState);
     }
 }
