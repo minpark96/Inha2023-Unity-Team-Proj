@@ -6,10 +6,12 @@ using UnityEngine;
 public class StateMachine : MonoBehaviour
 {
     private BaseState currentState;
+    public PlayerCharacter PlayerCharacter;
 
-    void Start()
+
+    public void Start()
     {
-        Debug.Log("Not null");
+        PlayerCharacter = GetComponent<PlayerCharacter>();
         currentState = GetInitialState();
         if(currentState != null )
         {
@@ -21,7 +23,6 @@ public class StateMachine : MonoBehaviour
     {
         if(currentState != null)
         {
-            Debug.Log("Not null");
             currentState.UpdateLogic();
         }
     }

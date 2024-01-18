@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using TreeEditor;
 using UnityEngine;
 
 public class MovementSM : StateMachine
 {
+    [HideInInspector]
     public Idle idleState;
+    [HideInInspector]
     public Moving movingState;
 
     public Rigidbody rigidbody;
@@ -13,21 +16,16 @@ public class MovementSM : StateMachine
 
     private void Awake()
     {
-        Debug.Log("Awake");
         idleState = new Idle(this);
         movingState = new Moving(this);
 
         Init();
     }
 
-    private void Start()
-    {
-
-    }
-
     private void Init()
     {
-
+        Transform Hip = transform.Find("GreenHip");
+        rigidbody = Hip.GetComponent<Rigidbody>();
     }
 
     protected override BaseState GetInitialState()

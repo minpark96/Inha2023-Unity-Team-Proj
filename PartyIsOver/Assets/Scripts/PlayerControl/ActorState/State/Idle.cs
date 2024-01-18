@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class Idle : BaseState
 {
-    float inputSpeed;
+
+    float horizontalInput;
+    float verticalInput;
     public Idle(MovementSM stateMachine) : base("Idel", stateMachine) 
     {
     }
@@ -12,14 +14,16 @@ public class Idle : BaseState
     {
         base.Enter();
         //TODO : 속도 0으로 설정
-        inputSpeed = 0f;
+        horizontalInput = 0f;
+        verticalInput = 0f;
     }
     public override void UpdateLogic()
     {
         base.UpdateLogic();
-        inputSpeed = Input.GetAxis("Horizontal");
+        horizontalInput = Input.GetAxis("Horizontal");
+        verticalInput = Input.GetAxis("Vertical");
         //TODO : 키 입력 
-        if (Mathf.Abs(inputSpeed) > Mathf.Epsilon)
+        if (Mathf.Abs(horizontalInput) > Mathf.Epsilon || Mathf.Abs(verticalInput) > Mathf.Epsilon)
             stateMachine.ChangeState(((MovementSM)stateMachine).movingState);
     }
 }
