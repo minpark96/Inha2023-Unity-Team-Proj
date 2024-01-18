@@ -1,0 +1,21 @@
+ActionCount : 2
+
+PartCount : 1
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+ActionRigidbodies : Head
+StandardPart : Head
+TartgetPart : Head
+StandardDirections : Forward
+TargetDirections : Zero
+AngleStability : 4
+AnglePowerValues : 0.1
+
+PartCount : 1
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+ActionRigidbodies : Head
+StandardPart : Head
+TartgetPart : Head
+StandardDirections : Up
+TargetDirections : Up
+AngleStability : 4
+AnglePowerValues : 0.1

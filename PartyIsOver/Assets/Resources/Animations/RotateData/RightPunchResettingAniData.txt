@@ -1,0 +1,21 @@
+ActionCount : 2
+
+PartCount : 1
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+ActionRigidbodies : RightArm
+StandardPart : Chest
+TartgetPart : Chest
+StandardDirections : Up
+TargetDirections : Forward
+AngleStability : 0.01
+AnglePowerValues : 20
+
+PartCount : 1
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+ActionRigidbodies : RightHand
+StandardPart : Chest
+TartgetPart : Chest
+StandardDirections : Up
+TargetDirections : Backward
+AngleStability : 2
+AnglePowerValues : 0.01

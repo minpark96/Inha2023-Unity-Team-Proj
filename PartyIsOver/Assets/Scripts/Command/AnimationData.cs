@@ -44,21 +44,6 @@ public class AnimationData
         return _direction;
     }
 
-    public void AniForce(AniFrameData[] _forceSpeed, int _elementCount, Vector3 _dir = default, float _punchpower = 1f)
-    {
-        for (int i = 0; i < _forceSpeed[_elementCount].StandardRigidbodies.Length; i++)
-        {
-            if (_forceSpeed[_elementCount].ForceDirections[i] == ForceDirection.Zero)
-            {
-                _forceSpeed[_elementCount].ActionRigidbodies[i].AddForce(_dir * _forceSpeed[_elementCount].ForcePowerValues[i] * _punchpower, ForceMode.Impulse);
-            }
-            else
-            {
-                Vector3 _direction = GetForceDirection(_forceSpeed[_elementCount], i);
-                _forceSpeed[_elementCount].ActionRigidbodies[i].AddForce(_direction * _forceSpeed[_elementCount].ForcePowerValues[i] * _punchpower, ForceMode.Impulse);
-            }
-        }
-    }
 
     public Vector3 GetAngleDirection(AniAngle _angleState, Transform _Transformdirection)
     {
@@ -93,6 +78,22 @@ public class AnimationData
         }
 
         return _direction;
+    }
+
+    public void AniForce(AniFrameData[] aniForceData, int _elementCount, Vector3 _dir = default, float _punchpower = 1f)
+    {
+        for (int i = 0; i < aniForceData[_elementCount].StandardRigidbodies.Length; i++)
+        {
+            if (aniForceData[_elementCount].ForceDirections[i] == ForceDirection.Zero)
+            {
+                aniForceData[_elementCount].ActionRigidbodies[i].AddForce(_dir * aniForceData[_elementCount].ForcePowerValues[i] * _punchpower, ForceMode.Impulse);
+            }
+            else
+            {
+                Vector3 _direction = GetForceDirection(aniForceData[_elementCount], i);
+                aniForceData[_elementCount].ActionRigidbodies[i].AddForce(_direction * aniForceData[_elementCount].ForcePowerValues[i] * _punchpower, ForceMode.Impulse);
+            }
+        }
     }
 
     public void AniAngleForce(AniAngleData[] _aniAngleData, int _elementCount, Vector3 _vector = default)//default´Â vector3.zero

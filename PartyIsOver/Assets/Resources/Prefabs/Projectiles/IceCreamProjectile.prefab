@@ -261,11 +261,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Owner: {fileID: 0}
   Gun: {fileID: 0}
-  InitialPosition: {x: 0, y: 0, z: 0}
-  InitialDirection: {x: 0, y: 0, z: 0}
   InteractableObject: {fileID: 0}
   root: {fileID: 8194921285208927527}
-  speed: 10
+  _speed: 15
   maxLifeTime: 5
   gravityDownAcceleration: 7
   _ignoredColliders: []

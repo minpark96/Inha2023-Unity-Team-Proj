@@ -1,0 +1,13 @@
+ActionCount : 1
+
+PartCount : 1
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+ActionRigidbodies : LeftHand
+StandardPart : Head
+TartgetPart : Head
+StandardDirections : Forward
+TargetDirections : Up
+AngleStability : 0.01
+AnglePowerValues : 100
+
+
