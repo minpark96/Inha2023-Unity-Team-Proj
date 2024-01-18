@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class Idle : BaseState
 {
-
     private float horizontalInput;
     private float verticalInput;
+    private bool jumpInput;
     public Idle(MovementSM stateMachine) : base("Idel", stateMachine) 
     {
     }
@@ -25,5 +25,7 @@ public class Idle : BaseState
         //TODO : Å° ÀÔ·Â 
         if (Mathf.Abs(horizontalInput) > Mathf.Epsilon || Mathf.Abs(verticalInput) > Mathf.Epsilon)
             stateMachine.ChangeState(((MovementSM)stateMachine).MovingState);
+        if (Input.GetKey(KeyCode.Space))
+            stateMachine.ChangeState(((MovementSM)stateMachine).JumpingState);
     }
 }

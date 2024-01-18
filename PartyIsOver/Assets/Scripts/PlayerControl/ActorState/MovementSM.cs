@@ -9,6 +9,9 @@ public class MovementSM : StateMachine
     public Idle IdleState;
     [HideInInspector]
     public Moving MovingState;
+    [HideInInspector]
+    public Jumping JumpingState;
+
 
     public Rigidbody Rigidbody;
     //speed는 ScriptableObject 로 변경해서 받아야함
@@ -19,6 +22,7 @@ public class MovementSM : StateMachine
     {
         IdleState = new Idle(this);
         MovingState = new Moving(this);
+        JumpingState = new Jumping(this);
 
         Init();
     }

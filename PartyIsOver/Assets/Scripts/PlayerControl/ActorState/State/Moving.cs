@@ -45,6 +45,12 @@ public class Moving : BaseState
             isRun = false;
         }
 
+        if(Input.GetKey(KeyCode.Space))
+        {
+            //여기가 문제가 있다
+            stateMachine.ChangeState(sm.JumpingState);
+        }
+
         if (moveInput != Vector3.zero)
         {
             inputspeed = 1f;
