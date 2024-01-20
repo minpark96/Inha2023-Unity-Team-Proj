@@ -8,6 +8,8 @@ public class LowerBodySM : StateMachine
     public PlayerInputHandler inputHandler;
     public bool isGrounded=false;
 
+    
+
     //[HideInInspector]
     //public Moving movingState;
     [HideInInspector]

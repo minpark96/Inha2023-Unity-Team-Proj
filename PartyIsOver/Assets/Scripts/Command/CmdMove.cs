@@ -2,21 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CmdMove : ICommand
+public class CmdMove : PlayerCommand
 {
-    private Rigidbody rb;
-    private Vector3 direction;
-    private float speed;
+    bool isInAir = false;
 
-    public CmdMove(Rigidbody rb, Vector3 direction, float speed)
+    public CmdMove(Actor actor)
     {
-        this.direction = direction;
-        this.speed = speed;
-        this.rb = rb;
+        bodyHandler = actor.BodyHandler;
+       
     }
 
-    public void Execute(Vector3 moveDir = default)
+    public override void Execute(Vector3 moveDir = default)
     {
-        rb.AddForce(direction);
+        
     }
 }

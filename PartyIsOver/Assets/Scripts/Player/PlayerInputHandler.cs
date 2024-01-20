@@ -10,38 +10,62 @@ public class PlayerInputHandler : MonoBehaviourPun
     private Actor _actor;
     private Dictionary<COMMAND_KEY, ICommand> commands = new Dictionary<COMMAND_KEY, ICommand>();
     private ICommand _activeCommand;
+    
+    private Transform _cameraArm;
+    private Vector3 _moveDir;
+    private Vector3 _moveInput;
+    private Vector3 _lookForward;
+    private Vector3 _lookRight;
+
+
     private void Awake()
     {
         _actor = GetComponent<Actor>();
         InitCommnad(_actor);
+        if (photonView.IsMine)
+            _cameraArm = _actor.CameraControl.CameraArm;
     }
     private void Update()
     {
-
-      
+        GetMoveInput();
     }
     private void FixedUpdate()
     {
-        //Master클라이어트의 PlayerController에서 받은 커맨드로 해당하는 actor들을 컨트롤하는 방향으로
+        //Master클라이어트에게 받은 커맨드로 해당하는 actor들을 컨트롤하는 방향으로 혹은 마스터에서 바로 actor.execute
         if(_activeCommand != null)
         {
-            _activeCommand.Execute();
+            _activeCommand.Execute(_moveDir);
             _activeCommand = null;
             Debug.Log("commnad");
         }
+    }
+
+    private void GetMoveInput()
+    {
+        _moveInput.x = Input.GetAxis("Horizontal");
+        _moveInput.y = 0;
+        _moveInput.z = Input.GetAxis("Vertical");
+
+        _lookForward.x = _cameraArm.forward.x;
+        _lookForward.y = 0f;
+        _lookForward.z = _cameraArm.forward.z;
+        _lookForward.Normalize();
+
+        _lookRight.x = _cameraArm.right.x;
+        _lookRight.y = 0f;
+        _lookRight.z = _cameraArm.right.z;
+        _lookRight.Normalize();
+
+        _moveDir = _lookForward * _moveInput.z + _lookRight * _moveInput.x;
     }
 
     //키 매핑
     private void InitCommnad(Actor actor)
     {
         commands.Add(COMMAND_KEY.Jump, new CmdJump(actor));
-    }
+        commands.Add(COMMAND_KEY.Move, new CmdInAirMove(actor));
+        //commands.Add(COMMAND_KEY.Move, new CmdMove(actor));
 
-    public bool InputGetMoveKey()
-    {
-        
-
-        return false;
     }
 
     public bool InputGetDownKey(KeyCode keyCode, GetKeyType keyType)
@@ -90,6 +114,7 @@ public class PlayerInputHandler : MonoBehaviourPun
 
         if (isEnabledKey && commandKey != COMMAND_KEY.None && commands.ContainsKey(commandKey))
         {
+            //이 자리에서 마스터한테 커맨드를 보낼수도
             // 커맨드 execute 호출
             //this.commands[commandKey].Execute();
             _activeCommand = commands[commandKey];

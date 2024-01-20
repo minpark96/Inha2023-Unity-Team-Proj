@@ -10,25 +10,24 @@ public class BodyHandler : MonoBehaviourPun
     public Transform Root;
     public List<BodyPart> BodyParts = new List<BodyPart>(17);
 
-    public BodyPart LeftFoot => GetBodyPart(Define.BodyPart.FootL);
-    public BodyPart RightFoot => GetBodyPart(Define.BodyPart.FootR);
-    public BodyPart LeftLeg => GetBodyPart(Define.BodyPart.LegLowerL);
-    public BodyPart RightLeg => GetBodyPart(Define.BodyPart.LegLowerR);
-    public BodyPart LeftThigh => GetBodyPart(Define.BodyPart.LegUpperL);
-    public BodyPart RightThigh => GetBodyPart(Define.BodyPart.LegUpperR);
+    public BodyPart LeftFoot;
+    public BodyPart RightFoot;
+    public BodyPart LeftLeg;
+    public BodyPart RightLeg;
+    public BodyPart LeftThigh;
+    public BodyPart RightThigh;
 
-    public BodyPart Hip => GetBodyPart(Define.BodyPart.Hip);
-    public BodyPart Waist => GetBodyPart(Define.BodyPart.Waist);
-    public BodyPart Chest => GetBodyPart(Define.BodyPart.Chest);
-    public BodyPart Head => GetBodyPart(Define.BodyPart.Head);
+    public BodyPart Hip;
+    public BodyPart Waist;
+    public BodyPart Chest;
+    public BodyPart Head;
 
-
-    public BodyPart LeftArm => GetBodyPart(Define.BodyPart.LeftArm);
-    public BodyPart RightArm => GetBodyPart(Define.BodyPart.RightArm);
-    public BodyPart LeftForeArm => GetBodyPart(Define.BodyPart.LeftForeArm);
-    public BodyPart RightForeArm => GetBodyPart(Define.BodyPart.RightForeArm);
-    public BodyPart LeftHand => GetBodyPart(Define.BodyPart.LeftHand);
-    public BodyPart RightHand => GetBodyPart(Define.BodyPart.RightHand);
+    public BodyPart LeftArm;
+    public BodyPart RightArm;
+    public BodyPart LeftForeArm;
+    public BodyPart RightForeArm;
+    public BodyPart LeftHand;
+    public BodyPart RightHand;
 
     public BodyPart Ball => GetBodyPart(Define.BodyPart.Ball);
 
@@ -47,11 +46,30 @@ public class BodyHandler : MonoBehaviourPun
             }
         }
 
-
         foreach (BodyPart part in BodyParts)
         {
             part.PartSetup();
         }
+
+        LeftFoot = GetBodyPart(Define.BodyPart.FootL);
+        RightFoot = GetBodyPart(Define.BodyPart.FootR);
+        LeftLeg = GetBodyPart(Define.BodyPart.LegLowerL);
+        RightLeg = GetBodyPart(Define.BodyPart.LegLowerR);
+        LeftThigh = GetBodyPart(Define.BodyPart.LegUpperL);
+        RightThigh = GetBodyPart(Define.BodyPart.LegUpperR);
+
+        Hip = GetBodyPart(Define.BodyPart.Hip);
+        Waist = GetBodyPart(Define.BodyPart.Waist);
+        Chest = GetBodyPart(Define.BodyPart.Chest);
+        Head = GetBodyPart(Define.BodyPart.Head);
+
+
+        LeftArm = GetBodyPart(Define.BodyPart.LeftArm);
+        RightArm = GetBodyPart(Define.BodyPart.RightArm);
+        LeftForeArm = GetBodyPart(Define.BodyPart.LeftForeArm);
+        RightForeArm = GetBodyPart(Define.BodyPart.RightForeArm);
+        LeftHand = GetBodyPart(Define.BodyPart.LeftHand);
+        RightHand = GetBodyPart(Define.BodyPart.RightHand);
     }
 
     private BodyPart GetBodyPart(Define.BodyPart part)

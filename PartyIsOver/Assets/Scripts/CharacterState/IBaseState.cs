@@ -6,6 +6,7 @@ public interface IBaseState
 {
    string Name { get; set; }
 
+   void GetInput();
    void Enter();
    void UpdateLogic();
    void UpdatePhysics();

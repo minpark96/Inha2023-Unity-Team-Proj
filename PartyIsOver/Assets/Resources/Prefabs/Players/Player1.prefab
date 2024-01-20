@@ -11348,6 +11348,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Root: {fileID: 5878509405600198244}
   BodyParts: []
+  LeftFoot: {fileID: 0}
+  RightFoot: {fileID: 0}
+  LeftLeg: {fileID: 0}
+  RightLeg: {fileID: 0}
+  LeftThigh: {fileID: 0}
+  RightThigh: {fileID: 0}
+  Hip: {fileID: 0}
+  Waist: {fileID: 0}
+  Chest: {fileID: 0}
+  Head: {fileID: 0}
+  LeftArm: {fileID: 0}
+  RightArm: {fileID: 0}
+  LeftForeArm: {fileID: 0}
+  RightForeArm: {fileID: 0}
+  LeftHand: {fileID: 0}
+  RightHand: {fileID: 0}
 --- !u!114 &5878509405600198232
 MonoBehaviour:
   m_ObjectHideFlags: 0

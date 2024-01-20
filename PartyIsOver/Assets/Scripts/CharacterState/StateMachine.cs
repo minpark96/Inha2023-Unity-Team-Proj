@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class StateMachine : MonoBehaviour
 {
-    [SerializeField]
     IBaseState currentState;
 
 
@@ -18,7 +17,12 @@ public class StateMachine : MonoBehaviour
     void Update()
     {
         if (currentState != null)
+        {
             currentState.UpdateLogic();
+
+            if (!Input.anyKey) return;
+            else currentState.GetInput();
+        }
     }
 
     private void FixedUpdate()
@@ -43,5 +47,11 @@ public class StateMachine : MonoBehaviour
 
         currentState = newState;
         newState.Enter();
+    }
+
+    private void OnGUI()
+    {
+        string content = currentState != null ? currentState.Name : "(no current state)";
+        GUILayout.Label($"<color='black'><size=40>{content}</size></color>");
     }
 }

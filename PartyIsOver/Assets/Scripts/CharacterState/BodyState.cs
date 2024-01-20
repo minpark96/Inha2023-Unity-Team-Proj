@@ -14,7 +14,10 @@ public abstract class BodyState:IBaseState
         this.Name = name;
         this.stateMachine = stateMachine;
     }
+    public virtual void GetInput()
+    {
 
+    }
     public virtual void Enter()
     {
     }

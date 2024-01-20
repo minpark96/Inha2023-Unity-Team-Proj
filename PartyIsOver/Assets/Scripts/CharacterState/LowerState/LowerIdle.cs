@@ -14,8 +14,12 @@ public class LowerIdle : BodyState
 
     public override void UpdateLogic()
     {
-        if (!Input.anyKey) return;
-        if(sm.inputHandler.InputGetDownKey(KeyCode.Space, Define.GetKeyType.Down))
+     
+    }
+
+    public override void GetInput()
+    {
+        if (sm.inputHandler.InputGetDownKey(KeyCode.Space, Define.GetKeyType.Down))
         {
             sm.ChangeState(sm.jumpingState);
         }
