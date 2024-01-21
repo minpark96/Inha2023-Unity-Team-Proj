@@ -4,10 +4,8 @@ using Unity.VisualScripting;
 using UnityEditorInternal;
 using UnityEngine;
 
-public class Moving : BaseState
+public class Moving : Grounded
 {
-    private MovementSM sm;
-
     private float inputspeed;
     private float maxSpeed = 2f;
     private float horizontalInput;
@@ -18,11 +16,7 @@ public class Moving : BaseState
     private Vector3 moveInput;
     private Vector3 moveDir;
 
-    public Moving(MovementSM stateMachine) : base("Moving", stateMachine) 
-    {
-        sm = (MovementSM)stateMachine;
-        
-    }
+    public Moving(MovementSM stateMachine) : base("Moving", stateMachine) {}
     public override void Enter()
     {
         base.Enter();
@@ -43,12 +37,6 @@ public class Moving : BaseState
         else
         {
             isRun = false;
-        }
-
-        if(Input.GetKey(KeyCode.Space))
-        {
-            //여기가 문제가 있다
-            stateMachine.ChangeState(sm.JumpingState);
         }
 
         if (moveInput != Vector3.zero)

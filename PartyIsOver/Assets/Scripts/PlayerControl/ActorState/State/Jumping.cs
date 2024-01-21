@@ -3,70 +3,52 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Experimental.AI;
-using static AniFrameData;
 
 public class Jumping : BaseState
 {
-    private MovementSM sm;
-    private float horizontalInput;
-    private float verticalInput;
-    private float maxSpeed = 2f;
+    protected MovementSM sm;
+    private bool grounded;
 
-    private bool isJump;
-
-    private Vector3 moveInput;
-    private Vector3 _moveDir;
+    private LayerMask groundLayer;
 
     public Jumping(MovementSM stateMachine) : base("Jumping", stateMachine)
     {
         sm = (MovementSM)stateMachine;
+        groundLayer = LayerMask.GetMask("Ground");
     }
 
     public override void Enter()
     {
         base.Enter();
-        isJump = true;
-        Debug.Log("체크 확인");
-
-        sm.Rigidbody.AddForce(Vector3.up * sm.Speed * 0.5f);
+        //이단 점프 방지
+        if(IsGrounded())
+            sm.Rigidbody.AddForce(Vector3.up * sm.Speed * 0.5f);
 
     }
+
     public override void UpdateLogic()
     {
         base.UpdateLogic();
-        horizontalInput = Input.GetAxis("Horizontal");
-        verticalInput = Input.GetAxis("Vertical");
-
-        moveInput = new Vector3(horizontalInput, 0, verticalInput);
-
-        //TODO : 여기서 체크해서 반환 하는게 맞을 듯
-        if (IsGrounded())
+        if (grounded)
             stateMachine.ChangeState(sm.IdleState);
     }
+
     public override void UpdatePhysics()
     {
         base.UpdatePhysics();
+        grounded = /*Mathf.Abs(sm.FootRigidbody.velocity.y) < 0.5f &&*/ IsGrounded();
 
-        //바라보는 방향으로 점프 및 점프 도중에 회전이 가능하도록 하기 위해서
-        Vector3 lookForward = new Vector3(stateMachine.PlayerCharacter.CameraTransform.forward.x, 0f, stateMachine.PlayerCharacter.CameraTransform.forward.z).normalized;
-        Vector3 lookRight = new Vector3(stateMachine.PlayerCharacter.CameraTransform.right.x, 0f, stateMachine.PlayerCharacter.CameraTransform.right.z).normalized;
-        _moveDir = lookForward * moveInput.z + lookRight * moveInput.x;
-
-        sm.Rigidbody.AddForce(_moveDir.normalized * sm.Speed * Time.deltaTime * 0.5f);
-        if (sm.Rigidbody.velocity.magnitude > maxSpeed)
-            sm.Rigidbody.velocity = sm.Rigidbody.velocity.normalized * maxSpeed;
     }
 
     private bool IsGrounded()
     {
-        float raycastDistance = 0.5f;
         RaycastHit hit;
-        if (Physics.Raycast(sm.Rigidbody.position, Vector3.down, out hit, raycastDistance))
+        float rayLength = 0.05f; 
+
+        if (Physics.Raycast(sm.FootRigidbody.position, Vector3.down, out hit, rayLength, groundLayer))
         {
-            isJump = false;
             return true;
         }
-
         return false;
     }
 

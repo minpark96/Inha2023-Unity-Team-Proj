@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Idle : BaseState
+public class Idle : Grounded
 {
     private float horizontalInput;
     private float verticalInput;
@@ -25,7 +25,5 @@ public class Idle : BaseState
         //TODO : Å° ÀÔ·Â 
         if (Mathf.Abs(horizontalInput) > Mathf.Epsilon || Mathf.Abs(verticalInput) > Mathf.Epsilon)
             stateMachine.ChangeState(((MovementSM)stateMachine).MovingState);
-        if (Input.GetKey(KeyCode.Space))
-            stateMachine.ChangeState(((MovementSM)stateMachine).JumpingState);
     }
 }

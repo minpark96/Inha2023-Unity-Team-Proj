@@ -7,6 +7,7 @@ public class StateMachine : MonoBehaviour
 {
     private BaseState currentState;
     public PlayerCharacter PlayerCharacter;
+    public bool IsGround;
 
     public void Start()
     {
