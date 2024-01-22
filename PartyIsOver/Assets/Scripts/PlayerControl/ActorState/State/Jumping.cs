@@ -8,22 +8,19 @@ public class Jumping : BaseState
 {
     protected MovementSM sm;
     private bool grounded;
-
     private LayerMask groundLayer;
 
     public Jumping(MovementSM stateMachine) : base("Jumping", stateMachine)
     {
         sm = (MovementSM)stateMachine;
-        groundLayer = LayerMask.GetMask("Ground");
+        groundLayer = LayerMask.GetMask("ClimbObject");
     }
 
     public override void Enter()
     {
         base.Enter();
-        //이단 점프 방지
-        if(IsGrounded())
-            sm.Rigidbody.AddForce(Vector3.up * sm.Speed * 0.5f);
 
+        sm.Rigidbody.AddForce(Vector3.up * sm.Speed * 0.5f);
     }
 
     public override void UpdateLogic()
@@ -36,7 +33,15 @@ public class Jumping : BaseState
     public override void UpdatePhysics()
     {
         base.UpdatePhysics();
-        grounded = /*Mathf.Abs(sm.FootRigidbody.velocity.y) < 0.5f &&*/ IsGrounded();
+        if (sm.FootRigidbody.velocity.y < Mathf.Epsilon && IsGrounded())
+        {
+            Debug.Log(IsGrounded());
+            grounded = false;
+        }
+        else
+        {
+            grounded = true;
+        }
 
     }
 
