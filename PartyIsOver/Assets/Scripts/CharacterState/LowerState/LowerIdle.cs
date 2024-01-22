@@ -5,11 +5,11 @@ using UnityEngine;
 
 public class LowerIdle : BodyState
 {
-    protected LowerBodySM sm;
+    private LowerBodySM _sm;
 
     public LowerIdle(StateMachine stateMachine) : base("LowerIdleState", stateMachine)
     {
-        sm = (LowerBodySM)stateMachine;
+        _sm = (LowerBodySM)stateMachine;
     }
 
     public override void UpdateLogic()
@@ -19,9 +19,13 @@ public class LowerIdle : BodyState
 
     public override void GetInput()
     {
-        if (sm.inputHandler.InputGetDownKey(KeyCode.Space, Define.GetKeyType.Down))
+        if (IsMoveKeyInput())
         {
-            sm.ChangeState(sm.jumpingState);
+            _sm.ChangeState(_sm.movingState);
+        }
+        if (_sm.inputHandler.InputGetDownKey(KeyCode.Space, Define.GetKeyType.Down))
+        {
+            _sm.ChangeState(_sm.jumpingState);
         }
     }
 }

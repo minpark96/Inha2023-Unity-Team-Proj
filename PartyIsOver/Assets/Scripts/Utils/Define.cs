@@ -204,6 +204,7 @@ public class Define
     public enum COMMAND_KEY
     {
         Move,
+        InAirMove,
         W,
         A,
         S,
@@ -281,6 +282,20 @@ public class Define
         TargetDirections,
         AngleStability,
         AnglePowerValues,
+    }
+
+    public enum BodyPose
+    {
+        Bent = 0,
+        Forward = 1,
+        Straight = 2,
+        Behind = 3
+    }
+
+    public enum Side
+    {
+        Left = 0,
+        Right = 1
     }
 }
 

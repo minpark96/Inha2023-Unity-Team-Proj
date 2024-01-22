@@ -1456,49 +1456,49 @@ public class PlayerController : MonoBehaviourPun
     #region Jump
     public void Jump()
     {
-        if (isStateChange)
-        {
+        //if (isStateChange)
+        //{
             
-            isGrounded = false;
-            for (int i = 0; i < frameDataLists[Define.AniFrameData.JumpAniForceData.ToString()].Length; i++)
-            {
-                AniForce(frameDataLists[Define.AniFrameData.JumpAniForceData.ToString()], i, Vector3.up);
-                if (i == 2)
-                    AniForce(frameDataLists[Define.AniFrameData.JumpAniForceData.ToString()], i, Vector3.down);
-            }
-            for (int i = 0; i < angleDataLists[Define.AniAngleData.MoveAngleJumpAniData.ToString()].Length; i++)
-            {
-                AniAngleForce(angleDataLists[Define.AniAngleData.MoveAngleJumpAniData.ToString()], i, _moveDir + new Vector3(0, 0.2f, 0f));
-            }
-        }
+        //    isGrounded = false;
+        //    for (int i = 0; i < frameDataLists[Define.AniFrameData.JumpAniForceData.ToString()].Length; i++)
+        //    {
+        //        AniForce(frameDataLists[Define.AniFrameData.JumpAniForceData.ToString()], i, Vector3.up);
+        //        if (i == 2)
+        //            AniForce(frameDataLists[Define.AniFrameData.JumpAniForceData.ToString()], i, Vector3.down);
+        //    }
+        //    for (int i = 0; i < angleDataLists[Define.AniAngleData.MoveAngleJumpAniData.ToString()].Length; i++)
+        //    {
+        //        AniAngleForce(angleDataLists[Define.AniAngleData.MoveAngleJumpAniData.ToString()], i, _moveDir + new Vector3(0, 0.2f, 0f));
+        //    }
+        //}
         
 
-        //방향서치,상태에서 하는게 아니라 _moveDir만 actor등에서 알아서 업데이트 하면서 가지고 있어야함
-        Vector3 lookForward = new Vector3(_cameraArm.forward.x, 0f, _cameraArm.forward.z).normalized;
-        Vector3 lookRight = new Vector3(_cameraArm.right.x, 0f, _cameraArm.right.z).normalized;
-        _moveDir = lookForward * MoveInput.z + lookRight * MoveInput.x;
+        ////방향서치,상태에서 하는게 아니라 _moveDir만 actor등에서 알아서 업데이트 하면서 가지고 있어야함
+        //Vector3 lookForward = new Vector3(_cameraArm.forward.x, 0f, _cameraArm.forward.z).normalized;
+        //Vector3 lookRight = new Vector3(_cameraArm.right.x, 0f, _cameraArm.right.z).normalized;
+        //_moveDir = lookForward * MoveInput.z + lookRight * MoveInput.x;
 
-        _bodyHandler.Chest.PartRigidbody.AddForce((_runVectorForce10 + _moveDir), ForceMode.VelocityChange);
-        _bodyHandler.Hip.PartRigidbody.AddForce((-_runVectorForce5 + -_moveDir), ForceMode.VelocityChange);
+        //_bodyHandler.Chest.PartRigidbody.AddForce((_runVectorForce10 + _moveDir), ForceMode.VelocityChange);
+        //_bodyHandler.Hip.PartRigidbody.AddForce((-_runVectorForce5 + -_moveDir), ForceMode.VelocityChange);
 
-        AlignToVector(_bodyHandler.Chest.PartRigidbody, -_bodyHandler.Chest.transform.up, _moveDir / 4f + -Vector3.up, 0.1f, 4f * _applyedForce);
-        AlignToVector(_bodyHandler.Chest.PartRigidbody, _bodyHandler.Chest.transform.forward, Vector3.up, 0.1f, 8f * _applyedForce);
-        AlignToVector(_bodyHandler.Waist.PartRigidbody, -_bodyHandler.Waist.transform.up, _moveDir / 4f + -Vector3.up, 0.1f, 4f * _applyedForce);
-        AlignToVector(_bodyHandler.Waist.PartRigidbody, _bodyHandler.Chest.transform.forward, Vector3.up, 0.1f, 8f * _applyedForce);
-        AlignToVector(_bodyHandler.Hip.PartRigidbody, -_bodyHandler.Hip.transform.up, _moveDir, 0.1f, 8f * _applyedForce);
-        AlignToVector(_bodyHandler.Hip.PartRigidbody, _bodyHandler.Hip.transform.forward, Vector3.up, 0.1f, 8f * _applyedForce);
+        //AlignToVector(_bodyHandler.Chest.PartRigidbody, -_bodyHandler.Chest.transform.up, _moveDir / 4f + -Vector3.up, 0.1f, 4f * _applyedForce);
+        //AlignToVector(_bodyHandler.Chest.PartRigidbody, _bodyHandler.Chest.transform.forward, Vector3.up, 0.1f, 8f * _applyedForce);
+        //AlignToVector(_bodyHandler.Waist.PartRigidbody, -_bodyHandler.Waist.transform.up, _moveDir / 4f + -Vector3.up, 0.1f, 4f * _applyedForce);
+        //AlignToVector(_bodyHandler.Waist.PartRigidbody, _bodyHandler.Chest.transform.forward, Vector3.up, 0.1f, 8f * _applyedForce);
+        //AlignToVector(_bodyHandler.Hip.PartRigidbody, -_bodyHandler.Hip.transform.up, _moveDir, 0.1f, 8f * _applyedForce);
+        //AlignToVector(_bodyHandler.Hip.PartRigidbody, _bodyHandler.Hip.transform.forward, Vector3.up, 0.1f, 8f * _applyedForce);
 
-        //Fall상태로 빼야 할수도
-        _hips.AddForce(_moveDir.normalized * RunSpeed * _runSpeedOffset * Time.deltaTime * 0.5f);
+        ////Fall상태로 빼야 할수도
+        //_hips.AddForce(_moveDir.normalized * RunSpeed * _runSpeedOffset * Time.deltaTime * 0.5f);
 
-        if (_hips.velocity.magnitude > MaxSpeed)
-            _hips.velocity = _hips.velocity.normalized * MaxSpeed;
+        //if (_hips.velocity.magnitude > MaxSpeed)
+        //    _hips.velocity = _hips.velocity.normalized * MaxSpeed;
 
-        //상태나가기
-        if (isGrounded)
-        {
-            _actor.actorState = Actor.ActorState.Stand;
-        }
+        ////상태나가기
+        //if (isGrounded)
+        //{
+        //    _actor.actorState = Actor.ActorState.Stand;
+        //}
     }
     #endregion
 

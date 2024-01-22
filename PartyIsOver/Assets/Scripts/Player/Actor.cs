@@ -24,8 +24,20 @@ public class Actor : MonoBehaviourPun, IPunObservable
     public Grab Grab;
     public CameraControl CameraControl;
 
+
+
+    public ActorFlag flags = ActorFlag.None;
     public AnimationPlayer animPlayer = new AnimationPlayer();
     public AnimationData animData;
+
+    public enum ActorFlag
+    {
+        None        = 0x0,
+        StateChange = 0x1,
+        Run         = 0x2,
+        Fall    = 0x4,
+    }
+
 
     public enum ActorState
     {

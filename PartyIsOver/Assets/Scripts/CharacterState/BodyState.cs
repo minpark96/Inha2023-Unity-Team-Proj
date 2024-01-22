@@ -35,5 +35,16 @@ public abstract class BodyState:IBaseState
     {
     }
 
-    
+    protected bool IsMoveKeyInput()
+    {
+        KeyCode[] keyCodes = { KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D };
+
+        for (int i = 0; i < keyCodes.Length; i++)
+        {
+            if (stateMachine.inputHandler.InputGetDownKey(keyCodes[i], Define.GetKeyType.Press, false))
+                return true;
+        }
+        return false;
+    }
+
 }

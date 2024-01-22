@@ -4,6 +4,7 @@ using UnityEngine;
 using static Actor;
 using Photon.Pun;
 using static Define;
+using static System.Runtime.CompilerServices.RuntimeHelpers;
 
 public class PlayerInputHandler : MonoBehaviourPun
 {
@@ -16,6 +17,20 @@ public class PlayerInputHandler : MonoBehaviourPun
     private Vector3 _moveInput;
     private Vector3 _lookForward;
     private Vector3 _lookRight;
+
+    public BodyPose leftArmPose;
+    public BodyPose rightArmPose;
+    public BodyPose leftLegPose;
+    public BodyPose rightLegPose;
+
+    private Dictionary<KeyCode, COMMAND_KEY> keyMap = new Dictionary<KeyCode, COMMAND_KEY>
+    {
+        { KeyCode.W, COMMAND_KEY.Move },
+        { KeyCode.A, COMMAND_KEY.Move },
+        { KeyCode.S, COMMAND_KEY.Move },
+        { KeyCode.D, COMMAND_KEY.Move },
+        { KeyCode.Space, COMMAND_KEY.Jump }
+    };
 
 
     private void Awake()
@@ -63,35 +78,26 @@ public class PlayerInputHandler : MonoBehaviourPun
     private void InitCommnad(Actor actor)
     {
         commands.Add(COMMAND_KEY.Jump, new CmdJump(actor));
-        commands.Add(COMMAND_KEY.Move, new CmdInAirMove(actor));
-        //commands.Add(COMMAND_KEY.Move, new CmdMove(actor));
+        commands.Add(COMMAND_KEY.InAirMove, new CmdInAirMove(actor));
+        commands.Add(COMMAND_KEY.Move, new CmdMove(actor));
 
     }
 
-    public bool InputGetDownKey(KeyCode keyCode, GetKeyType keyType)
+    public bool IsMoveInput()
+    {
+        if (_moveInput.magnitude == 0f)
+            return false;
+        else
+            return true;
+    }
+
+    public bool InputGetDownKey(KeyCode keyCode, GetKeyType keyType,bool isGround = true)
     {
         // 어떤 키값 호출 분기
         COMMAND_KEY commandKey = COMMAND_KEY.None;
-        switch (keyCode)
+        if (keyMap.ContainsKey(keyCode))
         {
-            case KeyCode.W:
-                commandKey = COMMAND_KEY.Move;
-                break;
-            case KeyCode.A:
-                commandKey = COMMAND_KEY.Move;
-                break;
-            case KeyCode.S:
-                commandKey = COMMAND_KEY.Move;
-                break;
-            case KeyCode.D:
-                commandKey = COMMAND_KEY.Move;
-                break;
-            case KeyCode.Space:
-                commandKey = COMMAND_KEY.Jump;
-                break;
-            default:
-                commandKey = COMMAND_KEY.None;
-                break;
+            commandKey = keyMap[keyCode];
         }
 
         // 키 활성화 타입 분기
@@ -117,7 +123,11 @@ public class PlayerInputHandler : MonoBehaviourPun
             //이 자리에서 마스터한테 커맨드를 보낼수도
             // 커맨드 execute 호출
             //this.commands[commandKey].Execute();
+            if (commandKey == Define.COMMAND_KEY.Move && !isGround)
+                commandKey = Define.COMMAND_KEY.InAirMove;
             _activeCommand = commands[commandKey];
+
+
             return true;
         }
         return false;

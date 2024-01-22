@@ -24,5 +24,8 @@ public class CmdInAirMove : PlayerCommand
 
         //Fall상태로 빼야 할수도
         bodyHandler.Hip.PartRigidbody.AddForce(moveDir.normalized * RunSpeed * runSpeedOffset * Time.deltaTime * 0.5f);
+
+        if (bodyHandler.Hip.PartRigidbody.velocity.magnitude > MaxSpeed)
+            bodyHandler.Hip.PartRigidbody.velocity = bodyHandler.Hip.PartRigidbody.velocity.normalized * MaxSpeed;
     }
 }

@@ -23,5 +23,7 @@ public class CmdJump : PlayerCommand
             animPlayer.AniAngleForce(animData.AngleDataLists[Define.AniAngleData.MoveAngleJumpAniData.ToString()], i, moveDir + new Vector3(0, 0.2f, 0f));
         }
         Debug.Log("jump");
+
+
     }
 }

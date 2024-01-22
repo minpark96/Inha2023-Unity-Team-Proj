@@ -5,6 +5,7 @@ using UnityEngine;
 public class StateMachine : MonoBehaviour
 {
     IBaseState currentState;
+    public PlayerInputHandler inputHandler;
 
 
     void Start()
@@ -14,14 +15,14 @@ public class StateMachine : MonoBehaviour
             currentState.Enter();
     }
 
-    void Update()
+    private void Update()
     {
         if (currentState != null)
         {
             currentState.UpdateLogic();
 
-            if (!Input.anyKey) return;
-            else currentState.GetInput();
+            if (Input.anyKey)
+                currentState.GetInput();
         }
     }
 
