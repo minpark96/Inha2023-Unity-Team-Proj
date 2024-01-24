@@ -161,6 +161,34 @@ InputManager나 PlayerInputHandler에서 가져와서 쓰는식으로 해도 괜
 https://welcomeheesuk.tistory.com/72
 
 
+ㅡㅡ고민해야할것
+대부분의 커맨드는 RigidBody16개를 필요로함
+Move커맨드는 플레이어가 뛰고있는지 등의 상태를 알아야함
+
+
+move스테이트에서 사이클을 돌려야하고
+move커맨드가 사이클을 알아야함(멤버변수로 사이클 포인터를 따놔야함)
+
+
+
+
+
+excute안에 세부움직임을 넣는건 불가
+excute에서  actor의 행동함수를 실행시키는 방식으로
+ 행동함수들은 actor의 , 상태, 등등이 필요함
+ 행동함수들은 애니메이션데이터, 애니메이션플레이어, Rb16개(바디핸들러)를
+ 	기본적으로 참조함
+
+actions 클래스는 action 델리게이트와 이벤트들을 들고있고
+해당 이벤트에 actions의 매개변수들을 세팅한다 
+action 클래스는 이 이벤트를 구독 
+
+
+Excute를 InputHandler에서 하는게 아니라 핸들러가 키만 저장하고
+actor나 playerController가 Excute를 하는 방식으로
+
+
+
 AnimationData를 커맨드는 깡통만 가지고 있고 actor의 AnimationData를 생성자에서
 참조받는 식으로
 

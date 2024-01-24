@@ -23,7 +23,6 @@ public class PlayerCommand : ICommand
 
     public virtual void Execute(Vector3 moveDir = default)
     {
-       
     }
 
     protected void AlignToVector(Rigidbody part, Vector3 alignmentVector, Vector3 targetVector, float stability, float speed)

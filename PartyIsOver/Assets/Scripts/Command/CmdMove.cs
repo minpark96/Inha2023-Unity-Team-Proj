@@ -20,8 +20,6 @@ public class CmdMove : PlayerCommand
     {
         _moveDir = moveDir;
 
-
-
         RunCyclePoseBody();
         RunCyclePoseArm(Define.Side.Left, leftArmPose);
         RunCyclePoseArm(Define.Side.Right, rightArmPose);

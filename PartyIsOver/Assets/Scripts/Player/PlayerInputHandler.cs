@@ -55,6 +55,7 @@ public class PlayerInputHandler : MonoBehaviourPun
         }
     }
 
+
     private void GetMoveInput()
     {
         _moveInput.x = Input.GetAxis("Horizontal");
