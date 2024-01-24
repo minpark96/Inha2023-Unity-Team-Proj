@@ -43,7 +43,7 @@ public class Jumping : BaseState
 
         if (Physics.Raycast(sm.FootRigidbody.position, Vector3.down, out hit, rayLength, groundLayer))
         {
-            return true;
+            return true; 
         }
         return false;
     }
