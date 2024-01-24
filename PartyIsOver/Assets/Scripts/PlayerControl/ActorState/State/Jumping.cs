@@ -33,16 +33,7 @@ public class Jumping : BaseState
     public override void UpdatePhysics()
     {
         base.UpdatePhysics();
-        if (sm.FootRigidbody.velocity.y < Mathf.Epsilon && IsGrounded())
-        {
-            Debug.Log(IsGrounded());
-            grounded = false;
-        }
-        else
-        {
-            grounded = true;
-        }
-
+        grounded = sm.FootRigidbody.velocity.y < Mathf.Epsilon && IsGrounded();
     }
 
     private bool IsGrounded()
@@ -56,5 +47,4 @@ public class Jumping : BaseState
         }
         return false;
     }
-
 }

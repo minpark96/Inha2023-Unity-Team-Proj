@@ -1512,6 +1512,7 @@ public class PlayerController : MonoBehaviourPun
         }
         if (isStateChange)
         {
+            //Enter에다가 넣고
             if (Random.Range(0, 2) == 1)
             {
                 leftLegPose = Pose.Bent;
@@ -1527,7 +1528,7 @@ public class PlayerController : MonoBehaviourPun
                 rightArmPose = Pose.Straight;
             }
         }
-        //Stand();
+        //Stand(); 요기는 physicsUpdate에다가 넣고
         RunCycleUpdate();
         RunCyclePoseBody();
         RunCyclePoseArm(Side.Left, leftArmPose);

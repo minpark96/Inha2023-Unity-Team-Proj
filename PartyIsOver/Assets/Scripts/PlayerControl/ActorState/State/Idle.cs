@@ -6,7 +6,7 @@ public class Idle : Grounded
 {
     private float horizontalInput;
     private float verticalInput;
-    private bool jumpInput;
+
     public Idle(MovementSM stateMachine) : base("Idel", stateMachine) 
     {
     }
@@ -22,8 +22,9 @@ public class Idle : Grounded
         base.UpdateLogic();
         horizontalInput = Input.GetAxis("Horizontal");
         verticalInput = Input.GetAxis("Vertical");
-        //TODO : 키 입력 
+        //TODO : 키 입력이 생기면 Moving으로 변경
         if (Mathf.Abs(horizontalInput) > Mathf.Epsilon || Mathf.Abs(verticalInput) > Mathf.Epsilon)
             stateMachine.ChangeState(((MovementSM)stateMachine).MovingState);
+
     }
 }

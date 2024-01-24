@@ -28,6 +28,21 @@ public class Define
         Ball,
     }
 
+    public enum Side
+    {
+        Left = 0,
+        Right = 1
+    }
+
+    public enum Pose
+    {
+        Bent = 0,
+        Forward = 1,
+        Straight = 2,
+        Behind = 3
+    }
+
+
     public enum Effect
     {
         UIEffect,
