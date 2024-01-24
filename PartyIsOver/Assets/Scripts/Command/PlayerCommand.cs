@@ -10,16 +10,7 @@ public class PlayerCommand : ICommand
     protected AnimationData animData;
 
 
-    protected float RunSpeed;
-    protected float MaxSpeed;
-    protected float runSpeedOffset = 350f;
 
-
-    protected Vector3 runVectorForce2 = new Vector3(0f, 0f, 0.2f);
-    protected Vector3 runVectorForce5 = new Vector3(0f, 0f, 0.4f);
-    protected Vector3 runVectorForce10 = new Vector3(0f, 0f, 0.8f);
-
-    protected float applyedForce = 800f;
 
     public virtual void Execute(Vector3 moveDir = default)
     {

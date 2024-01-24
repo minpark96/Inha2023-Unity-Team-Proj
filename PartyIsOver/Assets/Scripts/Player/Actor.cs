@@ -25,8 +25,8 @@ public class Actor : MonoBehaviourPun, IPunObservable
     public CameraControl CameraControl;
 
 
-
     public ActorFlag flags = ActorFlag.None;
+    public PlayerActions PlayerActions;
     public AnimationPlayer animPlayer = new AnimationPlayer();
     public AnimationData animData;
 
@@ -186,6 +186,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
         _playerAttackPoint = statData.PlayerAttackPoint;
 
         animData = new AnimationData(BodyHandler);
+        PlayerActions = new PlayerActions(animData,animPlayer,BodyHandler);
     }
 
     private void ChangeLayerRecursively(GameObject obj, int layer)
