@@ -13359,6 +13359,19 @@ MonoBehaviour:
   FootRigidbody: {fileID: 0}
   Speed: 52500
   RunSpeed: 1.25
+--- !u!114 &794044650
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 794044632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 711fed30e2bbe54408339dd33fce9e20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rowCount: 0
 --- !u!1001 &799031091
 PrefabInstance:
   m_ObjectHideFlags: 0
