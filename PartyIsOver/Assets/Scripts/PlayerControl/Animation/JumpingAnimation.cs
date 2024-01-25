@@ -52,21 +52,21 @@ for (int i = 0; i < MoveAngleJumpAniData.Length; i++)
     }
     void AniForceVelocityChange(CharacterPhysicsMotion[] _forceSpeed, int _elementCount, Vector3 _dir)
     {
-        for (int i = 0; i < _forceSpeed[_elementCount].StandardRigidbodies.Length; i++)
+        for (int i = 0; i < _forceSpeed[_elementCount].ReferenceRigidbodies.Length; i++)
         {
-            if (_forceSpeed[_elementCount].ForceDirections[i] == ForceDirection.Zero || _forceSpeed[_elementCount].ForceDirections[i] == ForceDirection.ZeroReverse)
-                _forceSpeed[_elementCount].ActionRigidbodies[i].AddForce(_dir * _forceSpeed[_elementCount].ActionPowerValues[i], ForceMode.Impulse);
+            if (_forceSpeed[_elementCount].ActionForceDirections[i] == ForceDirection.Zero || _forceSpeed[_elementCount].ActionForceDirections[i] == ForceDirection.ZeroReverse)
+                _forceSpeed[_elementCount].ActionRigidbodies[i].AddForce(_dir * _forceSpeed[_elementCount].ActionForceValues[i], ForceMode.Impulse);
             else
             {
                 Vector3 _direction = GetForceDirection(_forceSpeed[_elementCount], i);
-                _forceSpeed[_elementCount].ActionRigidbodies[i].AddForce(_direction * _forceSpeed[_elementCount].ActionPowerValues[i], ForceMode.Impulse);
+                _forceSpeed[_elementCount].ActionRigidbodies[i].AddForce(_direction * _forceSpeed[_elementCount].ActionForceValues[i], ForceMode.Impulse);
             }
         }
     }
 
     Vector3 GetForceDirection(CharacterPhysicsMotion data, int index)
     {
-        ForceDirection _rollState = data.ForceDirections[index];
+        ForceDirection _rollState = data.ActionForceDirections[index];
         Vector3 _direction;
 
         switch (_rollState)
@@ -78,22 +78,22 @@ for (int i = 0; i < MoveAngleJumpAniData.Length; i++)
                 _direction = new Vector3(-1, -1, -1);
                 break;
             case ForceDirection.Forward:
-                _direction = -data.StandardRigidbodies[index].transform.up;
+                _direction = -data.ReferenceRigidbodies[index].transform.up;
                 break;
             case ForceDirection.Backward:
-                _direction = data.StandardRigidbodies[index].transform.up;
+                _direction = data.ReferenceRigidbodies[index].transform.up;
                 break;
             case ForceDirection.Up:
-                _direction = data.StandardRigidbodies[index].transform.forward;
+                _direction = data.ReferenceRigidbodies[index].transform.forward;
                 break;
             case ForceDirection.Down:
-                _direction = -data.StandardRigidbodies[index].transform.forward;
+                _direction = -data.ReferenceRigidbodies[index].transform.forward;
                 break;
             case ForceDirection.Left:
-                _direction = -data.StandardRigidbodies[index].transform.right;
+                _direction = -data.ReferenceRigidbodies[index].transform.right;
                 break;
             case ForceDirection.Right:
-                _direction = data.StandardRigidbodies[index].transform.right;
+                _direction = data.ReferenceRigidbodies[index].transform.right;
                 break;
             default:
                 _direction = Vector3.zero;

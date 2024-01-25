@@ -7,20 +7,12 @@ using UnityEngine;
 public class Moving : Grounded
 {
     private float inputspeed;
-    private float maxSpeed = 2f;
     private float horizontalInput;
     private float verticalInput;
     private float MovingMotionSpeed;
     private float MovingMotionTimer = 0;
-    private float _applyedForce = 800f;
 
     private bool isRun;
-
-    private Vector3 _runVectorForce2 = new Vector3(0f, 0f, 0.2f);
-    private Vector3 _runVectorForce5 = new Vector3(0f, 0f, 0.4f);
-    private Vector3 _runVectorForce10 = new Vector3(0f, 0f, 0.8f);
-    private Vector3 moveInput;
-    private Vector3 moveDir;
 
     Define.Pose leftLegPose;
     Define.Pose rightLegPose;
@@ -131,25 +123,25 @@ public class Moving : Grounded
         switch (pose)
         {
             case Define.Pose.Bent:
-                AlignToVector(thighRigid, -thighTrans.forward, moveDir, 0.1f, 2f * _applyedForce);
-                AlignToVector(legRigid, legTrans.forward, moveDir, 0.1f, 2f * _applyedForce);
+                AlignToVector(thighRigid, -thighTrans.forward, moveDir, 0.1f, 2f * applyedForce);
+                AlignToVector(legRigid, legTrans.forward, moveDir, 0.1f, 2f * applyedForce);
                 break;
             case Define.Pose.Forward:
-                AlignToVector(thighRigid, -thighTrans.forward, moveDir + -hip.up / 2f, 0.1f, 4f * _applyedForce);
-                AlignToVector(legRigid, -legTrans.forward, moveDir + -hip.up / 2f, 0.1f, 4f * _applyedForce);
+                AlignToVector(thighRigid, -thighTrans.forward, moveDir + -hip.up / 2f, 0.1f, 4f * applyedForce);
+                AlignToVector(legRigid, -legTrans.forward, moveDir + -hip.up / 2f, 0.1f, 4f * applyedForce);
                 thighRigid.AddForce(-moveDir / 2f, ForceMode.VelocityChange);
                 legRigid.AddForce(moveDir / 2f, ForceMode.VelocityChange);
                 break;
             case Define.Pose.Straight:
-                AlignToVector(thighRigid, thighTrans.forward, Vector3.up, 0.1f, 2f * _applyedForce);
-                AlignToVector(legRigid, legTrans.forward, Vector3.up, 0.1f, 2f * _applyedForce);
-                thighRigid.AddForce(hip.up * 2f * _applyedForce);
-                legRigid.AddForce(-hip.up * 2f * _applyedForce);
-                legRigid.AddForce(-_runVectorForce2, ForceMode.VelocityChange);
+                AlignToVector(thighRigid, thighTrans.forward, Vector3.up, 0.1f, 2f * applyedForce);
+                AlignToVector(legRigid, legTrans.forward, Vector3.up, 0.1f, 2f * applyedForce);
+                thighRigid.AddForce(hip.up * 2f * applyedForce);
+                legRigid.AddForce(-hip.up * 2f * applyedForce);
+                legRigid.AddForce(-runVectorForce2, ForceMode.VelocityChange);
                 break;
             case Define.Pose.Behind:
-                AlignToVector(thighRigid, thighTrans.forward, moveDir * 2f, 0.1f, 2f * _applyedForce);
-                AlignToVector(legRigid, -legTrans.forward, -moveDir * 2f, 0.1f, 2f * _applyedForce);
+                AlignToVector(thighRigid, thighTrans.forward, moveDir * 2f, 0.1f, 2f * applyedForce);
+                AlignToVector(legRigid, -legTrans.forward, -moveDir * 2f, 0.1f, 2f * applyedForce);
                 break;
         }
 
@@ -182,27 +174,27 @@ public class Moving : Grounded
             switch (pose)
             {
                 case Define.Pose.Bent:
-                    AlignToVector(rigidbody, transform.forward, partTransform.forward + vector, 0.1f, 4f * _applyedForce * armForceCoef);
-                    AlignToVector(rigidbody2, transform2.forward, -moveDir / 4f, 0.1f, 4f * _applyedForce * armForceCoef);
+                    AlignToVector(rigidbody, transform.forward, partTransform.forward + vector, 0.1f, 4f * applyedForce * armForceCoef);
+                    AlignToVector(rigidbody2, transform2.forward, -moveDir / 4f, 0.1f, 4f * applyedForce * armForceCoef);
                     rigidbody.AddForce(-moveDir * armForceRunCoef, ForceMode.VelocityChange);
                     rigidbody3.AddForce(moveDir * armForceRunCoef, ForceMode.VelocityChange);
                     break;
                 case Define.Pose.Forward:
-                    AlignToVector(rigidbody, transform.forward, moveDir + -vector, 0.1f, 4f * _applyedForce * armForceCoef);
-                    AlignToVector(rigidbody2, transform2.forward, moveDir / 4f + -partTransform.forward + -vector, 0.1f, 4f * _applyedForce * armForceCoef);
+                    AlignToVector(rigidbody, transform.forward, moveDir + -vector, 0.1f, 4f * applyedForce * armForceCoef);
+                    AlignToVector(rigidbody2, transform2.forward, moveDir / 4f + -partTransform.forward + -vector, 0.1f, 4f * applyedForce * armForceCoef);
                     rigidbody.AddForce(-Vector3.up * armForceRunCoef, ForceMode.VelocityChange);
                     rigidbody3.AddForce(Vector3.up * armForceRunCoef, ForceMode.VelocityChange);
                     break;
                 case Define.Pose.Straight:
-                    AlignToVector(rigidbody, transform.forward, partTransform.forward + vector, 0.1f, 4f * _applyedForce * armForceCoef);
-                    AlignToVector(rigidbody2, transform2.forward, partTransform.forward, 0.1f, 4f * _applyedForce * armForceCoef);
+                    AlignToVector(rigidbody, transform.forward, partTransform.forward + vector, 0.1f, 4f * applyedForce * armForceCoef);
+                    AlignToVector(rigidbody2, transform2.forward, partTransform.forward, 0.1f, 4f * applyedForce * armForceCoef);
 
                     rigidbody.AddForce(Vector3.up * armForceRunCoef, ForceMode.VelocityChange);
                     rigidbody2.AddForce(-Vector3.up * armForceRunCoef, ForceMode.VelocityChange);
                     break;
                 case Define.Pose.Behind:
-                    AlignToVector(rigidbody, transform.forward, moveDir, 0.1f, 4f * _applyedForce * armForceCoef);
-                    AlignToVector(rigidbody2, transform2.forward, partTransform.forward, 0.1f, 4f * _applyedForce * armForceCoef);
+                    AlignToVector(rigidbody, transform.forward, moveDir, 0.1f, 4f * applyedForce * armForceCoef);
+                    AlignToVector(rigidbody2, transform2.forward, partTransform.forward, 0.1f, 4f * applyedForce * armForceCoef);
                     rigidbody.AddForce(-Vector3.up * armForceRunCoef, ForceMode.VelocityChange);
                     rigidbody3.AddForce(Vector3.up * armForceRunCoef, ForceMode.VelocityChange);
                     break;
@@ -213,26 +205,26 @@ public class Moving : Grounded
             switch (pose)
             {
                 case Define.Pose.Bent:
-                    AlignToVector(rigidbody, transform.forward, partTransform.forward + vector, 0.1f, 4f * _applyedForce * armForceCoef);
-                    AlignToVector(rigidbody2, transform2.forward, -moveDir, 0.1f, 4f * _applyedForce * armForceCoef);
+                    AlignToVector(rigidbody, transform.forward, partTransform.forward + vector, 0.1f, 4f * applyedForce * armForceCoef);
+                    AlignToVector(rigidbody2, transform2.forward, -moveDir, 0.1f, 4f * applyedForce * armForceCoef);
                     rigidbody.AddForce(-moveDir * armForceRunCoef, ForceMode.VelocityChange);
                     rigidbody3.AddForce(moveDir * armForceRunCoef, ForceMode.VelocityChange);
                     break;
                 case Define.Pose.Forward:
-                    AlignToVector(rigidbody, transform.forward, moveDir + -vector, 0.1f, 4f * _applyedForce);
-                    AlignToVector(rigidbody2, transform2.forward, moveDir + -partTransform.forward + -vector, 0.1f, 4f * _applyedForce * armForceCoef);
+                    AlignToVector(rigidbody, transform.forward, moveDir + -vector, 0.1f, 4f * applyedForce);
+                    AlignToVector(rigidbody2, transform2.forward, moveDir + -partTransform.forward + -vector, 0.1f, 4f * applyedForce * armForceCoef);
                     rigidbody.AddForce(-Vector3.up * armForceRunCoef, ForceMode.VelocityChange);
                     rigidbody3.AddForce(Vector3.up * armForceRunCoef, ForceMode.VelocityChange);
                     break;
                 case Define.Pose.Straight:
-                    AlignToVector(rigidbody, transform.forward, partTransform.forward + vector, 0.1f, 4f * _applyedForce * armForceCoef);
-                    AlignToVector(rigidbody2, transform2.forward, partTransform.forward, 0.1f, 4f * _applyedForce * armForceCoef);
+                    AlignToVector(rigidbody, transform.forward, partTransform.forward + vector, 0.1f, 4f * applyedForce * armForceCoef);
+                    AlignToVector(rigidbody2, transform2.forward, partTransform.forward, 0.1f, 4f * applyedForce * armForceCoef);
                     rigidbody.AddForce(Vector3.up * armForceRunCoef, ForceMode.VelocityChange);
                     rigidbody2.AddForce(-Vector3.up * armForceRunCoef, ForceMode.VelocityChange);
                     break;
                 case Define.Pose.Behind:
-                    AlignToVector(rigidbody, transform.forward, moveDir, 0.1f, 4f * _applyedForce * armForceCoef);
-                    AlignToVector(rigidbody2, transform2.forward, partTransform.forward, 0.1f, 4f * _applyedForce * armForceCoef);
+                    AlignToVector(rigidbody, transform.forward, moveDir, 0.1f, 4f * applyedForce * armForceCoef);
+                    AlignToVector(rigidbody2, transform2.forward, partTransform.forward, 0.1f, 4f * applyedForce * armForceCoef);
                     rigidbody.AddForce(-Vector3.up * armForceRunCoef, ForceMode.VelocityChange);
                     rigidbody3.AddForce(Vector3.up * armForceRunCoef, ForceMode.VelocityChange);
                     break;
@@ -246,15 +238,15 @@ public class Moving : Grounded
         Vector3 lookRight = new Vector3(stateMachine.PlayerCharacter.CameraTransform.right.x, 0f, stateMachine.PlayerCharacter.CameraTransform.right.z).normalized;
         moveDir = lookForward * moveInput.z + lookRight * moveInput.x;
 
-        sm.PlayerCharacter.bodyHandler.Chest.PartRigidbody.AddForce((_runVectorForce10 + moveDir), ForceMode.VelocityChange);
-        sm.PlayerCharacter.bodyHandler.Hip.PartRigidbody.AddForce((-_runVectorForce5 + -moveDir), ForceMode.VelocityChange);
+        sm.PlayerCharacter.bodyHandler.Chest.PartRigidbody.AddForce((runVectorForce10 + moveDir), ForceMode.VelocityChange);
+        sm.PlayerCharacter.bodyHandler.Hip.PartRigidbody.AddForce((-runVectorForce5 + -moveDir), ForceMode.VelocityChange);
 
-        AlignToVector(sm.PlayerCharacter.bodyHandler.Chest.PartRigidbody, -sm.PlayerCharacter.bodyHandler.Chest.transform.up, moveDir / 4f + -Vector3.up, 0.1f, 4f * _applyedForce);
-        AlignToVector(sm.PlayerCharacter.bodyHandler.Chest.PartRigidbody, sm.PlayerCharacter.bodyHandler.Chest.transform.forward, Vector3.up, 0.1f, 8f * _applyedForce);
-        AlignToVector(sm.PlayerCharacter.bodyHandler.Waist.PartRigidbody, -sm.PlayerCharacter.bodyHandler.Waist.transform.up, moveDir / 4f + -Vector3.up, 0.1f, 4f * _applyedForce);
-        AlignToVector(sm.PlayerCharacter.bodyHandler.Waist.PartRigidbody, sm.PlayerCharacter.bodyHandler.Chest.transform.forward, Vector3.up, 0.1f, 8f * _applyedForce);
-        AlignToVector(sm.PlayerCharacter.bodyHandler.Hip.PartRigidbody, -sm.PlayerCharacter.bodyHandler.Hip.transform.up, moveDir, 0.1f, 8f * _applyedForce);
-        AlignToVector(sm.PlayerCharacter.bodyHandler.Hip.PartRigidbody, sm.PlayerCharacter.bodyHandler.Hip.transform.forward, Vector3.up, 0.1f, 8f * _applyedForce);
+        AlignToVector(sm.PlayerCharacter.bodyHandler.Chest.PartRigidbody, -sm.PlayerCharacter.bodyHandler.Chest.transform.up, moveDir / 4f + -Vector3.up, 0.1f, 4f * applyedForce);
+        AlignToVector(sm.PlayerCharacter.bodyHandler.Chest.PartRigidbody, sm.PlayerCharacter.bodyHandler.Chest.transform.forward, Vector3.up, 0.1f, 8f * applyedForce);
+        AlignToVector(sm.PlayerCharacter.bodyHandler.Waist.PartRigidbody, -sm.PlayerCharacter.bodyHandler.Waist.transform.up, moveDir / 4f + -Vector3.up, 0.1f, 4f * applyedForce);
+        AlignToVector(sm.PlayerCharacter.bodyHandler.Waist.PartRigidbody, sm.PlayerCharacter.bodyHandler.Chest.transform.forward, Vector3.up, 0.1f, 8f * applyedForce);
+        AlignToVector(sm.PlayerCharacter.bodyHandler.Hip.PartRigidbody, -sm.PlayerCharacter.bodyHandler.Hip.transform.up, moveDir, 0.1f, 8f * applyedForce);
+        AlignToVector(sm.PlayerCharacter.bodyHandler.Hip.PartRigidbody, sm.PlayerCharacter.bodyHandler.Hip.transform.forward, Vector3.up, 0.1f, 8f * applyedForce);
 
         if (isRun)
         {

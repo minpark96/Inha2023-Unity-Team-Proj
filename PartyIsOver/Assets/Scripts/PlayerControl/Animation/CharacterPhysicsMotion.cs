@@ -15,8 +15,8 @@ public class CharacterPhysicsMotion : MonoBehaviour
         Right,
         Left,
     }
-    public Rigidbody[] StandardRigidbodies;
+    public Rigidbody[] ReferenceRigidbodies;
     public Rigidbody[] ActionRigidbodies;
-    public ForceDirection[] ForceDirections;
-    public float[] ActionPowerValues;
+    public ForceDirection[] ActionForceDirections;
+    public float[] ActionForceValues;
 }

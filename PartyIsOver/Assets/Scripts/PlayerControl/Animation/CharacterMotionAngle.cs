@@ -15,10 +15,10 @@ public class CharacterMotionAngle : MonoBehaviour
         Left,
     }
     public Rigidbody[] StandardRigidbodies;
-    public Transform[] ActionDirection;
-    public Transform[] TargetDirection;
-    public AniAngle[] ActionAngleDirections;
-    public AniAngle[] TargetAngleDirections;
-    public float[] AngleStability;
+    public Transform[] ActionDirections;
+    public Transform[] TargetDirections;
+    public AniAngle[] ActionRotationDirections;
+    public AniAngle[] TargetRotationDirections;
+    public float[] AngleStabilities;
     public float[] AnglePowerValues;
 }
