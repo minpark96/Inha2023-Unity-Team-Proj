@@ -11,6 +11,7 @@ public class Jumping : BaseState
     private bool grounded;
 
     private LayerMask groundLayer;
+    private CharacterPhysicsMotion[] JumpingAnimation;
 
     public Jumping(MovementSM stateMachine) : base("Jumping", stateMachine)
     {
@@ -25,6 +26,14 @@ public class Jumping : BaseState
         //AnimateWithDirectedForce(MoveForceJumpAniData, i, Vector3.up);
 
         sm.Rigidbody.AddForce(Vector3.up * sm.Speed * 0.5f);
+
+        for(int i =0; i< JumpingAnimation.Length; i++)
+        {
+            int _elementCount = 1;
+            Vector3 direction = GetForceDirection(JumpingAnimation[_elementCount], i);
+            JumpingAnimation[_elementCount].ActionRigidbodies[i].AddForce(direction * JumpingAnimation[_elementCount].ActionForceValues[i], ForceMode.Impulse);
+        }
+
     }
 
     public override void UpdateLogic()

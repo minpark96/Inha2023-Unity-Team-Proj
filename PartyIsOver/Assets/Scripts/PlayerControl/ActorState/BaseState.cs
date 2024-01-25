@@ -59,7 +59,7 @@ public class BaseState
         }
     }
 
-    private Vector3 GetForceDirection(CharacterPhysicsMotion data, int index)
+    protected Vector3 GetForceDirection(CharacterPhysicsMotion data, int index)
     {
         ForceDirection _rollState = data.ActionForceDirections[index];
         Vector3 _direction;
