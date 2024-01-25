@@ -2,20 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StateMachine : MonoBehaviour
+public class StateMachine
 {
     IBaseState currentState;
     public PlayerInputHandler inputHandler;
 
-
-    void Start()
+    public StateMachine()
     {
         currentState = GetInitialState();
         if (currentState != null)
             currentState.Enter();
     }
 
-    private void Update()
+    protected void UpdateLogic()
     {
         if (currentState != null)
         {
@@ -26,16 +25,13 @@ public class StateMachine : MonoBehaviour
         }
     }
 
-    private void FixedUpdate()
+
+    protected void UpdatePhysics()
     {
         if (currentState != null)
             currentState.UpdatePhysics();
     }
 
-    void LateUpdate()
-    {
-       
-    }
 
     protected virtual IBaseState GetInitialState()
     {

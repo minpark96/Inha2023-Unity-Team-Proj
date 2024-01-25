@@ -4,10 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Define;
 using UnityEngine.SceneManagement;
-using System.Numerics;
 
 
-public class Actor : MonoBehaviourPun, IPunObservable
+public class Actor : MonoBehaviourPun, IPunObservable, IPlayerContext
 {
     public delegate void ChangePlayerStatus(float HP,float Stamina, DebuffState debuffstate, int viewID);
     public event ChangePlayerStatus OnChangePlayerStatus;
@@ -16,6 +15,10 @@ public class Actor : MonoBehaviourPun, IPunObservable
     public delegate void ChangeStaminaBar();
     public event ChangeStaminaBar OnChangeStaminaBar;
 
+
+
+
+
     public AudioListener _audioListener;
 
     public StatusHandler StatusHandler;
@@ -23,12 +26,18 @@ public class Actor : MonoBehaviourPun, IPunObservable
     public PlayerController PlayerController;
     public Grab Grab;
     public CameraControl CameraControl;
+    private PlayerInputHandler _inputHandler;
 
 
-    public ActorFlag flags = ActorFlag.None;
     public PlayerActions PlayerActions;
     public AnimationPlayer animPlayer = new AnimationPlayer();
     public AnimationData animData;
+
+    private ICommand _activeCommand;
+    public Define.PlayerDynamicData dynamicData;
+
+    LowerBodySM lowerBodySM;
+
 
     public enum ActorFlag
     {
@@ -187,7 +196,15 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
         animData = new AnimationData(BodyHandler);
         PlayerActions = new PlayerActions(animData,animPlayer,BodyHandler);
+        dynamicData = new Define.PlayerDynamicData();
+
+        _inputHandler = GetComponent<PlayerInputHandler>();
+        lowerBodySM = new LowerBodySM(_inputHandler);
+
+        _inputHandler.InitCommnad(this);
     }
+
+
 
     private void ChangeLayerRecursively(GameObject obj, int layer)
     {
@@ -206,7 +223,22 @@ public class Actor : MonoBehaviourPun, IPunObservable
         if(CameraControl == null || BodyHandler == null) return;
         CameraControl.LookAround(BodyHandler.Hip.transform.position);
         CameraControl.CursorControl();
+
+        _activeCommand = _inputHandler.GetActiveCommand();
+        UpdateState();
     }
+
+
+    void UpdateState()
+    {
+        Vector3 dir = _inputHandler.GetMoveInput(CameraControl.transform);
+        dynamicData.dirX = dir.x;
+        dynamicData.dirY = dir.y;
+        dynamicData.dirZ = dir.z;
+
+
+    }
+
 
     void RecoveryStamina()
     {
@@ -305,6 +337,11 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
         OnChangeStaminaBar();
 
+        CommandExecute();
+
+
+
+
         if (actorState != lastActorState)
         {
             PlayerController.isStateChange = true;
@@ -338,6 +375,29 @@ public class Actor : MonoBehaviourPun, IPunObservable
         }
 
         lastActorState = actorState;
+    }
+
+
+    void CommandExecute()
+    {
+        //Master클라이어트에게 받은 커맨드로 해당하는 actor들을 컨트롤하는 방향으로 혹은 마스터에서 바로 actor.execute
+        if (_activeCommand != null)
+        {
+            _activeCommand.Execute(dynamicData);
+            _activeCommand = null;
+            Debug.Log("commnad");
+        }
+    }
+    public void AddCommand(ICommand command)
+    {
+        _activeCommand = command;
+    }
+
+    public void SetDir(in Vector3 data)
+    {
+        dynamicData.dirX = data.x;
+        dynamicData.dirY = data.y;
+        dynamicData.dirZ = data.z;
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

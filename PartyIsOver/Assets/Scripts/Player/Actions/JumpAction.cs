@@ -12,7 +12,7 @@ public class JumpAction
         this.actions.OnJump += Jump;
     }
 
-    void Jump(AnimationData animData, AnimationPlayer animPlayer, Vector3 moveDir)
+    void Jump(AnimationData animData, AnimationPlayer animPlayer, in Define.PlayerDynamicData data)
     {
         for (int i = 0; i < animData.FrameDataLists[Define.AniFrameData.JumpAniForceData.ToString()].Length; i++)
         {
@@ -22,7 +22,8 @@ public class JumpAction
         }
         for (int i = 0; i < animData.AngleDataLists[Define.AniAngleData.MoveAngleJumpAniData.ToString()].Length; i++)
         {
-            animPlayer.AniAngleForce(animData.AngleDataLists[Define.AniAngleData.MoveAngleJumpAniData.ToString()], i, moveDir + new Vector3(0, 0.2f, 0f));
+            animPlayer.AniAngleForce(animData.AngleDataLists[Define.AniAngleData.MoveAngleJumpAniData.ToString()], i,
+                new Vector3(data.dirX,data.dirY + 0.2f,data.dirZ));
         }
     }
 }

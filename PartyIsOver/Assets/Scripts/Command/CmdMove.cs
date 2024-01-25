@@ -10,9 +10,9 @@ public class CmdMove : PlayerCommand
     {
         this.actor = actor;
     }
-    public override void Execute(Vector3 moveDir = default)
+    public override void Execute(in Define.PlayerDynamicData data)
     {
-        actor.PlayerActions.InvokeMoveEvent(moveDir);
+        actor.PlayerActions.InvokeMoveEvent(data);
     }
 
 }

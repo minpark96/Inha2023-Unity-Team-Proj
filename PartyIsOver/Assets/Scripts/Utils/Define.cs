@@ -204,7 +204,6 @@ public class Define
     public enum COMMAND_KEY
     {
         Move,
-        InAirMove,
         W,
         A,
         S,
@@ -298,7 +297,27 @@ public class Define
         Right = 1
     }
 
-    public enum PlayerDynamicData
+    public struct PlayerDynamicData
+    {
+        public float dirX;
+        public float dirY;
+        public float dirZ;
+        public bool isRunState;
+        public bool isGround;
+        public int[] limbPositions;
+    }
+
+    public enum limbPositions
+    {
+        leftArmPose,
+        rightArmPose,
+        leftLegPose,
+        rightLegPose,
+        End,
+    }
+
+
+    public enum PlayerDatas
     {
         dirX,
         dirY,

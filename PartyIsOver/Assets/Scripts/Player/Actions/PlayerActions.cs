@@ -16,18 +16,18 @@ public class PlayerActions
     }
 
 
-    public delegate void PlayerMove(AnimationData data, AnimationPlayer animPlayer,BodyHandler bodyHandler, Vector3 dir);
+    public delegate void PlayerMove(AnimationData animData, AnimationPlayer animPlayer,BodyHandler bodyHandler, in Define.PlayerDynamicData dynamicData);
     public event PlayerMove OnMove;
-    public delegate void PlayerJump(AnimationData data, AnimationPlayer animPlayer, Vector3 dir);
+    public delegate void PlayerJump(AnimationData animData, AnimationPlayer animPlayer, in Define.PlayerDynamicData dynamicData);
     public event PlayerJump OnJump;
 
     
-    public void InvokeJumpEvent(Vector3 dir)
+    public void InvokeJumpEvent(in Define.PlayerDynamicData data)
     {
-        OnJump?.Invoke(animData, animPlayer, dir);
+        OnJump?.Invoke(animData, animPlayer, data);
     }
-    public void InvokeMoveEvent(Vector3 dir)
+    public void InvokeMoveEvent(in Define.PlayerDynamicData data)
     {
-        OnMove?.Invoke(animData, animPlayer, bodyHandler, dir);
+        OnMove?.Invoke(animData, animPlayer, bodyHandler, data);
     }
 }

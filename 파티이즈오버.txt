@@ -5,6 +5,11 @@ PlantUML 개발문서
 포션애니메이션 고쳤음 문제시 0117 이전에서 가져오기
 
 
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ해야할거ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+각각의 state가 actor의 값들을 갱신시켜야함
+LimbCollision도 마찬가지
+ 이때 StateMachine을 참조하고있는 state들이 옳은건지 확인
+
 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ리팩요소 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 인풋 check식으로 플레이어 동작시키기
 물리관련 FIxed로 빼기
@@ -187,6 +192,7 @@ action 클래스는 이 이벤트를 구독
 Excute를 InputHandler에서 하는게 아니라 핸들러가 키만 저장하고
 actor나 playerController가 Excute를 하는 방식으로
 
+각 state는 actor의 data를 갱신시켜야한다
 
 
 AnimationData를 커맨드는 깡통만 가지고 있고 actor의 AnimationData를 생성자에서

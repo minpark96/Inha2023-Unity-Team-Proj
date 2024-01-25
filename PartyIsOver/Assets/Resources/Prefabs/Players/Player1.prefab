@@ -11281,7 +11281,6 @@ GameObject:
   - component: {fileID: 1602883286494261838}
   - component: {fileID: 4655386519301525991}
   - component: {fileID: -3126586232859372832}
-  - component: {fileID: 4625832021918199697}
   m_Layer: 7
   m_Name: Player1
   m_TagString: Untagged
@@ -11506,6 +11505,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed7dbf9958ea1234c969b763dce58da1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  leftArmPose: 0
+  rightArmPose: 0
+  leftLegPose: 0
+  rightLegPose: 0
 --- !u!114 &4655386519301525991
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11541,20 +11544,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5740e34abace13f49a4a33d6c40a4acb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &4625832021918199697
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5873236424662451676}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: af45a714b0c24a24ea2691ec8d21cc67, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inputHandler: {fileID: 0}
-  isGrounded: 0
 --- !u!1 &5873269987166717472
 GameObject:
   m_ObjectHideFlags: 0

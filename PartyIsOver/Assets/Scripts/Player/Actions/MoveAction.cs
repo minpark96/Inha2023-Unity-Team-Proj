@@ -5,14 +5,16 @@ using UnityEngine;
 public class MoveAction
 {
     PlayerActions actions;
-    AnimationData _animData;
+    //AnimationData _animData;
     AnimationPlayer _animPlayer;
     BodyHandler _bodyHandler;
 
-    Vector3 _moveDir;
+    Vector3 _moveDir = new Vector3();
 
     private float _runSpeed;
     private float _maxSpeed;
+    private bool _isRun;
+
     private float _runSpeedOffset = 350f;
     private float _applyedForce = 800f;
 
@@ -20,30 +22,71 @@ public class MoveAction
     private Vector3 _runVectorForce5 = new Vector3(0f, 0f, 0.4f);
     private Vector3 _runVectorForce10 = new Vector3(0f, 0f, 0.8f);
 
+    int[] limbPositions = new int[4];
 
     MoveAction(PlayerActions actions)
     {
         this.actions = actions;
         this.actions.OnMove -= InvokeMoveEvent;
         this.actions.OnMove += InvokeMoveEvent;
+
+        PlayerStatData statData = Managers.Resource.Load<PlayerStatData>("ScriptableObject/PlayerStatData");
+        _maxSpeed = statData.MaxSpeed;
+        _runSpeed = statData.RunSpeed;
     }
 
 
-    public void InvokeMoveEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyhandler, Vector3 moveDir)
+    public void InvokeMoveEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyhandler, in Define.PlayerDynamicData data)
     {
-        _moveDir = moveDir;
-        _animData = animData;
+        //_animData = animData;
         _animPlayer = animPlayer;
         _bodyHandler = bodyhandler;
 
-        RunCyclePoseBody();
-        RunCyclePoseArm(Define.Side.Left, leftArmPose);
-        RunCyclePoseArm(Define.Side.Right, rightArmPose);
-        RunCyclePoseLeg(Define.Side.Left, leftLegPose);
-        RunCyclePoseLeg(Define.Side.Right, rightLegPose);
+        _moveDir.x = data.dirX;
+        _moveDir.y = data.dirY;
+        _moveDir.z = data.dirZ;
+        _isRun = data.isRunState;
+
+        for (int i = 0; i < (int)Define.limbPositions.End; i++) 
+        {
+            limbPositions[i] = data.limbPositions[i];
+        }
+        
+        if (data.isGround)
+            MovePlayer();
+        else
+            InAirMove();
     }
 
-    private void RunCyclePoseLeg(Define.Side side, Define.BodyPose pose)
+    private void InAirMove()
+    {
+        _bodyHandler.Chest.PartRigidbody.AddForce((_runVectorForce10 + _moveDir), ForceMode.VelocityChange);
+        _bodyHandler.Hip.PartRigidbody.AddForce((-_runVectorForce5 + -_moveDir), ForceMode.VelocityChange);
+
+        _animPlayer.AlignToVector(_bodyHandler.Chest.PartRigidbody, -_bodyHandler.Chest.transform.up, _moveDir / 4f + -Vector3.up, 0.1f, 4f * _applyedForce);
+        _animPlayer.AlignToVector(_bodyHandler.Chest.PartRigidbody, _bodyHandler.Chest.transform.forward, Vector3.up, 0.1f, 8f * _applyedForce);
+        _animPlayer.AlignToVector(_bodyHandler.Waist.PartRigidbody, -_bodyHandler.Waist.transform.up, _moveDir / 4f + -Vector3.up, 0.1f, 4f * _applyedForce);
+        _animPlayer.AlignToVector(_bodyHandler.Waist.PartRigidbody, _bodyHandler.Chest.transform.forward, Vector3.up, 0.1f, 8f * _applyedForce);
+        _animPlayer.AlignToVector(_bodyHandler.Hip.PartRigidbody, -_bodyHandler.Hip.transform.up, _moveDir, 0.1f, 8f * _applyedForce);
+        _animPlayer.AlignToVector(_bodyHandler.Hip.PartRigidbody, _bodyHandler.Hip.transform.forward, Vector3.up, 0.1f, 8f * _applyedForce);
+
+        //Fall상태로 빼야 할수도
+        _bodyHandler.Hip.PartRigidbody.AddForce(_moveDir.normalized * _runSpeed * _runSpeedOffset * Time.deltaTime * 0.5f);
+
+        if (_bodyHandler.Hip.PartRigidbody.velocity.magnitude > _maxSpeed)
+            _bodyHandler.Hip.PartRigidbody.velocity = _bodyHandler.Hip.PartRigidbody.velocity.normalized * _maxSpeed;
+    }
+
+    private void MovePlayer()
+    {
+        RunCyclePoseBody();
+        RunCyclePoseArm(Define.Side.Left, limbPositions[(int)Define.limbPositions.leftArmPose]);
+        RunCyclePoseArm(Define.Side.Right, limbPositions[(int)Define.limbPositions.rightArmPose]);
+        RunCyclePoseLeg(Define.Side.Left, limbPositions[(int)Define.limbPositions.leftLegPose]);
+        RunCyclePoseLeg(Define.Side.Right, limbPositions[(int)Define.limbPositions.rightLegPose]);
+    }
+
+    private void RunCyclePoseLeg(Define.Side side, int limbPose)
     {
         Transform hip = _bodyHandler.Hip.transform;
         Transform thighTrans = null;
@@ -69,20 +112,20 @@ public class MoveAction
                 break;
         }
 
-        switch (pose)
+        switch (limbPose)
         {
-            case Define.BodyPose.Bent:
+            case (int)Define.BodyPose.Bent:
                 _animPlayer.AlignToVector(thighRigid, -thighTrans.forward, _moveDir, 0.1f, 2f * _applyedForce);
                 _animPlayer.AlignToVector(legRigid, legTrans.forward, _moveDir, 0.1f, 2f * _applyedForce);
                 break;
-            case Define.BodyPose.Forward:
+            case (int)Define.BodyPose.Forward:
                 _animPlayer.AlignToVector(thighRigid, -thighTrans.forward, _moveDir + -hip.up / 2f, 0.1f, 4f * _applyedForce);
                 _animPlayer.AlignToVector(legRigid, -legTrans.forward, _moveDir + -hip.up / 2f, 0.1f, 4f * _applyedForce);
                 thighRigid.AddForce(-_moveDir / 2f, ForceMode.VelocityChange);
                 legRigid.AddForce(_moveDir / 2f, ForceMode.VelocityChange);
 
                 break;
-            case Define.BodyPose.Straight:
+            case (int)Define.BodyPose.Straight:
                 _animPlayer.AlignToVector(thighRigid, thighTrans.forward, Vector3.up, 0.1f, 2f * _applyedForce);
                 _animPlayer.AlignToVector(legRigid, legTrans.forward, Vector3.up, 0.1f, 2f * _applyedForce);
                 thighRigid.AddForce(hip.up * 2f * _applyedForce);
@@ -90,14 +133,14 @@ public class MoveAction
                 legRigid.AddForce(-_runVectorForce2, ForceMode.VelocityChange);
 
                 break;
-            case Define.BodyPose.Behind:
+            case (int)Define.BodyPose.Behind:
                 _animPlayer.AlignToVector(thighRigid, thighTrans.forward, _moveDir * 2f, 0.1f, 2f * _applyedForce);
                 _animPlayer.AlignToVector(legRigid, -legTrans.forward, -_moveDir * 2f, 0.1f, 2f * _applyedForce);
                 break;
         }
     }
 
-    private void RunCyclePoseArm(Define.Side side, Define.BodyPose pose)
+    private void RunCyclePoseArm(Define.Side side, int limbPose)
     {
         Vector3 vector = Vector3.zero;
         Transform partTransform = _bodyHandler.Chest.transform;
@@ -128,50 +171,50 @@ public class MoveAction
                 vector = -_bodyHandler.Chest.transform.right;
                 break;
         }
-        if ((actor.flags & ActorFlag.Run) != ActorFlag.Run)
+        if (_isRun)
         {
-            switch (pose)
+            switch (limbPose)
             {
-                case Define.BodyPose.Bent:
+                case (int)Define.BodyPose.Bent:
                     _animPlayer.AlignToVector(rigidbody, transform.forward, partTransform.forward + vector, 0.1f, 4f * _applyedForce * armForceCoef);
                     _animPlayer.AlignToVector(rigidbody2, transform2.forward, -_moveDir / 4f, 0.1f, 4f * _applyedForce * armForceCoef);
                     break;
-                case Define.BodyPose.Forward:
+                case (int)Define.BodyPose.Forward:
                     _animPlayer.AlignToVector(rigidbody, transform.forward, _moveDir + -vector, 0.1f, 4f * _applyedForce * armForceCoef);
                     _animPlayer.AlignToVector(rigidbody2, transform2.forward, _moveDir / 4f + -partTransform.forward + -vector, 0.1f, 4f * _applyedForce * armForceCoef);
                     break;
-                case Define.BodyPose.Straight:
+                case (int)Define.BodyPose.Straight:
                     _animPlayer.AlignToVector(rigidbody, transform.forward, partTransform.forward + vector, 0.1f, 4f * _applyedForce * armForceCoef);
                     _animPlayer.AlignToVector(rigidbody2, transform2.forward, partTransform.forward, 0.1f, 4f * _applyedForce * armForceCoef);
                     break;
-                case Define.BodyPose.Behind:
+                case (int)Define.BodyPose.Behind:
                     _animPlayer.AlignToVector(rigidbody, transform.forward, _moveDir, 0.1f, 4f * _applyedForce * armForceCoef);
                     _animPlayer.AlignToVector(rigidbody2, transform2.forward, partTransform.forward, 0.1f, 4f * _applyedForce * armForceCoef);
                     break;
             }
             return;
         }
-        switch (pose)
+        switch (limbPose)
         {
-            case Define.BodyPose.Bent:
+            case (int)Define.BodyPose.Bent:
                 _animPlayer.AlignToVector(rigidbody, transform.forward, partTransform.forward + vector, 0.1f, 4f * _applyedForce * armForceCoef);
                 _animPlayer.AlignToVector(rigidbody2, transform2.forward, -_moveDir, 0.1f, 4f * _applyedForce * armForceCoef);
                 rigidbody.AddForce(-_moveDir * armForceRunCoef, ForceMode.VelocityChange);
                 rigidbody3.AddForce(_moveDir * armForceRunCoef, ForceMode.VelocityChange);
                 break;
-            case Define.BodyPose.Forward:
+            case (int)Define.BodyPose.Forward:
                 _animPlayer.AlignToVector(rigidbody, transform.forward, _moveDir + -vector, 0.1f, 4f * _applyedForce);
                 _animPlayer.AlignToVector(rigidbody2, transform2.forward, _moveDir + -partTransform.forward + -vector, 0.1f, 4f * _applyedForce * armForceCoef);
                 rigidbody.AddForce(-Vector3.up * armForceRunCoef, ForceMode.VelocityChange);
                 rigidbody3.AddForce(Vector3.up * armForceRunCoef, ForceMode.VelocityChange);
                 break;
-            case Define.BodyPose.Straight:
+            case (int)Define.BodyPose.Straight:
                 _animPlayer.AlignToVector(rigidbody, transform.forward, partTransform.forward + vector, 0.1f, 4f * _applyedForce * armForceCoef);
                 _animPlayer.AlignToVector(rigidbody2, transform2.forward, partTransform.forward, 0.1f, 4f * _applyedForce * armForceCoef);
                 rigidbody.AddForce(Vector3.up * armForceRunCoef, ForceMode.VelocityChange);
                 rigidbody2.AddForce(-Vector3.up * armForceRunCoef, ForceMode.VelocityChange);
                 break;
-            case Define.BodyPose.Behind:
+            case (int)Define.BodyPose.Behind:
                 _animPlayer.AlignToVector(rigidbody, transform.forward, _moveDir, 0.1f, 4f * _applyedForce * armForceCoef);
                 _animPlayer.AlignToVector(rigidbody2, transform2.forward, partTransform.forward, 0.1f, 4f * _applyedForce * armForceCoef);
                 rigidbody.AddForce(-Vector3.up * armForceRunCoef, ForceMode.VelocityChange);
@@ -193,7 +236,7 @@ public class MoveAction
         _animPlayer.AlignToVector(_bodyHandler.Hip.PartRigidbody, -_bodyHandler.Hip.transform.up, _moveDir, 0.1f, 8f * _applyedForce);
         _animPlayer.AlignToVector(_bodyHandler.Hip.PartRigidbody, _bodyHandler.Hip.transform.forward, Vector3.up, 0.1f, 8f * _applyedForce);
 
-        if ((actor.flags & ActorFlag.Run) == ActorFlag.Run)
+        if (_isRun)
         {
             _bodyHandler.Hip.PartRigidbody.AddForce(_moveDir.normalized * _runSpeed * _runSpeedOffset * Time.deltaTime * 1.35f);
             if (_bodyHandler.Hip.PartRigidbody.velocity.magnitude > _maxSpeed)

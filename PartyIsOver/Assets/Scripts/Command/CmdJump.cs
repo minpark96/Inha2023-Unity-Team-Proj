@@ -9,8 +9,8 @@ public class CmdJump : PlayerCommand
         this.actor = actor;
     }
 
-    public override void Execute(Vector3 moveDir = default)
+    public override void Execute(in Define.PlayerDynamicData data)
     {
-        actor.PlayerActions.InvokeJumpEvent(moveDir);
+        actor.PlayerActions.InvokeJumpEvent(data);
     }
 }

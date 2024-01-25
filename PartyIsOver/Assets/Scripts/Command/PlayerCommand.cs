@@ -10,9 +10,7 @@ public class PlayerCommand : ICommand
     protected AnimationData animData;
 
 
-
-
-    public virtual void Execute(Vector3 moveDir = default)
+    public virtual void Execute(in Define.PlayerDynamicData data)
     {
     }
 

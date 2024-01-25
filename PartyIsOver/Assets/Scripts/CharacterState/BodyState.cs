@@ -28,7 +28,6 @@ public abstract class BodyState:IBaseState
 
     public virtual void UpdatePhysics()
     {
-
     }
 
     public virtual void Exit()
