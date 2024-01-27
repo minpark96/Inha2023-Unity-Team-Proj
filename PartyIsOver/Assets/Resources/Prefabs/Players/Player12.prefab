@@ -11279,6 +11279,7 @@ GameObject:
   - component: {fileID: 4655386519301525991}
   - component: {fileID: 5045761695599322105}
   - component: {fileID: 5386265303412058263}
+  - component: {fileID: 6437038779796477227}
   m_Layer: 7
   m_Name: Player12
   m_TagString: Untagged
@@ -11450,8 +11451,22 @@ MonoBehaviour:
   lastActorState: 0
   debuffState: 0
   GrabState: 0
+  hip: {fileID: 0}
+  bodyHandler: {fileID: 0}
   CameraTransform: {fileID: 0}
   CameraControl: {fileID: 0}
+--- !u!114 &6437038779796477227
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5873236424662451676}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ee4d03632e0acc4b8eebdbf4a86ea61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5873269987166717472
 GameObject:
   m_ObjectHideFlags: 0

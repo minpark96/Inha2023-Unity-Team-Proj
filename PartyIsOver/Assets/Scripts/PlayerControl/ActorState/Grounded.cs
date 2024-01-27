@@ -16,6 +16,9 @@ public class Grounded : BaseState
     {
         base.UpdateLogic();
         if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Debug.Log("Check");
             stateMachine.ChangeState(sm.JumpingState);
+        }
     }
 }

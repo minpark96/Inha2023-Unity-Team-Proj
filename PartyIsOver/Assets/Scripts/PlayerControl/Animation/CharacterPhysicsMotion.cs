@@ -20,6 +20,4 @@ public class CharacterPhysicsMotion : MonoBehaviour
     public ForceDirection[] ActionForceDirections;
     public float[] ActionForceValues;
 
-
-
 }

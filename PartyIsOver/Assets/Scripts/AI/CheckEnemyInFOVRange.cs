@@ -6,6 +6,7 @@ using BehaviorTree;
 
 public class CheckEnemyInFOVRange : Node
 {
+    //Define으로 변환
     private static int _enemyLayerMask = (1 << 26) | (1 << 27) | (1 << 28) | (1 << 29) | (1 << 30) | (1 << 31) ;
     private Transform _transform;
     private Animator _animator;

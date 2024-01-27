@@ -24,6 +24,7 @@ public class Moving : Grounded
     {
         base.Enter();
         inputspeed = 0f;
+        //시드값
         if (Random.Range(0, 2) == 1)
         {
 
@@ -43,6 +44,7 @@ public class Moving : Grounded
     public override void UpdateLogic()
     {
         base.UpdateLogic();
+        //외부
         horizontalInput = Input.GetAxis("Horizontal");
         verticalInput = Input.GetAxis("Vertical");
 
@@ -71,15 +73,20 @@ public class Moving : Grounded
     public override void UpdatePhysics()
     {
         base.UpdatePhysics();
-
-        RunCycleUpdate();
+        sm.MovingAnimation.RunCycleUpdate();
+        sm.MovingAnimation.RunCyclePoseBody(moveInput);
+        sm.MovingAnimation.RunCyclePoseArm(Define.Side.Left, leftArmPose);
+        sm.MovingAnimation.RunCyclePoseArm(Define.Side.Right, rightArmPose);
+        sm.MovingAnimation.RunCyclePoseLeg(Define.Side.Left, leftLegPose);
+        sm.MovingAnimation.RunCyclePoseLeg(Define.Side.Right, rightLegPose);
+        /*RunCycleUpdate();
         RunCyclePoseBody();
         RunCyclePoseArm(Define.Side.Left, leftArmPose);
         RunCyclePoseArm(Define.Side.Right, rightArmPose);
         RunCyclePoseLeg(Define.Side.Left, leftLegPose);
-        RunCyclePoseLeg(Define.Side.Right, rightLegPose);
+        RunCyclePoseLeg(Define.Side.Right, rightLegPose);*/
     }
-
+    /*
     private void RunCycleUpdate()
     {
         if (MovingMotionTimer < MovingMotionSpeed)
@@ -261,4 +268,5 @@ public class Moving : Grounded
                 sm.Rigidbody.velocity = sm.Rigidbody.velocity.normalized * maxSpeed;
         }
     }
+    */
 }

@@ -8,6 +8,7 @@ public class BaseState
 {
     protected float maxSpeed = 2f;
     protected float applyedForce = 800f;
+
     public string Name;
     protected StateMachine stateMachine;
 

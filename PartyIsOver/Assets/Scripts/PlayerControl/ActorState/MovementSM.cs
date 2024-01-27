@@ -12,7 +12,7 @@ public class MovementSM : StateMachine
     [HideInInspector]
     public Jumping JumpingState;
 
-
+    public MovingAnimation MovingAnimation;
     public Rigidbody Rigidbody;
     public Rigidbody FootRigidbody;
     //speed는 ScriptableObject 로 변경해서 받아야함
@@ -34,7 +34,7 @@ public class MovementSM : StateMachine
         Rigidbody = hip.GetComponent<Rigidbody>();
         Transform foot = transform.Find("foot_l");
         FootRigidbody = foot.GetComponent<Rigidbody>();
-        
+        MovingAnimation = GetComponent<MovingAnimation>();
     }
 
     protected override BaseState GetInitialState()

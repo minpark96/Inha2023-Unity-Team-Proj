@@ -22,17 +22,18 @@ public class Jumping : BaseState
     public override void Enter()
     {
         base.Enter();
-        // TODO : 애니메이션 추가 작업
-        //AnimateWithDirectedForce(MoveForceJumpAniData, i, Vector3.up);
 
         sm.Rigidbody.AddForce(Vector3.up * sm.Speed * 0.5f);
 
-        for(int i =0; i< JumpingAnimation.Length; i++)
-        {
-            int _elementCount = 1;
-            Vector3 direction = GetForceDirection(JumpingAnimation[_elementCount], i);
-            JumpingAnimation[_elementCount].ActionRigidbodies[i].AddForce(direction * JumpingAnimation[_elementCount].ActionForceValues[i], ForceMode.Impulse);
-        }
+
+        // TODO : 애니메이션 추가 작업
+        //AnimateWithDirectedForce(MoveForceJumpAniData, i, Vector3.up);
+        /*        for(int i =0; i< JumpingAnimation.Length; i++)
+                {
+                    int _elementCount = 1;
+                    Vector3 direction = GetForceDirection(JumpingAnimation[_elementCount], i);
+                    JumpingAnimation[_elementCount].ActionRigidbodies[i].AddForce(direction * JumpingAnimation[_elementCount].ActionForceValues[i], ForceMode.Impulse);
+                }*/
 
     }
 
@@ -46,7 +47,9 @@ public class Jumping : BaseState
     public override void UpdatePhysics()
     {
         base.UpdatePhysics();
+
         grounded = sm.FootRigidbody.velocity.y < Mathf.Epsilon && IsGrounded();
+        Debug.Log(sm.FootRigidbody.velocity.y + " " + IsGrounded());
 
         Vector3 lookForward = new Vector3(sm.PlayerCharacter.CameraTransform.forward.x, 0f, sm.PlayerCharacter.CameraTransform.forward.z).normalized;
         Vector3 lookRight = new Vector3(sm.PlayerCharacter.CameraTransform.right.x, 0f, sm.PlayerCharacter.CameraTransform.right.z).normalized;
@@ -71,6 +74,7 @@ public class Jumping : BaseState
         RaycastHit hit;
         float rayLength = 0.05f; 
 
+        //충돌이 되었는지 확인 확인후 참이면 Idle 상태로 전환
         if (Physics.Raycast(sm.FootRigidbody.position, Vector3.down, out hit, rayLength, groundLayer))
         {
             return true; 
