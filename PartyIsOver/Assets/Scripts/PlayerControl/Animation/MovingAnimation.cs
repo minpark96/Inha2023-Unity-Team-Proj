@@ -20,7 +20,6 @@ public class MovingAnimation : MonoBehaviour
     Vector3 runVectorForce5 = new Vector3(0f, 0f, 0.4f);
     Vector3 runVectorForce10 = new Vector3(0f, 0f, 0.8f);
     Vector3 moveDir;
-    Vector3 moveInput;
 
     Define.Pose leftLegPose;
     Define.Pose rightLegPose;
