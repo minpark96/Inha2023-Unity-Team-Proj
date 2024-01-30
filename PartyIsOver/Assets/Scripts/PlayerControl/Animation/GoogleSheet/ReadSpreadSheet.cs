@@ -33,8 +33,8 @@ public class ReadSpreadSheet : MonoBehaviour
             rowCount  = rows.Length -1;
         }
 
-        Debug.Log(www.downloadHandler.text);
-        Debug.Log(rowCount);
+        //Debug.Log(www.downloadHandler.text);
+        //Debug.Log(rowCount);
     }
 
     public static string GetTSVAddress(string address, string range, long sheetID)

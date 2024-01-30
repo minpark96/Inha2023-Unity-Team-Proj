@@ -4,32 +4,19 @@ using Unity.VisualScripting;
 using UnityEditorInternal;
 using UnityEngine;
 
-public class MovingAnimation : MonoBehaviour
+public class MovingAnimation : Moving
 {
-    private float MovingMotionSpeed;
-    private float MovingMotionTimer = 0;
-    private float maxSpeed = 2f;
-    private float applyedForce = 800f;
+    public MovingAnimation(MovementSM stateMachine) : base(stateMachine) { }
 
-    private bool isRun;
-
-    BodyHandler bodyHandler;
-    MovementSM movementSM;
-
-    Vector3 runVectorForce2 = new Vector3(0f, 0f, 0.2f);
-    Vector3 runVectorForce5 = new Vector3(0f, 0f, 0.4f);
-    Vector3 runVectorForce10 = new Vector3(0f, 0f, 0.8f);
-    Vector3 moveDir;
-
-    Define.Pose leftLegPose;
-    Define.Pose rightLegPose;
-    Define.Pose leftArmPose;
-    Define.Pose rightArmPose;
-
-    private void Awake()
+    public override void UpdatePhysics()
     {
-        bodyHandler = GetComponent<BodyHandler>();
-        movementSM = GetComponent<MovementSM>();
+        base.UpdatePhysics();
+        RunCycleUpdate();
+        RunCyclePoseBody();
+        RunCyclePoseArm(Define.Side.Left, leftArmPose);
+        RunCyclePoseArm(Define.Side.Right, rightArmPose);
+        RunCyclePoseLeg(Define.Side.Left, leftLegPose);
+        RunCyclePoseLeg(Define.Side.Right, rightLegPose);
     }
 
     public void RunCycleUpdate()
@@ -57,19 +44,19 @@ public class MovingAnimation : MonoBehaviour
     public void RunCyclePoseLeg(Define.Side side, Define.Pose pose)
     {
 
-        Transform hip = bodyHandler.Hip.transform;
-        Transform thighTrans = bodyHandler.LeftThigh.transform;
-        Transform legTrans = bodyHandler.LeftLeg.transform;
+        Transform hip = sm.BodyHandler.Hip.transform;
+        Transform thighTrans = sm.BodyHandler.LeftThigh.transform;
+        Transform legTrans = sm.BodyHandler.LeftLeg.transform;
 
-        Rigidbody thighRigid = bodyHandler.LeftThigh.GetComponent<Rigidbody>();
-        Rigidbody legRigid = bodyHandler.LeftLeg.PartRigidbody;
+        Rigidbody thighRigid = sm.BodyHandler.LeftThigh.GetComponent<Rigidbody>();
+        Rigidbody legRigid = sm.BodyHandler.LeftLeg.PartRigidbody;
 
         if (side == Define.Side.Right)
         {
-            thighTrans = bodyHandler.RightThigh.transform;
-            legTrans = bodyHandler.RightLeg.transform;
-            thighRigid = bodyHandler.RightThigh.PartRigidbody;
-            legRigid = bodyHandler.RightLeg.PartRigidbody;
+            thighTrans = sm.BodyHandler.RightThigh.transform;
+            legTrans = sm.BodyHandler.RightLeg.transform;
+            thighRigid = sm.BodyHandler.RightThigh.PartRigidbody;
+            legRigid = sm.BodyHandler.RightLeg.PartRigidbody;
         }
 
         switch (pose)
@@ -101,24 +88,24 @@ public class MovingAnimation : MonoBehaviour
 
     public void RunCyclePoseArm(Define.Side side, Define.Pose pose)
     {
-        Vector3 vector = bodyHandler.Chest.transform.right;
-        Transform partTransform = bodyHandler.Chest.transform;
-        Transform transform = bodyHandler.LeftArm.transform;
-        Transform transform2 = bodyHandler.LeftForearm.transform;
-        Rigidbody rigidbody = bodyHandler.LeftArm.PartRigidbody;
-        Rigidbody rigidbody2 = bodyHandler.LeftForearm.PartRigidbody;
-        Rigidbody rigidbody3 = bodyHandler.LeftHand.PartRigidbody;
+        Vector3 vector = sm.BodyHandler.Chest.transform.right;
+        Transform partTransform = sm.BodyHandler.Chest.transform;
+        Transform transform = sm.BodyHandler.LeftArm.transform;
+        Transform transform2 = sm.BodyHandler.LeftForearm.transform;
+        Rigidbody rigidbody = sm.BodyHandler.LeftArm.PartRigidbody;
+        Rigidbody rigidbody2 = sm.BodyHandler.LeftForearm.PartRigidbody;
+        Rigidbody rigidbody3 = sm.BodyHandler.LeftHand.PartRigidbody;
 
         float armForceCoef = 0.3f;
         float armForceRunCoef = 0.6f;
         if (side == Define.Side.Right)
         {
-            transform = bodyHandler.RightArm.transform;
-            transform2 = bodyHandler.RightForearm.transform;
-            rigidbody = bodyHandler.RightArm.PartRigidbody;
-            rigidbody2 = bodyHandler.RightForearm.PartRigidbody;
-            rigidbody3 = bodyHandler.RightHand.PartRigidbody;
-            vector = -bodyHandler.Chest.transform.right;
+            transform = sm.BodyHandler.RightArm.transform;
+            transform2 = sm.BodyHandler.RightForearm.transform;
+            rigidbody = sm.BodyHandler.RightArm.PartRigidbody;
+            rigidbody2 = sm.BodyHandler.RightForearm.PartRigidbody;
+            rigidbody3 = sm.BodyHandler.RightHand.PartRigidbody;
+            vector = -sm.BodyHandler.Chest.transform.right;
         }
 
         if (!isRun)
@@ -184,50 +171,33 @@ public class MovingAnimation : MonoBehaviour
         }
     }
 
-    public void RunCyclePoseBody(Vector3 moveInput)
+    public void RunCyclePoseBody()
     {
-        Vector3 lookForward = new Vector3(movementSM.PlayerCharacter.CameraTransform.forward.x, 0f, movementSM.PlayerCharacter.CameraTransform.forward.z).normalized;
-        Vector3 lookRight = new Vector3(movementSM.PlayerCharacter.CameraTransform.right.x, 0f, movementSM.PlayerCharacter.CameraTransform.right.z).normalized;
+        Vector3 lookForward = new Vector3(sm.PlayerCharacter.CameraTransform.forward.x, 0f, sm.PlayerCharacter.CameraTransform.forward.z).normalized;
+        Vector3 lookRight = new Vector3(sm.PlayerCharacter.CameraTransform.right.x, 0f, sm.PlayerCharacter.CameraTransform.right.z).normalized;
         moveDir = lookForward * moveInput.z + lookRight * moveInput.x;
 
-        bodyHandler.Chest.PartRigidbody.AddForce((runVectorForce10 + moveDir), ForceMode.VelocityChange);
-        bodyHandler.Hip.PartRigidbody.AddForce((-runVectorForce5 + -moveDir), ForceMode.VelocityChange);
+        sm.BodyHandler.Chest.PartRigidbody.AddForce((runVectorForce10 + moveDir), ForceMode.VelocityChange);
+        sm.BodyHandler.Hip.PartRigidbody.AddForce((-runVectorForce5 + -moveDir), ForceMode.VelocityChange);
 
-        AlignToVector(bodyHandler.Chest.PartRigidbody, -bodyHandler.Chest.transform.up, moveDir / 4f + -Vector3.up, 0.1f, 4f * applyedForce);
-        AlignToVector(bodyHandler.Chest.PartRigidbody, bodyHandler.Chest.transform.forward, Vector3.up, 0.1f, 8f * applyedForce);
-        AlignToVector(bodyHandler.Waist.PartRigidbody, -bodyHandler.Waist.transform.up, moveDir / 4f + -Vector3.up, 0.1f, 4f * applyedForce);
-        AlignToVector(bodyHandler.Waist.PartRigidbody, bodyHandler.Chest.transform.forward, Vector3.up, 0.1f, 8f * applyedForce);
-        AlignToVector(bodyHandler.Hip.PartRigidbody, -bodyHandler.Hip.transform.up, moveDir, 0.1f, 8f * applyedForce);
-        AlignToVector(bodyHandler.Hip.PartRigidbody, bodyHandler.Hip.transform.forward, Vector3.up, 0.1f, 8f * applyedForce);
+        AlignToVector(sm.BodyHandler.Chest.PartRigidbody, -sm.BodyHandler.Chest.transform.up, moveDir / 4f + -Vector3.up, 0.1f, 4f * applyedForce);
+        AlignToVector(sm.BodyHandler.Chest.PartRigidbody, sm.BodyHandler.Chest.transform.forward, Vector3.up, 0.1f, 8f * applyedForce);
+        AlignToVector(sm.BodyHandler.Waist.PartRigidbody, -sm.BodyHandler.Waist.transform.up, moveDir / 4f + -Vector3.up, 0.1f, 4f * applyedForce);
+        AlignToVector(sm.BodyHandler.Waist.PartRigidbody, sm.BodyHandler.Chest.transform.forward, Vector3.up, 0.1f, 8f * applyedForce);
+        AlignToVector(sm.BodyHandler.Hip.PartRigidbody, -sm.BodyHandler.Hip.transform.up, moveDir, 0.1f, 8f * applyedForce);
+        AlignToVector(sm.BodyHandler.Hip.PartRigidbody, sm.BodyHandler.Hip.transform.forward, Vector3.up, 0.1f, 8f * applyedForce);
 
         if (isRun)
         {
-            movementSM.Rigidbody.AddForce(moveDir.normalized * movementSM.Speed * Time.deltaTime * movementSM.RunSpeed);
-            if (movementSM.Rigidbody.velocity.magnitude > maxSpeed)
-                movementSM.Rigidbody.velocity = movementSM.Rigidbody.velocity.normalized * maxSpeed * 1.15f;
+            sm.Rigidbody.AddForce(moveDir.normalized * sm.Speed * Time.deltaTime * sm.RunSpeed);
+            if (sm.Rigidbody.velocity.magnitude > maxSpeed)
+                sm.Rigidbody.velocity = sm.Rigidbody.velocity.normalized * maxSpeed * 1.15f;
         }
         else
         {
-            movementSM.Rigidbody.AddForce(moveDir.normalized * movementSM.Speed * Time.deltaTime);
-            if (movementSM.Rigidbody.velocity.magnitude > maxSpeed)
-                movementSM.Rigidbody.velocity = movementSM.Rigidbody.velocity.normalized * maxSpeed;
-        }
-    }
-
-    void AlignToVector(Rigidbody part, Vector3 alignmentVector, Vector3 targetVector, float stability, float speed)
-    {
-        if (part == null)
-        {
-            return;
-        }
-        Vector3 vector = Vector3.Cross(Quaternion.AngleAxis(part.angularVelocity.magnitude * 57.29578f * stability / speed, part.angularVelocity) * alignmentVector, targetVector * 10f);
-        if (!float.IsNaN(vector.x) && !float.IsNaN(vector.y) && !float.IsNaN(vector.z))
-        {
-            part.AddTorque(vector * speed * speed);
-            {
-                Debug.DrawRay(part.position, alignmentVector * 0.2f, Color.red, 0f, depthTest: false);
-                Debug.DrawRay(part.position, targetVector * 0.2f, Color.green, 0f, depthTest: false);
-            }
+            sm.Rigidbody.AddForce(moveDir.normalized * sm.Speed * Time.deltaTime);
+            if (sm.Rigidbody.velocity.magnitude > maxSpeed)
+                sm.Rigidbody.velocity = sm.Rigidbody.velocity.normalized * maxSpeed;
         }
     }
 }

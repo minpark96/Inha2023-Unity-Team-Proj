@@ -13388,9 +13388,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerCharacter: {fileID: 0}
   IsGround: 0
-  MovingAnimation: {fileID: 0}
   Rigidbody: {fileID: 0}
   FootRigidbody: {fileID: 0}
+  BodyHandler: {fileID: 0}
   Speed: 52500
   RunSpeed: 1.25
 --- !u!114 &794044650
@@ -22722,7 +22722,8 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 26
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6437038779796477227, guid: 27e86df91d64c2e438187f06ef63b801, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 27e86df91d64c2e438187f06ef63b801, type: 3}
 --- !u!1001 &1316630884
 PrefabInstance:

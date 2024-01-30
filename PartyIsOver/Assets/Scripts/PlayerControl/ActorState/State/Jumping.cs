@@ -6,7 +6,6 @@ using UnityEngine.Experimental.AI;
 
 public class Jumping : BaseState
 {
-    protected MovementSM sm;
 
     private bool grounded;
 
@@ -15,7 +14,6 @@ public class Jumping : BaseState
 
     public Jumping(MovementSM stateMachine) : base("Jumping", stateMachine)
     {
-        sm = (MovementSM)stateMachine;
         groundLayer = LayerMask.GetMask("ClimbObject");
     }
 
@@ -49,7 +47,7 @@ public class Jumping : BaseState
         base.UpdatePhysics();
 
         grounded = sm.FootRigidbody.velocity.y < Mathf.Epsilon && IsGrounded();
-        Debug.Log(sm.FootRigidbody.velocity.y + " " + IsGrounded());
+        //Debug.Log(sm.FootRigidbody.velocity.y + " " + IsGrounded());
 
         Vector3 lookForward = new Vector3(sm.PlayerCharacter.CameraTransform.forward.x, 0f, sm.PlayerCharacter.CameraTransform.forward.z).normalized;
         Vector3 lookRight = new Vector3(sm.PlayerCharacter.CameraTransform.right.x, 0f, sm.PlayerCharacter.CameraTransform.right.z).normalized;

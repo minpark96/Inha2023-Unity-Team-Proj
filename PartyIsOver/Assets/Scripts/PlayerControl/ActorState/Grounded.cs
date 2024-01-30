@@ -6,18 +6,14 @@ using UnityEngine.Experimental.AI;
 
 public class Grounded : BaseState
 {
-    protected MovementSM sm;
 
-    public Grounded(string name, MovementSM stateMachine) : base(name, stateMachine)
-    {
-        sm = (MovementSM)stateMachine;
-    }
+    public Grounded(string name, MovementSM stateMachine) : base(name, stateMachine) {}
     public override void UpdateLogic()
     {
         base.UpdateLogic();
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            Debug.Log("Check");
+            //Debug.Log("Check");
             stateMachine.ChangeState(sm.JumpingState);
         }
     }

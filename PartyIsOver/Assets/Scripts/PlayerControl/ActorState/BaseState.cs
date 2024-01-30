@@ -8,9 +8,9 @@ public class BaseState
 {
     protected float maxSpeed = 2f;
     protected float applyedForce = 800f;
-
     public string Name;
     protected StateMachine stateMachine;
+    protected MovementSM sm;
 
     protected Vector3 runVectorForce2 = new Vector3(0f, 0f, 0.2f);
     protected Vector3 runVectorForce5 = new Vector3(0f, 0f, 0.4f);
@@ -20,6 +20,7 @@ public class BaseState
 
     public BaseState(string name, StateMachine stateMachine)
     {
+        sm = (MovementSM)stateMachine;
         this.Name = name;  
         this.stateMachine = stateMachine;
     }

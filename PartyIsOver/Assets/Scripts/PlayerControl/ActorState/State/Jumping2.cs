@@ -10,9 +10,7 @@ public class Jumping2 : BaseState
     private MovementSM sm;
     private float horizontalInput;
     private float verticalInput;
-    private float maxSpeed = 2f;
 
-    private Vector3 moveInput;
     private Vector3 _moveDir;
 
     public Jumping2(string name, MovementSM stateMachine) : base(name, stateMachine)
