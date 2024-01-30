@@ -21,9 +21,9 @@ public class MovementSM : StateMachine
 
     private void Awake()
     {
-        IdleState = new Idle(this);
+        IdleState = new IdleAnimation(this);
         MovingState = new MovingAnimation(this);
-        JumpingState = new Jumping(this);
+        JumpingState = new JumpingAnimation(this);
 
         Init();
     }
