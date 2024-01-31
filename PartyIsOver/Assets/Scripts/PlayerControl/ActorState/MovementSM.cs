@@ -23,7 +23,7 @@ public class MovementSM : StateMachine
     {
         IdleState = new IdleAnimation(this);
         MovingState = new MovingAnimation(this);
-        JumpingState = new JumpingAnimation(this);
+        JumpingState = new Jumping(this);
 
         Init();
     }
