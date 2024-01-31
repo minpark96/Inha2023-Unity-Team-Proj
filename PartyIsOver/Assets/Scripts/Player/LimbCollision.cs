@@ -9,7 +9,7 @@ public class LimbCollision : MonoBehaviourPun
 
     private void Start()
     {
-        bodySM = GetComponentInParent<LowerBodySM>();
+        bodySM = GetComponentInParent<Actor>().LowerBodySM;
     }
 
     private void OnTriggerEnter(Collider other)

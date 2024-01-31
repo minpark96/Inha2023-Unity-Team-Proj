@@ -8,7 +8,12 @@ public class PlayerCommand : ICommand
     protected BodyHandler bodyHandler;
     protected AnimationPlayer animPlayer;
     protected AnimationData animData;
+    public float Timestamp { get; set; }
 
+    public PlayerCommand()
+    {
+        Timestamp = Time.time;
+    }
 
     public virtual void Execute(in Define.PlayerDynamicData data)
     {

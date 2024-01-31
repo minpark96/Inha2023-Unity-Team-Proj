@@ -11505,10 +11505,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed7dbf9958ea1234c969b763dce58da1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  leftArmPose: 0
-  rightArmPose: 0
-  leftLegPose: 0
-  rightLegPose: 0
 --- !u!114 &4655386519301525991
 MonoBehaviour:
   m_ObjectHideFlags: 0

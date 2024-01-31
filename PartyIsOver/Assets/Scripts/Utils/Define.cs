@@ -212,6 +212,7 @@ public class Define
         RightBtn,
         Wheel,
         Jump,
+        Run,
         None,
     }
 
@@ -288,7 +289,9 @@ public class Define
         Bent = 0,
         Forward = 1,
         Straight = 2,
-        Behind = 3
+        Behind = 3,
+
+        End,
     }
 
     public enum Side
@@ -303,7 +306,7 @@ public class Define
         public float dirY;
         public float dirZ;
         public bool isRunState;
-        public bool isGround;
+        public bool isGrounded;
         public int[] limbPositions;
     }
 

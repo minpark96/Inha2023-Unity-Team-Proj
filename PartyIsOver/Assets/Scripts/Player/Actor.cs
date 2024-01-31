@@ -28,15 +28,17 @@ public class Actor : MonoBehaviourPun, IPunObservable, IPlayerContext
     public CameraControl CameraControl;
     private PlayerInputHandler _inputHandler;
 
+    //
+    private AnimationPlayer _animPlayer = new AnimationPlayer();
+    private AnimationData _animData;
 
     public PlayerActions PlayerActions;
-    public AnimationPlayer animPlayer = new AnimationPlayer();
-    public AnimationData animData;
+    public LowerBodySM LowerBodySM;
 
     private ICommand _activeCommand;
+
     public Define.PlayerDynamicData dynamicData;
 
-    LowerBodySM lowerBodySM;
 
 
     public enum ActorFlag
@@ -194,12 +196,18 @@ public class Actor : MonoBehaviourPun, IPunObservable, IPlayerContext
         _damageReduction = statData.DamageReduction;
         _playerAttackPoint = statData.PlayerAttackPoint;
 
-        animData = new AnimationData(BodyHandler);
-        PlayerActions = new PlayerActions(animData,animPlayer,BodyHandler);
-        dynamicData = new Define.PlayerDynamicData();
+        _animData = new AnimationData(BodyHandler);
+        PlayerActions = new PlayerActions(_animData,_animPlayer,BodyHandler);
+        dynamicData = new Define.PlayerDynamicData()
+        {
+            dirX = 0, dirY = 0, dirZ = 0f,
+            isRunState = false,
+            isGrounded = false,
+            limbPositions = new int[4],
+        };
 
         _inputHandler = GetComponent<PlayerInputHandler>();
-        lowerBodySM = new LowerBodySM(_inputHandler);
+        LowerBodySM = new LowerBodySM(_inputHandler);
 
         _inputHandler.InitCommnad(this);
     }
@@ -224,21 +232,137 @@ public class Actor : MonoBehaviourPun, IPunObservable, IPlayerContext
         CameraControl.LookAround(BodyHandler.Hip.transform.position);
         CameraControl.CursorControl();
 
-        _activeCommand = _inputHandler.GetActiveCommand();
-        UpdateState();
+        UpdateStateMachine();
+
+        if (LowerBodySM._currentState != null)
+            UpdateData(); //자리가 여기가 아닐수도
     }
 
 
-    void UpdateState()
+    void UpdateData()
     {
-        Vector3 dir = _inputHandler.GetMoveInput(CameraControl.transform);
+        Vector3 dir = _inputHandler.GetMoveInput(CameraControl.CameraArm.transform);
         dynamicData.dirX = dir.x;
         dynamicData.dirY = dir.y;
         dynamicData.dirZ = dir.z;
 
+        dynamicData.isRunState = LowerBodySM.isRun;
+        dynamicData.isGrounded = LowerBodySM.isGrounded;
 
+        int[] limbPositions = LowerBodySM.GetBodyPose();
+        for (int i = 0; i < (int)BodyPose.End; i++)
+        {
+            dynamicData.limbPositions[i] = limbPositions[i];
+        }
     }
+    private void FixedUpdate()
+    {
+        if (actorState == ActorState.Dead) return;
 
+        if (PhotonNetwork.LocalPlayer.IsMasterClient)
+        {
+            if (_stamina <= 0)
+            {
+                //벽타기 불가능
+                Grab.GrabResetTrigger();
+                GrabState = GrabState.None;
+            }
+
+            //회복하는 수치값 변경
+            RecoveryStamina();
+
+            accumulatedTime += Time.fixedDeltaTime;
+            //Time.fixedDeltaTime(0.02초 기준으로 계속 반복) >= 현제회복시간
+            //0.02초 계속 더해서 >= 0.1,0.2초 보다 커지면 
+            if (accumulatedTime >= currentRecoveryTime)
+            {
+                //뛰거나 잡기 상태에서는
+                if (actorState == ActorState.Run || GrabState == GrabState.Climb)
+                {
+                    //뛰거나 잡기 상태일때 만약 특수 디버프 상태가 들어오면 계속 까이는 현상이 있는데 조건을 걸어서 방지
+                    if ((debuffState & DebuffState.Ice) == DebuffState.Ice || (debuffState & DebuffState.Shock) == DebuffState.Shock)
+                    {
+                        _stamina -= 0;
+                        //photonView.RPC("DecreaseStamina", RpcTarget.All, 0f);
+                        Grab.GrabResetTrigger();
+                        GrabState = GrabState.None;
+                        //PlayerController.isRun = false;
+                    }
+                    else if (_stamina == 0)
+                    {
+                        _stamina = -1f;
+                        actorState = ActorState.Walk;
+                    }
+                    else
+                        _stamina -= 1;
+                    //photonView.RPC("DecreaseStamina", RpcTarget.All, 1f);
+                }
+                else if (PlayerController._isRSkillCheck || PlayerController.isHeading || PlayerController._isCoroutineDrop)
+                    //스킬 사용시 회복 불가능
+                    //photonView.RPC("RecoverStamina",RpcTarget.All, 0f);
+                    _stamina += 0;
+                else
+                    //상태에 맞는 회복하기
+                    //photonView.RPC("RecoverStamina", RpcTarget.All, currentRecoveryStaminaValue);
+                    _stamina += currentRecoveryStaminaValue;
+                accumulatedTime = 0f;
+            }
+            //스테미너가 최대치는 넘는거 방지
+            if (_stamina > MaxStamina)
+                _stamina = MaxStamina;
+
+            OnChangePlayerStatus(_health, _stamina, debuffState, photonView.ViewID);
+        }
+
+
+        if (!photonView.IsMine) return;
+
+        OnChangeStaminaBar();
+
+
+        UpdatePhysicsSM(); //마스터에서만 해야될수도
+
+
+
+        CommandExecute();
+
+
+
+
+        //if (actorState != lastActorState)
+        //{
+        //    PlayerController.isStateChange = true;
+        //}
+        //else
+        //{
+        //    PlayerController.isStateChange = false;
+        //}
+        //switch (actorState)
+        //{
+        //    case ActorState.Dead:
+        //        break;
+        //    case ActorState.Stand:
+        //        PlayerController.Stand();
+        //        break;
+        //    case ActorState.Walk:
+        //        PlayerController.Move();
+        //        break;
+        //    case ActorState.Run:
+        //        PlayerController.Move();
+        //        break;
+        //    case ActorState.Jump:
+        //        PlayerController.Jump();
+        //        break;
+        //    case ActorState.Fall:
+        //        break;
+        //    case ActorState.Climb:
+        //        break;
+        //    case ActorState.Roll:
+        //        break;
+        //}
+
+        //lastActorState = actorState;
+    }
 
     void RecoveryStamina()
     {
@@ -273,131 +397,27 @@ public class Actor : MonoBehaviourPun, IPunObservable, IPlayerContext
         Stamina += amount;
     }
 
-    private void FixedUpdate()
+   
+    void UpdateStateMachine()
     {
-        if (actorState == ActorState.Dead) return;
-            
-        if (PhotonNetwork.LocalPlayer.IsMasterClient)
-        {
-            if (_stamina <= 0)
-            {
-                //벽타기 불가능
-                Grab.GrabResetTrigger();
-                GrabState = GrabState.None;
-            }
-
-            //회복하는 수치값 변경
-            RecoveryStamina();
-
-            accumulatedTime += Time.fixedDeltaTime;
-            //Time.fixedDeltaTime(0.02초 기준으로 계속 반복) >= 현제회복시간
-            //0.02초 계속 더해서 >= 0.1,0.2초 보다 커지면 
-            if (accumulatedTime >= currentRecoveryTime)
-            {
-                //뛰거나 잡기 상태에서는
-                if (actorState == ActorState.Run || GrabState == GrabState.Climb)
-                {
-                    //뛰거나 잡기 상태일때 만약 특수 디버프 상태가 들어오면 계속 까이는 현상이 있는데 조건을 걸어서 방지
-                    if ((debuffState & DebuffState.Ice) == DebuffState.Ice || (debuffState & DebuffState.Shock) == DebuffState.Shock)
-                    {
-                        _stamina -= 0;
-                        //photonView.RPC("DecreaseStamina", RpcTarget.All, 0f);
-                        Grab.GrabResetTrigger();
-                        GrabState = GrabState.None;
-                        //PlayerController.isRun = false;
-                    }
-                    else if(_stamina == 0)
-                    {
-                        _stamina = -1f;
-                        actorState = ActorState.Walk;
-                    }
-                    else
-                        _stamina -= 1;
-                        //photonView.RPC("DecreaseStamina", RpcTarget.All, 1f);
-                }
-                else if (PlayerController._isRSkillCheck || PlayerController.isHeading || PlayerController._isCoroutineDrop)
-                    //스킬 사용시 회복 불가능
-                    //photonView.RPC("RecoverStamina",RpcTarget.All, 0f);
-                    _stamina += 0;
-                else
-                    //상태에 맞는 회복하기
-                    //photonView.RPC("RecoverStamina", RpcTarget.All, currentRecoveryStaminaValue);
-                    _stamina += currentRecoveryStaminaValue;
-                accumulatedTime = 0f;
-            }
-            //스테미너가 최대치는 넘는거 방지
-            if (_stamina > MaxStamina)
-                _stamina = MaxStamina;
-
-            OnChangePlayerStatus(_health, _stamina,  debuffState, photonView.ViewID);
-        }
-
-
-        if (!photonView.IsMine) return;
-
-        OnChangeStaminaBar();
-
-        CommandExecute();
-
-
-
-
-        if (actorState != lastActorState)
-        {
-            PlayerController.isStateChange = true;
-        }
-        else
-        {
-            PlayerController.isStateChange = false;
-        }
-        switch (actorState)
-        {
-            case ActorState.Dead:
-                break;
-            case ActorState.Stand:
-                PlayerController.Stand();
-                break;
-            case ActorState.Walk:
-                PlayerController.Move();
-                break;
-            case ActorState.Run:
-                PlayerController.Move();
-                break;
-            case ActorState.Jump:
-                PlayerController.Jump();
-                break;
-            case ActorState.Fall:
-                break;
-            case ActorState.Climb:
-                break;
-            case ActorState.Roll:
-                break;
-        }
-
-        lastActorState = actorState;
+        LowerBodySM.UpdateLogic();
     }
 
+    void UpdatePhysicsSM()
+    {
+        LowerBodySM.UpdatePhysics();
+    }
 
     void CommandExecute()
     {
+        _activeCommand = _inputHandler.GetActiveCommand();
+
         //Master클라이어트에게 받은 커맨드로 해당하는 actor들을 컨트롤하는 방향으로 혹은 마스터에서 바로 actor.execute
         if (_activeCommand != null)
         {
             _activeCommand.Execute(dynamicData);
             _activeCommand = null;
-            Debug.Log("commnad");
         }
-    }
-    public void AddCommand(ICommand command)
-    {
-        _activeCommand = command;
-    }
-
-    public void SetDir(in Vector3 data)
-    {
-        dynamicData.dirX = data.x;
-        dynamicData.dirY = data.y;
-        dynamicData.dirZ = data.z;
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -411,5 +431,11 @@ public class Actor : MonoBehaviourPun, IPunObservable, IPlayerContext
             if (this.actorState != ActorState.Dead)
                 this.actorState = (ActorState)stream.ReceiveNext();
         }
+    }
+
+    private void OnGUI() //완성 후 삭제
+    {
+        string content = LowerBodySM._currentState != null ? LowerBodySM._currentState.Name : "(no current state)";
+        GUILayout.Label($"<color='black'><size=40>{content}</size></color>");
     }
 }

@@ -4,15 +4,16 @@ using UnityEngine;
 
 public class PlayerActions
 {
-    AnimationData animData;
-    AnimationPlayer animPlayer;
-    BodyHandler bodyHandler;
+    AnimationData _animData;
+    AnimationPlayer _animPlayer;
+    BodyHandler _bodyHandler;
 
     public PlayerActions(AnimationData data, AnimationPlayer animPlayer, BodyHandler bodyHandler)
     {
-        animData = data;
-        this.animPlayer = animPlayer;
-        this.bodyHandler = bodyHandler;
+        _animData = data;
+        this._animPlayer = animPlayer;
+        this._bodyHandler = bodyHandler;
+        Init();
     }
 
 
@@ -21,13 +22,18 @@ public class PlayerActions
     public delegate void PlayerJump(AnimationData animData, AnimationPlayer animPlayer, in Define.PlayerDynamicData dynamicData);
     public event PlayerJump OnJump;
 
+    void Init()
+    {
+        new JumpAction(this);
+        new MoveAction(this);
+    }
     
     public void InvokeJumpEvent(in Define.PlayerDynamicData data)
     {
-        OnJump?.Invoke(animData, animPlayer, data);
+        OnJump?.Invoke(_animData, _animPlayer, data);
     }
     public void InvokeMoveEvent(in Define.PlayerDynamicData data)
     {
-        OnMove?.Invoke(animData, animPlayer, bodyHandler, data);
+        OnMove?.Invoke(_animData, _animPlayer, _bodyHandler, data);
     }
 }

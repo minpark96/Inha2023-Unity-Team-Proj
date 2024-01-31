@@ -30,12 +30,9 @@ public class Jumping : BodyState
     public override void GetInput()
     {
         IsMoveKeyInput();
-
     }
 
 
-
-    //bodyHandler, moveDir(계속 추적해야함,input으로 다른곳에서계산), 그외 잡다한 수치들이 필요
     public override void UpdatePhysics()
     {
 

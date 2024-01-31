@@ -4,32 +4,36 @@ using UnityEngine;
 
 public class StateMachine
 {
-    IBaseState currentState;
-    public PlayerInputHandler inputHandler;
+    public IBaseState _currentState; //나중에 OnGUI 필요없을때 private으로
+    public PlayerInputHandler InputHandler;
 
     public StateMachine()
     {
-        currentState = GetInitialState();
-        if (currentState != null)
-            currentState.Enter();
     }
 
-    protected void UpdateLogic()
+    protected void Init()
     {
-        if (currentState != null)
+        _currentState = GetInitialState();
+        if (_currentState != null)
+            _currentState.Enter();
+    }
+
+    public void UpdateLogic()
+    {
+        if (_currentState != null)
         {
-            currentState.UpdateLogic();
+            _currentState.UpdateLogic();
 
             if (Input.anyKey)
-                currentState.GetInput();
+                _currentState.GetInput();
         }
     }
 
 
-    protected void UpdatePhysics()
+    public void UpdatePhysics()
     {
-        if (currentState != null)
-            currentState.UpdatePhysics();
+        if (_currentState != null)
+            _currentState.UpdatePhysics();
     }
 
 
@@ -40,15 +44,11 @@ public class StateMachine
 
     public void ChangeState(IBaseState newState)
     {
-        currentState.Exit();
+        _currentState.Exit();
 
-        currentState = newState;
+        _currentState = newState;
         newState.Enter();
     }
 
-    private void OnGUI()
-    {
-        string content = currentState != null ? currentState.Name : "(no current state)";
-        GUILayout.Label($"<color='black'><size=40>{content}</size></color>");
-    }
+
 }

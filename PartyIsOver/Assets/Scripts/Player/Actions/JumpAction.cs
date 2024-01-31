@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class JumpAction
 {
-    PlayerActions actions;
-    JumpAction(PlayerActions actions)
+    PlayerActions _actions;
+    public JumpAction(PlayerActions actions)
     {
-        this.actions = actions;
-        this.actions.OnJump -= Jump;
-        this.actions.OnJump += Jump;
+        _actions = actions;
+        _actions.OnJump -= Jump;
+        _actions.OnJump += Jump;
     }
 
     void Jump(AnimationData animData, AnimationPlayer animPlayer, in Define.PlayerDynamicData data)
@@ -25,5 +25,6 @@ public class JumpAction
             animPlayer.AniAngleForce(animData.AngleDataLists[Define.AniAngleData.MoveAngleJumpAniData.ToString()], i,
                 new Vector3(data.dirX,data.dirY + 0.2f,data.dirZ));
         }
+        Debug.Log("ActionJump");
     }
 }

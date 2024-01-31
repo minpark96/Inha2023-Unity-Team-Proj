@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MoveAction
 {
-    PlayerActions actions;
+    PlayerActions _actions;
     //AnimationData _animData;
     AnimationPlayer _animPlayer;
     BodyHandler _bodyHandler;
@@ -24,11 +24,11 @@ public class MoveAction
 
     int[] limbPositions = new int[4];
 
-    MoveAction(PlayerActions actions)
+    public MoveAction(PlayerActions actions)
     {
-        this.actions = actions;
-        this.actions.OnMove -= InvokeMoveEvent;
-        this.actions.OnMove += InvokeMoveEvent;
+        _actions = actions;
+        _actions.OnMove -= InvokeMoveEvent;
+        _actions.OnMove += InvokeMoveEvent;
 
         PlayerStatData statData = Managers.Resource.Load<PlayerStatData>("ScriptableObject/PlayerStatData");
         _maxSpeed = statData.MaxSpeed;
@@ -47,12 +47,14 @@ public class MoveAction
         _moveDir.z = data.dirZ;
         _isRun = data.isRunState;
 
+        if (_isRun)
+            Debug.Log("Run");
         for (int i = 0; i < (int)Define.limbPositions.End; i++) 
         {
             limbPositions[i] = data.limbPositions[i];
         }
         
-        if (data.isGround)
+        if (data.isGrounded)
             MovePlayer();
         else
             InAirMove();
@@ -171,7 +173,7 @@ public class MoveAction
                 vector = -_bodyHandler.Chest.transform.right;
                 break;
         }
-        if (_isRun)
+        if (!_isRun)
         {
             switch (limbPose)
             {

@@ -20,25 +20,33 @@ public class Moving : BodyState
     {
         if (UnityEngine.Random.Range(0, 2) == 1)
         {
-            _sm.inputHandler.leftLegPose = BodyPose.Bent;
-            _sm.inputHandler.rightLegPose = BodyPose.Straight;
-            _sm.inputHandler.leftArmPose = BodyPose.Straight;
-            _sm.inputHandler.rightArmPose = BodyPose.Bent;
+            _sm.leftLegPose = BodyPose.Bent;
+            _sm.rightLegPose = BodyPose.Straight;
+            _sm.leftArmPose = BodyPose.Straight;
+            _sm.rightArmPose = BodyPose.Bent;
         }
         else
         {
-            _sm.inputHandler.leftLegPose = BodyPose.Straight;
-            _sm.inputHandler.rightLegPose = BodyPose.Bent;
-            _sm.inputHandler.leftArmPose = BodyPose.Bent;
-            _sm.inputHandler.rightArmPose = BodyPose.Straight;
+            _sm.leftLegPose = BodyPose.Straight;
+            _sm.rightLegPose = BodyPose.Bent;
+            _sm.leftArmPose = BodyPose.Bent;
+            _sm.rightArmPose = BodyPose.Straight;
         }
+    }
+
+    public override void Exit()
+    {
+        _sm.isRun = false;
     }
 
     public override void UpdateLogic()
     {
-        if (!_sm.inputHandler.IsMoveInput())
+        if (!_sm.InputHandler.IsMoveInput())
             _sm.ChangeState(_sm.idleState);
+    }
 
+    public override void UpdatePhysics()
+    {
         if (_sm.isRun)
             _cycleSpeed = 0.1f;
         else
@@ -51,9 +59,18 @@ public class Moving : BodyState
     {
         IsMoveKeyInput();
   
-        if (_sm.inputHandler.InputGetDownKey(KeyCode.Space, Define.GetKeyType.Down))
+        if (_sm.InputHandler.InputGetDownKey(KeyCode.Space, Define.GetKeyType.Down))
         {
             _sm.ChangeState(_sm.jumpingState);
+        }
+
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            _sm.isRun = true;
+        }
+        if (Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            _sm.isRun = false;
         }
     }
 
@@ -65,23 +82,20 @@ public class Moving : BodyState
             return;
         }
         _cycleTimer = 0f;
-        int num = (int)_sm.inputHandler.leftArmPose;
+        int num = (int)_sm.leftArmPose;
         num++;
-        _sm.inputHandler.leftArmPose = ((num <= 3) ? ((BodyPose)num) : BodyPose.Bent);
-        int num2 = (int)_sm.inputHandler.rightArmPose;
+        _sm.leftArmPose = ((num <= 3) ? ((BodyPose)num) : BodyPose.Bent);
+        int num2 = (int)_sm.rightArmPose;
         num2++;
-        _sm.inputHandler.rightArmPose = ((num2 <= 3) ? ((BodyPose)num2) : BodyPose.Bent);
-        int num3 = (int)_sm.inputHandler.leftLegPose;
+        _sm.rightArmPose = ((num2 <= 3) ? ((BodyPose)num2) : BodyPose.Bent);
+        int num3 = (int)_sm.leftLegPose;
         num3++;
-        _sm.inputHandler.leftLegPose = ((num3 <= 3) ? ((BodyPose)num3) : BodyPose.Bent);
-        int num4 = (int)_sm.inputHandler.rightLegPose;
+        _sm.leftLegPose = ((num3 <= 3) ? ((BodyPose)num3) : BodyPose.Bent);
+        int num4 = (int)_sm.rightLegPose;
         num4++;
-        _sm.inputHandler.rightLegPose = ((num4 <= 3) ? ((BodyPose)num4) : BodyPose.Bent);
+        _sm.rightLegPose = ((num4 <= 3) ? ((BodyPose)num4) : BodyPose.Bent);
     }
 
 
-    public override void UpdatePhysics()
-    {
 
-    }
 }

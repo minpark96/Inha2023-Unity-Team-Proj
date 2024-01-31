@@ -9,17 +9,15 @@ using static System.Runtime.CompilerServices.RuntimeHelpers;
 public class PlayerInputHandler : MonoBehaviourPun
 {
     private Dictionary<COMMAND_KEY, ICommand> commands = new Dictionary<COMMAND_KEY, ICommand>();
-    private ICommand _activeCommand;
+
+    private Queue<ICommand> _activeCommands = new Queue<ICommand>();
     
     private Vector3 _moveDir;
     private Vector3 _moveInput;
     private Vector3 _lookForward;
     private Vector3 _lookRight;
 
-    public BodyPose leftArmPose;
-    public BodyPose rightArmPose;
-    public BodyPose leftLegPose;
-    public BodyPose rightLegPose;
+
 
     private Dictionary<KeyCode, COMMAND_KEY> keyMap = new Dictionary<KeyCode, COMMAND_KEY>
     {
@@ -27,7 +25,7 @@ public class PlayerInputHandler : MonoBehaviourPun
         { KeyCode.A, COMMAND_KEY.Move },
         { KeyCode.S, COMMAND_KEY.Move },
         { KeyCode.D, COMMAND_KEY.Move },
-        { KeyCode.Space, COMMAND_KEY.Jump }
+        { KeyCode.Space, COMMAND_KEY.Jump },
     };
 
 
@@ -69,7 +67,6 @@ public class PlayerInputHandler : MonoBehaviourPun
     {
         commands.Add(COMMAND_KEY.Jump, new CmdJump(actor));
         commands.Add(COMMAND_KEY.Move, new CmdMove(actor));
-
     }
 
     public bool IsMoveInput()
@@ -112,9 +109,8 @@ public class PlayerInputHandler : MonoBehaviourPun
             //이 자리에서 마스터한테 커맨드를 보낼수도
             // 커맨드 execute 호출
             //this.commands[commandKey].Execute();
-            _activeCommand = commands[commandKey];
-           
-
+            if(_activeCommands.Count == 0 || _activeCommands.Peek() != commands[commandKey])
+                _activeCommands.Enqueue(commands[commandKey]);
             return true;
         }
         return false;
@@ -122,12 +118,18 @@ public class PlayerInputHandler : MonoBehaviourPun
 
     public ICommand GetActiveCommand()
     {
-        if(_activeCommand != null)
-            return _activeCommand;
+        if (_activeCommands.Count != 0)
+        {
+            return _activeCommands.Dequeue();
+        }
         else
             return null;
     }
 
+    public void ClearCommand()
+    {
+        _activeCommands = null;
+    }
     //void Start()
     //{
     //    if (_actor.PlayerController.isAI)
