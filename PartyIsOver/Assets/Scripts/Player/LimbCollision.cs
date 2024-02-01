@@ -15,9 +15,9 @@ public class LimbCollision : MonoBehaviourPun
     private void OnTriggerEnter(Collider other)
     {
         if (!photonView.IsMine) return;
-        if (!bodySM.isGrounded)
+        if (!bodySM.IsGrounded)
         {
-            bodySM.isGrounded = true;
+            bodySM.IsGrounded = true;
         }
     }
 }

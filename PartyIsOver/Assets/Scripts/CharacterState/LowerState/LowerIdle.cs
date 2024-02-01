@@ -20,11 +20,11 @@ public class LowerIdle : BodyState
     {
         if (IsMoveKeyInput())
         {
-            _sm.ChangeState(_sm.movingState);
+            _sm.ChangeState(_sm.MovingState);
         }
         if (_sm.InputHandler.InputGetDownKey(KeyCode.Space, Define.GetKeyType.Down))
         {
-            _sm.ChangeState(_sm.jumpingState);
+            _sm.ChangeState(_sm.JumpingState);
         }
     }
 }

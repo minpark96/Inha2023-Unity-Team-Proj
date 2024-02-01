@@ -32,7 +32,7 @@ public class Actor : MonoBehaviourPun, IPunObservable, IPlayerContext
     private AnimationPlayer _animPlayer = new AnimationPlayer();
     private AnimationData _animData;
 
-    public PlayerActions PlayerActions;
+    public ActionController ActionController;
     public LowerBodySM LowerBodySM;
 
     private ICommand _activeCommand;
@@ -197,7 +197,7 @@ public class Actor : MonoBehaviourPun, IPunObservable, IPlayerContext
         _playerAttackPoint = statData.PlayerAttackPoint;
 
         _animData = new AnimationData(BodyHandler);
-        PlayerActions = new PlayerActions(_animData,_animPlayer,BodyHandler);
+        ActionController = new ActionController(_animData,_animPlayer,BodyHandler);
         dynamicData = new Define.PlayerDynamicData()
         {
             dirX = 0, dirY = 0, dirZ = 0f,
@@ -246,8 +246,8 @@ public class Actor : MonoBehaviourPun, IPunObservable, IPlayerContext
         dynamicData.dirY = dir.y;
         dynamicData.dirZ = dir.z;
 
-        dynamicData.isRunState = LowerBodySM.isRun;
-        dynamicData.isGrounded = LowerBodySM.isGrounded;
+        dynamicData.isRunState = LowerBodySM.IsRun;
+        dynamicData.isGrounded = LowerBodySM.IsGrounded;
 
         int[] limbPositions = LowerBodySM.GetBodyPose();
         for (int i = 0; i < (int)BodyPose.End; i++)

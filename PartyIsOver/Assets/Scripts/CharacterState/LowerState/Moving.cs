@@ -20,34 +20,34 @@ public class Moving : BodyState
     {
         if (UnityEngine.Random.Range(0, 2) == 1)
         {
-            _sm.leftLegPose = BodyPose.Bent;
-            _sm.rightLegPose = BodyPose.Straight;
-            _sm.leftArmPose = BodyPose.Straight;
-            _sm.rightArmPose = BodyPose.Bent;
+            _sm.LeftLegPose = BodyPose.Bent;
+            _sm.RightLegPose = BodyPose.Straight;
+            _sm.LeftArmPose = BodyPose.Straight;
+            _sm.RightArmPose = BodyPose.Bent;
         }
         else
         {
-            _sm.leftLegPose = BodyPose.Straight;
-            _sm.rightLegPose = BodyPose.Bent;
-            _sm.leftArmPose = BodyPose.Bent;
-            _sm.rightArmPose = BodyPose.Straight;
+            _sm.LeftLegPose = BodyPose.Straight;
+            _sm.RightLegPose = BodyPose.Bent;
+            _sm.LeftArmPose = BodyPose.Bent;
+            _sm.RightArmPose = BodyPose.Straight;
         }
     }
 
     public override void Exit()
     {
-        _sm.isRun = false;
+        _sm.IsRun = false;
     }
 
     public override void UpdateLogic()
     {
         if (!_sm.InputHandler.IsMoveInput())
-            _sm.ChangeState(_sm.idleState);
+            _sm.ChangeState(_sm.IdleState);
     }
 
     public override void UpdatePhysics()
     {
-        if (_sm.isRun)
+        if (_sm.IsRun)
             _cycleSpeed = 0.1f;
         else
             _cycleSpeed = 0.15f;
@@ -61,16 +61,16 @@ public class Moving : BodyState
   
         if (_sm.InputHandler.InputGetDownKey(KeyCode.Space, Define.GetKeyType.Down))
         {
-            _sm.ChangeState(_sm.jumpingState);
+            _sm.ChangeState(_sm.JumpingState);
         }
 
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
-            _sm.isRun = true;
+            _sm.IsRun = true;
         }
         if (Input.GetKeyUp(KeyCode.LeftShift))
         {
-            _sm.isRun = false;
+            _sm.IsRun = false;
         }
     }
 
@@ -82,20 +82,17 @@ public class Moving : BodyState
             return;
         }
         _cycleTimer = 0f;
-        int num = (int)_sm.leftArmPose;
+        int num = (int)_sm.LeftArmPose;
         num++;
-        _sm.leftArmPose = ((num <= 3) ? ((BodyPose)num) : BodyPose.Bent);
-        int num2 = (int)_sm.rightArmPose;
+        _sm.LeftArmPose = ((num <= 3) ? ((BodyPose)num) : BodyPose.Bent);
+        int num2 = (int)_sm.RightArmPose;
         num2++;
-        _sm.rightArmPose = ((num2 <= 3) ? ((BodyPose)num2) : BodyPose.Bent);
-        int num3 = (int)_sm.leftLegPose;
+        _sm.RightArmPose = ((num2 <= 3) ? ((BodyPose)num2) : BodyPose.Bent);
+        int num3 = (int)_sm.LeftLegPose;
         num3++;
-        _sm.leftLegPose = ((num3 <= 3) ? ((BodyPose)num3) : BodyPose.Bent);
-        int num4 = (int)_sm.rightLegPose;
+        _sm.LeftLegPose = ((num3 <= 3) ? ((BodyPose)num3) : BodyPose.Bent);
+        int num4 = (int)_sm.RightLegPose;
         num4++;
-        _sm.rightLegPose = ((num4 <= 3) ? ((BodyPose)num4) : BodyPose.Bent);
+        _sm.RightLegPose = ((num4 <= 3) ? ((BodyPose)num4) : BodyPose.Bent);
     }
-
-
-
 }

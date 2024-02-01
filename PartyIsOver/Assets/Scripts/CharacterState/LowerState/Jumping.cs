@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Numerics;
 using Unity.VisualScripting;
 using UnityEngine;
-using static System.Runtime.CompilerServices.RuntimeHelpers;
 
 public class Jumping : BodyState
 {
@@ -16,15 +15,15 @@ public class Jumping : BodyState
 
     public override void Enter()
     {
-        _sm.isGrounded = false;
+        _sm.IsGrounded = false;
     }
 
     public override void UpdateLogic()
     {
         //상태 나가기
-        if (_sm.isGrounded)
+        if (_sm.IsGrounded)
         {
-            _sm.ChangeState(_sm.idleState);
+            _sm.ChangeState(_sm.IdleState);
         }
     }
     public override void GetInput()

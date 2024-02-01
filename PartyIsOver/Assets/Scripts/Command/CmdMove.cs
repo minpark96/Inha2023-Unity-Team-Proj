@@ -11,7 +11,7 @@ public class CmdMove : PlayerCommand
     }
     public override void Execute(in Define.PlayerDynamicData data)
     {
-        actor.PlayerActions.InvokeMoveEvent(data);
+        actor.ActionController.InvokeMoveEvent(data);
     }
 
 }

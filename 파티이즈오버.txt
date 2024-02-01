@@ -10,7 +10,7 @@ PlantUML 개발문서
 LimbCollision도 마찬가지
  이때 StateMachine을 참조하고있는 state들이 옳은건지 확인
 
-상체머신 만들어야함
+MoveAction과 PunchAction에 BodyHandler가 안들어가게 수정할 수 있는지 체크할것
 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ리팩요소 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 인풋 check식으로 플레이어 동작시키기
 물리관련 FIxed로 빼기
@@ -154,6 +154,18 @@ ai는 마스터클라이언트라 마스터로 커맨드를 보낼필요 없이 
 InputManager나 PlayerInputHandler에서 가져와서 쓰는식으로 해도 괜찮을듯
 
 상체 - 펀치, Gabbing , Equip, Climb, 스킬, 헤딩
+  Idle
+	2.스킬레디->3. 스킬 두개 
+		(계층구조,상태머신추가,스크립트 하나에서 처리 3가지 방법중 하나 고려)
+	2.헤딩
+	2.드롭킥
+	2.펀치레디->3. 펀치, 그랩
+	
+	4.그랩 완료시-> 5(1).아이템장착, 5.(플레이어잡기, 벽잡기)
+	
+	아이템장착->총,포션,근접무기 (계층구조 사용 혹은 weapon상태머신 추가)	
+	
+
 하체 - Stand, Move, Jump, Fall, 
 
 커맨드 - DropKick
@@ -165,6 +177,10 @@ InputManager나 PlayerInputHandler에서 가져와서 쓰는식으로 해도 괜
 
  ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ커맨드ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 https://welcomeheesuk.tistory.com/72
+
+마우스 L버튼 커맨드가 여러 액션을 실행시켜야함
+특정 상태가 DynamicData에 자신의 상태를 넣고
+data를 확인한 커맨드가 여러 액션중에 적합한 액션을 실행시켜야함
 
 
 ㅡㅡ고민해야할것

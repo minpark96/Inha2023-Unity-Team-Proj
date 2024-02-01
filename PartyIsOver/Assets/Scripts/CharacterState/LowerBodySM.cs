@@ -6,40 +6,40 @@ using static Define;
 
 public class LowerBodySM : StateMachine
 {
-    public bool isGrounded=false;
-    public bool isRun = false;
+    public bool IsGrounded=false;
+    public bool IsRun = false;
 
-    public Jumping jumpingState;
-    public LowerIdle idleState;
-    public Moving movingState;
+    public Jumping JumpingState;
+    public LowerIdle IdleState;
+    public Moving MovingState;
 
-    public BodyPose leftArmPose;
-    public BodyPose rightArmPose;
-    public BodyPose leftLegPose;
-    public BodyPose rightLegPose;
+    public BodyPose LeftArmPose;
+    public BodyPose RightArmPose;
+    public BodyPose LeftLegPose;
+    public BodyPose RightLegPose;
 
     int[] _aryBodyPose = new int[4];
 
     public LowerBodySM(PlayerInputHandler inputHandler)
     {
-        idleState = new LowerIdle(this);
-        jumpingState = new Jumping(this);
-        movingState = new Moving(this);
+        IdleState = new LowerIdle(this);
+        JumpingState = new Jumping(this);
+        MovingState = new Moving(this);
         base.InputHandler = inputHandler;
         base.Init();
     }
 
     public int[] GetBodyPose()
     {
-        _aryBodyPose[0] = (int)leftArmPose;
-        _aryBodyPose[1] = (int)rightArmPose;
-        _aryBodyPose[2] = (int)leftLegPose;
-        _aryBodyPose[3] = (int)rightLegPose;
+        _aryBodyPose[0] = (int)LeftArmPose;
+        _aryBodyPose[1] = (int)RightArmPose;
+        _aryBodyPose[2] = (int)LeftLegPose;
+        _aryBodyPose[3] = (int)RightLegPose;
         return _aryBodyPose;
     }
 
     protected override IBaseState GetInitialState()
     {
-        return idleState;
+        return IdleState;
     }
 }

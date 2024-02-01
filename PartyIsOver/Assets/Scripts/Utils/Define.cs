@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class Define
+public static class Define
 {
     public const byte MAX_PLAYERS_PER_ROOM = 6;
 
@@ -308,6 +308,7 @@ public class Define
         public bool isRunState;
         public bool isGrounded;
         public int[] limbPositions;
+        public Side side;
     }
 
     public enum limbPositions

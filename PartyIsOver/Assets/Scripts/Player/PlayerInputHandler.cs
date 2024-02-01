@@ -26,6 +26,7 @@ public class PlayerInputHandler : MonoBehaviourPun
         { KeyCode.S, COMMAND_KEY.Move },
         { KeyCode.D, COMMAND_KEY.Move },
         { KeyCode.Space, COMMAND_KEY.Jump },
+        { KeyCode.Mouse0, COMMAND_KEY.LeftBtn },
     };
 
 
@@ -67,6 +68,7 @@ public class PlayerInputHandler : MonoBehaviourPun
     {
         commands.Add(COMMAND_KEY.Jump, new CmdJump(actor));
         commands.Add(COMMAND_KEY.Move, new CmdMove(actor));
+        commands.Add(COMMAND_KEY.LeftBtn, new CmdMove(actor));
     }
 
     public bool IsMoveInput()

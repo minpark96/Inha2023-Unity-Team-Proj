@@ -4,7 +4,16 @@ using UnityEngine;
 
 public class MoveAction
 {
-    PlayerActions _actions;
+    public MoveAction(ActionController actions)
+    {
+        actions.OnMove -= InvokeMoveEvent;
+        actions.OnMove += InvokeMoveEvent;
+
+        PlayerStatData statData = Managers.Resource.Load<PlayerStatData>("ScriptableObject/PlayerStatData");
+        _maxSpeed = statData.MaxSpeed;
+        _runSpeed = statData.RunSpeed;
+    }
+
     //AnimationData _animData;
     AnimationPlayer _animPlayer;
     BodyHandler _bodyHandler;
@@ -24,17 +33,6 @@ public class MoveAction
 
     int[] limbPositions = new int[4];
 
-    public MoveAction(PlayerActions actions)
-    {
-        _actions = actions;
-        _actions.OnMove -= InvokeMoveEvent;
-        _actions.OnMove += InvokeMoveEvent;
-
-        PlayerStatData statData = Managers.Resource.Load<PlayerStatData>("ScriptableObject/PlayerStatData");
-        _maxSpeed = statData.MaxSpeed;
-        _runSpeed = statData.RunSpeed;
-    }
-
 
     public void InvokeMoveEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyhandler, in Define.PlayerDynamicData data)
     {
@@ -47,8 +45,6 @@ public class MoveAction
         _moveDir.z = data.dirZ;
         _isRun = data.isRunState;
 
-        if (_isRun)
-            Debug.Log("Run");
         for (int i = 0; i < (int)Define.limbPositions.End; i++) 
         {
             limbPositions[i] = data.limbPositions[i];
