@@ -35,7 +35,8 @@ public class PunchReady : BodyState
             //ÆÝÄ¡
             if (_sm.InputHandler.InputGetDownKey(KeyCode.Mouse0, Define.GetKeyType.Up))
             {
-                _sm.ChangeState(_sm.PunchReadyState);
+                _sm.ChangeState(_sm.PunchState);
+                _sm.IsAttacking = true;
             }
         }
 

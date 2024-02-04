@@ -40,7 +40,7 @@ public abstract class BodyState:IBaseState
 
         for (int i = 0; i < keyCodes.Length; i++)
         {
-            if (stateMachine.InputHandler.InputGetDownKey(keyCodes[i], Define.GetKeyType.Press, false))
+            if (stateMachine.InputHandler.InputGetDownKey(keyCodes[i], Define.GetKeyType.Press))
                 return true;
         }
         return false;

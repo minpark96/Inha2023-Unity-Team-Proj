@@ -40,6 +40,6 @@ public class ActionController
     }
     public void InvokePunchEvent(in Define.PlayerDynamicData data)
     {
-        OnMove?.Invoke(_animData, _animPlayer, _bodyHandler, data);
+        OnPunch?.Invoke(_animData, _animPlayer, _bodyHandler, data);
     }
 }

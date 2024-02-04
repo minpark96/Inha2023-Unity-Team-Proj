@@ -29,6 +29,14 @@ public class PlayerInputHandler : MonoBehaviourPun
         { KeyCode.Mouse0, COMMAND_KEY.LeftBtn },
     };
 
+    //키 매핑
+    public void InitCommnad(Actor actor)
+    {
+        commands.Add(COMMAND_KEY.Jump, new CmdJump(actor));
+        commands.Add(COMMAND_KEY.Move, new CmdMove(actor));
+        commands.Add(COMMAND_KEY.LeftBtn, new CmdLeftBtn(actor));
+    }
+
 
     private void Awake()
     {
@@ -40,7 +48,6 @@ public class PlayerInputHandler : MonoBehaviourPun
     {
     }
 
-    
 
 
     public Vector3 GetMoveInput(Transform cameraArm)
@@ -63,13 +70,7 @@ public class PlayerInputHandler : MonoBehaviourPun
         return _moveDir;
     }
 
-    //키 매핑
-    public void InitCommnad(Actor actor)
-    {
-        commands.Add(COMMAND_KEY.Jump, new CmdJump(actor));
-        commands.Add(COMMAND_KEY.Move, new CmdMove(actor));
-        commands.Add(COMMAND_KEY.LeftBtn, new CmdMove(actor));
-    }
+
 
     public bool IsMoveInput()
     {
@@ -79,7 +80,7 @@ public class PlayerInputHandler : MonoBehaviourPun
             return true;
     }
 
-    public bool InputGetDownKey(KeyCode keyCode, GetKeyType keyType,bool isGround = true)
+    public bool InputGetDownKey(KeyCode keyCode, GetKeyType keyType)
     {
         // 어떤 키값 호출 분기
         COMMAND_KEY commandKey = COMMAND_KEY.None;

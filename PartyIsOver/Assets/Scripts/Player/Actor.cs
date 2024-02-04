@@ -33,7 +33,9 @@ public class Actor : MonoBehaviourPun, IPunObservable, IPlayerContext
     private AnimationData _animData;
 
     public ActionController ActionController;
-    public LowerBodySM LowerBodySM;
+    public LowerBodySM LowerSM;
+    public UpperBodySM UpperSM;
+
 
     private ICommand _activeCommand;
 
@@ -207,7 +209,8 @@ public class Actor : MonoBehaviourPun, IPunObservable, IPlayerContext
         };
 
         _inputHandler = GetComponent<PlayerInputHandler>();
-        LowerBodySM = new LowerBodySM(_inputHandler);
+        LowerSM = new LowerBodySM(_inputHandler);
+        UpperSM = new UpperBodySM(_inputHandler);
 
         _inputHandler.InitCommnad(this);
     }
@@ -234,7 +237,7 @@ public class Actor : MonoBehaviourPun, IPunObservable, IPlayerContext
 
         UpdateStateMachine();
 
-        if (LowerBodySM._currentState != null)
+        if (LowerSM._currentState != null && UpperSM._currentState != null)
             UpdateData(); //자리가 여기가 아닐수도
     }
 
@@ -246,10 +249,13 @@ public class Actor : MonoBehaviourPun, IPunObservable, IPlayerContext
         dynamicData.dirY = dir.y;
         dynamicData.dirZ = dir.z;
 
-        dynamicData.isRunState = LowerBodySM.IsRun;
-        dynamicData.isGrounded = LowerBodySM.IsGrounded;
+        dynamicData.isRunState = LowerSM.IsRun;
+        dynamicData.isGrounded = LowerSM.IsGrounded;
+        int[] limbPositions = LowerSM.GetBodyPose();
 
-        int[] limbPositions = LowerBodySM.GetBodyPose();
+        dynamicData.isAttacking = UpperSM.IsAttacking;
+
+
         for (int i = 0; i < (int)BodyPose.End; i++)
         {
             dynamicData.limbPositions[i] = limbPositions[i];
@@ -400,12 +406,14 @@ public class Actor : MonoBehaviourPun, IPunObservable, IPlayerContext
    
     void UpdateStateMachine()
     {
-        LowerBodySM.UpdateLogic();
+        LowerSM.UpdateLogic();
+        UpperSM.UpdateLogic();
     }
 
     void UpdatePhysicsSM()
     {
-        LowerBodySM.UpdatePhysics();
+        LowerSM.UpdatePhysics();
+        UpperSM.UpdatePhysics();
     }
 
     void CommandExecute()
@@ -435,7 +443,28 @@ public class Actor : MonoBehaviourPun, IPunObservable, IPlayerContext
 
     private void OnGUI() //완성 후 삭제
     {
-        string content = LowerBodySM._currentState != null ? LowerBodySM._currentState.Name : "(no current state)";
-        GUILayout.Label($"<color='black'><size=40>{content}</size></color>");
+        string content = LowerSM._currentState != null ? LowerSM._currentState.Name : "(no current state)";
+        string content2 = UpperSM._currentState != null ? UpperSM._currentState.Name : "(no current state)";
+
+        // 텍스트의 위치 및 크기를 지정하는 Rect 구조체
+        Rect labelRect = new Rect(100, 0, 300, 40);
+        Rect labelRect2 = new Rect(Screen.width - 300, 0, 300, 40); // 위치 수정
+
+        // 스타일1: 검은색 텍스트, 크기 40
+        GUIStyle style1 = new GUIStyle(GUI.skin.label);
+        style1.normal.textColor = Color.black;
+        style1.fontSize = 40;
+
+        // 스타일2: 검은색 텍스트, 크기 40
+        GUIStyle style2 = new GUIStyle(GUI.skin.label);
+        style2.normal.textColor = Color.black;
+        style2.fontSize = 40;
+
+        // 첫 번째 텍스트 표시
+        GUI.Label(labelRect, content, style1);
+
+        // 두 번째 텍스트 표시
+        GUI.Label(labelRect2, content2, style2);
+
     }
 }

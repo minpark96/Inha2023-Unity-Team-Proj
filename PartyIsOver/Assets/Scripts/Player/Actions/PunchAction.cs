@@ -15,10 +15,10 @@ public class PunchAction
     AnimationPlayer _animPlayer;
     BodyHandler _bodyHandler;
 
-    float _duration;
-    float _readyTime;
-    float _punchTime;
-    float _resetTime;
+    float _duration = 0.07f;
+    float _readyTime = 0.1f;
+    float _punchTime = 0.1f;
+    float _resetTime = 0.3f;
 
     bool _isRSkillCheck;
     bool _isMeowNyangPunch;
@@ -28,10 +28,10 @@ public class PunchAction
 
     void InvokePunchEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler,in Define.PlayerDynamicData data)
     {
-        CoroutineHelper.StartCoroutine(Punch(data.side,_duration,_readyTime,_punchTime,_resetTime));
         _animData = animData;
         _animPlayer = animPlayer;
         _bodyHandler = bodyHandler;
+        CoroutineHelper.StartCoroutine(Punch(data.side,_duration,_readyTime,_punchTime,_resetTime));
     }
 
     public IEnumerator Punch(Define.Side side, float duration, float readyTime, float punchTime, float resetTime)

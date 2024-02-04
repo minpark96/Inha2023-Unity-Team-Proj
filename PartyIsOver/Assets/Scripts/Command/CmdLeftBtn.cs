@@ -10,6 +10,6 @@ public class CmdLeftBtn : PlayerCommand
     }
     public override void Execute(in Define.PlayerDynamicData data)
     {
-        actor.ActionController.InvokeMoveEvent(data);
+        actor.ActionController.InvokePunchEvent(data);
     }
 }

@@ -307,6 +307,7 @@ public static class Define
         public float dirZ;
         public bool isRunState;
         public bool isGrounded;
+        public bool isAttacking;
         public int[] limbPositions;
         public Side side;
     }
