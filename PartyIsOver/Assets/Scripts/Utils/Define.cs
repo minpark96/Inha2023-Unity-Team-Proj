@@ -214,6 +214,7 @@ public static class Define
         Jump,
         Run,
         None,
+        Skill,
     }
 
     public enum AniFrameData
@@ -310,6 +311,7 @@ public static class Define
         public bool isAttacking;
         public int[] limbPositions;
         public Side side;
+        public bool isMeowPunch;
     }
 
     public enum limbPositions

@@ -10,7 +10,7 @@ public class JumpAction
         actions.OnJump += InvokeJumpEvent;
     }
 
-    void InvokeJumpEvent(AnimationData animData, AnimationPlayer animPlayer, in Define.PlayerDynamicData data)
+    bool InvokeJumpEvent(AnimationData animData, AnimationPlayer animPlayer,BodyHandler bodyHandler, in Define.PlayerDynamicData data)
     {
         for (int i = 0; i < animData.FrameDataLists[Define.AniFrameData.JumpAniForceData.ToString()].Length; i++)
         {
@@ -23,5 +23,7 @@ public class JumpAction
             animPlayer.AniAngleForce(animData.AngleDataLists[Define.AniAngleData.MoveAngleJumpAniData.ToString()], i,
                 new Vector3(data.dirX,data.dirY + 0.2f,data.dirZ));
         }
+
+        return true;
     }
 }

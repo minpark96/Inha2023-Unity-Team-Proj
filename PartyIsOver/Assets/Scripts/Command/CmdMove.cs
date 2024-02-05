@@ -9,9 +9,9 @@ public class CmdMove : PlayerCommand
     {
         this.actor = actor;
     }
-    public override void Execute(in Define.PlayerDynamicData data)
+    public override bool Execute(in Define.PlayerDynamicData data)
     {
-        actor.ActionController.InvokeMoveEvent(data);
+        return actor.ActionController.InvokeMoveEvent(data);
     }
 
 }

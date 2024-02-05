@@ -9,8 +9,8 @@ public class CmdJump : PlayerCommand
         this.actor = actor;
     }
 
-    public override void Execute(in Define.PlayerDynamicData data)
+    public override bool Execute(in Define.PlayerDynamicData data)
     {
-        actor.ActionController.InvokeJumpEvent(data);
+        return actor.ActionController.InvokeJumpEvent(data);
     }
 }

@@ -5,36 +5,44 @@ using UnityEngine;
 
 public class PunchAction
 {
+    protected ActionController actions;
+
     public PunchAction(ActionController actions)
+    {
+        this.actions = actions;
+        Init();
+    }
+
+    protected AnimationData animData;
+    protected AnimationPlayer animPlayer;
+    protected BodyHandler bodyHandler;
+
+    protected float duration = 0.07f;
+    protected float readyTime = 0.1f;
+    protected float punchTime = 0.1f;
+    protected float resetTime = 0.3f;
+
+    protected bool isRSkillCheck;
+    protected bool isMeowNyangPunch;
+    protected float meowPunchPower;
+    protected float nuclearPunchPower;
+
+    protected virtual void Init()
     {
         actions.OnPunch -= InvokePunchEvent;
         actions.OnPunch += InvokePunchEvent;
     }
 
-    AnimationData _animData;
-    AnimationPlayer _animPlayer;
-    BodyHandler _bodyHandler;
-
-    float _duration = 0.07f;
-    float _readyTime = 0.1f;
-    float _punchTime = 0.1f;
-    float _resetTime = 0.3f;
-
-    bool _isRSkillCheck;
-    bool _isMeowNyangPunch;
-
-    float _meowPunchPower;
-    float _nuclearPunchPower;
-
-    void InvokePunchEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler,in Define.PlayerDynamicData data)
+    bool InvokePunchEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler,in Define.PlayerDynamicData data)
     {
-        _animData = animData;
-        _animPlayer = animPlayer;
-        _bodyHandler = bodyHandler;
-        CoroutineHelper.StartCoroutine(Punch(data.side,_duration,_readyTime,_punchTime,_resetTime));
+        this.animData = animData;
+        this.animPlayer = animPlayer;
+        this.bodyHandler = bodyHandler;
+        CoroutineHelper.StartCoroutine(Punch(data.side,duration,readyTime,punchTime,resetTime));
+        return true;
     }
 
-    public IEnumerator Punch(Define.Side side, float duration, float readyTime, float punchTime, float resetTime)
+    protected IEnumerator Punch(Define.Side side, float duration, float readyTime, float punchTime, float resetTime)
     {
         float checkTime = Time.time;
 
@@ -57,57 +65,59 @@ public class PunchAction
             ArmActionPunchResetting(side);
             yield return new WaitForSeconds(duration);
         }
+
+        actions.UpperActionEnd();
     }
     
-    public void ArmActionReadying(Define.Side side)
+    void ArmActionReadying(Define.Side side)
     {
-        AniAngleData[] aniAngleDatas = (side == Define.Side.Right) ? _animData.AngleDataLists[Define.AniAngleData.RightPunchAniData.ToString()] : _animData.AngleDataLists[Define.AniAngleData.LeftPunchAniData.ToString()];
+        AniAngleData[] aniAngleDatas = (side == Define.Side.Right) ? animData.AngleDataLists[Define.AniAngleData.RightPunchAniData.ToString()] : animData.AngleDataLists[Define.AniAngleData.LeftPunchAniData.ToString()];
         for (int i = 0; i < aniAngleDatas.Length; i++)
         {
-            _animPlayer.AniAngleForce(aniAngleDatas, i);
+            animPlayer.AniAngleForce(aniAngleDatas, i);
         }
     }
 
-    public void ArmActionPunching(Define.Side side)
+    void ArmActionPunching(Define.Side side)
     {
 
-        Transform partTransform = _bodyHandler.Chest.transform;
+        Transform partTransform = bodyHandler.Chest.transform;
         AniFrameData[] aniFrameDatas;
         Transform transform2;
 
         if (side == Define.Side.Left)
         {
-            aniFrameDatas = _animData.FrameDataLists[Define.AniFrameData.LeftPunchingAniData.ToString()];
-            transform2 = _bodyHandler.LeftHand.transform;
-            if (_isRSkillCheck)
+            aniFrameDatas = animData.FrameDataLists[Define.AniFrameData.LeftPunchingAniData.ToString()];
+            transform2 = bodyHandler.LeftHand.transform;
+            if (isRSkillCheck)
             {
-                if (_isMeowNyangPunch)
-                    _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.MeowNyangPunch;
+                if (isMeowNyangPunch)
+                    bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.MeowNyangPunch;
                 else
-                    _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.NuclearPunch;
+                    bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.NuclearPunch;
             }
             else
-                _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
-            _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
-            _bodyHandler.LeftForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+                bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+            bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+            bodyHandler.LeftForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
 
             //photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LeftHand, true);
         }
         else
         {
-            aniFrameDatas = _animData.FrameDataLists[Define.AniFrameData.RightPunchingAniData.ToString()];
-            transform2 = _bodyHandler.RightHand.transform;
-            if (_isRSkillCheck)
+            aniFrameDatas = animData.FrameDataLists[Define.AniFrameData.RightPunchingAniData.ToString()];
+            transform2 = bodyHandler.RightHand.transform;
+            if (isRSkillCheck)
             {
-                if (_isMeowNyangPunch)
-                    _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.MeowNyangPunch;
+                if (isMeowNyangPunch)
+                    bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.MeowNyangPunch;
                 else
-                    _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.NuclearPunch;
+                    bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.NuclearPunch;
             }
             else
-                _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
-            _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
-            _bodyHandler.RightForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+                bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+            bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+            bodyHandler.RightForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
 
             //photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.RightHand, true);
         }
@@ -116,38 +126,38 @@ public class PunchAction
         {
             Vector3 dir = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
 
-            if (_isRSkillCheck)
+            if (isRSkillCheck)
             {
-                if (_isMeowNyangPunch)
-                    _animPlayer.AniForce(aniFrameDatas, i, dir, _meowPunchPower);
+                if (isMeowNyangPunch)
+                    animPlayer.AniForce(aniFrameDatas, i, dir, meowPunchPower);
                 else
-                    _animPlayer.AniForce(aniFrameDatas, i, dir, _nuclearPunchPower);
+                    animPlayer.AniForce(aniFrameDatas, i, dir, nuclearPunchPower);
             }
             else
-                _animPlayer.AniForce(aniFrameDatas, i, dir);
+                animPlayer.AniForce(aniFrameDatas, i, dir);
         }
     }
 
-    public void ArmActionPunchResetting(Define.Side side)
+    void ArmActionPunchResetting(Define.Side side)
     {
-        Transform partTransform = _bodyHandler.Chest.transform;
+        Transform partTransform = bodyHandler.Chest.transform;
 
-        AniAngleData[] aniAngleDatas = _animData.AngleDataLists[Define.AniAngleData.LeftPunchResettingAniData.ToString()];
+        AniAngleData[] aniAngleDatas = animData.AngleDataLists[Define.AniAngleData.LeftPunchResettingAniData.ToString()];
 
         if (side == Define.Side.Left)
         {
-            _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
-            _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
-            _bodyHandler.LeftForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+            bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+            bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+            bodyHandler.LeftForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
 
             //photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LeftHand, false);
         }
         else
         {
-            aniAngleDatas = _animData.AngleDataLists[Define.AniAngleData.RightPunchResettingAniData.ToString()];
-            _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
-            _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
-            _bodyHandler.RightForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+            aniAngleDatas = animData.AngleDataLists[Define.AniAngleData.RightPunchResettingAniData.ToString()];
+            bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+            bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+            bodyHandler.RightForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
 
             //photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.RightHand, false);
         }
@@ -155,7 +165,7 @@ public class PunchAction
         for (int i = 0; i < aniAngleDatas.Length; i++)
         {
             Vector3 dir = partTransform.transform.right / 2f;
-            _animPlayer.AniAngleForce(_animData.AngleDataLists[Define.AniAngleData.LeftPunchResettingAniData.ToString()], i, dir);
+            animPlayer.AniAngleForce(animData.AngleDataLists[Define.AniAngleData.LeftPunchResettingAniData.ToString()], i, dir);
         }
     }
 }

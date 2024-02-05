@@ -8,8 +8,8 @@ public class CmdLeftBtn : PlayerCommand
     {
         this.actor = actor;
     }
-    public override void Execute(in Define.PlayerDynamicData data)
+    public override bool Execute(in Define.PlayerDynamicData data)
     {
-        actor.ActionController.InvokePunchEvent(data);
+        return actor.ActionController.InvokePunchEvent(data);
     }
 }

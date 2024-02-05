@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Define;
 using UnityEngine.SceneManagement;
-
+using Unity.VisualScripting;
 
 public class Actor : MonoBehaviourPun, IPunObservable, IPlayerContext
 {
@@ -200,6 +200,8 @@ public class Actor : MonoBehaviourPun, IPunObservable, IPlayerContext
 
         _animData = new AnimationData(BodyHandler);
         ActionController = new ActionController(_animData,_animPlayer,BodyHandler);
+        BindActionNotify();
+
         dynamicData = new Define.PlayerDynamicData()
         {
             dirX = 0, dirY = 0, dirZ = 0f,
@@ -253,14 +255,17 @@ public class Actor : MonoBehaviourPun, IPunObservable, IPlayerContext
         dynamicData.isGrounded = LowerSM.IsGrounded;
         int[] limbPositions = LowerSM.GetBodyPose();
 
-        dynamicData.isAttacking = UpperSM.IsAttacking;
-
+        dynamicData.isAttacking = UpperSM.IsActionProgress;
+        dynamicData.side = UpperSM.ReadySide;
 
         for (int i = 0; i < (int)BodyPose.End; i++)
         {
             dynamicData.limbPositions[i] = limbPositions[i];
         }
     }
+
+
+
     private void FixedUpdate()
     {
         if (actorState == ActorState.Dead) return;
@@ -328,46 +333,17 @@ public class Actor : MonoBehaviourPun, IPunObservable, IPlayerContext
 
         UpdatePhysicsSM(); //마스터에서만 해야될수도
 
+        ExecuteCommand();
+    }
 
-
-        CommandExecute();
-
-
-
-
-        //if (actorState != lastActorState)
-        //{
-        //    PlayerController.isStateChange = true;
-        //}
-        //else
-        //{
-        //    PlayerController.isStateChange = false;
-        //}
-        //switch (actorState)
-        //{
-        //    case ActorState.Dead:
-        //        break;
-        //    case ActorState.Stand:
-        //        PlayerController.Stand();
-        //        break;
-        //    case ActorState.Walk:
-        //        PlayerController.Move();
-        //        break;
-        //    case ActorState.Run:
-        //        PlayerController.Move();
-        //        break;
-        //    case ActorState.Jump:
-        //        PlayerController.Jump();
-        //        break;
-        //    case ActorState.Fall:
-        //        break;
-        //    case ActorState.Climb:
-        //        break;
-        //    case ActorState.Roll:
-        //        break;
-        //}
-
-        //lastActorState = actorState;
+    void BindActionNotify()
+    {
+        ActionController.OnActionEnd -= ActionEnd;
+        ActionController.OnActionEnd += ActionEnd;
+    }
+    void ActionEnd()
+    {
+        UpperSM.IsActionProgress = false;
     }
 
     void RecoveryStamina()
@@ -416,17 +392,21 @@ public class Actor : MonoBehaviourPun, IPunObservable, IPlayerContext
         UpperSM.UpdatePhysics();
     }
 
-    void CommandExecute()
+    void ExecuteCommand()
     {
         _activeCommand = _inputHandler.GetActiveCommand();
 
         //Master클라이어트에게 받은 커맨드로 해당하는 actor들을 컨트롤하는 방향으로 혹은 마스터에서 바로 actor.execute
         if (_activeCommand != null)
         {
-            _activeCommand.Execute(dynamicData);
+            if(!_activeCommand.Execute(dynamicData))
+                Debug.Log(_activeCommand.ToString() + "커맨드 실행 실패");
+
             _activeCommand = null;
         }
     }
+
+
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
@@ -446,25 +426,18 @@ public class Actor : MonoBehaviourPun, IPunObservable, IPlayerContext
         string content = LowerSM._currentState != null ? LowerSM._currentState.Name : "(no current state)";
         string content2 = UpperSM._currentState != null ? UpperSM._currentState.Name : "(no current state)";
 
-        // 텍스트의 위치 및 크기를 지정하는 Rect 구조체
         Rect labelRect = new Rect(100, 0, 300, 40);
-        Rect labelRect2 = new Rect(Screen.width - 300, 0, 300, 40); // 위치 수정
+        Rect labelRect2 = new Rect(Screen.width - 300, 0, 300, 40);
 
-        // 스타일1: 검은색 텍스트, 크기 40
         GUIStyle style1 = new GUIStyle(GUI.skin.label);
         style1.normal.textColor = Color.black;
         style1.fontSize = 40;
 
-        // 스타일2: 검은색 텍스트, 크기 40
         GUIStyle style2 = new GUIStyle(GUI.skin.label);
         style2.normal.textColor = Color.black;
         style2.fontSize = 40;
 
-        // 첫 번째 텍스트 표시
         GUI.Label(labelRect, content, style1);
-
-        // 두 번째 텍스트 표시
         GUI.Label(labelRect2, content2, style2);
-
     }
 }

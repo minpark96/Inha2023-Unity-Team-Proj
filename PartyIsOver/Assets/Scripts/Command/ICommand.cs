@@ -5,7 +5,7 @@ using UnityEngine;
 public interface ICommand
 {
     float Timestamp { get; set; }
-    void Execute(in Define.PlayerDynamicData data);
+    bool Execute(in Define.PlayerDynamicData data);
     //void Execute(IPlayerContext context);
 
 }

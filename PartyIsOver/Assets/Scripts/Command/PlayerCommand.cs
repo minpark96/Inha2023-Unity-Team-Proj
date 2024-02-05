@@ -15,8 +15,9 @@ public class PlayerCommand : ICommand
         Timestamp = Time.time;
     }
 
-    public virtual void Execute(in Define.PlayerDynamicData data)
+    public virtual bool Execute(in Define.PlayerDynamicData data)
     {
+        return true;
     }
 
     protected void AlignToVector(Rigidbody part, Vector3 alignmentVector, Vector3 targetVector, float stability, float speed)

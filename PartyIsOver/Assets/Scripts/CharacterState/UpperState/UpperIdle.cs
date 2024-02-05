@@ -17,13 +17,13 @@ public class UpperIdle : BodyState
 
     public override void UpdateLogic()
     {
-        //if(_sm.InputHandler.InputGetDownKey(KeyCode.Mouse0, Define.GetKeyType.Down))
-        //{
-        //    _sm.ChangeState(_sm.PunchReadyState);
-        //}
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             _sm.ChangeState(_sm.PunchReadyState);
+        }
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            _sm.ChangeState(_sm.SkillReadyState);
         }
     }
     public override void GetInput()

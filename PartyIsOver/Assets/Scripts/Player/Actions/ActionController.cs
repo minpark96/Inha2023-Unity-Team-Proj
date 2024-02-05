@@ -7,8 +7,8 @@ public class ActionController
     public ActionController(AnimationData data, AnimationPlayer animPlayer, BodyHandler bodyHandler)
     {
         _animData = data;
-        this._animPlayer = animPlayer;
-        this._bodyHandler = bodyHandler;
+        _animPlayer = animPlayer;
+        _bodyHandler = bodyHandler;
         Init();
     }
 
@@ -16,30 +16,42 @@ public class ActionController
     AnimationPlayer _animPlayer;
     BodyHandler _bodyHandler;
 
-    public delegate void PlayerJump(AnimationData animData, AnimationPlayer animPlayer, in Define.PlayerDynamicData dynamicData);
-    public event PlayerJump OnJump;
-    public delegate void PlayerMove(AnimationData animData, AnimationPlayer animPlayer,BodyHandler bodyHandler, in Define.PlayerDynamicData dynamicData);
-    public event PlayerMove OnMove;
-    public delegate void PlayerPunch(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in Define.PlayerDynamicData dynamicData);
-    public event PlayerPunch OnPunch;
+    public delegate bool ActionDelegate(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in Define.PlayerDynamicData dynamicData);
+    public event ActionDelegate OnJump;
+    public event ActionDelegate OnMove;
+    public event ActionDelegate OnPunch;
+    public event ActionDelegate OnSkill;
+
+    public delegate void ActionEndNotify();
+    public event ActionEndNotify OnActionEnd;
 
     void Init()
     {
         new JumpAction(this);
         new MoveAction(this);
         new PunchAction(this);
+        new SkillAction(this);
     }
     
-    public void InvokeJumpEvent(in Define.PlayerDynamicData data)
+    public bool InvokeJumpEvent(in Define.PlayerDynamicData data)
     {
-        OnJump?.Invoke(_animData, _animPlayer, data);
+        return OnJump?.Invoke(_animData, _animPlayer,_bodyHandler, data) ?? false;
     }
-    public void InvokeMoveEvent(in Define.PlayerDynamicData data)
+    public bool InvokeMoveEvent(in Define.PlayerDynamicData data)
     {
-        OnMove?.Invoke(_animData, _animPlayer, _bodyHandler, data);
+        return OnMove?.Invoke(_animData, _animPlayer, _bodyHandler, data) ?? false;
     }
-    public void InvokePunchEvent(in Define.PlayerDynamicData data)
+    public bool InvokePunchEvent(in Define.PlayerDynamicData data)
     {
-        OnPunch?.Invoke(_animData, _animPlayer, _bodyHandler, data);
+        return OnPunch?.Invoke(_animData, _animPlayer, _bodyHandler, data) ?? false;
+    }
+    public bool InvokeSkillEvent(in Define.PlayerDynamicData data)
+    {
+        return OnSkill?.Invoke(_animData, _animPlayer, _bodyHandler, data) ?? false;
+    }
+
+    public void UpperActionEnd()
+    {
+        OnActionEnd?.Invoke();
     }
 }

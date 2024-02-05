@@ -27,6 +27,7 @@ public class PlayerInputHandler : MonoBehaviourPun
         { KeyCode.D, COMMAND_KEY.Move },
         { KeyCode.Space, COMMAND_KEY.Jump },
         { KeyCode.Mouse0, COMMAND_KEY.LeftBtn },
+        { KeyCode.R, COMMAND_KEY.Skill },
     };
 
     //Å° ¸ÅÇÎ
@@ -35,6 +36,8 @@ public class PlayerInputHandler : MonoBehaviourPun
         commands.Add(COMMAND_KEY.Jump, new CmdJump(actor));
         commands.Add(COMMAND_KEY.Move, new CmdMove(actor));
         commands.Add(COMMAND_KEY.LeftBtn, new CmdLeftBtn(actor));
+        commands.Add(COMMAND_KEY.Skill, new CmdLeftBtn(actor));
+
     }
 
 

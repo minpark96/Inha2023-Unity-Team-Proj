@@ -513,7 +513,6 @@ public class PlayerController : MonoBehaviourPun
     [PunRPC]
     void RestoreOriginalMotions()
     {
-
         //y z 초기값 대입
         for (int i = 0; i < childJoints.Length; i++)
         {
@@ -587,7 +586,7 @@ public class PlayerController : MonoBehaviourPun
                 {
                     if (Input.GetMouseButtonUp(0))
                     {
-                        PunchAndGrab();
+                        //PunchAndGrab();
                     }
 
                     if (Input.GetMouseButtonUp(2) && _actor.Stamina >= 0)
@@ -928,69 +927,69 @@ public class PlayerController : MonoBehaviourPun
     IEnumerator NuclearPunchDelay()
     {
         photonView.RPC("PlayerEffectSound", RpcTarget.All, "Sounds/PlayerEffect/SUPERMODE_Punch_Hit_03");
-        yield return MeowPunch(Side.Right, 0.07f, NuclearPunchReadyPunch, NuclearPunching, NuclearPunchResetPunch);
+        //yield return MeowPunch(Side.Right, 0.07f, NuclearPunchReadyPunch, NuclearPunching, NuclearPunchResetPunch);
         yield return RSkillCoolTimer();
     }
 
     private void MeowNyangPunch()
     {
         photonView.RPC("DestroyEffect", RpcTarget.All, "Love_aura");
-        StartCoroutine(MeowNyangPunchDelay());
+        //StartCoroutine(MeowNyangPunchDelay());
         photonView.RPC("ResetCharge", RpcTarget.All);
     }
 
-    IEnumerator MeowNyangPunchDelay()
-    {
-        int _punchcount = 0;
-        _readySide = Side.Right;
-        while (_punchcount < 5)
-        {
-            photonView.RPC("PlayerEffectSound", RpcTarget.All, "Sounds/PlayerEffect/WEAPON_Spear");
-            if (_readySide == Side.Left)
-            {
-                yield return MeowPunch(Side.Left, 0.07f, MeowPunchReadyPunch, MeowPunchPunching, MeowPunchResetPunch);
-                _readySide = Side.Right;
-            }
-            else
-            {
-                yield return MeowPunch(Side.Right, 0.07f, MeowPunchReadyPunch, MeowPunchPunching, MeowPunchResetPunch);
-                _readySide = Side.Left;
-            }
-            _punchcount++;
-        }
-        yield return RSkillCoolTimer();
+    //IEnumerator MeowNyangPunchDelay()
+    //{
+    //    int _punchcount = 0;
+    //    _readySide = Side.Right;
+    //    while (_punchcount < 5)
+    //    {
+    //        photonView.RPC("PlayerEffectSound", RpcTarget.All, "Sounds/PlayerEffect/WEAPON_Spear");
+    //        if (_readySide == Side.Left)
+    //        {
+    //            yield return MeowPunch(Side.Left, 0.07f, MeowPunchReadyPunch, MeowPunchPunching, MeowPunchResetPunch);
+    //            _readySide = Side.Right;
+    //        }
+    //        else
+    //        {
+    //            yield return MeowPunch(Side.Right, 0.07f, MeowPunchReadyPunch, MeowPunchPunching, MeowPunchResetPunch);
+    //            _readySide = Side.Left;
+    //        }
+    //        _punchcount++;
+    //    }
+    //    yield return RSkillCoolTimer();
 
-    }
+    //}
     IEnumerator RSkillCoolTimer()
     {
         _isRSkillCheck = false;
         yield return new WaitForSeconds(RSkillCoolTime);
     }
 
-    IEnumerator MeowPunch(Side side, float duration, float readyTime, float punchTime, float resettingTime)
-    {
-        float checkTime = Time.time;
+    //IEnumerator MeowPunch(Side side, float duration, float readyTime, float punchTime, float resettingTime)
+    //{
+    //    float checkTime = Time.time;
 
-        while (Time.time - checkTime < readyTime)
-        {
-            ArmActionReadying(side);
-            yield return new WaitForSeconds(duration);
-        }
-        checkTime = Time.time;
+    //    while (Time.time - checkTime < readyTime)
+    //    {
+    //        ArmActionReadying(side);
+    //        yield return new WaitForSeconds(duration);
+    //    }
+    //    checkTime = Time.time;
 
-        while (Time.time - checkTime < punchTime)
-        {
-            ArmActionPunching(side);
-            yield return new WaitForSeconds(duration);
-        }
-        checkTime = Time.time;
+    //    while (Time.time - checkTime < punchTime)
+    //    {
+    //        ArmActionPunching(side);
+    //        yield return new WaitForSeconds(duration);
+    //    }
+    //    checkTime = Time.time;
 
-        while (Time.time - checkTime < resettingTime)
-        {
-            ArmActionPunchResetting(side);
-            yield return new WaitForSeconds(duration);
-        }
-    }
+    //    while (Time.time - checkTime < resettingTime)
+    //    {
+    //        ArmActionPunchResetting(side);
+    //        yield return new WaitForSeconds(duration);
+    //    }
+    //}
 
     #endregion
 
@@ -1229,210 +1228,210 @@ public class PlayerController : MonoBehaviourPun
     #endregion
 
     #region Punch
-    public void PunchAndGrab()
-    {
-        if (!_isCoroutineRunning)
-        {
-            if (_readySide == Side.Left)
-            {
-                StartCoroutine(PunchWithDelay(Side.Left));
-                _readySide = Side.Right;
-            }
-            else
-            {
-                StartCoroutine(PunchWithDelay(Side.Right));
-                _readySide = Side.Left;
-            }
-        }
-    }
+    //public void PunchAndGrab()
+    //{
+    //    if (!_isCoroutineRunning)
+    //    {
+    //        if (_readySide == Side.Left)
+    //        {
+    //            StartCoroutine(PunchWithDelay(Side.Left));
+    //            _readySide = Side.Right;
+    //        }
+    //        else
+    //        {
+    //            StartCoroutine(PunchWithDelay(Side.Right));
+    //            _readySide = Side.Left;
+    //        }
+    //    }
+    //}
 
-    IEnumerator PunchWithDelay(Side side)
-    {
-        _isCoroutineRunning = true;
-        yield return Punch(side, 0.07f, ReadyPunch, Punching, ResetPunch);
-        _isCoroutineRunning = false;
-    }
+    //IEnumerator PunchWithDelay(Side side)
+    //{
+    //    _isCoroutineRunning = true;
+    //    yield return Punch(side, 0.07f, ReadyPunch, Punching, ResetPunch);
+    //    _isCoroutineRunning = false;
+    //}
 
     //값이 들어 오는게 0.01 0.1 0.1 0.3
-    public IEnumerator Punch(Side side, float duration, float readyTime, float punchTime, float resetTime)
-    {
-        float checkTime = Time.time;
+    //public IEnumerator Punch(Side side, float duration, float readyTime, float punchTime, float resetTime)
+    //{
+    //    float checkTime = Time.time;
 
-        while (Time.time - checkTime < readyTime)
-        {
-            ArmActionReadying(side);
-            yield return new WaitForSeconds(duration);
-        }
-        checkTime = Time.time;
+    //    while (Time.time - checkTime < readyTime)
+    //    {
+    //        ArmActionReadying(side);
+    //        yield return new WaitForSeconds(duration);
+    //    }
+    //    checkTime = Time.time;
 
-        while (Time.time - checkTime < punchTime)
-        {
-            ArmActionPunching(side);
-            yield return new WaitForSeconds(duration);
-        }
-        checkTime = Time.time;
+    //    while (Time.time - checkTime < punchTime)
+    //    {
+    //        ArmActionPunching(side);
+    //        yield return new WaitForSeconds(duration);
+    //    }
+    //    checkTime = Time.time;
 
-        while (Time.time - checkTime < resetTime)
-        {
-            ArmActionPunchResetting(side);
-            yield return new WaitForSeconds(duration);
-        }
-    }
+    //    while (Time.time - checkTime < resetTime)
+    //    {
+    //        ArmActionPunchResetting(side);
+    //        yield return new WaitForSeconds(duration);
+    //    }
+    //}
 
     //아이템 때문에 추가
-    public IEnumerator Punch(Side side, float duration, float readyTime, float punchTime, float resetTime, float itemPower)
-    {
-        float checkTime = Time.time;
+    //public IEnumerator Punch(Side side, float duration, float readyTime, float punchTime, float resetTime, float itemPower)
+    //{
+    //    float checkTime = Time.time;
 
-        while (Time.time - checkTime < readyTime)
-        {
-            ArmActionReadying(side);
-            yield return new WaitForSeconds(duration);
-        }
-        checkTime = Time.time;
+    //    while (Time.time - checkTime < readyTime)
+    //    {
+    //        ArmActionReadying(side);
+    //        yield return new WaitForSeconds(duration);
+    //    }
+    //    checkTime = Time.time;
 
-        while (Time.time - checkTime < punchTime)
-        {
-            ArmActionPunching(side, itemPower);
-            yield return new WaitForSeconds(duration);
-        }
-        checkTime = Time.time;
+    //    while (Time.time - checkTime < punchTime)
+    //    {
+    //        ArmActionPunching(side, itemPower);
+    //        yield return new WaitForSeconds(duration);
+    //    }
+    //    checkTime = Time.time;
 
-        while (Time.time - checkTime < resetTime)
-        {
-            ArmActionPunchResetting(side);
-            yield return new WaitForSeconds(duration);
-        }
-    }
+    //    while (Time.time - checkTime < resetTime)
+    //    {
+    //        ArmActionPunchResetting(side);
+    //        yield return new WaitForSeconds(duration);
+    //    }
+    //}
     #endregion
 
     #region PunchAnimation
 
-    public void ArmActionReadying(Side side)
-    {
-        AniAngleData[] aniAngleDatas = (side == Side.Right) ? angleDataLists[Define.AniAngleData.RightPunchAniData.ToString()] : angleDataLists[Define.AniAngleData.LeftPunchAniData.ToString()];
-        for (int i = 0; i < aniAngleDatas.Length; i++)
-        {
-            AniAngleForce(aniAngleDatas, i);
-        }
-    }
+    //public void ArmActionReadying(Side side)
+    //{
+    //    AniAngleData[] aniAngleDatas = (side == Side.Right) ? angleDataLists[Define.AniAngleData.RightPunchAniData.ToString()] : angleDataLists[Define.AniAngleData.LeftPunchAniData.ToString()];
+    //    for (int i = 0; i < aniAngleDatas.Length; i++)
+    //    {
+    //        AniAngleForce(aniAngleDatas, i);
+    //    }
+    //}
 
-    public void ArmActionPunching(Side side)
-    {
+    //public void ArmActionPunching(Side side)
+    //{
 
-        Transform partTransform = _bodyHandler.Chest.transform;
-        AniFrameData[] aniFrameDatas;
-        Transform transform2;
+    //    Transform partTransform = _bodyHandler.Chest.transform;
+    //    AniFrameData[] aniFrameDatas;
+    //    Transform transform2;
 
-        if (side == Side.Left)
-        {
-            aniFrameDatas = frameDataLists[Define.AniFrameData.LeftPunchingAniData.ToString()];
-            transform2 = _bodyHandler.LeftHand.transform;
-            if (_isRSkillCheck)
-            {
-                if (isMeowNyangPunch)
-                    _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.MeowNyangPunch;
-                else
-                    _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.NuclearPunch;
-            }
-            else
-                _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
-            _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
-            _bodyHandler.LeftForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+    //    if (side == Side.Left)
+    //    {
+    //        aniFrameDatas = frameDataLists[Define.AniFrameData.LeftPunchingAniData.ToString()];
+    //        transform2 = _bodyHandler.LeftHand.transform;
+    //        if (_isRSkillCheck)
+    //        {
+    //            if (isMeowNyangPunch)
+    //                _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.MeowNyangPunch;
+    //            else
+    //                _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.NuclearPunch;
+    //        }
+    //        else
+    //            _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+    //        _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+    //        _bodyHandler.LeftForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
 
-            photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LeftHand, true);
-        }
-        else
-        {
-            aniFrameDatas = frameDataLists[Define.AniFrameData.RightPunchingAniData.ToString()];
-            transform2 = _bodyHandler.RightHand.transform;
-            if (_isRSkillCheck)
-            {
-                if (isMeowNyangPunch)
-                    _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.MeowNyangPunch;
-                else
-                    _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.NuclearPunch;
-            }
-            else
-                _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
-            _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
-            _bodyHandler.RightForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+    //        photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LeftHand, true);
+    //    }
+    //    else
+    //    {
+    //        aniFrameDatas = frameDataLists[Define.AniFrameData.RightPunchingAniData.ToString()];
+    //        transform2 = _bodyHandler.RightHand.transform;
+    //        if (_isRSkillCheck)
+    //        {
+    //            if (isMeowNyangPunch)
+    //                _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.MeowNyangPunch;
+    //            else
+    //                _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.NuclearPunch;
+    //        }
+    //        else
+    //            _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+    //        _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+    //        _bodyHandler.RightForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
 
-            photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.RightHand, true);
-        }
+    //        photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.RightHand, true);
+    //    }
 
-        for (int i = 0; i < aniFrameDatas.Length; i++)
-        {
-            Vector3 dir = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
+    //    for (int i = 0; i < aniFrameDatas.Length; i++)
+    //    {
+    //        Vector3 dir = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
 
-            if (_isRSkillCheck)
-            {
-                if (isMeowNyangPunch)
-                    AniForce(aniFrameDatas, i, dir, MeowPunchPower);
-                else
-                    AniForce(aniFrameDatas, i, dir, NuclearPunchPower);
-            }
-            else
-                AniForce(aniFrameDatas, i, dir);
-        }
-    }
+    //        if (_isRSkillCheck)
+    //        {
+    //            if (isMeowNyangPunch)
+    //                AniForce(aniFrameDatas, i, dir, MeowPunchPower);
+    //            else
+    //                AniForce(aniFrameDatas, i, dir, NuclearPunchPower);
+    //        }
+    //        else
+    //            AniForce(aniFrameDatas, i, dir);
+    //    }
+    //}
 
     // 아이템 때문에 추가
-    public void ArmActionPunching(Side side, float itemPower)
-    {
-        Transform partTransform = _bodyHandler.Chest.transform;
-        AniFrameData[] aniFrameDatas = frameDataLists[Define.AniFrameData.LeftPunchingAniData.ToString()];
-        Transform transform2 = _bodyHandler.LeftHand.transform;
-        _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
-        _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
-        _bodyHandler.LeftForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+    //public void ArmActionPunching(Side side, float itemPower)
+    //{
+    //    Transform partTransform = _bodyHandler.Chest.transform;
+    //    AniFrameData[] aniFrameDatas = frameDataLists[Define.AniFrameData.LeftPunchingAniData.ToString()];
+    //    Transform transform2 = _bodyHandler.LeftHand.transform;
+    //    _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+    //    _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+    //    _bodyHandler.LeftForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
 
-        if (side == Side.Right)
-        {
-            aniFrameDatas = frameDataLists[Define.AniFrameData.RightPunchingAniData.ToString()];
-            transform2 = _bodyHandler.RightHand.transform;
-            _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
-            _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
-            _bodyHandler.RightForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
-        }
+    //    if (side == Side.Right)
+    //    {
+    //        aniFrameDatas = frameDataLists[Define.AniFrameData.RightPunchingAniData.ToString()];
+    //        transform2 = _bodyHandler.RightHand.transform;
+    //        _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+    //        _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+    //        _bodyHandler.RightForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+    //    }
 
-        for (int i = 0; i < aniFrameDatas.Length; i++)
-        {
-            Vector3 dir = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
-            AniForce(aniFrameDatas, i, dir, itemPower);
-        }
-    }
+    //    for (int i = 0; i < aniFrameDatas.Length; i++)
+    //    {
+    //        Vector3 dir = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
+    //        AniForce(aniFrameDatas, i, dir, itemPower);
+    //    }
+    //}
 
-    public void ArmActionPunchResetting(Side side)
-    {
-        Transform partTransform = _bodyHandler.Chest.transform;
+    //public void ArmActionPunchResetting(Side side)
+    //{
+    //    Transform partTransform = _bodyHandler.Chest.transform;
 
-        AniAngleData[] aniAngleDatas = angleDataLists[Define.AniAngleData.LeftPunchResettingAniData.ToString()];
+    //    AniAngleData[] aniAngleDatas = angleDataLists[Define.AniAngleData.LeftPunchResettingAniData.ToString()];
         
-        if (side == Side.Left)
-        {
-            _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
-            _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
-            _bodyHandler.LeftForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+    //    if (side == Side.Left)
+    //    {
+    //        _bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+    //        _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+    //        _bodyHandler.LeftForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
 
-            photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LeftHand, false);
-        }
-        else
-        {
-            aniAngleDatas = angleDataLists[Define.AniAngleData.RightPunchResettingAniData.ToString()];
-            _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
-            _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
-            _bodyHandler.RightForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+    //        photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LeftHand, false);
+    //    }
+    //    else
+    //    {
+    //        aniAngleDatas = angleDataLists[Define.AniAngleData.RightPunchResettingAniData.ToString()];
+    //        _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+    //        _bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+    //        _bodyHandler.RightForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
 
-            photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.RightHand, false);
-        }
+    //        photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.RightHand, false);
+    //    }
 
-        for (int i = 0; i < aniAngleDatas.Length; i++)
-        {
-            Vector3 dir = partTransform.transform.right / 2f;
-            AniAngleForce(angleDataLists[Define.AniAngleData.LeftPunchResettingAniData.ToString()], i, dir);
-        }
-    }
+    //    for (int i = 0; i < aniAngleDatas.Length; i++)
+    //    {
+    //        Vector3 dir = partTransform.transform.right / 2f;
+    //        AniAngleForce(angleDataLists[Define.AniAngleData.LeftPunchResettingAniData.ToString()], i, dir);
+    //    }
+    //}
 
     #endregion
 

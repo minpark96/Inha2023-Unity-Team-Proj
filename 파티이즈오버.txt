@@ -10,6 +10,13 @@ PlantUML 개발문서
 LimbCollision도 마찬가지
  이때 StateMachine을 참조하고있는 state들이 옳은건지 확인
 
+PunchReady 스테이트 이름이 적절하지 않음 Punch와 Grabbing 둘 중 하나로 
+	이동하는 상태니 ArmReady 등으로 수정
+
+UpperBodySM 각 State선언시 인터페이스로 선언할지, 구체화된 클래스로 선언할지
+
+PunchAction 동작에서 충돌모드 잡다한 코드 정리, 공격타입 여기서 하는게 맞는지
+
 MoveAction과 PunchAction에 BodyHandler가 안들어가게 수정할 수 있는지 체크할것
 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ리팩요소 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 인풋 check식으로 플레이어 동작시키기
@@ -21,7 +28,7 @@ MoveAction과 PunchAction에 BodyHandler가 안들어가게 수정할 수 있는
 
 punRPC 논리상 오작동 있는지 한번 체크
 RPC 함수하나 통하도록 (여기서 디버그 가능할수도)
-애니메이션파일 나누기
+- 애니메이션파일 나누기
 게임시스템 스크립트 이해하고 개선
 플레이어 프리팹 하나로 통일
 
@@ -157,6 +164,7 @@ InputManager나 PlayerInputHandler에서 가져와서 쓰는식으로 해도 괜
   Idle
 	2.스킬레디->3. 스킬 두개 
 		(계층구조,상태머신추가,스크립트 하나에서 처리 3가지 방법중 하나 고려)
+			스킬 두개 차이점 - 액션,공격속성,사운드,이펙트 등
 	2.헤딩
 	2.드롭킥
 	2.펀치레디->3. 펀치, 그랩

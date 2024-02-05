@@ -34,7 +34,7 @@ public class MoveAction
     int[] limbPositions = new int[4];
 
 
-    public void InvokeMoveEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyhandler, in Define.PlayerDynamicData data)
+    public bool InvokeMoveEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyhandler, in Define.PlayerDynamicData data)
     {
         //_animData = animData;
         _animPlayer = animPlayer;
@@ -54,6 +54,8 @@ public class MoveAction
             MovePlayer();
         else
             InAirMove();
+
+        return true;
     }
 
     private void InAirMove()

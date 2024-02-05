@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Punch : BodyState
+public class MeowNyangPunch : BodyState
 {
-    private UpperBodySM _sm;
+    protected UpperBodySM _sm;
 
-    public Punch(StateMachine stateMachine) : base("PunchState", stateMachine)
+    public MeowNyangPunch(StateMachine stateMachine) : base("SkillState", stateMachine)
     {
         _sm = (UpperBodySM)stateMachine;
     }
@@ -16,10 +16,9 @@ public class Punch : BodyState
         //사운드, 이펙트를 여기서 관리해야 하는지 고민해야함
         //_sm에게 공격타입을 알려야함 그리고 DynamicData가 해당 타입을 저장
     }
-
     public override void UpdateLogic()
     {
-        if(!_sm.IsActionProgress)
+        if (!_sm.IsActionProgress)
         {
             _sm.ChangeState(_sm.IdleState);
         }
@@ -34,9 +33,5 @@ public class Punch : BodyState
 
     public override void Exit()
     {
-        if (_sm.ReadySide == Define.Side.Left)
-            _sm.ReadySide = Define.Side.Right;
-        else
-            _sm.ReadySide = Define.Side.Left;
     }
 }
