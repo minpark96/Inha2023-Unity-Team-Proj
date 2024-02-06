@@ -33,7 +33,7 @@ public class PunchReady : BodyState
         else if (_pressDuration < _punchGrabThreshold)
         {
             //ÆÝÄ¡
-            if (_sm.InputHandler.InputGetDownKey(KeyCode.Mouse0, Define.GetKeyType.Up))
+            if (_sm.InputHandler.InputCommnadKey(KeyCode.Mouse0, Define.GetKeyType.Up))
             {
                 _sm.ChangeState(_sm.PunchState);
                 _sm.IsActionProgress = true;

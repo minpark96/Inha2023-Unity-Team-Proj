@@ -12,12 +12,13 @@ public class BodyPart : MonoBehaviour
     public ConfigurableJoint PartJoint;
     public Transform PartTransform;
 
-    public void PartSetup()
+    public void PartSetup(Define.BodyPart part)
     {
         _partCollisionHandler = GetOrAddComponent<CollisionHandler>();
         PartRigidbody = GetOrAddComponent<Rigidbody>();
         PartInteractable = GetOrAddComponent<InteractableObject>();
-        PartJoint = GetOrAddComponent<ConfigurableJoint>();
+        if(!(part == Define.BodyPart.Hip))
+            PartJoint = GetOrAddComponent<ConfigurableJoint>();
         PartTransform = transform;
 
         SetPhotonRigidbody();

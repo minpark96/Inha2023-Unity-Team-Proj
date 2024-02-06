@@ -8,18 +8,13 @@ public class UpperBodySM : StateMachine
 {
     public Define.Side ReadySide = Define.Side.Left;
     public bool IsActionProgress = false;
+    public bool IsMeowPunch = false;
 
-    //public IBaseState IdleState;
-    //public IBaseState PunchReadyState;
-    //public IBaseState PunchState;
-    //public IBaseState GrabbingState;
-    //public IBaseState SkillState;
-
-    public UpperIdle IdleState;
-    public PunchReady PunchReadyState;
-    public Punch PunchState;
-    public Grabbing GrabbingState;
-    public SkillReady SkillReadyState;
+    public IBaseState IdleState;
+    public IBaseState PunchReadyState;
+    public IBaseState PunchState;
+    public IBaseState GrabbingState;
+    public IBaseState SkillReadyState;
     public IBaseState SkillState;
 
     public UpperBodySM(PlayerInputHandler inputHandler)

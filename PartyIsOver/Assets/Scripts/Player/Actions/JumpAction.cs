@@ -6,21 +6,21 @@ public class JumpAction
 {
     public JumpAction(ActionController actions)
     {
-        actions.OnJump -= InvokeJumpEvent;
-        actions.OnJump += InvokeJumpEvent;
+        actions.OnJump -= HandleJumpEvent;
+        actions.OnJump += HandleJumpEvent;
     }
 
-    bool InvokeJumpEvent(AnimationData animData, AnimationPlayer animPlayer,BodyHandler bodyHandler, in Define.PlayerDynamicData data)
+    bool HandleJumpEvent(AnimationData animData, AnimationPlayer animPlayer,BodyHandler bodyHandler, in Define.PlayerDynamicData data)
     {
-        for (int i = 0; i < animData.FrameDataLists[Define.AniFrameData.JumpAniForceData.ToString()].Length; i++)
+        for (int i = 0; i < animData.FrameDataLists[Define.AniFrameData.JumpAniForceData].Length; i++)
         {
-            animPlayer.AniForce(animData.FrameDataLists[Define.AniFrameData.JumpAniForceData.ToString()], i, Vector3.up);
+            animPlayer.AniForce(animData.FrameDataLists[Define.AniFrameData.JumpAniForceData], i, Vector3.up);
             if (i == 2)
-                animPlayer.AniForce(animData.FrameDataLists[Define.AniFrameData.JumpAniForceData.ToString()], i, Vector3.down);
+                animPlayer.AniForce(animData.FrameDataLists[Define.AniFrameData.JumpAniForceData], i, Vector3.down);
         }
-        for (int i = 0; i < animData.AngleDataLists[Define.AniAngleData.MoveAngleJumpAniData.ToString()].Length; i++)
+        for (int i = 0; i < animData.AngleDataLists[Define.AniAngleData.MoveAngleJumpAniData].Length; i++)
         {
-            animPlayer.AniAngleForce(animData.AngleDataLists[Define.AniAngleData.MoveAngleJumpAniData.ToString()], i,
+            animPlayer.AniAngleForce(animData.AngleDataLists[Define.AniAngleData.MoveAngleJumpAniData], i,
                 new Vector3(data.dirX,data.dirY + 0.2f,data.dirZ));
         }
 

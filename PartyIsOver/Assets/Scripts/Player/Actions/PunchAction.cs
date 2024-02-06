@@ -20,24 +20,30 @@ public class PunchAction
     protected float duration = 0.07f;
     protected float readyTime = 0.1f;
     protected float punchTime = 0.1f;
-    protected float resetTime = 0.3f;
+    protected float resetTime = 0.1f;
 
     protected bool isRSkillCheck;
-    protected bool isMeowNyangPunch;
-    protected float meowPunchPower;
-    protected float nuclearPunchPower;
+    protected bool isMeowPunch;
+    protected float meowPunchPower =3f;
+    protected float nuclearPunchPower =5f;
+
+    protected ConfigurableJoint[] _childJoints;
+    protected ConfigurableJointMotion[] _originalYMotions;
+    protected ConfigurableJointMotion[] _originalZMotions;
 
     protected virtual void Init()
     {
-        actions.OnPunch -= InvokePunchEvent;
-        actions.OnPunch += InvokePunchEvent;
+        actions.OnPunch -= HandlePunchEvent;
+        actions.OnPunch += HandlePunchEvent;
     }
 
-    bool InvokePunchEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler,in Define.PlayerDynamicData data)
+    bool HandlePunchEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler,in Define.PlayerDynamicData data)
     {
         this.animData = animData;
         this.animPlayer = animPlayer;
         this.bodyHandler = bodyHandler;
+        isRSkillCheck = false;
+
         CoroutineHelper.StartCoroutine(Punch(data.side,duration,readyTime,punchTime,resetTime));
         return true;
     }
@@ -66,12 +72,16 @@ public class PunchAction
             yield return new WaitForSeconds(duration);
         }
 
-        actions.UpperActionEnd();
+        if(!isRSkillCheck)
+            actions.UpperActionEnd();
     }
-    
+
+
+
+
     void ArmActionReadying(Define.Side side)
     {
-        AniAngleData[] aniAngleDatas = (side == Define.Side.Right) ? animData.AngleDataLists[Define.AniAngleData.RightPunchAniData.ToString()] : animData.AngleDataLists[Define.AniAngleData.LeftPunchAniData.ToString()];
+        AniAngleData[] aniAngleDatas = (side == Define.Side.Right) ? animData.AngleDataLists[Define.AniAngleData.RightPunchAniData] : animData.AngleDataLists[Define.AniAngleData.LeftPunchAniData];
         for (int i = 0; i < aniAngleDatas.Length; i++)
         {
             animPlayer.AniAngleForce(aniAngleDatas, i);
@@ -87,11 +97,11 @@ public class PunchAction
 
         if (side == Define.Side.Left)
         {
-            aniFrameDatas = animData.FrameDataLists[Define.AniFrameData.LeftPunchingAniData.ToString()];
+            aniFrameDatas = animData.FrameDataLists[Define.AniFrameData.LeftPunchingAniData];
             transform2 = bodyHandler.LeftHand.transform;
             if (isRSkillCheck)
             {
-                if (isMeowNyangPunch)
+                if (isMeowPunch)
                     bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.MeowNyangPunch;
                 else
                     bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.NuclearPunch;
@@ -105,11 +115,11 @@ public class PunchAction
         }
         else
         {
-            aniFrameDatas = animData.FrameDataLists[Define.AniFrameData.RightPunchingAniData.ToString()];
+            aniFrameDatas = animData.FrameDataLists[Define.AniFrameData.RightPunchingAniData];
             transform2 = bodyHandler.RightHand.transform;
             if (isRSkillCheck)
             {
-                if (isMeowNyangPunch)
+                if (isMeowPunch)
                     bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.MeowNyangPunch;
                 else
                     bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.NuclearPunch;
@@ -128,7 +138,7 @@ public class PunchAction
 
             if (isRSkillCheck)
             {
-                if (isMeowNyangPunch)
+                if (isMeowPunch)
                     animPlayer.AniForce(aniFrameDatas, i, dir, meowPunchPower);
                 else
                     animPlayer.AniForce(aniFrameDatas, i, dir, nuclearPunchPower);
@@ -142,7 +152,7 @@ public class PunchAction
     {
         Transform partTransform = bodyHandler.Chest.transform;
 
-        AniAngleData[] aniAngleDatas = animData.AngleDataLists[Define.AniAngleData.LeftPunchResettingAniData.ToString()];
+        AniAngleData[] aniAngleDatas = animData.AngleDataLists[Define.AniAngleData.LeftPunchResettingAniData];
 
         if (side == Define.Side.Left)
         {
@@ -154,7 +164,7 @@ public class PunchAction
         }
         else
         {
-            aniAngleDatas = animData.AngleDataLists[Define.AniAngleData.RightPunchResettingAniData.ToString()];
+            aniAngleDatas = animData.AngleDataLists[Define.AniAngleData.RightPunchResettingAniData];
             bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
             bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
             bodyHandler.RightForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
@@ -165,7 +175,7 @@ public class PunchAction
         for (int i = 0; i < aniAngleDatas.Length; i++)
         {
             Vector3 dir = partTransform.transform.right / 2f;
-            animPlayer.AniAngleForce(animData.AngleDataLists[Define.AniAngleData.LeftPunchResettingAniData.ToString()], i, dir);
+            animPlayer.AniAngleForce(animData.AngleDataLists[Define.AniAngleData.LeftPunchResettingAniData], i, dir);
         }
     }
 }

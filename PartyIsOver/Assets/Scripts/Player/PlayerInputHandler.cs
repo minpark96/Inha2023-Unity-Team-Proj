@@ -36,8 +36,9 @@ public class PlayerInputHandler : MonoBehaviourPun
         commands.Add(COMMAND_KEY.Jump, new CmdJump(actor));
         commands.Add(COMMAND_KEY.Move, new CmdMove(actor));
         commands.Add(COMMAND_KEY.LeftBtn, new CmdLeftBtn(actor));
-        commands.Add(COMMAND_KEY.Skill, new CmdLeftBtn(actor));
-
+        commands.Add(COMMAND_KEY.Skill, new CmdSkill(actor));
+        commands.Add(COMMAND_KEY.Charge, new CmdCharge(actor));
+        commands.Add(COMMAND_KEY.ResetCharge, new CmdResetCharge(actor));
     }
 
 
@@ -83,7 +84,7 @@ public class PlayerInputHandler : MonoBehaviourPun
             return true;
     }
 
-    public bool InputGetDownKey(KeyCode keyCode, GetKeyType keyType)
+    public bool InputCommnadKey(KeyCode keyCode, GetKeyType keyType)
     {
         // 어떤 키값 호출 분기
         COMMAND_KEY commandKey = COMMAND_KEY.None;
@@ -116,10 +117,16 @@ public class PlayerInputHandler : MonoBehaviourPun
             // 커맨드 execute 호출
             //this.commands[commandKey].Execute();
             if(_activeCommands.Count == 0 || _activeCommands.Peek() != commands[commandKey])
-                _activeCommands.Enqueue(commands[commandKey]);
+                EnqueueCommand(commandKey);
             return true;
         }
         return false;
+    }
+
+    public void EnqueueCommand(COMMAND_KEY commandKey)
+    {
+        Debug.Log(commandKey.ToString());
+        _activeCommands.Enqueue(commands[commandKey]);
     }
 
     public ICommand GetActiveCommand()

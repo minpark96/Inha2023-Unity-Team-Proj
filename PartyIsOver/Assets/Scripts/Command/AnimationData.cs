@@ -18,11 +18,13 @@ public class AnimationData
 
     BodyHandler _bodyHandler;
 
-    Dictionary<string, AniFrameData[]> frameDataLists = new Dictionary<string, AniFrameData[]>();
-    Dictionary<string, AniAngleData[]> angleDataLists = new Dictionary<string, AniAngleData[]>();
+    Dictionary<Define.AniFrameData, AniFrameData[]> frameDataLists = 
+        new Dictionary<Define.AniFrameData, AniFrameData[]>();
+    Dictionary<Define.AniAngleData, AniAngleData[]> angleDataLists = 
+        new Dictionary<Define.AniAngleData, AniAngleData[]>();
 
-    public Dictionary<string, AniFrameData[]> FrameDataLists { get { return frameDataLists; } private set { frameDataLists = value; } }
-    public Dictionary<string, AniAngleData[]> AngleDataLists { get { return angleDataLists; } private set { angleDataLists = value; } }
+    public Dictionary<Define.AniFrameData, AniFrameData[]> FrameDataLists { get { return frameDataLists; } private set { frameDataLists = value; } }
+    public Dictionary<Define.AniAngleData, AniAngleData[]> AngleDataLists { get { return angleDataLists; } private set { angleDataLists = value; } }
 
 
 
@@ -213,7 +215,7 @@ public class AnimationData
                     }
                     datas[j] = data;
                 }
-                frameDataLists[frameDataNames[i].ToString()] = datas;
+                frameDataLists[frameDataNames[i]] = datas;
             }
             else
                 Debug.LogError("File not found: " + filePath);
@@ -317,7 +319,7 @@ public class AnimationData
                     }
                     datas[j] = data;
                 }
-                angleDataLists[rotateDataNames[i].ToString()] = datas;
+                angleDataLists[rotateDataNames[i]] = datas;
             }
             else
                 Debug.LogError("File not found: " + filePath);

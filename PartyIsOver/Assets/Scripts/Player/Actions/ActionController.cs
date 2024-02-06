@@ -21,6 +21,9 @@ public class ActionController
     public event ActionDelegate OnMove;
     public event ActionDelegate OnPunch;
     public event ActionDelegate OnSkill;
+    public event ActionDelegate OnChargeReady;
+    public event ActionDelegate OnResetCharge;
+
 
     public delegate void ActionEndNotify();
     public event ActionEndNotify OnActionEnd;
@@ -31,6 +34,8 @@ public class ActionController
         new MoveAction(this);
         new PunchAction(this);
         new SkillAction(this);
+        new ChargeReadyAction(this);
+        new ResetChargeAction(this);
     }
     
     public bool InvokeJumpEvent(in Define.PlayerDynamicData data)
@@ -48,6 +53,14 @@ public class ActionController
     public bool InvokeSkillEvent(in Define.PlayerDynamicData data)
     {
         return OnSkill?.Invoke(_animData, _animPlayer, _bodyHandler, data) ?? false;
+    }
+    public bool InvokeChargeEvent(in Define.PlayerDynamicData data)
+    {
+        return OnChargeReady?.Invoke(_animData, _animPlayer, _bodyHandler, data) ?? false;
+    }
+    public bool InvokeResetChargeEvent(in Define.PlayerDynamicData data)
+    {
+        return OnResetCharge?.Invoke(_animData, _animPlayer, _bodyHandler, data) ?? false;
     }
 
     public void UpperActionEnd()

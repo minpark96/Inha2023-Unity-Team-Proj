@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class BodyHandler : MonoBehaviourPun
@@ -32,9 +33,20 @@ public class BodyHandler : MonoBehaviourPun
     public BodyPart Ball => GetBodyPart(Define.BodyPart.Ball);
 
 
+    public ConfigurableJoint[] ChildJoints;
+    public ConfigurableJointMotion[] OriginalYMotions;
+    public ConfigurableJointMotion[] OriginalZMotions;
+
+
     private void Awake()
     {
-        if(BodyParts.Count ==0)
+        InitBodyParts();
+        SaveConfigurableJoint();
+    }
+
+    private void InitBodyParts()
+    {
+        if (BodyParts.Count == 0)
         {
             foreach (Transform child in transform)
             {
@@ -46,9 +58,9 @@ public class BodyHandler : MonoBehaviourPun
             }
         }
 
-        foreach (BodyPart part in BodyParts)
+        for (int i = 0; i < BodyParts.Count; i++)
         {
-            part.PartSetup();
+            BodyParts[i].PartSetup((Define.BodyPart)i);
         }
 
         LeftFoot = GetBodyPart(Define.BodyPart.FootL);
@@ -70,6 +82,20 @@ public class BodyHandler : MonoBehaviourPun
         RightForeArm = GetBodyPart(Define.BodyPart.RightForeArm);
         LeftHand = GetBodyPart(Define.BodyPart.LeftHand);
         RightHand = GetBodyPart(Define.BodyPart.RightHand);
+    }
+
+    private void SaveConfigurableJoint()
+    {
+        ChildJoints = GetComponentsInChildren<ConfigurableJoint>();
+        OriginalYMotions = new ConfigurableJointMotion[ChildJoints.Length];
+        OriginalZMotions = new ConfigurableJointMotion[ChildJoints.Length];
+
+        // 원래의 angularMotion 값을 저장
+        for (int i = 0; i < ChildJoints.Length; i++)
+        {
+            OriginalYMotions[i] = ChildJoints[i].angularYMotion;
+            OriginalZMotions[i] = ChildJoints[i].angularZMotion;
+        }
     }
 
     private BodyPart GetBodyPart(Define.BodyPart part)

@@ -6,8 +6,8 @@ public class MoveAction
 {
     public MoveAction(ActionController actions)
     {
-        actions.OnMove -= InvokeMoveEvent;
-        actions.OnMove += InvokeMoveEvent;
+        actions.OnMove -= HandleMovement;
+        actions.OnMove += HandleMovement;
 
         PlayerStatData statData = Managers.Resource.Load<PlayerStatData>("ScriptableObject/PlayerStatData");
         _maxSpeed = statData.MaxSpeed;
@@ -34,11 +34,11 @@ public class MoveAction
     int[] limbPositions = new int[4];
 
 
-    public bool InvokeMoveEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyhandler, in Define.PlayerDynamicData data)
+    public bool HandleMovement(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in Define.PlayerDynamicData data)
     {
         //_animData = animData;
         _animPlayer = animPlayer;
-        _bodyHandler = bodyhandler;
+        _bodyHandler = bodyHandler;
 
         _moveDir.x = data.dirX;
         _moveDir.y = data.dirY;

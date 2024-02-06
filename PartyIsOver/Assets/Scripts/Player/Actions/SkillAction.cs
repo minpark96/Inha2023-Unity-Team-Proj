@@ -12,31 +12,35 @@ public class SkillAction : PunchAction
     Define.Side _readySide;
     int _punchCount = 5;
 
+
     protected override void Init()
     {
-        actions.OnSkill -= InvokeSkillEvent;
-        actions.OnSkill += InvokeSkillEvent;
+        actions.OnSkill -= HandleSkillEvent;
+        actions.OnSkill += HandleSkillEvent;
     }
 
-    bool InvokeSkillEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in Define.PlayerDynamicData data)
+    bool HandleSkillEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in Define.PlayerDynamicData data)
     {
         base.animData = animData;
         base.animPlayer = animPlayer;
         base.bodyHandler = bodyHandler;
+        isMeowPunch = data.isMeowPunch;
+        isRSkillCheck = true;
 
-        if(data.isMeowPunch)
+        if (data.isMeowPunch)
         {
             isRSkillCheck = true;
-            isMeowNyangPunch = true;
+            isMeowPunch = true;
             CoroutineHelper.StartCoroutine(MeowNyangPunch());
         }
         else //ÇÙÆÝÄ¡ ½ºÅ³
         {
             isRSkillCheck = true;
-            isMeowNyangPunch = false;
-            CoroutineHelper.StartCoroutine(Punch(data.side, duration, readyTime, punchTime, resetTime));
+            isMeowPunch = false;
+            CoroutineHelper.StartCoroutine(Punch(Define.Side.Right, duration, readyTime, punchTime, resetTime));
+            actions.UpperActionEnd();
         }
-
+        Debug.Log("skillEvent");
         return true;
     }
 
@@ -55,4 +59,5 @@ public class SkillAction : PunchAction
         }
         actions.UpperActionEnd();
     }
+
 }

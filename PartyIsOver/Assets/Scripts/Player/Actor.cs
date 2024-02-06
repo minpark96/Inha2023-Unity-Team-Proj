@@ -241,6 +241,9 @@ public class Actor : MonoBehaviourPun, IPunObservable, IPlayerContext
 
         if (LowerSM._currentState != null && UpperSM._currentState != null)
             UpdateData(); //자리가 여기가 아닐수도
+
+        if (Input.GetKeyDown(KeyCode.G))
+            UpperSM.IsMeowPunch = !UpperSM.IsMeowPunch;
     }
 
 
@@ -257,6 +260,7 @@ public class Actor : MonoBehaviourPun, IPunObservable, IPlayerContext
 
         dynamicData.isAttacking = UpperSM.IsActionProgress;
         dynamicData.side = UpperSM.ReadySide;
+        dynamicData.isMeowPunch = UpperSM.IsMeowPunch;
 
         for (int i = 0; i < (int)BodyPose.End; i++)
         {

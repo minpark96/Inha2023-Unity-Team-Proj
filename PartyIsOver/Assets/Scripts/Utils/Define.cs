@@ -215,6 +215,8 @@ public static class Define
         Run,
         None,
         Skill,
+        Charge,
+        ResetCharge,
     }
 
     public enum AniFrameData

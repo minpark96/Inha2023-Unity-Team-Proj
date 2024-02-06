@@ -730,10 +730,10 @@ public class PlayerController : MonoBehaviourPun
                     else
                     {
                         photonView.RPC("RestoreOriginalMotions", RpcTarget.All);
-                        if (Input.GetKeyUp(KeyCode.R) && isMeowNyangPunch)
-                            MeowNyangPunch();
-                        else
-                            NuclearPunch();        
+                        //if (Input.GetKeyUp(KeyCode.R) && isMeowNyangPunch)
+                        //    MeowNyangPunch();
+                        //else
+                        //    NuclearPunch();        
                     }
                 }
                 break;
@@ -847,96 +847,95 @@ public class PlayerController : MonoBehaviourPun
 
     #region ChargeSkill
     [PunRPC]
-    IEnumerator ChargeReady()
-    {
-        for (int i = 0; i < childJoints.Length; i++)
-        {
-            childJoints[i].angularYMotion = ConfigurableJointMotion.Locked;
-            childJoints[i].angularZMotion = ConfigurableJointMotion.Locked;
-        }
+    //IEnumerator ChargeReady()
+    //{
+    //    for (int i = 0; i < childJoints.Length; i++)
+    //    {
+    //        childJoints[i].angularYMotion = ConfigurableJointMotion.Locked;
+    //        childJoints[i].angularZMotion = ConfigurableJointMotion.Locked;
+    //    }
 
-        for (int i = 0; i < angleDataLists[Define.AniAngleData.RSkillAngleAniData.ToString()].Length; i++)
-        {
-            AniAngleForce(angleDataLists[Define.AniAngleData.RSkillAngleAniData.ToString()], i);
-        }
-        StartCoroutine(ForceRready(ChargeAniHoldTime));
-        yield return null;
-    }
+    //    for (int i = 0; i < angleDataLists[Define.AniAngleData.RSkillAngleAniData.ToString()].Length; i++)
+    //    {
+    //        AniAngleForce(angleDataLists[Define.AniAngleData.RSkillAngleAniData.ToString()], i);
+    //    }
+    //    StartCoroutine(ForceRready(ChargeAniHoldTime));
+    //    yield return null;
+    //}
 
-    IEnumerator ForceRready(float _delay)
-    {
-        startChargeTime = Time.time;
-        for (int i = 0; i < frameDataLists[Define.AniFrameData.RSkillAniData.ToString()].Length; i++)
-        {
-            AniForce(frameDataLists[Define.AniFrameData.RSkillAniData.ToString()], i);
-        }
-        yield return new WaitForSeconds(_delay);
-        //물체의 모션을 고정
-        Rigidbody _RPartRigidbody;
-        for (int i = 0; i < frameDataLists[Define.AniFrameData.RSkillAniData.ToString()].Length; i++)
-        {
-            for (int j = 0; j < frameDataLists[Define.AniFrameData.RSkillAniData.ToString()][i].StandardRigidbodies.Length; j++)
-            {
-                _RPartRigidbody = frameDataLists[Define.AniFrameData.RSkillAniData.ToString()][i].ActionRigidbodies[j];
-                _RPartRigidbody.constraints = RigidbodyConstraints.FreezeAll;
-                //키를 짧게 누르면 락 걸리는걸 방지 하기 위한 
-                if (endChargeTime - startChargeTime > 0.0001f)
-                {
-                    _RPartRigidbody.constraints = RigidbodyConstraints.None;
-                }
-                _RPartRigidbody.velocity = Vector3.zero;
-                _RPartRigidbody.angularVelocity = Vector3.zero;
-            }
-        }
+    //IEnumerator ForceRready(float _delay)
+    //{
+    //    startChargeTime = Time.time;
+    //    for (int i = 0; i < frameDataLists[Define.AniFrameData.RSkillAniData.ToString()].Length; i++)
+    //    {
+    //        AniForce(frameDataLists[Define.AniFrameData.RSkillAniData.ToString()], i);
+    //    }
+    //    yield return new WaitForSeconds(_delay);
+    //    //물체의 모션을 고정
+    //    Rigidbody _RPartRigidbody;
+    //    for (int i = 0; i < frameDataLists[Define.AniFrameData.RSkillAniData.ToString()].Length; i++)
+    //    {
+    //        for (int j = 0; j < frameDataLists[Define.AniFrameData.RSkillAniData.ToString()][i].StandardRigidbodies.Length; j++)
+    //        {
+    //            _RPartRigidbody = frameDataLists[Define.AniFrameData.RSkillAniData.ToString()][i].ActionRigidbodies[j];
+    //            _RPartRigidbody.constraints = RigidbodyConstraints.FreezeAll;
+    //            //키를 짧게 누르면 락 걸리는걸 방지 하기 위한 
+    //            if (endChargeTime - startChargeTime > 0.0001f)
+    //            {
+    //                _RPartRigidbody.constraints = RigidbodyConstraints.None;
+    //            }
+    //            _RPartRigidbody.velocity = Vector3.zero;
+    //            _RPartRigidbody.angularVelocity = Vector3.zero;
+    //        }
+    //    }
 
-        yield return null;
-    }
+    //    yield return null;
+    //}
 
-    [PunRPC]
     IEnumerator ResetCharge()
     {
-        _checkHoldTimeCount = 0;
-        endChargeTime = Time.time;
-        Rigidbody _RPartRigidbody;
+        //_checkHoldTimeCount = 0;
+        //endChargeTime = Time.time;
+        //Rigidbody _RPartRigidbody;
 
-        for (int i = 0; i < frameDataLists[Define.AniFrameData.RSkillAniData.ToString()].Length; i++)
-        {
-            for (int j = 0; j < frameDataLists[Define.AniFrameData.RSkillAniData.ToString()][i].StandardRigidbodies.Length; j++)
-            {
-                _RPartRigidbody = frameDataLists[Define.AniFrameData.RSkillAniData.ToString()][i].ActionRigidbodies[j];
-                //Debug.Log("Freeze풀기 : "+ _RPartRigidbody);
-                _RPartRigidbody.constraints = RigidbodyConstraints.None;
-                _RPartRigidbody.velocity = Vector3.zero;
-                _RPartRigidbody.angularVelocity = Vector3.zero;
-            }
-        }
-        RestoreOriginalMotions();
+        //for (int i = 0; i < frameDataLists[Define.AniFrameData.RSkillAniData.ToString()].Length; i++)
+        //{
+        //    for (int j = 0; j < frameDataLists[Define.AniFrameData.RSkillAniData.ToString()][i].StandardRigidbodies.Length; j++)
+        //    {
+        //        _RPartRigidbody = frameDataLists[Define.AniFrameData.RSkillAniData.ToString()][i].ActionRigidbodies[j];
+        //        //Debug.Log("Freeze풀기 : "+ _RPartRigidbody);
+        //        _RPartRigidbody.constraints = RigidbodyConstraints.None;
+        //        _RPartRigidbody.velocity = Vector3.zero;
+        //        _RPartRigidbody.angularVelocity = Vector3.zero;
+        //    }
+        //}
+        //RestoreOriginalMotions();
         yield return new WaitForSeconds(0.5f);
     }
     #endregion
 
     #region ChargeSkillAnimation
 
-    private void NuclearPunch()
-    {
-        photonView.RPC("DestroyEffect", RpcTarget.All, "Love_aura");
-        StartCoroutine(NuclearPunchDelay());
-        photonView.RPC("ResetCharge", RpcTarget.All);
-    }
+    //private void NuclearPunch()
+    //{
+    //    photonView.RPC("DestroyEffect", RpcTarget.All, "Love_aura");
+    //    StartCoroutine(NuclearPunchDelay());
+    //    photonView.RPC("ResetCharge", RpcTarget.All);
+    //}
 
-    IEnumerator NuclearPunchDelay()
-    {
-        photonView.RPC("PlayerEffectSound", RpcTarget.All, "Sounds/PlayerEffect/SUPERMODE_Punch_Hit_03");
-        //yield return MeowPunch(Side.Right, 0.07f, NuclearPunchReadyPunch, NuclearPunching, NuclearPunchResetPunch);
-        yield return RSkillCoolTimer();
-    }
+    //IEnumerator NuclearPunchDelay()
+    //{
+    //    photonView.RPC("PlayerEffectSound", RpcTarget.All, "Sounds/PlayerEffect/SUPERMODE_Punch_Hit_03");
+    //    //yield return MeowPunch(Side.Right, 0.07f, NuclearPunchReadyPunch, NuclearPunching, NuclearPunchResetPunch);
+    //    yield return RSkillCoolTimer();
+    //}
 
-    private void MeowNyangPunch()
-    {
-        photonView.RPC("DestroyEffect", RpcTarget.All, "Love_aura");
-        //StartCoroutine(MeowNyangPunchDelay());
-        photonView.RPC("ResetCharge", RpcTarget.All);
-    }
+    //private void MeowNyangPunch()
+    //{
+    //    photonView.RPC("DestroyEffect", RpcTarget.All, "Love_aura");
+    //    //StartCoroutine(MeowNyangPunchDelay());
+    //    photonView.RPC("ResetCharge", RpcTarget.All);
+    //}
 
     //IEnumerator MeowNyangPunchDelay()
     //{

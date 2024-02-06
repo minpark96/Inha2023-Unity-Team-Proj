@@ -10,6 +10,8 @@ PlantUML 개발문서
 LimbCollision도 마찬가지
  이때 StateMachine을 참조하고있는 state들이 옳은건지 확인
 
+현재 커맨드패턴이 리플레이 시스템에서도 작동할지가 의문
+
 PunchReady 스테이트 이름이 적절하지 않음 Punch와 Grabbing 둘 중 하나로 
 	이동하는 상태니 ArmReady 등으로 수정
 
@@ -185,6 +187,14 @@ InputManager나 PlayerInputHandler에서 가져와서 쓰는식으로 해도 괜
 
  ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ커맨드ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 https://welcomeheesuk.tistory.com/72
+
+*** 커맨드와 Action을 분리한 이유 ***
+1. 커맨드는 프레임마다 생성될 수 있어서 가벼워야 하는데 Action코드가 포함되면
+   너무 크기가 커져서 메모리,성능상 문제가있다고 판단
+	(다만 커맨드를 재활용하고 리플레이 시스템에는 메모장을 쓰기 때문에
+	크기가 큰거는 사실상 해결됐다고 생각)
+2. 커맨드에 Action을 넣으면 커맨드가 Actor와 결합도가 너무 높아진다고 판단
+
 
 마우스 L버튼 커맨드가 여러 액션을 실행시켜야함
 특정 상태가 DynamicData에 자신의 상태를 넣고
