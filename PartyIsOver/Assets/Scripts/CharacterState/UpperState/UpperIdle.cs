@@ -17,6 +17,9 @@ public class UpperIdle : BodyState
 
     public override void UpdateLogic()
     {
+        if (_sm.IsUpperActionProgress)
+            return;
+
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             _sm.ChangeState(_sm.PunchReadyState);
@@ -24,6 +27,10 @@ public class UpperIdle : BodyState
         if (Input.GetKeyDown(KeyCode.R))
         {
             _sm.ChangeState(_sm.SkillReadyState);
+        }
+        if (_sm.InputHandler.InputCommnadKey(KeyCode.Mouse2, Define.GetKeyType.Down))
+        {
+            _sm.ChangeState(_sm.HeadButtState);
         }
     }
     public override void GetInput()

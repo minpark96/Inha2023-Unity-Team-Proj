@@ -73,7 +73,7 @@ public class MagneticField : MonoBehaviour
 
     void InvokeDeath(int index)
     {
-        StartCoroutine(ActorList[index].StatusHandler.ResetBodySpring());
+        StartCoroutine(ActorList[index].BodyHandler.ResetBodySpring());
         ActorList[index].actorState = Actor.ActorState.Dead;
         ActorList[index].StatusHandler._isDead = true;
         ActorList[index].Health = 0;

@@ -23,10 +23,18 @@ public class ActionController
     public event ActionDelegate OnSkill;
     public event ActionDelegate OnChargeReady;
     public event ActionDelegate OnResetCharge;
+    public event ActionDelegate OnHeadButt;
+    public event ActionDelegate OnDropKick;
+    public event ActionDelegate OnGrabbing;
+
 
 
     public delegate void ActionEndNotify();
-    public event ActionEndNotify OnActionEnd;
+    public event ActionEndNotify OnUpperActionEnd;
+    public event ActionEndNotify OnLowerActionEnd;
+    public event ActionEndNotify OnUpperActionStart;
+    public event ActionEndNotify OnLowerActionStart;
+
 
     void Init()
     {
@@ -36,6 +44,9 @@ public class ActionController
         new SkillAction(this);
         new ChargeReadyAction(this);
         new ResetChargeAction(this);
+        new HeadButtAction(this);
+        new DropKickAction(this);
+        new GrabbingAction(this);
     }
     
     public bool InvokeJumpEvent(in Define.PlayerDynamicData data)
@@ -62,9 +73,35 @@ public class ActionController
     {
         return OnResetCharge?.Invoke(_animData, _animPlayer, _bodyHandler, data) ?? false;
     }
+    public bool InvokeHeadButtEvent(in Define.PlayerDynamicData data)
+    {
+        return OnHeadButt?.Invoke(_animData, _animPlayer, _bodyHandler, data) ?? false;
+    }
+    public bool InvokeDropKickEvent(in Define.PlayerDynamicData data)
+    {
+        return OnDropKick?.Invoke(_animData, _animPlayer, _bodyHandler, data) ?? false;
+    }
+    public bool InvokeGrabbingEvent(in Define.PlayerDynamicData data)
+    {
+        return OnGrabbing?.Invoke(_animData, _animPlayer, _bodyHandler, data) ?? false;
+    }
+
+
 
     public void UpperActionEnd()
     {
-        OnActionEnd?.Invoke();
+        OnUpperActionEnd?.Invoke();
+    }
+    public void LowerActionEnd()
+    {
+        OnLowerActionEnd?.Invoke();
+    }
+    public void UpperActionStart()
+    {
+        OnUpperActionStart?.Invoke();
+    }
+    public void LowerActionStart()
+    {
+        OnLowerActionStart?.Invoke();
     }
 }

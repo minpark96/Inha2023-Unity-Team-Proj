@@ -36,7 +36,8 @@ public class BodyHandler : MonoBehaviourPun
     public ConfigurableJoint[] ChildJoints;
     public ConfigurableJointMotion[] OriginalYMotions;
     public ConfigurableJointMotion[] OriginalZMotions;
-
+    private List<float> _xPosSpringAry = new List<float>();
+    private List<float> _yzPosSpringAry = new List<float>();
 
     private void Awake()
     {
@@ -96,11 +97,65 @@ public class BodyHandler : MonoBehaviourPun
             OriginalYMotions[i] = ChildJoints[i].angularYMotion;
             OriginalZMotions[i] = ChildJoints[i].angularZMotion;
         }
+
+        //초기 spring값 저장
+        for (int i = 0; i < BodyParts.Count; i++)
+        {
+            if (i == (int)Define.BodyPart.Hip)
+                continue;
+
+            _xPosSpringAry.Add(BodyParts[i].PartJoint.angularXDrive.positionSpring);
+            _yzPosSpringAry.Add(BodyParts[i].PartJoint.angularYZDrive.positionSpring);
+        }
     }
 
     private BodyPart GetBodyPart(Define.BodyPart part)
     {
         return BodyParts[(int)part];
+    }
+
+    void SetJointSpring(float percentage)
+    {
+        JointDrive angularXDrive;
+        JointDrive angularYZDrive;
+        int j = 0;
+
+        //기절과 회복에 모두 관여 기절시엔 퍼센티지를 0으로해서 사용
+        for (int i = 0; i < BodyParts.Count; i++)
+        {
+            if (i == (int)Define.BodyPart.Hip)
+                continue;
+
+            angularXDrive = BodyParts[i].PartJoint.angularXDrive;
+            angularXDrive.positionSpring = _xPosSpringAry[j] * percentage;
+            BodyParts[i].PartJoint.angularXDrive = angularXDrive;
+
+            angularYZDrive = BodyParts[i].PartJoint.angularYZDrive;
+            angularYZDrive.positionSpring = _yzPosSpringAry[j] * percentage;
+            BodyParts[i].PartJoint.angularYZDrive = angularYZDrive;
+
+            j++;
+        }
+    }
+
+    public IEnumerator ResetBodySpring()
+    {
+        SetJointSpring(0f);
+        yield return null;
+    }
+
+    public IEnumerator RestoreBodySpring(float _springLerpTime = 1f)
+    {
+        float startTime = Time.time;
+        float springLerpDuration = _springLerpTime;
+
+        while (Time.time - startTime < springLerpDuration)
+        {
+            float elapsed = Time.time - startTime;
+            float percentage = elapsed / springLerpDuration;
+            SetJointSpring(percentage);
+            yield return null;
+        }
     }
 }
 

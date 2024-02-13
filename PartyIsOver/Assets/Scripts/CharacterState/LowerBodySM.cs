@@ -8,10 +8,14 @@ public class LowerBodySM : StateMachine
 {
     public bool IsGrounded=false;
     public bool IsRun = false;
+    public bool IsLowerActionProgress = false;
 
-    public Jumping JumpingState;
-    public LowerIdle IdleState;
-    public Moving MovingState;
+
+    public IBaseState JumpingState;
+    public IBaseState IdleState;
+    public IBaseState MovingState;
+    public IBaseState DropKickState;
+
 
     public BodyPose LeftArmPose;
     public BodyPose RightArmPose;
@@ -25,6 +29,8 @@ public class LowerBodySM : StateMachine
         IdleState = new LowerIdle(this);
         JumpingState = new Jumping(this);
         MovingState = new Moving(this);
+        DropKickState = new DropKick(this);
+
         base.InputHandler = inputHandler;
         base.Init();
     }

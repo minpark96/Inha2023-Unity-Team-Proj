@@ -18,13 +18,7 @@ public class StatusHandler : MonoBehaviourPun
 
     public bool invulnerable = false;
     public bool _isDead;
-
-
-    // 초기 관절값
-    private List<float> _xPosSpringAry = new List<float>();
-    private List<float> _yzPosSpringAry = new List<float>();
-
-   
+ 
     // 추후 DebuffTime Actor에서만 사용할 예정
     private float _stunTime;
     private float _burnTime;
@@ -89,14 +83,7 @@ public class StatusHandler : MonoBehaviourPun
 
         //actor.BodyHandler.BodySetup();
 
-        for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
-        {
-            if (i == (int)Define.BodyPart.Hip)
-                continue;
 
-            _xPosSpringAry.Add(actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive.positionSpring);
-            _yzPosSpringAry.Add(actor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive.positionSpring);
-        }
     }
 
     private void LateUpdate()
@@ -370,49 +357,5 @@ public class StatusHandler : MonoBehaviourPun
     void ChangeStateMachines(float durationTime)
     {
         Context.ChangeState(stunInStance, durationTime);
-    }
-
-    void SetJointSpring(float percentage)
-    {
-        JointDrive angularXDrive;
-        JointDrive angularYZDrive;
-        int j = 0;
-
-        //기절과 회복에 모두 관여 기절시엔 퍼센티지를 0으로해서 사용
-        for (int i = 0; i < actor.BodyHandler.BodyParts.Count; i++)
-        {
-            if (i == (int)Define.BodyPart.Hip)
-                continue;
-
-            angularXDrive = actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive;
-            angularXDrive.positionSpring = _xPosSpringAry[j] * percentage;
-            actor.BodyHandler.BodyParts[i].PartJoint.angularXDrive = angularXDrive;
-
-            angularYZDrive = actor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive;
-            angularYZDrive.positionSpring = _yzPosSpringAry[j] * percentage;
-            actor.BodyHandler.BodyParts[i].PartJoint.angularYZDrive = angularYZDrive;
-
-            j++;
-        }
-    }
-
-    public IEnumerator ResetBodySpring()
-    {
-        SetJointSpring(0f);
-        yield return null;
-    }
-
-    public IEnumerator RestoreBodySpring(float _springLerpTime = 1f)
-    {
-        float startTime = Time.time;
-        float springLerpDuration = _springLerpTime;
-
-        while (Time.time - startTime < springLerpDuration)
-        {
-            float elapsed = Time.time - startTime;
-            float percentage = elapsed / springLerpDuration;
-            SetJointSpring(percentage);
-            yield return null;
-        }
     }
 }

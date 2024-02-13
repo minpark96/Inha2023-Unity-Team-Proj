@@ -258,7 +258,11 @@ public class Actor : MonoBehaviourPun, IPunObservable, IPlayerContext
         dynamicData.isGrounded = LowerSM.IsGrounded;
         int[] limbPositions = LowerSM.GetBodyPose();
 
-        dynamicData.isAttacking = UpperSM.IsActionProgress;
+        dynamicData.isUpperActionProgress = UpperSM.IsUpperActionProgress;
+        dynamicData.isLowerActionProgress = LowerSM.IsLowerActionProgress;
+        dynamicData.isEquipItem = UpperSM.IsEquipItem;
+
+
         dynamicData.side = UpperSM.ReadySide;
         dynamicData.isMeowPunch = UpperSM.IsMeowPunch;
 
@@ -342,12 +346,31 @@ public class Actor : MonoBehaviourPun, IPunObservable, IPlayerContext
 
     void BindActionNotify()
     {
-        ActionController.OnActionEnd -= ActionEnd;
-        ActionController.OnActionEnd += ActionEnd;
+        ActionController.OnUpperActionEnd -= UpperActionEnd;
+        ActionController.OnUpperActionEnd += UpperActionEnd;
+        ActionController.OnLowerActionEnd -= LowerActionEnd;
+        ActionController.OnLowerActionEnd += LowerActionEnd;
+
+        ActionController.OnUpperActionStart -= UpperActionStart;
+        ActionController.OnUpperActionStart += UpperActionStart;
+        ActionController.OnLowerActionStart -= LowerActionStart;
+        ActionController.OnLowerActionStart += LowerActionStart;
     }
-    void ActionEnd()
+    void UpperActionEnd()
     {
-        UpperSM.IsActionProgress = false;
+        UpperSM.IsUpperActionProgress = false;
+    }
+    void LowerActionEnd()
+    {
+        LowerSM.IsLowerActionProgress = false;
+    }
+    void UpperActionStart()
+    {
+        UpperSM.IsUpperActionProgress = true;
+    }
+    void LowerActionStart()
+    {
+        LowerSM.IsLowerActionProgress = true;
     }
 
     void RecoveryStamina()

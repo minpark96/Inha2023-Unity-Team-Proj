@@ -28,6 +28,10 @@ public class PlayerInputHandler : MonoBehaviourPun
         { KeyCode.Space, COMMAND_KEY.Jump },
         { KeyCode.Mouse0, COMMAND_KEY.LeftBtn },
         { KeyCode.R, COMMAND_KEY.Skill },
+        { KeyCode.Mouse2, COMMAND_KEY.HeadButt },
+        { KeyCode.Mouse1, COMMAND_KEY.DropKick },
+
+
     };
 
     //Å° ¸ÅÇÎ
@@ -39,6 +43,8 @@ public class PlayerInputHandler : MonoBehaviourPun
         commands.Add(COMMAND_KEY.Skill, new CmdSkill(actor));
         commands.Add(COMMAND_KEY.Charge, new CmdCharge(actor));
         commands.Add(COMMAND_KEY.ResetCharge, new CmdResetCharge(actor));
+        commands.Add(COMMAND_KEY.HeadButt, new CmdHeadButt(actor));
+        commands.Add(COMMAND_KEY.DropKick, new CmdDropKick(actor));
     }
 
 
@@ -126,7 +132,8 @@ public class PlayerInputHandler : MonoBehaviourPun
     public void EnqueueCommand(COMMAND_KEY commandKey)
     {
         Debug.Log(commandKey.ToString());
-        _activeCommands.Enqueue(commands[commandKey]);
+        if (_activeCommands.Count == 0 || _activeCommands.Peek() != commands[commandKey])
+            _activeCommands.Enqueue(commands[commandKey]);
     }
 
     public ICommand GetActiveCommand()

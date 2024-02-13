@@ -7,8 +7,9 @@ using UnityEngine;
 public class UpperBodySM : StateMachine
 {
     public Define.Side ReadySide = Define.Side.Left;
-    public bool IsActionProgress = false;
+    public bool IsUpperActionProgress = false;
     public bool IsMeowPunch = false;
+    public bool IsEquipItem = false;
 
     public IBaseState IdleState;
     public IBaseState PunchReadyState;
@@ -16,6 +17,8 @@ public class UpperBodySM : StateMachine
     public IBaseState GrabbingState;
     public IBaseState SkillReadyState;
     public IBaseState SkillState;
+    public IBaseState HeadButtState;
+
 
     public UpperBodySM(PlayerInputHandler inputHandler)
     {
@@ -25,6 +28,7 @@ public class UpperBodySM : StateMachine
         GrabbingState = new Grabbing(this);
         SkillReadyState = new SkillReady(this);
         SkillState = new NuclearPunch(this);
+        HeadButtState = new HeadButt(this);
         base.InputHandler = inputHandler;
         base.Init();
     }

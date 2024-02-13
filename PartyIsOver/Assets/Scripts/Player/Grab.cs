@@ -878,8 +878,6 @@ public class Grab : MonoBehaviourPun
     
     void DestroyJoint()
     {
-        
-
         Destroy(_grabJointLeft);
         Destroy(_grabJointRight);
         photonView.RPC("UnlockArmPosition", RpcTarget.All);

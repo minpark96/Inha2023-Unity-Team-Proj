@@ -1181,46 +1181,46 @@ public class PlayerController : MonoBehaviourPun
 
     IEnumerator DropKick()
     {
-        Transform partTransform = _bodyHandler.Hip.transform;
-        if (!isGrounded)
-        {
-            for (int i = 0; i < frameDataLists[Define.AniFrameData.DropAniData.ToString()].Length; i++)
-            {
-                _actor.StatusHandler.StartCoroutine("ResetBodySpring");
+        //Transform partTransform = _bodyHandler.Hip.transform;
+        //if (!isGrounded)
+        //{
+        //    for (int i = 0; i < frameDataLists[Define.AniFrameData.DropAniData.ToString()].Length; i++)
+        //    {
+        //        _actor.StatusHandler.StartCoroutine("ResetBodySpring");
 
-                if (i == 0)
-                {
-                    Transform transform2 = _bodyHandler.RightFoot.transform;
-                    _bodyHandler.RightFoot.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
-                    _bodyHandler.RightThigh.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
-                    _bodyHandler.RightLeg.PartInteractable.damageModifier = InteractableObject.Damage.DropKick; //데미지
-                    Vector3 dir = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
-                    AniForce(frameDataLists[Define.AniFrameData.DropAniData.ToString()], i, dir);
-                    photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LegLowerR, true);
-                }
-                else if (i == 1)
-                {
-                    Transform transform2 = _bodyHandler.LeftFoot.transform;
-                    _bodyHandler.LeftFoot.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
-                    _bodyHandler.LeftThigh.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
-                    _bodyHandler.LeftLeg.PartInteractable.damageModifier = InteractableObject.Damage.DropKick; //데미지
-                    Vector3 dir = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
-                    AniForce(frameDataLists[Define.AniFrameData.DropAniData.ToString()], i, dir);
-                    photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LegLowerL, true);
-                }
-                else
-                {
-                    AniForce(frameDataLists[Define.AniFrameData.DropAniData.ToString()], i);
-                }
-            }
+        //        if (i == 0)
+        //        {
+        //            Transform transform2 = _bodyHandler.RightFoot.transform;
+        //            _bodyHandler.RightFoot.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+        //            _bodyHandler.RightThigh.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+        //            _bodyHandler.RightLeg.PartInteractable.damageModifier = InteractableObject.Damage.DropKick; //데미지
+        //            Vector3 dir = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
+        //            AniForce(frameDataLists[Define.AniFrameData.DropAniData.ToString()], i, dir);
+        //            photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LegLowerR, true);
+        //        }
+        //        else if (i == 1)
+        //        {
+        //            Transform transform2 = _bodyHandler.LeftFoot.transform;
+        //            _bodyHandler.LeftFoot.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+        //            _bodyHandler.LeftThigh.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+        //            _bodyHandler.LeftLeg.PartInteractable.damageModifier = InteractableObject.Damage.DropKick; //데미지
+        //            Vector3 dir = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
+        //            AniForce(frameDataLists[Define.AniFrameData.DropAniData.ToString()], i, dir);
+        //            photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LegLowerL, true);
+        //        }
+        //        else
+        //        {
+        //            AniForce(frameDataLists[Define.AniFrameData.DropAniData.ToString()], i);
+        //        }
+        //    }
 
-            yield return new WaitForSeconds(2);
-            _actor.StatusHandler.StartCoroutine("RestoreBodySpring", 1f);
-            _bodyHandler.LeftLeg.PartInteractable.damageModifier = InteractableObject.Damage.Default;
-            _bodyHandler.RightLeg.PartInteractable.damageModifier = InteractableObject.Damage.Default;
-            photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LegLowerL, false);
-            photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LegLowerR, false);
-        }
+        //    yield return new WaitForSeconds(2);
+        //    _actor.StatusHandler.StartCoroutine("RestoreBodySpring", 1f);
+        //    _bodyHandler.LeftLeg.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+        //    _bodyHandler.RightLeg.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+        //    photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LegLowerL, false);
+        //    photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LegLowerR, false);
+        //}
         yield return null;
     }
 
@@ -1503,28 +1503,28 @@ public class PlayerController : MonoBehaviourPun
     #region Heading
     IEnumerator Heading()
     {
-        isHeading = true;
+        //isHeading = true;
 
-        this._bodyHandler.Head.PartInteractable.damageModifier = InteractableObject.Damage.Headbutt;
-        photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.Head, true);
+        //this._bodyHandler.Head.PartInteractable.damageModifier = InteractableObject.Damage.Headbutt;
+        //photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.Head, true);
 
-        for (int i = 0; i < frameDataLists[Define.AniFrameData.HeadingAniData.ToString()].Length; i++)
-        {
-            AniForce(frameDataLists[Define.AniFrameData.HeadingAniData.ToString()], i);
-        }
-        for (int i = 0; i < angleDataLists[Define.AniAngleData.HeadingAngleAniData.ToString()].Length; i++)
-        {
-            if (i == 0)
-                AniAngleForce(angleDataLists[Define.AniAngleData.HeadingAngleAniData.ToString()], i, _moveDir + new Vector3(0f, 0.2f, 0f));
-            if (i == 1)
-                AniAngleForce(angleDataLists[Define.AniAngleData.HeadingAngleAniData.ToString()], i, _moveDir + new Vector3(0f, 0.2f, 0f));
-        }
+        //for (int i = 0; i < frameDataLists[Define.AniFrameData.HeadingAniData.ToString()].Length; i++)
+        //{
+        //    AniForce(frameDataLists[Define.AniFrameData.HeadingAniData.ToString()], i);
+        //}
+        //for (int i = 0; i < angleDataLists[Define.AniAngleData.HeadingAngleAniData.ToString()].Length; i++)
+        //{
+        //    if (i == 0)
+        //        AniAngleForce(angleDataLists[Define.AniAngleData.HeadingAngleAniData.ToString()], i, _moveDir + new Vector3(0f, 0.2f, 0f));
+        //    if (i == 1)
+        //        AniAngleForce(angleDataLists[Define.AniAngleData.HeadingAngleAniData.ToString()], i, _moveDir + new Vector3(0f, 0.2f, 0f));
+        //}
 
         yield return new WaitForSeconds(HeadingCoolTime);
-        this._bodyHandler.Head.PartInteractable.damageModifier = InteractableObject.Damage.Default;
-        photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.Head, false);
+        //this._bodyHandler.Head.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+        //photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.Head, false);
 
-        isHeading = false;
+        //isHeading = false;
     }
     #endregion
 

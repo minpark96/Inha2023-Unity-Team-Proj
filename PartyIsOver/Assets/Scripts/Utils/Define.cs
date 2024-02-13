@@ -33,6 +33,25 @@ public static class Define
         UIEffect,
         PlayerEffect,
     }
+    public enum WorldObject
+    {
+        Unknown,
+        Player,
+        Item,
+    }
+    public enum UIEvent
+    {
+        Click,
+        Drag,
+    }
+    public enum AIState
+    {
+        Idle,
+        Move,
+        Find,
+        Attack,
+    }
+
 
     public enum SceneType
     {
@@ -53,13 +72,6 @@ public static class Define
         MagneticWarning,
         SnowStormWarning,
         Maxcount,
-    }
-
-    public enum WorldObject
-    {
-        Unknown,
-        Player,
-        Item,
     }
 
     public enum GrabObjectType
@@ -109,8 +121,6 @@ public static class Define
     {
         FrozenMeat,
 
-
-
         End,
     }
 
@@ -118,8 +128,6 @@ public static class Define
     {
         IceGun,
         TaserGun,
-
-
 
         End,
     }
@@ -130,8 +138,6 @@ public static class Define
         SpicyOnion,
         Mushroom,
         Donut,
-
-
 
         End,
     }
@@ -153,11 +159,7 @@ public static class Define
         Player6 = 31,
     }
 
-    public enum UIEvent
-    {
-        Click,
-        Drag,
-    }
+
 
     public enum MouseEvent
     {
@@ -177,13 +179,6 @@ public static class Define
         Charge,
     }
 
-    public enum AIState
-    {
-        Idle,
-        Move,
-        Find,
-        Attack,
-    }
 
     public enum Area
     {
@@ -204,19 +199,16 @@ public static class Define
     public enum COMMAND_KEY
     {
         Move,
-        W,
-        A,
-        S,
-        D,
         LeftBtn,
         RightBtn,
-        Wheel,
         Jump,
-        Run,
-        None,
         Skill,
         Charge,
         ResetCharge,
+        HeadButt,
+        DropKick,
+
+        None,
     }
 
     public enum AniFrameData
@@ -310,7 +302,9 @@ public static class Define
         public float dirZ;
         public bool isRunState;
         public bool isGrounded;
-        public bool isAttacking;
+        public bool isUpperActionProgress;
+        public bool isLowerActionProgress;
+        public bool isEquipItem;
         public int[] limbPositions;
         public Side side;
         public bool isMeowPunch;

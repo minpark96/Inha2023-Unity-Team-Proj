@@ -1,40 +1,38 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Numerics;
-using Unity.VisualScripting;
 using UnityEngine;
 
-public class Jumping : BodyState
+public class DropKick : BodyState
 {
     private LowerBodySM _sm;
 
-    public Jumping(StateMachine stateMachine):base("JumpingState", stateMachine)
+    public DropKick(StateMachine stateMachine) : base("DropKickState", stateMachine)
     {
         _sm = (LowerBodySM)stateMachine;
     }
 
     public override void Enter()
     {
-        _sm.IsGrounded = false;
+        _sm.IsLowerActionProgress = true;
     }
 
     public override void UpdateLogic()
     {
         //상태 나가기
-        if (_sm.IsGrounded)
+        if (!_sm.IsLowerActionProgress)
         {
             _sm.ChangeState(_sm.IdleState);
+        }
+        else
+        {
+            //이거 지우면 발차기 후 빙판에서 미끄러지듯이 작동, 마찰시키는 Action하나를 더 추가하는 식으로 대체 가능
+            _sm.InputHandler.EnqueueCommand(Define.COMMAND_KEY.Move);
         }
     }
     public override void GetInput()
     {
-        IsMoveKeyInput();
-
-        if (_sm.InputHandler.InputCommnadKey(KeyCode.Mouse1, Define.GetKeyType.Down))
-        {
-            _sm.ChangeState(_sm.DropKickState);
-        }
     }
+
 
     public override void UpdatePhysics()
     {

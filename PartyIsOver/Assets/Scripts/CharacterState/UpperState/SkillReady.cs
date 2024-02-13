@@ -34,7 +34,6 @@ public class SkillReady : BodyState
                 {
                     _sm.InputHandler.EnqueueCommand(Define.COMMAND_KEY.ResetCharge);
                     _sm.ChangeState(_sm.SkillState);
-                    _sm.IsActionProgress = true;
                 }
             }
             else

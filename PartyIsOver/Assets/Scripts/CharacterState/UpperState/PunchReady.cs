@@ -36,12 +36,14 @@ public class PunchReady : BodyState
             if (_sm.InputHandler.InputCommnadKey(KeyCode.Mouse0, Define.GetKeyType.Up))
             {
                 _sm.ChangeState(_sm.PunchState);
-                _sm.IsActionProgress = true;
             }
         }
 
         //행동트리나 리플레이에서 이 부분은 생략하고 바로 Punch나 Grabbing으로 넘어감
         //즉 PunchReady는 execute를 하지 않음
+    }
+    public override void GetInput()
+    {
     }
 
     public override void Exit()
