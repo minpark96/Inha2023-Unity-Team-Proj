@@ -15,7 +15,7 @@ public class PlayerCommand : ICommand
         Timestamp = Time.time;
     }
 
-    public virtual bool Execute(in Define.PlayerDynamicData data)
+    public virtual bool Execute(in PlayerContext data)
     {
         return true;
     }

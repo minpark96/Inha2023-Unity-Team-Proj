@@ -292,23 +292,11 @@ public static class Define
     public enum Side
     {
         Left = 0,
-        Right = 1
+        Right = 1,
+        Both = 2,
     }
 
-    public struct PlayerDynamicData
-    {
-        public float dirX;
-        public float dirY;
-        public float dirZ;
-        public bool isRunState;
-        public bool isGrounded;
-        public bool isUpperActionProgress;
-        public bool isLowerActionProgress;
-        public bool isEquipItem;
-        public int[] limbPositions;
-        public Side side;
-        public bool isMeowPunch;
-    }
+ 
 
     public enum limbPositions
     {

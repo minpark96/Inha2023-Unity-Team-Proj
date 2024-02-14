@@ -37,14 +37,14 @@ public class PunchAction
         actions.OnPunch += HandlePunchEvent;
     }
 
-    bool HandlePunchEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler,in Define.PlayerDynamicData data)
+    bool HandlePunchEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler,in PlayerContext data)
     {
         this.animData = animData;
         this.animPlayer = animPlayer;
         this.bodyHandler = bodyHandler;
         isRSkillCheck = false;
 
-        CoroutineHelper.StartCoroutine(Punch(data.side,duration,readyTime,punchTime,resetTime));
+        CoroutineHelper.StartCoroutine(Punch(data.Side,duration,readyTime,punchTime,resetTime));
         return true;
     }
 

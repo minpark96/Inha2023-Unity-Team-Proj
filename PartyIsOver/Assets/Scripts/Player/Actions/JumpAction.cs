@@ -10,7 +10,7 @@ public class JumpAction
         actions.OnJump += HandleJumpEvent;
     }
 
-    bool HandleJumpEvent(AnimationData animData, AnimationPlayer animPlayer,BodyHandler bodyHandler, in Define.PlayerDynamicData data)
+    bool HandleJumpEvent(AnimationData animData, AnimationPlayer animPlayer,BodyHandler bodyHandler, in PlayerContext data)
     {
         for (int i = 0; i < animData.FrameDataLists[Define.AniFrameData.JumpAniForceData].Length; i++)
         {
@@ -21,7 +21,7 @@ public class JumpAction
         for (int i = 0; i < animData.AngleDataLists[Define.AniAngleData.MoveAngleJumpAniData].Length; i++)
         {
             animPlayer.AniAngleForce(animData.AngleDataLists[Define.AniAngleData.MoveAngleJumpAniData], i,
-                new Vector3(data.dirX,data.dirY + 0.2f,data.dirZ));
+                new Vector3(data.DirX,data.DirY + 0.2f,data.DirZ));
         }
 
         return true;

@@ -22,7 +22,7 @@ public class ResetChargeAction
     private ConfigurableJointMotion[] _originalYMotions;
     private ConfigurableJointMotion[] _originalZMotions;
 
-    public bool HandleResetChargeEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in Define.PlayerDynamicData data)
+    public bool HandleResetChargeEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerContext data)
     {
         _animData = animData;
         _animPlayer = animPlayer;

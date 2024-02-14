@@ -19,15 +19,15 @@ public class SkillAction : PunchAction
         actions.OnSkill += HandleSkillEvent;
     }
 
-    bool HandleSkillEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in Define.PlayerDynamicData data)
+    bool HandleSkillEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerContext data)
     {
         base.animData = animData;
         base.animPlayer = animPlayer;
         base.bodyHandler = bodyHandler;
-        isMeowPunch = data.isMeowPunch;
+        isMeowPunch = data.IsMeowPunch;
         isRSkillCheck = true;
 
-        if (data.isMeowPunch)
+        if (data.IsMeowPunch)
         {
             isRSkillCheck = true;
             isMeowPunch = true;

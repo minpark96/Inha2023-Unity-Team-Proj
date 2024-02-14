@@ -6,6 +6,8 @@ using static Define;
 
 public class LowerBodySM : StateMachine
 {
+    public PlayerContext PlayerContext;
+
     public bool IsGrounded=false;
     public bool IsRun = false;
     public bool IsLowerActionProgress = false;
@@ -24,13 +26,14 @@ public class LowerBodySM : StateMachine
 
     int[] _aryBodyPose = new int[4];
 
-    public LowerBodySM(PlayerInputHandler inputHandler)
+    public LowerBodySM(PlayerInputHandler inputHandler, PlayerContext playerContext)
     {
         IdleState = new LowerIdle(this);
         JumpingState = new Jumping(this);
         MovingState = new Moving(this);
         DropKickState = new DropKick(this);
 
+        PlayerContext = playerContext;
         base.InputHandler = inputHandler;
         base.Init();
     }

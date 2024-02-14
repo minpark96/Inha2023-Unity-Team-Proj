@@ -6,13 +6,19 @@ using UnityEngine;
 
 public class InteractableObject : MonoBehaviourPun
 {
-    Rigidbody _rb;
     Damage _initialDamage;
     public Damage damageModifier = Damage.Default;
+    public bool IsItem = false;
+    public bool IsPhotonView = false;
+
+    public Rigidbody RigidbodyObject;
+    public Item ItemObject;
+    public Collider ColliderObject;
+    public PhotonView PhotonView;
+
     private void Start()
     {
-        _rb = GetComponent<Rigidbody>();
-        _initialDamage = damageModifier;
+        Init();
     }
 
 
@@ -38,6 +44,23 @@ public class InteractableObject : MonoBehaviourPun
     }
 
 
+    public void Init()
+    {
+        _initialDamage = damageModifier;
+
+        IsItem = GetComponent<Item>() != null;
+        ItemObject = IsItem ? GetComponent<Item>() : null;
+
+        ColliderObject = GetComponent<Collider>();
+        if(ColliderObject == null ) Debug.LogWarning("콜라이더 없음 " + gameObject.name);
+
+        RigidbodyObject = GetComponent<Rigidbody>();
+        if( RigidbodyObject == null )  Debug.LogWarning("RB 없음 " + gameObject.name);
+
+        IsPhotonView = GetComponent<PhotonView>() != null;
+        PhotonView = IsPhotonView ? GetComponent<PhotonView>() : null;
+        if (PhotonView == null) Debug.LogWarning("포톤뷰 없음 " + gameObject.name);
+    }
 
     public void PullingForceTrigger(Vector3 dir ,float power)
     {
@@ -51,7 +74,7 @@ public class InteractableObject : MonoBehaviourPun
             return;
         //Vector3 force = (vel - _rb.velocity) * _rb.mass; // 속도 차이에 질량을 곱하여 힘을 계산
         //_rb.AddForce(force, ForceMode.VelocityChange); // Impulse 모드를 사용하여 순간적으로 힘을 적용
-        _rb.AddForce(Vector3.ClampMagnitude(dir.normalized * power, 100f), ForceMode.VelocityChange);
+        RigidbodyObject.AddForce(Vector3.ClampMagnitude(dir.normalized * power, 100f), ForceMode.VelocityChange);
     }
 
     [PunRPC]

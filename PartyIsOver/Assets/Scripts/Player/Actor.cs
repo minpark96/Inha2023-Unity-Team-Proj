@@ -6,7 +6,7 @@ using static Define;
 using UnityEngine.SceneManagement;
 using Unity.VisualScripting;
 
-public class Actor : MonoBehaviourPun, IPunObservable, IPlayerContext
+public class Actor : MonoBehaviourPun, IPunObservable
 {
     public delegate void ChangePlayerStatus(float HP,float Stamina, DebuffState debuffstate, int viewID);
     public event ChangePlayerStatus OnChangePlayerStatus;
@@ -27,6 +27,7 @@ public class Actor : MonoBehaviourPun, IPunObservable, IPlayerContext
     public Grab Grab;
     public CameraControl CameraControl;
     private PlayerInputHandler _inputHandler;
+    private TargetingHandler _targetingHandler;
 
     //
     private AnimationPlayer _animPlayer = new AnimationPlayer();
@@ -39,9 +40,23 @@ public class Actor : MonoBehaviourPun, IPunObservable, IPlayerContext
 
     private ICommand _activeCommand;
 
-    public Define.PlayerDynamicData dynamicData;
+    //public Define.PlayerDynamicData dynamicData;
 
-
+    public PlayerContext dynamicData = new PlayerContext
+    {
+        DirX = 0,
+        DirY = 0,
+        DirZ = 0f,
+        IsRunState = false,
+        IsGrounded = false,
+        IsUpperActionProgress = false,
+        IsLowerActionProgress = false,
+        IsEquipItem = false,
+        LimbPositions = new int[4],
+        Side = Side.Left,
+        IsMeowPunch = false
+    };
+    private PlayerContext _PlayerContext;
 
     public enum ActorFlag
     {
@@ -202,19 +217,30 @@ public class Actor : MonoBehaviourPun, IPunObservable, IPlayerContext
         ActionController = new ActionController(_animData,_animPlayer,BodyHandler);
         BindActionNotify();
 
-        dynamicData = new Define.PlayerDynamicData()
-        {
-            dirX = 0, dirY = 0, dirZ = 0f,
-            isRunState = false,
-            isGrounded = false,
-            limbPositions = new int[4],
-        };
+        //dynamicData = new Define.PlayerDynamicData()
+        //{
+        //    dirX = 0, dirY = 0, dirZ = 0f,
+        //    isRunState = false,
+        //    isGrounded = false,
+        //    limbPositions = new int[4],
+
+        //    /*
+        //    isUpperActionProgress;
+        //    isLowerActionProgress;
+        //    isEquipItem;
+        //    side;
+        //    isMeowPunch;
+        //    */
+        //};
 
         _inputHandler = GetComponent<PlayerInputHandler>();
-        LowerSM = new LowerBodySM(_inputHandler);
-        UpperSM = new UpperBodySM(_inputHandler);
+        _targetingHandler = GetComponent<TargetingHandler>();
+
+        LowerSM = new LowerBodySM(_inputHandler, _PlayerContext);
+        UpperSM = new UpperBodySM(_inputHandler,_targetingHandler, _PlayerContext);
 
         _inputHandler.InitCommnad(this);
+        _targetingHandler.Init(BodyHandler.Chest.transform);
     }
 
 
@@ -250,25 +276,23 @@ public class Actor : MonoBehaviourPun, IPunObservable, IPlayerContext
     void UpdateData()
     {
         Vector3 dir = _inputHandler.GetMoveInput(CameraControl.CameraArm.transform);
-        dynamicData.dirX = dir.x;
-        dynamicData.dirY = dir.y;
-        dynamicData.dirZ = dir.z;
+        dynamicData.DirX = dir.x;
+        dynamicData.DirY = dir.y;
+        dynamicData.DirZ = dir.z;
 
-        dynamicData.isRunState = LowerSM.IsRun;
-        dynamicData.isGrounded = LowerSM.IsGrounded;
+        dynamicData.IsRunState = LowerSM.IsRun;
+        dynamicData.IsGrounded = LowerSM.IsGrounded;
+        dynamicData.IsUpperActionProgress = UpperSM.IsUpperActionProgress;
+        dynamicData.IsLowerActionProgress = LowerSM.IsLowerActionProgress;
+        dynamicData.IsEquipItem = UpperSM.IsEquipItem;
+        dynamicData.IsMeowPunch = UpperSM.IsMeowPunch;
+
+        dynamicData.Side = UpperSM.ReadySide;
+
         int[] limbPositions = LowerSM.GetBodyPose();
-
-        dynamicData.isUpperActionProgress = UpperSM.IsUpperActionProgress;
-        dynamicData.isLowerActionProgress = LowerSM.IsLowerActionProgress;
-        dynamicData.isEquipItem = UpperSM.IsEquipItem;
-
-
-        dynamicData.side = UpperSM.ReadySide;
-        dynamicData.isMeowPunch = UpperSM.IsMeowPunch;
-
         for (int i = 0; i < (int)BodyPose.End; i++)
         {
-            dynamicData.limbPositions[i] = limbPositions[i];
+            dynamicData.LimbPositions[i] = limbPositions[i];
         }
     }
 

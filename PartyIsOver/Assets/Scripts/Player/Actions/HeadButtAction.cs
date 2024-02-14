@@ -19,15 +19,15 @@ public class HeadButtAction
     float _headButtCoolTime = 1f;
     Vector3 _moveDir = new Vector3();
 
-    public bool HandleHeadButtEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in Define.PlayerDynamicData data)
+    public bool HandleHeadButtEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerContext data)
     {
         _animData = animData;
         _animPlayer = animPlayer;
         //_bodyHandler = bodyhandler;
 
-        _moveDir.x = data.dirX;
-        _moveDir.y = data.dirY;
-        _moveDir.z = data.dirZ;
+        _moveDir.x = data.DirX;
+        _moveDir.y = data.DirY;
+        _moveDir.z = data.DirZ;
 
         CoroutineHelper.StartCoroutine(HeadButt());
         return true;

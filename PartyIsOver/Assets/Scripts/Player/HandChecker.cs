@@ -8,7 +8,7 @@ public class HandChecker : MonoBehaviourPun
 {
     private Actor _actor;
     public GrabObjectType CollisionObjectType = GrabObjectType.None;
-    public GameObject CollisionObject = null;
+    public InteractableObject CollisionObject = null;
 
     // Start is called before the first frame update
     void Start()
@@ -28,10 +28,9 @@ public class HandChecker : MonoBehaviourPun
         if (!photonView.IsMine) return;
         if(collision.collider == null) return;
 
-
         if(_actor.Grab._isGrabbingInProgress && collision.gameObject.GetComponent<InteractableObject>() != null)
         {
-            CollisionObject = collision.gameObject;
+            CollisionObject = collision.gameObject.GetComponent<InteractableObject>();
 
             if (collision.collider.tag == "ItemHandle")
             {
@@ -45,8 +44,6 @@ public class HandChecker : MonoBehaviourPun
             }
             CollisionObjectType = Define.GrabObjectType.Object;
         }
-
-
     }
     private void OnCollisionExit(Collision collision)
     {
@@ -57,7 +54,6 @@ public class HandChecker : MonoBehaviourPun
         {
             CollisionObjectType = Define.GrabObjectType.None;
             CollisionObject = null;
-
         }
     }
 }

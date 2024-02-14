@@ -1857,7 +1857,7 @@ public class PlayerController : MonoBehaviourPun
     #region ItemTwoHand
 
 
-    public IEnumerator ItemTwoHand(Side side, float duration, float readyTime, float punchTime, float resetTime, float itemPower)
+    public IEnumerator ItemTwoHand(Define.Side side, float duration, float readyTime, float punchTime, float resetTime, float itemPower)
     {
         photonView.RPC("PlayerEffectSound", RpcTarget.All, "Sounds/PlayerEffect/WEAPON_Axe");
         float checkTime = Time.time;
@@ -1886,18 +1886,18 @@ public class PlayerController : MonoBehaviourPun
 
     #region ItemTwoHandAnimation
 
-    public void ItemTwoHandReady(Side side)
+    public void ItemTwoHandReady(Define.Side side)
     {
         //upperArm 2 chest1 up right 0.01 20 foreArm chest up back 
         //TestRready ¿À¸¥ÂÊ ¿ÞÂÊ ±¸º°ÇØ¼­ ÁÂ¿ì·Î ÈÖµÎ·ê¼ö ÀÖÀ½
-        AniAngleData[] itemTwoHands = (side == Side.Right) ? angleDataLists[Define.AniAngleData.ItemTwoHandAngleData.ToString()] : angleDataLists[Define.AniAngleData.ItemTwoHandLeftAngleData.ToString()];
+        AniAngleData[] itemTwoHands = (side == Define.Side.Right) ? angleDataLists[Define.AniAngleData.ItemTwoHandAngleData.ToString()] : angleDataLists[Define.AniAngleData.ItemTwoHandLeftAngleData.ToString()];
         for (int i = 0; i < itemTwoHands.Length; i++)
         {
             AniAngleForce(itemTwoHands, i);
         }
     }
 
-    public void ItemTwoHandSwing(Side side, float itemSwingPower)
+    public void ItemTwoHandSwing(Define.Side side, float itemSwingPower)
     {
 
         Transform partTransform = _bodyHandler.Chest.transform;
@@ -1907,7 +1907,7 @@ public class PlayerController : MonoBehaviourPun
         _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
         _bodyHandler.LeftForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
 
-        if (side == Side.Right)
+        if (side == Define.Side.Right)
         {
             itemTwoHands = frameDataLists[Define.AniFrameData.ItemTwoHandAniData.ToString()];
             transform2 = _bodyHandler.RightHand.transform;
@@ -1923,7 +1923,7 @@ public class PlayerController : MonoBehaviourPun
         }
     }
 
-    public void ItemTwoHandReSet(Side side)
+    public void ItemTwoHandReSet(Define.Side side)
     {
         Transform partTransform = _bodyHandler.Chest.transform;
 
@@ -1932,7 +1932,7 @@ public class PlayerController : MonoBehaviourPun
         _bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
         _bodyHandler.LeftForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
 
-        if (side == Side.Right)
+        if (side == Define.Side.Right)
         {
             itemTwoHands = angleDataLists[Define.AniAngleData.ItemTwoHandAngleData.ToString()];
             _bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;

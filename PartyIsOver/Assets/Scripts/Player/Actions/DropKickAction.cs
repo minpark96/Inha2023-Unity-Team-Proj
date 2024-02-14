@@ -20,13 +20,13 @@ public class DropKickAction
     float _springLerpTime =1f;
 
 
-    public bool HandleDropKickEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in Define.PlayerDynamicData data)
+    public bool HandleDropKickEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerContext data)
     {
         _animData = animData;
         _animPlayer = animPlayer;
         _bodyHandler = bodyHandler;
 
-        if (data.isEquipItem && data.isGrounded)
+        if (data.IsEquipItem && data.IsGrounded)
             return false;
         CoroutineHelper.StartCoroutine(DropKick());
         _actions.UpperActionStart();

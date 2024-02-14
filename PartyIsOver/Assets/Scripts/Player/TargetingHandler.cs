@@ -4,21 +4,29 @@ using UnityEngine;
 
 public class TargetingHandler : MonoBehaviour
 {
-    private float _detectionRadius = 1f;
-    public LayerMask layerMask;
+    [SerializeField]
+    private float _defaultDetectionRadius = 1f;
+    [SerializeField]
+    private float _inAirDetectionRadius = 2f;
+    [SerializeField]
     private float maxAngle = 110f; // 정면에서 좌우로 해당 각도만큼 서치
 
-    Collider _nearestCollider;
+    private float _detectionRadius;
     private float _nearestDistance;
+    private int _colliderCount;
 
-    Actor _actor;
-    InteractableObject[] _interactableObjects = new InteractableObject[30];
-    InteractableObject _nearestObject;
 
-    // Start is called before the first frame update
+    private Collider _nearestCollider;
+    private InteractableObject _nearestObject;
+    private Transform chestTransform;
+
+    private LayerMask layerMask;
+
+    //Actor _actor;
+
+
     void Start()
     {
-        _actor = GetComponent<Actor>();
         layerMask |= 1 << (int)Define.Layer.Item;
         layerMask |= 1 << (int)Define.Layer.ClimbObject;
         layerMask |= 1 << (int)Define.Layer.InteractableObject;
@@ -30,57 +38,58 @@ public class TargetingHandler : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
         
     }
  
+    public void Init(Transform chest)
+    {
+        chestTransform = chest;
+    }
 
-    public InteractableObject SearchTarget(Grab.Side side)
+    public InteractableObject SearchTarget(Define.Side side)
     {
         //나중에 멤버변수로 빼야 효율적
         Collider[] colliders = new Collider[40];
         _nearestCollider = null;
         _nearestObject = null;
         _nearestDistance = Mathf.Infinity;
-        Transform chestTransform = _actor.BodyHandler.Chest.transform;
-        
-        
+        _colliderCount = 0;
+        _detectionRadius = _defaultDetectionRadius;
+
         //정면벡터
         Vector3 chestForward = -chestTransform.up;
 
         //체크할 방향 벡터
         Vector3 detectionDirection;
-        if (side == Grab.Side.Left)
+        if (side == Define.Side.Left)
             detectionDirection = -chestTransform.right;
         else
             detectionDirection = chestTransform.right;
 
-        float detectionRadius = _detectionRadius;
 
-        int colliderCount;
 
         if (_actor.actorState == Actor.ActorState.Jump || _actor.actorState == Actor.ActorState.Fall)
         {
-            detectionRadius += 1f;
+            _detectionRadius = _inAirDetectionRadius;
             //colliderCount = Physics.OverlapSphereNonAlloc(chestTransform.position + chestForward, detectionRadius, colliders, layerMask);
-            colliderCount = Physics.OverlapSphereNonAlloc(chestTransform.position + Vector3.up * 0.1f, detectionRadius, colliders, layerMask);
+            _colliderCount = Physics.OverlapSphereNonAlloc(chestTransform.position + Vector3.up * 0.1f, _detectionRadius, colliders, layerMask);
 
         }
         else
         {
             // 원 안에 콜라이더 검출
-            colliderCount = Physics.OverlapSphereNonAlloc(chestTransform.position + Vector3.up * 0.1f, detectionRadius, colliders, layerMask);
+            _colliderCount = Physics.OverlapSphereNonAlloc(chestTransform.position + Vector3.up * 0.1f, _detectionRadius, colliders, layerMask);
         }
 
-        if (colliderCount <= 0 )
+        if (_colliderCount <= 0 )
         {
             return null;
         }
 
         // 바라보는 방향 180도 이내에 콜라이더 중 interatableObject 보유중인지 확인
-        for (int i = 0; i < colliderCount; i++)
+        for (int i = 0; i < _colliderCount; i++)
         {
             Vector3 toCollider = colliders[i].transform.position - chestTransform.position;
             float angle = Vector3.Angle(chestForward, toCollider);
@@ -137,7 +146,7 @@ public class TargetingHandler : MonoBehaviour
             return Vector3.zero;
         }
 
-        Vector3 start = _actor.BodyHandler.Chest.transform.position; 
+        Vector3 start = chestTransform.position;
         Vector3 direction = (collider.transform.position - start).normalized;
         float distance = Vector3.Distance(start, collider.transform.position);
 
@@ -152,5 +161,10 @@ public class TargetingHandler : MonoBehaviour
             Debug.Log("타겟에 문제가 있음");
             return Vector3.zero;
         }
+    }
+
+    public float TargetDistance(Vector3 target)
+    {
+        return Vector3.Distance(target,chestTransform.position);
     }
 }

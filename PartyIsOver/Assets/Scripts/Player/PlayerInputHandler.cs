@@ -30,8 +30,6 @@ public class PlayerInputHandler : MonoBehaviourPun
         { KeyCode.R, COMMAND_KEY.Skill },
         { KeyCode.Mouse2, COMMAND_KEY.HeadButt },
         { KeyCode.Mouse1, COMMAND_KEY.DropKick },
-
-
     };
 
     //Å° ¸ÅÇÎ

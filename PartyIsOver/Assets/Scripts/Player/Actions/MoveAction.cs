@@ -34,23 +34,23 @@ public class MoveAction
     int[] limbPositions = new int[4];
 
 
-    public bool HandleMovement(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in Define.PlayerDynamicData data)
+    public bool HandleMovement(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerContext data)
     {
         //_animData = animData;
         _animPlayer = animPlayer;
         _bodyHandler = bodyHandler;
 
-        _moveDir.x = data.dirX;
-        _moveDir.y = data.dirY;
-        _moveDir.z = data.dirZ;
-        _isRun = data.isRunState;
+        _moveDir.x = data.DirX;
+        _moveDir.y = data.DirY;
+        _moveDir.z = data.DirZ;
+        _isRun = data.IsRunState;
 
         for (int i = 0; i < (int)Define.limbPositions.End; i++) 
         {
-            limbPositions[i] = data.limbPositions[i];
+            limbPositions[i] = data.LimbPositions[i];
         }
         
-        if (data.isGrounded)
+        if (data.IsGrounded)
             MovePlayer();
         else
             InAirMove();
