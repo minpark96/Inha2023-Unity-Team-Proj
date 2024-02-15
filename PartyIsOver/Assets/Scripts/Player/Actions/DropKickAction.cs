@@ -26,7 +26,7 @@ public class DropKickAction
         _animPlayer = animPlayer;
         _bodyHandler = bodyHandler;
 
-        if (data.IsEquipItem && data.IsGrounded)
+        if (data.EquipItem != null && data.IsGrounded)
             return false;
         CoroutineHelper.StartCoroutine(DropKick());
         _actions.UpperActionStart();
@@ -78,7 +78,4 @@ public class DropKickAction
         _actions.UpperActionEnd();
         _actions.LowerActionEnd();
     }
-
-
-
 }

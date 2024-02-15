@@ -9,12 +9,12 @@ public class InteractableObject : MonoBehaviourPun
     Damage _initialDamage;
     public Damage damageModifier = Damage.Default;
     public bool IsItem = false;
-    public bool IsPhotonView = false;
 
     public Rigidbody RigidbodyObject;
     public Item ItemObject;
     public Collider ColliderObject;
     public PhotonView PhotonView;
+    public int ViewID = -1;
 
     private void Start()
     {
@@ -52,14 +52,13 @@ public class InteractableObject : MonoBehaviourPun
         ItemObject = IsItem ? GetComponent<Item>() : null;
 
         ColliderObject = GetComponent<Collider>();
-        if(ColliderObject == null ) Debug.LogWarning("콜라이더 없음 " + gameObject.name);
+        //if(ColliderObject == null ) Debug.LogWarning("콜라이더 없음 " + gameObject.name);
 
         RigidbodyObject = GetComponent<Rigidbody>();
-        if( RigidbodyObject == null )  Debug.LogWarning("RB 없음 " + gameObject.name);
+        //if( RigidbodyObject == null )  Debug.LogWarning("RB 없음 " + gameObject.name);
 
-        IsPhotonView = GetComponent<PhotonView>() != null;
-        PhotonView = IsPhotonView ? GetComponent<PhotonView>() : null;
-        if (PhotonView == null) Debug.LogWarning("포톤뷰 없음 " + gameObject.name);
+        PhotonView = GetComponent<PhotonView>();
+        if (PhotonView != null) ViewID = PhotonView.ViewID;
     }
 
     public void PullingForceTrigger(Vector3 dir ,float power)

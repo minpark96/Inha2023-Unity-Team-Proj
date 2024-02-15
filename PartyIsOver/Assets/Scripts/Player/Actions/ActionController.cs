@@ -26,6 +26,9 @@ public class ActionController
     public event ActionDelegate OnHeadButt;
     public event ActionDelegate OnDropKick;
     public event ActionDelegate OnGrabbing;
+    public event ActionDelegate OnTargetSearch;
+    public event ActionDelegate OnJointFix;
+    public event ActionDelegate OnJointDestroy;
 
 
 
@@ -47,6 +50,9 @@ public class ActionController
         new HeadButtAction(this);
         new DropKickAction(this);
         new GrabbingAction(this);
+        new JointFixAction(this);
+        new JointDestroyAction(this);
+        new SearchAction(this);
     }
     
     public bool InvokeJumpEvent(in PlayerContext data)
@@ -85,7 +91,18 @@ public class ActionController
     {
         return OnGrabbing?.Invoke(_animData, _animPlayer, _bodyHandler, data) ?? false;
     }
-
+    public bool InvokeTargetSearchEvent(in PlayerContext data)
+    {
+        return OnTargetSearch?.Invoke(_animData, _animPlayer, _bodyHandler, data) ?? false;
+    }
+    public bool InvokeFixJointEvent(in PlayerContext data)
+    {
+        return OnJointFix?.Invoke(_animData, _animPlayer, _bodyHandler, data) ?? false;
+    }
+    public bool InvokeDestroyJointEvent(in PlayerContext data)
+    {
+        return OnJointDestroy?.Invoke(_animData, _animPlayer, _bodyHandler, data) ?? false;
+    }
 
 
     public void UpperActionEnd()

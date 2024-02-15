@@ -11,7 +11,9 @@ public class PlayerInputHandler : MonoBehaviourPun
     private Dictionary<COMMAND_KEY, ICommand> commands = new Dictionary<COMMAND_KEY, ICommand>();
 
     private Queue<ICommand> _activeCommands = new Queue<ICommand>();
-    
+    private Define.COMMAND_KEY _activeCommandFlag;
+
+
     private Vector3 _moveDir;
     private Vector3 _moveInput;
     private Vector3 _lookForward;
@@ -43,6 +45,10 @@ public class PlayerInputHandler : MonoBehaviourPun
         commands.Add(COMMAND_KEY.ResetCharge, new CmdResetCharge(actor));
         commands.Add(COMMAND_KEY.HeadButt, new CmdHeadButt(actor));
         commands.Add(COMMAND_KEY.DropKick, new CmdDropKick(actor));
+        commands.Add(COMMAND_KEY.Grabbing, new CmdGrabbing(actor));
+        commands.Add(COMMAND_KEY.TargetSearch, new CmdSearchTarget(actor));
+        commands.Add(COMMAND_KEY.FixJoint, new CmdFixJoint(actor));
+        commands.Add(COMMAND_KEY.DestroyJoint, new CmdDestroyJoint(actor));
     }
 
 
@@ -130,18 +136,21 @@ public class PlayerInputHandler : MonoBehaviourPun
     public void EnqueueCommand(COMMAND_KEY commandKey)
     {
         Debug.Log(commandKey.ToString());
-        if (_activeCommands.Count == 0 || _activeCommands.Peek() != commands[commandKey])
-            _activeCommands.Enqueue(commands[commandKey]);
+        _activeCommandFlag |= commandKey;
+
+        //if (_activeCommands.Count == 0 || _activeCommands.Peek() != commands[commandKey])
+        //    _activeCommands.Enqueue(commands[commandKey]);
     }
 
-    public ICommand GetActiveCommand()
+    public ICommand GetActiveCommand(COMMAND_KEY key)
     {
-        if (_activeCommands.Count != 0)
-        {
-            return _activeCommands.Dequeue();
-        }
-        else
-            return null;
+        ICommand command = commands[key];
+        return command;
+    }
+
+    public COMMAND_KEY GetActiveCmdFlag()
+    {
+        return _activeCommandFlag;
     }
 
     public void ClearCommand()

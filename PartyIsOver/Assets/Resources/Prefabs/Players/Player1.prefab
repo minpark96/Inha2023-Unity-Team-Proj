@@ -11275,7 +11275,6 @@ GameObject:
   - component: {fileID: 5878509405600198247}
   - component: {fileID: 5878509405600198232}
   - component: {fileID: 5878509405600198236}
-  - component: {fileID: 5878509405600198233}
   - component: {fileID: 5878509405600198235}
   - component: {fileID: 5878509405600198234}
   - component: {fileID: 1602883286494261838}
@@ -11430,21 +11429,6 @@ MonoBehaviour:
   FirePoint: {fileID: 0}
   CollisionObject: {fileID: 0}
   _turnForce: 0
---- !u!114 &5878509405600198233
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5873236424662451676}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 50d5428a52f424042a9db0e6cb88f27b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 3328
 --- !u!114 &5878509405600198235
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11457,12 +11441,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0444d9ac95de644cb7ff3b6d6c356fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _audioListener: {fileID: 0}
-  StatusHandler: {fileID: 0}
-  BodyHandler: {fileID: 0}
-  PlayerController: {fileID: 0}
-  Grab: {fileID: 0}
-  CameraControl: {fileID: 0}
   GrabState: 0
   _damageReduction: 0
   _playerAttackPoint: 1
@@ -11477,6 +11455,12 @@ MonoBehaviour:
   actorState: 4
   lastActorState: 8
   debuffState: 0
+  _audioListener: {fileID: 0}
+  StatusHandler: {fileID: 0}
+  BodyHandler: {fileID: 0}
+  CameraControl: {fileID: 0}
+  PlayerController: {fileID: 0}
+  Grab: {fileID: 0}
 --- !u!114 &5878509405600198234
 MonoBehaviour:
   m_ObjectHideFlags: 0

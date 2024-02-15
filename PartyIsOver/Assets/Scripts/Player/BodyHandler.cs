@@ -157,5 +157,19 @@ public class BodyHandler : MonoBehaviourPun
             yield return null;
         }
     }
+
+    public void JointLock(Define.Side side)
+    {
+        ConfigurableJoint hand = (side == Define.Side.Left)? LeftHand.PartJoint : RightHand.PartJoint;
+        ConfigurableJoint ForeArm = (side == Define.Side.Left) ? LeftForeArm.PartJoint : RightForeArm.PartJoint;
+        ConfigurableJoint UpperArm = (side == Define.Side.Left) ? LeftArm.PartJoint : RightArm.PartJoint;
+
+        hand.angularYMotion = ConfigurableJointMotion.Locked;
+        ForeArm.angularYMotion = ConfigurableJointMotion.Locked;
+        UpperArm.angularYMotion = ConfigurableJointMotion.Locked;
+        hand.angularZMotion = ConfigurableJointMotion.Locked;
+        ForeArm.angularZMotion = ConfigurableJointMotion.Locked;
+        UpperArm.angularZMotion = ConfigurableJointMotion.Locked;
+    }
 }
 

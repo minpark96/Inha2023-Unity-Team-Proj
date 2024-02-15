@@ -14,7 +14,6 @@ public class MoveAction
         _runSpeed = statData.RunSpeed;
     }
 
-    //AnimationData _animData;
     AnimationPlayer _animPlayer;
     BodyHandler _bodyHandler;
 
@@ -36,10 +35,8 @@ public class MoveAction
 
     public bool HandleMovement(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerContext data)
     {
-        //_animData = animData;
         _animPlayer = animPlayer;
         _bodyHandler = bodyHandler;
-
         _moveDir.x = data.DirX;
         _moveDir.y = data.DirY;
         _moveDir.z = data.DirZ;

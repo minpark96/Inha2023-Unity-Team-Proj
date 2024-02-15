@@ -11,12 +11,7 @@ public class ResetChargeAction
         actions.OnResetCharge += HandleResetChargeEvent;
     }
 
-    AnimationPlayer _animPlayer;
-    //BodyHandler _bodyHandler;
     AnimationData _animData;
-
-    float _endChargeTime = 0f;
-    int _checkHoldTimeCount = 0;
 
     private ConfigurableJoint[] _childJoints;
     private ConfigurableJointMotion[] _originalYMotions;
@@ -25,8 +20,6 @@ public class ResetChargeAction
     public bool HandleResetChargeEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerContext data)
     {
         _animData = animData;
-        _animPlayer = animPlayer;
-        //_bodyHandler = bodyhandler;
 
         _childJoints = bodyHandler.ChildJoints;
         _originalYMotions = bodyHandler.OriginalYMotions;
@@ -40,8 +33,6 @@ public class ResetChargeAction
     [PunRPC]
     IEnumerator ResetCharge()
     {
-        _checkHoldTimeCount = 0;
-        _endChargeTime = Time.time;
         Rigidbody _RPartRigidbody;
 
         for (int i = 0; i < _animData.FrameDataLists[Define.AniFrameData.RSkillAniData].Length; i++)

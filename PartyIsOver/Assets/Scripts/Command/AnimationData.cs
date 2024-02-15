@@ -11,7 +11,6 @@ public class AnimationData
     public AnimationData(BodyHandler bodyHandler)
     {
         _bodyHandler = bodyHandler;
-
         LoadAnimForceData();
         LoadAnimRotateData();
     }

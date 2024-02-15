@@ -5,6 +5,7 @@ using UnityEngine;
 using static Define;
 using UnityEngine.SceneManagement;
 using Unity.VisualScripting;
+using System;
 
 public class Actor : MonoBehaviourPun, IPunObservable
 {
@@ -16,33 +17,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
     public event ChangeStaminaBar OnChangeStaminaBar;
 
 
-
-
-
-    public AudioListener _audioListener;
-
-    public StatusHandler StatusHandler;
-    public BodyHandler BodyHandler;
-    public PlayerController PlayerController;
-    public Grab Grab;
-    public CameraControl CameraControl;
-    private PlayerInputHandler _inputHandler;
-    private TargetingHandler _targetingHandler;
-
-    //
-    private AnimationPlayer _animPlayer = new AnimationPlayer();
-    private AnimationData _animData;
-
-    public ActionController ActionController;
-    public LowerBodySM LowerSM;
-    public UpperBodySM UpperSM;
-
-
-    private ICommand _activeCommand;
-
-    //public Define.PlayerDynamicData dynamicData;
-
-    public PlayerContext dynamicData = new PlayerContext
+    private PlayerContext _context = new PlayerContext
     {
         DirX = 0,
         DirY = 0,
@@ -51,12 +26,10 @@ public class Actor : MonoBehaviourPun, IPunObservable
         IsGrounded = false,
         IsUpperActionProgress = false,
         IsLowerActionProgress = false,
-        IsEquipItem = false,
         LimbPositions = new int[4],
         Side = Side.Left,
         IsMeowPunch = false
     };
-    private PlayerContext _PlayerContext;
 
     public enum ActorFlag
     {
@@ -93,6 +66,8 @@ public class Actor : MonoBehaviourPun, IPunObservable
         Drunk =     0x80,  
         Ghost =     0x200,
     }
+
+
 
     public GrabState GrabState = GrabState.None;
 
@@ -147,6 +122,31 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
     public static int LayerCnt = (int)Define.Layer.Player1;
 
+
+
+
+    //
+
+    private AnimationPlayer _animPlayer = new AnimationPlayer();
+    private AnimationData _animData;
+
+    public AudioListener _audioListener;
+    public StatusHandler StatusHandler;
+    private PlayerInputHandler _inputHandler;
+    public BodyHandler BodyHandler;
+    public CameraControl CameraControl;
+
+    public ActionController ActionController;
+    public LowerBodySM LowerSM;
+    public UpperBodySM UpperSM;
+
+
+    private COMMAND_KEY _activeCommand;
+    private COMMAND_KEY[] _commandAry = (COMMAND_KEY[])Enum.GetValues(typeof(COMMAND_KEY));
+
+    public PlayerController PlayerController;
+    public Grab Grab;
+
     public void InvokeStatusChangeEvent()
     {
         if (OnChangePlayerStatus == null)
@@ -198,6 +198,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
         StatusHandler = GetComponent<StatusHandler>();
         PlayerController = GetComponent<PlayerController>();
         Grab = GetComponent<Grab>();
+
         ChangeLayerRecursively(gameObject, LayerCnt++);
         Init();
     }
@@ -217,30 +218,12 @@ public class Actor : MonoBehaviourPun, IPunObservable
         ActionController = new ActionController(_animData,_animPlayer,BodyHandler);
         BindActionNotify();
 
-        //dynamicData = new Define.PlayerDynamicData()
-        //{
-        //    dirX = 0, dirY = 0, dirZ = 0f,
-        //    isRunState = false,
-        //    isGrounded = false,
-        //    limbPositions = new int[4],
-
-        //    /*
-        //    isUpperActionProgress;
-        //    isLowerActionProgress;
-        //    isEquipItem;
-        //    side;
-        //    isMeowPunch;
-        //    */
-        //};
-
         _inputHandler = GetComponent<PlayerInputHandler>();
-        _targetingHandler = GetComponent<TargetingHandler>();
 
-        LowerSM = new LowerBodySM(_inputHandler, _PlayerContext);
-        UpperSM = new UpperBodySM(_inputHandler,_targetingHandler, _PlayerContext);
+        LowerSM = new LowerBodySM(_inputHandler, _context);
+        UpperSM = new UpperBodySM(_inputHandler, _context);
 
         _inputHandler.InitCommnad(this);
-        _targetingHandler.Init(BodyHandler.Chest.transform);
     }
 
 
@@ -275,24 +258,29 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
     void UpdateData()
     {
+        _context.Id = photonView.ViewID;
+        _context.Position = BodyHandler.Chest.transform.position;
+        _context.IsMine = photonView.IsMine? true: false;
+        _context.Layer = gameObject.layer;
+
         Vector3 dir = _inputHandler.GetMoveInput(CameraControl.CameraArm.transform);
-        dynamicData.DirX = dir.x;
-        dynamicData.DirY = dir.y;
-        dynamicData.DirZ = dir.z;
+        _context.DirX = dir.x;
+        _context.DirY = dir.y;
+        _context.DirZ = dir.z;
 
-        dynamicData.IsRunState = LowerSM.IsRun;
-        dynamicData.IsGrounded = LowerSM.IsGrounded;
-        dynamicData.IsUpperActionProgress = UpperSM.IsUpperActionProgress;
-        dynamicData.IsLowerActionProgress = LowerSM.IsLowerActionProgress;
-        dynamicData.IsEquipItem = UpperSM.IsEquipItem;
-        dynamicData.IsMeowPunch = UpperSM.IsMeowPunch;
 
-        dynamicData.Side = UpperSM.ReadySide;
+        _context.IsRunState = LowerSM.IsRun;
+        _context.IsGrounded = LowerSM.IsGrounded;
+        _context.IsUpperActionProgress = UpperSM.IsUpperActionProgress;
+        _context.IsLowerActionProgress = LowerSM.IsLowerActionProgress;
+        _context.IsMeowPunch = UpperSM.IsMeowPunch;
+
+        _context.Side = UpperSM.ReadySide;
 
         int[] limbPositions = LowerSM.GetBodyPose();
         for (int i = 0; i < (int)BodyPose.End; i++)
         {
-            dynamicData.LimbPositions[i] = limbPositions[i];
+            _context.LimbPositions[i] = limbPositions[i];
         }
     }
 
@@ -307,7 +295,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
             if (_stamina <= 0)
             {
                 //벽타기 불가능
-                Grab.GrabResetTrigger();
+                //Grab.GrabResetTrigger();
                 GrabState = GrabState.None;
             }
 
@@ -327,7 +315,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
                     {
                         _stamina -= 0;
                         //photonView.RPC("DecreaseStamina", RpcTarget.All, 0f);
-                        Grab.GrabResetTrigger();
+                        //Grab.GrabResetTrigger();
                         GrabState = GrabState.None;
                         //PlayerController.isRun = false;
                     }
@@ -340,10 +328,10 @@ public class Actor : MonoBehaviourPun, IPunObservable
                         _stamina -= 1;
                     //photonView.RPC("DecreaseStamina", RpcTarget.All, 1f);
                 }
-                else if (PlayerController._isRSkillCheck || PlayerController.isHeading || PlayerController._isCoroutineDrop)
+                //else if (PlayerController._isRSkillCheck || PlayerController.isHeading || PlayerController._isCoroutineDrop)
                     //스킬 사용시 회복 불가능
                     //photonView.RPC("RecoverStamina",RpcTarget.All, 0f);
-                    _stamina += 0;
+                    //_stamina += 0;
                 else
                     //상태에 맞는 회복하기
                     //photonView.RPC("RecoverStamina", RpcTarget.All, currentRecoveryStaminaValue);
@@ -407,7 +395,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
         }
         else
         {
-            PlayerController.isRun = false;
+            //PlayerController.isRun = false;
             currentRecoveryTime = ExhaustedRecoveryTime;
             currentRecoveryStaminaValue = RecoveryStaminaValue;
         }
@@ -443,17 +431,19 @@ public class Actor : MonoBehaviourPun, IPunObservable
         UpperSM.UpdatePhysics();
     }
 
+    //Update에서 활성키들을 모아놨다가
+    //프레임상 문제가 있음 Execute 할 떄 마다 _activeCommand를 0으로 해야함
     void ExecuteCommand()
     {
-        _activeCommand = _inputHandler.GetActiveCommand();
-
+        _activeCommand = _inputHandler.GetActiveCmdFlag();
         //Master클라이어트에게 받은 커맨드로 해당하는 actor들을 컨트롤하는 방향으로 혹은 마스터에서 바로 actor.execute
-        if (_activeCommand != null)
+        for (int i = 0; i < Enum.GetValues(typeof(COMMAND_KEY)).Length; i++)
         {
-            if(!_activeCommand.Execute(dynamicData))
-                Debug.Log(_activeCommand.ToString() + "커맨드 실행 실패");
-
-            _activeCommand = null;
+            if((_activeCommand & _commandAry[i]) == _commandAry[i])
+            {
+                if(_inputHandler.GetActiveCommand(_commandAry[i]).Execute(_context))
+                    Debug.Log(_commandAry[i].ToString() + "커맨드 실행 실패");
+            }
         }
     }
 

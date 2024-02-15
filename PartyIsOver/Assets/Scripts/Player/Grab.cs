@@ -11,7 +11,6 @@ using static PlayerController;
 
 public class Grab : MonoBehaviourPun
 {
-    private TargetingHandler _targetingHandler;
     private InteractableObject _leftSearchTarget;
     private InteractableObject _rightSearchTarget;
 
@@ -91,7 +90,6 @@ public class Grab : MonoBehaviourPun
     {
         _actor = GetComponent<Actor>();
         _actor.BodyHandler = transform.root.GetComponent<BodyHandler>();
-        _targetingHandler = GetComponent<TargetingHandler>();
         //_actor.BodyHandler.BodySetup();
 
 
@@ -150,10 +148,15 @@ public class Grab : MonoBehaviourPun
             {
                 _actor.GrabState = GrabState.PlayerLift;
 
-                AlignToVector(_actor.BodyHandler.LeftArm.PartRigidbody, _actor.BodyHandler.LeftArm.PartTransform.forward, -_actor.BodyHandler.Waist.PartTransform.forward + _actor.BodyHandler.Chest.PartTransform.right / 2f + -_actor.PlayerController.MoveInput / 8f, 0.01f, 8f);
-                AlignToVector(_actor.BodyHandler.LeftForeArm.PartRigidbody, _actor.BodyHandler.LeftForeArm.PartTransform.forward, -_actor.BodyHandler.Waist.PartTransform.forward, 0.01f, 8f);
+                AlignToVector(_actor.BodyHandler.LeftArm.PartRigidbody, _actor.BodyHandler.LeftArm.PartTransform.forward, 
+                    -_actor.BodyHandler.Waist.PartTransform.forward + _actor.BodyHandler.Chest.PartTransform.right / 2f + 
+                    -_actor.PlayerController.MoveInput / 8f, 0.01f, 8f);
+                AlignToVector(_actor.BodyHandler.LeftForeArm.PartRigidbody, _actor.BodyHandler.LeftForeArm.PartTransform.forward,
+                    -_actor.BodyHandler.Waist.PartTransform.forward, 0.01f, 8f);
 
-                AlignToVector(_actor.BodyHandler.RightArm.PartRigidbody, _actor.BodyHandler.RightArm.PartTransform.forward, -_actor.BodyHandler.Waist.PartTransform.forward + -_actor.BodyHandler.Chest.PartTransform.right / 2f + -_actor.PlayerController.MoveInput / 8f, 0.01f, 8f);
+                AlignToVector(_actor.BodyHandler.RightArm.PartRigidbody, _actor.BodyHandler.RightArm.PartTransform.forward, 
+                    -_actor.BodyHandler.Waist.PartTransform.forward + -_actor.BodyHandler.Chest.PartTransform.right / 2f + 
+                    -_actor.PlayerController.MoveInput / 8f, 0.01f, 8f);
                 AlignToVector(_actor.BodyHandler.RightForeArm.PartRigidbody, _actor.BodyHandler.RightForeArm.PartTransform.forward, -_actor.BodyHandler.Waist.PartTransform.forward, 0.01f, 8f);
 
                 // _actor.BodyHandler.Chest.PartRigidbody.AddForce(Vector3.down * 30, ForceMode.VelocityChange);
@@ -391,22 +394,22 @@ public class Grab : MonoBehaviourPun
 
     private void SearchTarget()
     {
-        //타겟서치 태그설정 주의할것
-        _leftSearchTarget = _targetingHandler.SearchTarget(Define.Side.Left);
-        _rightSearchTarget = _targetingHandler.SearchTarget(Define.Side.Right);
+        ////타겟서치 태그설정 주의할것
+        //_leftSearchTarget = _targetingHandler.SearchTarget(Define.Side.Left);
+        //_rightSearchTarget = _targetingHandler.SearchTarget(Define.Side.Right);
 
-        if(_leftSearchTarget != null && _leftSearchTarget.GetComponent<PhotonView>() != null)
-        {
-            int id = _leftSearchTarget.GetComponent<PhotonView>().ViewID;
-            photonView.RPC("BroadcastFoundTarget", RpcTarget.All,0,id);
+        //if(_leftSearchTarget != null && _leftSearchTarget.GetComponent<PhotonView>() != null)
+        //{
+        //    int id = _leftSearchTarget.GetComponent<PhotonView>().ViewID;
+        //    photonView.RPC("BroadcastFoundTarget", RpcTarget.All,0,id);
 
-        }
-        if (_rightSearchTarget != null && _rightSearchTarget.GetComponent<PhotonView>() != null)
-        {
-            int id = _rightSearchTarget.GetComponent<PhotonView>().ViewID;
-            photonView.RPC("BroadcastFoundTarget", RpcTarget.All,1,id);
+        //}
+        //if (_rightSearchTarget != null && _rightSearchTarget.GetComponent<PhotonView>() != null)
+        //{
+        //    int id = _rightSearchTarget.GetComponent<PhotonView>().ViewID;
+        //    photonView.RPC("BroadcastFoundTarget", RpcTarget.All,1,id);
 
-        }
+        //}
     }
 
     [PunRPC]
@@ -426,88 +429,88 @@ public class Grab : MonoBehaviourPun
 
     public void Grabbing()
     {
-        if (_grabDelayTimer > 0f)
-            return;
+        //if (_grabDelayTimer > 0f)
+        //    return;
 
-        SearchTarget();
-        //Debug.Log(_leftSearchTarget);
-        //Debug.Log(_rightSearchTarget);
+        //SearchTarget();
+        ////Debug.Log(_leftSearchTarget);
+        ////Debug.Log(_rightSearchTarget);
 
-        //발견한 오브젝트가 없으면 리턴
-        if (_leftSearchTarget == null && _rightSearchTarget == null)
-            return;
+        ////발견한 오브젝트가 없으면 리턴
+        //if (_leftSearchTarget == null && _rightSearchTarget == null)
+        //    return;
 
-        _isGrabbingInProgress = true;
+        //_isGrabbingInProgress = true;
 
-        //타겟이 정면에 있고 아이템일때
-        if (_leftSearchTarget == _rightSearchTarget && _leftSearchTarget.GetComponent<Item>() != null)
-        {
-            //일정 거리 이내에 있을때 양손이 비어있을때
-            if (Vector3.Distance(_targetingHandler.FindClosestCollisionPoint(_leftSearchTarget.GetComponent<Collider>()),
-                _actor.BodyHandler.Chest.transform.position) <= 1f
-                  && !_isRightGrab && !_isLeftGrab)
-            {
-                Item item = _leftSearchTarget.GetComponent<Item>();
-                HandleItemGrabbing(item);
-                return;
-            }
-        }
-        else//아이템이 아닐때
-        {
-            Vector3 dir;
-            //타겟이 정면이 아닐때
-            if (_leftSearchTarget != null && !_isLeftGrab)
-            {
-                if (_actor.actorState == Actor.ActorState.Jump || _actor.actorState == Actor.ActorState.Fall)
-                {
-                    dir = ((_targetingHandler.FindClosestCollisionPoint(_leftSearchTarget.GetComponent<Collider>()) + Vector3.up * 2)
-                        - _leftHandRigid.transform.position).normalized;
-                }
-                else
-                {
-                    dir = (_targetingHandler.FindClosestCollisionPoint(_leftSearchTarget.GetComponent<Collider>())
-                        - _leftHandRigid.transform.position).normalized;
-                }
+        ////타겟이 정면에 있고 아이템일때
+        //if (_leftSearchTarget == _rightSearchTarget && _leftSearchTarget.GetComponent<Item>() != null)
+        //{
+        //    //일정 거리 이내에 있을때 양손이 비어있을때
+        //    if (Vector3.Distance(_targetingHandler.FindClosestCollisionPoint(_leftSearchTarget.GetComponent<Collider>()),
+        //        _actor.BodyHandler.Chest.transform.position) <= 1f
+        //          && !_isRightGrab && !_isLeftGrab)
+        //    {
+        //        Item item = _leftSearchTarget.GetComponent<Item>();
+        //        HandleItemGrabbing(item);
+        //        return;
+        //    }
+        //}
+        //else//아이템이 아닐때
+        //{
+        //    Vector3 dir;
+        //    //타겟이 정면이 아닐때
+        //    if (_leftSearchTarget != null && !_isLeftGrab)
+        //    {
+        //        if (_actor.actorState == Actor.ActorState.Jump || _actor.actorState == Actor.ActorState.Fall)
+        //        {
+        //            dir = ((_targetingHandler.FindClosestCollisionPoint(_leftSearchTarget.GetComponent<Collider>()) + Vector3.up * 2)
+        //                - _leftHandRigid.transform.position).normalized;
+        //        }
+        //        else
+        //        {
+        //            dir = (_targetingHandler.FindClosestCollisionPoint(_leftSearchTarget.GetComponent<Collider>())
+        //                - _leftHandRigid.transform.position).normalized;
+        //        }
 
-                _leftHandRigid.AddForce(dir * 80f);
-                if (HandCollisionCheck(Define.Side.Left))
-                {
-                    int leftObjViewID = -1;
-                    if (_leftSearchTarget.GetComponent<PhotonView>() != null)
-                    {
-                        leftObjViewID = _leftSearchTarget.transform.GetComponent<PhotonView>().ViewID;
-                    }
-                    photonView.RPC("JointFix", RpcTarget.All, (int)Define.Side.Left, leftObjViewID);
-                    _grabDelayTimer = 0.5f;
-                }
-            }
+        //        _leftHandRigid.AddForce(dir * 80f);
+        //        if (HandCollisionCheck(Define.Side.Left))
+        //        {
+        //            int leftObjViewID = -1;
+        //            if (_leftSearchTarget.GetComponent<PhotonView>() != null)
+        //            {
+        //                leftObjViewID = _leftSearchTarget.transform.GetComponent<PhotonView>().ViewID;
+        //            }
+        //            photonView.RPC("JointFix", RpcTarget.All, (int)Define.Side.Left, leftObjViewID);
+        //            _grabDelayTimer = 0.5f;
+        //        }
+        //    }
 
-            if (_rightSearchTarget != null && !_isRightGrab)
-            {
-                if (_actor.actorState == Actor.ActorState.Jump || _actor.actorState == Actor.ActorState.Fall)
-                {
-                    dir = ((_targetingHandler.FindClosestCollisionPoint(_rightSearchTarget.GetComponent<Collider>()) + Vector3.up * 2)
-                        - _rightHandRigid.transform.position).normalized;
-                }
-                else
-                {
-                    dir = (_targetingHandler.FindClosestCollisionPoint(_rightSearchTarget.GetComponent<Collider>())
-                        - _rightHandRigid.transform.position).normalized;
-                }
+        //    if (_rightSearchTarget != null && !_isRightGrab)
+        //    {
+        //        if (_actor.actorState == Actor.ActorState.Jump || _actor.actorState == Actor.ActorState.Fall)
+        //        {
+        //            dir = ((_targetingHandler.FindClosestCollisionPoint(_rightSearchTarget.GetComponent<Collider>()) + Vector3.up * 2)
+        //                - _rightHandRigid.transform.position).normalized;
+        //        }
+        //        else
+        //        {
+        //            dir = (_targetingHandler.FindClosestCollisionPoint(_rightSearchTarget.GetComponent<Collider>())
+        //                - _rightHandRigid.transform.position).normalized;
+        //        }
 
-                _rightHandRigid.AddForce(dir * 80f);
-                if (HandCollisionCheck(Define.Side.Right))
-                {
-                    int rightObjViewID = -1;
-                    if (_rightSearchTarget.GetComponent<PhotonView>() !=null)
-                    {
-                        rightObjViewID = _rightSearchTarget.transform.GetComponent<PhotonView>().ViewID;
-                    }
-                    photonView.RPC("JointFix", RpcTarget.All, (int)Define.Side.Right, rightObjViewID);
-                    _grabDelayTimer = 0.5f;
-                }
-            }
-        }
+        //        _rightHandRigid.AddForce(dir * 80f);
+        //        if (HandCollisionCheck(Define.Side.Right))
+        //        {
+        //            int rightObjViewID = -1;
+        //            if (_rightSearchTarget.GetComponent<PhotonView>() !=null)
+        //            {
+        //                rightObjViewID = _rightSearchTarget.transform.GetComponent<PhotonView>().ViewID;
+        //            }
+        //            photonView.RPC("JointFix", RpcTarget.All, (int)Define.Side.Right, rightObjViewID);
+        //            _grabDelayTimer = 0.5f;
+        //        }
+        //    }
+        //}
     }
 
 

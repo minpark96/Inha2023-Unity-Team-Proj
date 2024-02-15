@@ -198,15 +198,19 @@ public static class Define
 
     public enum COMMAND_KEY
     {
-        Move,
-        LeftBtn,
-        RightBtn,
-        Jump,
-        Skill,
-        Charge,
-        ResetCharge,
-        HeadButt,
-        DropKick,
+        Move           =    0x0,
+        LeftBtn        =    0x1,
+        RightBtn       =    0x2,
+        Jump           =    0x4,
+        Skill          =    0x8,
+        Charge         =    0x10,
+        ResetCharge    =    0x20, 
+        HeadButt       =    0x40, 
+        DropKick       =    0x80, 
+        Grabbing       =    0x100,
+        TargetSearch   =    0x200, 
+        FixJoint       =    0x400,
+        DestroyJoint   =    0x800,
 
         None,
     }

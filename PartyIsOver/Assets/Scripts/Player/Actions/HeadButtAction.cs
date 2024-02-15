@@ -9,12 +9,11 @@ public class HeadButtAction
     {
         actions.OnHeadButt -= HandleHeadButtEvent;
         actions.OnHeadButt += HandleHeadButtEvent;
-        this._actions = actions;
+        _actions = actions;
     }
 
     ActionController _actions;
     AnimationPlayer _animPlayer;
-    //BodyHandler _bodyHandler;
     AnimationData _animData;
     float _headButtCoolTime = 1f;
     Vector3 _moveDir = new Vector3();
@@ -23,8 +22,6 @@ public class HeadButtAction
     {
         _animData = animData;
         _animPlayer = animPlayer;
-        //_bodyHandler = bodyhandler;
-
         _moveDir.x = data.DirX;
         _moveDir.y = data.DirY;
         _moveDir.z = data.DirZ;

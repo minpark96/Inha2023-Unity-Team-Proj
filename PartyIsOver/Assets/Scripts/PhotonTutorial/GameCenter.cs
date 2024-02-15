@@ -303,7 +303,7 @@ public class GameCenter : BaseScene
         }
 
         photonView.RPC("UpdateMasterStatus", RpcTarget.MasterClient);
-        Debug.Log(_roomUI.PlayerCount);
+        Debug.Log("roomUI PlayerCount " + _roomUI.PlayerCount);
         photonView.RPC("UpdatePlayerNumber", RpcTarget.All, _roomUI.PlayerCount);
     }
 
@@ -329,7 +329,7 @@ public class GameCenter : BaseScene
     [PunRPC]
     void UpdatePlayerNumber(int totalPlayerNumber)
     {
-        Debug.Log(totalPlayerNumber);
+        Debug.Log("TotalPlayerNumber " + totalPlayerNumber);
         _roomUI.UpdatePlayerNumber(totalPlayerNumber);
     }
 

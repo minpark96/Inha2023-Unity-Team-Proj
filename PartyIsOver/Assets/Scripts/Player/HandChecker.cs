@@ -23,6 +23,7 @@ public class HandChecker : MonoBehaviourPun
         
     }
 
+    //태그로 처리하는걸로 수정해야함
     private void OnCollisionStay(Collision collision)
     {
         if (!photonView.IsMine) return;

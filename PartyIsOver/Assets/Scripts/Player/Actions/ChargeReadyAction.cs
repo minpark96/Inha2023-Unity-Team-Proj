@@ -12,9 +12,7 @@ public class ChargeReadyAction
     }
 
     AnimationPlayer _animPlayer;
-    //BodyHandler _bodyHandler;
     AnimationData _animData;
-
     float _startChargeTime;
     float _endChargeTime = 0f;
     float _chargeAniHoldTime = 0.5f;
@@ -26,7 +24,6 @@ public class ChargeReadyAction
     {
         _animData = animData;
         _animPlayer = animPlayer;
-        //_bodyHandler = bodyhandler;
         _childJoints = bodyHandler.ChildJoints;
 
         CoroutineHelper.StartCoroutine(ChargeReady());
@@ -44,12 +41,10 @@ public class ChargeReadyAction
         }
 
         for (int i = 0; i < _animData.AngleDataLists[Define.AniAngleData.RSkillAngleAniData].Length; i++)
-        {
             _animPlayer.AniAngleForce(_animData.AngleDataLists[Define.AniAngleData.RSkillAngleAniData], i);
-        }
+
 
         yield return (ForceRready(_chargeAniHoldTime));
-        //yield return null;
     }
 
     IEnumerator ForceRready(float delay)

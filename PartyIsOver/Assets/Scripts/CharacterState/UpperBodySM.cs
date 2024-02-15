@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class UpperBodySM : StateMachine
 {
-    public PlayerContext PlayerContext;
+    public PlayerContext Context;
 
     public Define.Side ReadySide = Define.Side.Left;
     public bool IsUpperActionProgress = false;
@@ -14,16 +14,6 @@ public class UpperBodySM : StateMachine
     public bool IsEquipItem = false;
     public Vector3 RightTargetDir = Vector3.zero;
     public Vector3 LeftTargetDir = Vector3.zero;
-
-    public TargetingHandler TargetingHandler;
-    public InteractableObject LeftSearchTarget = null;
-    public InteractableObject RightSearchTarget = null;
-    public InteractableObject LeftGrabObject = null;
-    public InteractableObject RightGrabObject = null;
-    public InteractableObject EquipItem;
-
-    public FixedJoint LeftGrabJoint;
-    public FixedJoint RightGrabJoint;
 
     public HandChecker LeftHandCheckter;
     public HandChecker RightHandCheckter;
@@ -37,8 +27,11 @@ public class UpperBodySM : StateMachine
     public IBaseState HeadButtState;
 
 
-    public UpperBodySM(PlayerInputHandler inputHandler, TargetingHandler targetingHandler,PlayerContext playerContext)
+    public UpperBodySM(PlayerInputHandler inputHandler, PlayerContext playerContext)
     {
+        Context = playerContext;
+        InputHandler = inputHandler;
+
         IdleState = new UpperIdle(this);
         PunchReadyState = new PunchReady(this);
         PunchState = new Punch(this);
@@ -46,14 +39,7 @@ public class UpperBodySM : StateMachine
         SkillReadyState = new SkillReady(this);
         SkillState = new NuclearPunch(this);
         HeadButtState = new HeadButt(this);
-
-        PlayerContext = playerContext;
-        InputHandler = inputHandler;
-        TargetingHandler = targetingHandler;
-        
-        //ChestTransform = chest;
         Init();
-
     }
 
 

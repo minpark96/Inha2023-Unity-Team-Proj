@@ -435,13 +435,6 @@ public class PlayerController : MonoBehaviourPun
     [Header("Dummy")]
     public bool isAI = false;
 
-    Pose leftArmPose;
-    Pose rightArmPose;
-    Pose leftLegPose;
-    Pose rightLegPose;
-
-    Side _readySide = Side.Left;
-
     float startChargeTime;
     float endChargeTime = 0f;
     int _checkHoldTimeCount = 0;
