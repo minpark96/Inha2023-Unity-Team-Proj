@@ -8,7 +8,6 @@ public class InteractableObject : MonoBehaviourPun
 {
     Damage _initialDamage;
     public Damage damageModifier = Damage.Default;
-    public bool IsItem = false;
 
     public Rigidbody RigidbodyObject;
     public Item ItemObject;
@@ -48,8 +47,7 @@ public class InteractableObject : MonoBehaviourPun
     {
         _initialDamage = damageModifier;
 
-        IsItem = GetComponent<Item>() != null;
-        ItemObject = IsItem ? GetComponent<Item>() : null;
+        ItemObject = GetComponent<Item>();
 
         ColliderObject = GetComponent<Collider>();
         //if(ColliderObject == null ) Debug.LogWarning("콜라이더 없음 " + gameObject.name);

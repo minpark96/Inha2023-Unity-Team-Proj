@@ -12,8 +12,10 @@ public class UpperBodySM : StateMachine
     public bool IsUpperActionProgress = false;
     public bool IsMeowPunch = false;
     public bool IsEquipItem = false;
+    public bool IsGrabbingInProgress=false;
     public Vector3 RightTargetDir = Vector3.zero;
     public Vector3 LeftTargetDir = Vector3.zero;
+    public float ItemCoolTime;
 
     public HandChecker LeftHandCheckter;
     public HandChecker RightHandCheckter;
@@ -27,7 +29,7 @@ public class UpperBodySM : StateMachine
     public IBaseState HeadButtState;
 
 
-    public UpperBodySM(PlayerInputHandler inputHandler, PlayerContext playerContext)
+    public UpperBodySM(PlayerInputHandler inputHandler, PlayerContext playerContext, HandChecker left, HandChecker right)
     {
         Context = playerContext;
         InputHandler = inputHandler;
@@ -39,9 +41,10 @@ public class UpperBodySM : StateMachine
         SkillReadyState = new SkillReady(this);
         SkillState = new NuclearPunch(this);
         HeadButtState = new HeadButt(this);
+        LeftHandCheckter = left;
+        RightHandCheckter = right;
         Init();
     }
-
 
     protected override IBaseState GetInitialState()
     {

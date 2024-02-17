@@ -5,6 +5,7 @@ using static Actor;
 using Photon.Pun;
 using static Define;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
+using System;
 
 public class PlayerInputHandler : MonoBehaviourPun
 {
@@ -155,7 +156,8 @@ public class PlayerInputHandler : MonoBehaviourPun
 
     public void ClearCommand()
     {
-        _activeCommands = null;
+        //_activeCommands = null;
+        _activeCommandFlag = 0f;
     }
     //void Start()
     //{

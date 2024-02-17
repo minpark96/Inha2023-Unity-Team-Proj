@@ -17,9 +17,9 @@ public class BodyPart : MonoBehaviour
         _partCollisionHandler = GetOrAddComponent<CollisionHandler>();
         PartRigidbody = GetOrAddComponent<Rigidbody>();
         PartInteractable = GetOrAddComponent<InteractableObject>();
+        PartTransform = transform;
         if(!(part == Define.BodyPart.Hip))
             PartJoint = GetOrAddComponent<ConfigurableJoint>();
-        PartTransform = transform;
 
         SetPhotonRigidbody();
     }

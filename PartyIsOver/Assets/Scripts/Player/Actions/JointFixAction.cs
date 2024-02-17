@@ -13,17 +13,17 @@ public class JointFixAction
     }
 
     BodyHandler _bodyHandler;
-    PlayerContext context;
+    PlayerContext _context;
 
     bool HandleJointFixEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerContext data)
     {
         _bodyHandler = bodyHandler;
-        context = data;
+        _context = data;
 
-        if (context.LeftGrabObject != null && context.LeftGrabJoint == null)
+        if (_context.LeftSearchTarget != null && _context.LeftGrabJoint == null)
             JointFix((int)Define.Side.Left);
 
-        if (context.RightGrabObject != null && context.RightGrabJoint == null)
+        if (_context.RightSearchTarget != null && _context.RightGrabJoint == null)
             JointFix((int)Define.Side.Right);
 
         return true;
@@ -34,41 +34,39 @@ public class JointFixAction
         ItemType type = ItemType.None;
 
         //아이템 장착시
-        if (context.EquipItem != null)
+        if (_context.EquipItem != null)
         {
             //레이어 변경
-            type = context.EquipItem.ItemObject.ItemData.ItemType;
-            context.EquipItem.gameObject.layer = _bodyHandler.gameObject.layer;
+            type = _context.EquipItem.ItemObject.ItemData.ItemType;
+            _context.EquipItem.gameObject.layer = _bodyHandler.gameObject.layer;
+
+            _context.EquipItem.ItemObject.Owner = _bodyHandler.GetComponent<Actor>();
+            _context.EquipItem.RigidbodyObject.mass = 0.3f;
 
             //owner변경
-            if (context.IsMine && context.EquipItem.PhotonView != null)
+            if (_context.IsMine && _context.EquipItem.PhotonView != null)
             {
                 int playerID = PhotonNetwork.LocalPlayer.ActorNumber;
-                context.EquipItem.PhotonView.TransferOwnership(playerID);
+                _context.EquipItem.PhotonView.TransferOwnership(playerID);
             }
         }
-   
 
         //관절 생성 및 연결
         if ((Define.Side)side == Define.Side.Left)
         {
-            if (context.LeftSearchTarget == null)
-                Debug.Log("Fail LeftJointFix");
-
-            context.LeftGrabJoint = _bodyHandler.LeftHand.gameObject.AddComponent<FixedJoint>();
-            context.LeftGrabJoint.connectedBody = context.LeftSearchTarget.RigidbodyObject;
+            _context.LeftGrabObject = _context.LeftSearchTarget;
+            _context.LeftGrabJoint = _bodyHandler.LeftHand.gameObject.AddComponent<FixedJoint>();
+            _context.LeftGrabJoint.connectedBody = _context.LeftSearchTarget.RigidbodyObject;
         }
         else if ((Define.Side)side == Define.Side.Right)
         {
-            if (context.RightSearchTarget == null)
-                Debug.Log("Fail RightJointFix");
-
-            context.RightGrabJoint = _bodyHandler.RightHand.gameObject.AddComponent<FixedJoint>();
-            context.RightGrabJoint.connectedBody = context.RightSearchTarget.RigidbodyObject;
+            _context.LeftGrabObject = _context.LeftSearchTarget;
+            _context.RightGrabJoint = _bodyHandler.RightHand.gameObject.AddComponent<FixedJoint>();
+            _context.RightGrabJoint.connectedBody = _context.RightSearchTarget.RigidbodyObject;
         }
 
         //관절 고정
-        if (context.EquipItem != null && (type == ItemType.TwoHanded || type == ItemType.Ranged))
+        if (_context.EquipItem != null && (type == ItemType.TwoHanded || type == ItemType.Ranged))
             _bodyHandler.JointLock((Define.Side)side);
     }
 }

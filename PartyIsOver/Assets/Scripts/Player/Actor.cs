@@ -221,7 +221,8 @@ public class Actor : MonoBehaviourPun, IPunObservable
         _inputHandler = GetComponent<PlayerInputHandler>();
 
         LowerSM = new LowerBodySM(_inputHandler, _context);
-        UpperSM = new UpperBodySM(_inputHandler, _context);
+        UpperSM = new UpperBodySM(_inputHandler, _context,
+           BodyHandler.LeftHand.GetComponent<HandChecker>(), BodyHandler.RightHand.GetComponent<HandChecker>());
 
         _inputHandler.InitCommnad(this);
     }
@@ -445,6 +446,9 @@ public class Actor : MonoBehaviourPun, IPunObservable
                     Debug.Log(_commandAry[i].ToString() + "커맨드 실행 실패");
             }
         }
+
+        //커맨드 플래그 클리어
+        _inputHandler.ClearCommand();
     }
 
 

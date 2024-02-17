@@ -28,8 +28,6 @@ public class Grab : MonoBehaviourPun
 
     float _grabDelayTimer = 0.5f;
 
-    public bool _isGrabbingInProgress { get; private set; }
-
 
     public GameObject EquipItem;
     public GameObject LeftGrabObject;
@@ -363,8 +361,6 @@ public class Grab : MonoBehaviourPun
                 rightPV.TransferOwnership(playerID);
         }
 
-        _isGrabbingInProgress = false;
-
         if (EquipItem != null)
         {
             EquipItem.gameObject.layer = LayerMask.NameToLayer("Item");
@@ -633,8 +629,8 @@ public class Grab : MonoBehaviourPun
 
         PhotonView pv = PhotonNetwork.GetPhotonView(id);
 
-        pv.GetComponent<Item>().Owner = GetComponent<Actor>();
-        pv.GetComponent<Rigidbody>().mass = 0.3f;
+        //pv.GetComponent<Item>().Owner = GetComponent<Actor>();
+        //pv.GetComponent<Rigidbody>().mass = 0.3f;
         _coolTime = pv.GetComponent<Item>().ItemData.CoolTime;
     }
 

@@ -171,5 +171,25 @@ public class BodyHandler : MonoBehaviourPun
         ForeArm.angularZMotion = ConfigurableJointMotion.Locked;
         UpperArm.angularZMotion = ConfigurableJointMotion.Locked;
     }
+
+    public void DestroyJoint(FixedJoint right, FixedJoint left)
+    {
+        Destroy(left);
+        Destroy(right);
+
+        LeftHand.PartJoint.angularYMotion = ConfigurableJointMotion.Limited;
+        LeftForeArm.PartJoint.angularYMotion = ConfigurableJointMotion.Limited;
+        LeftArm.PartJoint.angularYMotion = ConfigurableJointMotion.Limited;
+        LeftHand.PartJoint.angularZMotion = ConfigurableJointMotion.Limited;
+        LeftForeArm.PartJoint.angularZMotion = ConfigurableJointMotion.Limited;
+        LeftArm.PartJoint.angularZMotion = ConfigurableJointMotion.Limited;
+
+        RightHand.PartJoint.angularYMotion = ConfigurableJointMotion.Limited;
+        RightForeArm.PartJoint.angularYMotion = ConfigurableJointMotion.Limited;
+        RightArm.PartJoint.angularYMotion = ConfigurableJointMotion.Limited;
+        RightHand.PartJoint.angularZMotion = ConfigurableJointMotion.Limited;
+        RightForeArm.PartJoint.angularZMotion = ConfigurableJointMotion.Limited;
+        RightArm.PartJoint.angularZMotion = ConfigurableJointMotion.Limited;
+    }
 }
 

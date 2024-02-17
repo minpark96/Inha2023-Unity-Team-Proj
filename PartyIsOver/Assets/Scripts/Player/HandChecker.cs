@@ -6,21 +6,19 @@ using static Define;
 
 public class HandChecker : MonoBehaviourPun
 {
-    private Actor _actor;
+    private UpperBodySM bodySM;
     public GrabObjectType CollisionObjectType = GrabObjectType.None;
     public InteractableObject CollisionObject = null;
 
     // Start is called before the first frame update
     void Start()
     {
-        _actor = transform.root.GetComponent<Actor>();
-
+        bodySM = GetComponentInParent<Actor>().UpperSM;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
     }
 
     //태그로 처리하는걸로 수정해야함
@@ -29,7 +27,7 @@ public class HandChecker : MonoBehaviourPun
         if (!photonView.IsMine) return;
         if(collision.collider == null) return;
 
-        if(_actor.Grab._isGrabbingInProgress && collision.gameObject.GetComponent<InteractableObject>() != null)
+        if(bodySM.IsGrabbingInProgress && collision.gameObject.GetComponent<InteractableObject>() != null)
         {
             CollisionObject = collision.gameObject.GetComponent<InteractableObject>();
 
