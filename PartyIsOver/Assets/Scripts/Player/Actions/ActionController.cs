@@ -29,6 +29,7 @@ public class ActionController
     public event ActionDelegate OnTargetSearch;
     public event ActionDelegate OnJointFix;
     public event ActionDelegate OnJointDestroy;
+    public event ActionDelegate OnUseItem;
 
 
 
@@ -53,6 +54,7 @@ public class ActionController
         new JointFixAction(this);
         new JointDestroyAction(this);
         new SearchAction(this);
+        new ItemUseAction(this);
     }
     
     public bool InvokeJumpEvent(in PlayerContext data)
@@ -103,7 +105,10 @@ public class ActionController
     {
         return OnJointDestroy?.Invoke(_animData, _animPlayer, _bodyHandler, data) ?? false;
     }
-
+    public bool InvokeUseItemEvent(in PlayerContext data)
+    {
+        return OnUseItem?.Invoke(_animData, _animPlayer, _bodyHandler, data) ?? false;
+    }
 
     public void UpperActionEnd()
     {

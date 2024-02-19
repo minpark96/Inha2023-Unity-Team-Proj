@@ -27,7 +27,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
         IsUpperActionProgress = false,
         IsLowerActionProgress = false,
         LimbPositions = new int[4],
-        Side = Side.Left,
+        PunchSide = Side.Left,
         IsMeowPunch = false
     };
 
@@ -276,7 +276,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
         _context.IsLowerActionProgress = LowerSM.IsLowerActionProgress;
         _context.IsMeowPunch = UpperSM.IsMeowPunch;
 
-        _context.Side = UpperSM.ReadySide;
+        _context.PunchSide = UpperSM.ReadySide;
 
         int[] limbPositions = LowerSM.GetBodyPose();
         for (int i = 0; i < (int)BodyPose.End; i++)
@@ -442,7 +442,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
         {
             if((_activeCommand & _commandAry[i]) == _commandAry[i])
             {
-                if(_inputHandler.GetActiveCommand(_commandAry[i]).Execute(_context))
+                if(!_inputHandler.GetCommand(_commandAry[i]).Execute(_context))
                     Debug.Log(_commandAry[i].ToString() + "커맨드 실행 실패");
             }
         }

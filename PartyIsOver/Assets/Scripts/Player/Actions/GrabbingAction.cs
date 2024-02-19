@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using static Define;
+using static UnityEditor.Progress;
 
 public class GrabbingAction
 {
@@ -11,17 +13,20 @@ public class GrabbingAction
         actions.OnGrabbing -= HandleGrabbingEvent;
         actions.OnGrabbing += HandleGrabbingEvent;
     }
-
+    PlayerContext _context;
     Rigidbody _leftHandRigid;
     Rigidbody _rightHandRigid;
 
+
     bool _isGrounded;
-    Vector3 _dir;
+    Vector3 _leftAddForceDir;
+    Vector3 _rightAddForceDir;
     Vector3 _leftTargetDir;
     Vector3 _rightTargetDir;
 
     public bool HandleGrabbingEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerContext data)
     {
+        _context = data;
         _isGrounded = data.IsGrounded;
 
         _leftTargetDir = data.LeftTargetDir;
@@ -29,32 +34,81 @@ public class GrabbingAction
         _leftHandRigid = bodyHandler.LeftHand.PartRigidbody;
         _rightHandRigid = bodyHandler.RightHand.PartRigidbody;
 
-        Gabbing();
+        if(_context.IsItemGrabbing)
+        {
+            Debug.Log(_context.RightSearchTarget);
+            ItemDirSetting(_context.RightSearchTarget.ItemObject);
+        }
+        else
+            NonItemDirSetting();
+
+        Grabbing();
         return true;
     }
 
+    private void Grabbing()
+    {
+        if (_leftTargetDir != Vector3.zero)
+            _leftHandRigid.AddForce(_leftAddForceDir.normalized * 90f);
 
-    private void Gabbing()
+        if (_rightTargetDir != Vector3.zero)
+            _rightHandRigid.AddForce(_rightAddForceDir.normalized * 90f);
+
+    }
+    private void NonItemDirSetting()
     {
         if (_leftTargetDir != Vector3.zero)
         {
             if (!_isGrounded)
-                _dir = ((_leftTargetDir + Vector3.up * 2) - _leftHandRigid.transform.position).normalized;
+                _leftAddForceDir = ((_leftTargetDir + Vector3.up * 2) - _leftHandRigid.transform.position).normalized;
             else
-                _dir = (_leftTargetDir - _leftHandRigid.transform.position).normalized;
-
-            _leftHandRigid.AddForce(_dir * 80f);
+                _leftAddForceDir = (_leftTargetDir - _leftHandRigid.transform.position).normalized;
         }
 
         if (_rightTargetDir != Vector3.zero)
         {
             if (!_isGrounded)
-                _dir = ((_rightTargetDir + Vector3.up * 2) - _rightHandRigid.transform.position).normalized;
+                _rightAddForceDir = ((_rightTargetDir + Vector3.up * 2) - _rightHandRigid.transform.position).normalized;
             else
-                _dir = (_rightTargetDir - _rightHandRigid.transform.position).normalized;
-
-            _rightHandRigid.AddForce(_dir * 80f);
+                _rightAddForceDir = (_rightTargetDir - _rightHandRigid.transform.position).normalized;
+        }
+    }
+    private void ItemDirSetting(Item item)
+    {
+        switch (item.ItemData.ItemType)
+        {
+            case ItemType.TwoHanded:
+                    TwoHandedGrab(item);
+                break;
+            case ItemType.Ranged:
+                    TwoHandedGrab(item);
+                break;
+            case ItemType.Consumable:
+                {
+                    _rightAddForceDir = item.OneHandedPos.position - _rightHandRigid.transform.position;
+                    _leftTargetDir = Vector3.zero;
+                    _rightTargetDir = Vector3.up;
+                }
+                break;
         }
     }
 
+
+    void TwoHandedGrab(Item item)
+    {
+        Vector3 rightGripPos = item.TwoHandedPos.position;
+        Vector3 leftGripPos = item.OneHandedPos.position;
+
+        //아이템 방향따라 오른쪽 손잡이를 오른손으로 잡기 진행
+        if (_context.ItemHandleSide == Side.Right)
+        {
+            rightGripPos = item.OneHandedPos.position;
+            leftGripPos = item.TwoHandedPos.position;
+        }
+
+        _rightAddForceDir = rightGripPos - _rightHandRigid.transform.position;
+        _leftAddForceDir = leftGripPos - _leftHandRigid.transform.position;
+        _leftTargetDir = Vector3.up;
+        _rightTargetDir = Vector3.up;
+    }
 }

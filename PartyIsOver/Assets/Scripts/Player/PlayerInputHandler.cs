@@ -143,10 +143,9 @@ public class PlayerInputHandler : MonoBehaviourPun
         //    _activeCommands.Enqueue(commands[commandKey]);
     }
 
-    public ICommand GetActiveCommand(COMMAND_KEY key)
+    public ICommand GetCommand(COMMAND_KEY key)
     {
-        ICommand command = commands[key];
-        return command;
+        return commands[key];
     }
 
     public COMMAND_KEY GetActiveCmdFlag()

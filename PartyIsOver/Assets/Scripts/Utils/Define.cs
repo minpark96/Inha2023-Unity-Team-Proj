@@ -207,8 +207,8 @@ public static class Define
         ResetCharge    =    0x20, 
         HeadButt       =    0x40, 
         DropKick       =    0x80, 
-        Grabbing       =    0x100,
-        TargetSearch   =    0x200, 
+        TargetSearch   =    0x100, 
+        Grabbing       =    0x200,
         FixJoint       =    0x400,
         DestroyJoint   =    0x800,
 

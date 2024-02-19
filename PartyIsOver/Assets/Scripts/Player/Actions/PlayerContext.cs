@@ -18,9 +18,12 @@ public class PlayerContext
     public bool IsUpperActionProgress { get; set; }
     public bool IsLowerActionProgress { get; set; }
     public bool IsMeowPunch { get; set; }
+    public bool IsItemGrabbing { get; set; }
+
 
     public int[] LimbPositions { get; set; }
-    public Define.Side Side { get; set; }
+    public Define.Side PunchSide { get; set; }
+    public Define.Side ItemHandleSide { get; set; }
 
     public InteractableObject LeftSearchTarget { get; set; }
     public InteractableObject RightSearchTarget { get; set; }

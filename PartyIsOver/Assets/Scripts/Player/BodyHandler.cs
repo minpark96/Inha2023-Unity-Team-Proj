@@ -39,6 +39,15 @@ public class BodyHandler : MonoBehaviourPun
     private List<float> _xPosSpringAry = new List<float>();
     private List<float> _yzPosSpringAry = new List<float>();
 
+    private FixedJoint[] _fixedArmJoints = new FixedJoint[6];
+    private List<ConfigurableJoint> _chestArmJoints = new List<ConfigurableJoint>();
+
+    const int _armJointCount = 3;
+    const int _indexLeftStart = 1;
+    const int _indexRightStart = 4;
+    const int _indexChest = 0;
+    const int _indexChangeDir = 3;
+
     private void Awake()
     {
         InitBodyParts();
@@ -53,16 +62,13 @@ public class BodyHandler : MonoBehaviourPun
             {
                 var component = child.GetComponent<BodyPart>();
                 if (component != null)
-                {
                     BodyParts.Add(component);
-                }
             }
         }
 
         for (int i = 0; i < BodyParts.Count; i++)
-        {
             BodyParts[i].PartSetup((Define.BodyPart)i);
-        }
+        
 
         LeftFoot = GetBodyPart(Define.BodyPart.FootL);
         RightFoot = GetBodyPart(Define.BodyPart.FootR);
@@ -107,6 +113,15 @@ public class BodyHandler : MonoBehaviourPun
             _xPosSpringAry.Add(BodyParts[i].PartJoint.angularXDrive.positionSpring);
             _yzPosSpringAry.Add(BodyParts[i].PartJoint.angularYZDrive.positionSpring);
         }
+
+        //谅快 迫 包例 府胶飘 历厘
+        _chestArmJoints.Add(Chest.PartJoint);
+        _chestArmJoints.Add(LeftArm.PartJoint);
+        _chestArmJoints.Add(LeftForeArm.PartJoint);
+        _chestArmJoints.Add(LeftHand.PartJoint);
+        _chestArmJoints.Add(RightArm.PartJoint);
+        _chestArmJoints.Add(RightForeArm.PartJoint);
+        _chestArmJoints.Add(RightHand.PartJoint);
     }
 
     private BodyPart GetBodyPart(Define.BodyPart part)
@@ -160,16 +175,17 @@ public class BodyHandler : MonoBehaviourPun
 
     public void JointLock(Define.Side side)
     {
-        ConfigurableJoint hand = (side == Define.Side.Left)? LeftHand.PartJoint : RightHand.PartJoint;
-        ConfigurableJoint ForeArm = (side == Define.Side.Left) ? LeftForeArm.PartJoint : RightForeArm.PartJoint;
-        ConfigurableJoint UpperArm = (side == Define.Side.Left) ? LeftArm.PartJoint : RightArm.PartJoint;
+        int start;
+        if(side ==Define.Side.Left)
+            start = _indexLeftStart;
+        else
+            start = _indexRightStart;
 
-        hand.angularYMotion = ConfigurableJointMotion.Locked;
-        ForeArm.angularYMotion = ConfigurableJointMotion.Locked;
-        UpperArm.angularYMotion = ConfigurableJointMotion.Locked;
-        hand.angularZMotion = ConfigurableJointMotion.Locked;
-        ForeArm.angularZMotion = ConfigurableJointMotion.Locked;
-        UpperArm.angularZMotion = ConfigurableJointMotion.Locked;
+        for (int i = 0; i < _armJointCount; i++)
+        {
+            _chestArmJoints[start + i].angularYMotion = ConfigurableJointMotion.Locked;
+            _chestArmJoints[start + i].angularZMotion = ConfigurableJointMotion.Locked;
+        }
     }
 
     public void DestroyJoint(FixedJoint right, FixedJoint left)
@@ -177,19 +193,37 @@ public class BodyHandler : MonoBehaviourPun
         Destroy(left);
         Destroy(right);
 
-        LeftHand.PartJoint.angularYMotion = ConfigurableJointMotion.Limited;
-        LeftForeArm.PartJoint.angularYMotion = ConfigurableJointMotion.Limited;
-        LeftArm.PartJoint.angularYMotion = ConfigurableJointMotion.Limited;
-        LeftHand.PartJoint.angularZMotion = ConfigurableJointMotion.Limited;
-        LeftForeArm.PartJoint.angularZMotion = ConfigurableJointMotion.Limited;
-        LeftArm.PartJoint.angularZMotion = ConfigurableJointMotion.Limited;
+        for (int i = 0; i < _armJointCount * 2; i++)
+        {
+            _chestArmJoints[_indexLeftStart + i].angularYMotion = ConfigurableJointMotion.Limited;
+            _chestArmJoints[_indexLeftStart + i].angularZMotion = ConfigurableJointMotion.Limited;
+        }
+    }
 
-        RightHand.PartJoint.angularYMotion = ConfigurableJointMotion.Limited;
-        RightForeArm.PartJoint.angularYMotion = ConfigurableJointMotion.Limited;
-        RightArm.PartJoint.angularYMotion = ConfigurableJointMotion.Limited;
-        RightHand.PartJoint.angularZMotion = ConfigurableJointMotion.Limited;
-        RightForeArm.PartJoint.angularZMotion = ConfigurableJointMotion.Limited;
-        RightArm.PartJoint.angularZMotion = ConfigurableJointMotion.Limited;
+    public IEnumerator LockArmPosition()
+    {
+        yield return new WaitForSeconds(0.5f);
+
+        for (int i = 0; i < _fixedArmJoints.Length; i++)
+        {
+            _fixedArmJoints[i] = _chestArmJoints[i + 1].AddComponent<FixedJoint>();
+
+            if (i == _indexChangeDir)
+                _fixedArmJoints[i].connectedBody = _chestArmJoints[_indexChest].GetComponent<Rigidbody>();
+            else
+                _fixedArmJoints[i].connectedBody = _chestArmJoints[i].GetComponent<Rigidbody>();
+        }
+    }
+
+    [PunRPC]
+    public void UnlockArmPosition()
+    {
+        for (int i = 0; i < 6; i++)
+        {
+            Debug.Log("UnlockArm" + _fixedArmJoints[i]);
+            Destroy(_fixedArmJoints[i]);
+            _fixedArmJoints[i] = null;
+        }
     }
 }
 

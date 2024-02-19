@@ -756,7 +756,6 @@ public class Grab : MonoBehaviourPun
     {
         Transform item = PhotonNetwork.GetPhotonView(itemViewID).transform;
         item.transform.right = -targetPosition.normalized;
-        Debug.Log("SyncGrapItemPosition");
     }
 
 

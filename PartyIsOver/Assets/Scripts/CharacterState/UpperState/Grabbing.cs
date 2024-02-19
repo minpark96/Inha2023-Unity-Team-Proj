@@ -11,6 +11,7 @@ public class Grabbing : BodyState
 
 
     private float _grabDelayTimer =0;
+    private float _itemSearchRange = 1f;
 
     public Grabbing(StateMachine stateMachine) : base("GrabbingState", stateMachine)
     {
@@ -71,17 +72,21 @@ public class Grabbing : BodyState
 
 
         //타겟이 정면에 있고 아이템일때
-        if (_context.LeftSearchTarget == _context.RightSearchTarget && _context.LeftSearchTarget.ItemObject !=null)
+        if (_context.LeftSearchTarget == _context.RightSearchTarget && _context.RightSearchTarget.ItemObject !=null)
         {
             //일정 거리 안에서 양손이 비어있을때
             if (TargetingHandler.TargetDistance(TargetingHandler.FindClosestCollisionPoint
-                (_context.Position,_context.LeftSearchTarget.ColliderObject,_context.Layer))<= 1f
+                (_context.Position,_context.RightSearchTarget.ColliderObject,_context.Layer))<= _itemSearchRange
                   && _context.LeftGrabObject ==null && _context.RightGrabObject == null)
             {
                 //아이템 잡기 상태로 진입
-                //HandleItemGrabbing(_context.LeftSearchTarget.ItemObject);
+                _context.IsItemGrabbing = true;
+                _sm.InputHandler.EnqueueCommand(COMMAND_KEY.Grabbing);
+                HandleItemGrabbing(_context.RightSearchTarget);
                 return;
             }
+            else
+                _context.IsItemGrabbing = false;
         }
         else//아이템이 아닐때 혹은 손이 멀리 있을때
         {
@@ -139,87 +144,56 @@ public class Grabbing : BodyState
         return false;
     }
 
-    //bool IsHoldingItem(Item item, Define.Side side)
-    //{
-    //    //HandChecker 스크립트에서 양손 다 아이템의 손잡이와 접촉중인지 판정
-    //    if (HandCollisionCheck(side))
-    //    {
-    //        _sm.Context.EquipItem.ItemObject = item;
-    //        Debug.Log(_sm.Context.EquipItem);
-    //        int id = _context.EquipItem.PhotonView.ViewID;
-    //        photonView.RPC("UsingItemSetting", RpcTarget.All, id);
-    //        return true;
-    //    }
-    //    return false;
-    //}
+    void HandleItemGrabbing(InteractableObject item)
+    {
+        switch (item.ItemObject.ItemData.ItemType)
+        {
+            case ItemType.TwoHanded:
+                    if (!IsHoldingItem(item, Define.Side.Both))
+                        return;
+                break;
+            case ItemType.Ranged:
+                    if (!IsHoldingItem(item, Define.Side.Both))
+                        return;
+                break;
+            case ItemType.Consumable:
+                    if (!IsHoldingItem(item, Side.Right))
+                        return;
+                break;
+            default:
+                return;
+        }
 
-    //void HandleItemGrabbing(Item item)
-    //{
-    //    switch (item.ItemData.ItemType)
-    //    {
-    //        case ItemType.TwoHanded:
-    //            {
-    //                TwoHandedGrab(item);
-    //            }
-    //            break;
-    //        case ItemType.Ranged:
-    //            {
-    //                TwoHandedGrab(item);
-    //            }
-    //            break;
-    //        case ItemType.Consumable:
-    //            {
-    //                Vector3 dir = item.OneHandedPos.position - _rightHandRigid.transform.position;
-    //                _rightHandRigid.AddForce(dir.normalized * 80f);
+        if(item.ItemObject.ItemData.ItemType != ItemType.Consumable)
+            _context.ItemHandleSide = ItemDirCheck(item.ItemObject);
+        _sm.InputHandler.EnqueueCommand(COMMAND_KEY.FixJoint);
+    }
 
-    //                if (IsHoldingItem(item, Side.Right))
-    //                    ItemRotate(item.transform, false);
-    //                else
-    //                    return;
 
-    //                int rightObjViewID = _rightSearchTarget.transform.GetComponent<PhotonView>().ViewID;
-    //                photonView.RPC("JointFix", RpcTarget.All, (int)Side.Right, rightObjViewID);
-    //            }
-    //            break;
-    //    }
-    //}
+    bool IsHoldingItem(InteractableObject item, Define.Side side)
+    {
+        //HandChecker 스크립트에서 양손 다 아이템의 손잡이와 접촉중인지 판정
+        if (HandCollisionCheck(side))
+        {
+            _grabDelayTimer = 0.5f;
+            _sm.Context.EquipItem = item;
+            return true;
+        }
+        return false;
+    }
 
-    //void TwoHandedGrab(Item item)
-    //{
-    //    //아이템 방향따라 오른쪽 손잡이를 오른손으로 잡기 진행
-    //    if (ItemDirCheck(item))
-    //    {
-    //        Vector3 dir = item.OneHandedPos.position - _rightHandRigid.transform.position;
-    //        _rightHandRigid.AddForce(dir.normalized * 90f);
 
-    //        dir = item.TwoHandedPos.position - _leftHandRigid.transform.position;
-    //        _leftHandRigid.AddForce(dir.normalized * 90f);
+    Side ItemDirCheck(Item item)
+    {
+        //오른손과 손잡이 위치 체크해서 아이템 방향 리턴
+        Vector3 toItem = (item.TwoHandedPos.position - _context.Position).normalized; // 플레이어가 아이템을 바라보는 벡터
+        Vector3 toOneHandedHandle = (item.OneHandedPos.position - _context.Position).normalized; // 오른손이 잡아야할 oneHanded 손잡이 벡터
+        Vector3 crossProduct = Vector3.Cross(toItem, toOneHandedHandle);
 
-    //        if (IsHoldingItem(item, Define.Side.Both))
-    //            ItemRotate(item.transform, true);
-    //        else
-    //            return;
-    //    }
-    //    else
-    //    {
-    //        Vector3 dir = item.TwoHandedPos.position - _rightHandRigid.transform.position;
-    //        _rightHandRigid.AddForce(dir.normalized * 90f);
+        if (crossProduct.y > 0)
+            return Side.Right;// 원핸드 손잡이가 오른쪽
+        else
+            return Side.Left;// 원핸드 손잡이가 왼쪽
+    }
 
-    //        dir = item.OneHandedPos.position - _leftHandRigid.transform.position;
-    //        _leftHandRigid.AddForce(dir.normalized * 90f);
-
-    //        if (IsHoldingItem(item, Define.Side.Both))
-    //            ItemRotate(item.transform, false);
-    //        else
-    //            return;
-    //    }
-
-    //    int leftObjViewID = _leftSearchTarget.transform.GetComponent<PhotonView>().ViewID;
-    //    photonView.RPC("JointFix", RpcTarget.All, (int)Define.Side.Left, leftObjViewID);
-    //    int rightObjViewID = _rightSearchTarget.transform.GetComponent<PhotonView>().ViewID;
-    //    photonView.RPC("JointFix", RpcTarget.All, (int)Define.Side.Right, rightObjViewID);
-
-    //    photonView.RPC("LockArmTrigger", RpcTarget.All);
-
-    //}
 }

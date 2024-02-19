@@ -15,7 +15,6 @@ public class UpperBodySM : StateMachine
     public bool IsGrabbingInProgress=false;
     public Vector3 RightTargetDir = Vector3.zero;
     public Vector3 LeftTargetDir = Vector3.zero;
-    public float ItemCoolTime;
 
     public HandChecker LeftHandCheckter;
     public HandChecker RightHandCheckter;
@@ -27,6 +26,7 @@ public class UpperBodySM : StateMachine
     public IBaseState SkillReadyState;
     public IBaseState SkillState;
     public IBaseState HeadButtState;
+    public IBaseState EquipItemState;
 
 
     public UpperBodySM(PlayerInputHandler inputHandler, PlayerContext playerContext, HandChecker left, HandChecker right)
@@ -34,13 +34,15 @@ public class UpperBodySM : StateMachine
         Context = playerContext;
         InputHandler = inputHandler;
 
-        IdleState = new UpperIdle(this);
-        PunchReadyState = new PunchReady(this);
-        PunchState = new Punch(this);
-        GrabbingState = new Grabbing(this);
-        SkillReadyState = new SkillReady(this);
-        SkillState = new NuclearPunch(this);
-        HeadButtState = new HeadButt(this);
+        IdleState        = new UpperIdle(this);
+        PunchReadyState  = new PunchReady(this);
+        PunchState       = new Punch(this);
+        GrabbingState    = new Grabbing(this);
+        SkillReadyState  = new SkillReady(this);
+        SkillState       = new NuclearPunch(this);
+        HeadButtState    = new HeadButt(this);
+        EquipItemState   = new EquipItem(this);
+
         LeftHandCheckter = left;
         RightHandCheckter = right;
         Init();

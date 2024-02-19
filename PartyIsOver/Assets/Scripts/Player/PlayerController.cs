@@ -1871,7 +1871,7 @@ public class PlayerController : MonoBehaviourPun
 
         while (Time.time - checkTime < resetTime)
         {
-            ItemTwoHandReSet(side);
+            ItemTwoHandReset(side);
             yield return new WaitForSeconds(duration);
         }
     }
@@ -1916,7 +1916,7 @@ public class PlayerController : MonoBehaviourPun
         }
     }
 
-    public void ItemTwoHandReSet(Define.Side side)
+    public void ItemTwoHandReset(Define.Side side)
     {
         Transform partTransform = _bodyHandler.Chest.transform;
 

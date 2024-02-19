@@ -53,6 +53,7 @@ public class JointDestroyAction
         }
 
         _bodyHandler.DestroyJoint(_context.RightGrabJoint, _context.LeftGrabJoint);
+        _bodyHandler.UnlockArmPosition();
 
         _context.LeftGrabObject = null;
         _context.RightGrabObject = null;

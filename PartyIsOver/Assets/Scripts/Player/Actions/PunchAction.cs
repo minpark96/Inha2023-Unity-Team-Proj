@@ -44,7 +44,7 @@ public class PunchAction
         this.bodyHandler = bodyHandler;
         isRSkillCheck = false;
 
-        CoroutineHelper.StartCoroutine(Punch(data.Side,duration,readyTime,punchTime,resetTime));
+        CoroutineHelper.StartCoroutine(Punch(data.PunchSide,duration,readyTime,punchTime,resetTime));
         return true;
     }
 
