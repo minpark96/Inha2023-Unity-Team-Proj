@@ -187,6 +187,51 @@ public static class Define
         Outside,
         Default,
     }
+    public enum PlayerState
+    {
+        IndexLowerStart,
+
+        LowerIdle,
+        Moving,
+        Jumping,
+        DropKick,
+
+        IndexLowerEnd,
+
+        IndexUpperStart,
+
+        UpperIdle,
+        PunchAndGrabReady,
+        Punch,
+        Grabbing,
+        SkillReady,
+        Skill,
+        HeadButt,
+        EquipItem,
+
+        IndexUpperEnd,
+    }
+
+    public enum PlayerLowerState
+    {
+        Idle,
+        Moving,
+        Jumping,
+        DropKick,
+        None,
+    }
+    public enum PlayerUpperState
+    {
+        Idle,
+        PunchAndGrabReady,
+        Punch,
+        Grabbing,
+        SkillReady,
+        Skill,
+        HeadButt,
+        EquipItem,
+        None,
+    }
 
     public enum GetKeyType
     {
@@ -198,21 +243,21 @@ public static class Define
 
     public enum COMMAND_KEY
     {
-        Move           =    0x0,
-        LeftBtn        =    0x1,
-        RightBtn       =    0x2,
-        Jump           =    0x4,
-        Skill          =    0x8,
-        Charge         =    0x10,
-        ResetCharge    =    0x20, 
-        HeadButt       =    0x40, 
-        DropKick       =    0x80, 
-        TargetSearch   =    0x100, 
-        Grabbing       =    0x200,
-        FixJoint       =    0x400,
-        DestroyJoint   =    0x800,
+        Move           =    0x1,
+        LeftBtn        =    0x2,
+        RightBtn       =    0x4,
+        Jump           =    0x8,
+        Skill          =    0x10,
+        Charge         =    0x20, 
+        ResetCharge    =    0x40, 
+        HeadButt       =    0x80, 
+        DropKick       =    0x100, 
+        TargetSearch   =    0x200,
+        Grabbing       =    0x400,
+        FixJoint       =    0x800,
+        DestroyJoint   =    0x1000,
 
-        None,
+        None = 0x8000,
     }
 
     public enum AniFrameData

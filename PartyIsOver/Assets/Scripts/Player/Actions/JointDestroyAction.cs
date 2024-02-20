@@ -43,7 +43,6 @@ public class JointDestroyAction
             _context.EquipItem.gameObject.layer = (int)Define.Layer.Item;
             _equipItem.Body.gameObject.SetActive(true);
 
-            //angeWeaponSkin.gameObject.SetActive(false);
             _context.EquipItem.ItemObject.Owner = null;
             if (_equipItem.ItemData.ItemType == ItemType.OneHanded ||
                 _equipItem.ItemData.ItemType == ItemType.TwoHanded)

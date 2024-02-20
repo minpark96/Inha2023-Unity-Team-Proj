@@ -34,7 +34,7 @@ public class GrabbingAction
         _leftHandRigid = bodyHandler.LeftHand.PartRigidbody;
         _rightHandRigid = bodyHandler.RightHand.PartRigidbody;
 
-        if(_context.IsItemGrabbing)
+        if(_context.IsItemGrabbing && _context.RightSearchTarget != null)
         {
             Debug.Log(_context.RightSearchTarget);
             ItemDirSetting(_context.RightSearchTarget.ItemObject);
@@ -49,10 +49,10 @@ public class GrabbingAction
     private void Grabbing()
     {
         if (_leftTargetDir != Vector3.zero)
-            _leftHandRigid.AddForce(_leftAddForceDir.normalized * 90f);
+            _leftHandRigid.AddForce(_leftAddForceDir.normalized * 150f);
 
         if (_rightTargetDir != Vector3.zero)
-            _rightHandRigid.AddForce(_rightAddForceDir.normalized * 90f);
+            _rightHandRigid.AddForce(_rightAddForceDir.normalized * 150f);
 
     }
     private void NonItemDirSetting()

@@ -13,7 +13,7 @@ public class Grabbing : BodyState
     private float _grabDelayTimer =0;
     private float _itemSearchRange = 1f;
 
-    public Grabbing(StateMachine stateMachine) : base("GrabbingState", stateMachine)
+    public Grabbing(StateMachine stateMachine) : base(PlayerState.Grabbing, stateMachine)
     {
         _sm = (UpperBodySM)stateMachine;
     }
@@ -28,16 +28,6 @@ public class Grabbing : BodyState
     public override void UpdateLogic()
     {
         _grabDelayTimer -= Time.deltaTime;
-
-
-        //그래빙Action 계속 실행
-        if (_grabDelayTimer < 0f)
-            GrabbingProgress();
-
-        //각각 손에 뭔가 잡힌것을 _sm이 가지고 있어야 하고 그걸 판단하다 해당상태로 이동
-        //1.아이템인지, 벽인지, 플레이어인지 등
-
-
     }
     public override void GetInput()
     {
@@ -45,13 +35,16 @@ public class Grabbing : BodyState
         if (!Input.GetKey(KeyCode.Mouse0))
         {
             _sm.InputHandler.EnqueueCommand(COMMAND_KEY.DestroyJoint);
-            _sm.ChangeState(_sm.IdleState);
+            _sm.ChangeState(_sm.StateMap[PlayerState.UpperIdle]);
         }
            
     }
 
     public override void UpdatePhysics()
     {
+        //그래빙Action 계속 실행
+        if (_grabDelayTimer < 0f)
+            GrabbingProgress();
     }
 
     public override void Exit()
@@ -81,8 +74,11 @@ public class Grabbing : BodyState
             {
                 //아이템 잡기 상태로 진입
                 _context.IsItemGrabbing = true;
-                _sm.InputHandler.EnqueueCommand(COMMAND_KEY.Grabbing);
-                HandleItemGrabbing(_context.RightSearchTarget);
+                if (IsItemGrabbing(_context.RightSearchTarget))
+                    _sm.ChangeState(_sm.StateMap[PlayerState.EquipItem]);
+                else
+                    _sm.InputHandler.EnqueueCommand(COMMAND_KEY.Grabbing);
+
                 return;
             }
             else
@@ -144,29 +140,29 @@ public class Grabbing : BodyState
         return false;
     }
 
-    void HandleItemGrabbing(InteractableObject item)
+    bool IsItemGrabbing(InteractableObject item)
     {
         switch (item.ItemObject.ItemData.ItemType)
         {
             case ItemType.TwoHanded:
                     if (!IsHoldingItem(item, Define.Side.Both))
-                        return;
+                        return false;
                 break;
             case ItemType.Ranged:
                     if (!IsHoldingItem(item, Define.Side.Both))
-                        return;
+                        return false;
                 break;
             case ItemType.Consumable:
                     if (!IsHoldingItem(item, Side.Right))
-                        return;
+                        return false;
                 break;
             default:
-                return;
+                return false;
         }
 
         if(item.ItemObject.ItemData.ItemType != ItemType.Consumable)
             _context.ItemHandleSide = ItemDirCheck(item.ItemObject);
-        _sm.InputHandler.EnqueueCommand(COMMAND_KEY.FixJoint);
+        return true;
     }
 
 

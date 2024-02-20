@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Define;
 
 public class Punch : BodyState
 {
     private UpperBodySM _sm;
 
-    public Punch(StateMachine stateMachine) : base("PunchState", stateMachine)
+    public Punch(StateMachine stateMachine) : base(PlayerState.Punch, stateMachine)
     {
         _sm = (UpperBodySM)stateMachine;
     }
@@ -22,7 +23,7 @@ public class Punch : BodyState
     {
         if(!_sm.IsUpperActionProgress)
         {
-            _sm.ChangeState(_sm.IdleState);
+            _sm.ChangeState(_sm.StateMap[PlayerState.UpperIdle]);
         }
     }
     public override void GetInput()
@@ -35,9 +36,9 @@ public class Punch : BodyState
 
     public override void Exit()
     {
-        if (_sm.ReadySide == Define.Side.Left)
-            _sm.ReadySide = Define.Side.Right;
+        if (_sm.ReadySide == Side.Left)
+            _sm.ReadySide = Side.Right;
         else
-            _sm.ReadySide = Define.Side.Left;
+            _sm.ReadySide = Side.Left;
     }
 }

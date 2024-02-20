@@ -16,6 +16,7 @@ public class DropKickAction
     AnimationPlayer _animPlayer;
     BodyHandler _bodyHandler;
     AnimationData _animData;
+    PlayerContext _context;
     float _DropKickCoolTime = 2f;
     float _springLerpTime =1f;
 
@@ -25,6 +26,7 @@ public class DropKickAction
         _animData = animData;
         _animPlayer = animPlayer;
         _bodyHandler = bodyHandler;
+        _context = data;
 
         if (data.EquipItem != null && data.IsGrounded)
             return false;
@@ -76,6 +78,6 @@ public class DropKickAction
         //photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LegLowerR, false);
 
         _actions.UpperActionEnd();
-        _actions.LowerActionEnd();
+        _context.IsLowerActionProgress = false;
     }
 }

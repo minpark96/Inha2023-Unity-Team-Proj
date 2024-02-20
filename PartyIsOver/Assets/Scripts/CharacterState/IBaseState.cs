@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Define;
 
 public interface IBaseState
 {
-   string Name { get; set; }
+   Define.PlayerState Name { get; set; }
 
    void GetInput();
    void Enter();

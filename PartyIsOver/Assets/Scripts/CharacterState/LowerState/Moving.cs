@@ -11,7 +11,7 @@ public class Moving : BodyState
     private float _cycleTimer = 0;
     private float _cycleSpeed;
 
-    public Moving(StateMachine stateMachine) : base("MovingState", stateMachine)
+    public Moving(StateMachine stateMachine) : base(PlayerState.Moving, stateMachine)
     {
         _sm = (LowerBodySM)stateMachine;
     }

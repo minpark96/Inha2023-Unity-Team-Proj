@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Define;
 
 public class MeowNyangPunch : BodyState
 {
     protected UpperBodySM _sm;
 
-    public MeowNyangPunch(StateMachine stateMachine) : base("SkillState", stateMachine)
+    public MeowNyangPunch(StateMachine stateMachine) : base(PlayerState.Skill, stateMachine)
     {
         _sm = (UpperBodySM)stateMachine;
     }
@@ -21,7 +22,7 @@ public class MeowNyangPunch : BodyState
     {
         if (!_sm.IsUpperActionProgress)
         {
-            _sm.ChangeState(_sm.IdleState);
+            _sm.ChangeState(_sm.StateMap[PlayerState.UpperIdle]);
         }
     }
     public override void GetInput()

@@ -114,16 +114,9 @@ public class ActionController
     {
         OnUpperActionEnd?.Invoke();
     }
-    public void LowerActionEnd()
-    {
-        OnLowerActionEnd?.Invoke();
-    }
     public void UpperActionStart()
     {
         OnUpperActionStart?.Invoke();
     }
-    public void LowerActionStart()
-    {
-        OnLowerActionStart?.Invoke();
-    }
+
 }

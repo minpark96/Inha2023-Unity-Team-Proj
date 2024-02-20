@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using static Define;
+using static UnityEditor.Progress;
 
 public class ItemUseAction
 {
@@ -16,51 +18,63 @@ public class ItemUseAction
     BodyHandler _bodyHandler;
     AnimationData _animData;
     AnimationPlayer _animPlayer;
+    InteractableObject _item;
     //public float _turnForce;
 
     bool HandleUseItemEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerContext data)
     {
         _type = data.EquipItem.ItemObject.ItemData.ItemType;
+        _item = data.EquipItem;
         _context = data;
         _bodyHandler = bodyHandler;
         _animData = animData;
         _animPlayer = animPlayer;
-
+        ItemUse();
 
         return true;
     }
 
 
+    void ItemUse()
+    {
+        switch (_type)
+        {
+            case ItemType.TwoHanded:
+                CoroutineHelper.StartCoroutine(HorizontalAttack());
+                break;
+            case ItemType.Ranged:
+                UseItem();
+                break;
+            case ItemType.Consumable:
+                CoroutineHelper.StartCoroutine(UsePotionAnim());
+                break;
+        }
+    }
+
 
     IEnumerator HorizontalAttack()
     {
         if (PhotonNetwork.IsMasterClient)
-            _context.EquipItem.ChangeUseTypeTrigger(0f, 1.1f);
-        //if (!photonView.IsMine)
-        //    yield break;
+            _item.ChangeUseTypeTrigger(0f, 1.1f);
 
-        _jointLeft.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 3, 0, 0));
-        _jointRight.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 3, 0, 0));
+        //_bodyHandler.LeftHand.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 3, 0, 0));
+        //_bodyHandler.RightHand.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 3, 0, 0));
 
-        yield return _actor.PlayerController.ItemTwoHand(_side, 0.07f, 0.1f, 0.5f, 0.1f, 3f);
+        yield return ItemTwoHand(_context.ItemHandleSide, 0.07f, 0.1f, 0.5f, 0.1f, 3f);
     }
 
     IEnumerator UsePotionAnim()
     {
-        _jointLeft.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 3, 0, 0));
-        _jointRight.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 3, 0, 0));
+        //_bodyHandler.LeftHand.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 3, 0, 0));
+        //_bodyHandler.RightHand.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 3, 0, 0));
 
-        yield return _actor.PlayerController.Potion(0.07f, 0.1f, 0.5f, 0.5f, 0.1f);
-
-        photonView.RPC("UseItem", RpcTarget.All);
-        GrabResetTrigger();
+        yield return Potion(0.07f, 0.1f, 0.5f, 0.5f, 0.1f);
+        UseItem();
     }
 
     private void UseItem()
     {
-        EquipItem.GetComponent<Item>().Use();
-        _isAttackReady = false;
-
+        _item.ItemObject.Use();
     }
 
     public IEnumerator ItemTwoHand(Define.Side side, float duration, float readyTime, float punchTime, float resetTime, float itemPower)

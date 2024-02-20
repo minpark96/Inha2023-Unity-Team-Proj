@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Define;
 
 public class HeadButt : BodyState
 {
     protected UpperBodySM _sm;
 
-    public HeadButt(StateMachine stateMachine) : base("HeadButtState", stateMachine)
+    public HeadButt(StateMachine stateMachine) : base(PlayerState.HeadButt, stateMachine)
     {
         _sm = (UpperBodySM)stateMachine;
     }
@@ -18,7 +19,7 @@ public class HeadButt : BodyState
     {
         if (!_sm.IsUpperActionProgress)
         {
-            _sm.ChangeState(_sm.IdleState);
+            _sm.ChangeState(_sm.StateMap[PlayerState.UpperIdle]);
         }
     }
     public override void GetInput()

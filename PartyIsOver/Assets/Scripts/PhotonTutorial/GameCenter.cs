@@ -912,7 +912,7 @@ public class GameCenter : BaseScene
         MyGraveStone = Managers.Resource.PhotonNetworkInstantiate(_graveStonePath, pos: spawnAirPos);
         yield return new WaitForSeconds(GhostSpawnDelay);
         MyGhost = Managers.Resource.Instantiate(_ghostPath, pos: spawnPos);
-        Destroy(MyActor._audioListener);
+        Destroy(MyActor.AudioListener);
         MyActor.CameraControl = null;
     }
 

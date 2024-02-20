@@ -158,24 +158,7 @@ public class PlayerInputHandler : MonoBehaviourPun
         //_activeCommands = null;
         _activeCommandFlag = 0f;
     }
-    //void Start()
-    //{
-    //    if (_actor.PlayerController.isAI)
-    //        return;
 
-    //    return;
-    //    Managers.Input.MouseAction -= OnMouseEvent;
-    //    Managers.Input.MouseAction += OnMouseEvent;
-    //    Managers.Input.KeyboardAction -= OnKeyboardEvent;
-    //    Managers.Input.KeyboardAction += OnKeyboardEvent;
-    //}
-
-    //void OnDestroy()
-    //{
-    //    commands.Clear();
-    //    Managers.Input.MouseAction -= OnMouseEvent;
-    //    Managers.Input.KeyboardAction -= OnKeyboardEvent;
-    //}
 
    
     //void OnKeyboardEvent(Define.KeyboardEvent evt)

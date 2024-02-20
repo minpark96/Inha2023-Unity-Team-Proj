@@ -2,14 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using static Define;
 
 public abstract class BodyState:IBaseState
 {
-    public string Name { get; set; }
+    public Define.PlayerState Name { get; set; }
     
     protected StateMachine stateMachine;
 
-    public BodyState(string name, StateMachine stateMachine)
+    public BodyState(PlayerState name, StateMachine stateMachine)
     {
         this.Name = name;
         this.stateMachine = stateMachine;

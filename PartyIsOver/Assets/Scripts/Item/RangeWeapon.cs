@@ -15,7 +15,7 @@ public class RangeWeapon : Item
             projectile.gameObject.layer = Owner.gameObject.layer;
 
             Vector3 forward = -Owner.BodyHandler.Chest.PartTransform.up;
-            projectile.transform.position = Owner.Grab.FirePoint.position + (forward * 0.2f) + (Vector3.up * 0.1f);
+            projectile.transform.position = Owner.UpperSM.FirePoint.position + (forward * 0.2f) + (Vector3.up * 0.1f);
             projectile.transform.rotation = Quaternion.LookRotation(forward + new Vector3(0f, 0.37f, 0f));
             projectile.Shoot(this);
             Owner.PlayerController.PlayerEffectSound("PlayerEffect/Cartoon-UI-040");

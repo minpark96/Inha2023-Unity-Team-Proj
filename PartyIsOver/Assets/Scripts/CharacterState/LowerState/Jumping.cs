@@ -8,7 +8,7 @@ public class Jumping : BodyState
 {
     private LowerBodySM _sm;
 
-    public Jumping(StateMachine stateMachine):base("JumpingState", stateMachine)
+    public Jumping(StateMachine stateMachine):base(Define.PlayerState.Jumping, stateMachine)
     {
         _sm = (LowerBodySM)stateMachine;
     }

@@ -1,8 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.IO.LowLevel.Unsafe;
 using Unity.VisualScripting;
 using UnityEngine;
+using static Define;
 
 public class UpperBodySM : StateMachine
 {
@@ -10,39 +12,26 @@ public class UpperBodySM : StateMachine
 
     public Define.Side ReadySide = Define.Side.Left;
     public bool IsUpperActionProgress = false;
-    public bool IsMeowPunch = false;
-    public bool IsEquipItem = false;
     public bool IsGrabbingInProgress=false;
-    public Vector3 RightTargetDir = Vector3.zero;
-    public Vector3 LeftTargetDir = Vector3.zero;
 
+    public Transform RangeWeaponSkin;
+    public Transform FirePoint;
     public HandChecker LeftHandCheckter;
     public HandChecker RightHandCheckter;
 
-    public IBaseState IdleState;
-    public IBaseState PunchReadyState;
-    public IBaseState PunchState;
-    public IBaseState GrabbingState;
-    public IBaseState SkillReadyState;
-    public IBaseState SkillState;
-    public IBaseState HeadButtState;
-    public IBaseState EquipItemState;
+    private Dictionary<PlayerState, IBaseState> stateMap = new Dictionary<PlayerState, IBaseState>();
+    public Dictionary<PlayerState, IBaseState> StateMap { get { return stateMap; } private set { stateMap = value; } }
 
 
-    public UpperBodySM(PlayerInputHandler inputHandler, PlayerContext playerContext, HandChecker left, HandChecker right)
+    public UpperBodySM(PlayerInputHandler inputHandler, PlayerContext playerContext, HandChecker left, HandChecker right,Transform rangeSKin)
     {
         Context = playerContext;
         InputHandler = inputHandler;
+        RangeWeaponSkin = rangeSKin;
 
-        IdleState        = new UpperIdle(this);
-        PunchReadyState  = new PunchReady(this);
-        PunchState       = new Punch(this);
-        GrabbingState    = new Grabbing(this);
-        SkillReadyState  = new SkillReady(this);
-        SkillState       = new NuclearPunch(this);
-        HeadButtState    = new HeadButt(this);
-        EquipItemState   = new EquipItem(this);
-
+        for (PlayerState i = PlayerState.IndexUpperStart+1; i < PlayerState.IndexUpperEnd; i++)
+            stateMap[i] = CreateState(i);
+        
         LeftHandCheckter = left;
         RightHandCheckter = right;
         Init();
@@ -50,6 +39,22 @@ public class UpperBodySM : StateMachine
 
     protected override IBaseState GetInitialState()
     {
-        return IdleState;
+        return stateMap[PlayerState.UpperIdle];
     }
+    private IBaseState CreateState(Define.PlayerState state)
+    {
+        switch (state)
+        {
+            case PlayerState.UpperIdle:         return new UpperIdle(this);
+            case PlayerState.PunchAndGrabReady: return new PunchReady(this);
+            case PlayerState.Punch:             return new Punch(this);
+            case PlayerState.Grabbing:          return new Grabbing(this);
+            case PlayerState.SkillReady:        return new SkillReady(this);
+            case PlayerState.Skill:             return new NuclearPunch(this);
+            case PlayerState.HeadButt:          return new HeadButt(this);
+            case PlayerState.EquipItem:         return new EquipItem(this);
+            default: throw new ArgumentException($"Unknown state: {state}");
+        }
+    }
+
 }

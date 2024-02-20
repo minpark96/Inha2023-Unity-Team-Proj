@@ -10,6 +10,17 @@ public class CmdLeftBtn : PlayerCommand
     }
     public override bool Execute(in PlayerContext data)
     {
-        return actor.ActionController.InvokePunchEvent(data);
+        switch (actor.GetUpperState())
+        {
+            case Define.PlayerState.Punch:
+                return actor.ActionController.InvokePunchEvent(data);
+            case Define.PlayerState.EquipItem:
+                return actor.ActionController.InvokeUseItemEvent(data);
+            //case Define.PlayerState.Grabbing:
+            //    return actor.ActionController.InvokeGrabbingEvent(data);
+            default: return false;
+        }
+
+        //return actor.ActionController.InvokePunchEvent(data);
     }
 }

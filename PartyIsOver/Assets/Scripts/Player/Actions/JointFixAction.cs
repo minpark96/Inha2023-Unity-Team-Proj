@@ -22,26 +22,20 @@ public class JointFixAction
         _bodyHandler = bodyHandler;
         _context = data;
 
+        if (_context.EquipItem != null)
+            ItemEquip();
+
         if (_context.LeftSearchTarget != null && _context.LeftGrabJoint == null)
             JointFix((int)Define.Side.Left);
 
         if (_context.RightSearchTarget != null && _context.RightGrabJoint == null)
             JointFix((int)Define.Side.Right);
 
-        if(_context.EquipItem != null)
-            ItemEquip();
-        
-
         return true;
     }
 
     void JointFix(int side)
     {
-        //아이템 장착시
-        if (_context.EquipItem != null)
-            _type = _context.EquipItem.ItemObject.ItemData.ItemType;
-        
-
         //관절 생성 및 연결
         if ((Define.Side)side == Define.Side.Left)
         {
@@ -59,16 +53,15 @@ public class JointFixAction
         //관절 고정
         if (_context.EquipItem != null && (_type == ItemType.TwoHanded || _type == ItemType.Ranged))
             _bodyHandler.JointLock((Define.Side)side);
-        
     }
 
 
     void ItemEquip()
     {
-        ItemType type = _context.EquipItem.ItemObject.ItemData.ItemType;
+        _type = _context.EquipItem.ItemObject.ItemData.ItemType;
 
         //아이템 회전
-        if(type == ItemType.TwoHanded || type == ItemType.Ranged)
+        if(_type == ItemType.TwoHanded || _type == ItemType.Ranged)
         {
             if (_context.ItemHandleSide == Define.Side.Right)
                 ItemRotate(_context.EquipItem, true);
@@ -127,36 +120,4 @@ public class JointFixAction
             //EquipItem = PhotonNetwork.GetPhotonView(itemViewID).gameObject;
         }
     }
-
-    //private void ChangeWeaponSkin(int id)
-    //{
-    //    RangeWeaponSkin.gameObject.SetActive(true);
-
-
-    //    RangeWeapon item = PhotonNetwork.GetPhotonView(id).transform.GetComponent<RangeWeapon>();
-    //    Define.RangeWeapon weapon = Define.RangeWeapon.IceGun;
-    //    item.GetComponent<Item>().Body.gameObject.SetActive(false);
-
-
-    //    switch (item.ItemData.UseDamageType)
-    //    {
-    //        case InteractableObject.Damage.Ice:
-    //            {
-    //                weapon = Define.RangeWeapon.IceGun;
-    //            }
-    //            break;
-    //        case InteractableObject.Damage.Shock:
-    //            {
-    //                weapon = Define.RangeWeapon.StunGun;
-    //            }
-    //            break;
-    //    }
-
-    //    for (int i = 0; i < RangeWeaponSkin.childCount; i++)
-    //        RangeWeaponSkin.GetChild(0).GetChild(0).GetChild(i).gameObject.SetActive(false);
-
-
-    //    RangeWeaponSkin.GetChild(0).GetChild(0).GetChild((int)weapon).gameObject.SetActive(true);
-    //    FirePoint = RangeWeaponSkin.GetChild(0).GetChild(1);
-    //}
 }

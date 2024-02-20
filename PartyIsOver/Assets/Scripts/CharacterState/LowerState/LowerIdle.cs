@@ -7,7 +7,7 @@ public class LowerIdle : BodyState
 {
     private LowerBodySM _sm;
 
-    public LowerIdle(StateMachine stateMachine) : base("LowerIdleState", stateMachine)
+    public LowerIdle(StateMachine stateMachine) : base(Define.PlayerState.LowerIdle, stateMachine)
     {
         _sm = (LowerBodySM)stateMachine;
     }

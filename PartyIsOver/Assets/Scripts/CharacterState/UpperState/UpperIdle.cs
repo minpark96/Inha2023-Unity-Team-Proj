@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Define;
 
 public class UpperIdle : BodyState
 {
     private UpperBodySM _sm;
 
-    public UpperIdle(StateMachine stateMachine) : base("UpperIdleState", stateMachine)
+    public UpperIdle(StateMachine stateMachine) : base(PlayerState.UpperIdle, stateMachine)
     {
         _sm = (UpperBodySM)stateMachine;
     }
@@ -22,15 +23,15 @@ public class UpperIdle : BodyState
 
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            _sm.ChangeState(_sm.PunchReadyState);
+            _sm.ChangeState(_sm.StateMap[PlayerState.PunchAndGrabReady]);
         }
         if (Input.GetKeyDown(KeyCode.R))
         {
-            _sm.ChangeState(_sm.SkillReadyState);
+            _sm.ChangeState(_sm.StateMap[PlayerState.SkillReady]);
         }
-        if (_sm.InputHandler.InputCommnadKey(KeyCode.Mouse2, Define.GetKeyType.Down))
+        if (_sm.InputHandler.InputCommnadKey(KeyCode.Mouse2, GetKeyType.Down))
         {
-            _sm.ChangeState(_sm.HeadButtState);
+            _sm.ChangeState(_sm.StateMap[PlayerState.HeadButt]);
         }
     }
     public override void GetInput()

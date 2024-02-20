@@ -31,14 +31,6 @@ public class Actor : MonoBehaviourPun, IPunObservable
         IsMeowPunch = false
     };
 
-    public enum ActorFlag
-    {
-        None        = 0x0,
-        StateChange = 0x1,
-        Run         = 0x2,
-        Fall    = 0x4,
-    }
-
 
     public enum ActorState
     {
@@ -126,24 +118,24 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
 
     //
-
-    private AnimationPlayer _animPlayer = new AnimationPlayer();
-    private AnimationData _animData;
-
-    public AudioListener _audioListener;
+    public AudioListener AudioListener;
     public StatusHandler StatusHandler;
-    private PlayerInputHandler _inputHandler;
     public BodyHandler BodyHandler;
     public CameraControl CameraControl;
 
     public ActionController ActionController;
     public LowerBodySM LowerSM;
     public UpperBodySM UpperSM;
+    public Transform RangeWeaponSkin;
 
+    private PlayerInputHandler _inputHandler;
+    private AnimationPlayer _animPlayer = new AnimationPlayer();
+    private AnimationData _animData;
 
     private COMMAND_KEY _activeCommand;
     private COMMAND_KEY[] _commandAry = (COMMAND_KEY[])Enum.GetValues(typeof(COMMAND_KEY));
 
+    //
     public PlayerController PlayerController;
     public Grab Grab;
 
@@ -169,11 +161,12 @@ public class Actor : MonoBehaviourPun, IPunObservable
         OnKillPlayer(photonView.ViewID);
     }
 
+
     private void Awake()
     {
         Transform SoundListenerTransform = transform.Find("GreenHead");
         if(SoundListenerTransform != null)
-            _audioListener = SoundListenerTransform.gameObject.AddComponent<AudioListener>();
+            AudioListener = SoundListenerTransform.gameObject.AddComponent<AudioListener>();
         if (photonView.IsMine)
         {
             LocalPlayerInstance = this.gameObject;
@@ -187,7 +180,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
         else
         {
             // 사운드 끄기
-            Destroy(_audioListener);
+            Destroy(AudioListener);
             //_audioListener.enabled = false;
         }
 
@@ -222,7 +215,8 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
         LowerSM = new LowerBodySM(_inputHandler, _context);
         UpperSM = new UpperBodySM(_inputHandler, _context,
-           BodyHandler.LeftHand.GetComponent<HandChecker>(), BodyHandler.RightHand.GetComponent<HandChecker>());
+           BodyHandler.LeftHand.GetComponent<HandChecker>(), BodyHandler.RightHand.GetComponent<HandChecker>(),
+           RangeWeaponSkin);
 
         _inputHandler.InitCommnad(this);
     }
@@ -249,11 +243,11 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
         UpdateStateMachine();
 
-        if (LowerSM._currentState != null && UpperSM._currentState != null)
+        if (LowerSM.GetCurrentState() != null && UpperSM.GetCurrentState() != null)
             UpdateData(); //자리가 여기가 아닐수도
 
         if (Input.GetKeyDown(KeyCode.G))
-            UpperSM.IsMeowPunch = !UpperSM.IsMeowPunch;
+            _context.IsMeowPunch = !_context.IsMeowPunch;
     }
 
 
@@ -273,8 +267,6 @@ public class Actor : MonoBehaviourPun, IPunObservable
         _context.IsRunState = LowerSM.IsRun;
         _context.IsGrounded = LowerSM.IsGrounded;
         _context.IsUpperActionProgress = UpperSM.IsUpperActionProgress;
-        _context.IsLowerActionProgress = LowerSM.IsLowerActionProgress;
-        _context.IsMeowPunch = UpperSM.IsMeowPunch;
 
         _context.PunchSide = UpperSM.ReadySide;
 
@@ -357,34 +349,8 @@ public class Actor : MonoBehaviourPun, IPunObservable
         ExecuteCommand();
     }
 
-    void BindActionNotify()
-    {
-        ActionController.OnUpperActionEnd -= UpperActionEnd;
-        ActionController.OnUpperActionEnd += UpperActionEnd;
-        ActionController.OnLowerActionEnd -= LowerActionEnd;
-        ActionController.OnLowerActionEnd += LowerActionEnd;
 
-        ActionController.OnUpperActionStart -= UpperActionStart;
-        ActionController.OnUpperActionStart += UpperActionStart;
-        ActionController.OnLowerActionStart -= LowerActionStart;
-        ActionController.OnLowerActionStart += LowerActionStart;
-    }
-    void UpperActionEnd()
-    {
-        UpperSM.IsUpperActionProgress = false;
-    }
-    void LowerActionEnd()
-    {
-        LowerSM.IsLowerActionProgress = false;
-    }
-    void UpperActionStart()
-    {
-        UpperSM.IsUpperActionProgress = true;
-    }
-    void LowerActionStart()
-    {
-        LowerSM.IsLowerActionProgress = true;
-    }
+
 
     void RecoveryStamina()
     {
@@ -420,17 +386,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
     }
 
    
-    void UpdateStateMachine()
-    {
-        LowerSM.UpdateLogic();
-        UpperSM.UpdateLogic();
-    }
 
-    void UpdatePhysicsSM()
-    {
-        LowerSM.UpdatePhysics();
-        UpperSM.UpdatePhysics();
-    }
 
     //Update에서 활성키들을 모아놨다가
     //프레임상 문제가 있음 Execute 할 떄 마다 _activeCommand를 0으로 해야함
@@ -438,7 +394,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
     {
         _activeCommand = _inputHandler.GetActiveCmdFlag();
         //Master클라이어트에게 받은 커맨드로 해당하는 actor들을 컨트롤하는 방향으로 혹은 마스터에서 바로 actor.execute
-        for (int i = 0; i < Enum.GetValues(typeof(COMMAND_KEY)).Length; i++)
+        for (int i = 0; i < Enum.GetValues(typeof(COMMAND_KEY)).Length -1; i++)
         {
             if((_activeCommand & _commandAry[i]) == _commandAry[i])
             {
@@ -450,8 +406,39 @@ public class Actor : MonoBehaviourPun, IPunObservable
         //커맨드 플래그 클리어
         _inputHandler.ClearCommand();
     }
-
-
+    void UpdateStateMachine()
+    {
+        LowerSM.UpdateLogic();
+        UpperSM.UpdateLogic();
+    }
+    void UpdatePhysicsSM()
+    {
+        LowerSM.UpdatePhysics();
+        UpperSM.UpdatePhysics();
+    }
+    void BindActionNotify()
+    {
+        ActionController.OnUpperActionEnd -= UpperActionEnd;
+        ActionController.OnUpperActionEnd += UpperActionEnd;
+        ActionController.OnUpperActionStart -= UpperActionStart;
+        ActionController.OnUpperActionStart += UpperActionStart;
+    }
+    void UpperActionEnd()
+    {
+        UpperSM.IsUpperActionProgress = false;
+    }
+    void UpperActionStart()
+    {
+        UpperSM.IsUpperActionProgress = true;
+    }
+    public Define.PlayerState GetUpperState()
+    {
+        return UpperSM.GetCurrentState().Name;
+    }
+    public Define.PlayerState GetLowerState()
+    {
+        return LowerSM.GetCurrentState().Name;
+    }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
@@ -468,8 +455,8 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
     private void OnGUI() //완성 후 삭제
     {
-        string content = LowerSM._currentState != null ? LowerSM._currentState.Name : "(no current state)";
-        string content2 = UpperSM._currentState != null ? UpperSM._currentState.Name : "(no current state)";
+        string content = LowerSM.GetCurrentState() != null ? LowerSM.GetCurrentState().Name.ToString() : "(no current state)";
+        string content2 = UpperSM.GetCurrentState() != null ? UpperSM.GetCurrentState().Name.ToString() : "(no current state)";
 
         Rect labelRect = new Rect(100, 0, 300, 40);
         Rect labelRect2 = new Rect(Screen.width - 300, 0, 300, 40);

@@ -10,8 +10,6 @@ public class LowerBodySM : StateMachine
 
     public bool IsGrounded=false;
     public bool IsRun = false;
-    public bool IsLowerActionProgress = false;
-
 
     public IBaseState JumpingState;
     public IBaseState IdleState;
@@ -25,6 +23,7 @@ public class LowerBodySM : StateMachine
     public BodyPose RightLegPose;
 
     int[] _aryBodyPose = new int[4];
+
 
     public LowerBodySM(PlayerInputHandler inputHandler, PlayerContext playerContext)
     {

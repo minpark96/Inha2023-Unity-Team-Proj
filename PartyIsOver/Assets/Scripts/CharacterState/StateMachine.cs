@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class StateMachine
 {
-    public IBaseState _currentState; //나중에 OnGUI 필요없을때 private으로
+    private IBaseState _currentState; //나중에 OnGUI 필요없을때 private으로
     public PlayerInputHandler InputHandler;
 
     public StateMachine()
@@ -50,5 +50,9 @@ public class StateMachine
         newState.Enter();
     }
 
+    public IBaseState GetCurrentState()
+    {
+        return _currentState;
+    }
 
 }

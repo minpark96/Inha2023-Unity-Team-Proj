@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Define;
 
 public class PunchReady : BodyState
 {
@@ -8,7 +9,7 @@ public class PunchReady : BodyState
     private float _pressDuration;
     private float _punchGrabThreshold = 0.2f;
 
-    public PunchReady(StateMachine stateMachine) : base("PunchReadyState", stateMachine)
+    public PunchReady(StateMachine stateMachine) : base(PlayerState.PunchAndGrabReady, stateMachine)
     {
         _sm = (UpperBodySM)stateMachine;
     }
@@ -27,15 +28,15 @@ public class PunchReady : BodyState
             if( _pressDuration > _punchGrabThreshold )
             {
                 //±×·¦»óÅÂ·Î
-                _sm.ChangeState(_sm.GrabbingState);
+                _sm.ChangeState(_sm.StateMap[PlayerState.Grabbing]);
             }
         }
         else if (_pressDuration < _punchGrabThreshold)
         {
             //ÆİÄ¡
-            if (_sm.InputHandler.InputCommnadKey(KeyCode.Mouse0, Define.GetKeyType.Up))
+            if (_sm.InputHandler.InputCommnadKey(KeyCode.Mouse0, GetKeyType.Up))
             {
-                _sm.ChangeState(_sm.PunchState);
+                _sm.ChangeState(_sm.StateMap[PlayerState.Punch]);
             }
         }
 

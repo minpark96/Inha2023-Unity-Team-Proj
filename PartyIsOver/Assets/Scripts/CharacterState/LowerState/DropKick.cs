@@ -6,20 +6,20 @@ public class DropKick : BodyState
 {
     private LowerBodySM _sm;
 
-    public DropKick(StateMachine stateMachine) : base("DropKickState", stateMachine)
+    public DropKick(StateMachine stateMachine) : base(Define.PlayerState.DropKick, stateMachine)
     {
         _sm = (LowerBodySM)stateMachine;
     }
 
     public override void Enter()
     {
-        _sm.IsLowerActionProgress = true;
+        _sm.PlayerContext.IsLowerActionProgress = true;
     }
 
     public override void UpdateLogic()
     {
         //상태 나가기
-        if (!_sm.IsLowerActionProgress)
+        if (!_sm.PlayerContext.IsLowerActionProgress)
         {
             _sm.ChangeState(_sm.IdleState);
         }
