@@ -17,10 +17,8 @@ public class AnimationData
 
     BodyHandler _bodyHandler;
 
-    Dictionary<Define.AniFrameData, AniFrameData[]> frameDataLists = 
-        new Dictionary<Define.AniFrameData, AniFrameData[]>();
-    Dictionary<Define.AniAngleData, AniAngleData[]> angleDataLists = 
-        new Dictionary<Define.AniAngleData, AniAngleData[]>();
+    Dictionary<Define.AniFrameData, AniFrameData[]> frameDataLists = new Dictionary<Define.AniFrameData, AniFrameData[]>();
+    Dictionary<Define.AniAngleData, AniAngleData[]> angleDataLists = new Dictionary<Define.AniAngleData, AniAngleData[]>();
 
     public Dictionary<Define.AniFrameData, AniFrameData[]> FrameDataLists { get { return frameDataLists; } private set { frameDataLists = value; } }
     public Dictionary<Define.AniAngleData, AniAngleData[]> AngleDataLists { get { return angleDataLists; } private set { angleDataLists = value; } }

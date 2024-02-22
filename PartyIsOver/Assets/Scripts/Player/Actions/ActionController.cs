@@ -35,9 +35,7 @@ public class ActionController
 
     public delegate void ActionEndNotify();
     public event ActionEndNotify OnUpperActionEnd;
-    public event ActionEndNotify OnLowerActionEnd;
     public event ActionEndNotify OnUpperActionStart;
-    public event ActionEndNotify OnLowerActionStart;
 
 
     void Init()

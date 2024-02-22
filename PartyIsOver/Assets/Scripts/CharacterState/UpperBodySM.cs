@@ -28,12 +28,11 @@ public class UpperBodySM : StateMachine
         Context = playerContext;
         InputHandler = inputHandler;
         RangeWeaponSkin = rangeSKin;
+        LeftHandCheckter = left;
+        RightHandCheckter = right;
 
         for (PlayerState i = PlayerState.IndexUpperStart+1; i < PlayerState.IndexUpperEnd; i++)
             stateMap[i] = CreateState(i);
-        
-        LeftHandCheckter = left;
-        RightHandCheckter = right;
         Init();
     }
 

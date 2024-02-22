@@ -7,17 +7,19 @@ public class StateMachine
     private IBaseState _currentState; //나중에 OnGUI 필요없을때 private으로
     public PlayerInputHandler InputHandler;
 
-    public StateMachine()
-    {
-    }
-
     protected void Init()
     {
         _currentState = GetInitialState();
         if (_currentState != null)
             _currentState.Enter();
     }
+    public void ChangeState(IBaseState newState)
+    {
+        _currentState.Exit();
 
+        _currentState = newState;
+        newState.Enter();
+    }
     public void UpdateLogic()
     {
         if (_currentState != null)
@@ -28,8 +30,6 @@ public class StateMachine
                 _currentState.GetInput();
         }
     }
-
-
     public void UpdatePhysics()
     {
         if (_currentState != null)
@@ -41,15 +41,6 @@ public class StateMachine
     {
         return null;
     }
-
-    public void ChangeState(IBaseState newState)
-    {
-        _currentState.Exit();
-
-        _currentState = newState;
-        newState.Enter();
-    }
-
     public IBaseState GetCurrentState()
     {
         return _currentState;
