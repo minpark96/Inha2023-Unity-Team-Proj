@@ -13,11 +13,11 @@ public class HeadButt : BodyState
     }
     public override void Enter()
     {
-        _sm.IsUpperActionProgress = true;
+        _sm.Context.IsUpperActionProgress = true;
     }
     public override void UpdateLogic()
     {
-        if (!_sm.IsUpperActionProgress)
+        if (!_sm.Context.IsUpperActionProgress)
         {
             _sm.ChangeState(_sm.StateMap[PlayerState.UpperIdle]);
         }

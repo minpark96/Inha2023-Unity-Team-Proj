@@ -33,12 +33,6 @@ public static class Define
         UIEffect,
         PlayerEffect,
     }
-    public enum WorldObject
-    {
-        Unknown,
-        Player,
-        Item,
-    }
     public enum UIEvent
     {
         Click,
@@ -74,12 +68,13 @@ public static class Define
         Maxcount,
     }
 
-    public enum GrabObjectType
+    public enum ObjectType
     {
         None,
         Player,
         Item,
         Object,
+        Wall,
     }
 
     public enum GrabState
@@ -197,7 +192,6 @@ public static class Define
         DropKick,
 
         IndexLowerEnd,
-
         IndexUpperStart,
 
         UpperIdle,
@@ -208,29 +202,10 @@ public static class Define
         Skill,
         HeadButt,
         EquipItem,
+        LiftObject,
+        Climb,
 
         IndexUpperEnd,
-    }
-
-    public enum PlayerLowerState
-    {
-        Idle,
-        Moving,
-        Jumping,
-        DropKick,
-        None,
-    }
-    public enum PlayerUpperState
-    {
-        Idle,
-        PunchAndGrabReady,
-        Punch,
-        Grabbing,
-        SkillReady,
-        Skill,
-        HeadButt,
-        EquipItem,
-        None,
     }
 
     public enum GetKeyType
@@ -251,11 +226,10 @@ public static class Define
         Charge         =    0x20, 
         ResetCharge    =    0x40, 
         HeadButt       =    0x80, 
-        DropKick       =    0x100, 
-        TargetSearch   =    0x200,
-        Grabbing       =    0x400,
-        FixJoint       =    0x800,
-        DestroyJoint   =    0x1000,
+        TargetSearch   =    0x100,
+        Grabbing       =    0x200,
+        FixJoint       =    0x400,
+        DestroyJoint   =    0x800,
 
         None = 0x8000,
     }

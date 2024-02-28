@@ -16,6 +16,7 @@ public class PunchAction
     protected AnimationData animData;
     protected AnimationPlayer animPlayer;
     protected BodyHandler bodyHandler;
+    protected PlayerContext _context;
 
     protected float duration = 0.07f;
     protected float readyTime = 0.1f;
@@ -42,6 +43,7 @@ public class PunchAction
         this.animData = animData;
         this.animPlayer = animPlayer;
         this.bodyHandler = bodyHandler;
+        this._context = data;
         isRSkillCheck = false;
 
         CoroutineHelper.StartCoroutine(Punch(data.PunchSide,duration,readyTime,punchTime,resetTime));
@@ -73,7 +75,8 @@ public class PunchAction
         }
 
         if(!isRSkillCheck)
-            actions.UpperActionEnd();
+            _context.IsUpperActionProgress = false;
+
     }
 
 

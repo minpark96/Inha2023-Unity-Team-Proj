@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using static Define;
-using static UnityEditor.Progress;
 
 public class ItemUseAction
 {
@@ -70,6 +69,7 @@ public class ItemUseAction
 
         yield return Potion(0.07f, 0.1f, 0.5f, 0.5f, 0.1f);
         UseItem();
+        _context.IsUpperActionProgress = false;
     }
 
     private void UseItem()

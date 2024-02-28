@@ -2,8 +2,6 @@ using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
-using UnityEditor;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class BodyHandler : MonoBehaviourPun
@@ -215,7 +213,7 @@ public class BodyHandler : MonoBehaviourPun
         }
     }
 
-    [PunRPC]
+
     public void UnlockArmPosition()
     {
         for (int i = 0; i < 6; i++)

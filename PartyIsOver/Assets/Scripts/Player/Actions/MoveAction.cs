@@ -17,7 +17,7 @@ public class MoveAction
     AnimationPlayer _animPlayer;
     BodyHandler _bodyHandler;
 
-    Vector3 _moveDir = new Vector3();
+    Vector3 _inputMoveDir = new Vector3();
 
     private float _runSpeed;
     private float _maxSpeed;
@@ -37,9 +37,9 @@ public class MoveAction
     {
         _animPlayer = animPlayer;
         _bodyHandler = bodyHandler;
-        _moveDir.x = data.DirX;
-        _moveDir.y = data.DirY;
-        _moveDir.z = data.DirZ;
+        _inputMoveDir.x = data.InputDirX;
+        _inputMoveDir.y = data.InputDirY;
+        _inputMoveDir.z = data.InputDirZ;
         _isRun = data.IsRunState;
 
         for (int i = 0; i < (int)Define.limbPositions.End; i++) 
@@ -57,18 +57,18 @@ public class MoveAction
 
     private void InAirMove()
     {
-        _bodyHandler.Chest.PartRigidbody.AddForce((_runVectorForce10 + _moveDir), ForceMode.VelocityChange);
-        _bodyHandler.Hip.PartRigidbody.AddForce((-_runVectorForce5 + -_moveDir), ForceMode.VelocityChange);
+        _bodyHandler.Chest.PartRigidbody.AddForce((_runVectorForce10 + _inputMoveDir), ForceMode.VelocityChange);
+        _bodyHandler.Hip.PartRigidbody.AddForce((-_runVectorForce5 + -_inputMoveDir), ForceMode.VelocityChange);
 
-        _animPlayer.AlignToVector(_bodyHandler.Chest.PartRigidbody, -_bodyHandler.Chest.transform.up, _moveDir / 4f + -Vector3.up, 0.1f, 4f * _applyedForce);
+        _animPlayer.AlignToVector(_bodyHandler.Chest.PartRigidbody, -_bodyHandler.Chest.transform.up, _inputMoveDir / 4f + -Vector3.up, 0.1f, 4f * _applyedForce);
         _animPlayer.AlignToVector(_bodyHandler.Chest.PartRigidbody, _bodyHandler.Chest.transform.forward, Vector3.up, 0.1f, 8f * _applyedForce);
-        _animPlayer.AlignToVector(_bodyHandler.Waist.PartRigidbody, -_bodyHandler.Waist.transform.up, _moveDir / 4f + -Vector3.up, 0.1f, 4f * _applyedForce);
+        _animPlayer.AlignToVector(_bodyHandler.Waist.PartRigidbody, -_bodyHandler.Waist.transform.up, _inputMoveDir / 4f + -Vector3.up, 0.1f, 4f * _applyedForce);
         _animPlayer.AlignToVector(_bodyHandler.Waist.PartRigidbody, _bodyHandler.Chest.transform.forward, Vector3.up, 0.1f, 8f * _applyedForce);
-        _animPlayer.AlignToVector(_bodyHandler.Hip.PartRigidbody, -_bodyHandler.Hip.transform.up, _moveDir, 0.1f, 8f * _applyedForce);
+        _animPlayer.AlignToVector(_bodyHandler.Hip.PartRigidbody, -_bodyHandler.Hip.transform.up, _inputMoveDir, 0.1f, 8f * _applyedForce);
         _animPlayer.AlignToVector(_bodyHandler.Hip.PartRigidbody, _bodyHandler.Hip.transform.forward, Vector3.up, 0.1f, 8f * _applyedForce);
 
         //Fall상태로 빼야 할수도
-        _bodyHandler.Hip.PartRigidbody.AddForce(_moveDir.normalized * _runSpeed * _runSpeedOffset * Time.deltaTime * 0.5f);
+        _bodyHandler.Hip.PartRigidbody.AddForce(_inputMoveDir.normalized * _runSpeed * _runSpeedOffset * Time.deltaTime * 0.5f);
 
         if (_bodyHandler.Hip.PartRigidbody.velocity.magnitude > _maxSpeed)
             _bodyHandler.Hip.PartRigidbody.velocity = _bodyHandler.Hip.PartRigidbody.velocity.normalized * _maxSpeed;
@@ -112,14 +112,14 @@ public class MoveAction
         switch (limbPose)
         {
             case (int)Define.BodyPose.Bent:
-                _animPlayer.AlignToVector(thighRigid, -thighTrans.forward, _moveDir, 0.1f, 2f * _applyedForce);
-                _animPlayer.AlignToVector(legRigid, legTrans.forward, _moveDir, 0.1f, 2f * _applyedForce);
+                _animPlayer.AlignToVector(thighRigid, -thighTrans.forward, _inputMoveDir, 0.1f, 2f * _applyedForce);
+                _animPlayer.AlignToVector(legRigid, legTrans.forward, _inputMoveDir, 0.1f, 2f * _applyedForce);
                 break;
             case (int)Define.BodyPose.Forward:
-                _animPlayer.AlignToVector(thighRigid, -thighTrans.forward, _moveDir + -hip.up / 2f, 0.1f, 4f * _applyedForce);
-                _animPlayer.AlignToVector(legRigid, -legTrans.forward, _moveDir + -hip.up / 2f, 0.1f, 4f * _applyedForce);
-                thighRigid.AddForce(-_moveDir / 2f, ForceMode.VelocityChange);
-                legRigid.AddForce(_moveDir / 2f, ForceMode.VelocityChange);
+                _animPlayer.AlignToVector(thighRigid, -thighTrans.forward, _inputMoveDir + -hip.up / 2f, 0.1f, 4f * _applyedForce);
+                _animPlayer.AlignToVector(legRigid, -legTrans.forward, _inputMoveDir + -hip.up / 2f, 0.1f, 4f * _applyedForce);
+                thighRigid.AddForce(-_inputMoveDir / 2f, ForceMode.VelocityChange);
+                legRigid.AddForce(_inputMoveDir / 2f, ForceMode.VelocityChange);
 
                 break;
             case (int)Define.BodyPose.Straight:
@@ -131,8 +131,8 @@ public class MoveAction
 
                 break;
             case (int)Define.BodyPose.Behind:
-                _animPlayer.AlignToVector(thighRigid, thighTrans.forward, _moveDir * 2f, 0.1f, 2f * _applyedForce);
-                _animPlayer.AlignToVector(legRigid, -legTrans.forward, -_moveDir * 2f, 0.1f, 2f * _applyedForce);
+                _animPlayer.AlignToVector(thighRigid, thighTrans.forward, _inputMoveDir * 2f, 0.1f, 2f * _applyedForce);
+                _animPlayer.AlignToVector(legRigid, -legTrans.forward, -_inputMoveDir * 2f, 0.1f, 2f * _applyedForce);
                 break;
         }
     }
@@ -174,18 +174,18 @@ public class MoveAction
             {
                 case (int)Define.BodyPose.Bent:
                     _animPlayer.AlignToVector(rigidbody, transform.forward, partTransform.forward + vector, 0.1f, 4f * _applyedForce * armForceCoef);
-                    _animPlayer.AlignToVector(rigidbody2, transform2.forward, -_moveDir / 4f, 0.1f, 4f * _applyedForce * armForceCoef);
+                    _animPlayer.AlignToVector(rigidbody2, transform2.forward, -_inputMoveDir / 4f, 0.1f, 4f * _applyedForce * armForceCoef);
                     break;
                 case (int)Define.BodyPose.Forward:
-                    _animPlayer.AlignToVector(rigidbody, transform.forward, _moveDir + -vector, 0.1f, 4f * _applyedForce * armForceCoef);
-                    _animPlayer.AlignToVector(rigidbody2, transform2.forward, _moveDir / 4f + -partTransform.forward + -vector, 0.1f, 4f * _applyedForce * armForceCoef);
+                    _animPlayer.AlignToVector(rigidbody, transform.forward, _inputMoveDir + -vector, 0.1f, 4f * _applyedForce * armForceCoef);
+                    _animPlayer.AlignToVector(rigidbody2, transform2.forward, _inputMoveDir / 4f + -partTransform.forward + -vector, 0.1f, 4f * _applyedForce * armForceCoef);
                     break;
                 case (int)Define.BodyPose.Straight:
                     _animPlayer.AlignToVector(rigidbody, transform.forward, partTransform.forward + vector, 0.1f, 4f * _applyedForce * armForceCoef);
                     _animPlayer.AlignToVector(rigidbody2, transform2.forward, partTransform.forward, 0.1f, 4f * _applyedForce * armForceCoef);
                     break;
                 case (int)Define.BodyPose.Behind:
-                    _animPlayer.AlignToVector(rigidbody, transform.forward, _moveDir, 0.1f, 4f * _applyedForce * armForceCoef);
+                    _animPlayer.AlignToVector(rigidbody, transform.forward, _inputMoveDir, 0.1f, 4f * _applyedForce * armForceCoef);
                     _animPlayer.AlignToVector(rigidbody2, transform2.forward, partTransform.forward, 0.1f, 4f * _applyedForce * armForceCoef);
                     break;
             }
@@ -195,13 +195,13 @@ public class MoveAction
         {
             case (int)Define.BodyPose.Bent:
                 _animPlayer.AlignToVector(rigidbody, transform.forward, partTransform.forward + vector, 0.1f, 4f * _applyedForce * armForceCoef);
-                _animPlayer.AlignToVector(rigidbody2, transform2.forward, -_moveDir, 0.1f, 4f * _applyedForce * armForceCoef);
-                rigidbody.AddForce(-_moveDir * armForceRunCoef, ForceMode.VelocityChange);
-                rigidbody3.AddForce(_moveDir * armForceRunCoef, ForceMode.VelocityChange);
+                _animPlayer.AlignToVector(rigidbody2, transform2.forward, -_inputMoveDir, 0.1f, 4f * _applyedForce * armForceCoef);
+                rigidbody.AddForce(-_inputMoveDir * armForceRunCoef, ForceMode.VelocityChange);
+                rigidbody3.AddForce(_inputMoveDir * armForceRunCoef, ForceMode.VelocityChange);
                 break;
             case (int)Define.BodyPose.Forward:
-                _animPlayer.AlignToVector(rigidbody, transform.forward, _moveDir + -vector, 0.1f, 4f * _applyedForce);
-                _animPlayer.AlignToVector(rigidbody2, transform2.forward, _moveDir + -partTransform.forward + -vector, 0.1f, 4f * _applyedForce * armForceCoef);
+                _animPlayer.AlignToVector(rigidbody, transform.forward, _inputMoveDir + -vector, 0.1f, 4f * _applyedForce);
+                _animPlayer.AlignToVector(rigidbody2, transform2.forward, _inputMoveDir + -partTransform.forward + -vector, 0.1f, 4f * _applyedForce * armForceCoef);
                 rigidbody.AddForce(-Vector3.up * armForceRunCoef, ForceMode.VelocityChange);
                 rigidbody3.AddForce(Vector3.up * armForceRunCoef, ForceMode.VelocityChange);
                 break;
@@ -212,7 +212,7 @@ public class MoveAction
                 rigidbody2.AddForce(-Vector3.up * armForceRunCoef, ForceMode.VelocityChange);
                 break;
             case (int)Define.BodyPose.Behind:
-                _animPlayer.AlignToVector(rigidbody, transform.forward, _moveDir, 0.1f, 4f * _applyedForce * armForceCoef);
+                _animPlayer.AlignToVector(rigidbody, transform.forward, _inputMoveDir, 0.1f, 4f * _applyedForce * armForceCoef);
                 _animPlayer.AlignToVector(rigidbody2, transform2.forward, partTransform.forward, 0.1f, 4f * _applyedForce * armForceCoef);
                 rigidbody.AddForce(-Vector3.up * armForceRunCoef, ForceMode.VelocityChange);
                 rigidbody3.AddForce(Vector3.up * armForceRunCoef, ForceMode.VelocityChange);
@@ -223,25 +223,25 @@ public class MoveAction
 
     private void RunCyclePoseBody()
     {
-        _bodyHandler.Chest.PartRigidbody.AddForce((_runVectorForce10 + _moveDir), ForceMode.VelocityChange);
-        _bodyHandler.Hip.PartRigidbody.AddForce((-_runVectorForce5 + -_moveDir), ForceMode.VelocityChange);
+        _bodyHandler.Chest.PartRigidbody.AddForce((_runVectorForce10 + _inputMoveDir), ForceMode.VelocityChange);
+        _bodyHandler.Hip.PartRigidbody.AddForce((-_runVectorForce5 + -_inputMoveDir), ForceMode.VelocityChange);
 
-        _animPlayer.AlignToVector(_bodyHandler.Chest.PartRigidbody, -_bodyHandler.Chest.transform.up, _moveDir / 4f + -Vector3.up, 0.1f, 4f * _applyedForce);
+        _animPlayer.AlignToVector(_bodyHandler.Chest.PartRigidbody, -_bodyHandler.Chest.transform.up, _inputMoveDir / 4f + -Vector3.up, 0.1f, 4f * _applyedForce);
         _animPlayer.AlignToVector(_bodyHandler.Chest.PartRigidbody, _bodyHandler.Chest.transform.forward, Vector3.up, 0.1f, 8f * _applyedForce);
-        _animPlayer.AlignToVector(_bodyHandler.Waist.PartRigidbody, -_bodyHandler.Waist.transform.up, _moveDir / 4f + -Vector3.up, 0.1f, 4f * _applyedForce);
+        _animPlayer.AlignToVector(_bodyHandler.Waist.PartRigidbody, -_bodyHandler.Waist.transform.up, _inputMoveDir / 4f + -Vector3.up, 0.1f, 4f * _applyedForce);
         _animPlayer.AlignToVector(_bodyHandler.Waist.PartRigidbody, _bodyHandler.Chest.transform.forward, Vector3.up, 0.1f, 8f * _applyedForce);
-        _animPlayer.AlignToVector(_bodyHandler.Hip.PartRigidbody, -_bodyHandler.Hip.transform.up, _moveDir, 0.1f, 8f * _applyedForce);
+        _animPlayer.AlignToVector(_bodyHandler.Hip.PartRigidbody, -_bodyHandler.Hip.transform.up, _inputMoveDir, 0.1f, 8f * _applyedForce);
         _animPlayer.AlignToVector(_bodyHandler.Hip.PartRigidbody, _bodyHandler.Hip.transform.forward, Vector3.up, 0.1f, 8f * _applyedForce);
 
         if (_isRun)
         {
-            _bodyHandler.Hip.PartRigidbody.AddForce(_moveDir.normalized * _runSpeed * _runSpeedOffset * Time.deltaTime * 1.35f);
+            _bodyHandler.Hip.PartRigidbody.AddForce(_inputMoveDir.normalized * _runSpeed * _runSpeedOffset * Time.deltaTime * 1.35f);
             if (_bodyHandler.Hip.PartRigidbody.velocity.magnitude > _maxSpeed)
                 _bodyHandler.Hip.PartRigidbody.velocity = _bodyHandler.Hip.PartRigidbody.velocity.normalized * _maxSpeed * 1.15f;
         }
         else
         {
-            _bodyHandler.Hip.PartRigidbody.AddForce(_moveDir.normalized * _runSpeed * _runSpeedOffset * Time.deltaTime);
+            _bodyHandler.Hip.PartRigidbody.AddForce(_inputMoveDir.normalized * _runSpeed * _runSpeedOffset * Time.deltaTime);
             if (_bodyHandler.Hip.PartRigidbody.velocity.magnitude > _maxSpeed)
                 _bodyHandler.Hip.PartRigidbody.velocity = _bodyHandler.Hip.PartRigidbody.velocity.normalized * _maxSpeed;
         }

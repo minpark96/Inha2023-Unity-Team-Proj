@@ -28,6 +28,15 @@ public class Grabbing : BodyState
     public override void UpdateLogic()
     {
         _grabDelayTimer -= Time.deltaTime;
+
+        if (_context.RightGrabObject != null && _context.LeftGrabObject != null
+            && _context.RightGrabObject.ItemObject == null)
+        {
+            if(_context.RightGrabObject.Type == ObjectType.Wall)
+                _sm.ChangeState(_sm.StateMap[PlayerState.Climb]);
+            else
+                _sm.ChangeState(_sm.StateMap[PlayerState.LiftObject]);
+        }
     }
     public override void GetInput()
     {

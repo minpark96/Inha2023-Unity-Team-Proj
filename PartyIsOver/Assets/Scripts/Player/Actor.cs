@@ -19,9 +19,9 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
     private PlayerContext _context = new PlayerContext
     {
-        DirX = 0,
-        DirY = 0,
-        DirZ = 0f,
+        InputDirX = 0,
+        InputDirY = 0,
+        InputDirZ = 0f,
         IsRunState = false,
         IsGrounded = false,
         IsUpperActionProgress = false,
@@ -209,7 +209,6 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
         _animData = new AnimationData(BodyHandler);
         ActionController = new ActionController(_animData,_animPlayer,BodyHandler);
-        BindActionNotify();
 
         _inputHandler = GetComponent<PlayerInputHandler>();
 
@@ -259,14 +258,13 @@ public class Actor : MonoBehaviourPun, IPunObservable
         _context.Layer = gameObject.layer;
 
         Vector3 dir = _inputHandler.GetMoveInput(CameraControl.CameraArm.transform);
-        _context.DirX = dir.x;
-        _context.DirY = dir.y;
-        _context.DirZ = dir.z;
+        _context.InputDirX = dir.x;
+        _context.InputDirY = dir.y;
+        _context.InputDirZ = dir.z;
 
 
         _context.IsRunState = LowerSM.IsRun;
         _context.IsGrounded = LowerSM.IsGrounded;
-        _context.IsUpperActionProgress = UpperSM.IsUpperActionProgress;
 
         _context.PunchSide = UpperSM.ReadySide;
 
@@ -416,21 +414,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
         LowerSM.UpdatePhysics();
         UpperSM.UpdatePhysics();
     }
-    void BindActionNotify()
-    {
-        ActionController.OnUpperActionEnd -= UpperActionEnd;
-        ActionController.OnUpperActionEnd += UpperActionEnd;
-        ActionController.OnUpperActionStart -= UpperActionStart;
-        ActionController.OnUpperActionStart += UpperActionStart;
-    }
-    void UpperActionEnd()
-    {
-        UpperSM.IsUpperActionProgress = false;
-    }
-    void UpperActionStart()
-    {
-        UpperSM.IsUpperActionProgress = true;
-    }
+
     public Define.PlayerState GetUpperState()
     {
         return UpperSM.GetCurrentState().Name;

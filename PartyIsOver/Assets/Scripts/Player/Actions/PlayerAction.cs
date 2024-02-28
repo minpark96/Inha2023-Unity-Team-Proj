@@ -2,7 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IPlayerAction
+public abstract class PlayerAction
 {
-    void BindingAction(ActionController action);
+
+
+    bool HandleActionEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerContext data)
+    {
+
+        return true;
+    }
 }

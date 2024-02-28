@@ -10,7 +10,9 @@ public class EquipItem : BodyState
     private Item _item;
     private float _itemCoolTime;
     private float _coolTimeTimer = 0f;
-    private bool _exitFlag;
+
+
+
     public EquipItem(StateMachine stateMachine) : base(PlayerState.EquipItem, stateMachine)
     {
         _sm = (UpperBodySM)stateMachine;
@@ -20,7 +22,7 @@ public class EquipItem : BodyState
     {
         _item = _sm.Context.EquipItem.ItemObject;
         _itemCoolTime = _item.ItemData.CoolTime;
-        _exitFlag = false;
+        _sm.Context.IsUpperActionProgress = true;
         _sm.InputHandler.EnqueueCommand(COMMAND_KEY.FixJoint);
 
         if (_item.ItemData.ItemType == ItemType.Ranged)
@@ -30,21 +32,22 @@ public class EquipItem : BodyState
     public override void UpdateLogic()
     {
         _coolTimeTimer -= Time.deltaTime;
+
+        if(!_sm.Context.IsUpperActionProgress)
+            _sm.ChangeState(_sm.StateMap[PlayerState.UpperIdle]);
     }
 
     public override void GetInput()
     {
         if (_sm.InputHandler.InputCommnadKey(KeyCode.Mouse0, GetKeyType.Down) && _coolTimeTimer < 0f)
-        {
             _coolTimeTimer = _itemCoolTime;
-            if (_item.ItemData.ItemType == ItemType.Consumable)
-                _exitFlag = true;
-        }
+        
 
-        if (Input.GetKeyDown(KeyCode.Mouse1))
+        if (_sm.InputHandler.InputCommnadKey(KeyCode.Mouse1, GetKeyType.Down))
         {
-            //원거리 무기의 경우 투척
-            _sm.ChangeState(_sm.StateMap[PlayerState.UpperIdle]);
+            if(_item.ItemData.ItemType != ItemType.Consumable)
+                _sm.Context.IsUpperActionProgress = false;
+            //_sm.ChangeState(_sm.StateMap[PlayerState.UpperIdle]);
         }
     }
 

@@ -18,7 +18,7 @@ public class UpperIdle : BodyState
 
     public override void UpdateLogic()
     {
-        if (_sm.IsUpperActionProgress)
+        if (_sm.Context.IsUpperActionProgress)
             return;
 
         if (Input.GetKeyDown(KeyCode.Mouse0))

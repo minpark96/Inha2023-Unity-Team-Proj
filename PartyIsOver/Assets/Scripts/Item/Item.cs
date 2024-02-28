@@ -69,7 +69,6 @@ public class Item : MonoBehaviourPun
 
             //projectile.gameObject.layer = Owner.gameObject.layer;
 
-
             Vector3 forward = new Vector3(-Owner.BodyHandler.Head.PartTransform.up.x, 0f, -Owner.BodyHandler.Head.PartTransform.up.z).normalized;
             Vector3 right = new Vector3(Owner.BodyHandler.Head.PartTransform.right.z, 0f, Owner.BodyHandler.Head.PartTransform.right.z).normalized;
             projectile.transform.position = Owner.BodyHandler.Chest.transform.position + (forward * 0.2f) + (Vector3.up * 0.1f) + (right * 0.2f);
@@ -100,8 +99,8 @@ public class Item : MonoBehaviourPun
             //projectile.GetComponent<InteractableObject>().ChangeUseTypeTrigger(0.08f, -1f);
         }
 
-
         Owner.PlayerController.PlayerEffectSound("PlayerEffect/Cartoon-UI-040");
+        Destroy(this, 1f);
 
     }
 }

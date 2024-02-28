@@ -246,6 +246,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damageModifier: 1
+  Type: 0
+  RigidbodyObject: {fileID: 0}
+  ItemObject: {fileID: 0}
+  ColliderObject: {fileID: 0}
+  PhotonView: {fileID: 0}
+  ViewID: -1
 --- !u!114 &665132571615330177
 MonoBehaviour:
   m_ObjectHideFlags: 0

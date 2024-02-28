@@ -7,7 +7,7 @@ using static Define;
 public class HandChecker : MonoBehaviourPun
 {
     private UpperBodySM bodySM;
-    public GrabObjectType CollisionObjectType = GrabObjectType.None;
+    public ObjectType CollisionObjectType = ObjectType.None;
     public InteractableObject CollisionObject = null;
 
     // Start is called before the first frame update
@@ -33,15 +33,15 @@ public class HandChecker : MonoBehaviourPun
 
             if (collision.collider.tag == "ItemHandle")
             {
-                CollisionObjectType = Define.GrabObjectType.Item;
+                CollisionObjectType = Define.ObjectType.Item;
                 return;
             }
             if (collision.gameObject.GetComponent<BodyPart>())
             {
-                CollisionObjectType = Define.GrabObjectType.Player;
+                CollisionObjectType = Define.ObjectType.Player;
                 return;
             }
-            CollisionObjectType = Define.GrabObjectType.Object;
+            CollisionObjectType = Define.ObjectType.Object;
         }
     }
     private void OnCollisionExit(Collision collision)
@@ -51,7 +51,7 @@ public class HandChecker : MonoBehaviourPun
 
         if (collision.gameObject.GetComponent<InteractableObject>() != null)
         {
-            CollisionObjectType = Define.GrabObjectType.None;
+            CollisionObjectType = Define.ObjectType.None;
             CollisionObject = null;
         }
     }

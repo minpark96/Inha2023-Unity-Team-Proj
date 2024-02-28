@@ -30,8 +30,8 @@ public class PlayerInputHandler : MonoBehaviourPun
         { KeyCode.D, COMMAND_KEY.Move },
         { KeyCode.Space, COMMAND_KEY.Jump },
         { KeyCode.Mouse0, COMMAND_KEY.LeftBtn },
+        { KeyCode.Mouse1, COMMAND_KEY.RightBtn },
         { KeyCode.Mouse2, COMMAND_KEY.HeadButt },
-        { KeyCode.Mouse1, COMMAND_KEY.DropKick },
         { KeyCode.R, COMMAND_KEY.Skill },
     };
 
@@ -45,7 +45,7 @@ public class PlayerInputHandler : MonoBehaviourPun
         commands.Add(COMMAND_KEY.Charge, new CmdCharge(actor));
         commands.Add(COMMAND_KEY.ResetCharge, new CmdResetCharge(actor));
         commands.Add(COMMAND_KEY.HeadButt, new CmdHeadButt(actor));
-        commands.Add(COMMAND_KEY.DropKick, new CmdDropKick(actor));
+        commands.Add(COMMAND_KEY.RightBtn, new CmdRightBtn(actor));
         commands.Add(COMMAND_KEY.Grabbing, new CmdGrabbing(actor));
         commands.Add(COMMAND_KEY.TargetSearch, new CmdSearchTarget(actor));
         commands.Add(COMMAND_KEY.FixJoint, new CmdFixJoint(actor));

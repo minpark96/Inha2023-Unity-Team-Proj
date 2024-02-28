@@ -11,7 +11,6 @@ public class UpperBodySM : StateMachine
     public PlayerContext Context;
 
     public Define.Side ReadySide = Define.Side.Left;
-    public bool IsUpperActionProgress = false;
     public bool IsGrabbingInProgress=false;
 
     public Transform RangeWeaponSkin;
@@ -52,6 +51,9 @@ public class UpperBodySM : StateMachine
             case PlayerState.Skill:             return new NuclearPunch(this);
             case PlayerState.HeadButt:          return new HeadButt(this);
             case PlayerState.EquipItem:         return new EquipItem(this);
+            case PlayerState.LiftObject:        return new LiftObject(this);
+            case PlayerState.Climb:             return new Climb(this);
+
             default: throw new ArgumentException($"Unknown state: {state}");
         }
     }

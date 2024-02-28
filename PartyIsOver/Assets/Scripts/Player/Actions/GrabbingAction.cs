@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using static Define;
-using static UnityEditor.Progress;
 
 public class GrabbingAction
 {
@@ -34,7 +33,7 @@ public class GrabbingAction
         _leftHandRigid = bodyHandler.LeftHand.PartRigidbody;
         _rightHandRigid = bodyHandler.RightHand.PartRigidbody;
 
-        if(_context.IsItemGrabbing && _context.RightSearchTarget != null)
+        if(_context.IsItemGrabbing && _context.RightSearchTarget != null && _context.RightSearchTarget.ItemObject !=null)
         {
             Debug.Log(_context.RightSearchTarget);
             ItemDirSetting(_context.RightSearchTarget.ItemObject);

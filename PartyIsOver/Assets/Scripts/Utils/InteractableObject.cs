@@ -9,6 +9,7 @@ public class InteractableObject : MonoBehaviourPun
     Damage _initialDamage;
     public Damage damageModifier = Damage.Default;
 
+    public Define.ObjectType Type;
     public Rigidbody RigidbodyObject;
     public Item ItemObject;
     public Collider ColliderObject;
@@ -57,6 +58,15 @@ public class InteractableObject : MonoBehaviourPun
 
         PhotonView = GetComponent<PhotonView>();
         if (PhotonView != null) ViewID = PhotonView.ViewID;
+
+        if (ItemObject != null)
+            Type = Define.ObjectType.Item;
+        else if (GetComponent<BodyPart>() != null)
+            Type = Define.ObjectType.Player;
+        else if (gameObject.layer == (int)Define.Layer.ClimbObject)
+            Type = Define.ObjectType.Wall;
+        else
+            Type = Define.ObjectType.Object;
     }
 
     public void PullingForceTrigger(Vector3 dir ,float power)

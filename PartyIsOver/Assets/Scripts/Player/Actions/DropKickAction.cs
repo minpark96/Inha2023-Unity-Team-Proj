@@ -31,7 +31,8 @@ public class DropKickAction
         if (data.EquipItem != null && data.IsGrounded)
             return false;
         CoroutineHelper.StartCoroutine(DropKick());
-        _actions.UpperActionStart();
+        _context.IsUpperActionProgress = true;
+
 
         return true;
     }
@@ -77,7 +78,7 @@ public class DropKickAction
         //photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LegLowerL, false);
         //photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LegLowerR, false);
 
-        _actions.UpperActionEnd();
+        _context.IsUpperActionProgress = false;
         _context.IsLowerActionProgress = false;
     }
 }

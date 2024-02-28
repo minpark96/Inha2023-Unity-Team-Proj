@@ -24,121 +24,6 @@ public class AnimationData
     public Dictionary<Define.AniAngleData, AniAngleData[]> AngleDataLists { get { return angleDataLists; } private set { angleDataLists = value; } }
 
 
-
-
-    Rigidbody StringToRigid(string text)
-    {
-        Rigidbody rb = new Rigidbody();
-        Define.BodyPart part;
-        if (Enum.TryParse(text, out part))
-        {
-            switch (part)
-            {
-                case Define.BodyPart.FootL:
-                    rb = _bodyHandler.LeftFoot.PartRigidbody; break;
-                case Define.BodyPart.FootR:
-                    rb = _bodyHandler.RightFoot.PartRigidbody; break;
-                case Define.BodyPart.LegLowerL:
-                    rb = _bodyHandler.LeftLeg.PartRigidbody; break;
-                case Define.BodyPart.LegLowerR:
-                    rb = _bodyHandler.RightLeg.PartRigidbody; break;
-                case Define.BodyPart.LegUpperL:
-                    rb = _bodyHandler.LeftThigh.PartRigidbody; break;
-                case Define.BodyPart.LegUpperR:
-                    rb = _bodyHandler.RightThigh.PartRigidbody; break;
-                case Define.BodyPart.Hip:
-                    rb = _bodyHandler.Hip.PartRigidbody; break;
-                case Define.BodyPart.Waist:
-                    rb = _bodyHandler.Waist.PartRigidbody; break;
-                case Define.BodyPart.Chest:
-                    rb = _bodyHandler.Chest.PartRigidbody; break;
-                case Define.BodyPart.Head:
-                    rb = _bodyHandler.Head.PartRigidbody; break;
-                case Define.BodyPart.LeftArm:
-                    rb = _bodyHandler.LeftArm.PartRigidbody; break;
-                case Define.BodyPart.RightArm:
-                    rb = _bodyHandler.RightArm.PartRigidbody; break;
-                case Define.BodyPart.LeftForeArm:
-                    rb = _bodyHandler.LeftForeArm.PartRigidbody; break;
-                case Define.BodyPart.RightForeArm:
-                    rb = _bodyHandler.RightForeArm.PartRigidbody; break;
-                case Define.BodyPart.LeftHand:
-                    rb = _bodyHandler.LeftHand.PartRigidbody; break;
-                case Define.BodyPart.RightHand:
-                    rb = _bodyHandler.RightHand.PartRigidbody; break;
-                default:
-                    Debug.Log("애니메이션 파츠 불러오기 에러1" + part.ToString());
-                    break;
-            }
-        }
-        else
-            Debug.Log("애니메이션 파츠 불러오기 에러2" + text);
-        return rb;
-    }
-    ForceDirection StringToForceDir(string text)
-    {
-        ForceDirection dir = new ForceDirection();
-        Define.AnimDirection eDirection;
-        if (Enum.TryParse(text, out eDirection))
-        {
-            switch (eDirection)
-            {
-                case Define.AnimDirection.Zero:
-                    dir = ForceDirection.Zero; break;
-                case Define.AnimDirection.Forward:
-                    dir = ForceDirection.Forward; break;
-                case Define.AnimDirection.Backward:
-                    dir = ForceDirection.Backward; break;
-                case Define.AnimDirection.Up:
-                    dir = ForceDirection.Up; break;
-                case Define.AnimDirection.Down:
-                    dir = ForceDirection.Down; break;
-                case Define.AnimDirection.Right:
-                    dir = ForceDirection.Right; break;
-                case Define.AnimDirection.Left:
-                    dir = ForceDirection.Left; break;
-                default:
-                    Debug.Log("포스방향 불러오기 에러1"); break;
-            }
-        }
-        else
-            Debug.Log("포스방향 불러오기 에러2" + text);
-
-        return dir;
-    }
-
-    AniAngle StringToRotateDir(string text)
-    {
-        AniAngle dir = new AniAngle();
-        Define.AnimDirection eDirection;
-        if (Enum.TryParse(text, out eDirection))
-        {
-            switch (eDirection)
-            {
-                case Define.AnimDirection.Zero:
-                    dir = AniAngle.Zero; break;
-                case Define.AnimDirection.Forward:
-                    dir = AniAngle.Forward; break;
-                case Define.AnimDirection.Backward:
-                    dir = AniAngle.Backward; break;
-                case Define.AnimDirection.Up:
-                    dir = AniAngle.Up; break;
-                case Define.AnimDirection.Down:
-                    dir = AniAngle.Down; break;
-                case Define.AnimDirection.Right:
-                    dir = AniAngle.Right; break;
-                case Define.AnimDirection.Left:
-                    dir = AniAngle.Left; break;
-                default:
-                    Debug.Log("포스방향 불러오기 에러1"); break;
-            }
-        }
-        else
-            Debug.Log("포스방향 불러오기 에러2" + text);
-
-        return dir;
-    }
-
     void LoadAnimForceData()
     {
         Define.AniFrameData[] frameDataNames = (Define.AniFrameData[])Enum.GetValues(typeof(Define.AniFrameData));
@@ -323,4 +208,117 @@ public class AnimationData
         }
     }
 
+
+    Rigidbody StringToRigid(string text)
+    {
+        Rigidbody rb = new Rigidbody();
+        Define.BodyPart part;
+        if (Enum.TryParse(text, out part))
+        {
+            switch (part)
+            {
+                case Define.BodyPart.FootL:
+                    rb = _bodyHandler.LeftFoot.PartRigidbody; break;
+                case Define.BodyPart.FootR:
+                    rb = _bodyHandler.RightFoot.PartRigidbody; break;
+                case Define.BodyPart.LegLowerL:
+                    rb = _bodyHandler.LeftLeg.PartRigidbody; break;
+                case Define.BodyPart.LegLowerR:
+                    rb = _bodyHandler.RightLeg.PartRigidbody; break;
+                case Define.BodyPart.LegUpperL:
+                    rb = _bodyHandler.LeftThigh.PartRigidbody; break;
+                case Define.BodyPart.LegUpperR:
+                    rb = _bodyHandler.RightThigh.PartRigidbody; break;
+                case Define.BodyPart.Hip:
+                    rb = _bodyHandler.Hip.PartRigidbody; break;
+                case Define.BodyPart.Waist:
+                    rb = _bodyHandler.Waist.PartRigidbody; break;
+                case Define.BodyPart.Chest:
+                    rb = _bodyHandler.Chest.PartRigidbody; break;
+                case Define.BodyPart.Head:
+                    rb = _bodyHandler.Head.PartRigidbody; break;
+                case Define.BodyPart.LeftArm:
+                    rb = _bodyHandler.LeftArm.PartRigidbody; break;
+                case Define.BodyPart.RightArm:
+                    rb = _bodyHandler.RightArm.PartRigidbody; break;
+                case Define.BodyPart.LeftForeArm:
+                    rb = _bodyHandler.LeftForeArm.PartRigidbody; break;
+                case Define.BodyPart.RightForeArm:
+                    rb = _bodyHandler.RightForeArm.PartRigidbody; break;
+                case Define.BodyPart.LeftHand:
+                    rb = _bodyHandler.LeftHand.PartRigidbody; break;
+                case Define.BodyPart.RightHand:
+                    rb = _bodyHandler.RightHand.PartRigidbody; break;
+                default:
+                    Debug.Log("애니메이션 파츠 불러오기 에러1" + part.ToString());
+                    break;
+            }
+        }
+        else
+            Debug.Log("애니메이션 파츠 불러오기 에러2" + text);
+        return rb;
+    }
+    ForceDirection StringToForceDir(string text)
+    {
+        ForceDirection dir = new ForceDirection();
+        Define.AnimDirection eDirection;
+        if (Enum.TryParse(text, out eDirection))
+        {
+            switch (eDirection)
+            {
+                case Define.AnimDirection.Zero:
+                    dir = ForceDirection.Zero; break;
+                case Define.AnimDirection.Forward:
+                    dir = ForceDirection.Forward; break;
+                case Define.AnimDirection.Backward:
+                    dir = ForceDirection.Backward; break;
+                case Define.AnimDirection.Up:
+                    dir = ForceDirection.Up; break;
+                case Define.AnimDirection.Down:
+                    dir = ForceDirection.Down; break;
+                case Define.AnimDirection.Right:
+                    dir = ForceDirection.Right; break;
+                case Define.AnimDirection.Left:
+                    dir = ForceDirection.Left; break;
+                default:
+                    Debug.Log("포스방향 불러오기 에러1"); break;
+            }
+        }
+        else
+            Debug.Log("포스방향 불러오기 에러2" + text);
+
+        return dir;
+    }
+
+    AniAngle StringToRotateDir(string text)
+    {
+        AniAngle dir = new AniAngle();
+        Define.AnimDirection eDirection;
+        if (Enum.TryParse(text, out eDirection))
+        {
+            switch (eDirection)
+            {
+                case Define.AnimDirection.Zero:
+                    dir = AniAngle.Zero; break;
+                case Define.AnimDirection.Forward:
+                    dir = AniAngle.Forward; break;
+                case Define.AnimDirection.Backward:
+                    dir = AniAngle.Backward; break;
+                case Define.AnimDirection.Up:
+                    dir = AniAngle.Up; break;
+                case Define.AnimDirection.Down:
+                    dir = AniAngle.Down; break;
+                case Define.AnimDirection.Right:
+                    dir = AniAngle.Right; break;
+                case Define.AnimDirection.Left:
+                    dir = AniAngle.Left; break;
+                default:
+                    Debug.Log("포스방향 불러오기 에러1"); break;
+            }
+        }
+        else
+            Debug.Log("포스방향 불러오기 에러2" + text);
+
+        return dir;
+    }
 }

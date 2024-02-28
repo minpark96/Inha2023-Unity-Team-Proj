@@ -38,7 +38,7 @@ public class SkillAction : PunchAction
             isRSkillCheck = true;
             isMeowPunch = false;
             CoroutineHelper.StartCoroutine(Punch(Define.Side.Right, duration, readyTime, punchTime, resetTime));
-            actions.UpperActionEnd();
+            _context.IsUpperActionProgress = false;
         }
         Debug.Log("skillEvent");
         return true;
@@ -57,7 +57,6 @@ public class SkillAction : PunchAction
             else
                 _readySide = Define.Side.Left;
         }
-        actions.UpperActionEnd();
+        _context.IsUpperActionProgress = false;
     }
-
 }

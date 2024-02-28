@@ -5,11 +5,7 @@ using static Actor;
 using static AniFrameData;
 using static AniAngleData;
 using Photon.Pun;
-using Photon.Realtime;
-using Unity.VisualScripting;
-using System.IO;
 using System;
-using UnityEditor.Experimental.GraphView;
 
 [System.Serializable]
 public class AniFrameData

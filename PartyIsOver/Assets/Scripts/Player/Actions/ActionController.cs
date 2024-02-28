@@ -30,12 +30,8 @@ public class ActionController
     public event ActionDelegate OnJointFix;
     public event ActionDelegate OnJointDestroy;
     public event ActionDelegate OnUseItem;
-
-
-
-    public delegate void ActionEndNotify();
-    public event ActionEndNotify OnUpperActionEnd;
-    public event ActionEndNotify OnUpperActionStart;
+    public event ActionDelegate OnThrow;
+    public event ActionDelegate OnLift;
 
 
     void Init()
@@ -53,6 +49,8 @@ public class ActionController
         new JointDestroyAction(this);
         new SearchAction(this);
         new ItemUseAction(this);
+        new ThrowAction(this);
+        new LiftAction(this);
     }
     
     public bool InvokeJumpEvent(in PlayerContext data)
@@ -107,14 +105,12 @@ public class ActionController
     {
         return OnUseItem?.Invoke(_animData, _animPlayer, _bodyHandler, data) ?? false;
     }
-
-    public void UpperActionEnd()
+    public bool InvokeThrowEvent(in PlayerContext data)
     {
-        OnUpperActionEnd?.Invoke();
+        return OnThrow?.Invoke(_animData, _animPlayer, _bodyHandler, data) ?? false;
     }
-    public void UpperActionStart()
+    public bool InvokeLiftEvent(in PlayerContext data)
     {
-        OnUpperActionStart?.Invoke();
+        return OnLift?.Invoke(_animData, _animPlayer, _bodyHandler, data) ?? false;
     }
-
 }

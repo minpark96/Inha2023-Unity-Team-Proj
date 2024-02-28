@@ -16,6 +16,8 @@ public class CmdLeftBtn : PlayerCommand
                 return actor.ActionController.InvokePunchEvent(data);
             case Define.PlayerState.EquipItem:
                 return actor.ActionController.InvokeUseItemEvent(data);
+            case Define.PlayerState.LiftObject:
+                return actor.ActionController.InvokeLiftEvent(data);
             //case Define.PlayerState.Grabbing:
             //    return actor.ActionController.InvokeGrabbingEvent(data);
             default: return false;

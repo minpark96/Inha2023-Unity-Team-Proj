@@ -9,9 +9,9 @@ public class PlayerContext
     public Vector3 Position {  get; set; }
     public int Layer { get; set; }
 
-    public float DirX { get; set; }
-    public float DirY { get; set; }
-    public float DirZ { get; set; }
+    public float InputDirX { get; set; }
+    public float InputDirY { get; set; }
+    public float InputDirZ { get; set; }
 
     public bool IsRunState { get; set; }
     public bool IsGrounded { get; set; }

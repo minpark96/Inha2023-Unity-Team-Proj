@@ -14,8 +14,8 @@ public class JointDestroyAction
     }
 
     PlayerContext _context;
-    Item _equipItem;
     BodyHandler _bodyHandler;
+    Item _equipItem;
 
     bool HandleJointDestroyEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerContext data)
     {

@@ -11471,10 +11471,11 @@ MonoBehaviour:
   actorState: 4
   lastActorState: 8
   debuffState: 0
-  _audioListener: {fileID: 0}
+  AudioListener: {fileID: 0}
   StatusHandler: {fileID: 0}
   BodyHandler: {fileID: 0}
   CameraControl: {fileID: 0}
+  RangeWeaponSkin: {fileID: 0}
   PlayerController: {fileID: 0}
   Grab: {fileID: 0}
 --- !u!114 &5878509405600198234

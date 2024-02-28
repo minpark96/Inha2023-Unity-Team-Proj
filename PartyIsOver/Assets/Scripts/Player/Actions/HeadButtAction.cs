@@ -15,6 +15,7 @@ public class HeadButtAction
     ActionController _actions;
     AnimationPlayer _animPlayer;
     AnimationData _animData;
+    PlayerContext _context;
     float _headButtCoolTime = 1f;
     Vector3 _moveDir = new Vector3();
 
@@ -22,10 +23,10 @@ public class HeadButtAction
     {
         _animData = animData;
         _animPlayer = animPlayer;
-        _moveDir.x = data.DirX;
-        _moveDir.y = data.DirY;
-        _moveDir.z = data.DirZ;
-
+        _moveDir.x = data.InputDirX;
+        _moveDir.y = data.InputDirY;
+        _moveDir.z = data.InputDirZ;
+        _context = data;
         CoroutineHelper.StartCoroutine(HeadButt());
         return true;
     }
@@ -51,7 +52,8 @@ public class HeadButtAction
         //this._bodyHandler.Head.PartInteractable.damageModifier = InteractableObject.Damage.Default;
         //photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.Head, false);
 
-        _actions.UpperActionEnd();
+        _context.IsUpperActionProgress = false;
+
     }
 
 }
