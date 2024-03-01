@@ -34,7 +34,7 @@ public class PunchReady : BodyState
         else if (_pressDuration < _punchGrabThreshold)
         {
             //ÆÝÄ¡
-            if (_sm.InputHandler.InputCommnadKey(KeyCode.Mouse0, GetKeyType.Up))
+            if (_sm.InputHandler.InputCommnadKey(COMMAND_KEY.LeftBtn, GetKeyType.Up))
             {
                 _sm.ChangeState(_sm.StateMap[PlayerState.Punch]);
             }

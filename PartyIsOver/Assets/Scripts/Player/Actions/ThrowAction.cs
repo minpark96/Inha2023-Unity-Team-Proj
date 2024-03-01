@@ -54,7 +54,8 @@ public class ThrowAction
         }
         else if (_type == ObjectType.Item)
         {
-            CoroutineHelper.StartCoroutine(PotionThrowAnim());
+            if(_object.ItemObject.ItemData.ItemType==Define.ItemType.Consumable)
+                CoroutineHelper.StartCoroutine(PotionThrowAnim());
         }
         else
             Debug.LogError("잘못된 던지기 타입");

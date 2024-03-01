@@ -31,7 +31,7 @@ public class SkillReady : BodyState
             if (_pressDuration > _skillActiveThreshold)
             {
                 //스킬 발동 상태로
-                if (_sm.InputHandler.InputCommnadKey(KeyCode.R, GetKeyType.Up))
+                if (_sm.InputHandler.InputCommnadKey(COMMAND_KEY.Skill, GetKeyType.Up))
                 {
                     _sm.InputHandler.EnqueueCommand(COMMAND_KEY.ResetCharge);
                     _sm.ChangeState(_sm.StateMap[PlayerState.Skill]);

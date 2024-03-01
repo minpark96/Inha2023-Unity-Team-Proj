@@ -23,10 +23,10 @@ public class LiftObject : BodyState
 
     public override void GetInput()
     {
-        if (!_sm.InputHandler.InputCommnadKey(KeyCode.Mouse0, GetKeyType.Press))
+        if (!_sm.InputHandler.InputCommnadKey(COMMAND_KEY.LeftBtn, GetKeyType.Press))
             _sm.ChangeState(_sm.StateMap[PlayerState.UpperIdle]);
 
-        if (_sm.InputHandler.InputCommnadKey(KeyCode.Mouse1, GetKeyType.Up))
+        if (_sm.InputHandler.InputCommnadKey(COMMAND_KEY.RightBtn, GetKeyType.Up))
             _sm.ChangeState(_sm.StateMap[PlayerState.UpperIdle]);
     }
 

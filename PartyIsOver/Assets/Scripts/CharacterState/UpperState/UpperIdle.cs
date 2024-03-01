@@ -29,7 +29,7 @@ public class UpperIdle : BodyState
         {
             _sm.ChangeState(_sm.StateMap[PlayerState.SkillReady]);
         }
-        if (_sm.InputHandler.InputCommnadKey(KeyCode.Mouse2, GetKeyType.Down))
+        if (_sm.InputHandler.InputCommnadKey(COMMAND_KEY.HeadButt, GetKeyType.Down))
         {
             _sm.ChangeState(_sm.StateMap[PlayerState.HeadButt]);
         }

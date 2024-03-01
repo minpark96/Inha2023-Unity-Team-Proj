@@ -13,7 +13,8 @@ public class PlayerInputHandler : MonoBehaviourPun
 
     private Queue<ICommand> _activeCommands = new Queue<ICommand>();
     private Define.COMMAND_KEY _activeCommandFlag;
-
+    private KeyCode[] _keyCodes;
+    private bool _isEnabledKey;
 
     private Vector3 _moveDir;
     private Vector3 _moveInput;
@@ -22,18 +23,28 @@ public class PlayerInputHandler : MonoBehaviourPun
 
 
 
-    private Dictionary<KeyCode, COMMAND_KEY> keyMap = new Dictionary<KeyCode, COMMAND_KEY>
+    //private Dictionary<COMMAND_KEY, KeyCode> keyMap = new Dictionary<COMMAND_KEY, KeyCode>
+    //{
+    //    { COMMAND_KEY.Move     , KeyCode.W      },
+    //    //{ COMMAND_KEY.Move     , KeyCode.A      },
+    //    //{ COMMAND_KEY.Move     , KeyCode.S      },
+    //    //{ COMMAND_KEY.Move     , KeyCode.D      },
+    //    { COMMAND_KEY.Jump     , KeyCode.Space  },
+    //    { COMMAND_KEY.LeftBtn  , KeyCode.Mouse0 },
+    //    { COMMAND_KEY.RightBtn , KeyCode.Mouse1 },
+    //    { COMMAND_KEY.HeadButt , KeyCode.Mouse2 },
+    //    { COMMAND_KEY.Skill    , KeyCode.R      },
+    //};
+    private Dictionary<COMMAND_KEY, KeyCode[]> keyMap = new Dictionary<COMMAND_KEY, KeyCode[]>
     {
-        { KeyCode.W, COMMAND_KEY.Move },
-        { KeyCode.A, COMMAND_KEY.Move },
-        { KeyCode.S, COMMAND_KEY.Move },
-        { KeyCode.D, COMMAND_KEY.Move },
-        { KeyCode.Space, COMMAND_KEY.Jump },
-        { KeyCode.Mouse0, COMMAND_KEY.LeftBtn },
-        { KeyCode.Mouse1, COMMAND_KEY.RightBtn },
-        { KeyCode.Mouse2, COMMAND_KEY.HeadButt },
-        { KeyCode.R, COMMAND_KEY.Skill },
+    { COMMAND_KEY.Move     , new KeyCode[] { KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D } },
+    { COMMAND_KEY.Jump     , new KeyCode[] { KeyCode.Space } },
+    { COMMAND_KEY.LeftBtn  , new KeyCode[] { KeyCode.Mouse0 } },
+    { COMMAND_KEY.RightBtn , new KeyCode[] { KeyCode.Mouse1 } },
+    { COMMAND_KEY.HeadButt , new KeyCode[] { KeyCode.Mouse2 } },
+    { COMMAND_KEY.Skill    , new KeyCode[] { KeyCode.R } }
     };
+
 
     //키 매핑
     public void InitCommnad(Actor actor)
@@ -95,42 +106,43 @@ public class PlayerInputHandler : MonoBehaviourPun
             return true;
     }
 
-    public bool InputCommnadKey(KeyCode keyCode, GetKeyType keyType)
+    public bool InputCommnadKey(COMMAND_KEY commandKey, GetKeyType keyType)
     {
-        // 어떤 키값 호출 분기
-        COMMAND_KEY commandKey = COMMAND_KEY.None;
-        if (keyMap.ContainsKey(keyCode))
+        // COMMAND_KEY에 대응하는 KeyCode 배열 가져오기
+        
+        if (keyMap.TryGetValue(commandKey, out _keyCodes))
         {
-            commandKey = keyMap[keyCode];
+            // 각 KeyCode에 대해 입력 확인
+            foreach (KeyCode keyCode in _keyCodes)
+            {
+                _isEnabledKey = false;
+                switch (keyType)
+                {
+                    case GetKeyType.Press:
+                        _isEnabledKey = Input.GetKey(keyCode);
+                        break;
+                    case GetKeyType.Down:
+                        _isEnabledKey = Input.GetKeyDown(keyCode);
+                        break;
+                    case GetKeyType.Up:
+                        _isEnabledKey = Input.GetKeyUp(keyCode);
+                        break;
+                    default:
+                        _isEnabledKey = false;
+                        break;
+                }
+
+                // 입력이 발생하면 해당 커맨드를 실행하고 true 반환
+                if (_isEnabledKey)
+                {
+                    if (_activeCommands.Count == 0 || _activeCommands.Peek() != commands[commandKey])
+                        EnqueueCommand(commandKey);
+                    return true;
+                }
+            }
         }
 
-        // 키 활성화 타입 분기
-        bool isEnabledKey = false;
-        switch (keyType)
-        {
-            case GetKeyType.Press:
-                isEnabledKey = Input.GetKey(keyCode);
-                break;
-            case GetKeyType.Down:
-                isEnabledKey = Input.GetKeyDown(keyCode);
-                break;
-            case GetKeyType.Up:
-                isEnabledKey = Input.GetKeyUp(keyCode);
-                break;
-            default:
-                isEnabledKey = false;
-                break;
-        }
-
-        if (isEnabledKey && commandKey != COMMAND_KEY.None && commands.ContainsKey(commandKey))
-        {
-            //이 자리에서 마스터한테 커맨드를 보낼수도
-            // 커맨드 execute 호출
-            //this.commands[commandKey].Execute();
-            if(_activeCommands.Count == 0 || _activeCommands.Peek() != commands[commandKey])
-                EnqueueCommand(commandKey);
-            return true;
-        }
+        // 입력이 발생하지 않았거나 COMMAND_KEY에 대응하는 KeyCode 배열이 없는 경우 false 반환
         return false;
     }
 
