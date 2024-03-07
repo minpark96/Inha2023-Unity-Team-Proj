@@ -44,11 +44,11 @@ public class UpperBodySM : StateMachine
         switch (state)
         {
             case PlayerState.UpperIdle:         return new UpperIdle(this);
-            case PlayerState.PunchAndGrabReady: return new PunchReady(this);
+            case PlayerState.PunchAndGrabReady: return new ArmReady(this);
             case PlayerState.Punch:             return new Punch(this);
             case PlayerState.Grabbing:          return new Grabbing(this);
             case PlayerState.SkillReady:        return new SkillReady(this);
-            case PlayerState.Skill:             return new NuclearPunch(this);
+            case PlayerState.Skill:             return new Skill(this);
             case PlayerState.HeadButt:          return new HeadButt(this);
             case PlayerState.EquipItem:         return new EquipItem(this);
             case PlayerState.LiftObject:        return new LiftObject(this);

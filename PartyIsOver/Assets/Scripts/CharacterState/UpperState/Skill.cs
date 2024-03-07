@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Define;
 
-public class MeowNyangPunch : BodyState
+public class Skill : BodyState
 {
     protected UpperBodySM _sm;
 
-    public MeowNyangPunch(StateMachine stateMachine) : base(PlayerState.Skill, stateMachine)
+    public Skill(StateMachine stateMachine) : base(PlayerState.Skill, stateMachine)
     {
         _sm = (UpperBodySM)stateMachine;
     }

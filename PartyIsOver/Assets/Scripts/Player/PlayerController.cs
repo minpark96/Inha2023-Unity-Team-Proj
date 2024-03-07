@@ -425,8 +425,7 @@ public class PlayerController : MonoBehaviourPun
     private Vector3 _runVectorForce5 = new Vector3(0f, 0f, 0.4f);
     private Vector3 _runVectorForce10 = new Vector3(0f, 0f, 0.8f);
 
-    public AudioSource _audioSource;
-    AudioClip _audioClip;
+
 
     [Header("Dummy")]
     public bool isAI = false;
@@ -472,8 +471,7 @@ public class PlayerController : MonoBehaviourPun
     {
         _bodyHandler = GetComponent<BodyHandler>();
         _actor = GetComponent<Actor>();
-        Transform SoundSourceTransform = transform.Find("GreenHip");
-        _audioSource = SoundSourceTransform.GetComponent<AudioSource>();
+
          
         childJoints = GetComponentsInChildren<ConfigurableJoint>();
         originalYMotions = new ConfigurableJointMotion[childJoints.Length];
@@ -510,15 +508,7 @@ public class PlayerController : MonoBehaviourPun
         }
     }
 
-    [PunRPC]
-    public void PlayerEffectSound(string path)
-    {
-        _audioClip = Managers.Sound.GetOrAddAudioClip(path, Define.Sound.PlayerEffect);
-        _audioSource.clip = _audioClip;
-        _audioSource.spatialBlend = 1;
-        Managers.Sound.Play(_audioClip, Define.Sound.PlayerEffect, _audioSource);
 
-    }
 
     #region OnMouseEvent_Grab
     public void OnMouseEvent_Grab(Define.MouseEvent evt)
@@ -610,8 +600,8 @@ public class PlayerController : MonoBehaviourPun
                 {
                     if (Input.GetKeyDown(KeyCode.Space))
                     {
-                        if (_actor.GrabState == Define.GrabState.Climb)
-                            _actor.Grab.ClimbJump();
+                        //if (_actor.GrabState == Define.GrabState.Climb)
+                        //    _actor.Grab.ClimbJump();
                         _actor.actorState = Actor.ActorState.Jump;
                     }
 

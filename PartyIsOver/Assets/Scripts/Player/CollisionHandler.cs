@@ -188,7 +188,7 @@ public class CollisionHandler : MonoBehaviourPun
     [PunRPC]
     void PlayerEffectSound(string path)
     {
-        actor.PlayerController.PlayerEffectSound($"{path}");
+        actor.PlayerEffectSound($"{path}");
     }
 
     [PunRPC]

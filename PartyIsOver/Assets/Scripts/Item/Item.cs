@@ -99,7 +99,7 @@ public class Item : MonoBehaviourPun
             //projectile.GetComponent<InteractableObject>().ChangeUseTypeTrigger(0.08f, -1f);
         }
 
-        Owner.PlayerController.PlayerEffectSound("PlayerEffect/Cartoon-UI-040");
+        Owner.PlayerEffectSound("PlayerEffect/Cartoon-UI-040");
         Destroy(this, 1f);
 
     }

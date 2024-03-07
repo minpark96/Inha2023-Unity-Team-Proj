@@ -138,43 +138,43 @@ public class Grab : MonoBehaviourPun
 
     void PlayerLiftCheck()
     {
-        if (_isRightGrab && _isLeftGrab && LeftGrabObject != null && RightGrabObject != null)
-        {
+        //if (_isRightGrab && _isLeftGrab && LeftGrabObject != null && RightGrabObject != null)
+        //{
            
-            if (LeftGrabObject.GetComponent<CollisionHandler>() != null &&
-                RightGrabObject.GetComponent<CollisionHandler>() != null)
-            {
-                _actor.GrabState = GrabState.PlayerLift;
+        //    if (LeftGrabObject.GetComponent<CollisionHandler>() != null &&
+        //        RightGrabObject.GetComponent<CollisionHandler>() != null)
+        //    {
+        //        _actor.GrabState = GrabState.PlayerLift;
 
-                AlignToVector(_actor.BodyHandler.LeftArm.PartRigidbody, _actor.BodyHandler.LeftArm.PartTransform.forward, 
-                    -_actor.BodyHandler.Waist.PartTransform.forward + _actor.BodyHandler.Chest.PartTransform.right / 2f + 
-                    -_actor.PlayerController.MoveInput / 8f, 0.01f, 8f);
-                AlignToVector(_actor.BodyHandler.LeftForeArm.PartRigidbody, _actor.BodyHandler.LeftForeArm.PartTransform.forward,
-                    -_actor.BodyHandler.Waist.PartTransform.forward, 0.01f, 8f);
+        //        AlignToVector(_actor.BodyHandler.LeftArm.PartRigidbody, _actor.BodyHandler.LeftArm.PartTransform.forward, 
+        //            -_actor.BodyHandler.Waist.PartTransform.forward + _actor.BodyHandler.Chest.PartTransform.right / 2f + 
+        //            -_actor.PlayerController.MoveInput / 8f, 0.01f, 8f);
+        //        AlignToVector(_actor.BodyHandler.LeftForeArm.PartRigidbody, _actor.BodyHandler.LeftForeArm.PartTransform.forward,
+        //            -_actor.BodyHandler.Waist.PartTransform.forward, 0.01f, 8f);
 
-                AlignToVector(_actor.BodyHandler.RightArm.PartRigidbody, _actor.BodyHandler.RightArm.PartTransform.forward, 
-                    -_actor.BodyHandler.Waist.PartTransform.forward + -_actor.BodyHandler.Chest.PartTransform.right / 2f + 
-                    -_actor.PlayerController.MoveInput / 8f, 0.01f, 8f);
-                AlignToVector(_actor.BodyHandler.RightForeArm.PartRigidbody, _actor.BodyHandler.RightForeArm.PartTransform.forward, -_actor.BodyHandler.Waist.PartTransform.forward, 0.01f, 8f);
+        //        AlignToVector(_actor.BodyHandler.RightArm.PartRigidbody, _actor.BodyHandler.RightArm.PartTransform.forward, 
+        //            -_actor.BodyHandler.Waist.PartTransform.forward + -_actor.BodyHandler.Chest.PartTransform.right / 2f + 
+        //            -_actor.PlayerController.MoveInput / 8f, 0.01f, 8f);
+        //        AlignToVector(_actor.BodyHandler.RightForeArm.PartRigidbody, _actor.BodyHandler.RightForeArm.PartTransform.forward, -_actor.BodyHandler.Waist.PartTransform.forward, 0.01f, 8f);
 
-                // _actor.BodyHandler.Chest.PartRigidbody.AddForce(Vector3.down * 30, ForceMode.VelocityChange);
+        //        // _actor.BodyHandler.Chest.PartRigidbody.AddForce(Vector3.down * 30, ForceMode.VelocityChange);
 
-                InteractableObject obj1 = RightGrabObject.transform.root.GetComponent<BodyHandler>().Hip.GetComponent<InteractableObject>();
-                obj1.PullingForceTrigger(Vector3.up, 5.5f);
+        //        InteractableObject obj1 = RightGrabObject.transform.root.GetComponent<BodyHandler>().Hip.GetComponent<InteractableObject>();
+        //        obj1.PullingForceTrigger(Vector3.up, 5.5f);
 
-                Vector3 vec = _actor.BodyHandler.Hip.PartRigidbody.velocity;
-                _actor.BodyHandler.Hip.PartRigidbody.velocity = new Vector3(vec.x*1.3f,0f,vec.z*1.3f);
-            }
-            else if(LeftGrabObject == RightGrabObject && LeftGrabObject.layer == (int)Define.Layer.InteractableObject)
-            {
-                _actor.GrabState = GrabState.PlayerLift;
+        //        Vector3 vec = _actor.BodyHandler.Hip.PartRigidbody.velocity;
+        //        _actor.BodyHandler.Hip.PartRigidbody.velocity = new Vector3(vec.x*1.3f,0f,vec.z*1.3f);
+        //    }
+        //    else if(LeftGrabObject == RightGrabObject && LeftGrabObject.layer == (int)Define.Layer.InteractableObject)
+        //    {
+        //        _actor.GrabState = GrabState.PlayerLift;
 
 
-                InteractableObject obj1 = RightGrabObject.transform.GetComponent<InteractableObject>();
-                float mass = obj1.GetComponent<Rigidbody>().mass;
-                obj1.PullingForceTrigger(Vector3.up, 0.5f);
-            }
-        }
+        //        InteractableObject obj1 = RightGrabObject.transform.GetComponent<InteractableObject>();
+        //        float mass = obj1.GetComponent<Rigidbody>().mass;
+        //        obj1.PullingForceTrigger(Vector3.up, 0.5f);
+        //    }
+        //}
     }
 
     public void ClimbJump()
@@ -227,7 +227,7 @@ public class Grab : MonoBehaviourPun
                                 photonView.RPC("UseItem", RpcTarget.All);
                                 break;
                             case ItemType.Consumable:
-                                StartCoroutine(UsePotionAnim());
+                                //StartCoroutine(UsePotionAnim());
                                 break;
                         }
                     }
@@ -908,20 +908,20 @@ public class Grab : MonoBehaviourPun
         _jointLeft.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 3, 0, 0));
         _jointRight.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 3, 0, 0));
 
-        yield return _actor.PlayerController.ItemTwoHand(_side, 0.07f, 0.1f, 0.5f, 0.1f, 3f);
+        //yield return _actor.PlayerController.ItemTwoHand(_side, 0.07f, 0.1f, 0.5f, 0.1f, 3f);
     }
 
-    IEnumerator UsePotionAnim()
-    {
-        _jointLeft.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 3, 0, 0));
-        _jointRight.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 3, 0, 0));
+    //IEnumerator UsePotionAnim()
+    //{
+    //    //_jointLeft.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 3, 0, 0));
+    //    //_jointRight.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 3, 0, 0));
 
-        yield return _actor.PlayerController.Potion(0.07f, 0.1f, 0.5f, 0.5f, 0.1f);
+    //    ////yield return _actor.PlayerController.Potion(0.07f, 0.1f, 0.5f, 0.5f, 0.1f);
 
-        photonView.RPC("UseItem", RpcTarget.All);
-        GrabResetTrigger();
+    //    //photonView.RPC("UseItem", RpcTarget.All);
+    //    //GrabResetTrigger();
 
-    }
+    //}
 
     [PunRPC]
     IEnumerator PotionThrowAnim()
@@ -932,7 +932,7 @@ public class Grab : MonoBehaviourPun
         _jointRight.GetComponent<Rigidbody>().AddForce(new Vector3(_turnForce * 3, 0, 0));
 
         StartCoroutine(obj.GetComponent<Item>().ThrowItem());
-        yield return _actor.PlayerController.PotionThrow(0.07f, 0.1f, 0.3f, 0.1f);
+        //yield return _actor.PlayerController.PotionThrow(0.07f, 0.1f, 0.3f, 0.1f);
 
 
         yield return new WaitForSeconds(1f);

@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Define;
 
-public class PunchReady : BodyState
+public class ArmReady : BodyState
 {
     private UpperBodySM _sm;
     private float _pressDuration;
     private float _punchGrabThreshold = 0.2f;
 
-    public PunchReady(StateMachine stateMachine) : base(PlayerState.PunchAndGrabReady, stateMachine)
+    public ArmReady(StateMachine stateMachine) : base(PlayerState.PunchAndGrabReady, stateMachine)
     {
         _sm = (UpperBodySM)stateMachine;
     }

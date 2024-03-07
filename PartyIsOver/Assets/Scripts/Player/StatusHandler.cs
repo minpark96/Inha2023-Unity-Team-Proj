@@ -99,7 +99,7 @@ public class StatusHandler : MonoBehaviourPun
                     if (actor.GrabState != Define.GrabState.PlayerLift)
                     {
                         actor.GrabState = Define.GrabState.None;
-                        actor.Grab.GrabResetTrigger();
+                        actor.ResetGrab();
                     }
                     actor.debuffState |= Actor.DebuffState.Exhausted;
                     photonView.RPC("RPCExhaustedCreate", RpcTarget.All);
@@ -229,7 +229,8 @@ public class StatusHandler : MonoBehaviourPun
     [PunRPC]
     void RPCShockCreate()
     {
-        actor.Grab.GrabResetTrigger();
+        actor.ResetGrab();
+
         Context.ChangeState(shockInStance, _shockTime);
     }
 
@@ -247,7 +248,8 @@ public class StatusHandler : MonoBehaviourPun
     [PunRPC]
     void RPCBurnCreate()
     {
-        actor.Grab.GrabResetTrigger();
+        actor.ResetGrab();
+
         Context.ChangeState(burnInStance, _burnTime);
     }
 
@@ -335,7 +337,7 @@ public class StatusHandler : MonoBehaviourPun
     {
         actor.actorState = Actor.ActorState.Dead;
         _isDead = true;
-        actor.Grab.GrabResetTrigger();
+        actor.ResetGrab();
         actor.InvokeDeathEvent();
     }
 
@@ -344,7 +346,8 @@ public class StatusHandler : MonoBehaviourPun
         //데미지 이펙트나 사운드 추후 추가
 
         //actor.debuffState = Actor.DebuffState.Stun;
-        actor.Grab.GrabResetTrigger();
+        actor.ResetGrab();
+
         photonView.RPC("ChangeStateMachines", RpcTarget.All, _stunTime);
         //StartCoroutine(ResetBodySpring());
         actor.BodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;

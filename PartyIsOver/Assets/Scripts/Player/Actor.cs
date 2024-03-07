@@ -107,7 +107,6 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
 
     public ActorState actorState = ActorState.Stand;
-    public ActorState lastActorState = ActorState.Run;
     public DebuffState debuffState = DebuffState.Default;
 
     public static GameObject LocalPlayerInstance;
@@ -137,7 +136,8 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
     //
     public PlayerController PlayerController;
-    public Grab Grab;
+    AudioSource _audioSource;
+    AudioClip _audioClip;
 
     public void InvokeStatusChangeEvent()
     {
@@ -161,6 +161,15 @@ public class Actor : MonoBehaviourPun, IPunObservable
         OnKillPlayer(photonView.ViewID);
     }
 
+    [PunRPC]
+    public void PlayerEffectSound(string path)
+    {
+        _audioClip = Managers.Sound.GetOrAddAudioClip(path, Define.Sound.PlayerEffect);
+        _audioSource.clip = _audioClip;
+        _audioSource.spatialBlend = 1;
+        Managers.Sound.Play(_audioClip, Define.Sound.PlayerEffect, _audioSource);
+
+    }
 
     private void Awake()
     {
@@ -190,8 +199,8 @@ public class Actor : MonoBehaviourPun, IPunObservable
         BodyHandler = GetComponent<BodyHandler>();
         StatusHandler = GetComponent<StatusHandler>();
         PlayerController = GetComponent<PlayerController>();
-        Grab = GetComponent<Grab>();
-
+        Transform SoundSourceTransform = transform.Find("GreenHip");
+        _audioSource = SoundSourceTransform.GetComponent<AudioSource>();
         ChangeLayerRecursively(gameObject, LayerCnt++);
         Init();
     }
@@ -286,8 +295,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
             if (_stamina <= 0)
             {
                 //벽타기 불가능
-                //Grab.GrabResetTrigger();
-                GrabState = GrabState.None;
+                ResetGrab();
             }
 
             //회복하는 수치값 변경
@@ -306,9 +314,8 @@ public class Actor : MonoBehaviourPun, IPunObservable
                     {
                         _stamina -= 0;
                         //photonView.RPC("DecreaseStamina", RpcTarget.All, 0f);
-                        //Grab.GrabResetTrigger();
-                        GrabState = GrabState.None;
-                        //PlayerController.isRun = false;
+                        ResetGrab();
+                        _context.IsRunState = false;
                     }
                     else if (_stamina == 0)
                     {
@@ -347,7 +354,10 @@ public class Actor : MonoBehaviourPun, IPunObservable
         ExecuteCommand();
     }
 
-
+    public void ResetGrab()
+    {
+        _inputHandler.EnqueueCommand(COMMAND_KEY.DestroyJoint);
+    }
 
 
     void RecoveryStamina()
