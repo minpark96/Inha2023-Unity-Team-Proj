@@ -20,7 +20,7 @@ public class ChargeReadyAction
     ConfigurableJoint[] _childJoints;
 
 
-    public bool HandleChargeEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerContext data)
+    public bool HandleChargeEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerActionContext data)
     {
         _animData = animData;
         _animPlayer = animPlayer;

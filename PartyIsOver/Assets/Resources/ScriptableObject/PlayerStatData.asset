@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _runSpeed: 100
   _maxSpeed: 3.5
-  _playerAttackPoint: 1
+  _attackPowerMultiplier: 1
   _health: 200
   _maxHealth: 200
   _stamina: 100

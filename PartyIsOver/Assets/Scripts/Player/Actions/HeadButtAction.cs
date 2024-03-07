@@ -15,11 +15,11 @@ public class HeadButtAction
     ActionController _actions;
     AnimationPlayer _animPlayer;
     AnimationData _animData;
-    PlayerContext _context;
+    PlayerActionContext _context;
     float _headButtCoolTime = 1f;
     Vector3 _moveDir = new Vector3();
 
-    public bool HandleHeadButtEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerContext data)
+    public bool HandleHeadButtEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerActionContext data)
     {
         _animData = animData;
         _animPlayer = animPlayer;

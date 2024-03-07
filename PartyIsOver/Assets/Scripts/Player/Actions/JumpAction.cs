@@ -12,9 +12,9 @@ public class JumpAction
 
     AnimationData _animData;
     AnimationPlayer _animPlayer;
-    PlayerContext _context;
+    PlayerActionContext _context;
     BodyHandler _bodyHandler;
-    bool HandleJumpEvent(AnimationData animData, AnimationPlayer animPlayer,BodyHandler bodyHandler, in PlayerContext data)
+    bool HandleJumpEvent(AnimationData animData, AnimationPlayer animPlayer,BodyHandler bodyHandler, in PlayerActionContext data)
     {
         _animData = animData;
         _animPlayer = animPlayer;

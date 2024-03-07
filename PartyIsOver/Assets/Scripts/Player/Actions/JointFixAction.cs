@@ -14,10 +14,10 @@ public class JointFixAction
     }
 
     BodyHandler _bodyHandler;
-    PlayerContext _context;
+    PlayerActionContext _context;
     ItemType _type = ItemType.None;
 
-    bool HandleJointFixEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerContext data)
+    bool HandleJointFixEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerActionContext data)
     {
         _bodyHandler = bodyHandler;
         _context = data;

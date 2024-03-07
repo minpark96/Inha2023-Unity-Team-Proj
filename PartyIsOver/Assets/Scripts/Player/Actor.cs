@@ -17,7 +17,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
     public event ChangeStaminaBar OnChangeStaminaBar;
 
 
-    private PlayerContext _context = new PlayerContext
+    private PlayerActionContext _actionContext = new PlayerActionContext
     {
         InputDirX = 0,
         InputDirY = 0,
@@ -31,6 +31,16 @@ public class Actor : MonoBehaviourPun, IPunObservable
         IsMeowPunch = false
     };
 
+    private PlayerStatContext _statContext = new PlayerStatContext
+    {
+        DamageReduction = 0f,
+        AttackPowerMultiplier = 1f,
+
+        Health = 0f,
+        MaxHealth = 200f,
+
+
+    };
 
     public enum ActorState
     {
@@ -69,9 +79,9 @@ public class Actor : MonoBehaviourPun, IPunObservable
     public float DamageReduction { get { return _damageReduction; } set { _damageReduction = value; } }
 
     [SerializeField]
-    private float _playerAttackPoint = 1f;
+    private float _attackPowerMultiplier = 1f;
 
-    public float PlayerAttackPoint { get { return _playerAttackPoint; } set { _damageReduction = value; } }
+    public float AttackPowerMultiplier { get { return _attackPowerMultiplier; } set { _attackPowerMultiplier = value; } }
 
 
     // 체력
@@ -214,15 +224,15 @@ public class Actor : MonoBehaviourPun, IPunObservable
         _maxHealth = statData.MaxHealth;
         _maxStamina = statData.MaxStamina;
         _damageReduction = statData.DamageReduction;
-        _playerAttackPoint = statData.PlayerAttackPoint;
+        _attackPowerMultiplier = statData.AttackPowerMultiplier;
 
         _animData = new AnimationData(BodyHandler);
         ActionController = new ActionController(_animData,_animPlayer,BodyHandler);
 
         _inputHandler = GetComponent<PlayerInputHandler>();
 
-        LowerSM = new LowerBodySM(_inputHandler, _context);
-        UpperSM = new UpperBodySM(_inputHandler, _context,
+        LowerSM = new LowerBodySM(_inputHandler, _actionContext);
+        UpperSM = new UpperBodySM(_inputHandler, _actionContext,
            BodyHandler.LeftHand.GetComponent<HandChecker>(), BodyHandler.RightHand.GetComponent<HandChecker>(),
            RangeWeaponSkin);
 
@@ -255,33 +265,32 @@ public class Actor : MonoBehaviourPun, IPunObservable
             UpdateData(); //자리가 여기가 아닐수도
 
         if (Input.GetKeyDown(KeyCode.G))
-            _context.IsMeowPunch = !_context.IsMeowPunch;
+            _actionContext.IsMeowPunch = !_actionContext.IsMeowPunch;
     }
 
 
     void UpdateData()
     {
-        _context.Id = photonView.ViewID;
-        _context.Position = BodyHandler.Chest.transform.position;
-        _context.IsMine = photonView.IsMine? true: false;
-        _context.Layer = gameObject.layer;
+        _actionContext.Id = photonView.ViewID;
+        _actionContext.Position = BodyHandler.Chest.transform.position;
+        _actionContext.IsMine = photonView.IsMine? true: false;
+        _actionContext.Layer = gameObject.layer;
 
         Vector3 dir = _inputHandler.GetMoveInput(CameraControl.CameraArm.transform);
-        _context.InputDirX = dir.x;
-        _context.InputDirY = dir.y;
-        _context.InputDirZ = dir.z;
+        _actionContext.InputDirX = dir.x;
+        _actionContext.InputDirY = dir.y;
+        _actionContext.InputDirZ = dir.z;
 
 
-        _context.IsRunState = LowerSM.IsRun;
-        _context.IsGrounded = LowerSM.IsGrounded;
+        _actionContext.IsRunState = LowerSM.IsRun;
+        _actionContext.IsGrounded = LowerSM.IsGrounded;
 
-        _context.PunchSide = UpperSM.ReadySide;
+        _actionContext.PunchSide = UpperSM.ReadySide;
 
         int[] limbPositions = LowerSM.GetBodyPose();
         for (int i = 0; i < (int)BodyPose.End; i++)
-        {
-            _context.LimbPositions[i] = limbPositions[i];
-        }
+            _actionContext.LimbPositions[i] = limbPositions[i];
+       
     }
 
 
@@ -315,7 +324,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
                         _stamina -= 0;
                         //photonView.RPC("DecreaseStamina", RpcTarget.All, 0f);
                         ResetGrab();
-                        _context.IsRunState = false;
+                        _actionContext.IsRunState = false;
                     }
                     else if (_stamina == 0)
                     {
@@ -356,7 +365,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
     public void ResetGrab()
     {
-        _inputHandler.EnqueueCommand(COMMAND_KEY.DestroyJoint);
+        _inputHandler.ReserveCommand(COMMAND_KEY.DestroyJoint);
     }
 
 
@@ -406,7 +415,9 @@ public class Actor : MonoBehaviourPun, IPunObservable
         {
             if((_activeCommand & _commandAry[i]) == _commandAry[i])
             {
-                if(!_inputHandler.GetCommand(_commandAry[i]).Execute(_context))
+                if (_inputHandler.GetCommand(_commandAry[i]).Execute(_actionContext))
+                    Debug.Log(_commandAry[i].ToString() +" + "+ GetUpperState());
+                else
                     Debug.Log(_commandAry[i].ToString() + "커맨드 실행 실패");
             }
         }

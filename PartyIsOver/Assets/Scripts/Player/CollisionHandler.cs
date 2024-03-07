@@ -126,7 +126,7 @@ public class CollisionHandler : MonoBehaviourPun
             {
                 damage = PhysicalDamage(collisionInteractable, damage, contact);
                 damage = ApplyBodyPartDamageModifier(damage);
-                damage *= actor.PlayerAttackPoint;
+                damage *= actor.AttackPowerMultiplier;
                 damage = Mathf.RoundToInt(damage);
                 damage -= damage * (actor.DamageReduction / 100f);
 
@@ -176,9 +176,6 @@ public class CollisionHandler : MonoBehaviourPun
         else if (transform == actor.BodyHandler.RightThigh.transform ||
             transform == actor.BodyHandler.LeftThigh.transform)
             damage *= _legMultiple;
-        //else if (transform == actor.BodyHandler.RightFoot.transform ||
-            //transform == actor.BodyHandler.LeftFoot.transform)
-            //damage *= actor.LegMultiple;
         else if (transform == actor.BodyHandler.Head.transform)
             damage *= _headMultiple;
 
@@ -206,51 +203,31 @@ public class CollisionHandler : MonoBehaviourPun
         switch (collisionInteractable.damageModifier)
         {
             case InteractableObject.Damage.Ignore:
-                damage = 0f;
+                    damage = 0f;
                 break;
             case InteractableObject.Damage.Object:
-                {
-                    //Rigidbody rb;
-                    //if (collisionInteractable.GetComponent<Item>() != null)
-                    //{
-                    //    rb = collisionInteractable.GetComponent<Rigidbody>();
-                    //    rb.velocity = Vector3.zero;
-                    //    rb.angularVelocity = Vector3.zero;
-                    //}
                     damage *= _objectDamage * itemDamage;
                     damage = Mathf.Clamp(damage, 15f, 50f);
                     photonView.RPC("PlayerEffectSound", RpcTarget.All, "PlayerEffect/WEAPON_CrossBow");
-                }
                 break;
             case InteractableObject.Damage.Punch:
-                damage *= _punchDamage;
-                {
+                    damage *= _punchDamage;
                     photonView.RPC("PlayerEffectSound", RpcTarget.All, "PlayerEffect/SFX_ArrowShot_Hit");
                     //photonView.RPC("PlayerEffectCreate", RpcTarget.All, "Effects/PS_VFX_Dash_Variant");
-                }
                 break;
             case InteractableObject.Damage.DropKick:
-                damage *= _dropkickDamage;
-                {
+                    damage *= _dropkickDamage;
                     photonView.RPC("PlayerEffectSound", RpcTarget.All, "PlayerEffect/DAMAGE_Monster_01");
-                }
                 break;
             case InteractableObject.Damage.Headbutt:
-                damage *= _headbuttDamage;
-                {
+                    damage *= _headbuttDamage;
                     photonView.RPC("PlayerEffectSound", RpcTarget.All, "PlayerEffect/WEAPON_CrossBow");
-                }
                 break;
             case InteractableObject.Damage.NuclearPunch:
-                {
                     damage *= _nuclearPunchDamage;
-
-                }
                 break;
             case InteractableObject.Damage.MeowNyangPunch:
-                {
                     damage *= _meowNyangPunchDamage;
-                }
                 break;
             default:
                 break;
@@ -354,12 +331,6 @@ public class CollisionHandler : MonoBehaviourPun
                 }
                 break;
             case InteractableObject.Damage.Punch:
-                //if (body != null)
-                //{
-                //    body.AddForce(normal * _punchForceNormal, ForceMode.VelocityChange);
-                //    body.AddForce(Vector3.up * _punchForceUp, ForceMode.VelocityChange);
-                //    Debug.Log("punch hip");
-                //}
                 {
                     thisRb.AddForce(normal * _punchForceNormal, ForceMode.VelocityChange);
                     thisRb.AddForce(Vector3.up * _punchForceUp, ForceMode.VelocityChange);

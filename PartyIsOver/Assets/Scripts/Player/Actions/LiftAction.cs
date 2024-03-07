@@ -12,14 +12,14 @@ public class LiftAction : MonoBehaviour
     }
 
     BodyHandler _bodyHandler;
-    PlayerContext _context;
+    PlayerActionContext _context;
     AnimationPlayer _animPlayer;
 
     Define.ObjectType _type;
     InteractableObject _object;
     Vector3 _inputMoveDir = new Vector3();
 
-    public bool HandleLiftEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerContext data)
+    public bool HandleLiftEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerActionContext data)
     {
         _bodyHandler = bodyHandler;
         _context = data;

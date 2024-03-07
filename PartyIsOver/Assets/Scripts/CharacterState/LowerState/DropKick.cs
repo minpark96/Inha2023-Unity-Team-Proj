@@ -26,7 +26,7 @@ public class DropKick : BodyState
         else
         {
             //이거 지우면 발차기 후 빙판에서 미끄러지듯이 작동, 마찰시키는 Action하나를 더 추가하는 식으로 대체 가능
-            _sm.InputHandler.EnqueueCommand(Define.COMMAND_KEY.Move);
+            _sm.InputHandler.ReserveCommand(Define.COMMAND_KEY.Move);
         }
     }
     public override void GetInput()

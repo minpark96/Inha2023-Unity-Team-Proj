@@ -12,7 +12,7 @@ public class GrabbingAction
         actions.OnGrabbing -= HandleGrabbingEvent;
         actions.OnGrabbing += HandleGrabbingEvent;
     }
-    PlayerContext _context;
+    PlayerActionContext _context;
     Rigidbody _leftHandRigid;
     Rigidbody _rightHandRigid;
 
@@ -23,7 +23,7 @@ public class GrabbingAction
     Vector3 _leftTargetDir;
     Vector3 _rightTargetDir;
 
-    public bool HandleGrabbingEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerContext data)
+    public bool HandleGrabbingEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerActionContext data)
     {
         _context = data;
         _isGrounded = data.IsGrounded;

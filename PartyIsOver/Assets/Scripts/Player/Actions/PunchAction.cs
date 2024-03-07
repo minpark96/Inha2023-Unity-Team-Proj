@@ -16,7 +16,7 @@ public class PunchAction
     protected AnimationData animData;
     protected AnimationPlayer animPlayer;
     protected BodyHandler bodyHandler;
-    protected PlayerContext _context;
+    protected PlayerActionContext context;
 
     protected float duration = 0.07f;
     protected float readyTime = 0.1f;
@@ -38,12 +38,12 @@ public class PunchAction
         actions.OnPunch += HandlePunchEvent;
     }
 
-    bool HandlePunchEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler,in PlayerContext data)
+    bool HandlePunchEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler,in PlayerActionContext data)
     {
         this.animData = animData;
         this.animPlayer = animPlayer;
         this.bodyHandler = bodyHandler;
-        this._context = data;
+        this.context = data;
         isRSkillCheck = false;
 
         CoroutineHelper.StartCoroutine(Punch(data.PunchSide,duration,readyTime,punchTime,resetTime));
@@ -75,7 +75,7 @@ public class PunchAction
         }
 
         if(!isRSkillCheck)
-            _context.IsUpperActionProgress = false;
+            context.IsUpperActionProgress = false;
 
     }
 

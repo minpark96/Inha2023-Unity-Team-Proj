@@ -19,11 +19,12 @@ public class SkillAction : PunchAction
         actions.OnSkill += HandleSkillEvent;
     }
 
-    bool HandleSkillEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerContext data)
+    bool HandleSkillEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerActionContext data)
     {
         base.animData = animData;
         base.animPlayer = animPlayer;
         base.bodyHandler = bodyHandler;
+        base.context = data;
         isMeowPunch = data.IsMeowPunch;
         isRSkillCheck = true;
 
@@ -38,7 +39,7 @@ public class SkillAction : PunchAction
             isRSkillCheck = true;
             isMeowPunch = false;
             CoroutineHelper.StartCoroutine(Punch(Define.Side.Right, duration, readyTime, punchTime, resetTime));
-            _context.IsUpperActionProgress = false;
+            context.IsUpperActionProgress = false;
         }
         Debug.Log("skillEvent");
         return true;
@@ -57,6 +58,6 @@ public class SkillAction : PunchAction
             else
                 _readySide = Define.Side.Left;
         }
-        _context.IsUpperActionProgress = false;
+        context.IsUpperActionProgress = false;
     }
 }

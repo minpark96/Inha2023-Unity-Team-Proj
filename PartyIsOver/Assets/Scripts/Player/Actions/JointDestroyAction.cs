@@ -13,11 +13,11 @@ public class JointDestroyAction
         actions.OnJointDestroy += HandleJointDestroyEvent;
     }
 
-    PlayerContext _context;
+    PlayerActionContext _context;
     BodyHandler _bodyHandler;
     Item _equipItem;
 
-    bool HandleJointDestroyEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerContext data)
+    bool HandleJointDestroyEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerActionContext data)
     {
         _context = data;
         _bodyHandler = bodyHandler;

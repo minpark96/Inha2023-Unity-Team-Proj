@@ -37,7 +37,7 @@ public abstract class BodyState:IBaseState
 
     protected bool IsMoveKeyInput()
     {
-        if (stateMachine.InputHandler.InputCommnadKey(COMMAND_KEY.Move, Define.GetKeyType.Press))
+        if (stateMachine.InputCommandKey(COMMAND_KEY.Move, Define.GetKeyType.Press))
             return true;
         else
             return false;

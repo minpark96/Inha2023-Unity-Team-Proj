@@ -16,12 +16,12 @@ public class DropKickAction
     AnimationPlayer _animPlayer;
     BodyHandler _bodyHandler;
     AnimationData _animData;
-    PlayerContext _context;
+    PlayerActionContext _context;
     float _DropKickCoolTime = 2f;
     float _springLerpTime =1f;
 
 
-    public bool HandleDropKickEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerContext data)
+    public bool HandleDropKickEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerActionContext data)
     {
         _animData = animData;
         _animPlayer = animPlayer;

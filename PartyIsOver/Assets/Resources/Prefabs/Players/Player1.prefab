@@ -11406,7 +11406,6 @@ MonoBehaviour:
   IsFlambe: 0
   MoveInput: {x: 0, y: 0, z: 0}
   _isCoroutineDrop: 0
-  _audioSource: {fileID: 0}
   isAI: 0
 --- !u!114 &5878509405600198236
 MonoBehaviour:
@@ -11443,7 +11442,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GrabState: 0
   _damageReduction: 0
-  _playerAttackPoint: 1
+  _attackPowerMultiplier: 1
   _health: 0
   _maxHealth: 200
   RecoveryTime: 0.1
@@ -11453,7 +11452,6 @@ MonoBehaviour:
   _maxStamina: 100
   _magneticStack: 0
   actorState: 4
-  lastActorState: 8
   debuffState: 0
   AudioListener: {fileID: 0}
   StatusHandler: {fileID: 0}
@@ -11461,7 +11459,6 @@ MonoBehaviour:
   CameraControl: {fileID: 0}
   RangeWeaponSkin: {fileID: 2087769795625165002}
   PlayerController: {fileID: 0}
-  Grab: {fileID: 0}
 --- !u!114 &5878509405600198234
 MonoBehaviour:
   m_ObjectHideFlags: 0

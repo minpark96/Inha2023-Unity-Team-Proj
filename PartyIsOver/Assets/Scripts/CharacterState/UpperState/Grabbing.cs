@@ -7,7 +7,7 @@ using static Define;
 public class Grabbing : BodyState
 {
     private UpperBodySM _sm;
-    private PlayerContext _context;
+    private PlayerActionContext _context;
 
 
     private float _grabDelayTimer =0;
@@ -28,6 +28,8 @@ public class Grabbing : BodyState
     public override void UpdateLogic()
     {
         _grabDelayTimer -= Time.deltaTime;
+        _sm.InputHandler.ReserveCommand(COMMAND_KEY.TargetSearch);
+
 
         if (_context.RightGrabObject != null && _context.LeftGrabObject != null
             && _context.RightGrabObject.ItemObject == null)
@@ -41,9 +43,9 @@ public class Grabbing : BodyState
     public override void GetInput()
     {
         //마우스 떼면 Idle로
-        if (!Input.GetKey(KeyCode.Mouse0))
+        if (!_sm.InputHandler.CheckInputCommand(COMMAND_KEY.LeftBtn,GetKeyType.Press))
         {
-            _sm.InputHandler.EnqueueCommand(COMMAND_KEY.DestroyJoint);
+            _sm.InputHandler.ReserveCommand(COMMAND_KEY.DestroyJoint);
             _sm.ChangeState(_sm.StateMap[PlayerState.UpperIdle]);
         }
            
@@ -63,7 +65,6 @@ public class Grabbing : BodyState
 
     private void GrabbingProgress()
     {
-        _sm.InputHandler.EnqueueCommand(COMMAND_KEY.TargetSearch);
 
         //Debug.Log(_context.LeftSearchTarget);
         //Debug.Log(_context.RightSearchTarget);
@@ -71,6 +72,7 @@ public class Grabbing : BodyState
         //발견한 오브젝트가 없으면 리턴
         if (_context.LeftSearchTarget == null && _context.RightSearchTarget == null)
             return;
+        Debug.Log("grabbing");
 
 
         //타겟이 정면에 있고 아이템일때
@@ -86,7 +88,7 @@ public class Grabbing : BodyState
                 if (IsItemGrabbing(_context.RightSearchTarget))
                     _sm.ChangeState(_sm.StateMap[PlayerState.EquipItem]);
                 else
-                    _sm.InputHandler.EnqueueCommand(COMMAND_KEY.Grabbing);
+                    _sm.InputHandler.ReserveCommand(COMMAND_KEY.Grabbing);
 
                 return;
             }
@@ -97,11 +99,11 @@ public class Grabbing : BodyState
         {
             if (_context.LeftSearchTarget != null && _context.LeftGrabObject ==null)
             {
-                _sm.InputHandler.EnqueueCommand(COMMAND_KEY.Grabbing);
+                _sm.InputHandler.ReserveCommand(COMMAND_KEY.Grabbing);
                 //손이 닿았을때 포톤뷰가 있으면 id를 저장하고 각 캐릭터들에게 JointFix를 시킴
                 if (HandCollisionCheck(Side.Left))
                 {
-                    _sm.InputHandler.EnqueueCommand(COMMAND_KEY.FixJoint);
+                    _sm.InputHandler.ReserveCommand(COMMAND_KEY.FixJoint);
                     _grabDelayTimer = 0.5f;
                 }
             }
@@ -109,11 +111,11 @@ public class Grabbing : BodyState
             if (_context.RightSearchTarget != null && _context.RightGrabObject == null)
             {
                 //손 뻗기 Action 실행
-                _sm.InputHandler.EnqueueCommand(COMMAND_KEY.Grabbing);
+                _sm.InputHandler.ReserveCommand(COMMAND_KEY.Grabbing);
 
                 if (HandCollisionCheck(Side.Right))
                 {
-                    _sm.InputHandler.EnqueueCommand(COMMAND_KEY.FixJoint);
+                    _sm.InputHandler.ReserveCommand(COMMAND_KEY.FixJoint);
                     _grabDelayTimer = 0.5f;
                 }
             }

@@ -23,7 +23,7 @@ public class EquipItem : BodyState
         _item = _sm.Context.EquipItem.ItemObject;
         _itemCoolTime = _item.ItemData.CoolTime;
         _sm.Context.IsUpperActionProgress = true;
-        _sm.InputHandler.EnqueueCommand(COMMAND_KEY.FixJoint);
+        _sm.InputHandler.ReserveCommand(COMMAND_KEY.FixJoint);
 
         if (_item.ItemData.ItemType == ItemType.Ranged)
             ChangeWeaponSkin();
@@ -39,22 +39,21 @@ public class EquipItem : BodyState
 
     public override void GetInput()
     {
-        if (_sm.InputHandler.InputCommnadKey(COMMAND_KEY.LeftBtn, GetKeyType.Down) && _coolTimeTimer < 0f)
+        if (_sm.InputCommandKey(COMMAND_KEY.LeftBtn, GetKeyType.Down) && _coolTimeTimer < 0f)
             _coolTimeTimer = _itemCoolTime;
         
 
-        if (_sm.InputHandler.InputCommnadKey(COMMAND_KEY.RightBtn, GetKeyType.Down))
+        if (_sm.InputCommandKey(COMMAND_KEY.RightBtn, GetKeyType.Down))
         {
             if(_item.ItemData.ItemType != ItemType.Consumable)
                 _sm.Context.IsUpperActionProgress = false;
-            //_sm.ChangeState(_sm.StateMap[PlayerState.UpperIdle]);
         }
     }
 
     public override void Exit()
     {
         _sm.RangeWeaponSkin.gameObject.SetActive(false);
-        _sm.InputHandler.EnqueueCommand(COMMAND_KEY.DestroyJoint);
+        _sm.InputHandler.ReserveCommand(COMMAND_KEY.DestroyJoint);
     }
 
     private void ChangeWeaponSkin()

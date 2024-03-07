@@ -13,14 +13,14 @@ public class ItemUseAction
         actions.OnUseItem += HandleUseItemEvent;
     }
     Define.ItemType _type;
-    PlayerContext _context;
+    PlayerActionContext _context;
     BodyHandler _bodyHandler;
     AnimationData _animData;
     AnimationPlayer _animPlayer;
     InteractableObject _item;
     //public float _turnForce;
 
-    bool HandleUseItemEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerContext data)
+    bool HandleUseItemEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerActionContext data)
     {
         _type = data.EquipItem.ItemObject.ItemData.ItemType;
         _item = data.EquipItem;

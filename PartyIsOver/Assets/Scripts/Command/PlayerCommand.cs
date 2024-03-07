@@ -5,9 +5,6 @@ using UnityEngine;
 public class PlayerCommand : ICommand
 {
     protected Actor actor;
-    protected BodyHandler bodyHandler;
-    protected AnimationPlayer animPlayer;
-    protected AnimationData animData;
     public float Timestamp { get; set; }
 
     public PlayerCommand()
@@ -15,7 +12,7 @@ public class PlayerCommand : ICommand
         Timestamp = Time.time;
     }
 
-    public virtual bool Execute(in PlayerContext data)
+    public virtual bool Execute(in PlayerActionContext data)
     {
         return true;
     }

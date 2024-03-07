@@ -10,9 +10,9 @@ public class SearchAction
         actions.OnTargetSearch -= HandleSearchEvent;
         actions.OnTargetSearch += HandleSearchEvent;
     }
-    PlayerContext _context;
+    PlayerActionContext _context;
     BodyHandler _bodyHandler;
-    public bool HandleSearchEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerContext data)
+    public bool HandleSearchEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerActionContext data)
     {
         _context = data;
         _bodyHandler = bodyHandler;

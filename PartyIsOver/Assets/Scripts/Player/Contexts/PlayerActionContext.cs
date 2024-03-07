@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerContext
+public class PlayerActionContext
 {
     public int Id { get; set; }
     public bool IsMine { get; set; }

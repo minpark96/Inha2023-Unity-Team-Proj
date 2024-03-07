@@ -8,8 +8,9 @@ public class CmdLeftBtn : PlayerCommand
     {
         this.actor = actor;
     }
-    public override bool Execute(in PlayerContext data)
+    public override bool Execute(in PlayerActionContext data)
     {
+        //Left버튼이 눌렸을때 플레이어 상태에 따라 해당하는 Action을 실행
         switch (actor.GetUpperState())
         {
             case Define.PlayerState.Punch:
@@ -18,11 +19,7 @@ public class CmdLeftBtn : PlayerCommand
                 return actor.ActionController.InvokeUseItemEvent(data);
             case Define.PlayerState.LiftObject:
                 return actor.ActionController.InvokeLiftEvent(data);
-            //case Define.PlayerState.Grabbing:
-            //    return actor.ActionController.InvokeGrabbingEvent(data);
             default: return false;
         }
-
-        //return actor.ActionController.InvokePunchEvent(data);
     }
 }

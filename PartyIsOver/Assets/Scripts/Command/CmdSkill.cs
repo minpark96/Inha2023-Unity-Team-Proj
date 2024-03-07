@@ -8,7 +8,7 @@ public class CmdSkill : PlayerCommand
     {
         this.actor = actor;
     }
-    public override bool Execute(in PlayerContext data)
+    public override bool Execute(in PlayerActionContext data)
     {
         return actor.ActionController.InvokeSkillEvent(data);
     }

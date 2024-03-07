@@ -33,7 +33,7 @@ public class MoveAction
     int[] limbPositions = new int[4];
 
 
-    public bool HandleMovement(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerContext data)
+    public bool HandleMovement(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerActionContext data)
     {
         _animPlayer = animPlayer;
         _bodyHandler = bodyHandler;

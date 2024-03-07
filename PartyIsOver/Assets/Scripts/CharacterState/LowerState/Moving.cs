@@ -59,7 +59,7 @@ public class Moving : BodyState
     {
         IsMoveKeyInput();
   
-        if (_sm.InputHandler.InputCommnadKey(Define.COMMAND_KEY.Jump, Define.GetKeyType.Down))
+        if (_sm.InputCommandKey(Define.COMMAND_KEY.Jump, Define.GetKeyType.Down))
         {
             _sm.ChangeState(_sm.JumpingState);
         }

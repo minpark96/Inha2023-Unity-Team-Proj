@@ -16,8 +16,8 @@ public class PlayerStatData : ScriptableObject
     public float MaxSpeed { get { return _maxSpeed; } }
 
     [SerializeField]
-    private float _playerAttackPoint;
-    public float PlayerAttackPoint { get { return _playerAttackPoint; } }
+    private float _attackPowerMultiplier;
+    public float AttackPowerMultiplier { get { return _attackPowerMultiplier; } }
 
 
     [SerializeField]

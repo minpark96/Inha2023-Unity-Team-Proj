@@ -14,7 +14,7 @@ public class LiftObject : BodyState
 
     public override void Enter()
     {
-        _sm.InputHandler.EnqueueCommand(COMMAND_KEY.FixJoint);
+        _sm.InputHandler.ReserveCommand(COMMAND_KEY.FixJoint);
     }
 
     public override void UpdateLogic()
@@ -23,15 +23,15 @@ public class LiftObject : BodyState
 
     public override void GetInput()
     {
-        if (!_sm.InputHandler.InputCommnadKey(COMMAND_KEY.LeftBtn, GetKeyType.Press))
+        if (!_sm.InputCommandKey(COMMAND_KEY.LeftBtn, GetKeyType.Press))
             _sm.ChangeState(_sm.StateMap[PlayerState.UpperIdle]);
 
-        if (_sm.InputHandler.InputCommnadKey(COMMAND_KEY.RightBtn, GetKeyType.Up))
+        if (_sm.InputCommandKey(COMMAND_KEY.RightBtn, GetKeyType.Down))
             _sm.ChangeState(_sm.StateMap[PlayerState.UpperIdle]);
     }
 
     public override void Exit()
     {
-        _sm.InputHandler.EnqueueCommand(COMMAND_KEY.DestroyJoint);
+        _sm.InputHandler.ReserveCommand(COMMAND_KEY.DestroyJoint);
     }
 }

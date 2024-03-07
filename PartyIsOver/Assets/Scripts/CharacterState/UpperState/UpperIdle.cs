@@ -21,15 +21,15 @@ public class UpperIdle : BodyState
         if (_sm.Context.IsUpperActionProgress)
             return;
 
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        if (_sm.InputHandler.CheckInputCommand(COMMAND_KEY.LeftBtn, GetKeyType.Down))
         {
             _sm.ChangeState(_sm.StateMap[PlayerState.PunchAndGrabReady]);
         }
-        if (Input.GetKeyDown(KeyCode.R))
+        if (_sm.InputHandler.CheckInputCommand(COMMAND_KEY.Skill, GetKeyType.Down))
         {
             _sm.ChangeState(_sm.StateMap[PlayerState.SkillReady]);
         }
-        if (_sm.InputHandler.InputCommnadKey(COMMAND_KEY.HeadButt, GetKeyType.Down))
+        if (_sm.InputCommandKey(COMMAND_KEY.HeadButt, GetKeyType.Down))
         {
             _sm.ChangeState(_sm.StateMap[PlayerState.HeadButt]);
         }

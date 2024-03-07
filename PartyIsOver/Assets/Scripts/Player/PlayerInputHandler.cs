@@ -10,8 +10,6 @@ using System;
 public class PlayerInputHandler : MonoBehaviourPun
 {
     private Dictionary<COMMAND_KEY, ICommand> commands = new Dictionary<COMMAND_KEY, ICommand>();
-
-    private Queue<ICommand> _activeCommands = new Queue<ICommand>();
     private Define.COMMAND_KEY _activeCommandFlag;
     private KeyCode[] _keyCodes;
     private bool _isEnabledKey;
@@ -22,19 +20,7 @@ public class PlayerInputHandler : MonoBehaviourPun
     private Vector3 _lookRight;
 
 
-
-    //private Dictionary<COMMAND_KEY, KeyCode> keyMap = new Dictionary<COMMAND_KEY, KeyCode>
-    //{
-    //    { COMMAND_KEY.Move     , KeyCode.W      },
-    //    //{ COMMAND_KEY.Move     , KeyCode.A      },
-    //    //{ COMMAND_KEY.Move     , KeyCode.S      },
-    //    //{ COMMAND_KEY.Move     , KeyCode.D      },
-    //    { COMMAND_KEY.Jump     , KeyCode.Space  },
-    //    { COMMAND_KEY.LeftBtn  , KeyCode.Mouse0 },
-    //    { COMMAND_KEY.RightBtn , KeyCode.Mouse1 },
-    //    { COMMAND_KEY.HeadButt , KeyCode.Mouse2 },
-    //    { COMMAND_KEY.Skill    , KeyCode.R      },
-    //};
+    //키 매핑 및 커맨드 등록
     private Dictionary<COMMAND_KEY, KeyCode[]> keyMap = new Dictionary<COMMAND_KEY, KeyCode[]>
     {
     { COMMAND_KEY.Move     , new KeyCode[] { KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D } },
@@ -45,8 +31,6 @@ public class PlayerInputHandler : MonoBehaviourPun
     { COMMAND_KEY.Skill    , new KeyCode[] { KeyCode.R } }
     };
 
-
-    //키 매핑
     public void InitCommnad(Actor actor)
     {
         commands.Add(COMMAND_KEY.Jump, new CmdJump(actor));
@@ -62,18 +46,6 @@ public class PlayerInputHandler : MonoBehaviourPun
         commands.Add(COMMAND_KEY.FixJoint, new CmdFixJoint(actor));
         commands.Add(COMMAND_KEY.DestroyJoint, new CmdDestroyJoint(actor));
     }
-
-
-    private void Awake()
-    {
-    }
-    private void Update()
-    {
-    }
-    private void FixedUpdate()
-    {
-    }
-
 
 
     public Vector3 GetMoveInput(Transform cameraArm)
@@ -106,10 +78,9 @@ public class PlayerInputHandler : MonoBehaviourPun
             return true;
     }
 
-    public bool InputCommnadKey(COMMAND_KEY commandKey, GetKeyType keyType)
+    public bool CheckInputCommand(COMMAND_KEY commandKey, GetKeyType keyType)
     {
         // COMMAND_KEY에 대응하는 KeyCode 배열 가져오기
-        
         if (keyMap.TryGetValue(commandKey, out _keyCodes))
         {
             // 각 KeyCode에 대해 입력 확인
@@ -135,8 +106,7 @@ public class PlayerInputHandler : MonoBehaviourPun
                 // 입력이 발생하면 해당 커맨드를 실행하고 true 반환
                 if (_isEnabledKey)
                 {
-                    if (_activeCommands.Count == 0 || _activeCommands.Peek() != commands[commandKey])
-                        EnqueueCommand(commandKey);
+                    //ReserveCommand(commandKey);
                     return true;
                 }
             }
@@ -146,13 +116,9 @@ public class PlayerInputHandler : MonoBehaviourPun
         return false;
     }
 
-    public void EnqueueCommand(COMMAND_KEY commandKey)
+    public void ReserveCommand(COMMAND_KEY commandKey)
     {
-        Debug.Log(commandKey.ToString());
         _activeCommandFlag |= commandKey;
-
-        //if (_activeCommands.Count == 0 || _activeCommands.Peek() != commands[commandKey])
-        //    _activeCommands.Enqueue(commands[commandKey]);
     }
 
     public ICommand GetCommand(COMMAND_KEY key)
@@ -167,7 +133,6 @@ public class PlayerInputHandler : MonoBehaviourPun
 
     public void ClearCommand()
     {
-        //_activeCommands = null;
         _activeCommandFlag = 0f;
     }
 

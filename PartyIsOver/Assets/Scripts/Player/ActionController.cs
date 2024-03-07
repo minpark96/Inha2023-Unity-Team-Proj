@@ -16,7 +16,7 @@ public class ActionController
     AnimationPlayer _animPlayer;
     BodyHandler _bodyHandler;
 
-    public delegate bool ActionDelegate(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerContext dynamicData);
+    public delegate bool ActionDelegate(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerActionContext dynamicData);
     public event ActionDelegate OnJump;
     public event ActionDelegate OnMove;
     public event ActionDelegate OnPunch;
@@ -53,63 +53,63 @@ public class ActionController
         new LiftAction(this);
     }
     
-    public bool InvokeJumpEvent(in PlayerContext data)
+    public bool InvokeJumpEvent(in PlayerActionContext data)
     {
         return OnJump?.Invoke(_animData, _animPlayer,_bodyHandler, data) ?? false;
     }
-    public bool InvokeMoveEvent(in PlayerContext data)
+    public bool InvokeMoveEvent(in PlayerActionContext data)
     {
         return OnMove?.Invoke(_animData, _animPlayer, _bodyHandler, data) ?? false;
     }
-    public bool InvokePunchEvent(in PlayerContext data)
+    public bool InvokePunchEvent(in PlayerActionContext data)
     {
         return OnPunch?.Invoke(_animData, _animPlayer, _bodyHandler, data) ?? false;
     }
-    public bool InvokeSkillEvent(in PlayerContext data)
+    public bool InvokeSkillEvent(in PlayerActionContext data)
     {
         return OnSkill?.Invoke(_animData, _animPlayer, _bodyHandler, data) ?? false;
     }
-    public bool InvokeChargeEvent(in PlayerContext data)
+    public bool InvokeChargeEvent(in PlayerActionContext data)
     {
         return OnChargeReady?.Invoke(_animData, _animPlayer, _bodyHandler, data) ?? false;
     }
-    public bool InvokeResetChargeEvent(in PlayerContext data)
+    public bool InvokeResetChargeEvent(in PlayerActionContext data)
     {
         return OnResetCharge?.Invoke(_animData, _animPlayer, _bodyHandler, data) ?? false;
     }
-    public bool InvokeHeadButtEvent(in PlayerContext data)
+    public bool InvokeHeadButtEvent(in PlayerActionContext data)
     {
         return OnHeadButt?.Invoke(_animData, _animPlayer, _bodyHandler, data) ?? false;
     }
-    public bool InvokeDropKickEvent(in PlayerContext data)
+    public bool InvokeDropKickEvent(in PlayerActionContext data)
     {
         return OnDropKick?.Invoke(_animData, _animPlayer, _bodyHandler, data) ?? false;
     }
-    public bool InvokeGrabbingEvent(in PlayerContext data)
+    public bool InvokeGrabbingEvent(in PlayerActionContext data)
     {
         return OnGrabbing?.Invoke(_animData, _animPlayer, _bodyHandler, data) ?? false;
     }
-    public bool InvokeTargetSearchEvent(in PlayerContext data)
+    public bool InvokeTargetSearchEvent(in PlayerActionContext data)
     {
         return OnTargetSearch?.Invoke(_animData, _animPlayer, _bodyHandler, data) ?? false;
     }
-    public bool InvokeFixJointEvent(in PlayerContext data)
+    public bool InvokeFixJointEvent(in PlayerActionContext data)
     {
         return OnJointFix?.Invoke(_animData, _animPlayer, _bodyHandler, data) ?? false;
     }
-    public bool InvokeDestroyJointEvent(in PlayerContext data)
+    public bool InvokeDestroyJointEvent(in PlayerActionContext data)
     {
         return OnJointDestroy?.Invoke(_animData, _animPlayer, _bodyHandler, data) ?? false;
     }
-    public bool InvokeUseItemEvent(in PlayerContext data)
+    public bool InvokeUseItemEvent(in PlayerActionContext data)
     {
         return OnUseItem?.Invoke(_animData, _animPlayer, _bodyHandler, data) ?? false;
     }
-    public bool InvokeThrowEvent(in PlayerContext data)
+    public bool InvokeThrowEvent(in PlayerActionContext data)
     {
         return OnThrow?.Invoke(_animData, _animPlayer, _bodyHandler, data) ?? false;
     }
-    public bool InvokeLiftEvent(in PlayerContext data)
+    public bool InvokeLiftEvent(in PlayerActionContext data)
     {
         return OnLift?.Invoke(_animData, _animPlayer, _bodyHandler, data) ?? false;
     }

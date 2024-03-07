@@ -9,6 +9,12 @@ PlantUML 개발문서
 LimbCollision도 마찬가지
  이때 StateMachine을 참조하고있는 state들이 옳은건지 확인
 
+커맨드를 체크와 input으로 나누는 과정에서 문제가 생김
+climb에서 벽 아닌곳이 잡아지거나
+아이템잡기에서 딜레이가 생기거나
+grabbing 상태에서 마우스를 놨는데 idle로 자동으로 안간다거나
+등등 딜레이 관련한 문제일수도
+
 아이템먹는모션, 펀치할때 몸 도는거 둘다 같은 원인으로 보임
 
 서버 동기화
@@ -35,6 +41,26 @@ RPC 함수하나 통하도록 (여기서 디버그 가능할수도)
 
 	//게임의 긴장감, 매달리기등에 대한 이유, 목적
 
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ스테이터스 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+health
+maxHealth
+
+damageReduction
+playerAttackMultiple
+
+스테미너 관련
+stamina
+maxStamina
+
+RecoveryTime
+RecoveryStamnaValue
+currentRecoveryTime
+currentRecoveryStaminaValue
+accumulatedTime
+
+magneticStack
+
+isDead
 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ서버 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 Actor에서는 delegate로 상태변경과 ID를 저장
 public delegate void ActorStateHandler(Actor actor, int connectionID, ActorState state);

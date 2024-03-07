@@ -13,13 +13,13 @@ public class ThrowAction
     AnimationData _animData;
     AnimationPlayer _animPlayer;
     BodyHandler _bodyHandler;
-    PlayerContext _context;
+    PlayerActionContext _context;
 
     Define.ObjectType _type;
     InteractableObject _object;
     float _throwingForce = 40f;
 
-    public bool HandleThrowEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerContext data)
+    public bool HandleThrowEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerActionContext data)
     {
         _animData = animData;
         _animPlayer = animPlayer;

@@ -8,7 +8,7 @@ using static Define;
 
 public class UpperBodySM : StateMachine
 {
-    public PlayerContext Context;
+    public PlayerActionContext Context;
 
     public Define.Side ReadySide = Define.Side.Left;
     public bool IsGrabbingInProgress=false;
@@ -22,7 +22,7 @@ public class UpperBodySM : StateMachine
     public Dictionary<PlayerState, IBaseState> StateMap { get { return stateMap; } private set { stateMap = value; } }
 
 
-    public UpperBodySM(PlayerInputHandler inputHandler, PlayerContext playerContext, HandChecker left, HandChecker right,Transform rangeSKin)
+    public UpperBodySM(PlayerInputHandler inputHandler, PlayerActionContext playerContext, HandChecker left, HandChecker right,Transform rangeSKin)
     {
         Context = playerContext;
         InputHandler = inputHandler;
