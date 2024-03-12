@@ -358,9 +358,9 @@ public class Actor : MonoBehaviourPun, IPunObservable
         OnChangeStaminaBar();
 
 
+        ExecuteCommand();
         UpdatePhysicsSM(); //마스터에서만 해야될수도
 
-        ExecuteCommand();
     }
 
     public void ResetGrab()
