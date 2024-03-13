@@ -110,7 +110,7 @@ public class ItemUseAction
         AniAngleData[] itemTwoHands = (side == Define.Side.Right) ? _animData.AngleDataLists[Define.AniAngleData.ItemTwoHandAngleData] : _animData.AngleDataLists[Define.AniAngleData.ItemTwoHandLeftAngleData];
         for (int i = 0; i < itemTwoHands.Length; i++)
         {
-            _animPlayer.AniAngleForce(itemTwoHands, i);
+            _animPlayer.PlayAnimAngle(itemTwoHands, i);
         }
     }
 
@@ -136,7 +136,7 @@ public class ItemUseAction
         for (int i = 0; i < itemTwoHands.Length; i++)
         {
             Vector3 dir = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
-            _animPlayer.AniForce(itemTwoHands, i, dir, itemSwingPower);
+            _animPlayer.PlayAnimForce(itemTwoHands, i, dir, itemSwingPower);
         }
     }
 
@@ -160,7 +160,7 @@ public class ItemUseAction
         for (int i = 0; i < itemTwoHands.Length; i++)
         {
             Vector3 dir = partTransform.transform.right / 2f;
-            _animPlayer.AniAngleForce(itemTwoHands, i, dir);
+            _animPlayer.PlayAnimAngle(itemTwoHands, i, dir);
         }
     }
     public IEnumerator Potion(float duration, float ready, float start, float drinking, float end)
@@ -201,7 +201,7 @@ public class ItemUseAction
     {
         for (int i = 0; i < _animData.AngleDataLists[Define.AniAngleData.PotionAngleAniData].Length; i++)
         {
-            _animPlayer.AniAngleForce(_animData.AngleDataLists[Define.AniAngleData.PotionAngleAniData], i);
+            _animPlayer.PlayAnimAngle(_animData.AngleDataLists[Define.AniAngleData.PotionAngleAniData], i);
         }
     }
 
@@ -209,7 +209,7 @@ public class ItemUseAction
     {
         for (int i = 0; i < _animData.FrameDataLists[Define.AniFrameData.PotionReadyAniData].Length; i++)
         {
-            _animPlayer.AniForce(_animData.FrameDataLists[Define.AniFrameData.PotionReadyAniData], i);
+            _animPlayer.PlayAnimForce(_animData.FrameDataLists[Define.AniFrameData.PotionReadyAniData], i);
         }
     }
 
@@ -217,7 +217,7 @@ public class ItemUseAction
     {
         for (int i = 0; i < _animData.FrameDataLists[Define.AniFrameData.PotionDrinkingAniData].Length; i++)
         {
-            _animPlayer.AniForce(_animData.FrameDataLists[Define.AniFrameData.PotionDrinkingAniData], i);
+            _animPlayer.PlayAnimForce(_animData.FrameDataLists[Define.AniFrameData.PotionDrinkingAniData], i);
         }
     }
 }

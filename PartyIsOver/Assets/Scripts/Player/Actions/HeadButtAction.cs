@@ -38,14 +38,14 @@ public class HeadButtAction
 
         for (int i = 0; i < _animData.FrameDataLists[Define.AniFrameData.HeadingAniData].Length; i++)
         {
-            _animPlayer.AniForce(_animData.FrameDataLists[Define.AniFrameData.HeadingAniData], i);
+            _animPlayer.PlayAnimForce(_animData.FrameDataLists[Define.AniFrameData.HeadingAniData], i);
         }
         for (int i = 0; i < _animData.AngleDataLists[Define.AniAngleData.HeadingAngleAniData].Length; i++)
         {
             if (i == 0)
-                _animPlayer.AniAngleForce(_animData.AngleDataLists[Define.AniAngleData.HeadingAngleAniData], i, _moveDir + new Vector3(0f, 0.2f, 0f));
+                _animPlayer.PlayAnimAngle(_animData.AngleDataLists[Define.AniAngleData.HeadingAngleAniData], i, _moveDir + new Vector3(0f, 0.2f, 0f));
             if (i == 1)
-                _animPlayer.AniAngleForce(_animData.AngleDataLists[Define.AniAngleData.HeadingAngleAniData], i, _moveDir + new Vector3(0f, 0.2f, 0f));
+                _animPlayer.PlayAnimAngle(_animData.AngleDataLists[Define.AniAngleData.HeadingAngleAniData], i, _moveDir + new Vector3(0f, 0.2f, 0f));
         }
 
         yield return new WaitForSeconds(_headButtCoolTime);

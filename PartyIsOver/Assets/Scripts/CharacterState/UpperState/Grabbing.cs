@@ -28,8 +28,6 @@ public class Grabbing : BodyState
     public override void UpdateLogic()
     {
         _grabDelayTimer -= Time.deltaTime;
-        _sm.InputHandler.ReserveCommand(COMMAND_KEY.TargetSearch);
-
 
         if (_context.RightGrabObject != null && _context.LeftGrabObject != null
             && _context.RightGrabObject.ItemObject == null)
@@ -43,7 +41,7 @@ public class Grabbing : BodyState
     public override void GetInput()
     {
         //마우스 떼면 Idle로
-        if (!_sm.InputHandler.CheckInputCommand(COMMAND_KEY.LeftBtn,GetKeyType.Press))
+        if (!_sm.InputHandler.CheckInput(COMMAND_KEY.LeftBtn,GetKeyType.Press))
         {
             _sm.InputHandler.ReserveCommand(COMMAND_KEY.DestroyJoint);
             _sm.ChangeState(_sm.StateMap[PlayerState.UpperIdle]);
@@ -53,6 +51,7 @@ public class Grabbing : BodyState
 
     public override void UpdatePhysics()
     {
+        _sm.InputHandler.ReserveCommand(COMMAND_KEY.TargetSearch);
         //그래빙Action 계속 실행
         if (_grabDelayTimer < 0f)
             GrabbingProgress();
@@ -79,9 +78,7 @@ public class Grabbing : BodyState
         if (_context.LeftSearchTarget == _context.RightSearchTarget && _context.RightSearchTarget.ItemObject !=null)
         {
             //일정 거리 안에서 양손이 비어있을때
-            if (TargetingHandler.TargetDistance(TargetingHandler.FindClosestCollisionPoint
-                (_context.Position,_context.RightSearchTarget.ColliderObject,_context.Layer))<= _itemSearchRange
-                  && _context.LeftGrabObject ==null && _context.RightGrabObject == null)
+            if (IsTargetInRange() && IsHandsEmpty())
             {
                 //아이템 잡기 상태로 진입
                 _context.IsItemGrabbing = true;
@@ -95,34 +92,48 @@ public class Grabbing : BodyState
             else
                 _context.IsItemGrabbing = false;
         }
-        else//아이템이 아닐때 혹은 손이 멀리 있을때
+        else//타겟이 정면에 없거나 아이템이 아닐 경우
         {
             if (_context.LeftSearchTarget != null && _context.LeftGrabObject ==null)
             {
-                _sm.InputHandler.ReserveCommand(COMMAND_KEY.Grabbing);
-                //손이 닿았을때 포톤뷰가 있으면 id를 저장하고 각 캐릭터들에게 JointFix를 시킴
                 if (HandCollisionCheck(Side.Left))
                 {
                     _sm.InputHandler.ReserveCommand(COMMAND_KEY.FixJoint);
                     _grabDelayTimer = 0.5f;
                 }
+                else
+                    _sm.InputHandler.ReserveCommand(COMMAND_KEY.Grabbing);
             }
 
             if (_context.RightSearchTarget != null && _context.RightGrabObject == null)
             {
-                //손 뻗기 Action 실행
-                _sm.InputHandler.ReserveCommand(COMMAND_KEY.Grabbing);
-
+                //손 뻗기 Action 실행 및 닿았는지 체크
                 if (HandCollisionCheck(Side.Right))
                 {
                     _sm.InputHandler.ReserveCommand(COMMAND_KEY.FixJoint);
                     _grabDelayTimer = 0.5f;
                 }
+                else
+                    _sm.InputHandler.ReserveCommand(COMMAND_KEY.Grabbing);
             }
         }
     }
 
 
+    bool IsTargetInRange()
+    {
+        if (TargetingHandler.TargetDistance(TargetingHandler.FindClosestCollisionPoint
+                (_context.Position, _context.RightSearchTarget.ColliderObject, _context.Layer)) <= _itemSearchRange)
+            return true;
+        else return false;
+    }
+
+    bool IsHandsEmpty()
+    {
+        if (_context.LeftGrabObject == null && _context.RightGrabObject == null)
+            return true;
+        else return false;
+    }
 
     //나중에 수정
     bool HandCollisionCheck(Define.Side side)

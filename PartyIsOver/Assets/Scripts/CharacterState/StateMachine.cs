@@ -47,9 +47,9 @@ public class StateMachine
         return _currentState;
     }
 
-    public bool InputCommandKey(COMMAND_KEY commandKey, GetKeyType keyType)
+    public bool ReserveInputCommand(COMMAND_KEY commandKey, GetKeyType keyType)
     {
-        if (InputHandler.CheckInputCommand(commandKey, keyType))
+        if (InputHandler.CheckInput(commandKey, keyType))
         {
             InputHandler.ReserveCommand(commandKey);
             return true;

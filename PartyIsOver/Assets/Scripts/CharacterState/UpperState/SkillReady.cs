@@ -22,7 +22,7 @@ public class SkillReady : BodyState
 
     public override void UpdateLogic()
     {
-        if (_sm.InputHandler.CheckInputCommand(COMMAND_KEY.Skill,GetKeyType.Press))
+        if (_sm.InputHandler.CheckInput(COMMAND_KEY.Skill,GetKeyType.Press))
         {
             _pressDuration += Time.deltaTime;
         }
@@ -31,7 +31,7 @@ public class SkillReady : BodyState
             if (_pressDuration > _skillActiveThreshold)
             {
                 //스킬 발동 상태로
-                if (_sm.InputCommandKey(COMMAND_KEY.Skill, GetKeyType.Up))
+                if (_sm.ReserveInputCommand(COMMAND_KEY.Skill, GetKeyType.Up))
                 {
                     _sm.InputHandler.ReserveCommand(COMMAND_KEY.ResetCharge);
                     _sm.ChangeState(_sm.StateMap[PlayerState.Skill]);
@@ -40,8 +40,8 @@ public class SkillReady : BodyState
             else
             {
                 //Idle 상태로
-                _sm.ChangeState(_sm.StateMap[PlayerState.UpperIdle]);
                 _sm.InputHandler.ReserveCommand(COMMAND_KEY.ResetCharge);
+                _sm.ChangeState(_sm.StateMap[PlayerState.UpperIdle]);
             }
         }
     }

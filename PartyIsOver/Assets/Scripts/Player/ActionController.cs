@@ -17,6 +17,7 @@ public class ActionController
     BodyHandler _bodyHandler;
 
     public delegate bool ActionDelegate(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerActionContext dynamicData);
+    //public event ActionDelegate[] ActionEvents;
     public event ActionDelegate OnJump;
     public event ActionDelegate OnMove;
     public event ActionDelegate OnPunch;

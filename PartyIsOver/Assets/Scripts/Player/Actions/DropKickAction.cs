@@ -52,7 +52,7 @@ public class DropKickAction
                 //_bodyHandler.RightThigh.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
                 _bodyHandler.RightLeg.PartInteractable.damageModifier = InteractableObject.Damage.DropKick; //데미지
                 Vector3 dir = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
-                _animPlayer.AniForce(_animData.FrameDataLists[Define.AniFrameData.DropAniData], i, dir);
+                _animPlayer.PlayAnimForce(_animData.FrameDataLists[Define.AniFrameData.DropAniData], i, dir);
                 //photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LegLowerR, true);
             }
             else if (i == 1)
@@ -62,12 +62,12 @@ public class DropKickAction
                 //_bodyHandler.LeftThigh.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
                 _bodyHandler.LeftLeg.PartInteractable.damageModifier = InteractableObject.Damage.DropKick; //데미지
                 Vector3 dir = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
-                _animPlayer.AniForce(_animData.FrameDataLists[Define.AniFrameData.DropAniData], i, dir);
+                _animPlayer.PlayAnimForce(_animData.FrameDataLists[Define.AniFrameData.DropAniData], i, dir);
                 //photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LegLowerL, true);
             }
             else
             {
-                _animPlayer.AniForce(_animData.FrameDataLists[Define.AniFrameData.DropAniData], i);
+                _animPlayer.PlayAnimForce(_animData.FrameDataLists[Define.AniFrameData.DropAniData], i);
             }
         }
 

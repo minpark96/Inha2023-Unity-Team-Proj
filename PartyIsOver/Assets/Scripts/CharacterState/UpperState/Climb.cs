@@ -33,12 +33,12 @@ public class Climb : BodyState
 
     public override void GetInput()
     {
-        if (_sm.InputCommandKey(COMMAND_KEY.Jump, GetKeyType.Down) && _isClimb)
+        if (_sm.ReserveInputCommand(COMMAND_KEY.Jump, GetKeyType.Down) && _isClimb)
         {
             _sm.InputHandler.ReserveCommand(COMMAND_KEY.DestroyJoint);
             _isClimb = false;
         }
-        if (!_sm.InputCommandKey(COMMAND_KEY.LeftBtn, GetKeyType.Press))
+        if (!_sm.ReserveInputCommand(COMMAND_KEY.LeftBtn, GetKeyType.Press))
             _sm.ChangeState(_sm.StateMap[PlayerState.UpperIdle]);
     }
 

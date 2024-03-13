@@ -34,13 +34,13 @@ public class JumpAction
     {
         for (int i = 0; i < _animData.FrameDataLists[Define.AniFrameData.JumpAniForceData].Length; i++)
         {
-            _animPlayer.AniForce(_animData.FrameDataLists[Define.AniFrameData.JumpAniForceData], i, Vector3.up);
+            _animPlayer.PlayAnimForce(_animData.FrameDataLists[Define.AniFrameData.JumpAniForceData], i, Vector3.up);
             if (i == 2)
-                _animPlayer.AniForce(_animData.FrameDataLists[Define.AniFrameData.JumpAniForceData], i, Vector3.down);
+                _animPlayer.PlayAnimForce(_animData.FrameDataLists[Define.AniFrameData.JumpAniForceData], i, Vector3.down);
         }
         for (int i = 0; i < _animData.AngleDataLists[Define.AniAngleData.MoveAngleJumpAniData].Length; i++)
         {
-            _animPlayer.AniAngleForce(_animData.AngleDataLists[Define.AniAngleData.MoveAngleJumpAniData], i,
+            _animPlayer.PlayAnimAngle(_animData.AngleDataLists[Define.AniAngleData.MoveAngleJumpAniData], i,
                 new Vector3(_context.InputDirX, _context.InputDirY + 0.2f, _context.InputDirZ));
         }
     }

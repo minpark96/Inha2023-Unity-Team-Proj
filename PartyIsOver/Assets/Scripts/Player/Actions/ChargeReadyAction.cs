@@ -41,7 +41,7 @@ public class ChargeReadyAction
         }
 
         for (int i = 0; i < _animData.AngleDataLists[Define.AniAngleData.RSkillAngleAniData].Length; i++)
-            _animPlayer.AniAngleForce(_animData.AngleDataLists[Define.AniAngleData.RSkillAngleAniData], i);
+            _animPlayer.PlayAnimAngle(_animData.AngleDataLists[Define.AniAngleData.RSkillAngleAniData], i);
 
 
         yield return (ForceRready(_chargeAniHoldTime));
@@ -52,7 +52,7 @@ public class ChargeReadyAction
         _startChargeTime = Time.time;
         for (int i = 0; i < _animData.FrameDataLists[Define.AniFrameData.RSkillAniData].Length; i++)
         {
-            _animPlayer.AniForce(_animData.FrameDataLists[Define.AniFrameData.RSkillAniData], i);
+            _animPlayer.PlayAnimForce(_animData.FrameDataLists[Define.AniFrameData.RSkillAniData], i);
         }
         yield return new WaitForSeconds(delay);
 

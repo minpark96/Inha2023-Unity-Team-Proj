@@ -22,7 +22,7 @@ public class LowerIdle : BodyState
         {
             _sm.ChangeState(_sm.MovingState);
         }
-        if (_sm.InputCommandKey(Define.COMMAND_KEY.Jump, Define.GetKeyType.Down))
+        if (_sm.ReserveInputCommand(Define.COMMAND_KEY.Jump, Define.GetKeyType.Down))
         {
             _sm.ChangeState(_sm.JumpingState);
         }

@@ -87,7 +87,7 @@ public class PunchAction
         AniAngleData[] aniAngleDatas = (side == Define.Side.Right) ? animData.AngleDataLists[Define.AniAngleData.RightPunchAniData] : animData.AngleDataLists[Define.AniAngleData.LeftPunchAniData];
         for (int i = 0; i < aniAngleDatas.Length; i++)
         {
-            animPlayer.AniAngleForce(aniAngleDatas, i);
+            animPlayer.PlayAnimAngle(aniAngleDatas, i);
         }
     }
 
@@ -142,12 +142,12 @@ public class PunchAction
             if (isRSkillCheck)
             {
                 if (isMeowPunch)
-                    animPlayer.AniForce(aniFrameDatas, i, dir, meowPunchPower);
+                    animPlayer.PlayAnimForce(aniFrameDatas, i, dir, meowPunchPower);
                 else
-                    animPlayer.AniForce(aniFrameDatas, i, dir, nuclearPunchPower);
+                    animPlayer.PlayAnimForce(aniFrameDatas, i, dir, nuclearPunchPower);
             }
             else
-                animPlayer.AniForce(aniFrameDatas, i, dir);
+                animPlayer.PlayAnimForce(aniFrameDatas, i, dir);
         }
     }
 
@@ -178,7 +178,7 @@ public class PunchAction
         for (int i = 0; i < aniAngleDatas.Length; i++)
         {
             Vector3 dir = partTransform.transform.right / 2f;
-            animPlayer.AniAngleForce(animData.AngleDataLists[Define.AniAngleData.LeftPunchResettingAniData], i, dir);
+            animPlayer.PlayAnimAngle(animData.AngleDataLists[Define.AniAngleData.LeftPunchResettingAniData], i, dir);
         }
     }
 }

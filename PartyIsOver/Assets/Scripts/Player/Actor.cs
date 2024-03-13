@@ -358,8 +358,8 @@ public class Actor : MonoBehaviourPun, IPunObservable
         OnChangeStaminaBar();
 
 
-        ExecuteCommand();
         UpdatePhysicsSM(); //마스터에서만 해야될수도
+        ExecuteCommand();
 
     }
 
@@ -404,12 +404,10 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
    
 
-
-    //Update에서 활성키들을 모아놨다가
-    //프레임상 문제가 있음 Execute 할 떄 마다 _activeCommand를 0으로 해야함
     void ExecuteCommand()
     {
         _activeCommand = _inputHandler.GetActiveCmdFlag();
+
         //Master클라이어트에게 받은 커맨드로 해당하는 actor들을 컨트롤하는 방향으로 혹은 마스터에서 바로 actor.execute
         for (int i = 0; i < Enum.GetValues(typeof(COMMAND_KEY)).Length -1; i++)
         {

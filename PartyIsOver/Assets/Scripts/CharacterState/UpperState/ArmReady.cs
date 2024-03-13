@@ -21,7 +21,7 @@ public class ArmReady : BodyState
 
     public override void UpdateLogic()
     {
-        if (_sm.InputHandler.CheckInputCommand(COMMAND_KEY.LeftBtn, GetKeyType.Press))
+        if (_sm.InputHandler.CheckInput(COMMAND_KEY.LeftBtn, GetKeyType.Press))
         {
             _pressDuration += Time.deltaTime;
 
@@ -34,7 +34,7 @@ public class ArmReady : BodyState
         else if (_pressDuration < _punchGrabThreshold)
         {
             //ÆÝÄ¡
-            if (_sm.InputCommandKey(COMMAND_KEY.LeftBtn, GetKeyType.Up))
+            if (_sm.ReserveInputCommand(COMMAND_KEY.LeftBtn, GetKeyType.Up))
             {
                 _sm.ChangeState(_sm.StateMap[PlayerState.Punch]);
             }

@@ -78,7 +78,7 @@ public class PlayerInputHandler : MonoBehaviourPun
             return true;
     }
 
-    public bool CheckInputCommand(COMMAND_KEY commandKey, GetKeyType keyType)
+    public bool CheckInput(COMMAND_KEY commandKey, GetKeyType keyType)
     {
         // COMMAND_KEY에 대응하는 KeyCode 배열 가져오기
         if (keyMap.TryGetValue(commandKey, out _keyCodes))

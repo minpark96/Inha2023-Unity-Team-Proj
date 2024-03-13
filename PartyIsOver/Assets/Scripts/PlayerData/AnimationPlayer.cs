@@ -77,23 +77,24 @@ public class AnimationPlayer
         return _direction;
     }
 
-    public void AniForce(AniFrameData[] aniForceData, int _elementCount, Vector3 _dir = default, float _punchpower = 1f)
+    public void PlayAnimForce(AniFrameData[] aniForceData, int _elementCount, Vector3 _dir = default, float _punchpower = 1f)
     {
         for (int i = 0; i < aniForceData[_elementCount].StandardRigidbodies.Length; i++)
         {
             if (aniForceData[_elementCount].ForceDirections[i] == ForceDirection.Zero)
-            {
-                aniForceData[_elementCount].ActionRigidbodies[i].AddForce(_dir * aniForceData[_elementCount].ForcePowerValues[i] * _punchpower, ForceMode.Impulse);
-            }
+                aniForceData[_elementCount].ActionRigidbodies[i].
+                    AddForce(_dir * aniForceData[_elementCount].ForcePowerValues[i] * _punchpower, ForceMode.Impulse);
+            
             else
             {
                 Vector3 _direction = GetForceDirection(aniForceData[_elementCount], i);
-                aniForceData[_elementCount].ActionRigidbodies[i].AddForce(_direction * aniForceData[_elementCount].ForcePowerValues[i] * _punchpower, ForceMode.Impulse);
+                aniForceData[_elementCount].ActionRigidbodies[i].
+                    AddForce(_direction * aniForceData[_elementCount].ForcePowerValues[i] * _punchpower, ForceMode.Impulse);
             }
         }
     }
 
-    public void AniAngleForce(AniAngleData[] _aniAngleData, int _elementCount, Vector3 _vector = default)//default´Â vector3.zero
+    public void PlayAnimAngle(AniAngleData[] _aniAngleData, int _elementCount, Vector3 _vector = default)//default´Â vector3.zero
     {
         for (int i = 0; i < _aniAngleData[_elementCount].ActionRigidbodies.Length; i++)
         {
@@ -110,9 +111,8 @@ public class AnimationPlayer
     public void AlignToVector(Rigidbody part, Vector3 alignmentVector, Vector3 targetVector, float stability, float speed)
     {
         if (part == null)
-        {
             return;
-        }
+        
         Vector3 vector = Vector3.Cross(Quaternion.AngleAxis(part.angularVelocity.magnitude * 57.29578f * stability / speed, part.angularVelocity) * alignmentVector, targetVector * 10f);
         if (!float.IsNaN(vector.x) && !float.IsNaN(vector.y) && !float.IsNaN(vector.z))
         {

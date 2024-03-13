@@ -39,11 +39,11 @@ public class EquipItem : BodyState
 
     public override void GetInput()
     {
-        if (_sm.InputCommandKey(COMMAND_KEY.LeftBtn, GetKeyType.Down) && _coolTimeTimer < 0f)
+        if (_sm.ReserveInputCommand(COMMAND_KEY.LeftBtn, GetKeyType.Down) && _coolTimeTimer < 0f)
             _coolTimeTimer = _itemCoolTime;
         
 
-        if (_sm.InputCommandKey(COMMAND_KEY.RightBtn, GetKeyType.Down))
+        if (_sm.ReserveInputCommand(COMMAND_KEY.RightBtn, GetKeyType.Down))
         {
             if(_item.ItemData.ItemType != ItemType.Consumable)
                 _sm.Context.IsUpperActionProgress = false;

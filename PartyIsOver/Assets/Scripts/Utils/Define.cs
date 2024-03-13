@@ -268,6 +268,25 @@ public static class Define
         End,
     }
 
+    public enum ActionEventName
+    {
+        Jump,
+        Move,
+        Punch,
+        Skill,
+        ChargeReady,
+        ResetCharge,
+        HeadButt,
+        DropKick,
+        Grabbing,
+        TargetSearch,
+        JointFix,
+        JointDestroy,
+        UseItem,
+        Throw,
+        Lift,
+    }
+
     public enum AnimDirection
     {
         Zero,

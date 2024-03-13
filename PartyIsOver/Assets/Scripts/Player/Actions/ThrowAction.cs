@@ -99,7 +99,7 @@ public class ThrowAction
     {
         for (int i = 0; i < _animData.AngleDataLists[Define.AniAngleData.PotionAngleAniData].Length; i++)
         {
-            _animPlayer.AniAngleForce(_animData.AngleDataLists[Define.AniAngleData.PotionAngleAniData], i);
+            _animPlayer.PlayAnimAngle(_animData.AngleDataLists[Define.AniAngleData.PotionAngleAniData], i);
         }
     }
 
@@ -107,7 +107,7 @@ public class ThrowAction
     {
         for (int i = 0; i < _animData.FrameDataLists[Define.AniFrameData.PotionThrowAniData].Length; i++)
         {
-            _animPlayer.AniForce(_animData.FrameDataLists[Define.AniFrameData.PotionThrowAniData], i);
+            _animPlayer.PlayAnimForce(_animData.FrameDataLists[Define.AniFrameData.PotionThrowAniData], i);
         }
     }
 
@@ -115,7 +115,7 @@ public class ThrowAction
     {
         for (int i = 0; i < _animData.AngleDataLists[Define.AniAngleData.PotionThrowAngleData].Length; i++)
         {
-            _animPlayer.AniAngleForce(_animData.AngleDataLists[Define.AniAngleData.PotionThrowAngleData], i);
+            _animPlayer.PlayAnimAngle(_animData.AngleDataLists[Define.AniAngleData.PotionThrowAngleData], i);
         }
     }
 }
