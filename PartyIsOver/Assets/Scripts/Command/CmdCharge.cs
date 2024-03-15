@@ -10,6 +10,6 @@ public class CmdCharge:PlayerCommand
     }
     public override bool Execute(in PlayerActionContext data)
     {
-        return actor.ActionController.InvokeChargeEvent(data);
+        return actor.ActionController.InvokeEvent(data, Define.ActionEventName.ChargeReady);
     }
 }

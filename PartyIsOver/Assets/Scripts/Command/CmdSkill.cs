@@ -10,6 +10,6 @@ public class CmdSkill : PlayerCommand
     }
     public override bool Execute(in PlayerActionContext data)
     {
-        return actor.ActionController.InvokeSkillEvent(data);
+        return actor.ActionController.InvokeEvent(data, Define.ActionEventName.Skill);
     }
 }

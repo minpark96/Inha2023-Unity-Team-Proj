@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Define;
 
-public class LiftAction : MonoBehaviour
+public class LiftAction : PlayerAction
 {
-    public LiftAction(ActionController actions)
+    public LiftAction(ActionController actions, Define.ActionEventName name) : base(actions, name)
     {
-        actions.OnLift -= HandleLiftEvent;
-        actions.OnLift += HandleLiftEvent;
     }
 
     BodyHandler _bodyHandler;
@@ -19,7 +17,7 @@ public class LiftAction : MonoBehaviour
     InteractableObject _object;
     Vector3 _inputMoveDir = new Vector3();
 
-    public bool HandleLiftEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerActionContext data)
+    protected override bool HandleActionEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerActionContext data)
     {
         _bodyHandler = bodyHandler;
         _context = data;

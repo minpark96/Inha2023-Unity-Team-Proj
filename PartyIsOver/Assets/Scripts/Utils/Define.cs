@@ -38,14 +38,6 @@ public static class Define
         Click,
         Drag,
     }
-    public enum AIState
-    {
-        Idle,
-        Move,
-        Find,
-        Attack,
-    }
-
 
     public enum SceneType
     {
@@ -106,8 +98,6 @@ public static class Define
         TwoHanded,
         Ranged,
         Consumable,
-
-
 
         End,
     }

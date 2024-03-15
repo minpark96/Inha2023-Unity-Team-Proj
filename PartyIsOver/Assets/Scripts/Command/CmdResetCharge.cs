@@ -10,6 +10,6 @@ public class CmdResetCharge : PlayerCommand
     }
     public override bool Execute(in PlayerActionContext data)
     {
-        return actor.ActionController.InvokeResetChargeEvent(data);
+        return actor.ActionController.InvokeEvent(data, Define.ActionEventName.ResetCharge);
     }
 }

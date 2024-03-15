@@ -3,14 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PunchAction
+public class PunchAction : PlayerAction
 {
     protected ActionController actions;
 
-    public PunchAction(ActionController actions)
+    public PunchAction(ActionController actions, Define.ActionEventName name) : base(actions, name)
     {
         this.actions = actions;
-        Init();
     }
 
     protected AnimationData animData;
@@ -32,13 +31,8 @@ public class PunchAction
     protected ConfigurableJointMotion[] _originalYMotions;
     protected ConfigurableJointMotion[] _originalZMotions;
 
-    protected virtual void Init()
-    {
-        actions.OnPunch -= HandlePunchEvent;
-        actions.OnPunch += HandlePunchEvent;
-    }
 
-    bool HandlePunchEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler,in PlayerActionContext data)
+    protected override bool HandleActionEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler,in PlayerActionContext data)
     {
         this.animData = animData;
         this.animPlayer = animPlayer;

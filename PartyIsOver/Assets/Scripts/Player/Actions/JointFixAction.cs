@@ -3,21 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static Define;
-using static PlayerController;
 
-public class JointFixAction
+public class JointFixAction : PlayerAction
 {
-    public JointFixAction(ActionController actions)
+    public JointFixAction(ActionController actions, Define.ActionEventName name) : base(actions, name)
     {
-        actions.OnJointFix -= HandleJointFixEvent;
-        actions.OnJointFix += HandleJointFixEvent;
     }
 
     BodyHandler _bodyHandler;
     PlayerActionContext _context;
     ItemType _type = ItemType.None;
 
-    bool HandleJointFixEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerActionContext data)
+    protected override bool HandleActionEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerActionContext data)
     {
         _bodyHandler = bodyHandler;
         _context = data;

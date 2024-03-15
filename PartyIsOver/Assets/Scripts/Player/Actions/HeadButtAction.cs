@@ -3,23 +3,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HeadButtAction
+public class HeadButtAction : PlayerAction
 {
-    public HeadButtAction(ActionController actions)
+    public HeadButtAction(ActionController actions, Define.ActionEventName name) : base(actions, name)
     {
-        actions.OnHeadButt -= HandleHeadButtEvent;
-        actions.OnHeadButt += HandleHeadButtEvent;
-        _actions = actions;
     }
 
-    ActionController _actions;
+
     AnimationPlayer _animPlayer;
     AnimationData _animData;
     PlayerActionContext _context;
     float _headButtCoolTime = 1f;
     Vector3 _moveDir = new Vector3();
 
-    public bool HandleHeadButtEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerActionContext data)
+    protected override bool HandleActionEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerActionContext data)
     {
         _animData = animData;
         _animPlayer = animPlayer;

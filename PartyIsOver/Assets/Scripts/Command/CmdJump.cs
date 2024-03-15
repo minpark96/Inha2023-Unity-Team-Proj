@@ -10,6 +10,6 @@ public class CmdJump : PlayerCommand
     }
     public override bool Execute(in PlayerActionContext data)
     {
-        return actor.ActionController.InvokeJumpEvent(data);
+        return actor.ActionController.InvokeEvent(data, Define.ActionEventName.Jump);
     }
 }

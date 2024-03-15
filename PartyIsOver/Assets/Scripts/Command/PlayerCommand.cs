@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerCommand : ICommand
+public abstract class PlayerCommand : ICommand
 {
     protected Actor actor;
     public float Timestamp { get; set; }

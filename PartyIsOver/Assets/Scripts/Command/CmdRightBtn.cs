@@ -11,8 +11,8 @@ public class CmdRightBtn : PlayerCommand
     public override bool Execute(in PlayerActionContext data)
     {
         if(actor.GetLowerState() == Define.PlayerState.DropKick)
-            return actor.ActionController.InvokeDropKickEvent(data);
+            return actor.ActionController.InvokeEvent(data, Define.ActionEventName.DropKick);
         else
-            return actor.ActionController.InvokeThrowEvent(data);
+            return actor.ActionController.InvokeEvent(data, Define.ActionEventName.Throw);
     }
 }

@@ -2,17 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MoveAction
+public class MoveAction : PlayerAction
 {
-    public MoveAction(ActionController actions)
+    public MoveAction(ActionController actions, Define.ActionEventName name) : base(actions, name)
     {
-        actions.OnMove -= HandleMovement;
-        actions.OnMove += HandleMovement;
-
         PlayerStatData statData = Managers.Resource.Load<PlayerStatData>("ScriptableObject/PlayerStatData");
         _maxSpeed = statData.MaxSpeed;
         _runSpeed = statData.RunSpeed;
     }
+
 
     AnimationPlayer _animPlayer;
     BodyHandler _bodyHandler;
@@ -33,7 +31,7 @@ public class MoveAction
     int[] limbPositions = new int[4];
 
 
-    public bool HandleMovement(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerActionContext data)
+    protected override bool HandleActionEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerActionContext data)
     {
         _animPlayer = animPlayer;
         _bodyHandler = bodyHandler;

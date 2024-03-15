@@ -10,6 +10,6 @@ public class CmdHeadButt : PlayerCommand
     }
     public override bool Execute(in PlayerActionContext data)
     {
-        return actor.ActionController.InvokeHeadButtEvent(data);
+        return actor.ActionController.InvokeEvent(data, Define.ActionEventName.HeadButt);
     }
 }

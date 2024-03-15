@@ -21,7 +21,6 @@ public class InteractableObject : MonoBehaviourPun
         Init();
     }
 
-
     public enum Damage
     {
         Ignore = 0,
@@ -49,12 +48,8 @@ public class InteractableObject : MonoBehaviourPun
         _initialDamage = damageModifier;
 
         ItemObject = GetComponent<Item>();
-
         ColliderObject = GetComponent<Collider>();
-        //if(ColliderObject == null ) Debug.LogWarning("콜라이더 없음 " + gameObject.name);
-
         RigidbodyObject = GetComponent<Rigidbody>();
-        //if( RigidbodyObject == null )  Debug.LogWarning("RB 없음 " + gameObject.name);
 
         PhotonView = GetComponent<PhotonView>();
         if (PhotonView != null) ViewID = PhotonView.ViewID;

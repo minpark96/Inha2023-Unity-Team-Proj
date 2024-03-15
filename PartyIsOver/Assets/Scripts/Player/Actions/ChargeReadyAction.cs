@@ -3,12 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ChargeReadyAction
+public class ChargeReadyAction : PlayerAction
 {
-    public ChargeReadyAction(ActionController actions)
+    public ChargeReadyAction(ActionController actions,Define.ActionEventName name):base(actions,name)
     {
-        actions.OnChargeReady -= HandleChargeEvent;
-        actions.OnChargeReady += HandleChargeEvent;
     }
 
     AnimationPlayer _animPlayer;
@@ -20,7 +18,7 @@ public class ChargeReadyAction
     ConfigurableJoint[] _childJoints;
 
 
-    public bool HandleChargeEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerActionContext data)
+    protected override bool HandleActionEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerActionContext data)
     {
         _animData = animData;
         _animPlayer = animPlayer;

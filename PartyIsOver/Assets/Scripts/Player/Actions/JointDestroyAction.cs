@@ -5,19 +5,17 @@ using Unity.VisualScripting;
 using UnityEngine;
 using static Define;
 
-public class JointDestroyAction
+public class JointDestroyAction : PlayerAction
 {
-    public JointDestroyAction(ActionController actions)
+    public JointDestroyAction(ActionController actions, Define.ActionEventName name) : base(actions, name)
     {
-        actions.OnJointDestroy -= HandleJointDestroyEvent;
-        actions.OnJointDestroy += HandleJointDestroyEvent;
     }
 
     PlayerActionContext _context;
     BodyHandler _bodyHandler;
     Item _equipItem;
 
-    bool HandleJointDestroyEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerActionContext data)
+    protected override bool HandleActionEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerActionContext data)
     {
         _context = data;
         _bodyHandler = bodyHandler;

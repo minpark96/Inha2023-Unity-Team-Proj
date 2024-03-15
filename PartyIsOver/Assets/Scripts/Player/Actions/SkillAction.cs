@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class SkillAction : PunchAction
 {
-    public SkillAction(ActionController actions):base(actions)
+    public SkillAction(ActionController actions, Define.ActionEventName name) : base(actions, name)
     {
     }
 
@@ -13,13 +13,7 @@ public class SkillAction : PunchAction
     int _punchCount = 5;
 
 
-    protected override void Init()
-    {
-        actions.OnSkill -= HandleSkillEvent;
-        actions.OnSkill += HandleSkillEvent;
-    }
-
-    bool HandleSkillEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerActionContext data)
+    protected override bool HandleActionEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerActionContext data)
     {
         base.animData = animData;
         base.animPlayer = animPlayer;

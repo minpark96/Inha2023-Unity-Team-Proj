@@ -3,12 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ResetChargeAction
+public class ResetChargeAction : PlayerAction
 {
-    public ResetChargeAction(ActionController actions)
+    public ResetChargeAction(ActionController actions, Define.ActionEventName name) : base(actions, name)
     {
-        actions.OnResetCharge -= HandleResetChargeEvent;
-        actions.OnResetCharge += HandleResetChargeEvent;
     }
 
     AnimationData _animData;
@@ -17,7 +15,7 @@ public class ResetChargeAction
     private ConfigurableJointMotion[] _originalYMotions;
     private ConfigurableJointMotion[] _originalZMotions;
 
-    public bool HandleResetChargeEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerActionContext data)
+    protected override bool HandleActionEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerActionContext data)
     {
         _animData = animData;
 

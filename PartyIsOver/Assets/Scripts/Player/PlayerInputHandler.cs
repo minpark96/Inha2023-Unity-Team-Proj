@@ -33,17 +33,17 @@ public class PlayerInputHandler : MonoBehaviourPun
 
     public void InitCommnad(Actor actor)
     {
-        commands.Add(COMMAND_KEY.Jump, new CmdJump(actor));
-        commands.Add(COMMAND_KEY.Move, new CmdMove(actor));
-        commands.Add(COMMAND_KEY.LeftBtn, new CmdLeftBtn(actor));
-        commands.Add(COMMAND_KEY.Skill, new CmdSkill(actor));
-        commands.Add(COMMAND_KEY.Charge, new CmdCharge(actor));
-        commands.Add(COMMAND_KEY.ResetCharge, new CmdResetCharge(actor));
-        commands.Add(COMMAND_KEY.HeadButt, new CmdHeadButt(actor));
-        commands.Add(COMMAND_KEY.RightBtn, new CmdRightBtn(actor));
-        commands.Add(COMMAND_KEY.Grabbing, new CmdGrabbing(actor));
+        commands.Add(COMMAND_KEY.Jump,         new CmdJump(actor));
+        commands.Add(COMMAND_KEY.Move,         new CmdMove(actor));
+        commands.Add(COMMAND_KEY.LeftBtn,      new CmdLeftBtn(actor));
+        commands.Add(COMMAND_KEY.Skill,        new CmdSkill(actor));
+        commands.Add(COMMAND_KEY.Charge,       new CmdCharge(actor));
+        commands.Add(COMMAND_KEY.ResetCharge,  new CmdResetCharge(actor));
+        commands.Add(COMMAND_KEY.HeadButt,     new CmdHeadButt(actor));
+        commands.Add(COMMAND_KEY.RightBtn,     new CmdRightBtn(actor));
+        commands.Add(COMMAND_KEY.Grabbing,     new CmdGrabbing(actor));
         commands.Add(COMMAND_KEY.TargetSearch, new CmdSearchTarget(actor));
-        commands.Add(COMMAND_KEY.FixJoint, new CmdFixJoint(actor));
+        commands.Add(COMMAND_KEY.FixJoint,     new CmdFixJoint(actor));
         commands.Add(COMMAND_KEY.DestroyJoint, new CmdDestroyJoint(actor));
     }
 

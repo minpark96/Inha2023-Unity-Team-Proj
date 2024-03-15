@@ -2,12 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static Define;
-public class ThrowAction
+public class ThrowAction : PlayerAction
 {
-    public ThrowAction(ActionController actions)
+    public ThrowAction(ActionController actions, Define.ActionEventName name) : base(actions, name)
     {
-        actions.OnThrow -= HandleThrowEvent;
-        actions.OnThrow += HandleThrowEvent;
     }
 
     AnimationData _animData;
@@ -19,7 +17,7 @@ public class ThrowAction
     InteractableObject _object;
     float _throwingForce = 40f;
 
-    public bool HandleThrowEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerActionContext data)
+    protected override bool HandleActionEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerActionContext data)
     {
         _animData = animData;
         _animPlayer = animPlayer;

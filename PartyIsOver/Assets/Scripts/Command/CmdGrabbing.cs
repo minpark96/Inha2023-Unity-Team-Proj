@@ -10,6 +10,6 @@ public class CmdGrabbing : PlayerCommand
     }
     public override bool Execute(in PlayerActionContext data)
     {
-        return actor.ActionController.InvokeGrabbingEvent(data);
+        return actor.ActionController.InvokeEvent(data, Define.ActionEventName.Grabbing);
     }
 }

@@ -2,19 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class JumpAction
+public class JumpAction : PlayerAction
 {
-    public JumpAction(ActionController actions)
+    public JumpAction(ActionController actions, Define.ActionEventName name) : base(actions, name)
     {
-        actions.OnJump -= HandleJumpEvent;
-        actions.OnJump += HandleJumpEvent;
     }
 
     AnimationData _animData;
     AnimationPlayer _animPlayer;
     PlayerActionContext _context;
     BodyHandler _bodyHandler;
-    bool HandleJumpEvent(AnimationData animData, AnimationPlayer animPlayer,BodyHandler bodyHandler, in PlayerActionContext data)
+    protected override bool HandleActionEvent(AnimationData animData, AnimationPlayer animPlayer,BodyHandler bodyHandler, in PlayerActionContext data)
     {
         _animData = animData;
         _animPlayer = animPlayer;

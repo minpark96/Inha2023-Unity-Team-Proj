@@ -14,11 +14,11 @@ public class CmdLeftBtn : PlayerCommand
         switch (actor.GetUpperState())
         {
             case Define.PlayerState.Punch:
-                return actor.ActionController.InvokePunchEvent(data);
+                return actor.ActionController.InvokeEvent(data,Define.ActionEventName.Punch);
             case Define.PlayerState.EquipItem:
-                return actor.ActionController.InvokeUseItemEvent(data);
+                return actor.ActionController.InvokeEvent(data, Define.ActionEventName.UseItem);
             case Define.PlayerState.LiftObject:
-                return actor.ActionController.InvokeLiftEvent(data);
+                return actor.ActionController.InvokeEvent(data, Define.ActionEventName.Lift);
             default: return false;
         }
     }

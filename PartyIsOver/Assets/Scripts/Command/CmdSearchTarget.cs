@@ -10,6 +10,6 @@ public class CmdSearchTarget : PlayerCommand
     }
     public override bool Execute(in PlayerActionContext data)
     {
-        return actor.ActionController.InvokeTargetSearchEvent(data);
+        return actor.ActionController.InvokeEvent(data, Define.ActionEventName.TargetSearch);
     }
 }

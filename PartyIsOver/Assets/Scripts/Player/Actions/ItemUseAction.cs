@@ -5,12 +5,10 @@ using TMPro;
 using UnityEngine;
 using static Define;
 
-public class ItemUseAction
+public class ItemUseAction : PlayerAction
 {
-    public ItemUseAction(ActionController actions)
+    public ItemUseAction(ActionController actions, Define.ActionEventName name) : base(actions, name)
     {
-        actions.OnUseItem -= HandleUseItemEvent;
-        actions.OnUseItem += HandleUseItemEvent;
     }
     Define.ItemType _type;
     PlayerActionContext _context;
@@ -18,9 +16,8 @@ public class ItemUseAction
     AnimationData _animData;
     AnimationPlayer _animPlayer;
     InteractableObject _item;
-    //public float _turnForce;
 
-    bool HandleUseItemEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerActionContext data)
+    protected override bool HandleActionEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerActionContext data)
     {
         _type = data.EquipItem.ItemObject.ItemData.ItemType;
         _item = data.EquipItem;

@@ -3,12 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DropKickAction
+public class DropKickAction:PlayerAction
 {
-    public DropKickAction(ActionController actions)
+    public DropKickAction(ActionController actions, Define.ActionEventName name) : base(actions, name)
     {
-        actions.OnDropKick -= HandleDropKickEvent;
-        actions.OnDropKick += HandleDropKickEvent;
         this._actions = actions;
     }
 
@@ -21,7 +19,7 @@ public class DropKickAction
     float _springLerpTime =1f;
 
 
-    public bool HandleDropKickEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerActionContext data)
+    protected override bool HandleActionEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerActionContext data)
     {
         _animData = animData;
         _animPlayer = animPlayer;

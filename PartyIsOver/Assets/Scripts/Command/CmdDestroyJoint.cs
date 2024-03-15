@@ -10,6 +10,6 @@ public class CmdDestroyJoint : PlayerCommand
     }
     public override bool Execute(in PlayerActionContext data)
     {
-        return actor.ActionController.InvokeDestroyJointEvent(data);
+        return actor.ActionController.InvokeEvent(data, Define.ActionEventName.JointDestroy);
     }
 }

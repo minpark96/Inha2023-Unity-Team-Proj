@@ -10,6 +10,6 @@ public class CmdFixJoint : PlayerCommand
     }
     public override bool Execute(in PlayerActionContext data)
     {
-        return actor.ActionController.InvokeFixJointEvent(data);
+        return actor.ActionController.InvokeEvent(data, Define.ActionEventName.JointFix);
     }
 }

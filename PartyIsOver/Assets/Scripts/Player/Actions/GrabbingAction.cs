@@ -5,12 +5,10 @@ using Unity.VisualScripting;
 using UnityEngine;
 using static Define;
 
-public class GrabbingAction
+public class GrabbingAction:PlayerAction
 {
-    public GrabbingAction(ActionController actions)
+    public GrabbingAction(ActionController actions, Define.ActionEventName name) : base(actions, name)
     {
-        actions.OnGrabbing -= HandleGrabbingEvent;
-        actions.OnGrabbing += HandleGrabbingEvent;
     }
     PlayerActionContext _context;
     Rigidbody _leftHandRigid;
@@ -23,7 +21,7 @@ public class GrabbingAction
     Vector3 _leftTargetDir;
     Vector3 _rightTargetDir;
 
-    public bool HandleGrabbingEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerActionContext data)
+    protected override bool HandleActionEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerActionContext data)
     {
         _context = data;
         _isGrounded = data.IsGrounded;

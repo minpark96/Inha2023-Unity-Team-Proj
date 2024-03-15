@@ -3,16 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SearchAction
+public class SearchAction : PlayerAction
 {
-    public SearchAction(ActionController actions)
+    public SearchAction(ActionController actions, Define.ActionEventName name) : base(actions, name)
     {
-        actions.OnTargetSearch -= HandleSearchEvent;
-        actions.OnTargetSearch += HandleSearchEvent;
     }
+
     PlayerActionContext _context;
     BodyHandler _bodyHandler;
-    public bool HandleSearchEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerActionContext data)
+    protected override bool HandleActionEvent(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerActionContext data)
     {
         _context = data;
         _bodyHandler = bodyHandler;

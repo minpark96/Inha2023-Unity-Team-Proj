@@ -11,7 +11,7 @@ public class CmdMove : PlayerCommand
     }
     public override bool Execute(in PlayerActionContext data)
     {
-        return actor.ActionController.InvokeMoveEvent(data);
+        return actor.ActionController.InvokeEvent(data, Define.ActionEventName.Move);
     }
 
 }
