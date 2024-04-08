@@ -11,10 +11,10 @@ public class LowerBodySM : StateMachine
     public bool IsGrounded=false;
     public bool IsRun = false;
 
-    public IBaseState JumpingState;
-    public IBaseState IdleState;
-    public IBaseState MovingState;
-    public IBaseState DropKickState;
+    public BodyState JumpingState;
+    public BodyState IdleState;
+    public BodyState MovingState;
+    public BodyState DropKickState;
 
 
     public BodyPose LeftArmPose;
@@ -46,7 +46,7 @@ public class LowerBodySM : StateMachine
         return _aryBodyPose;
     }
 
-    protected override IBaseState GetInitialState()
+    protected override BodyState GetInitialState()
     {
         return IdleState;
     }

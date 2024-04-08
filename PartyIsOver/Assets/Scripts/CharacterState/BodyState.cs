@@ -4,7 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using static Define;
 
-public abstract class BodyState:IBaseState
+public abstract class BodyState
 {
     public Define.PlayerState Name { get; set; }
     

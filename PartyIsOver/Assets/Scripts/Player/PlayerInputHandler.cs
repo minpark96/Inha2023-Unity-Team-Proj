@@ -9,7 +9,7 @@ using System;
 
 public class PlayerInputHandler : MonoBehaviourPun
 {
-    private Dictionary<COMMAND_KEY, ICommand> commands = new Dictionary<COMMAND_KEY, ICommand>();
+    private Dictionary<COMMAND_KEY, PlayerCommand> commands = new Dictionary<COMMAND_KEY, PlayerCommand>();
     private Define.COMMAND_KEY _activeCommandFlag;
     private KeyCode[] _keyCodes;
     private bool _isEnabledKey;
@@ -121,7 +121,7 @@ public class PlayerInputHandler : MonoBehaviourPun
         _activeCommandFlag |= commandKey;
     }
 
-    public ICommand GetCommand(COMMAND_KEY key)
+    public PlayerCommand GetCommand(COMMAND_KEY key)
     {
         return commands[key];
     }

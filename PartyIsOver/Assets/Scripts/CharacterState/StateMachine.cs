@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Define;
 
-public class StateMachine
+public abstract class StateMachine
 {
-    private IBaseState _currentState; //나중에 OnGUI 필요없을때 private으로
+    private BodyState _currentState; //나중에 OnGUI 필요없을때 private으로
     public PlayerInputHandler InputHandler;
 
     protected void Init()
@@ -14,7 +14,7 @@ public class StateMachine
         if (_currentState != null)
             _currentState.Enter();
     }
-    public void ChangeState(IBaseState newState)
+    public void ChangeState(BodyState newState)
     {
         _currentState.Exit();
 
@@ -38,11 +38,11 @@ public class StateMachine
     }
 
 
-    protected virtual IBaseState GetInitialState()
+    protected virtual BodyState GetInitialState()
     {
         return null;
     }
-    public IBaseState GetCurrentState()
+    public BodyState GetCurrentState()
     {
         return _currentState;
     }
