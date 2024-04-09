@@ -7,6 +7,8 @@ PlantUML 개발문서
 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ해야할거ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 Input핸들러를 SM에서 빼고 Actor에서 눌린 키값만 State내의 Update로 보내서 처리하는 방식 고려
 아니면 유니티 버튼기능을 사용해서 InputHandler를 굳이 가지지 않고 전역으로 인풋받는걸 처리
+-위의거 하는중 Button으로 시스템 변경하고, InvokeReserveCommand함수로 사용해서 결합도 낮추기
+
 
 각각의 state가 actor의 값들을 갱신시켜야함
 LimbCollision도 마찬가지

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CmdFixJoint : PlayerCommand
+public class CmdFixJoint : CommandKey
 {
     public CmdFixJoint(Actor actor)
     {
@@ -10,6 +10,6 @@ public class CmdFixJoint : PlayerCommand
     }
     public override bool Execute(in PlayerActionContext data)
     {
-        return actor.ActionController.InvokeEvent(data, Define.ActionEventName.JointFix);
+        return actor.ActionController.InvokeActionEvent(data, Define.ActionEventName.JointFix);
     }
 }

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MoveAction : PlayerAction
+public class MoveAction : BaseAction
 {
     public MoveAction(ActionController actions, Define.ActionEventName name) : base(actions, name)
     {

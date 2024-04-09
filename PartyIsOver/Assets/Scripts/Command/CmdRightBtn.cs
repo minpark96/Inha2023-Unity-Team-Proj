@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CmdRightBtn : PlayerCommand
+public class CmdRightBtn : CommandKey
 {
     public CmdRightBtn(Actor actor)
     {
@@ -11,8 +11,8 @@ public class CmdRightBtn : PlayerCommand
     public override bool Execute(in PlayerActionContext data)
     {
         if(actor.GetLowerState() == Define.PlayerState.DropKick)
-            return actor.ActionController.InvokeEvent(data, Define.ActionEventName.DropKick);
+            return actor.ActionController.InvokeActionEvent(data, Define.ActionEventName.DropKick);
         else
-            return actor.ActionController.InvokeEvent(data, Define.ActionEventName.Throw);
+            return actor.ActionController.InvokeActionEvent(data, Define.ActionEventName.Throw);
     }
 }

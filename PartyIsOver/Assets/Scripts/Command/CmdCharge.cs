@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CmdCharge:PlayerCommand
+public class CmdCharge:CommandKey
 {
     public CmdCharge(Actor actor)
     {
@@ -10,6 +10,6 @@ public class CmdCharge:PlayerCommand
     }
     public override bool Execute(in PlayerActionContext data)
     {
-        return actor.ActionController.InvokeEvent(data, Define.ActionEventName.ChargeReady);
+        return actor.ActionController.InvokeActionEvent(data, Define.ActionEventName.ChargeReady);
     }
 }

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class JumpAction : PlayerAction
+public class JumpAction : BaseAction
 {
     public JumpAction(ActionController actions, Define.ActionEventName name) : base(actions, name)
     {

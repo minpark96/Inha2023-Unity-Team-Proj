@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SearchAction : PlayerAction
+public class SearchAction : BaseAction
 {
     public SearchAction(ActionController actions, Define.ActionEventName name) : base(actions, name)
     {

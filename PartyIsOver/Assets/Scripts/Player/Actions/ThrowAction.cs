@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static Define;
-public class ThrowAction : PlayerAction
+public class ThrowAction : BaseAction
 {
     public ThrowAction(ActionController actions, Define.ActionEventName name) : base(actions, name)
     {

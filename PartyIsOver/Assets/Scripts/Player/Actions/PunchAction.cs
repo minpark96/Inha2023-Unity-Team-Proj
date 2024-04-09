@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PunchAction : PlayerAction
+public class PunchAction : BaseAction
 {
     protected ActionController actions;
 

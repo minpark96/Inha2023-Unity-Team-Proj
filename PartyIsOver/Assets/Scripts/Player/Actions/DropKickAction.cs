@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DropKickAction:PlayerAction
+public class DropKickAction:BaseAction
 {
     public DropKickAction(ActionController actions, Define.ActionEventName name) : base(actions, name)
     {

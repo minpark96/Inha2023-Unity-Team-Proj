@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HeadButtAction : PlayerAction
+public class HeadButtAction : BaseAction
 {
     public HeadButtAction(ActionController actions, Define.ActionEventName name) : base(actions, name)
     {

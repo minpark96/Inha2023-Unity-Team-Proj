@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class PlayerCommand
+public abstract class CommandKey
 {
     protected Actor actor;
     public float Timestamp { get; set; }
 
-    public PlayerCommand()
+    public CommandKey()
     {
         Timestamp = Time.time;
     }

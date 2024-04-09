@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Numerics;
 using UnityEngine;
+using static Define;
 
-public class LowerIdle : BodyState
+public class LowerIdle : BaseState
 {
     private LowerBodySM _sm;
 

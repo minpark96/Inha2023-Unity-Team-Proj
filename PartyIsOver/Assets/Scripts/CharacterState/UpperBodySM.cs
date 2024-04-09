@@ -18,24 +18,27 @@ public class UpperBodySM : StateMachine
     public HandChecker LeftHandCheckter;
     public HandChecker RightHandCheckter;
 
-    private Dictionary<PlayerState, BodyState> stateMap = new Dictionary<PlayerState, BodyState>();
-    public Dictionary<PlayerState, BodyState> StateMap { get { return stateMap; } private set { stateMap = value; } }
+    private Dictionary<PlayerState, BaseState> stateMap = new Dictionary<PlayerState, BaseState>();
+    public Dictionary<PlayerState, BaseState> StateMap { get { return stateMap; } private set { stateMap = value; } }
 
 
-    public UpperBodySM(PlayerInputHandler inputHandler, PlayerActionContext playerContext, HandChecker left, HandChecker right,Transform rangeSkin)
+    public UpperBodySM(PlayerInputHandler inputHandler, PlayerActionContext playerContext, 
+        CommandDelegate cmdReserveHandler, HandChecker left, HandChecker right,Transform rangeSkin )
     {
         Context = playerContext;
         InputHandler = inputHandler;
         RangeWeaponSkin = rangeSkin;
         LeftHandCheckter = left;
         RightHandCheckter = right;
+        CommandReserveHandler -= cmdReserveHandler;
+        CommandReserveHandler += cmdReserveHandler;
 
         for (PlayerState i = PlayerState.IndexUpperStart+1; i < PlayerState.IndexUpperEnd; i++)
             stateMap[i] = CreateState(i);
         Init();
     }
 
-    private BodyState CreateState(Define.PlayerState state)
+    private BaseState CreateState(Define.PlayerState state)
     {
         switch (state)
         {
@@ -54,7 +57,7 @@ public class UpperBodySM : StateMachine
         }
     }
 
-    protected override BodyState GetInitialState()
+    protected override BaseState GetInitialState()
     {
         return stateMap[PlayerState.UpperIdle];
     }

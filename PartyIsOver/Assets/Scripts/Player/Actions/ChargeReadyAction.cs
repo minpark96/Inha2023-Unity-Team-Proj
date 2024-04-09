@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ChargeReadyAction : PlayerAction
+public class ChargeReadyAction : BaseAction
 {
     public ChargeReadyAction(ActionController actions,Define.ActionEventName name):base(actions,name)
     {

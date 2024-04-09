@@ -11,10 +11,10 @@ public class LowerBodySM : StateMachine
     public bool IsGrounded=false;
     public bool IsRun = false;
 
-    public BodyState JumpingState;
-    public BodyState IdleState;
-    public BodyState MovingState;
-    public BodyState DropKickState;
+    public BaseState JumpingState;
+    public BaseState IdleState;
+    public BaseState MovingState;
+    public BaseState DropKickState;
 
 
     public BodyPose LeftArmPose;
@@ -25,13 +25,15 @@ public class LowerBodySM : StateMachine
     int[] _aryBodyPose = new int[4];
 
 
-    public LowerBodySM(PlayerInputHandler inputHandler, PlayerActionContext playerContext)
+    public LowerBodySM(PlayerInputHandler inputHandler, PlayerActionContext playerContext, CommandDelegate cmdReserveHandler)
     {
         IdleState = new LowerIdle(this);
         JumpingState = new Jumping(this);
         MovingState = new Moving(this);
         DropKickState = new DropKick(this);
 
+        CommandReserveHandler -= cmdReserveHandler;
+        CommandReserveHandler += cmdReserveHandler;
         PlayerContext = playerContext;
         base.InputHandler = inputHandler;
         base.Init();
@@ -46,7 +48,7 @@ public class LowerBodySM : StateMachine
         return _aryBodyPose;
     }
 
-    protected override BodyState GetInitialState()
+    protected override BaseState GetInitialState()
     {
         return IdleState;
     }

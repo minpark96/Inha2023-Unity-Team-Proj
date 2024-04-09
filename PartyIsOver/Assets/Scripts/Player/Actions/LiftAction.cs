@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Define;
 
-public class LiftAction : PlayerAction
+public class LiftAction : BaseAction
 {
     public LiftAction(ActionController actions, Define.ActionEventName name) : base(actions, name)
     {

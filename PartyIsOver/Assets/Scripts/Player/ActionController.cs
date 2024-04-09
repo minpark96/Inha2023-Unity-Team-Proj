@@ -18,14 +18,14 @@ public class ActionController
     BodyHandler _bodyHandler;
 
     public delegate bool ActionDelegate(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerActionContext dynamicData);
-    public List<ActionDelegate> ActionEvents = new List<ActionDelegate>();
+    private List<ActionDelegate> ActionHandlers = new List<ActionDelegate>();
 
     void Init()
     {
         for (int i = 0; i < Enum.GetValues(typeof(Define.ActionEventName)).Length; i++)
         {
             ActionDelegate action = null;
-            ActionEvents.Add(action);
+            ActionHandlers.Add(action);
         }
 
         new JumpAction          (this, Define.ActionEventName.Jump);
@@ -44,14 +44,14 @@ public class ActionController
         new ThrowAction         (this, Define.ActionEventName.Throw);
         new LiftAction          (this, Define.ActionEventName.Lift);
     }
-    public bool InvokeEvent(in PlayerActionContext data,Define.ActionEventName name)
+    public bool InvokeActionEvent(in PlayerActionContext data,Define.ActionEventName name)
     {
-        return ActionEvents[(int)name]?.Invoke(_animData, _animPlayer, _bodyHandler, data) ?? false;
+        return ActionHandlers[(int)name]?.Invoke(_animData, _animPlayer, _bodyHandler, data) ?? false;
     }
 
-    public void BindEvent(Define.ActionEventName name, ActionDelegate eventHandler)
+    public void BindActionEvent(Define.ActionEventName name, ActionDelegate eventHandler)
     {
-        ActionEvents[(int)name] -= eventHandler;
-        ActionEvents[(int)name] += eventHandler;
+        ActionHandlers[(int)name] -= eventHandler;
+        ActionHandlers[(int)name] += eventHandler;
     }
 }

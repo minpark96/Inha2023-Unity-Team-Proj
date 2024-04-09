@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CmdJump : PlayerCommand
+public class CmdJump : CommandKey
 {
     public CmdJump(Actor actor)
     {
@@ -10,6 +10,6 @@ public class CmdJump : PlayerCommand
     }
     public override bool Execute(in PlayerActionContext data)
     {
-        return actor.ActionController.InvokeEvent(data, Define.ActionEventName.Jump);
+        return actor.ActionController.InvokeActionEvent(data, Define.ActionEventName.Jump);
     }
 }

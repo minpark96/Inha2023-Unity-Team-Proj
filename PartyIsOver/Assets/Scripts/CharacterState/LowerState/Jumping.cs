@@ -4,7 +4,7 @@ using System.Numerics;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class Jumping : BodyState
+public class Jumping : BaseState
 {
     private LowerBodySM _sm;
 

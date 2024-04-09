@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class CmdMove : PlayerCommand
+public class CmdMove : CommandKey
 {
     public CmdMove(Actor actor)
     {
@@ -11,7 +11,7 @@ public class CmdMove : PlayerCommand
     }
     public override bool Execute(in PlayerActionContext data)
     {
-        return actor.ActionController.InvokeEvent(data, Define.ActionEventName.Move);
+        return actor.ActionController.InvokeActionEvent(data, Define.ActionEventName.Move);
     }
 
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Define;
 
-public class UpperIdle : BodyState
+public class UpperIdle : BaseState
 {
     private UpperBodySM _sm;
 

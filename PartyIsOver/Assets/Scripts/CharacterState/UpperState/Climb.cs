@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Define;
 
-public class Climb : BodyState
+public class Climb : BaseState
 {
     private UpperBodySM _sm;
     private bool _isClimb = false;

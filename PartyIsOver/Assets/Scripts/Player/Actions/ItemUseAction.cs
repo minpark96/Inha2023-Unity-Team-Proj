@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using static Define;
 
-public class ItemUseAction : PlayerAction
+public class ItemUseAction : BaseAction
 {
     public ItemUseAction(ActionController actions, Define.ActionEventName name) : base(actions, name)
     {

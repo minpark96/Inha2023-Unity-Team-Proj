@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CmdSkill : PlayerCommand
+public class CmdSkill : CommandKey
 {
     public CmdSkill(Actor actor)
     {
@@ -10,6 +10,6 @@ public class CmdSkill : PlayerCommand
     }
     public override bool Execute(in PlayerActionContext data)
     {
-        return actor.ActionController.InvokeEvent(data, Define.ActionEventName.Skill);
+        return actor.ActionController.InvokeActionEvent(data, Define.ActionEventName.Skill);
     }
 }

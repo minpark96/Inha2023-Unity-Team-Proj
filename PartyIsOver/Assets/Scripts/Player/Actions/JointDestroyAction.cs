@@ -5,7 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using static Define;
 
-public class JointDestroyAction : PlayerAction
+public class JointDestroyAction : BaseAction
 {
     public JointDestroyAction(ActionController actions, Define.ActionEventName name) : base(actions, name)
     {

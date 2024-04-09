@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Define;
 
-public class LiftObject : BodyState
+public class LiftObject : BaseState
 {
     private UpperBodySM _sm;
 

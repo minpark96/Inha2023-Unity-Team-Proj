@@ -231,8 +231,8 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
         _inputHandler = GetComponent<PlayerInputHandler>();
 
-        LowerSM = new LowerBodySM(_inputHandler, _actionContext);
-        UpperSM = new UpperBodySM(_inputHandler, _actionContext,
+        LowerSM = new LowerBodySM(_inputHandler, _actionContext, _inputHandler.ReserveCommand);
+        UpperSM = new UpperBodySM(_inputHandler, _actionContext,_inputHandler.ReserveCommand,
            BodyHandler.LeftHand.GetComponent<HandChecker>(), BodyHandler.RightHand.GetComponent<HandChecker>(),
            RangeWeaponSkin);
 

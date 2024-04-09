@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Define;
 
-public class Punch : BodyState
+public class Punch : BaseState
 {
     private UpperBodySM _sm;
 

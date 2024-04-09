@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Define;
 
-public class Moving : BodyState
+public class Moving : BaseState
 {
     private LowerBodySM _sm;
 

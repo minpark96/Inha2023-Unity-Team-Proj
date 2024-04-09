@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Define;
 
-public class HeadButt : BodyState
+public class HeadButt : BaseState
 {
     protected UpperBodySM _sm;
 

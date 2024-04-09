@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Define;
 
-public class EquipItem : BodyState
+public class EquipItem : BaseState
 {
     private UpperBodySM _sm;
     private Item _item;

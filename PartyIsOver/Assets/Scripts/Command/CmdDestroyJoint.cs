@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CmdDestroyJoint : PlayerCommand
+public class CmdDestroyJoint : CommandKey
 {
     public CmdDestroyJoint(Actor actor)
     {
@@ -10,6 +10,6 @@ public class CmdDestroyJoint : PlayerCommand
     }
     public override bool Execute(in PlayerActionContext data)
     {
-        return actor.ActionController.InvokeEvent(data, Define.ActionEventName.JointDestroy);
+        return actor.ActionController.InvokeActionEvent(data, Define.ActionEventName.JointDestroy);
     }
 }

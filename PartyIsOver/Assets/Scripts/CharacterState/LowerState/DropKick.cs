@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DropKick : BodyState
+public class DropKick : BaseState
 {
     private LowerBodySM _sm;
 

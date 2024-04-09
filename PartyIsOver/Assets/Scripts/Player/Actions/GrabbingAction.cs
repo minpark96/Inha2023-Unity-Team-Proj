@@ -5,7 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using static Define;
 
-public class GrabbingAction:PlayerAction
+public class GrabbingAction:BaseAction
 {
     public GrabbingAction(ActionController actions, Define.ActionEventName name) : base(actions, name)
     {

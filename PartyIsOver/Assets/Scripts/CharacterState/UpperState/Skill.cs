@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Define;
 
-public class Skill : BodyState
+public class Skill : BaseState
 {
     protected UpperBodySM _sm;
 

@@ -4,35 +4,27 @@ using Unity.VisualScripting;
 using UnityEngine;
 using static Define;
 
-public abstract class BodyState
+public abstract class BaseState
 {
     public Define.PlayerState Name { get; set; }
-    
+
     protected StateMachine stateMachine;
 
-    public BodyState(PlayerState name, StateMachine stateMachine)
+    public BaseState(PlayerState name, StateMachine stateMachine)
     {
         this.Name = name;
         this.stateMachine = stateMachine;
     }
-    public virtual void GetInput()
-    {
+    public virtual void GetInput(){}
+    public virtual void Enter(){}
+    public virtual void UpdateLogic(){}
+    public virtual void UpdatePhysics(){}
+    public virtual void Exit(){}
 
-    }
-    public virtual void Enter()
-    {
-    }
 
-    public virtual void UpdateLogic()
+    protected void InvokeReserveCommand(COMMAND_KEY cmd)
     {
-    }
-
-    public virtual void UpdatePhysics()
-    {
-    }
-
-    public virtual void Exit()
-    {
+        stateMachine.CommandReserveHandler.Invoke(cmd);
     }
 
     protected bool IsMoveKeyInput()

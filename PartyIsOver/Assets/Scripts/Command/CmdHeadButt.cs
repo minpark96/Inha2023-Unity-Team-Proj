@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CmdHeadButt : PlayerCommand
+public class CmdHeadButt : CommandKey
 {
     public CmdHeadButt(Actor actor)
     {
@@ -10,6 +10,6 @@ public class CmdHeadButt : PlayerCommand
     }
     public override bool Execute(in PlayerActionContext data)
     {
-        return actor.ActionController.InvokeEvent(data, Define.ActionEventName.HeadButt);
+        return actor.ActionController.InvokeActionEvent(data, Define.ActionEventName.HeadButt);
     }
 }

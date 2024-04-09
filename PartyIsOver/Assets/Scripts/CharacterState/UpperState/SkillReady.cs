@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Define;
 
-public class SkillReady : BodyState
+public class SkillReady : BaseState
 {
     private UpperBodySM _sm;
     private float _pressDuration;

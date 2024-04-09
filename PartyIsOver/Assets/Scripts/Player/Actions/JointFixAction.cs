@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Define;
 
-public class JointFixAction : PlayerAction
+public class JointFixAction : BaseAction
 {
     public JointFixAction(ActionController actions, Define.ActionEventName name) : base(actions, name)
     {
