@@ -14,24 +14,28 @@ public class LiftObject : BaseState
 
     public override void Enter()
     {
-        _sm.InputHandler.ReserveCommand(COMMAND_KEY.FixJoint);
+        InvokeReserveCommand(COMMAND_KEY.FixJoint);
     }
 
     public override void UpdateLogic()
     {
+        InvokeReserveCommand(COMMAND_KEY.LeftBtn);
     }
 
     public override void GetInput()
     {
-        if (!_sm.ReserveInputCommand(COMMAND_KEY.LeftBtn, GetKeyType.Press))
+        if(!Input.GetButton(COMMAND_KEY.LeftBtn.ToString()))
             _sm.ChangeState(_sm.StateMap[PlayerState.UpperIdle]);
-
-        if (_sm.ReserveInputCommand(COMMAND_KEY.RightBtn, GetKeyType.Down))
+        
+        if(Input.GetButtonDown(COMMAND_KEY.RightBtn.ToString()))
+        {
+            InvokeReserveCommand(COMMAND_KEY.RightBtn);
             _sm.ChangeState(_sm.StateMap[PlayerState.UpperIdle]);
+        }
     }
 
     public override void Exit()
     {
-        _sm.InputHandler.ReserveCommand(COMMAND_KEY.DestroyJoint);
+        InvokeReserveCommand(COMMAND_KEY.DestroyJoint);
     }
 }

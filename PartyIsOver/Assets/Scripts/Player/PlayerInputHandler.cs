@@ -1,11 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static Actor;
 using Photon.Pun;
 using static Define;
-using static System.Runtime.CompilerServices.RuntimeHelpers;
-using System;
 
 public class PlayerInputHandler : MonoBehaviourPun
 {
@@ -30,6 +27,44 @@ public class PlayerInputHandler : MonoBehaviourPun
     { COMMAND_KEY.HeadButt , new KeyCode[] { KeyCode.Mouse2 } },
     { COMMAND_KEY.Skill    , new KeyCode[] { KeyCode.R } }
     };
+
+    //private Dictionary<COMMAND_KEY,InputAction> _buttonList = new Dictionary<COMMAND_KEY, InputAction>();
+    //private List<InputManagerEntry> _buttonList = new List<InputManagerEntry>();
+
+    public void InitButton()
+    {
+        //_buttonList.Add(AddButtonEntry(COMMAND_KEY.Jump.    ToString(), "space"));
+        //_buttonList.Add(AddButtonEntry(COMMAND_KEY.LeftBtn. ToString(), "Mouse0"));
+        //_buttonList.Add(AddButtonEntry(COMMAND_KEY.RightBtn.ToString(), "Mouse1"));
+        //_buttonList.Add(AddButtonEntry(COMMAND_KEY.HeadButt.ToString(), "Mouse2"));
+        //_buttonList.Add(AddButtonEntry(COMMAND_KEY.Skill.   ToString(), "r"));
+        //InputRegistering.RegisterInputs(_buttonList);
+       
+
+        //_buttonList.Add(COMMAND_KEY.Move, new InputAction(COMMAND_KEY.Move.ToString()));
+        //_buttonList[COMMAND_KEY.Move].AddBinding("<Keyboard>/W");
+        //_buttonList[COMMAND_KEY.Move].AddBinding("<Keyboard>/A");
+        //_buttonList[COMMAND_KEY.Move].AddBinding("<Keyboard>/S");
+        //_buttonList[COMMAND_KEY.Move].AddBinding("<Keyboard>/D");
+
+        //_buttonList.Add(COMMAND_KEY.Jump    , new InputAction(COMMAND_KEY.Jump.    ToString(), binding: "<Keyboard>/space"));
+        //_buttonList.Add(COMMAND_KEY.LeftBtn , new InputAction(COMMAND_KEY.LeftBtn. ToString(), binding: "<Mouse>/leftButton"));
+        //_buttonList.Add(COMMAND_KEY.RightBtn, new InputAction(COMMAND_KEY.RightBtn.ToString(), binding: "<Mouse>/rightButton"));
+        //_buttonList.Add(COMMAND_KEY.HeadButt, new InputAction(COMMAND_KEY.HeadButt.ToString(), binding: "<Mouse>/middleButton"));
+        //_buttonList.Add(COMMAND_KEY.Skill   , new InputAction(COMMAND_KEY.Skill.   ToString(), binding: "<Keyboard>/R"));
+        //foreach (var button in _buttonList.Values) { button.Enable(); }
+    }
+    //private InputManagerEntry AddButtonEntry(string buttonName, string inputString)
+    //{
+    //    InputManagerEntry entry = new InputManagerEntry
+    //    {
+    //        kind = InputManagerEntry.Kind.KeyOrButton,
+    //        name = buttonName,
+    //        btnPositive = inputString,
+    //        btnNegative = ""
+    //    };
+    //    return entry;
+    //}
 
     public void InitCommnad(Actor actor)
     {
@@ -77,6 +112,7 @@ public class PlayerInputHandler : MonoBehaviourPun
         else
             return true;
     }
+  
 
     public bool CheckInput(COMMAND_KEY commandKey, GetKeyType keyType)
     {

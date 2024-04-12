@@ -237,6 +237,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
            RangeWeaponSkin);
 
         _inputHandler.InitCommnad(this);
+        _inputHandler.InitButton();
     }
 
 

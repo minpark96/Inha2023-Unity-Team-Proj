@@ -23,7 +23,7 @@ public class EquipItem : BaseState
         _item = _sm.Context.EquipItem.ItemObject;
         _itemCoolTime = _item.ItemData.CoolTime;
         _sm.Context.IsUpperActionProgress = true;
-        _sm.InputHandler.ReserveCommand(COMMAND_KEY.FixJoint);
+        InvokeReserveCommand(COMMAND_KEY.FixJoint);
 
         if (_item.ItemData.ItemType == ItemType.Ranged)
             ChangeWeaponSkin();
@@ -39,13 +39,16 @@ public class EquipItem : BaseState
 
     public override void GetInput()
     {
-        if (_sm.ReserveInputCommand(COMMAND_KEY.LeftBtn, GetKeyType.Down) && _coolTimeTimer < 0f)
-            _coolTimeTimer = _itemCoolTime;
-        
-
-        if (_sm.ReserveInputCommand(COMMAND_KEY.RightBtn, GetKeyType.Down))
+        if(Input.GetButtonDown(COMMAND_KEY.LeftBtn.ToString()) && _coolTimeTimer < 0f)
         {
-            if(_item.ItemData.ItemType != ItemType.Consumable)
+            InvokeReserveCommand(COMMAND_KEY.LeftBtn);
+            _coolTimeTimer = _itemCoolTime;
+        }
+
+        if (Input.GetButtonDown(COMMAND_KEY.RightBtn.ToString()))
+        {
+            InvokeReserveCommand(COMMAND_KEY.RightBtn);
+            if (_item.ItemData.ItemType != ItemType.Consumable)
                 _sm.Context.IsUpperActionProgress = false;
         }
     }
@@ -53,7 +56,7 @@ public class EquipItem : BaseState
     public override void Exit()
     {
         _sm.RangeWeaponSkin.gameObject.SetActive(false);
-        _sm.InputHandler.ReserveCommand(COMMAND_KEY.DestroyJoint);
+        InvokeReserveCommand(COMMAND_KEY.DestroyJoint);
     }
 
     private void ChangeWeaponSkin()

@@ -200,6 +200,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damageModifier: 1
+  Type: 0
+  RigidbodyObject: {fileID: 0}
+  ItemObject: {fileID: 0}
+  ColliderObject: {fileID: 0}
+  PhotonView: {fileID: 0}
+  ViewID: -1
 --- !u!114 &4397491357844937495
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -214,11 +220,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Owner: {fileID: 0}
   Gun: {fileID: 0}
-  InitialPosition: {x: 0, y: 0, z: 0}
-  InitialDirection: {x: 0, y: 0, z: 0}
   InteractableObject: {fileID: 0}
   root: {fileID: 1882534793761968422}
-  speed: 10
+  _speed: 15
   maxLifeTime: 5
   gravityDownAcceleration: 7
   _ignoredColliders: []

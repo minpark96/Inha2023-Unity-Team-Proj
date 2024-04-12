@@ -41,7 +41,7 @@ public class Moving : BaseState
 
     public override void UpdateLogic()
     {
-        if (!_sm.InputHandler.IsMoveInput())
+        if (!IsMoveKeyInput())
             _sm.ChangeState(_sm.IdleState);
     }
 
@@ -58,9 +58,10 @@ public class Moving : BaseState
     public override void GetInput()
     {
         IsMoveKeyInput();
-  
-        if (_sm.ReserveInputCommand(Define.COMMAND_KEY.Jump, Define.GetKeyType.Down))
+
+        if (Input.GetButtonDown(Define.COMMAND_KEY.Jump.ToString()))
         {
+            InvokeReserveCommand(Define.COMMAND_KEY.Jump);
             _sm.ChangeState(_sm.JumpingState);
         }
 

@@ -29,10 +29,15 @@ public abstract class BaseState
 
     protected bool IsMoveKeyInput()
     {
-        if (stateMachine.ReserveInputCommand(COMMAND_KEY.Move, Define.GetKeyType.Press))
+        if (stateMachine.InputHandler.IsMoveInput())
             return true;
         else
             return false;
+
+        //if (stateMachine.ReserveInputCommand(COMMAND_KEY.Move, Define.GetKeyType.Press))
+        //    return true;
+        //else
+        //    return false;
     }
 
 }

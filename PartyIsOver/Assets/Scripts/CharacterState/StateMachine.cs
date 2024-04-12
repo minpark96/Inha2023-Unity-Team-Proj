@@ -51,13 +51,13 @@ public abstract class StateMachine
     }
 
 
-    public bool ReserveInputCommand(COMMAND_KEY commandKey, GetKeyType keyType)
-    {
-        if (InputHandler.CheckInput(commandKey, keyType))
-        {
-            InputHandler.ReserveCommand(commandKey);
-            return true;
-        }
-        else return false;
-    }
+    //public bool ReserveInputCommand(COMMAND_KEY commandKey, GetKeyType keyType)
+    //{
+    //    if (InputHandler.CheckInput(commandKey, keyType))
+    //    {
+    //        InputHandler.ReserveCommand(commandKey);
+    //        return true;
+    //    }
+    //    else return false;
+    //}
 }

@@ -16,7 +16,7 @@ public class Climb : BaseState
 
     public override void Enter()
     {
-        _sm.InputHandler.ReserveCommand(COMMAND_KEY.FixJoint);
+        InvokeReserveCommand(COMMAND_KEY.FixJoint);
         _isClimb = true;
         _timer = 0f;
     }
@@ -33,18 +33,21 @@ public class Climb : BaseState
 
     public override void GetInput()
     {
-        if (_sm.ReserveInputCommand(COMMAND_KEY.Jump, GetKeyType.Down) && _isClimb)
+        if(Input.GetButtonDown(COMMAND_KEY.Jump.ToString()) && _isClimb)
         {
-            _sm.InputHandler.ReserveCommand(COMMAND_KEY.DestroyJoint);
+            InvokeReserveCommand(COMMAND_KEY.Jump);
+            InvokeReserveCommand(COMMAND_KEY.DestroyJoint);
             _isClimb = false;
         }
-        if (!_sm.ReserveInputCommand(COMMAND_KEY.LeftBtn, GetKeyType.Press))
+
+        if(!Input.GetButton(COMMAND_KEY.LeftBtn.ToString()))
             _sm.ChangeState(_sm.StateMap[PlayerState.UpperIdle]);
+        
     }
 
     public override void Exit()
     {
-        _sm.InputHandler.ReserveCommand(COMMAND_KEY.DestroyJoint);
+        InvokeReserveCommand(COMMAND_KEY.DestroyJoint);
         _sm.Context.RightGrabObject = null;
         _sm.Context.LeftGrabObject = null;
     }

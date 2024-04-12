@@ -21,11 +21,11 @@ public class ArmReady : BaseState
 
     public override void UpdateLogic()
     {
-        if (_sm.InputHandler.CheckInput(COMMAND_KEY.LeftBtn, GetKeyType.Press))
+        if (Input.GetButton(COMMAND_KEY.LeftBtn.ToString()))
         {
             _pressDuration += Time.deltaTime;
 
-            if( _pressDuration > _punchGrabThreshold )
+            if (_pressDuration > _punchGrabThreshold)
             {
                 //그랩상태로
                 _sm.ChangeState(_sm.StateMap[PlayerState.Grabbing]);
@@ -34,11 +34,13 @@ public class ArmReady : BaseState
         else if (_pressDuration < _punchGrabThreshold)
         {
             //펀치
-            if (_sm.ReserveInputCommand(COMMAND_KEY.LeftBtn, GetKeyType.Up))
+            if (Input.GetButtonUp(COMMAND_KEY.LeftBtn.ToString()))
             {
+                InvokeReserveCommand(COMMAND_KEY.LeftBtn);
                 _sm.ChangeState(_sm.StateMap[PlayerState.Punch]);
             }
         }
+        
 
         //행동트리나 리플레이에서 이 부분은 생략하고 바로 Punch나 Grabbing으로 넘어감
         //즉 PunchReady는 execute를 하지 않음

@@ -17,12 +17,12 @@ public class SkillReady : BaseState
     public override void Enter()
     {
         _pressDuration = 0f;
-        _sm.InputHandler.ReserveCommand(COMMAND_KEY.Charge);
+        InvokeReserveCommand(COMMAND_KEY.Charge);
     }
 
     public override void UpdateLogic()
     {
-        if (_sm.InputHandler.CheckInput(COMMAND_KEY.Skill,GetKeyType.Press))
+        if(Input.GetButton(COMMAND_KEY.Skill.ToString()))
         {
             _pressDuration += Time.deltaTime;
         }
@@ -31,16 +31,15 @@ public class SkillReady : BaseState
             if (_pressDuration > _skillActiveThreshold)
             {
                 //스킬 발동 상태로
-                if (_sm.ReserveInputCommand(COMMAND_KEY.Skill, GetKeyType.Up))
+                if(Input.GetButtonUp(COMMAND_KEY.Skill.ToString()))
                 {
-                    _sm.InputHandler.ReserveCommand(COMMAND_KEY.ResetCharge);
+                    InvokeReserveCommand(COMMAND_KEY.Skill);
                     _sm.ChangeState(_sm.StateMap[PlayerState.Skill]);
                 }
             }
             else
             {
                 //Idle 상태로
-                _sm.InputHandler.ReserveCommand(COMMAND_KEY.ResetCharge);
                 _sm.ChangeState(_sm.StateMap[PlayerState.UpperIdle]);
             }
         }
@@ -48,5 +47,6 @@ public class SkillReady : BaseState
 
     public override void Exit()
     {
+        InvokeReserveCommand(COMMAND_KEY.ResetCharge);
     }
 }

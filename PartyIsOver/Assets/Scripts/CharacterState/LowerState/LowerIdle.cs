@@ -23,8 +23,9 @@ public class LowerIdle : BaseState
         {
             _sm.ChangeState(_sm.MovingState);
         }
-        if (_sm.ReserveInputCommand(Define.COMMAND_KEY.Jump, Define.GetKeyType.Down))
+        if (Input.GetButtonDown(Define.COMMAND_KEY.Jump.ToString()))
         {
+            InvokeReserveCommand(Define.COMMAND_KEY.Jump);
             _sm.ChangeState(_sm.JumpingState);
         }
     }

@@ -41,17 +41,16 @@ public class Grabbing : BaseState
     public override void GetInput()
     {
         //마우스 떼면 Idle로
-        if (!_sm.InputHandler.CheckInput(COMMAND_KEY.LeftBtn,GetKeyType.Press))
+        if(!Input.GetButton(COMMAND_KEY.LeftBtn.ToString()))
         {
-            _sm.InputHandler.ReserveCommand(COMMAND_KEY.DestroyJoint);
+            InvokeReserveCommand(COMMAND_KEY.DestroyJoint);
             _sm.ChangeState(_sm.StateMap[PlayerState.UpperIdle]);
         }
-           
     }
 
     public override void UpdatePhysics()
     {
-        _sm.InputHandler.ReserveCommand(COMMAND_KEY.TargetSearch);
+       InvokeReserveCommand(COMMAND_KEY.TargetSearch);
         //그래빙Action 계속 실행
         if (_grabDelayTimer < 0f)
             GrabbingProgress();
@@ -85,7 +84,7 @@ public class Grabbing : BaseState
                 if (IsItemGrabbing(_context.RightSearchTarget))
                     _sm.ChangeState(_sm.StateMap[PlayerState.EquipItem]);
                 else
-                    _sm.InputHandler.ReserveCommand(COMMAND_KEY.Grabbing);
+                    InvokeReserveCommand(COMMAND_KEY.Grabbing);
 
                 return;
             }
@@ -98,11 +97,11 @@ public class Grabbing : BaseState
             {
                 if (HandCollisionCheck(Side.Left))
                 {
-                    _sm.InputHandler.ReserveCommand(COMMAND_KEY.FixJoint);
+                    InvokeReserveCommand(COMMAND_KEY.FixJoint);
                     _grabDelayTimer = 0.5f;
                 }
                 else
-                    _sm.InputHandler.ReserveCommand(COMMAND_KEY.Grabbing);
+                    InvokeReserveCommand(COMMAND_KEY.Grabbing);
             }
 
             if (_context.RightSearchTarget != null && _context.RightGrabObject == null)
@@ -110,11 +109,11 @@ public class Grabbing : BaseState
                 //손 뻗기 Action 실행 및 닿았는지 체크
                 if (HandCollisionCheck(Side.Right))
                 {
-                    _sm.InputHandler.ReserveCommand(COMMAND_KEY.FixJoint);
+                    InvokeReserveCommand(COMMAND_KEY.FixJoint);
                     _grabDelayTimer = 0.5f;
                 }
                 else
-                    _sm.InputHandler.ReserveCommand(COMMAND_KEY.Grabbing);
+                    InvokeReserveCommand(COMMAND_KEY.Grabbing);
             }
         }
     }

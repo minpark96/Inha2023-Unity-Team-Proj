@@ -30,8 +30,9 @@ public class Jumping : BaseState
     {
         IsMoveKeyInput();
 
-        if (_sm.ReserveInputCommand(Define.COMMAND_KEY.RightBtn, Define.GetKeyType.Down))
+        if(Input.GetButtonDown(Define.COMMAND_KEY.RightBtn.ToString()))
         {
+            InvokeReserveCommand(Define.COMMAND_KEY.RightBtn);
             _sm.ChangeState(_sm.DropKickState);
         }
     }
