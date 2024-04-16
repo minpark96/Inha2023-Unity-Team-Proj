@@ -5,8 +5,7 @@ using static Define;
 
 public abstract class StateMachine
 {
-    private BaseState _currentState; //나중에 OnGUI 필요없을때 private으로
-    public PlayerInputHandler InputHandler;
+    private BaseState _currentState;
 
     public delegate void CommandDelegate(COMMAND_KEY commandKey);
     public CommandDelegate CommandReserveHandler;
@@ -20,9 +19,8 @@ public abstract class StateMachine
     public void ChangeState(BaseState newState)
     {
         _currentState.Exit();
-
         _currentState = newState;
-        newState.Enter();
+        _currentState.Enter();
     }
     public void UpdateLogic()
     {
@@ -49,15 +47,4 @@ public abstract class StateMachine
     {
         return _currentState;
     }
-
-
-    //public bool ReserveInputCommand(COMMAND_KEY commandKey, GetKeyType keyType)
-    //{
-    //    if (InputHandler.CheckInput(commandKey, keyType))
-    //    {
-    //        InputHandler.ReserveCommand(commandKey);
-    //        return true;
-    //    }
-    //    else return false;
-    //}
 }

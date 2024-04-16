@@ -20,12 +20,11 @@ public class LowerIdle : BaseState
     public override void GetInput()
     {
         if (IsMoveKeyInput())
-        {
             _sm.ChangeState(_sm.MovingState);
-        }
-        if (Input.GetButtonDown(Define.COMMAND_KEY.Jump.ToString()))
+
+        if (InputCommand(COMMAND_KEY.Jump, KeyType.Down))
         {
-            InvokeReserveCommand(Define.COMMAND_KEY.Jump);
+            InvokeReserveCommand(COMMAND_KEY.Jump);
             _sm.ChangeState(_sm.JumpingState);
         }
     }

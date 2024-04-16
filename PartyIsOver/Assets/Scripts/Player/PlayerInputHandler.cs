@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using static Define;
+using UnityEditor;
 
 public class PlayerInputHandler : MonoBehaviourPun
 {
     private Dictionary<COMMAND_KEY, CommandKey> commands = new Dictionary<COMMAND_KEY, CommandKey>();
     private Define.COMMAND_KEY _activeCommandFlag;
-    private KeyCode[] _keyCodes;
-    private bool _isEnabledKey;
 
     private Vector3 _moveDir;
     private Vector3 _moveInput;
@@ -17,56 +16,29 @@ public class PlayerInputHandler : MonoBehaviourPun
     private Vector3 _lookRight;
 
 
-    //키 매핑 및 커맨드 등록
-    private Dictionary<COMMAND_KEY, KeyCode[]> keyMap = new Dictionary<COMMAND_KEY, KeyCode[]>
+    public void SetupInputAxes()
     {
-    { COMMAND_KEY.Move     , new KeyCode[] { KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D } },
-    { COMMAND_KEY.Jump     , new KeyCode[] { KeyCode.Space } },
-    { COMMAND_KEY.LeftBtn  , new KeyCode[] { KeyCode.Mouse0 } },
-    { COMMAND_KEY.RightBtn , new KeyCode[] { KeyCode.Mouse1 } },
-    { COMMAND_KEY.HeadButt , new KeyCode[] { KeyCode.Mouse2 } },
-    { COMMAND_KEY.Skill    , new KeyCode[] { KeyCode.R } }
-    };
+        PlayerPrefs.SetString(COMMAND_KEY.LeftBtn.ToString(), "mouse 0");
+        PlayerPrefs.SetString(COMMAND_KEY.RightBtn.ToString(), "mouse 1");
+        PlayerPrefs.SetString(COMMAND_KEY.HeadButt.ToString(), "mouse 2");
+        PlayerPrefs.SetString(COMMAND_KEY.Jump.ToString(), "space");
+        PlayerPrefs.SetString(COMMAND_KEY.Skill.ToString(), "r");
+        PlayerPrefs.SetString(COMMAND_KEY.ToggleRun.ToString(), "left shift");
 
-    //private Dictionary<COMMAND_KEY,InputAction> _buttonList = new Dictionary<COMMAND_KEY, InputAction>();
-    //private List<InputManagerEntry> _buttonList = new List<InputManagerEntry>();
+        SerializedObject serializedObject = new SerializedObject(AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/InputManager.asset")[0]);
+        SerializedProperty axesProperty = serializedObject.FindProperty("m_Axes");
 
-    public void InitButton()
-    {
-        //_buttonList.Add(AddButtonEntry(COMMAND_KEY.Jump.    ToString(), "space"));
-        //_buttonList.Add(AddButtonEntry(COMMAND_KEY.LeftBtn. ToString(), "Mouse0"));
-        //_buttonList.Add(AddButtonEntry(COMMAND_KEY.RightBtn.ToString(), "Mouse1"));
-        //_buttonList.Add(AddButtonEntry(COMMAND_KEY.HeadButt.ToString(), "Mouse2"));
-        //_buttonList.Add(AddButtonEntry(COMMAND_KEY.Skill.   ToString(), "r"));
-        //InputRegistering.RegisterInputs(_buttonList);
-       
+        AddVirtualAxis(axesProperty, COMMAND_KEY.LeftBtn.ToString(), PlayerPrefs.GetString(COMMAND_KEY.LeftBtn.ToString()));
+        AddVirtualAxis(axesProperty, COMMAND_KEY.RightBtn.ToString(), PlayerPrefs.GetString(COMMAND_KEY.RightBtn.ToString()));
+        AddVirtualAxis(axesProperty, COMMAND_KEY.HeadButt.ToString(), PlayerPrefs.GetString(COMMAND_KEY.HeadButt.ToString()));
+        AddVirtualAxis(axesProperty, COMMAND_KEY.Jump.ToString(), PlayerPrefs.GetString(COMMAND_KEY.Jump.ToString()));
+        AddVirtualAxis(axesProperty, COMMAND_KEY.Skill.ToString(), PlayerPrefs.GetString(COMMAND_KEY.Skill.ToString()));
+        AddVirtualAxis(axesProperty, COMMAND_KEY.ToggleRun.ToString(), PlayerPrefs.GetString(COMMAND_KEY.ToggleRun.ToString()));
 
-        //_buttonList.Add(COMMAND_KEY.Move, new InputAction(COMMAND_KEY.Move.ToString()));
-        //_buttonList[COMMAND_KEY.Move].AddBinding("<Keyboard>/W");
-        //_buttonList[COMMAND_KEY.Move].AddBinding("<Keyboard>/A");
-        //_buttonList[COMMAND_KEY.Move].AddBinding("<Keyboard>/S");
-        //_buttonList[COMMAND_KEY.Move].AddBinding("<Keyboard>/D");
-
-        //_buttonList.Add(COMMAND_KEY.Jump    , new InputAction(COMMAND_KEY.Jump.    ToString(), binding: "<Keyboard>/space"));
-        //_buttonList.Add(COMMAND_KEY.LeftBtn , new InputAction(COMMAND_KEY.LeftBtn. ToString(), binding: "<Mouse>/leftButton"));
-        //_buttonList.Add(COMMAND_KEY.RightBtn, new InputAction(COMMAND_KEY.RightBtn.ToString(), binding: "<Mouse>/rightButton"));
-        //_buttonList.Add(COMMAND_KEY.HeadButt, new InputAction(COMMAND_KEY.HeadButt.ToString(), binding: "<Mouse>/middleButton"));
-        //_buttonList.Add(COMMAND_KEY.Skill   , new InputAction(COMMAND_KEY.Skill.   ToString(), binding: "<Keyboard>/R"));
-        //foreach (var button in _buttonList.Values) { button.Enable(); }
+        serializedObject.ApplyModifiedProperties();
     }
-    //private InputManagerEntry AddButtonEntry(string buttonName, string inputString)
-    //{
-    //    InputManagerEntry entry = new InputManagerEntry
-    //    {
-    //        kind = InputManagerEntry.Kind.KeyOrButton,
-    //        name = buttonName,
-    //        btnPositive = inputString,
-    //        btnNegative = ""
-    //    };
-    //    return entry;
-    //}
 
-    public void InitCommnad(Actor actor)
+    public void InitCommand(Actor actor)
     {
         commands.Add(COMMAND_KEY.Jump,         new CmdJump(actor));
         commands.Add(COMMAND_KEY.Move,         new CmdMove(actor));
@@ -103,55 +75,6 @@ public class PlayerInputHandler : MonoBehaviourPun
         return _moveDir;
     }
 
-
-
-    public bool IsMoveInput()
-    {
-        if (_moveInput.magnitude == 0f)
-            return false;
-        else
-            return true;
-    }
-  
-
-    public bool CheckInput(COMMAND_KEY commandKey, GetKeyType keyType)
-    {
-        // COMMAND_KEY에 대응하는 KeyCode 배열 가져오기
-        if (keyMap.TryGetValue(commandKey, out _keyCodes))
-        {
-            // 각 KeyCode에 대해 입력 확인
-            foreach (KeyCode keyCode in _keyCodes)
-            {
-                _isEnabledKey = false;
-                switch (keyType)
-                {
-                    case GetKeyType.Press:
-                        _isEnabledKey = Input.GetKey(keyCode);
-                        break;
-                    case GetKeyType.Down:
-                        _isEnabledKey = Input.GetKeyDown(keyCode);
-                        break;
-                    case GetKeyType.Up:
-                        _isEnabledKey = Input.GetKeyUp(keyCode);
-                        break;
-                    default:
-                        _isEnabledKey = false;
-                        break;
-                }
-
-                // 입력이 발생하면 해당 커맨드를 실행하고 true 반환
-                if (_isEnabledKey)
-                {
-                    //ReserveCommand(commandKey);
-                    return true;
-                }
-            }
-        }
-
-        // 입력이 발생하지 않았거나 COMMAND_KEY에 대응하는 KeyCode 배열이 없는 경우 false 반환
-        return false;
-    }
-
     public void ReserveCommand(COMMAND_KEY commandKey)
     {
         _activeCommandFlag |= commandKey;
@@ -172,8 +95,108 @@ public class PlayerInputHandler : MonoBehaviourPun
         _activeCommandFlag = 0f;
     }
 
+    void AddVirtualAxis(SerializedProperty axesProperty, string axisName, string positiveButton)
+    {
+        axesProperty.arraySize++;
+        SerializedProperty axis = axesProperty.GetArrayElementAtIndex(axesProperty.arraySize - 1);
 
-   
+        axis.FindPropertyRelative("m_Name").stringValue = axisName;
+        axis.FindPropertyRelative("positiveButton").stringValue = positiveButton;
+        axis.FindPropertyRelative("negativeButton").stringValue = string.Empty;
+        axis.FindPropertyRelative("altNegativeButton").stringValue = string.Empty;
+        axis.FindPropertyRelative("gravity").floatValue = 1000f;
+        axis.FindPropertyRelative("dead").floatValue = 0.001f;
+        axis.FindPropertyRelative("sensitivity").floatValue = 1000f;
+        axis.FindPropertyRelative("snap").boolValue = false;
+        axis.FindPropertyRelative("invert").boolValue = false;
+        axis.FindPropertyRelative("type").intValue = 0;
+        axis.FindPropertyRelative("axis").intValue = 0;
+        axis.FindPropertyRelative("joyNum").intValue = 0;
+    }
+    //private Dictionary<COMMAND_KEY,InputAction> _buttonList = new Dictionary<COMMAND_KEY, InputAction>();
+    //private List<InputManagerEntry> _buttonList = new List<InputManagerEntry>();
+
+    //public void InitButton()
+    //{
+    //    _buttonList.Add(AddButtonEntry(COMMAND_KEY.Jump.ToString(), "space"));
+    //    _buttonList.Add(AddButtonEntry(COMMAND_KEY.LeftBtn.ToString(), "Mouse0"));
+    //    _buttonList.Add(AddButtonEntry(COMMAND_KEY.RightBtn.ToString(), "Mouse1"));
+    //    _buttonList.Add(AddButtonEntry(COMMAND_KEY.HeadButt.ToString(), "Mouse2"));
+    //    _buttonList.Add(AddButtonEntry(COMMAND_KEY.Skill.ToString(), "r"));
+    //    InputRegistering.RegisterInputs(_buttonList);
+
+
+    //    _buttonList.Add(COMMAND_KEY.Move, new InputAction(COMMAND_KEY.Move.ToString()));
+    //    _buttonList[COMMAND_KEY.Move].AddBinding("<Keyboard>/W");
+    //    _buttonList[COMMAND_KEY.Move].AddBinding("<Keyboard>/A");
+    //    _buttonList[COMMAND_KEY.Move].AddBinding("<Keyboard>/S");
+    //    _buttonList[COMMAND_KEY.Move].AddBinding("<Keyboard>/D");
+
+    //    _buttonList.Add(COMMAND_KEY.Jump, new InputAction(COMMAND_KEY.Jump.ToString(), binding: "<Keyboard>/space"));
+    //    _buttonList.Add(COMMAND_KEY.LeftBtn, new InputAction(COMMAND_KEY.LeftBtn.ToString(), binding: "<Mouse>/leftButton"));
+    //    _buttonList.Add(COMMAND_KEY.RightBtn, new InputAction(COMMAND_KEY.RightBtn.ToString(), binding: "<Mouse>/rightButton"));
+    //    _buttonList.Add(COMMAND_KEY.HeadButt, new InputAction(COMMAND_KEY.HeadButt.ToString(), binding: "<Mouse>/middleButton"));
+    //    _buttonList.Add(COMMAND_KEY.Skill, new InputAction(COMMAND_KEY.Skill.ToString(), binding: "<Keyboard>/R"));
+    //    foreach (var button in _buttonList.Values) { button.Enable(); }
+    //}
+    //private InputManagerEntry AddButtonEntry(string buttonName, string inputString)
+    //{
+    //    InputManagerEntry entry = new InputManagerEntry
+    //    {
+    //        kind = InputManagerEntry.Kind.KeyOrButton,
+    //        name = buttonName,
+    //        btnPositive = inputString,
+    //        btnNegative = ""
+    //    };
+    //    return entry;
+    //}
+
+
+
+
+    //public bool CheckInput(COMMAND_KEY commandKey, GetKeyType keyType)
+    //{
+    //    // COMMAND_KEY에 대응하는 KeyCode 배열 가져오기
+    //    if (keyMap.TryGetValue(commandKey, out _keyCodes))
+    //    {
+    //        // 각 KeyCode에 대해 입력 확인
+    //        foreach (KeyCode keyCode in _keyCodes)
+    //        {
+    //            _isEnabledKey = false;
+    //            switch (keyType)
+    //            {
+    //                case GetKeyType.Press:
+    //                    _isEnabledKey = Input.GetKey(keyCode);
+    //                    break;
+    //                case GetKeyType.Down:
+    //                    _isEnabledKey = Input.GetKeyDown(keyCode);
+    //                    break;
+    //                case GetKeyType.Up:
+    //                    _isEnabledKey = Input.GetKeyUp(keyCode);
+    //                    break;
+    //                default:
+    //                    _isEnabledKey = false;
+    //                    break;
+    //            }
+
+    //            // 입력이 발생하면 해당 커맨드를 실행하고 true 반환
+    //            if (_isEnabledKey)
+    //            {
+    //                //ReserveCommand(commandKey);
+    //                return true;
+    //            }
+    //        }
+    //    }
+
+    //    // 입력이 발생하지 않았거나 COMMAND_KEY에 대응하는 KeyCode 배열이 없는 경우 false 반환
+    //    return false;
+    //}
+
+
+
+
+
+
     //void OnKeyboardEvent(Define.KeyboardEvent evt)
     //{
     //    if (!photonView.IsMine || _actor.actorState == ActorState.Dead)

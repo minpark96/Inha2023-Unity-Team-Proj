@@ -41,7 +41,7 @@ public class Grabbing : BaseState
     public override void GetInput()
     {
         //마우스 떼면 Idle로
-        if(!Input.GetButton(COMMAND_KEY.LeftBtn.ToString()))
+        if(!InputCommand(COMMAND_KEY.LeftBtn, KeyType.Press))
         {
             InvokeReserveCommand(COMMAND_KEY.DestroyJoint);
             _sm.ChangeState(_sm.StateMap[PlayerState.UpperIdle]);

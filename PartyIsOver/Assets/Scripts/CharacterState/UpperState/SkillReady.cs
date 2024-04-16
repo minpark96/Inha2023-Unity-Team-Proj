@@ -22,7 +22,7 @@ public class SkillReady : BaseState
 
     public override void UpdateLogic()
     {
-        if(Input.GetButton(COMMAND_KEY.Skill.ToString()))
+        if(InputCommand(COMMAND_KEY.Skill, KeyType.Press))
         {
             _pressDuration += Time.deltaTime;
         }
@@ -31,7 +31,7 @@ public class SkillReady : BaseState
             if (_pressDuration > _skillActiveThreshold)
             {
                 //스킬 발동 상태로
-                if(Input.GetButtonUp(COMMAND_KEY.Skill.ToString()))
+                if(InputCommand(COMMAND_KEY.Skill, KeyType.Up))
                 {
                     InvokeReserveCommand(COMMAND_KEY.Skill);
                     _sm.ChangeState(_sm.StateMap[PlayerState.Skill]);

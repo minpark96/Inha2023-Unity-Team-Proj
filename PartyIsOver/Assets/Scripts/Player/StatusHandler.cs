@@ -12,7 +12,6 @@ public class StatusHandler : MonoBehaviourPun
     private float _damageModifer = 1f;
     private float _knockoutThreshold = 15f;
     private float _healthDamage;
-    private float _maxSpeed;
 
     public Actor actor;
 
@@ -79,11 +78,8 @@ public class StatusHandler : MonoBehaviourPun
     void Start()
     {
         actor = transform.GetComponent<Actor>();
-        _maxSpeed = actor.PlayerController.RunSpeed;
 
         //actor.BodyHandler.BodySetup();
-
-
     }
 
     private void LateUpdate()
@@ -92,7 +88,7 @@ public class StatusHandler : MonoBehaviourPun
         // 지침 디버프 활성화/비활성화
         if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
-            if (actor.Stamina <= 0)
+            if (actor.StatContext.Stamina <= 0)
             {
                 if ((actor.debuffState & DebuffState.Exhausted) == DebuffState.Exhausted)
                 {
@@ -293,13 +289,13 @@ public class StatusHandler : MonoBehaviourPun
             return;
 
         //현재 체력 받아오기
-        float tempHealth = actor.Health;
+        float tempHealth = actor.StatContext.Health;
 
         //무적상태가 아닐때만 데미지 적용
         if (tempHealth > 0f && !invulnerable)
             tempHealth -= _healthDamage;
 
-        float realDamage = actor.Health - tempHealth;
+        float realDamage = actor.StatContext.Health - tempHealth;
 
         //계산한 체력이 0보다 작으면 Death로
         if (tempHealth <= 0f)
@@ -321,7 +317,7 @@ public class StatusHandler : MonoBehaviourPun
                 }
             }
         }
-        actor.Health = Mathf.Clamp(tempHealth, 0f, actor.MaxHealth);
+        actor.StatContext.Health = Mathf.Clamp(tempHealth, 0f, actor.StatContext.MaxHealth);
 
         _healthDamage = 0f;
     }

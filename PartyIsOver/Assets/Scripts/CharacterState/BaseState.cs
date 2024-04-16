@@ -29,15 +29,21 @@ public abstract class BaseState
 
     protected bool IsMoveKeyInput()
     {
-        if (stateMachine.InputHandler.IsMoveInput())
-            return true;
-        else
-            return false;
-
-        //if (stateMachine.ReserveInputCommand(COMMAND_KEY.Move, Define.GetKeyType.Press))
-        //    return true;
-        //else
-        //    return false;
+        return Input.GetAxis("Horizontal") != 0f || Input.GetAxis("Vertical") != 0f;
     }
 
+    protected bool InputCommand(COMMAND_KEY key, KeyType type)
+    {
+        switch(type)
+        {
+            case KeyType.Up:
+                return Input.GetButtonUp(key.ToString());
+            case KeyType.Down: 
+                return Input.GetButtonDown(key.ToString());
+            case KeyType.Press:
+                return Input.GetButton(key.ToString());
+
+            default: return false;
+        }
+    }
 }

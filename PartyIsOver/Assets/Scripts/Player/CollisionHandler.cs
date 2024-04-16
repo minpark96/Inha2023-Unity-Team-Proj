@@ -126,9 +126,9 @@ public class CollisionHandler : MonoBehaviourPun
             {
                 damage = PhysicalDamage(collisionInteractable, damage, contact);
                 damage = ApplyBodyPartDamageModifier(damage);
-                damage *= actor.AttackPowerMultiplier;
+                damage *= actor.StatContext.AttackPowerMultiplier;
                 damage = Mathf.RoundToInt(damage);
-                damage -= damage * (actor.DamageReduction / 100f);
+                damage -= damage * (actor.StatContext.DamageReduction / 100f);
 
                 // 데미지 적용
                 if (damage > 0f && velocityMagnitude > damageMinimumVelocity)

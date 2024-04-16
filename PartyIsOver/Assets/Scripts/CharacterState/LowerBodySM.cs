@@ -35,7 +35,6 @@ public class LowerBodySM : StateMachine
         CommandReserveHandler -= cmdReserveHandler;
         CommandReserveHandler += cmdReserveHandler;
         PlayerContext = playerContext;
-        base.InputHandler = inputHandler;
         base.Init();
     }
 

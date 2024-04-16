@@ -26,7 +26,6 @@ public class UpperBodySM : StateMachine
         CommandDelegate cmdReserveHandler, HandChecker left, HandChecker right,Transform rangeSkin )
     {
         Context = playerContext;
-        InputHandler = inputHandler;
         RangeWeaponSkin = rangeSkin;
         LeftHandCheckter = left;
         RightHandCheckter = right;

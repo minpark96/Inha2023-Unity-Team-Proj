@@ -541,14 +541,14 @@ public class PlayerController : MonoBehaviourPun
         {
             case Define.MouseEvent.PointerDown:
                 {
-                    if (Input.GetMouseButtonDown(1) && _actor.Stamina >= 0)
+                    if (Input.GetMouseButtonDown(1) && _actor.StatContext.Stamina >= 0)
                     {
                         if ((_actor.debuffState & DebuffState.Exhausted) == DebuffState.Exhausted)
                             return;
                         //_actor.Stamina -= 5;
 
 
-                        if (_actor.Stamina <= 0)
+                        if (_actor.StatContext.Stamina <= 0)
                             photonView.RPC("SetStemina", RpcTarget.MasterClient, 0f);
 
                         //_actor.Stamina = 0;
@@ -568,12 +568,12 @@ public class PlayerController : MonoBehaviourPun
                         //PunchAndGrab();
                     }
 
-                    if (Input.GetMouseButtonUp(2) && _actor.Stamina >= 0)
+                    if (Input.GetMouseButtonUp(2) && _actor.StatContext.Stamina >= 0)
                     {
                         if ((_actor.debuffState & DebuffState.Exhausted) == DebuffState.Exhausted)
                             return;
 
-                        if (_actor.Stamina <= 0)
+                        if (_actor.StatContext.Stamina <= 0)
                             photonView.RPC("SetStemina", RpcTarget.MasterClient, 0f);
 
                         //_actor.Stamina = 0;
@@ -643,11 +643,11 @@ public class PlayerController : MonoBehaviourPun
         {
             case Define.KeyboardEvent.PointerDown:
                 {
-                    if (Input.GetKeyDown(KeyCode.R) && _actor.Stamina >= 0)
+                    if (Input.GetKeyDown(KeyCode.R) && _actor.StatContext.Stamina >= 0)
                     {
                         photonView.RPC("DecreaseStamina", RpcTarget.MasterClient, 30f);
 
-                        if (_actor.Stamina <= 0)
+                        if (_actor.StatContext.Stamina <= 0)
                         {
                             photonView.RPC("SetStemina", RpcTarget.MasterClient, 0f);
                             _actor.debuffState |= DebuffState.Exhausted;
@@ -724,7 +724,7 @@ public class PlayerController : MonoBehaviourPun
                         _checkHoldTimeCount++;
                     }
 
-                    if (Input.GetKey(KeyCode.R) && _actor.Stamina >= 0)
+                    if (Input.GetKey(KeyCode.R) && _actor.StatContext.Stamina >= 0)
                     {
                         if ((_actor.debuffState & DebuffState.Drunk) == DebuffState.Drunk)
                         {

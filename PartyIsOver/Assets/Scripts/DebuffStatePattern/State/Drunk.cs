@@ -21,7 +21,7 @@ public class Drunk : MonoBehaviourPun, IDebuffState
 
         PlayerDebuffSound("PlayerEffect/Cartoon-UI-049");
         InstantiateEffect("Effects/Fog_poison");
-        MyActor.PlayerController.IsFlambe = true;
+        MyActor.SetFlambe(true);
     }
 
     public void UpdateState()

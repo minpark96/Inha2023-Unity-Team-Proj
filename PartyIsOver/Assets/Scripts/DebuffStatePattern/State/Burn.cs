@@ -39,7 +39,7 @@ public class Burn : MonoBehaviourPun , IDebuffState
 
         if (Time.time - lastBurnTime >= 1.0f) // 1초간 데미지+액션
         {
-            MyActor.Health -= _burnDamage;
+            MyActor.StatContext.Health -= _burnDamage;
             MyActor.BodyHandler.Waist.PartRigidbody.AddForce((MyActor.BodyHandler.Hip.transform.right) * 40f, ForceMode.VelocityChange);
             MyActor.BodyHandler.Hip.PartRigidbody.AddForce((MyActor.BodyHandler.Hip.transform.right) * 40f, ForceMode.VelocityChange);
             lastBurnTime = Time.time;

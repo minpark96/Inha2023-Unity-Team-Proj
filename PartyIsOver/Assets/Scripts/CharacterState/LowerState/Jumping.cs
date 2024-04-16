@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using Unity.VisualScripting;
 using UnityEngine;
+using static Define;
 
 public class Jumping : BaseState
 {
@@ -28,11 +29,12 @@ public class Jumping : BaseState
     }
     public override void GetInput()
     {
-        IsMoveKeyInput();
+        if (IsMoveKeyInput())
+            InvokeReserveCommand(COMMAND_KEY.Move);
 
-        if(Input.GetButtonDown(Define.COMMAND_KEY.RightBtn.ToString()))
+        if (InputCommand(COMMAND_KEY.RightBtn, KeyType.Down))
         {
-            InvokeReserveCommand(Define.COMMAND_KEY.RightBtn);
+            InvokeReserveCommand(COMMAND_KEY.RightBtn);
             _sm.ChangeState(_sm.DropKickState);
         }
     }

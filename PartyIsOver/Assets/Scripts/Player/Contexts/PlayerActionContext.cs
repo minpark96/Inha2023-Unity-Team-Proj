@@ -17,6 +17,7 @@ public class PlayerActionContext
     public bool IsGrounded { get; set; }
     public bool IsUpperActionProgress { get; set; }
     public bool IsLowerActionProgress { get; set; }
+    public bool IsFlambe { get; set; }
     public bool IsMeowPunch { get; set; }
     public bool IsItemGrabbing { get; set; }
 
@@ -36,4 +37,18 @@ public class PlayerActionContext
 
     public Vector3 LeftTargetDir { get; set; }
     public Vector3 RightTargetDir { get; set; }
+
+    public void SetupAction()
+    {
+        InputDirX = 0;
+        InputDirY = 0;
+        InputDirZ = 0f;
+        IsRunState = false;
+        IsGrounded = false;
+        IsUpperActionProgress = false;
+        IsLowerActionProgress = false;
+        LimbPositions = new int[4];
+        PunchSide = Define.Side.Left;
+        IsMeowPunch = false;
+    }
 }

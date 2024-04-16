@@ -57,19 +57,20 @@ public class Moving : BaseState
 
     public override void GetInput()
     {
-        IsMoveKeyInput();
+        if(IsMoveKeyInput())
+            InvokeReserveCommand(COMMAND_KEY.Move);
 
-        if (Input.GetButtonDown(Define.COMMAND_KEY.Jump.ToString()))
+        if (InputCommand(COMMAND_KEY.Jump, KeyType.Down))
         {
-            InvokeReserveCommand(Define.COMMAND_KEY.Jump);
+            InvokeReserveCommand(COMMAND_KEY.Jump);
             _sm.ChangeState(_sm.JumpingState);
         }
 
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+        if (InputCommand(COMMAND_KEY.ToggleRun, KeyType.Down))
         {
             _sm.IsRun = true;
         }
-        if (Input.GetKeyUp(KeyCode.LeftShift))
+        if (InputCommand(COMMAND_KEY.ToggleRun, KeyType.Up))
         {
             _sm.IsRun = false;
         }

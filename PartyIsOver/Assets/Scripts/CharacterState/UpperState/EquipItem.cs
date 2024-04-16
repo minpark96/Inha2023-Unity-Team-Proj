@@ -39,13 +39,13 @@ public class EquipItem : BaseState
 
     public override void GetInput()
     {
-        if(Input.GetButtonDown(COMMAND_KEY.LeftBtn.ToString()) && _coolTimeTimer < 0f)
+        if(InputCommand(COMMAND_KEY.LeftBtn, KeyType.Down) && _coolTimeTimer < 0f)
         {
             InvokeReserveCommand(COMMAND_KEY.LeftBtn);
             _coolTimeTimer = _itemCoolTime;
         }
 
-        if (Input.GetButtonDown(COMMAND_KEY.RightBtn.ToString()))
+        if (InputCommand(COMMAND_KEY.RightBtn, KeyType.Down))
         {
             InvokeReserveCommand(COMMAND_KEY.RightBtn);
             if (_item.ItemData.ItemType != ItemType.Consumable)

@@ -7,7 +7,6 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using static Define;
-using static PlayerController;
 
 public class Grab : MonoBehaviourPun
 {

@@ -17,30 +17,9 @@ public class Actor : MonoBehaviourPun, IPunObservable
     public event ChangeStaminaBar OnChangeStaminaBar;
 
 
-    private PlayerActionContext _actionContext = new PlayerActionContext
-    {
-        InputDirX = 0,
-        InputDirY = 0,
-        InputDirZ = 0f,
-        IsRunState = false,
-        IsGrounded = false,
-        IsUpperActionProgress = false,
-        IsLowerActionProgress = false,
-        LimbPositions = new int[4],
-        PunchSide = Side.Left,
-        IsMeowPunch = false
-    };
+    private PlayerActionContext _actionContext;
+    public PlayerStatContext StatContext;
 
-    private PlayerStatContext _statContext = new PlayerStatContext
-    {
-        DamageReduction = 0f,
-        AttackPowerMultiplier = 1f,
-
-        Health = 0f,
-        MaxHealth = 200f,
-
-
-    };
 
     public enum ActorState
     {
@@ -70,60 +49,13 @@ public class Actor : MonoBehaviourPun, IPunObservable
     }
 
 
-
     public GrabState GrabState = GrabState.None;
-
-    //공격력 방어력(100이 무적)
-    [SerializeField]
-    private float _damageReduction = 0f;
-    public float DamageReduction { get { return _damageReduction; } set { _damageReduction = value; } }
-
-    [SerializeField]
-    private float _attackPowerMultiplier = 1f;
-
-    public float AttackPowerMultiplier { get { return _attackPowerMultiplier; } set { _attackPowerMultiplier = value; } }
-
-
-    // 체력
-    [SerializeField]
-    private float _health;
-    [SerializeField]
-    private float _maxHealth = 200f;
-    public float Health { get { return _health; } set { _health = value; } }
-    public float MaxHealth { get { return _maxHealth; } }
-
-
-    [Header("Stamina Recovery")]
-    public float RecoveryTime = 0.1f;
-    public float RecoveryStaminaValue = 1f;
-    public float ExhaustedRecoveryTime = 0.2f;
-    float currentRecoveryTime;
-    float currentRecoveryStaminaValue; 
-    float accumulatedTime = 0.0f;
-
-    // 스테미나
-    [SerializeField]
-    private float _stamina;
-    [SerializeField]
-    private float _maxStamina = 100f;
-    public float Stamina { get { return _stamina; } set { _stamina = value; } }
-    public float MaxStamina { get { return _maxStamina; } }
-
-    // 동사스택
-    [SerializeField]
-    private int _magneticStack = 0;
-    public int MagneticStack { get { return _magneticStack; } set { _magneticStack = value; } }
-    
-
-
     public ActorState actorState = ActorState.Stand;
     public DebuffState debuffState = DebuffState.Default;
 
     public static GameObject LocalPlayerInstance;
 
     public static int LayerCnt = (int)Define.Layer.Player1;
-
-
 
 
     //
@@ -135,7 +67,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
     public ActionController ActionController;
     public LowerBodySM LowerSM;
     public UpperBodySM UpperSM;
-    public Transform RangeWeaponSkin;
+    private Transform _rangeWeaponSkin;
 
     private PlayerInputHandler _inputHandler;
     private AnimationPlayer _animPlayer = new AnimationPlayer();
@@ -144,10 +76,10 @@ public class Actor : MonoBehaviourPun, IPunObservable
     private COMMAND_KEY _activeCommand;
     private COMMAND_KEY[] _commandAry = (COMMAND_KEY[])Enum.GetValues(typeof(COMMAND_KEY));
 
-    //
-    public PlayerController PlayerController;
     AudioSource _audioSource;
     AudioClip _audioClip;
+
+
 
     public void InvokeStatusChangeEvent()
     {
@@ -157,7 +89,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
             return;
         }
 
-        OnChangePlayerStatus(_health, _stamina, debuffState, photonView.ViewID);
+        OnChangePlayerStatus(StatContext.Health, StatContext.Stamina, debuffState, photonView.ViewID);
     }
 
     public void InvokeDeathEvent()
@@ -208,24 +140,17 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
         BodyHandler = GetComponent<BodyHandler>();
         StatusHandler = GetComponent<StatusHandler>();
-        PlayerController = GetComponent<PlayerController>();
         Transform SoundSourceTransform = transform.Find("GreenHip");
         _audioSource = SoundSourceTransform.GetComponent<AudioSource>();
         ChangeLayerRecursively(gameObject, LayerCnt++);
+        StatContext = new PlayerStatContext();
+        _actionContext = new PlayerActionContext();
+
         Init();
     }
 
     private void Init()
     {
-        PlayerStatData statData = Managers.Resource.Load<PlayerStatData>("ScriptableObject/PlayerStatData");
-
-        _health = statData.Health;
-        _stamina = statData.Stamina;
-        _maxHealth = statData.MaxHealth;
-        _maxStamina = statData.MaxStamina;
-        _damageReduction = statData.DamageReduction;
-        _attackPowerMultiplier = statData.AttackPowerMultiplier;
-
         _animData = new AnimationData(BodyHandler);
         ActionController = new ActionController(_animData,_animPlayer,BodyHandler);
 
@@ -234,10 +159,12 @@ public class Actor : MonoBehaviourPun, IPunObservable
         LowerSM = new LowerBodySM(_inputHandler, _actionContext, _inputHandler.ReserveCommand);
         UpperSM = new UpperBodySM(_inputHandler, _actionContext,_inputHandler.ReserveCommand,
            BodyHandler.LeftHand.GetComponent<HandChecker>(), BodyHandler.RightHand.GetComponent<HandChecker>(),
-           RangeWeaponSkin);
+           _rangeWeaponSkin);
 
-        _inputHandler.InitCommnad(this);
-        _inputHandler.InitButton();
+        _inputHandler.InitCommand(this);
+        _inputHandler.SetupInputAxes();
+        StatContext.SetupStat();
+        _actionContext.SetupAction();
     }
 
 
@@ -302,7 +229,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
         if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
-            if (_stamina <= 0)
+            if (StatContext.Stamina <= 0)
             {
                 //벽타기 불가능
                 ResetGrab();
@@ -311,10 +238,10 @@ public class Actor : MonoBehaviourPun, IPunObservable
             //회복하는 수치값 변경
             RecoveryStamina();
 
-            accumulatedTime += Time.fixedDeltaTime;
+            StatContext.AccumulatedTime += Time.fixedDeltaTime;
             //Time.fixedDeltaTime(0.02초 기준으로 계속 반복) >= 현제회복시간
             //0.02초 계속 더해서 >= 0.1,0.2초 보다 커지면 
-            if (accumulatedTime >= currentRecoveryTime)
+            if (StatContext.AccumulatedTime >= StatContext.CurrentRecoveryTime)
             {
                 //뛰거나 잡기 상태에서는
                 if (actorState == ActorState.Run || GrabState == GrabState.Climb)
@@ -322,18 +249,18 @@ public class Actor : MonoBehaviourPun, IPunObservable
                     //뛰거나 잡기 상태일때 만약 특수 디버프 상태가 들어오면 계속 까이는 현상이 있는데 조건을 걸어서 방지
                     if ((debuffState & DebuffState.Ice) == DebuffState.Ice || (debuffState & DebuffState.Shock) == DebuffState.Shock)
                     {
-                        _stamina -= 0;
+                        StatContext.Stamina -= 0;
                         //photonView.RPC("DecreaseStamina", RpcTarget.All, 0f);
                         ResetGrab();
                         _actionContext.IsRunState = false;
                     }
-                    else if (_stamina == 0)
+                    else if (StatContext.Stamina == 0)
                     {
-                        _stamina = -1f;
+                        StatContext.Stamina = -1f;
                         actorState = ActorState.Walk;
                     }
                     else
-                        _stamina -= 1;
+                        StatContext.Stamina -= 1;
                     //photonView.RPC("DecreaseStamina", RpcTarget.All, 1f);
                 }
                 //else if (PlayerController._isRSkillCheck || PlayerController.isHeading || PlayerController._isCoroutineDrop)
@@ -343,14 +270,14 @@ public class Actor : MonoBehaviourPun, IPunObservable
                 else
                     //상태에 맞는 회복하기
                     //photonView.RPC("RecoverStamina", RpcTarget.All, currentRecoveryStaminaValue);
-                    _stamina += currentRecoveryStaminaValue;
-                accumulatedTime = 0f;
+                    StatContext.Stamina += StatContext.CurrentRecoveryStaminaValue;
+                StatContext.AccumulatedTime = 0f;
             }
             //스테미너가 최대치는 넘는거 방지
-            if (_stamina > MaxStamina)
-                _stamina = MaxStamina;
+            if (StatContext.Stamina > StatContext.MaxStamina)
+                StatContext.Stamina = StatContext.MaxStamina;
 
-            OnChangePlayerStatus(_health, _stamina, debuffState, photonView.ViewID);
+            OnChangePlayerStatus(StatContext.Health, StatContext.Stamina, debuffState, photonView.ViewID);
         }
 
 
@@ -375,35 +302,48 @@ public class Actor : MonoBehaviourPun, IPunObservable
         //회복해주는 수치
         if (!((debuffState & DebuffState.Exhausted) == DebuffState.Exhausted))
         {
-            currentRecoveryTime = RecoveryTime;
-            currentRecoveryStaminaValue = RecoveryStaminaValue;
+            StatContext.CurrentRecoveryTime = StatContext.RecoveryTime;
+            StatContext.CurrentRecoveryStaminaValue = StatContext.RecoveryStaminaValue;
         }
         else
         {
             //PlayerController.isRun = false;
-            currentRecoveryTime = ExhaustedRecoveryTime;
-            currentRecoveryStaminaValue = RecoveryStaminaValue;
+            StatContext.CurrentRecoveryTime = StatContext.ExhaustedRecoveryTime;
+            StatContext.CurrentRecoveryStaminaValue = StatContext.RecoveryStaminaValue;
         }
     }
     [PunRPC]
     void SetStemina(float amount)
     {
-        Stamina = amount;
+        StatContext.Stamina = amount;
     }
 
     [PunRPC]
     void DecreaseStamina(float amount)
     {
-        Stamina -= amount;
+        StatContext.Stamina -= amount;
     }
 
     [PunRPC]
     void RecoverStamina(float amount)
     {
-        Stamina += amount;
+        StatContext.Stamina += amount;
     }
 
-   
+    public Vector3 GetMoveDir()
+    {
+        return _inputHandler.GetMoveInput(CameraControl.CameraArm.transform);
+    }
+
+    public void SetSkill(bool IsMeowNyangPunch)
+    {
+        _actionContext.IsMeowPunch = IsMeowNyangPunch;
+    }
+  
+    public void SetFlambe(bool value)
+    {
+        _actionContext.IsFlambe = value;
+    }
 
     void ExecuteCommand()
     {

@@ -5,10 +5,8 @@ PlantUML 개발문서
 포션애니메이션 고쳤음 문제시 0117 이전에서 가져오기
 
 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ해야할거ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
-Input핸들러를 SM에서 빼고 Actor에서 눌린 키값만 State내의 Update로 보내서 처리하는 방식 고려
-아니면 유니티 버튼기능을 사용해서 InputHandler를 굳이 가지지 않고 전역으로 인풋받는걸 처리
--위의거 하는중 Button으로 시스템 변경하고, InvokeReserveCommand함수로 사용해서 결합도 낮추기
-
+ActorState Actor클래스에서 삭제시켜야함 Dead와 Run은 context로 처리하고 나머진 GetLowerState
+로 변경, 메모장에 Actor부분 정리하고 멀티되게끔 수정
 
 각각의 state가 actor의 값들을 갱신시켜야함
 LimbCollision도 마찬가지
@@ -45,6 +43,17 @@ RPC 함수하나 통하도록 (여기서 디버그 가능할수도)
 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ영상 피드백	ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 
 	//게임의 긴장감, 매달리기등에 대한 이유, 목적
+
+
+
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡActorㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+Awake
+	-카메라만 IsMIne이 처리
+	-나머진 모든 Actor
+
+Update는 IsMine만 처리중
+FixedUpdate
+
 
 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ스테이터스 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 health

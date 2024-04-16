@@ -11273,7 +11273,6 @@ GameObject:
   - component: {fileID: 5878509405600198244}
   - component: {fileID: 3717766367762509942}
   - component: {fileID: 5878509405600198247}
-  - component: {fileID: 5878509405600198232}
   - component: {fileID: 5878509405600198236}
   - component: {fileID: 5878509405600198235}
   - component: {fileID: 5878509405600198234}
@@ -11365,48 +11364,6 @@ MonoBehaviour:
   ChildJoints: []
   OriginalYMotions: 
   OriginalZMotions: 
---- !u!114 &5878509405600198232
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5873236424662451676}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 163aac5c61a559942a4c0ff8013e0a41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  RunSpeed: 100
-  _hips: {fileID: 5856347132035830517}
-  _cameraArm: {fileID: 0}
-  _bodyHandler: {fileID: 0}
-  ReadyPunch: 0.1
-  Punching: 0.1
-  ResetPunch: 0.3
-  isGrounded: 0
-  isRun: 0
-  isMove: 0
-  isStateChange: 0
-  isMeowNyangPunch: 0
-  _isRSkillCheck: 0
-  isHeading: 0
-  RSkillCoolTime: 5
-  MeowPunchPower: 3
-  MeowPunchReadyPunch: 0.05
-  MeowPunchPunching: 0.05
-  MeowPunchResetPunch: 0.05
-  NuclearPunchPower: 5
-  NuclearPunchReadyPunch: 0.1
-  NuclearPunching: 0.1
-  NuclearPunchResetPunch: 0.1
-  HeadingCoolTime: 1
-  DropkickCoolTime: 2
-  ChargeTime: 1.3
-  IsFlambe: 0
-  MoveInput: {x: 0, y: 0, z: 0}
-  _isCoroutineDrop: 0
-  isAI: 0
 --- !u!114 &5878509405600198236
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11441,24 +11398,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GrabState: 0
-  _damageReduction: 0
-  _attackPowerMultiplier: 1
-  _health: 0
-  _maxHealth: 200
-  RecoveryTime: 0.1
-  RecoveryStaminaValue: 1
-  ExhaustedRecoveryTime: 0.2
-  _stamina: 100
-  _maxStamina: 100
-  _magneticStack: 0
   actorState: 4
   debuffState: 0
   AudioListener: {fileID: 0}
   StatusHandler: {fileID: 0}
   BodyHandler: {fileID: 0}
   CameraControl: {fileID: 0}
-  RangeWeaponSkin: {fileID: 2087769795625165002}
-  PlayerController: {fileID: 0}
 --- !u!114 &5878509405600198234
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -21,13 +21,13 @@ public class UpperIdle : BaseState
         if (_sm.Context.IsUpperActionProgress)
             return;
 
-        if(Input.GetButtonDown(COMMAND_KEY.LeftBtn.ToString()))
+        if(InputCommand(COMMAND_KEY.LeftBtn, KeyType.Down))
             _sm.ChangeState(_sm.StateMap[PlayerState.PunchAndGrabReady]);
 
-        if (Input.GetButtonDown(COMMAND_KEY.Skill.ToString()))
+        if (InputCommand(COMMAND_KEY.Skill, KeyType.Down))
             _sm.ChangeState(_sm.StateMap[PlayerState.SkillReady]);
 
-        if (Input.GetButtonDown(COMMAND_KEY.HeadButt.ToString()))
+        if (InputCommand(COMMAND_KEY.HeadButt, KeyType.Down))
         {
             InvokeReserveCommand(COMMAND_KEY.HeadButt);
             _sm.ChangeState(_sm.StateMap[PlayerState.HeadButt]);

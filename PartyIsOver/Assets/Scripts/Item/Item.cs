@@ -82,7 +82,7 @@ public class Item : MonoBehaviourPun
 
             Vector3 pos1 = Owner.BodyHandler.Chest.transform.position + lookForward.normalized * 10f + Vector3.up * 3f;
 
-            Vector3 input = Owner.PlayerController.MoveInput;
+            Vector3 input = Owner.GetMoveDir();
             Vector3 moveDir = lookForward * input.z + lookRight * input.x;
 
 

@@ -229,7 +229,7 @@ public class GameCenter : BaseScene
     void UpdateStaminaBar()
     {
         if (ImageStaminaBar != null)
-            ImageStaminaBar.fillAmount = MyActor.Stamina / MyActor.MaxStamina;
+            ImageStaminaBar.fillAmount = MyActor.StatContext.Stamina / MyActor.StatContext.MaxStamina;
     }
 
     #region ScoreBoard
@@ -731,10 +731,7 @@ public class GameCenter : BaseScene
             Actor actor = targetPV.transform.GetComponent<Actor>();
             Actors.Add(actor);
 
-            if (IsMeowNyangPunch)
-                actor.PlayerController.isMeowNyangPunch = true;
-            else
-                actor.PlayerController.isMeowNyangPunch = false;
+            actor.SetSkill(IsMeowNyangPunch);
 
             if (PhotonNetwork.LocalPlayer.IsMasterClient)
             {
@@ -853,14 +850,14 @@ public class GameCenter : BaseScene
 
             if (Actors[i].photonView.ViewID == viewID)
             {
-                Actors[i].Health = hp;
+                Actors[i].StatContext.Health = hp;
                 //Actors[i].actorState = actorState;
                 Actors[i].debuffState = debuffstate;
-                Actors[i].Stamina = stamina;
+                Actors[i].StatContext.Stamina = stamina;
 
                 if (Actors[i].photonView.IsMine && ImageHPBar != null)
                 {
-                    ImageHPBar.fillAmount = Actors[i].Health / Actors[i].MaxHealth;
+                    ImageHPBar.fillAmount = Actors[i].StatContext.Health / Actors[i].StatContext.MaxHealth;
                 }
                 break;
             }
@@ -971,7 +968,7 @@ public class GameCenter : BaseScene
     {
         for (int i = 0; i < Actors.Count; i++)
         {
-            Actors[i].MagneticStack = magneticStack[i];
+            Actors[i].StatContext.MagneticStack = magneticStack[i];
         }
 
         _magneticField.ChangeMainPanel();

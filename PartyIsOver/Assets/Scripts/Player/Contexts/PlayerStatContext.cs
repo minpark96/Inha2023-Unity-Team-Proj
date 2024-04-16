@@ -4,33 +4,42 @@ using UnityEngine;
 
 public class PlayerStatContext
 {
-    //공격력 방어력(100이 무적)
-    private float _damageReduction = 0f;
-    private float _attackPowerMultiplier = 1f;
-    public float DamageReduction { get { return _damageReduction; } set { _damageReduction = value; } }
-    public float AttackPowerMultiplier { get { return _attackPowerMultiplier; } set { _attackPowerMultiplier = value; } }
+    public float RunSpeed { get; set; }
+    public float MaxSpeed { get; set; }
+
+    //공격력, 방어력(100이 무적)
+    public float DamageReduction { get; set; }
+    public float AttackPowerMultiplier { get; set; }
 
 
     // 체력
-    private float _health;
-    private float _maxHealth = 200f;
-    public float Health { get { return _health; } set { _health = value; } }
-    public float MaxHealth { get { return _maxHealth; } set { _maxHealth = value; } }
+    public float Health { get; set; }
+    public float MaxHealth { get; set; }
 
 
     public float RecoveryTime = 0.1f;
     public float RecoveryStaminaValue = 1f;
     public float ExhaustedRecoveryTime = 0.2f;
-    public float currentRecoveryTime;
-    public float currentRecoveryStaminaValue;
-    public float accumulatedTime = 0.0f;
-
-    private float _stamina;
-    private float _maxStamina = 100f;
-    public float Stamina { get { return _stamina; } set { _stamina = value; } }
-    public float MaxStamina { get { return _maxStamina; } }
+    public float CurrentRecoveryTime;
+    public float CurrentRecoveryStaminaValue;
+    public float AccumulatedTime = 0.0f;
+    public float Stamina { get; set; }
+    public float MaxStamina { get; set; }
 
     // 동사스택
-    private int _magneticStack = 0;
-    public int MagneticStack { get { return _magneticStack; } set { _magneticStack = value; } }
+    public int MagneticStack { get; set; }
+
+    public void SetupStat()
+    {
+        PlayerStatData statData = Managers.Resource.Load<PlayerStatData>("ScriptableObject/PlayerStatData");
+
+        RunSpeed = statData.RunSpeed;
+        MaxSpeed = statData.MaxSpeed;
+        Health = statData.Health;
+        Stamina = statData.Stamina;
+        MaxHealth = statData.MaxHealth;
+        MaxStamina = statData.MaxStamina;
+        DamageReduction = statData.DamageReduction;
+        AttackPowerMultiplier = statData.AttackPowerMultiplier;
+    }
 }

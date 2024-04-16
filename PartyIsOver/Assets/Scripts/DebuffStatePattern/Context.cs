@@ -24,7 +24,7 @@ public class Context : MonoBehaviourPun
 
             if (state != null)
             {
-                if (state.ToString().Contains("Exhausted") && state.MyActor.Stamina == 100)
+                if (state.ToString().Contains("Exhausted") && state.MyActor.StatContext.Stamina == 100)
                 {
                     state.ExitState();
                     _currentStateList[i] = null;

@@ -198,7 +198,7 @@ public static class Define
         IndexUpperEnd,
     }
 
-    public enum GetKeyType
+    public enum KeyType
     {
         Press,
         Down,
@@ -220,6 +220,7 @@ public static class Define
         Grabbing       =    0x200,
         FixJoint       =    0x400,
         DestroyJoint   =    0x800,
+        ToggleRun            =    0x1000,
 
         None = 0x8000,
     }

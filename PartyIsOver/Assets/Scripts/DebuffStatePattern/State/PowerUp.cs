@@ -12,17 +12,14 @@ public class PowerUp : MonoBehaviourPun, IDebuffState
     AudioClip _audioClip = null;
     AudioSource _audioSource;
 
-    private float _maxSpeed;
 
     public void EnterState()
     {
-        _maxSpeed = MyActor.PlayerController.RunSpeed;
-
         effectObject = null;
         playerTransform = this.transform.Find("GreenHip").GetComponent<Transform>();
         Transform SoundSourceTransform = transform.Find("GreenHip");
         _audioSource = SoundSourceTransform.GetComponent<AudioSource>();
-        MyActor.PlayerController.RunSpeed += _maxSpeed * 0.1f;
+        MyActor.StatContext.RunSpeed += MyActor.StatContext.MaxSpeed * 0.1f;
         PlayerDebuffSound("PlayerEffect/Cartoon-UI-037");
         InstantiateEffect("Effects/Aura_acceleration");
     }
@@ -36,7 +33,7 @@ public class PowerUp : MonoBehaviourPun, IDebuffState
     public void ExitState()
     {
         MyActor.debuffState &= ~Actor.DebuffState.PowerUp;
-        MyActor.PlayerController.RunSpeed -= _maxSpeed * 0.1f;
+        MyActor.StatContext.RunSpeed = MyActor.StatContext.MaxSpeed;
         RemoveObject("Aura_acceleration");
         MyActor.InvokeStatusChangeEvent();
         _audioClip = null;

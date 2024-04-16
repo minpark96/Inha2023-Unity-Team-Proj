@@ -24,10 +24,10 @@ public class LiftObject : BaseState
 
     public override void GetInput()
     {
-        if(!Input.GetButton(COMMAND_KEY.LeftBtn.ToString()))
+        if(!InputCommand(COMMAND_KEY.LeftBtn, KeyType.Press))
             _sm.ChangeState(_sm.StateMap[PlayerState.UpperIdle]);
         
-        if(Input.GetButtonDown(COMMAND_KEY.RightBtn.ToString()))
+        if(InputCommand(COMMAND_KEY.RightBtn, KeyType.Down))
         {
             InvokeReserveCommand(COMMAND_KEY.RightBtn);
             _sm.ChangeState(_sm.StateMap[PlayerState.UpperIdle]);
