@@ -67,7 +67,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
     public ActionController ActionController;
     public LowerBodySM LowerSM;
     public UpperBodySM UpperSM;
-    private Transform _rangeWeaponSkin;
+    public Transform RangeWeaponSkin;
 
     private PlayerInputHandler _inputHandler;
     private AnimationPlayer _animPlayer = new AnimationPlayer();
@@ -159,7 +159,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
         LowerSM = new LowerBodySM(_inputHandler, _actionContext, _inputHandler.ReserveCommand);
         UpperSM = new UpperBodySM(_inputHandler, _actionContext,_inputHandler.ReserveCommand,
            BodyHandler.LeftHand.GetComponent<HandChecker>(), BodyHandler.RightHand.GetComponent<HandChecker>(),
-           _rangeWeaponSkin);
+           RangeWeaponSkin);
 
         _inputHandler.InitCommand(this);
         _inputHandler.SetupInputAxes();

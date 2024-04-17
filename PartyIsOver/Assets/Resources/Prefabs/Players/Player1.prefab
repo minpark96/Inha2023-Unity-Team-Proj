@@ -11273,7 +11273,6 @@ GameObject:
   - component: {fileID: 5878509405600198244}
   - component: {fileID: 3717766367762509942}
   - component: {fileID: 5878509405600198247}
-  - component: {fileID: 5878509405600198236}
   - component: {fileID: 5878509405600198235}
   - component: {fileID: 5878509405600198234}
   - component: {fileID: 1602883286494261838}
@@ -11364,27 +11363,6 @@ MonoBehaviour:
   ChildJoints: []
   OriginalYMotions: 
   OriginalZMotions: 
---- !u!114 &5878509405600198236
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5873236424662451676}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d8d2732e4766ccf4fba1c58f524e0dae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _isRightGrab: 0
-  _isLeftGrab: 0
-  EquipItem: {fileID: 0}
-  LeftGrabObject: {fileID: 0}
-  RightGrabObject: {fileID: 0}
-  RangeWeaponSkin: {fileID: 2087769795625165002}
-  FirePoint: {fileID: 0}
-  CollisionObject: {fileID: 0}
-  _turnForce: 0
 --- !u!114 &5878509405600198235
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11404,6 +11382,7 @@ MonoBehaviour:
   StatusHandler: {fileID: 0}
   BodyHandler: {fileID: 0}
   CameraControl: {fileID: 0}
+  RangeWeaponSkin: {fileID: 2087769795625165002}
 --- !u!114 &5878509405600198234
 MonoBehaviour:
   m_ObjectHideFlags: 0
