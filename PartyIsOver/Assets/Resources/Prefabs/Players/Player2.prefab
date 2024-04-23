@@ -11277,7 +11277,6 @@ GameObject:
   - component: {fileID: 5878509405600198234}
   - component: {fileID: 1602883286494261838}
   - component: {fileID: 4655386519301525991}
-  - component: {fileID: -1628419483737758786}
   m_Layer: 7
   m_Name: Player2
   m_TagString: Untagged
@@ -11392,7 +11391,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GrabState: 0
-  actorState: 4
   debuffState: 0
   AudioListener: {fileID: 0}
   StatusHandler: {fileID: 0}
@@ -11453,18 +11451,6 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &-1628419483737758786
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5873236424662451676}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5740e34abace13f49a4a33d6c40a4acb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &5873269987166717472
 GameObject:
   m_ObjectHideFlags: 0

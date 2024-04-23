@@ -44,7 +44,6 @@ public class Stun : MonoBehaviourPun , IDebuffState
         StartCoroutine(RestoreBodySpring(0.07f));
 
         RemoveObject("Stun_loop");
-        MyActor.actorState = Actor.ActorState.Stand;
         MyActor.debuffState &= ~Actor.DebuffState.Stun;
         //MyActor.InvokeStatusChangeEvent();
 

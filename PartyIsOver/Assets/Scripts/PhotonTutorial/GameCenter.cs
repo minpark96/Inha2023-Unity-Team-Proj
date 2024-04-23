@@ -878,7 +878,7 @@ public class GameCenter : BaseScene
         {
             if (Actors[i].photonView.ViewID == viewID)
             {
-                Actors[i].actorState = ActorState.Dead;
+                Actors[i].StatContext.IsAlive = true;
 
                 if (Actors[i].photonView.IsMine == true)
                 //if (Actors[i].photonView.ViewID == viewID && Actors[i].photonView.IsMine == true)
@@ -886,7 +886,7 @@ public class GameCenter : BaseScene
                     Actors[i].CameraControl.Camera.GetComponent<GrayscaleEffect>().StartGrayscalseEffect();
                     photonView.RPC("ReduceAlivePlayerCount", RpcTarget.MasterClient, viewID);
                     Vector3 deadPos = Actors[i].BodyHandler.Hip.transform.position;
-                    Debug.Log("HandleDeath: " + Actors[i].actorState);
+                    //Debug.Log("Ha: " + Actors[i].StatContext.IsAlive);
                     StartCoroutine(InstantiateGhost(deadPos));
                 }
             }
@@ -999,7 +999,7 @@ public class GameCenter : BaseScene
     [PunRPC]
     void FindWinner()
     {
-        if (MyActor.actorState != ActorState.Dead)
+        if (MyActor.StatContext.IsAlive)
         {
             photonView.RPC("GiveScoreToWinner", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber);
         }

@@ -36,7 +36,7 @@ public class StatusHandler : MonoBehaviourPun
     AudioSource _audioSource;
 
 
-    public Context Context;
+    public DebuffContext Context;
     Stun stunInStance;
     Burn burnInStance;
     Ice IceInStance;
@@ -65,7 +65,7 @@ public class StatusHandler : MonoBehaviourPun
         PlayerTransform = this.transform.Find("GreenHip").GetComponent<Transform>();
         Transform SoundSourceTransform = transform.Find("GreenHip");
         _audioSource = SoundSourceTransform.GetComponent<AudioSource>();
-        Context = GetComponent<Context>();
+        Context = GetComponent<DebuffContext>();
         stunInStance = gameObject.AddComponent<Stun>();
         burnInStance = gameObject.AddComponent<Burn>();
         IceInStance = gameObject.AddComponent<Ice>();
@@ -110,7 +110,7 @@ public class StatusHandler : MonoBehaviourPun
         // 데미지 체크
         damage *= _damageModifer;
 
-        if (!invulnerable && actor.actorState != Actor.ActorState.Dead && !((actor.debuffState & Actor.DebuffState.Stun) == DebuffState.Stun))
+        if (!invulnerable && actor.StatContext.IsAlive && !((actor.debuffState & Actor.DebuffState.Stun) == DebuffState.Stun))
         {
             _healthDamage += damage;
         }
@@ -118,7 +118,7 @@ public class StatusHandler : MonoBehaviourPun
         if (_healthDamage != 0f)
             UpdateHealth();
 
-        if (actor.actorState != Actor.ActorState.Dead)
+        if (actor.StatContext.IsAlive)
         {
             // 상태이상 체크
             DebuffCheck(type);
@@ -331,7 +331,7 @@ public class StatusHandler : MonoBehaviourPun
 
     void KillPlayer()
     {
-        actor.actorState = Actor.ActorState.Dead;
+        actor.StatContext.IsAlive = false;
         _isDead = true;
         actor.ResetGrab();
         actor.InvokeDeathEvent();

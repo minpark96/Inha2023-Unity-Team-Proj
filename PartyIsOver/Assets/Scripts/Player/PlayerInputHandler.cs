@@ -7,7 +7,7 @@ using UnityEditor;
 
 public class PlayerInputHandler : MonoBehaviourPun
 {
-    private Dictionary<COMMAND_KEY, CommandKey> commands = new Dictionary<COMMAND_KEY, CommandKey>();
+    private Dictionary<COMMAND_KEY, CommandKey> _commands = new Dictionary<COMMAND_KEY, CommandKey>();
     private Define.COMMAND_KEY _activeCommandFlag;
 
     private Vector3 _moveDir;
@@ -40,18 +40,18 @@ public class PlayerInputHandler : MonoBehaviourPun
 
     public void InitCommand(Actor actor)
     {
-        commands.Add(COMMAND_KEY.Jump,         new CmdJump(actor));
-        commands.Add(COMMAND_KEY.Move,         new CmdMove(actor));
-        commands.Add(COMMAND_KEY.LeftBtn,      new CmdLeftBtn(actor));
-        commands.Add(COMMAND_KEY.Skill,        new CmdSkill(actor));
-        commands.Add(COMMAND_KEY.Charge,       new CmdCharge(actor));
-        commands.Add(COMMAND_KEY.ResetCharge,  new CmdResetCharge(actor));
-        commands.Add(COMMAND_KEY.HeadButt,     new CmdHeadButt(actor));
-        commands.Add(COMMAND_KEY.RightBtn,     new CmdRightBtn(actor));
-        commands.Add(COMMAND_KEY.Grabbing,     new CmdGrabbing(actor));
-        commands.Add(COMMAND_KEY.TargetSearch, new CmdSearchTarget(actor));
-        commands.Add(COMMAND_KEY.FixJoint,     new CmdFixJoint(actor));
-        commands.Add(COMMAND_KEY.DestroyJoint, new CmdDestroyJoint(actor));
+        _commands.Add(COMMAND_KEY.Jump,         new CmdJump(actor));
+        _commands.Add(COMMAND_KEY.Move,         new CmdMove(actor));
+        _commands.Add(COMMAND_KEY.LeftBtn,      new CmdLeftBtn(actor));
+        _commands.Add(COMMAND_KEY.Skill,        new CmdSkill(actor));
+        _commands.Add(COMMAND_KEY.Charge,       new CmdCharge(actor));
+        _commands.Add(COMMAND_KEY.ResetCharge,  new CmdResetCharge(actor));
+        _commands.Add(COMMAND_KEY.HeadButt,     new CmdHeadButt(actor));
+        _commands.Add(COMMAND_KEY.RightBtn,     new CmdRightBtn(actor));
+        _commands.Add(COMMAND_KEY.Grabbing,     new CmdGrabbing(actor));
+        _commands.Add(COMMAND_KEY.TargetSearch, new CmdSearchTarget(actor));
+        _commands.Add(COMMAND_KEY.FixJoint,     new CmdFixJoint(actor));
+        _commands.Add(COMMAND_KEY.DestroyJoint, new CmdDestroyJoint(actor));
     }
 
 
@@ -82,7 +82,7 @@ public class PlayerInputHandler : MonoBehaviourPun
 
     public CommandKey GetCommand(COMMAND_KEY key)
     {
-        return commands[key];
+        return _commands[key];
     }
 
     public COMMAND_KEY GetActiveCmdFlag()

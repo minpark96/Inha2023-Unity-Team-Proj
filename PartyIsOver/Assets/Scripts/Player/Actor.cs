@@ -21,19 +21,6 @@ public class Actor : MonoBehaviourPun, IPunObservable
     public PlayerStatContext StatContext;
 
 
-    public enum ActorState
-    {
-        Dead = 0x1,
-        Stand = 0x4,
-        Walk = 0x8,
-        Run = 0x10,
-        Roll = 0x20,
-        Jump = 0x40,
-        Fall = 0x80,
-        Climb = 0x100,
-        Debuff = 0x200,
-    }
-
     public enum DebuffState
     {
         Default =   0x0,
@@ -50,7 +37,6 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
 
     public GrabState GrabState = GrabState.None;
-    public ActorState actorState = ActorState.Stand;
     public DebuffState debuffState = DebuffState.Default;
 
     public static GameObject LocalPlayerInstance;
@@ -181,7 +167,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
     private void Update()
     {
-        if (!photonView.IsMine || actorState == ActorState.Dead) return;
+        if (!photonView.IsMine || !StatContext.IsAlive) return;
 
         if(CameraControl == null || BodyHandler == null) return;
         CameraControl.LookAround(BodyHandler.Hip.transform.position);
@@ -225,7 +211,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
     private void FixedUpdate()
     {
-        if (actorState == ActorState.Dead) return;
+        if (!StatContext.IsAlive) return;
 
         if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
@@ -244,12 +230,12 @@ public class Actor : MonoBehaviourPun, IPunObservable
             if (StatContext.AccumulatedTime >= StatContext.CurrentRecoveryTime)
             {
                 //뛰거나 잡기 상태에서는
-                if (actorState == ActorState.Run || GrabState == GrabState.Climb)
+                if (_actionContext.IsRunState || GrabState == GrabState.Climb)
                 {
                     //뛰거나 잡기 상태일때 만약 특수 디버프 상태가 들어오면 계속 까이는 현상이 있는데 조건을 걸어서 방지
                     if ((debuffState & DebuffState.Ice) == DebuffState.Ice || (debuffState & DebuffState.Shock) == DebuffState.Shock)
                     {
-                        StatContext.Stamina -= 0;
+                        StatContext.Stamina = 0;
                         //photonView.RPC("DecreaseStamina", RpcTarget.All, 0f);
                         ResetGrab();
                         _actionContext.IsRunState = false;
@@ -257,7 +243,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
                     else if (StatContext.Stamina == 0)
                     {
                         StatContext.Stamina = -1f;
-                        actorState = ActorState.Walk;
+                        _actionContext.IsRunState=false;
                     }
                     else
                         StatContext.Stamina -= 1;
@@ -345,6 +331,11 @@ public class Actor : MonoBehaviourPun, IPunObservable
         _actionContext.IsFlambe = value;
     }
 
+    public void SetActorState(Define.PlayerState state)
+    {
+        
+    }
+
     void ExecuteCommand()
     {
         _activeCommand = _inputHandler.GetActiveCmdFlag();
@@ -384,17 +375,19 @@ public class Actor : MonoBehaviourPun, IPunObservable
         return LowerSM.GetCurrentState().Name;
     }
 
+
+
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        if (stream.IsWriting)
-        {
-            stream.SendNext(actorState);
-        }
-        else
-        {
-            if (this.actorState != ActorState.Dead)
-                this.actorState = (ActorState)stream.ReceiveNext();
-        }
+        //if (stream.IsWriting)
+        //{
+        //    stream.SendNext(actorState);
+        //}
+        //else
+        //{
+        //    if (this.actorState != ActorState.Dead)
+        //        this.actorState = (ActorState)stream.ReceiveNext();
+        //}
     }
 
     private void OnGUI() //완성 후 삭제

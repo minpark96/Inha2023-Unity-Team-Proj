@@ -46,7 +46,6 @@ public class Ice : MonoBehaviour, IDebuffState
             MyActor.BodyHandler.BodyParts[i].PartRigidbody.isKinematic = false;
         }
 
-        MyActor.actorState = Actor.ActorState.Stand;
         MyActor.debuffState &= ~Actor.DebuffState.Ice;
 
         MyActor.InvokeStatusChangeEvent();

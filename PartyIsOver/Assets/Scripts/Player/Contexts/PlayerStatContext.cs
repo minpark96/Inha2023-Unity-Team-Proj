@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerStatContext
 {
+    public bool IsAlive { get; set; }
     public float RunSpeed { get; set; }
     public float MaxSpeed { get; set; }
 

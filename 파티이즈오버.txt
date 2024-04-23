@@ -8,6 +8,18 @@ PlantUML 개발문서
 ActorState Actor클래스에서 삭제시켜야함 Dead와 Run은 context로 처리하고 나머진 GetLowerState
 로 변경, 메모장에 Actor부분 정리하고 멀티되게끔 수정
 
+PlayerController의 FixedUpdate같은 공용부분들 Actor쪽 등으로 이식해야함
+
+드롭킥시 스테미너 소모(마스터만) 시켜야함
+
+Actor의 OnPhotonSerializeView 함수 주석친거 풀고 고쳐야함
+
+스테미너 다 떨어졌을때 climb에서 떨어진거랑 RunState에서 떨어진건지 구분해야함
+
+플레이어를 잡을때 발 위치에 따라 Lift인지 Climb인지 판단해야함 (보류 지상에서 플레이어 밟고 뛸수도 있음)
+
+StatusHandler 의 AddDamage 함수에서 Stun상태를 체크하는게 이상함 같은논리라면 빙결도 해야함
+
 각각의 state가 actor의 값들을 갱신시켜야함
 LimbCollision도 마찬가지
  이때 StateMachine을 참조하고있는 state들이 옳은건지 확인

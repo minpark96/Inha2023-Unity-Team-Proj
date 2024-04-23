@@ -4,7 +4,7 @@ using Photon.Pun;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class Context : MonoBehaviourPun
+public class DebuffContext : MonoBehaviourPun
 {
     private List<IDebuffState> _currentStateList = new List<IDebuffState>();
 

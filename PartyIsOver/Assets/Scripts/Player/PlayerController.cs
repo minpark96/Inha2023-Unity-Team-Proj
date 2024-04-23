@@ -553,11 +553,11 @@ public class PlayerController : MonoBehaviourPun
 
                         //_actor.Stamina = 0;
 
-                        if ( _actor.actorState == Actor.ActorState.Jump && !_isCoroutineDrop)
-                        {
-                            photonView.RPC("DecreaseStamina", RpcTarget.MasterClient, 5f);
-                            DropKickTrigger();
-                        }
+                        //if ( _actor.actorState == Actor.ActorState.Jump && !_isCoroutineDrop)
+                        //{
+                        //    photonView.RPC("DecreaseStamina", RpcTarget.MasterClient, 5f);
+                        //    DropKickTrigger();
+                        //}
                     }
                 }
                 break;
@@ -602,7 +602,7 @@ public class PlayerController : MonoBehaviourPun
                     {
                         //if (_actor.GrabState == Define.GrabState.Climb)
                         //    _actor.Grab.ClimbJump();
-                        _actor.actorState = Actor.ActorState.Jump;
+                       // _actor.actorState = Actor.ActorState.Jump;
                     }
 
                     if ((_actor.debuffState & DebuffState.Drunk) == DebuffState.Drunk)
@@ -675,20 +675,20 @@ public class PlayerController : MonoBehaviourPun
                 break;
             case Define.KeyboardEvent.Press:
                 {
-                    if (Input.GetKey(KeyCode.LeftShift) && _actor.actorState!=ActorState.Jump && MoveInput.magnitude != 0)
-                    {
-                        _actor.actorState = Actor.ActorState.Run;
-                        isRun = true;
-                    }
+                    //if (Input.GetKey(KeyCode.LeftShift) && _actor.actorState!=ActorState.Jump && MoveInput.magnitude != 0)
+                    //{
+                    //    _actor.actorState = Actor.ActorState.Run;
+                    //    isRun = true;
+                    //}
                 }
                 break;
             case Define.KeyboardEvent.Click:
                 {
-                    if (Input.GetKeyUp(KeyCode.LeftShift) && isRun == true)
-                    {
-                        _actor.actorState = Actor.ActorState.Stand;
-                        isRun = false;
-                    }
+                    //if (Input.GetKeyUp(KeyCode.LeftShift) && isRun == true)
+                    //{
+                    //    _actor.actorState = Actor.ActorState.Stand;
+                    //    isRun = false;
+                    //}
 
                     if (Input.GetKeyUp(KeyCode.R) && Managers.Input._checkHoldTime)
                     {
@@ -1008,28 +1008,28 @@ public class PlayerController : MonoBehaviourPun
             }
         }
         
-        if (!photonView.IsMine || _actor.actorState == ActorState.Dead) return;
+        //if (!photonView.IsMine || _actor.actorState == ActorState.Dead) return;
 
         if (isAI)
             return;
 
-        if (_actor.actorState != Actor.ActorState.Jump && _actor.actorState != Actor.ActorState.Roll 
-            && _actor.actorState != Actor.ActorState.Run )//&& _actor.actorState != ActorState.Unconscious)
-        {
-            if(!((_actor.debuffState & DebuffState.Stun) == DebuffState.Stun))
-            {
-                if (MoveInput.magnitude == 0f)
-                {
-                    _actor.actorState = Actor.ActorState.Stand;
-                }
-                else
-                {
-                    _actor.actorState = Actor.ActorState.Walk;
+        //if (_actor.actorState != Actor.ActorState.Jump && _actor.actorState != Actor.ActorState.Roll 
+        //    && _actor.actorState != Actor.ActorState.Run )//&& _actor.actorState != ActorState.Unconscious)
+        //{
+        //    if(!((_actor.debuffState & DebuffState.Stun) == DebuffState.Stun))
+        //    {
+        //        if (MoveInput.magnitude == 0f)
+        //        {
+        //            _actor.actorState = Actor.ActorState.Stand;
+        //        }
+        //        else
+        //        {
+        //            _actor.actorState = Actor.ActorState.Walk;
 
-                    //Stand();
-                }
-            }
-        }
+        //            //Stand();
+        //        }
+        //    }
+        //}
     }
 
     #endregion

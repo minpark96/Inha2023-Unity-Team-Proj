@@ -74,7 +74,7 @@ public class MagneticField : MonoBehaviour
     void InvokeDeath(int index)
     {
         StartCoroutine(ActorList[index].BodyHandler.ResetBodySpring());
-        ActorList[index].actorState = Actor.ActorState.Dead;
+        ActorList[index].StatContext.IsAlive = false;
         ActorList[index].StatusHandler._isDead = true;
         ActorList[index].StatContext.Health = 0;
         ActorList[index].StatContext.MagneticStack = 0;
@@ -92,7 +92,7 @@ public class MagneticField : MonoBehaviour
         {
             if(ActorList[i].photonView.IsMine)
             {
-                if (ActorList[i].actorState == Actor.ActorState.Dead)
+                if (ActorList[i].StatContext.IsAlive == false)
                 {
                     FreezeImage.SetActive(false);
 
@@ -269,7 +269,7 @@ public class MagneticField : MonoBehaviour
 
     public IEnumerator DamagedByFloor(int index)
     {
-        if (ActorList[index].actorState == Actor.ActorState.Dead) yield return null;
+        if (ActorList[index].StatContext.IsAlive == false) yield return null;
 
         if (PhotonNetwork.IsMasterClient)
         {
@@ -294,9 +294,9 @@ public class MagneticField : MonoBehaviour
 
     public IEnumerator DamagedByMagnetic(int index)
     {
-        if (ActorList[index].actorState == Actor.ActorState.Dead) yield return null;
+        if (ActorList[index].StatContext.IsAlive == false) yield return null;
 
-        if (PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.IsMasterClient)   
         {
             while (ActorList[index].StatContext.MagneticStack <= 100 && AreaNames[index] == (int)Define.Area.Outside)
             {
@@ -319,7 +319,7 @@ public class MagneticField : MonoBehaviour
 
     public IEnumerator RestoreMagneticDamage(int index)
     {
-        if (ActorList[index].actorState == Actor.ActorState.Dead) yield return null;
+        if (ActorList[index].StatContext.IsAlive == false) yield return null;
 
         if (PhotonNetwork.IsMasterClient)
         {

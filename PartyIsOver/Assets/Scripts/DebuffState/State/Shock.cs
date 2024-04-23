@@ -89,7 +89,6 @@ public class Shock : MonoBehaviourPun, IDebuffState
 
         TransferDebuffToPlayer((int)InteractableObject.Damage.Default);
 
-        MyActor.actorState = Actor.ActorState.Stand;
         MyActor.debuffState &= ~Actor.DebuffState.Shock;
 
         RemoveObject("Lightning_aura");
