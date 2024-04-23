@@ -6,6 +6,7 @@ using static Define;
 using UnityEngine.SceneManagement;
 using Unity.VisualScripting;
 using System;
+using UnityEngine.ProBuilder.MeshOperations;
 
 public class Actor : MonoBehaviourPun, IPunObservable
 {
@@ -17,8 +18,12 @@ public class Actor : MonoBehaviourPun, IPunObservable
     public event ChangeStaminaBar OnChangeStaminaBar;
 
 
+    public static GameObject LocalPlayerInstance;
+    public static int LayerCnt = (int)Define.Layer.Player1;
+
     private PlayerActionContext _actionContext;
     public PlayerStatContext StatContext;
+    public DebuffState debuffState = DebuffState.Default;
 
 
     public enum DebuffState
@@ -35,13 +40,6 @@ public class Actor : MonoBehaviourPun, IPunObservable
         Ghost =     0x200,
     }
 
-
-    public GrabState GrabState = GrabState.None;
-    public DebuffState debuffState = DebuffState.Default;
-
-    public static GameObject LocalPlayerInstance;
-
-    public static int LayerCnt = (int)Define.Layer.Player1;
 
 
     //
@@ -144,8 +142,8 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
         LowerSM = new LowerBodySM(_inputHandler, _actionContext, _inputHandler.ReserveCommand);
         UpperSM = new UpperBodySM(_inputHandler, _actionContext,_inputHandler.ReserveCommand,
-           BodyHandler.LeftHand.GetComponent<HandChecker>(), BodyHandler.RightHand.GetComponent<HandChecker>(),
-           RangeWeaponSkin);
+        BodyHandler.LeftHand.GetComponent<HandChecker>(), BodyHandler.RightHand.GetComponent<HandChecker>(),
+        RangeWeaponSkin);
 
         _inputHandler.InitCommand(this);
         _inputHandler.SetupInputAxes();
@@ -172,6 +170,8 @@ public class Actor : MonoBehaviourPun, IPunObservable
         if(CameraControl == null || BodyHandler == null) return;
         CameraControl.LookAround(BodyHandler.Hip.transform.position);
         CameraControl.CursorControl();
+
+        if(!IsActionable()) return;
 
         UpdateStateMachine();
 
@@ -230,7 +230,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
             if (StatContext.AccumulatedTime >= StatContext.CurrentRecoveryTime)
             {
                 //뛰거나 잡기 상태에서는
-                if (_actionContext.IsRunState || GrabState == GrabState.Climb)
+                if (_actionContext.IsRunState || GetLowerState() == PlayerState.Climb)
                 {
                     //뛰거나 잡기 상태일때 만약 특수 디버프 상태가 들어오면 계속 까이는 현상이 있는데 조건을 걸어서 방지
                     if ((debuffState & DebuffState.Ice) == DebuffState.Ice || (debuffState & DebuffState.Shock) == DebuffState.Shock)
@@ -271,15 +271,20 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
         OnChangeStaminaBar();
 
-
-        UpdatePhysicsSM(); //마스터에서만 해야될수도
-        ExecuteCommand();
-
+        //마스터에서만 해야될수도
+        if (IsActionable())
+        {
+            UpdatePhysicsSM();
+            ExecuteCommand();
+        }
+        //커맨드 플래그 클리어
+        _inputHandler.ClearCommand();
     }
 
     public void ResetGrab()
     {
         _inputHandler.ReserveCommand(COMMAND_KEY.DestroyJoint);
+        UpperSM.ChangeState(UpperSM.StateMap[PlayerState.UpperIdle]);
     }
 
 
@@ -331,10 +336,6 @@ public class Actor : MonoBehaviourPun, IPunObservable
         _actionContext.IsFlambe = value;
     }
 
-    public void SetActorState(Define.PlayerState state)
-    {
-        
-    }
 
     void ExecuteCommand()
     {
@@ -351,9 +352,6 @@ public class Actor : MonoBehaviourPun, IPunObservable
                     Debug.Log(_commandAry[i].ToString() + "커맨드 실행 실패");
             }
         }
-
-        //커맨드 플래그 클리어
-        _inputHandler.ClearCommand();
     }
     void UpdateStateMachine()
     {
@@ -375,6 +373,15 @@ public class Actor : MonoBehaviourPun, IPunObservable
         return LowerSM.GetCurrentState().Name;
     }
 
+    bool IsActionable()
+    {
+        if ((debuffState & DebuffState.Ice) == DebuffState.Ice ||
+            (debuffState & DebuffState.Shock) == DebuffState.Shock ||
+            (debuffState & DebuffState.Stun) == DebuffState.Stun)
+            return false;
+        else
+            return true;
+    }
 
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

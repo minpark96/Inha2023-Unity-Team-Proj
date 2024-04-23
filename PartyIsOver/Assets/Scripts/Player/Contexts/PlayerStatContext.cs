@@ -34,6 +34,7 @@ public class PlayerStatContext
     {
         PlayerStatData statData = Managers.Resource.Load<PlayerStatData>("ScriptableObject/PlayerStatData");
 
+        IsAlive = true;
         RunSpeed = statData.RunSpeed;
         MaxSpeed = statData.MaxSpeed;
         Health = statData.Health;

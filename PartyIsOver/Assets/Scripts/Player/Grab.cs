@@ -122,7 +122,7 @@ public class Grab : MonoBehaviourPun
     {
         if (EquipItem != null)
         {
-            _actor.GrabState = GrabState.EquipItem;
+            //_actor.GrabState = GrabState.EquipItem;
             return;
         }
 
@@ -130,7 +130,7 @@ public class Grab : MonoBehaviourPun
         {
             if (LeftGrabObject.layer == (int)Define.Layer.ClimbObject && RightGrabObject.layer == (int)Define.Layer.ClimbObject)
             {
-                _actor.GrabState = GrabState.Climb;
+                //_actor.GrabState = GrabState.Climb;
             }
         }
     }
@@ -383,7 +383,7 @@ public class Grab : MonoBehaviourPun
         _isLeftGrab = false;
         RightGrabObject = null;
         LeftGrabObject = null;
-        _actor.GrabState = GrabState.None;
+        //_actor.GrabState = GrabState.None;
     }
 
 

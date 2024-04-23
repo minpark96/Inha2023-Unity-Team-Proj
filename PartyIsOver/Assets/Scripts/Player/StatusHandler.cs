@@ -92,9 +92,8 @@ public class StatusHandler : MonoBehaviourPun
             {
                 if ((actor.debuffState & DebuffState.Exhausted) == DebuffState.Exhausted)
                 {
-                    if (actor.GrabState != Define.GrabState.PlayerLift)
+                    if (actor.GetUpperState() != Define.PlayerState.LiftObject)
                     {
-                        actor.GrabState = Define.GrabState.None;
                         actor.ResetGrab();
                     }
                     actor.debuffState |= Actor.DebuffState.Exhausted;
