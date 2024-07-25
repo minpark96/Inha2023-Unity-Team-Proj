@@ -3,6 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//플레이어의 신체부위에 들어가는 컴포넌트
+//계산에 필요하고 자주 쓰는 Rigidbody나 관절들을 멤버로 보관하고 
+//시작시 신체부위의 특정 값들을 세팅하는 클래스
+
 public class BodyPart : MonoBehaviour
 {
     private CollisionHandler _partCollisionHandler;

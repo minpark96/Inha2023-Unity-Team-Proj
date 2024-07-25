@@ -4,8 +4,11 @@ using UnityEngine;
 using static AniAngleData;
 using static AniFrameData;
 
+//애니메이션 데이터를 인풋으로 넣으면 실제 동작으로 바꿔주는 클래스
+
 public class AnimationPlayer
 {
+    //애니메이션 데이터의 방향을 신체부위의 로컬방향에 맞게 변환해주는 함수 2개
     public Vector3 GetForceDirection(AniFrameData data, int index)
     {
         ForceDirection _rollState = data.ForceDirections[index];
@@ -77,6 +80,7 @@ public class AnimationPlayer
         return _direction;
     }
 
+    //들어온 애니메이션 데이터에 따라 신체부위를 움직이는 함수 3개
     public void PlayAnimForce(AniFrameData[] aniForceData, int _elementCount, Vector3 _dir = default, float _punchpower = 1f)
     {
         for (int i = 0; i < aniForceData[_elementCount].StandardRigidbodies.Length; i++)

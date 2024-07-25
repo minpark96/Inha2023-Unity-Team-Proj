@@ -7,6 +7,8 @@ using UnityEngine;
 using static Actor;
 using static InteractableObject;
 
+//충돌을 판정하고, 데미지 유형별 넉백량과 피해량을 계산하는 클래스
+
 public class CollisionHandler : MonoBehaviourPun
 {
     public float damageMinimumVelocity = 0.25f;
@@ -140,6 +142,7 @@ public class CollisionHandler : MonoBehaviourPun
                         if (contact.thisCollider.gameObject.GetComponent<PhotonView>() != null && _itemImfactForce != 0f)
                         {
                             thisViewID = contact.thisCollider.gameObject.GetComponent<PhotonView>().ViewID;
+                            //넉백처리
                             photonView.RPC("AddForceAttackedTarget", RpcTarget.All, thisViewID, NormalChange(contact.normal), (int)collisionInteractable.damageModifier, _itemImfactForce);
                             _itemImfactForce = 0f;
                         }
@@ -158,7 +161,8 @@ public class CollisionHandler : MonoBehaviourPun
             }
         }
     }
-
+    
+    //피격 부위별 데미지배율 변환
     private float ApplyBodyPartDamageModifier(float damage)
     {
         if (transform == actor.BodyHandler.RightArm.transform ||
@@ -194,6 +198,7 @@ public class CollisionHandler : MonoBehaviourPun
         actor.StatusHandler.EffectObjectCreate($"{path}");
     }
 
+    //실제 피해 데미지를 계산해서 반환하는 함수
     private float PhysicalDamage(InteractableObject collisionInteractable, float damage, ContactPoint contact)
     {
         float itemDamage = 100f;
@@ -248,6 +253,7 @@ public class CollisionHandler : MonoBehaviourPun
         return damage;
     }
 
+    //캐릭터 특성에 맞게 넉백벡터를 변환
     Vector3 NormalChange(Vector3 normal)
     {
         Vector3 newNormal = new Vector3(normal.x, normal.y / 3, normal.z);
@@ -294,6 +300,7 @@ public class CollisionHandler : MonoBehaviourPun
         actor.StatusHandler.AddDamage(collisionInteractable.damageModifier, 0f);
     }
 
+    //넉백계산함수
     [PunRPC]
     void AddForceAttackedTarget(int objViewId, Vector3 normal, int damageModifier, float itemDamage)
     {

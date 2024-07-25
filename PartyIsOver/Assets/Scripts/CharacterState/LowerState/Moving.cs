@@ -16,6 +16,7 @@ public class Moving : BaseState
         _sm = (LowerBodySM)stateMachine;
     }
 
+    //걷기 시작시 팔다리 초기위치 설정
     public override void Enter()
     {
         if (UnityEngine.Random.Range(0, 2) == 1)
@@ -76,6 +77,7 @@ public class Moving : BaseState
         }
     }
 
+    //걸을때 사이클마다 팔다리를 앞뒤로 움직이게 위치상태를 변경
     private void RunCycleUpdate()
     {
         if (_cycleTimer < _cycleSpeed)

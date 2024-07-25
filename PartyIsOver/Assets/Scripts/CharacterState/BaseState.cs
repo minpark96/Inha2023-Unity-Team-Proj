@@ -4,12 +4,16 @@ using Unity.VisualScripting;
 using UnityEngine;
 using static Define;
 
+/*
+ * 플레이어 상태의 베이스가 되는 추상클래스
+ */
 public abstract class BaseState
 {
     public Define.PlayerState Name { get; set; }
 
     protected StateMachine stateMachine;
 
+    //생성시 상태별 이름을 enum으로 받고, 상태머신 저장
     public BaseState(PlayerState name, StateMachine stateMachine)
     {
         this.Name = name;
@@ -21,7 +25,7 @@ public abstract class BaseState
     public virtual void UpdatePhysics(){}
     public virtual void Exit(){}
 
-
+    //예약된 커맨드를 실행
     protected void InvokeReserveCommand(COMMAND_KEY cmd)
     {
         stateMachine.CommandReserveHandler.Invoke(cmd);

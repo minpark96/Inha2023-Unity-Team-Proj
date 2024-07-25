@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Define;
 
+/*
+ * 상하체 상태머신의 베이스가 되는 추상클래스
+ */
 public abstract class StateMachine
 {
     private BaseState _currentState;

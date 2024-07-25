@@ -7,6 +7,8 @@ using UnityEngine.UI;
 using static Actor;
 using static InteractableObject;
 
+//플레이어에게 들어오는 데미지와 상태변화를 적용하는 클래스
+
 public class StatusHandler : MonoBehaviourPun
 {
     private float _damageModifer = 1f;

@@ -2,6 +2,8 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
+//플레이어가 다른 오브젝트를 감지하고, 판정하는 기능을 모아둔 클래스
+
 public static class TargetingHandler
 {
     [SerializeField]
@@ -122,6 +124,7 @@ public static class TargetingHandler
         return _nearestObject;
     }
 
+    //타겟에서 손에 가장 가까운 충돌지점을 찾는 함수
     public static Vector3 FindClosestCollisionPoint(Vector3 start, Collider targetCol, int layer)
     {
         if (targetCol == null)

@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+//스크립터블 오브젝트에서 충돌유형별 데미지나 넉백량을 조절하는 클래스
+
 [CreateAssetMenu(fileName = "Collision Data", menuName = "Scriptable Object/Collision Data", order = int.MaxValue)]
 public class CollisionData : ScriptableObject
 {

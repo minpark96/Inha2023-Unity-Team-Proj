@@ -4,6 +4,11 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
+/*
+ * 신체부위들을 바로 접근할 수 있게 멤버로 보유하고 있는 클래스
+ * 부위들의 관절을 고정하거나 해제시켜서 기절,아이템 장착 등의 모션을 구현하는 함수 보유
+ */
+
 public class BodyHandler : MonoBehaviourPun
 {
     public Transform Root;
@@ -89,6 +94,7 @@ public class BodyHandler : MonoBehaviourPun
         RightHand = GetBodyPart(Define.BodyPart.RightHand);
     }
 
+    //시작시 초기의 관절값들을 저장
     private void SaveConfigurableJoint()
     {
         ChildJoints = GetComponentsInChildren<ConfigurableJoint>();
@@ -127,6 +133,7 @@ public class BodyHandler : MonoBehaviourPun
         return BodyParts[(int)part];
     }
 
+    //관절의 스프링을 조절하는 함수
     void SetJointSpring(float percentage)
     {
         JointDrive angularXDrive;
@@ -157,6 +164,7 @@ public class BodyHandler : MonoBehaviourPun
         yield return null;
     }
 
+    //기절후 회복기능
     public IEnumerator RestoreBodySpring(float _springLerpTime = 1f)
     {
         float startTime = Time.time;
@@ -171,6 +179,7 @@ public class BodyHandler : MonoBehaviourPun
         }
     }
 
+    //기절되서 스프링이 0이 된 관절을 그대로 고정시키는 함수
     public void JointLock(Define.Side side)
     {
         int start;
@@ -186,6 +195,7 @@ public class BodyHandler : MonoBehaviourPun
         }
     }
 
+    //손으로 잡고있어서 연결되어있던 관절을 해제
     public void DestroyJoint(FixedJoint right, FixedJoint left)
     {
         Destroy(left);
@@ -198,6 +208,7 @@ public class BodyHandler : MonoBehaviourPun
         }
     }
 
+    //아이템 장착시 팔이 흔들리지 않게 장착모션으로 고정
     public IEnumerator LockArmPosition()
     {
         yield return new WaitForSeconds(0.5f);
@@ -213,7 +224,7 @@ public class BodyHandler : MonoBehaviourPun
         }
     }
 
-
+    //고정된 팔을 해제시키는 기능
     public void UnlockArmPosition()
     {
         for (int i = 0; i < 6; i++)

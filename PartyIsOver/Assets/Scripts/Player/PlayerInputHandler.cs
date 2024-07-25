@@ -5,6 +5,8 @@ using Photon.Pun;
 using static Define;
 using UnityEditor;
 
+//플레이어가 할 수 있는 커맨드를 추가하고 키보드 키와 매핑하는 클래스
+
 public class PlayerInputHandler : MonoBehaviourPun
 {
     private Dictionary<COMMAND_KEY, CommandKey> _commands = new Dictionary<COMMAND_KEY, CommandKey>();
@@ -15,7 +17,7 @@ public class PlayerInputHandler : MonoBehaviourPun
     private Vector3 _lookForward;
     private Vector3 _lookRight;
 
-
+    //작업공간이 바뀔때마다 유니티의 InputManager Axes를 설정할 필요없게 코드에서 처리하는 함수
     public void SetupInputAxes()
     {
         PlayerPrefs.SetString(COMMAND_KEY.LeftBtn.ToString(), "mouse 0");
@@ -38,6 +40,7 @@ public class PlayerInputHandler : MonoBehaviourPun
         serializedObject.ApplyModifiedProperties();
     }
 
+    //Actor에게 커맨드를 추가
     public void InitCommand(Actor actor)
     {
         _commands.Add(COMMAND_KEY.Jump,         new CmdJump(actor));
@@ -54,7 +57,7 @@ public class PlayerInputHandler : MonoBehaviourPun
         _commands.Add(COMMAND_KEY.DestroyJoint, new CmdDestroyJoint(actor));
     }
 
-
+    //플레이어의 진행방향을 리턴
     public Vector3 GetMoveInput(Transform cameraArm)
     {
         _moveInput.x = Input.GetAxis("Horizontal");
@@ -75,6 +78,7 @@ public class PlayerInputHandler : MonoBehaviourPun
         return _moveDir;
     }
 
+    //플래그에 커맨드 예약
     public void ReserveCommand(COMMAND_KEY commandKey)
     {
         _activeCommandFlag |= commandKey;
@@ -85,11 +89,13 @@ public class PlayerInputHandler : MonoBehaviourPun
         return _commands[key];
     }
 
+    //예약된 커맨드를 Actor에게 보내주는 역할
     public COMMAND_KEY GetActiveCmdFlag()
     {
         return _activeCommandFlag;
     }
 
+    //Update 사이클동안 예약된 커맨드가 FixedUpdate에서 처리됐을경우 실행되는 함수
     public void ClearCommand()
     {
         _activeCommandFlag = 0f;
@@ -113,162 +119,5 @@ public class PlayerInputHandler : MonoBehaviourPun
         axis.FindPropertyRelative("axis").intValue = 0;
         axis.FindPropertyRelative("joyNum").intValue = 0;
     }
-    //private Dictionary<COMMAND_KEY,InputAction> _buttonList = new Dictionary<COMMAND_KEY, InputAction>();
-    //private List<InputManagerEntry> _buttonList = new List<InputManagerEntry>();
 
-    //public void InitButton()
-    //{
-    //    _buttonList.Add(AddButtonEntry(COMMAND_KEY.Jump.ToString(), "space"));
-    //    _buttonList.Add(AddButtonEntry(COMMAND_KEY.LeftBtn.ToString(), "Mouse0"));
-    //    _buttonList.Add(AddButtonEntry(COMMAND_KEY.RightBtn.ToString(), "Mouse1"));
-    //    _buttonList.Add(AddButtonEntry(COMMAND_KEY.HeadButt.ToString(), "Mouse2"));
-    //    _buttonList.Add(AddButtonEntry(COMMAND_KEY.Skill.ToString(), "r"));
-    //    InputRegistering.RegisterInputs(_buttonList);
-
-
-    //    _buttonList.Add(COMMAND_KEY.Move, new InputAction(COMMAND_KEY.Move.ToString()));
-    //    _buttonList[COMMAND_KEY.Move].AddBinding("<Keyboard>/W");
-    //    _buttonList[COMMAND_KEY.Move].AddBinding("<Keyboard>/A");
-    //    _buttonList[COMMAND_KEY.Move].AddBinding("<Keyboard>/S");
-    //    _buttonList[COMMAND_KEY.Move].AddBinding("<Keyboard>/D");
-
-    //    _buttonList.Add(COMMAND_KEY.Jump, new InputAction(COMMAND_KEY.Jump.ToString(), binding: "<Keyboard>/space"));
-    //    _buttonList.Add(COMMAND_KEY.LeftBtn, new InputAction(COMMAND_KEY.LeftBtn.ToString(), binding: "<Mouse>/leftButton"));
-    //    _buttonList.Add(COMMAND_KEY.RightBtn, new InputAction(COMMAND_KEY.RightBtn.ToString(), binding: "<Mouse>/rightButton"));
-    //    _buttonList.Add(COMMAND_KEY.HeadButt, new InputAction(COMMAND_KEY.HeadButt.ToString(), binding: "<Mouse>/middleButton"));
-    //    _buttonList.Add(COMMAND_KEY.Skill, new InputAction(COMMAND_KEY.Skill.ToString(), binding: "<Keyboard>/R"));
-    //    foreach (var button in _buttonList.Values) { button.Enable(); }
-    //}
-    //private InputManagerEntry AddButtonEntry(string buttonName, string inputString)
-    //{
-    //    InputManagerEntry entry = new InputManagerEntry
-    //    {
-    //        kind = InputManagerEntry.Kind.KeyOrButton,
-    //        name = buttonName,
-    //        btnPositive = inputString,
-    //        btnNegative = ""
-    //    };
-    //    return entry;
-    //}
-
-
-
-
-    //public bool CheckInput(COMMAND_KEY commandKey, GetKeyType keyType)
-    //{
-    //    // COMMAND_KEY에 대응하는 KeyCode 배열 가져오기
-    //    if (keyMap.TryGetValue(commandKey, out _keyCodes))
-    //    {
-    //        // 각 KeyCode에 대해 입력 확인
-    //        foreach (KeyCode keyCode in _keyCodes)
-    //        {
-    //            _isEnabledKey = false;
-    //            switch (keyType)
-    //            {
-    //                case GetKeyType.Press:
-    //                    _isEnabledKey = Input.GetKey(keyCode);
-    //                    break;
-    //                case GetKeyType.Down:
-    //                    _isEnabledKey = Input.GetKeyDown(keyCode);
-    //                    break;
-    //                case GetKeyType.Up:
-    //                    _isEnabledKey = Input.GetKeyUp(keyCode);
-    //                    break;
-    //                default:
-    //                    _isEnabledKey = false;
-    //                    break;
-    //            }
-
-    //            // 입력이 발생하면 해당 커맨드를 실행하고 true 반환
-    //            if (_isEnabledKey)
-    //            {
-    //                //ReserveCommand(commandKey);
-    //                return true;
-    //            }
-    //        }
-    //    }
-
-    //    // 입력이 발생하지 않았거나 COMMAND_KEY에 대응하는 KeyCode 배열이 없는 경우 false 반환
-    //    return false;
-    //}
-
-
-
-
-
-
-    //void OnKeyboardEvent(Define.KeyboardEvent evt)
-    //{
-    //    if (!photonView.IsMine || _actor.actorState == ActorState.Dead)
-    //        return;
-
-    //    if ((_actor.debuffState & DebuffState.Ice) == DebuffState.Ice ||
-    //        (_actor.debuffState & DebuffState.Shock) == DebuffState.Shock ||
-    //        (_actor.debuffState & DebuffState.Stun) == DebuffState.Stun)
-    //        return;
-
-    //    _actor.PlayerController.OnKeyboardEvent_Move(evt);
-
-    //    if (_actor.GrabState != Define.GrabState.EquipItem)
-    //    {
-    //        if(!((_actor.debuffState & DebuffState.Exhausted) == DebuffState.Exhausted))
-    //            _actor.PlayerController.OnKeyboardEvent_Skill(evt);
-    //    }
-
-    //    if (Input.GetKeyUp(KeyCode.F4))
-    //    {
-    //        KillOneself();
-    //    }
-    //}
-
-    //#region 임시 자살 테스트용
-    //void KillOneself()
-    //{
-    //    photonView.RPC("TestKill", RpcTarget.MasterClient, photonView.ViewID);
-    //}
-
-    //[PunRPC]
-    //void TestKill(int ID)
-    //{
-    //    PhotonView pv = PhotonView.Find(ID);
-    //    Actor ac = pv.transform.GetComponent<Actor>();
-    //    StartCoroutine(ac.StatusHandler.ResetBodySpring());
-    //    ac.actorState = Actor.ActorState.Dead;
-    //    ac.StatusHandler._isDead = true;
-    //    _actor.Health = 0;
-    //    ac.InvokeDeathEvent();
-    //    ac.InvokeStatusChangeEvent();
-    //}
-
-    //#endregion
-
-    //void OnMouseEvent(Define.MouseEvent evt)
-    //{
-    //    if (!photonView.IsMine || _actor.actorState == ActorState.Dead)
-    //        return;
-
-    //    if ((_actor.debuffState & DebuffState.Ice) == DebuffState.Ice ||
-    //        (_actor.debuffState & DebuffState.Shock) == DebuffState.Shock ||
-    //        (_actor.debuffState & DebuffState.Stun) == DebuffState.Stun)
-    //        return;
-
-    //    if (_actor.GrabState != Define.GrabState.EquipItem)
-    //    {
-    //        _actor.PlayerController.OnMouseEvent_Skill(evt);
-
-    //        if (!((_actor.debuffState & DebuffState.Burn) == DebuffState.Burn))
-    //            if (_actor.GrabState == Define.GrabState.PlayerLift)
-    //            {
-    //                _actor.Grab.OnMouseEvent_LiftPlayer(evt);
-    //                return;
-    //            }
-    //            else
-    //                _actor.PlayerController.OnMouseEvent_Grab(evt);
-
-    //    }
-    //    else
-    //    {
-    //        _actor.Grab.OnMouseEvent_EquipItem(evt);
-    //    }
-    //}
 }

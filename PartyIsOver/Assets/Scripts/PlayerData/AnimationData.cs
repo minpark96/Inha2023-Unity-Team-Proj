@@ -6,6 +6,7 @@ using UnityEngine;
 using static AniAngleData;
 using static AniFrameData;
 
+//텍스트 형식의 애니메이션 데이터를 읽어오는 클래스
 public class AnimationData
 {
     public AnimationData(BodyHandler bodyHandler)
@@ -40,7 +41,7 @@ public class AnimationData
         {
             string filePath = $"Animations/ForceData/{frameDataNames[i]}";
             TextAsset textAsset = Resources.Load<TextAsset>(filePath);
-            //리스트들 클리어해야함
+            //리스트클리어
             partCount.Clear();
             standardRb.Clear();
             actionRb.Clear();
