@@ -224,6 +224,15 @@ public static class Define
 
         None = 0x8000,
     }
+    public struct CommandBtnName
+    {
+        public const string LeftBtn     = "mouse 0";
+        public const string RightBtn    = "mouse 1";
+        public const string HeadButt    = "mouse 2";
+        public const string Jump        = "space";
+        public const string Skill       = "r";
+        public const string ToggleRun   = "left shift";
+    }
 
     public enum AniFrameData
     {

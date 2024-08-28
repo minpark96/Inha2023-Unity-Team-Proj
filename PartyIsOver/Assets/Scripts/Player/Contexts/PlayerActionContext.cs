@@ -38,7 +38,7 @@ public class PlayerActionContext
     public Vector3 LeftTargetDir { get; set; }
     public Vector3 RightTargetDir { get; set; }
 
-    public void SetupAction()
+    public void SetupAction(int id, bool isMine)
     {
         InputDirX = 0;
         InputDirY = 0;
@@ -50,5 +50,7 @@ public class PlayerActionContext
         LimbPositions = new int[4];
         PunchSide = Define.Side.Left;
         IsMeowPunch = false;
+        IsMine = isMine;
+        Id = id;
     }
 }

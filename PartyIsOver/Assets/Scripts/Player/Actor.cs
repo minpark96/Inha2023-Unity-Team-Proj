@@ -10,7 +10,7 @@ using UnityEngine.ProBuilder.MeshOperations;
 
 public class Actor : MonoBehaviourPun, IPunObservable
 {
-    public delegate void ChangePlayerStatus(float HP,float Stamina, DebuffState debuffstate, int viewID);
+    public delegate void ChangePlayerStatus(float HP, float Stamina, DebuffState debuffstate, int viewID);
     public event ChangePlayerStatus OnChangePlayerStatus;
     public delegate void KillPlayer(int viewID);
     public event KillPlayer OnKillPlayer;
@@ -28,16 +28,16 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
     public enum DebuffState
     {
-        Default =   0x0,
-        PowerUp =   0x1,
-        Burn =      0x2,
+        Default = 0x0,
+        PowerUp = 0x1,
+        Burn = 0x2,
         Exhausted = 0x4,
-        Slow =      0x8,
-        Ice =       0x10,
-        Shock =     0x20, 
-        Stun =      0x40, 
-        Drunk =     0x80,  
-        Ghost =     0x200,
+        Slow = 0x8,
+        Ice = 0x10,
+        Shock = 0x20,
+        Stun = 0x40,
+        Drunk = 0x80,
+        Ghost = 0x200,
     }
 
 
@@ -100,7 +100,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
     private void Awake()
     {
         Transform SoundListenerTransform = transform.Find("GreenHead");
-        if(SoundListenerTransform != null)
+        if (SoundListenerTransform != null)
             AudioListener = SoundListenerTransform.gameObject.AddComponent<AudioListener>();
         if (photonView.IsMine)
         {
@@ -136,19 +136,21 @@ public class Actor : MonoBehaviourPun, IPunObservable
     private void Init()
     {
         _animData = new AnimationData(BodyHandler);
-        ActionController = new ActionController(_animData,_animPlayer,BodyHandler);
+        ActionController = new ActionController(_animData, _animPlayer, BodyHandler);
 
         _inputHandler = GetComponent<PlayerInputHandler>();
 
         LowerSM = new LowerBodySM(_inputHandler, _actionContext, _inputHandler.ReserveCommand);
-        UpperSM = new UpperBodySM(_inputHandler, _actionContext,_inputHandler.ReserveCommand,
+        UpperSM = new UpperBodySM(_inputHandler, _actionContext, _inputHandler.ReserveCommand,
         BodyHandler.LeftHand.GetComponent<HandChecker>(), BodyHandler.RightHand.GetComponent<HandChecker>(),
         RangeWeaponSkin);
 
         _inputHandler.InitCommand(this);
+#if UNITY_EDITOR
         _inputHandler.SetupInputAxes();
+#endif
         StatContext.SetupStat();
-        _actionContext.SetupAction();
+        _actionContext.SetupAction(photonView.ViewID, photonView.IsMine ? true : false);
     }
 
 
@@ -161,50 +163,65 @@ public class Actor : MonoBehaviourPun, IPunObservable
         {
             ChangeLayerRecursively(child.gameObject, layer);
         }
-    } 
+    }
 
     private void Update()
     {
-        if (!photonView.IsMine || !StatContext.IsAlive) return;
+        if (!StatContext.IsAlive) return;
 
-        if(CameraControl == null || BodyHandler == null) return;
-        CameraControl.LookAround(BodyHandler.Hip.transform.position);
-        CameraControl.CursorControl();
 
-        if(!IsActionable()) return;
+        if (PhotonNetwork.LocalPlayer.IsMasterClient)
+        {
+            photonView.RPC(nameof(UpdateDataMasterToAll),
+                RpcTarget.All, gameObject.layer, BodyHandler.Chest.transform.position,
+                LowerSM.IsGrounded, UpperSM.ReadySide, LowerSM.GetBodyPose());
+        }
 
-        UpdateStateMachine();
 
-        if (LowerSM.GetCurrentState() != null && UpperSM.GetCurrentState() != null)
-            UpdateData(); //자리가 여기가 아닐수도
+        if (photonView.IsMine)
+        {
+            if (CameraControl == null || BodyHandler == null) return;
+            CameraControl.LookAround(BodyHandler.Hip.transform.position);
+            CameraControl.CursorControl();
 
-        if (Input.GetKeyDown(KeyCode.G))
-            _actionContext.IsMeowPunch = !_actionContext.IsMeowPunch;
+            if (!IsActionable()) return;
+
+            UpdateStateMachine();
+
+
+            photonView.RPC(nameof(UpdateDataClientToAll), RpcTarget.All, LowerSM.IsRun,
+                _inputHandler.GetMoveInput(CameraControl.CameraArm.transform));
+
+            if (Input.GetKeyDown(KeyCode.G))
+                _actionContext.IsMeowPunch = !_actionContext.IsMeowPunch;
+        }
     }
 
-
-    void UpdateData()
+    [PunRPC]
+    void UpdateDataMasterToAll(int layer, Vector3 position, bool isGround, Side readySide, int[] limbPose) //마스터에서 All 
     {
-        _actionContext.Id = photonView.ViewID;
-        _actionContext.Position = BodyHandler.Chest.transform.position;
-        _actionContext.IsMine = photonView.IsMine? true: false;
-        _actionContext.Layer = gameObject.layer;
+        if (LowerSM.GetCurrentState() == null || UpperSM.GetCurrentState() == null) return;
 
-        Vector3 dir = _inputHandler.GetMoveInput(CameraControl.CameraArm.transform);
+        _actionContext.Layer = layer;
+        _actionContext.Position = position;
+        _actionContext.IsGrounded = isGround;
+        _actionContext.PunchSide = readySide;
+
+        int[] limbPositions = limbPose;
+        for (int i = 0; i < (int)BodyPose.End; i++)
+            _actionContext.LimbPositions[i] = limbPositions[i];
+    }
+
+    [PunRPC]
+    void UpdateDataClientToAll(bool isRun, Vector3 inputDir) //클라에서 전체로 RPC_ALL
+    {
+        if (LowerSM.GetCurrentState() == null || UpperSM.GetCurrentState() == null) return;
+
+        _actionContext.IsRunState = isRun;
+        Vector3 dir = inputDir;
         _actionContext.InputDirX = dir.x;
         _actionContext.InputDirY = dir.y;
         _actionContext.InputDirZ = dir.z;
-
-
-        _actionContext.IsRunState = LowerSM.IsRun;
-        _actionContext.IsGrounded = LowerSM.IsGrounded;
-
-        _actionContext.PunchSide = UpperSM.ReadySide;
-
-        int[] limbPositions = LowerSM.GetBodyPose();
-        for (int i = 0; i < (int)BodyPose.End; i++)
-            _actionContext.LimbPositions[i] = limbPositions[i];
-       
     }
 
 
@@ -243,16 +260,16 @@ public class Actor : MonoBehaviourPun, IPunObservable
                     else if (StatContext.Stamina == 0)
                     {
                         StatContext.Stamina = -1f;
-                        _actionContext.IsRunState=false;
+                        _actionContext.IsRunState = false;
                     }
                     else
                         StatContext.Stamina -= 1;
                     //photonView.RPC("DecreaseStamina", RpcTarget.All, 1f);
                 }
                 //else if (PlayerController._isRSkillCheck || PlayerController.isHeading || PlayerController._isCoroutineDrop)
-                    //스킬 사용시 회복 불가능
-                    //photonView.RPC("RecoverStamina",RpcTarget.All, 0f);
-                    //_stamina += 0;
+                //스킬 사용시 회복 불가능
+                //photonView.RPC("RecoverStamina",RpcTarget.All, 0f);
+                //_stamina += 0;
                 else
                     //상태에 맞는 회복하기
                     //photonView.RPC("RecoverStamina", RpcTarget.All, currentRecoveryStaminaValue);
@@ -264,24 +281,25 @@ public class Actor : MonoBehaviourPun, IPunObservable
                 StatContext.Stamina = StatContext.MaxStamina;
 
             OnChangePlayerStatus(StatContext.Health, StatContext.Stamina, debuffState, photonView.ViewID);
+
+            if (IsActionable())
+            {
+                UpdatePhysicsSM();
+                photonView.RPC(nameof(ExecuteCommand), RpcTarget.All, (int)_inputHandler.GetActiveCmdFlag());
+            }
+
+            //커맨드 플래그 클리어
+            _inputHandler.ClearCommand();
         }
 
-
-        if (!photonView.IsMine) return;
-
-        OnChangeStaminaBar();
-
-        //마스터에서만 해야될수도
-        if (IsActionable())
+        if (photonView.IsMine)
         {
-            UpdatePhysicsSM();
-            ExecuteCommand();
+            OnChangeStaminaBar();  //isMine에서 하는게 맞나?
         }
-        //커맨드 플래그 클리어
-        _inputHandler.ClearCommand();
+
     }
 
-    public void ResetGrab()
+    public void ResetGrab() //수정해야함
     {
         _inputHandler.ReserveCommand(COMMAND_KEY.DestroyJoint);
         UpperSM.ChangeState(UpperSM.StateMap[PlayerState.UpperIdle]);
@@ -330,24 +348,24 @@ public class Actor : MonoBehaviourPun, IPunObservable
     {
         _actionContext.IsMeowPunch = IsMeowNyangPunch;
     }
-  
+
     public void SetFlambe(bool value)
     {
         _actionContext.IsFlambe = value;
     }
 
-
-    void ExecuteCommand()
+    [PunRPC]
+    void ExecuteCommand(int commandKey)
     {
-        _activeCommand = _inputHandler.GetActiveCmdFlag();
+        _activeCommand = (COMMAND_KEY)commandKey;
 
         //Master클라이어트에게 받은 커맨드로 해당하는 actor들을 컨트롤하는 방향으로 혹은 마스터에서 바로 actor.execute
-        for (int i = 0; i < Enum.GetValues(typeof(COMMAND_KEY)).Length -1; i++)
+        for (int i = 0; i < Enum.GetValues(typeof(COMMAND_KEY)).Length - 1; i++)
         {
-            if((_activeCommand & _commandAry[i]) == _commandAry[i])
+            if ((_activeCommand & _commandAry[i]) == _commandAry[i])
             {
                 if (_inputHandler.GetCommand(_commandAry[i]).Execute(_actionContext))
-                    Debug.Log(_commandAry[i].ToString() +" + "+ GetUpperState());
+                    Debug.Log(_commandAry[i].ToString() + " + " + GetUpperState());
                 else
                     Debug.Log(_commandAry[i].ToString() + "커맨드 실행 실패");
             }
