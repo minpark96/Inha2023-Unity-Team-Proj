@@ -19,23 +19,26 @@ public class PlayerInputHandler : MonoBehaviourPun
     private Vector3 _lookRight;
 
 #if UNITY_EDITOR
-    //작업공간이 바뀔때마다 유니티의 InputManager Axis를 설정할 필요없게 코드에서 처리하는 함수
-    public void SetupInputAxes()
+    //작업환경이 바뀔때마다 유니티의 InputManager Axis를 설정할 필요없게 코드에서 처리하는 함수
+    //작업환경이 바뀌었을때 혹은 빌드 전에 유니티 에디터 상단의 Tools - Setup Input Axes 클릭 
+    [MenuItem("Tools/Setup Input Axes")]
+    public static void SetupInputAxes()
     {
         SerializedObject serializedObject = new SerializedObject(AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/InputManager.asset")[0]);
         SerializedProperty axesProperty = serializedObject.FindProperty("m_Axes");
 
-        //Define에서 정의한 COMMAND_KEY enum의 이름으로 Axis를 생성하고 Positive값을 CommandBtnName로 저장
-        AddVirtualAxis(axesProperty, COMMAND_KEY.LeftBtn.ToString(),   CommandBtnName.LeftBtn);
-        AddVirtualAxis(axesProperty, COMMAND_KEY.RightBtn.ToString(),  CommandBtnName.RightBtn);
-        AddVirtualAxis(axesProperty, COMMAND_KEY.HeadButt.ToString(),  CommandBtnName.HeadButt);
-        AddVirtualAxis(axesProperty, COMMAND_KEY.Jump.ToString(),      CommandBtnName.Jump);
-        AddVirtualAxis(axesProperty, COMMAND_KEY.Skill.ToString(),     CommandBtnName.Skill);
+        AddVirtualAxis(axesProperty, COMMAND_KEY.LeftBtn.ToString(), CommandBtnName.LeftBtn);
+        AddVirtualAxis(axesProperty, COMMAND_KEY.RightBtn.ToString(), CommandBtnName.RightBtn);
+        AddVirtualAxis(axesProperty, COMMAND_KEY.HeadButt.ToString(), CommandBtnName.HeadButt);
+        AddVirtualAxis(axesProperty, COMMAND_KEY.Jump.ToString(), CommandBtnName.Jump);
+        AddVirtualAxis(axesProperty, COMMAND_KEY.Skill.ToString(), CommandBtnName.Skill);
         AddVirtualAxis(axesProperty, COMMAND_KEY.ToggleRun.ToString(), CommandBtnName.ToggleRun);
 
         serializedObject.ApplyModifiedProperties();
+        Debug.Log("Input axes setup complete!");
     }
-    void AddVirtualAxis(SerializedProperty axesProperty, string axisName, string positiveButton)
+
+    private static void AddVirtualAxis(SerializedProperty axesProperty, string axisName, string positiveButton)
     {
         axesProperty.arraySize++;
         SerializedProperty axis = axesProperty.GetArrayElementAtIndex(axesProperty.arraySize - 1);
@@ -97,7 +100,8 @@ public class PlayerInputHandler : MonoBehaviourPun
     //플래그에 커맨드 예약
     public void ReserveCommand(COMMAND_KEY commandKey)
     {
-        photonView.RPC(nameof(ReserveCmdMaster), RpcTarget.MasterClient, (int)commandKey);
+        ReserveCmdMaster((int)commandKey);
+        //photonView.RPC(nameof(ReserveCmdMaster), RpcTarget.MasterClient, (int)commandKey);
     }
 
     [PunRPC]

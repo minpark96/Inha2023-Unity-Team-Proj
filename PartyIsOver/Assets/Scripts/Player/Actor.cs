@@ -1,12 +1,7 @@
 using Photon.Pun;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using static Define;
-using UnityEngine.SceneManagement;
-using Unity.VisualScripting;
 using System;
-using UnityEngine.ProBuilder.MeshOperations;
 
 public class Actor : MonoBehaviourPun, IPunObservable
 {
@@ -147,7 +142,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
         _inputHandler.InitCommand(this);
 #if UNITY_EDITOR
-        _inputHandler.SetupInputAxes();
+        //_inputHandler.SetupInputAxes();
 #endif
         StatContext.SetupStat();
         _actionContext.SetupAction(photonView.ViewID, photonView.IsMine ? true : false);
@@ -169,15 +164,6 @@ public class Actor : MonoBehaviourPun, IPunObservable
     {
         if (!StatContext.IsAlive) return;
 
-
-        if (PhotonNetwork.LocalPlayer.IsMasterClient)
-        {
-            photonView.RPC(nameof(UpdateDataMasterToAll),
-                RpcTarget.All, gameObject.layer, BodyHandler.Chest.transform.position,
-                LowerSM.IsGrounded, UpperSM.ReadySide, LowerSM.GetBodyPose());
-        }
-
-
         if (photonView.IsMine)
         {
             if (CameraControl == null || BodyHandler == null) return;
@@ -188,37 +174,29 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
             UpdateStateMachine();
 
-
-            photonView.RPC(nameof(UpdateDataClientToAll), RpcTarget.All, LowerSM.IsRun,
-                _inputHandler.GetMoveInput(CameraControl.CameraArm.transform));
+            UpdateData();
 
             if (Input.GetKeyDown(KeyCode.G))
                 _actionContext.IsMeowPunch = !_actionContext.IsMeowPunch;
         }
     }
 
-    [PunRPC]
-    void UpdateDataMasterToAll(int layer, Vector3 position, bool isGround, Side readySide, int[] limbPose) //마스터에서 All 
+
+    void UpdateData() 
     {
         if (LowerSM.GetCurrentState() == null || UpperSM.GetCurrentState() == null) return;
 
-        _actionContext.Layer = layer;
-        _actionContext.Position = position;
-        _actionContext.IsGrounded = isGround;
-        _actionContext.PunchSide = readySide;
+        _actionContext.Layer = gameObject.layer;
+        _actionContext.Position = BodyHandler.Chest.transform.position;
+        _actionContext.IsGrounded = LowerSM.IsGrounded;
+        _actionContext.PunchSide = UpperSM.ReadySide;
 
-        int[] limbPositions = limbPose;
+        int[] limbPositions = LowerSM.GetBodyPose();
         for (int i = 0; i < (int)BodyPose.End; i++)
             _actionContext.LimbPositions[i] = limbPositions[i];
-    }
 
-    [PunRPC]
-    void UpdateDataClientToAll(bool isRun, Vector3 inputDir) //클라에서 전체로 RPC_ALL
-    {
-        if (LowerSM.GetCurrentState() == null || UpperSM.GetCurrentState() == null) return;
-
-        _actionContext.IsRunState = isRun;
-        Vector3 dir = inputDir;
+        _actionContext.IsRunState = LowerSM.IsRun;
+        Vector3 dir = _inputHandler.GetMoveInput(CameraControl.CameraArm.transform);
         _actionContext.InputDirX = dir.x;
         _actionContext.InputDirY = dir.y;
         _actionContext.InputDirZ = dir.z;
@@ -281,19 +259,20 @@ public class Actor : MonoBehaviourPun, IPunObservable
                 StatContext.Stamina = StatContext.MaxStamina;
 
             OnChangePlayerStatus(StatContext.Health, StatContext.Stamina, debuffState, photonView.ViewID);
-
-            if (IsActionable())
-            {
-                UpdatePhysicsSM();
-                photonView.RPC(nameof(ExecuteCommand), RpcTarget.All, (int)_inputHandler.GetActiveCmdFlag());
-            }
-
-            //커맨드 플래그 클리어
-            _inputHandler.ClearCommand();
         }
 
         if (photonView.IsMine)
         {
+            if (IsActionable())
+            {
+                UpdatePhysicsSM();
+                ExecuteCommand((int)_inputHandler.GetActiveCmdFlag());
+                //photonView.RPC(nameof(ExecuteCommand), RpcTarget.All, (int)_inputHandler.GetActiveCmdFlag());
+            }
+
+            //커맨드 플래그 클리어
+            _inputHandler.ClearCommand();
+
             OnChangeStaminaBar();  //isMine에서 하는게 맞나?
         }
 
@@ -354,20 +333,20 @@ public class Actor : MonoBehaviourPun, IPunObservable
         _actionContext.IsFlambe = value;
     }
 
-    [PunRPC]
     void ExecuteCommand(int commandKey)
     {
         _activeCommand = (COMMAND_KEY)commandKey;
 
-        //Master클라이어트에게 받은 커맨드로 해당하는 actor들을 컨트롤하는 방향으로 혹은 마스터에서 바로 actor.execute
         for (int i = 0; i < Enum.GetValues(typeof(COMMAND_KEY)).Length - 1; i++)
         {
             if ((_activeCommand & _commandAry[i]) == _commandAry[i])
             {
                 if (_inputHandler.GetCommand(_commandAry[i]).Execute(_actionContext))
-                    Debug.Log(_commandAry[i].ToString() + " + " + GetUpperState());
+                {
+                    //Debug.Log(_commandAry[i].ToString() + " + " + GetUpperState());
+                }
                 else
-                    Debug.Log(_commandAry[i].ToString() + "커맨드 실행 실패");
+                    Debug.Log(gameObject.name + _commandAry[i].ToString() + "커맨드 실행 실패");
             }
         }
     }
@@ -417,21 +396,25 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
     private void OnGUI() //완성 후 삭제
     {
-        string content = LowerSM.GetCurrentState() != null ? LowerSM.GetCurrentState().Name.ToString() : "(no current state)";
-        string content2 = UpperSM.GetCurrentState() != null ? UpperSM.GetCurrentState().Name.ToString() : "(no current state)";
+        if (photonView.IsMine)
+        {
+            string content = LowerSM.GetCurrentState() != null ? LowerSM.GetCurrentState().Name.ToString() : "(no current state)";
+            string content2 = UpperSM.GetCurrentState() != null ? UpperSM.GetCurrentState().Name.ToString() : "(no current state)";
 
-        Rect labelRect = new Rect(100, 0, 300, 40);
-        Rect labelRect2 = new Rect(Screen.width - 300, 0, 300, 40);
+            Rect labelRect = new Rect(100, 0, 300, 40);
+            Rect labelRect2 = new Rect(Screen.width - 300, 0, 300, 40);
 
-        GUIStyle style1 = new GUIStyle(GUI.skin.label);
-        style1.normal.textColor = Color.black;
-        style1.fontSize = 40;
+            GUIStyle style1 = new GUIStyle(GUI.skin.label);
+            style1.normal.textColor = Color.black;
+            style1.fontSize = 40;
 
-        GUIStyle style2 = new GUIStyle(GUI.skin.label);
-        style2.normal.textColor = Color.black;
-        style2.fontSize = 40;
+            GUIStyle style2 = new GUIStyle(GUI.skin.label);
+            style2.normal.textColor = Color.black;
+            style2.fontSize = 40;
 
-        GUI.Label(labelRect, content, style1);
-        GUI.Label(labelRect2, content2, style2);
+            GUI.Label(labelRect, content, style1);
+            GUI.Label(labelRect2, content2, style2);
+        }
+
     }
 }

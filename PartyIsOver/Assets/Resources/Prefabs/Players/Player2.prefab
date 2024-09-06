@@ -11391,7 +11391,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0444d9ac95de644cb7ff3b6d6c356fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GrabState: 0
   debuffState: 0
   AudioListener: {fileID: 0}
   StatusHandler: {fileID: 0}

@@ -107,8 +107,7 @@ public class PunchAction : BaseAction
                 bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
             bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
             bodyHandler.LeftForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
-
-            //photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LeftHand, true);
+            bodyHandler.ChangeDamageModifier(Define.BodyPart.LeftHand, true);
         }
         else
         {
@@ -125,8 +124,7 @@ public class PunchAction : BaseAction
                 bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
             bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
             bodyHandler.RightForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
-
-            //photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.RightHand, true);
+            bodyHandler.ChangeDamageModifier(Define.BodyPart.RightHand, true);;
         }
 
         for (int i = 0; i < aniFrameDatas.Length; i++)
@@ -156,8 +154,7 @@ public class PunchAction : BaseAction
             bodyHandler.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
             bodyHandler.LeftHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
             bodyHandler.LeftForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
-
-            //photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LeftHand, false);
+            bodyHandler.ChangeDamageModifier(Define.BodyPart.LeftHand, false);
         }
         else
         {
@@ -165,8 +162,7 @@ public class PunchAction : BaseAction
             bodyHandler.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
             bodyHandler.RightHand.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
             bodyHandler.RightForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
-
-            //photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.RightHand, false);
+            bodyHandler.ChangeDamageModifier(Define.BodyPart.RightHand, false);
         }
 
         for (int i = 0; i < aniAngleDatas.Length; i++)

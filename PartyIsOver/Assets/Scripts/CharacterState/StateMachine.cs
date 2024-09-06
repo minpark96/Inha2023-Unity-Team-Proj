@@ -29,10 +29,10 @@ public abstract class StateMachine
     {
         if (_currentState != null)
         {
-            _currentState.UpdateLogic();
-
             if (Input.anyKey)
                 _currentState.GetInput();
+
+            _currentState.UpdateLogic();
         }
     }
     public void UpdatePhysics()

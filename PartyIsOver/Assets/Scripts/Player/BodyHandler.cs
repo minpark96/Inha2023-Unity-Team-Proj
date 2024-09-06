@@ -2,6 +2,7 @@ using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 
 /*
@@ -232,6 +233,82 @@ public class BodyHandler : MonoBehaviourPun
             Debug.Log("UnlockArm" + _fixedArmJoints[i]);
             Destroy(_fixedArmJoints[i]);
             _fixedArmJoints[i] = null;
+        }
+    }
+
+    public void ChangeDamageModifier(Define.BodyPart bodyPart, bool isAttack)
+    {
+        photonView.RPC(nameof(UpdateDamageModifier), RpcTarget.MasterClient, (int)bodyPart, true);
+    }
+
+
+    [PunRPC]
+    private void UpdateDamageModifier(int bodyPart, bool isAttack)
+    {
+        //Debug.Log("[UpdateDamageModifier] isAttack: " + isAttack + ", bodyPart: " + bodyPart);
+
+        switch ((Define.BodyPart)bodyPart)
+        {
+            case Define.BodyPart.FootL:
+                if (isAttack)
+                    this.LeftFoot.PartInteractable.damageModifier = InteractableObject.Damage.DropKick;
+                else
+                    this.LeftFoot.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+                break;
+            case Define.BodyPart.FootR:
+                if (isAttack)
+                    this.RightFoot.PartInteractable.damageModifier = InteractableObject.Damage.DropKick;
+                else
+                    this.RightFoot.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+                break;
+            case Define.BodyPart.LegLowerL:
+                if (isAttack)
+                    this.LeftLeg.PartInteractable.damageModifier = InteractableObject.Damage.DropKick;
+                else
+                    this.LeftLeg.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+                break;
+            case Define.BodyPart.LegLowerR:
+                if (isAttack)
+                    this.RightLeg.PartInteractable.damageModifier = InteractableObject.Damage.DropKick;
+                else
+                    this.RightLeg.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+                break;
+            case Define.BodyPart.LegUpperL:
+                break;
+            case Define.BodyPart.LegUpperR:
+                break;
+            case Define.BodyPart.Hip:
+                break;
+            case Define.BodyPart.Waist:
+                break;
+            case Define.BodyPart.Chest:
+                break;
+            case Define.BodyPart.Head:
+                if (isAttack)
+                    this.Head.PartInteractable.damageModifier = InteractableObject.Damage.Headbutt;
+                else
+                    this.Head.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+                break;
+            case Define.BodyPart.LeftArm:
+                break;
+            case Define.BodyPart.RightArm:
+                break;
+            case Define.BodyPart.LeftForeArm:
+                break;
+            case Define.BodyPart.RightForeArm:
+                break;
+            case Define.BodyPart.LeftHand:
+                if (isAttack)
+                    this.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+                else
+                    this.LeftHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+                break;
+            case Define.BodyPart.RightHand:
+                if (isAttack)
+                    this.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Punch;
+                else
+                    this.RightHand.PartInteractable.damageModifier = InteractableObject.Damage.Default;
+                break;
         }
     }
 }

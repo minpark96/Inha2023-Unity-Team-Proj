@@ -13,6 +13,7 @@ public class HeadButtAction : BaseAction
     AnimationPlayer _animPlayer;
     AnimationData _animData;
     PlayerActionContext _context;
+    BodyHandler _bodyHandler;
     float _headButtCoolTime = 1f;
     Vector3 _moveDir = new Vector3();
 
@@ -23,6 +24,7 @@ public class HeadButtAction : BaseAction
         _moveDir.x = data.InputDirX;
         _moveDir.y = data.InputDirY;
         _moveDir.z = data.InputDirZ;
+        _bodyHandler = bodyHandler;
         _context = data;
         CoroutineHelper.StartCoroutine(HeadButt());
         return true;
@@ -30,9 +32,7 @@ public class HeadButtAction : BaseAction
 
     IEnumerator HeadButt()
     {
-        //this._bodyHandler.Head.PartInteractable.damageModifier = InteractableObject.Damage.Headbutt;
-        //photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.Head, true);
-
+        _bodyHandler.ChangeDamageModifier(Define.BodyPart.Head, true);
         for (int i = 0; i < _animData.FrameDataLists[Define.AniFrameData.HeadingAniData].Length; i++)
         {
             _animPlayer.PlayAnimForce(_animData.FrameDataLists[Define.AniFrameData.HeadingAniData], i);
@@ -46,8 +46,7 @@ public class HeadButtAction : BaseAction
         }
 
         yield return new WaitForSeconds(_headButtCoolTime);
-        //this._bodyHandler.Head.PartInteractable.damageModifier = InteractableObject.Damage.Default;
-        //photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.Head, false);
+        _bodyHandler.ChangeDamageModifier(Define.BodyPart.Head, false);
 
         _context.IsUpperActionProgress = false;
 
