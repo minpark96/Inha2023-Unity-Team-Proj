@@ -1,7 +1,8 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// 점프 액션
 public class JumpAction : BaseAction
 {
     public JumpAction(ActionController actions, Define.ActionEventName name) : base(actions, name)
@@ -28,6 +29,7 @@ public class JumpAction : BaseAction
         return true;
     }
 
+    // 애니메이션 데이터대로 플레이어를 위로 점프하게 한다.
     void Jump()
     {
         for (int i = 0; i < _animData.FrameDataLists[Define.AniFrameData.JumpAniForceData].Length; i++)
@@ -43,6 +45,7 @@ public class JumpAction : BaseAction
         }
     }
 
+    // 벽을 잡고 있을때 사용하는 점프
     void Climb()
     {
         _bodyHandler.Hip.PartRigidbody.AddForce(Vector3.up * 150f, ForceMode.VelocityChange);

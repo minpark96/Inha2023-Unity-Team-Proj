@@ -1,9 +1,9 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 
-//½ºÅ©¸³ÅÍºí ¿ÀºêÁ§Æ®¿¡¼­ Ãæµ¹À¯Çüº° µ¥¹ÌÁö³ª ³Ë¹é·®À» Á¶ÀıÇÏ´Â Å¬·¡½º
+//ìŠ¤í¬ë¦½í„°ë¸” ì˜¤ë¸Œì íŠ¸ì—ì„œ ì¶©ëŒìœ í˜•ë³„ ë°ë¯¸ì§€ë‚˜ ë„‰ë°±ëŸ‰ì„ ì¡°ì ˆí•˜ëŠ” í´ë˜ìŠ¤
 
 [CreateAssetMenu(fileName = "Collision Data", menuName = "Scriptable Object/Collision Data", order = int.MaxValue)]
 public class CollisionData : ScriptableObject

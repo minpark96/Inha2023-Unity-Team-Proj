@@ -1,11 +1,11 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using static Define;
 
 /*
- * ÇÃ·¹ÀÌ¾î »óÅÂÀÇ º£ÀÌ½º°¡ µÇ´Â Ãß»óÅ¬·¡½º
+ * í”Œë ˆì´ì–´ ìƒíƒœì˜ ë² ì´ìŠ¤ê°€ ë˜ëŠ” ì¶”ìƒí´ë˜ìŠ¤
  */
 public abstract class BaseState
 {
@@ -13,7 +13,7 @@ public abstract class BaseState
 
     protected StateMachine stateMachine;
 
-    //»ı¼º½Ã »óÅÂº° ÀÌ¸§À» enumÀ¸·Î ¹Ş°í, »óÅÂ¸Ó½Å ÀúÀå
+    // ìƒì„±ì‹œ ìƒíƒœë³„ ì´ë¦„ì„ enumìœ¼ë¡œ ë°›ê³ , ìƒíƒœë¨¸ì‹  ì €ì¥
     public BaseState(PlayerState name, StateMachine stateMachine)
     {
         this.Name = name;
@@ -25,7 +25,7 @@ public abstract class BaseState
     public virtual void UpdatePhysics(){}
     public virtual void Exit(){}
 
-    //¿¹¾àµÈ Ä¿¸Çµå¸¦ ½ÇÇà
+    // í•´ë‹¹ ì»¤ë§¨ë“œë¥¼ ì˜ˆì•½í•˜ëŠ” í•¨ìˆ˜ë¥¼ ì‹¤í–‰
     protected void InvokeReserveCommand(COMMAND_KEY cmd)
     {
         stateMachine.CommandReserveHandler.Invoke(cmd);

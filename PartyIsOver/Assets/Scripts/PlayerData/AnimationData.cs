@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -6,7 +6,7 @@ using UnityEngine;
 using static AniAngleData;
 using static AniFrameData;
 
-//ÅØ½ºÆ® Çü½ÄÀÇ ¾Ö´Ï¸ŞÀÌ¼Ç µ¥ÀÌÅÍ¸¦ ÀĞ¾î¿À´Â Å¬·¡½º
+//í…ìŠ¤íŠ¸ í˜•ì‹ì˜ ì• ë‹ˆë©”ì´ì…˜ ë°ì´í„°ë¥¼ ì½ì–´ì˜¤ëŠ” í´ë˜ìŠ¤
 public class AnimationData
 {
     public AnimationData(BodyHandler bodyHandler)
@@ -41,7 +41,7 @@ public class AnimationData
         {
             string filePath = $"Animations/ForceData/{frameDataNames[i]}";
             TextAsset textAsset = Resources.Load<TextAsset>(filePath);
-            //¸®½ºÆ®Å¬¸®¾î
+            //ë¦¬ìŠ¤íŠ¸í´ë¦¬ì–´
             partCount.Clear();
             standardRb.Clear();
             actionRb.Clear();
@@ -123,7 +123,7 @@ public class AnimationData
         {
             string filePath = $"Animations/RotateData/{rotateDataNames[i]}";
             TextAsset textAsset = Resources.Load<TextAsset>(filePath);
-            //¸®½ºÆ®µé Å¬¸®¾îÇØ¾ßÇÔ
+            //ë¦¬ìŠ¤íŠ¸ë“¤ í´ë¦¬ì–´í•´ì•¼í•¨
             partCount.Clear();
 
             actionRb.Clear();
@@ -251,12 +251,12 @@ public class AnimationData
                 case Define.BodyPart.RightHand:
                     rb = _bodyHandler.RightHand.PartRigidbody; break;
                 default:
-                    Debug.Log("¾Ö´Ï¸ŞÀÌ¼Ç ÆÄÃ÷ ºÒ·¯¿À±â ¿¡·¯1" + part.ToString());
+                    Debug.Log("ì• ë‹ˆë©”ì´ì…˜ íŒŒì¸  ë¶ˆëŸ¬ì˜¤ê¸° ì—ëŸ¬1" + part.ToString());
                     break;
             }
         }
         else
-            Debug.Log("¾Ö´Ï¸ŞÀÌ¼Ç ÆÄÃ÷ ºÒ·¯¿À±â ¿¡·¯2" + text);
+            Debug.Log("ì• ë‹ˆë©”ì´ì…˜ íŒŒì¸  ë¶ˆëŸ¬ì˜¤ê¸° ì—ëŸ¬2" + text);
         return rb;
     }
     ForceDirection StringToForceDir(string text)
@@ -282,11 +282,11 @@ public class AnimationData
                 case Define.AnimDirection.Left:
                     dir = ForceDirection.Left; break;
                 default:
-                    Debug.Log("Æ÷½º¹æÇâ ºÒ·¯¿À±â ¿¡·¯1"); break;
+                    Debug.Log("í¬ìŠ¤ë°©í–¥ ë¶ˆëŸ¬ì˜¤ê¸° ì—ëŸ¬1"); break;
             }
         }
         else
-            Debug.Log("Æ÷½º¹æÇâ ºÒ·¯¿À±â ¿¡·¯2" + text);
+            Debug.Log("í¬ìŠ¤ë°©í–¥ ë¶ˆëŸ¬ì˜¤ê¸° ì—ëŸ¬2" + text);
 
         return dir;
     }
@@ -314,11 +314,11 @@ public class AnimationData
                 case Define.AnimDirection.Left:
                     dir = AniAngle.Left; break;
                 default:
-                    Debug.Log("Æ÷½º¹æÇâ ºÒ·¯¿À±â ¿¡·¯1"); break;
+                    Debug.Log("í¬ìŠ¤ë°©í–¥ ë¶ˆëŸ¬ì˜¤ê¸° ì—ëŸ¬1"); break;
             }
         }
         else
-            Debug.Log("Æ÷½º¹æÇâ ºÒ·¯¿À±â ¿¡·¯2" + text);
+            Debug.Log("í¬ìŠ¤ë°©í–¥ ë¶ˆëŸ¬ì˜¤ê¸° ì—ëŸ¬2" + text);
 
         return dir;
     }

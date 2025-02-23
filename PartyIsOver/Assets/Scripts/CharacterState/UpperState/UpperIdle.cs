@@ -1,8 +1,9 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static Define;
 
+// 상체의 기본 상태
 public class UpperIdle : BaseState
 {
     private UpperBodySM _sm;
@@ -18,15 +19,18 @@ public class UpperIdle : BaseState
 
     public override void UpdateLogic()
     {
-        if (_sm.Context.IsUpperActionProgress)
+        if (_sm.PlayerContext.IsUpperActionProgress)
             return;
-
+        
+        // 펀치나 잡기가 가능한 준비 상태로 변경
         if(InputCommand(COMMAND_KEY.LeftBtn, KeyType.Down))
             _sm.ChangeState(_sm.StateMap[PlayerState.PunchAndGrabReady]);
-
+        
+        // 스킬 차지 상태로 변경
         if (InputCommand(COMMAND_KEY.Skill, KeyType.Down))
             _sm.ChangeState(_sm.StateMap[PlayerState.SkillReady]);
-
+        
+        // 박치기 상태로 변경
         if (InputCommand(COMMAND_KEY.HeadButt, KeyType.Down))
         {
             InvokeReserveCommand(COMMAND_KEY.HeadButt);

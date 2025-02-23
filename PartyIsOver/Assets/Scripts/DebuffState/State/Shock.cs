@@ -1,4 +1,4 @@
-using Photon.Pun;
+ï»¿using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -106,7 +106,7 @@ public class Shock : MonoBehaviourPun, IDebuffState
     }
     void PlayerDebuffSound(string path)
     {
-        //»ç¿îµå ¹®Á¦ ÀÖÀ½
+        //ì‚¬ìš´ë“œ ë¬¸ì œ ìˆìŒ
         _audioClip = Managers.Sound.GetOrAddAudioClip(path);
         _audioSource.clip = _audioClip;
         _audioSource.spatialBlend = 1;
@@ -197,7 +197,7 @@ public class Shock : MonoBehaviourPun, IDebuffState
         JointDrive angularYZDrive;
         int j = 0;
 
-        //±âÀı°ú È¸º¹¿¡ ¸ğµÎ °ü¿© ±âÀı½Ã¿£ ÆÛ¼¾Æ¼Áö¸¦ 0À¸·ÎÇØ¼­ »ç¿ë
+        //ê¸°ì ˆê³¼ íšŒë³µì— ëª¨ë‘ ê´€ì—¬ ê¸°ì ˆì‹œì—” í¼ì„¼í‹°ì§€ë¥¼ 0ìœ¼ë¡œí•´ì„œ ì‚¬ìš©
         for (int i = 0; i < MyActor.BodyHandler.BodyParts.Count; i++)
         {
             if (i == (int)Define.BodyPart.Hip)

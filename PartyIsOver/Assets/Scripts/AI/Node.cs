@@ -1,9 +1,9 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 
 namespace BehaviorTree
 {
-    //3°¡Áö »ıÅÂ ½ÇÇà ¼º°ø ½ÇÆĞ
+    //3ê°€ì§€ ìƒíƒœ ì‹¤í–‰ ì„±ê³µ ì‹¤íŒ¨
     public enum NodeState
     {
         Running,
@@ -13,45 +13,45 @@ namespace BehaviorTree
 
     public class Node
     {
-        //ÇöÀç ³ëµåÀÇ »óÅÂ¸¦ ³ªÅ¸³¿
+        //í˜„ì¬ ë…¸ë“œì˜ ìƒíƒœë¥¼ ë‚˜íƒ€ëƒ„
         protected NodeState state;
-        //ºÎ¸ğ ³ëµå¸¦ °¡¸®Å´
+        //ë¶€ëª¨ ë…¸ë“œë¥¼ ê°€ë¦¬í‚´
         public Node parent;
-        //¾ç¹æÇâÀ¸·Î ÁøÇàÇÏ±â À§ÇØ »ç¿ëÇÏ´Â ÀÚ½Ä ³ëµå ¸®½ºÆ®
+        //ì–‘ë°©í–¥ìœ¼ë¡œ ì§„í–‰í•˜ê¸° ìœ„í•´ ì‚¬ìš©í•˜ëŠ” ìì‹ ë…¸ë“œ ë¦¬ìŠ¤íŠ¸
         protected List<Node> children = new List<Node>();
-        //³ëµå¿¡¼­ »ç¿ëÇÏ´Â µ¥ÀÌÅÍ¸¦ °ü¸®
+        //ë…¸ë“œì—ì„œ ì‚¬ìš©í•˜ëŠ” ë°ì´í„°ë¥¼ ê´€ë¦¬
         private Dictionary<string, object>_dataContext = new Dictionary<string, object>();
 
-        //»ı¼ºÀÚ
+        //ìƒì„±ì
         public Node()
         {
             parent = null;
         }
 
-        //»ı¼ºÀÚ ÀÚ½Ä ³ëµå¸¦ ¹Ş¾Æ¼­ ÇöÀç ³ëµå¿¡ Ãß°¡ÇÔ
+        //ìƒì„±ì ìì‹ ë…¸ë“œë¥¼ ë°›ì•„ì„œ í˜„ì¬ ë…¸ë“œì— ì¶”ê°€í•¨
         public Node(List<Node> children)
         {
             foreach(Node child in children)
                 _Attach(child);
         }
 
-        //ÀÚ½Ä ³ëµå¸¦ ÇöÀç ³ëµå¿¡ Ãß°¡
+        //ìì‹ ë…¸ë“œë¥¼ í˜„ì¬ ë…¸ë“œì— ì¶”ê°€
         private void _Attach(Node node)
         {
             node.parent = this;
             children.Add(node);
         }
 
-        //³ëµåÀÇ Æò°¡¸¦ ¼öÇàÇÏ°í »óÅÂ¸¦ ¹İÈ¯ÇÔ
+        //ë…¸ë“œì˜ í‰ê°€ë¥¼ ìˆ˜í–‰í•˜ê³  ìƒíƒœë¥¼ ë°˜í™˜í•¨
         public virtual NodeState Evaluate() => NodeState.Failure;
 
-        //µ¥ÀÌÅÍ Ãß°¡¸¦ ´ëÀÔ
+        //ë°ì´í„° ì¶”ê°€ë¥¼ ëŒ€ì…
         public void SetData(string key, object value)
         {
             _dataContext[key] = value;
         }
 
-        //Àç±ÍÀûÀÎ »óÅÂ ¸Ş¼­µå´Â ÇöÀç ³ëµå¿¡¼­ µ¥ÀÌÅÍ¸¦Ã£°í Ã£Áö ¸øÇÏ¸é ºÎ¸ğ³ëµå·Î ¿Ã¶ó°¡¸é¼­ °Ë»ö
+        //ì¬ê·€ì ì¸ ìƒíƒœ ë©”ì„œë“œëŠ” í˜„ì¬ ë…¸ë“œì—ì„œ ë°ì´í„°ë¥¼ì°¾ê³  ì°¾ì§€ ëª»í•˜ë©´ ë¶€ëª¨ë…¸ë“œë¡œ ì˜¬ë¼ê°€ë©´ì„œ ê²€ìƒ‰
         public object GetData(string key)
         {
             object value = null;
@@ -69,7 +69,7 @@ namespace BehaviorTree
             return null;
         }
 
-        //¸Ş¼­µå´Â Æ¯Á¤Å°¿¡ ÇØ´çÇÏ´Â µ¥ÀÌÅÍ¸¦ »èÁ¦, ÇöÀç³ëµå¿¡¼­ Ã£Áö ¸øÇÏ¸é ºÎ¸ğ ³ëµå·Î ¿Ã¶ó°¡¸é¼­ °Ë»ö
+        //ë©”ì„œë“œëŠ” íŠ¹ì •í‚¤ì— í•´ë‹¹í•˜ëŠ” ë°ì´í„°ë¥¼ ì‚­ì œ, í˜„ì¬ë…¸ë“œì—ì„œ ì°¾ì§€ ëª»í•˜ë©´ ë¶€ëª¨ ë…¸ë“œë¡œ ì˜¬ë¼ê°€ë©´ì„œ ê²€ìƒ‰
         public bool ClearData(string key) 
         { 
             if(_dataContext.ContainsKey(key))

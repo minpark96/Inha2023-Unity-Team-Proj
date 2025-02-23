@@ -1,4 +1,4 @@
-using System.Collections;
+Ôªøusing System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static System.TimeZoneInfo;
@@ -34,7 +34,7 @@ public class GrayscaleEffect : MonoBehaviour
             timer += Time.deltaTime;
             float lerpFactor = timer / TransitionTime;
             grayscaleMaterial.SetFloat("_LerpFactor", lerpFactor);
-            //Debug.Log("_LerpFactor: " + lerpFactor); // _LerpFactor ∞™¿ª ∑Œ±◊∑Œ √‚∑¬
+            //Debug.Log("_LerpFactor: " + lerpFactor); // _LerpFactor Í∞íÏùÑ Î°úÍ∑∏Î°ú Ï∂úÎ†•
             yield return null;
         }
         grayscaleMaterial.SetFloat("_LerpFactor", 1.0f);

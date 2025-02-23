@@ -1,19 +1,20 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// í”Œë ˆì´ì–´ ìºë¦­í„°ì˜ ìŠ¤íƒ¯ ì •ë³´ë¥¼ ì €ì¥í•˜ëŠ” í´ë˜ìŠ¤
 public class PlayerStatContext
 {
     public bool IsAlive { get; set; }
     public float RunSpeed { get; set; }
     public float MaxSpeed { get; set; }
 
-    //°ø°İ·Â, ¹æ¾î·Â(100ÀÌ ¹«Àû)
+    //ê³µê²©ë ¥, ë°©ì–´ë ¥(100ì´ ë¬´ì )
     public float DamageReduction { get; set; }
     public float AttackPowerMultiplier { get; set; }
 
 
-    // Ã¼·Â
+    // ì²´ë ¥
     public float Health { get; set; }
     public float MaxHealth { get; set; }
 
@@ -27,7 +28,7 @@ public class PlayerStatContext
     public float Stamina { get; set; }
     public float MaxStamina { get; set; }
 
-    // µ¿»ç½ºÅÃ
+    // ë™ì‚¬ìŠ¤íƒ
     public int MagneticStack { get; set; }
 
     public void SetupStat()

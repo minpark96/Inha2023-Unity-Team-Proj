@@ -1,8 +1,8 @@
-using Unity.VisualScripting;
+ï»¿using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
-//ÇÃ·¹ÀÌ¾î°¡ ´Ù¸¥ ¿ÀºêÁ§Æ®¸¦ °¨ÁöÇÏ°í, ÆÇÁ¤ÇÏ´Â ±â´ÉÀ» ¸ğ¾ÆµĞ Å¬·¡½º
+//í”Œë ˆì´ì–´ê°€ ë‹¤ë¥¸ ì˜¤ë¸Œì íŠ¸ë¥¼ ê°ì§€í•˜ê³ , íŒì •í•˜ëŠ” ê¸°ëŠ¥ì„ ëª¨ì•„ë‘” í´ë˜ìŠ¤
 
 public static class TargetingHandler
 {
@@ -11,7 +11,7 @@ public static class TargetingHandler
     [SerializeField]
     static float _inAirDetectionRadius = 2f;
     [SerializeField]
-    static float maxAngle = 110f; // Á¤¸é¿¡¼­ ÁÂ¿ì·Î ÇØ´ç °¢µµ¸¸Å­ ¼­Ä¡
+    static float maxAngle = 110f; // ì •ë©´ì—ì„œ ì¢Œìš°ë¡œ í•´ë‹¹ ê°ë„ë§Œí¼ ì„œì¹˜
 
     static float _detectionRadius;
     static float _nearestDistance;
@@ -47,13 +47,13 @@ public static class TargetingHandler
         return layerMask;
     }
 
-
+    // ì£¼ë³€ì— ìƒí˜¸ì‘ìš© ê°€ëŠ¥í•œ ì˜¤ë¸Œì íŠ¸ë¥¼ íƒìƒ‰í•´ì„œ ë¦¬í„´í•˜ëŠ” í•¨ìˆ˜
     public static InteractableObject SearchTarget(Define.Side side,Transform transform, int layer, bool isGrounded)
     {
         LayerMask layerMask = LayerSetting(layer);
         chestTransform = transform;
 
-        //³ªÁß¿¡ ¸â¹öº¯¼ö·Î »©¾ß È¿À²Àû
+        //ë‚˜ì¤‘ì— ë©¤ë²„ë³€ìˆ˜ë¡œ ë¹¼ì•¼ íš¨ìœ¨ì 
         Collider[] colliders = new Collider[40];
         _nearestCollider = null;
         _nearestObject = null;
@@ -61,10 +61,10 @@ public static class TargetingHandler
         _colliderCount = 0;
         _detectionRadius = _defaultDetectionRadius;
 
-        //Á¤¸éº¤ÅÍ
+        //ì •ë©´ë²¡í„°
         Vector3 chestForward = -chestTransform.up;
 
-        //Ã¼Å©ÇÒ ¹æÇâ º¤ÅÍ
+        //ì²´í¬í•  ë°©í–¥ ë²¡í„°
         Vector3 detectionDirection;
         detectionDirection = (side == Define.Side.Left) ? -chestTransform.right : chestTransform.right;
 
@@ -78,7 +78,7 @@ public static class TargetingHandler
         if (_colliderCount <= 0 )
             return null;
 
-        // ¹Ù¶óº¸´Â ¹æÇâ 180µµ ÀÌ³»¿¡ Äİ¶óÀÌ´õ Áß interatableObject º¸À¯ÁßÀÎÁö È®ÀÎ
+        // ë°”ë¼ë³´ëŠ” ë°©í–¥ì—ì„œ ì¢Œìš° maxAngleê°ë„ ì´ë‚´ì— ì½œë¼ì´ë” ì¤‘ interatableObject ë³´ìœ ì¤‘ì¸ì§€ í™•ì¸
         for (int i = 0; i < _colliderCount; i++)
         {
             Vector3 toCollider = colliders[i].transform.position - chestTransform.position;
@@ -92,7 +92,7 @@ public static class TargetingHandler
                     (FindClosestCollisionPoint(chestTransform.position,colliders[i],layer),chestTransform.position);
                 bool lowPriorityPart = true;
 
-                //¼­Ä¡Å¸°ÙÀÌ ·¡±×µ¹ÀÏ°æ¿ì Áß¿äµµ°¡ ³·Àº ¸ö ºÎÀ§¿¡ °ªÀ» °öÇØ¼­ ÃÖÁ¾Å¸°ÙÀÌ µÉ °¡´É¼ºÀ» ³·Ãã
+                // ì„œì¹˜íƒ€ê²Ÿì´ ë˜ê·¸ëŒì¼ê²½ìš° ì¤‘ìš”ë„ê°€ ë‚®ì€ ëª¸ ë¶€ìœ„ì— ê°’ì„ ê³±í•´ì„œ ìµœì¢…íƒ€ê²Ÿì´ ë  ê°€ëŠ¥ì„±ì„ ë‚®ì¶¤
                 if (colliders[i].GetComponent<BodyPart>() !=null)
                 {
                     for (int j = (int)Define.BodyPart.Hip; j < (int)Define.BodyPart.Hip + 1; j++)
@@ -105,7 +105,7 @@ public static class TargetingHandler
                         distanceWithPriority *= 10f;
                 }
 
-                //°¡Àå°¡±î¿î Å¸°Ù °»½Å
+                // ê°€ì¥ê°€ê¹Œìš´ íƒ€ê²Ÿ ê°±ì‹ 
                 if (_nearestObject == null || distanceWithPriority < _nearestDistance)
                 {
                     _nearestCollider = colliders[i];
@@ -120,16 +120,16 @@ public static class TargetingHandler
         if (_nearestCollider == null)
             return null;
 
-        //Debug.Log(_nearestObject.gameObject + "ÃÖ¿ì¼±¼øÀ§");
+        //Debug.Log(_nearestObject.gameObject + "ìµœìš°ì„ ìˆœìœ„");
         return _nearestObject;
     }
 
-    //Å¸°Ù¿¡¼­ ¼Õ¿¡ °¡Àå °¡±î¿î Ãæµ¹ÁöÁ¡À» Ã£´Â ÇÔ¼ö
+    // íƒ€ê²Ÿì—ì„œ ì†ì— ê°€ì¥ ê°€ê¹Œìš´ ì¶©ëŒì§€ì ì„ ì°¾ëŠ” í•¨ìˆ˜
     public static Vector3 FindClosestCollisionPoint(Vector3 start, Collider targetCol, int layer)
     {
         if (targetCol == null)
         {
-            Debug.Log("Å¸°Ù¿¡ Äİ¶óÀÌ´õ°¡ ¾øÀ½");
+            Debug.Log("íƒ€ê²Ÿì— ì½œë¼ì´ë”ê°€ ì—†ìŒ");
             return Vector3.zero;
         }
 
@@ -144,7 +144,7 @@ public static class TargetingHandler
             return hit.point;
         else
         {
-            Debug.Log("Å¸°Ù¿¡ ¹®Á¦°¡ ÀÖÀ½");
+            Debug.Log("íƒ€ê²Ÿì— ë¬¸ì œê°€ ìˆìŒ");
             return Vector3.zero;
         }
     }

@@ -1,4 +1,4 @@
-using Photon.Pun;
+﻿using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -41,14 +41,14 @@ public class Item : MonoBehaviourPun
     
     public virtual void Use()
     {
-        //���ǻ��
+        // 자기 자신에게 아이템 사용(주로 포션으로 상태이상이나 버프를 부여)
         if (PhotonNetwork.LocalPlayer.IsMasterClient)
             Owner.StatusHandler.AddDamage(ItemData.UseDamageType, 0f, null);
 
         Destroy(gameObject,1f);
-        //�վ ���鶩 ��ũ��Ʈ �ϳ� �� �İ� Item�� ��ӹ޾Ƽ� Use�� ���������ϴ� �Լ��� �������̵�
-        //����� ���鶧 ItemData ��ũ��Ʈ���� Projectile�� �Ϲ� ���Ÿ������� ����ü�� ���� �� �� �ְ� �ϰų�
-        //ItemData ��ũ��Ʈ���� Projectile�� ���� ���Ÿ��� ������� ���� ���Ӱ� �۾��ϴ� ������ ����
+        //뚫어뻥 만들땐 스크립트 하나 더 파고 Item을 상속받아서 Use를 관절연결하는 함수로 오버라이드
+        //방사형 만들때 ItemData 스크립트에서 Projectile을 일반 원거리무기의 투사체랑 같이 쓸 수 있게 하거나
+        //ItemData 스크립트에서 Projectile을 빼고 원거리랑 방사형은 따로 새롭게 작업하는 식으로 진행
         
     }
 

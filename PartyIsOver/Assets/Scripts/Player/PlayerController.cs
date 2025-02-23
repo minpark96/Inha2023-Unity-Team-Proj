@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;                       
 using UnityEngine;
 using System.Collections.Generic;
 using static Actor;
@@ -6,6 +6,24 @@ using static AniFrameData;
 using static AniAngleData;
 using Photon.Pun;
 using System;
+
+/*
+ *                                          ë¦¬íŒ©í† ë§ ì „ì˜ ë ˆê±°ì‹œ ì½”ë“œ
+ *                                              í˜„ì¬ ì‚¬ìš©í•˜ì§€ ì•ŠìŒ
+ *
+ *
+ *
+ * 
+ *
+ *
+ *
+ * 
+ *
+ * 
+ */
+
+
+
 
 [System.Serializable]
 public class AniFrameData
@@ -97,12 +115,12 @@ public class PlayerController : MonoBehaviourPun
                 case Define.BodyPart.RightHand:
                     rb = _bodyHandler.RightHand.PartRigidbody; break;
                 default:
-                    Debug.Log("¾Ö´Ï¸ŞÀÌ¼Ç ÆÄÃ÷ ºÒ·¯¿À±â ¿¡·¯1" + part.ToString());
+                    Debug.Log("ì• ë‹ˆë©”ì´ì…˜ íŒŒì¸  ë¶ˆëŸ¬ì˜¤ê¸° ì—ëŸ¬1" + part.ToString());
                     break;
             }
         }
         else
-            Debug.Log("¾Ö´Ï¸ŞÀÌ¼Ç ÆÄÃ÷ ºÒ·¯¿À±â ¿¡·¯2" + text);
+            Debug.Log("ì• ë‹ˆë©”ì´ì…˜ íŒŒì¸  ë¶ˆëŸ¬ì˜¤ê¸° ì—ëŸ¬2" + text);
         return rb;
     }
     ForceDirection StringToForceDir(string text)
@@ -128,11 +146,11 @@ public class PlayerController : MonoBehaviourPun
                 case Define.AnimDirection.Left:
                     dir = ForceDirection.Left; break;
                 default:
-                    Debug.Log("Æ÷½º¹æÇâ ºÒ·¯¿À±â ¿¡·¯1"); break;
+                    Debug.Log("í¬ìŠ¤ë°©í–¥ ë¶ˆëŸ¬ì˜¤ê¸° ì—ëŸ¬1"); break;
             }
         }
         else
-            Debug.Log("Æ÷½º¹æÇâ ºÒ·¯¿À±â ¿¡·¯2"+text);
+            Debug.Log("í¬ìŠ¤ë°©í–¥ ë¶ˆëŸ¬ì˜¤ê¸° ì—ëŸ¬2"+text);
 
         return dir;
     }
@@ -160,11 +178,11 @@ public class PlayerController : MonoBehaviourPun
                 case Define.AnimDirection.Left:
                     dir = AniAngle.Left; break;
                 default:
-                    Debug.Log("Æ÷½º¹æÇâ ºÒ·¯¿À±â ¿¡·¯1"); break;
+                    Debug.Log("í¬ìŠ¤ë°©í–¥ ë¶ˆëŸ¬ì˜¤ê¸° ì—ëŸ¬1"); break;
             }
         }
         else
-            Debug.Log("Æ÷½º¹æÇâ ºÒ·¯¿À±â ¿¡·¯2" + text);
+            Debug.Log("í¬ìŠ¤ë°©í–¥ ë¶ˆëŸ¬ì˜¤ê¸° ì—ëŸ¬2" + text);
 
         return dir;
     }
@@ -185,7 +203,7 @@ public class PlayerController : MonoBehaviourPun
         {
             string filePath = $"Animations/ForceData/{frameDataNames[i]}";
             TextAsset textAsset = Resources.Load<TextAsset>(filePath);
-            //¸®½ºÆ®µé Å¬¸®¾îÇØ¾ßÇÔ
+            //ë¦¬ìŠ¤íŠ¸ë“¤ í´ë¦¬ì–´í•´ì•¼í•¨
             partCount.Clear();
             standardRb.Clear();
             actionRb.Clear();
@@ -267,7 +285,7 @@ public class PlayerController : MonoBehaviourPun
         {
             string filePath = $"Animations/RotateData/{rotateDataNames[i]}";
             TextAsset textAsset = Resources.Load<TextAsset>(filePath);
-            //¸®½ºÆ®µé Å¬¸®¾îÇØ¾ßÇÔ
+            //ë¦¬ìŠ¤íŠ¸ë“¤ í´ë¦¬ì–´í•´ì•¼í•¨
             partCount.Clear();
 
             actionRb.Clear();
@@ -388,10 +406,10 @@ public class PlayerController : MonoBehaviourPun
 
     [Header("SkillControll")]
     public float RSkillCoolTime = 10;
-    //Àá±ñ µô·¹ÀÌ¸¦ Áà¾ß ÀÚ¼¼¸¦ ÀâÀ½
+    //ì ê¹ ë”œë ˆì´ë¥¼ ì¤˜ì•¼ ìì„¸ë¥¼ ì¡ìŒ
     private float ChargeAniHoldTime = 0.5f;
     public float MeowPunchPower = 1f;
-    //ÆİÄ¡ 3°³
+    //í€ì¹˜ 3ê°œ
     public float MeowPunchReadyPunch = 0.1f;
     public float MeowPunchPunching = 0.1f;
     public float MeowPunchResetPunch = 0.3f;
@@ -404,7 +422,7 @@ public class PlayerController : MonoBehaviourPun
     public float HeadingCoolTime = 1f;
     public float DropkickCoolTime = 2f;
 
-    //Â÷Áö ½Ã°£
+    //ì°¨ì§€ ì‹œê°„
     public float ChargeTime = 1.3f;
 
     public bool IsFlambe;
@@ -478,7 +496,7 @@ public class PlayerController : MonoBehaviourPun
         originalZMotions = new ConfigurableJointMotion[childJoints.Length];
 
 
-        // ¿ø·¡ÀÇ angularXMotion °ªÀ» ÀúÀå
+        // ì›ë˜ì˜ angularXMotion ê°’ì„ ì €ì¥
         for (int i = 0; i < childJoints.Length; i++)
         {
             originalYMotions[i] = childJoints[i].angularYMotion;
@@ -500,7 +518,7 @@ public class PlayerController : MonoBehaviourPun
     [PunRPC]
     void RestoreOriginalMotions()
     {
-        //y z ÃÊ±â°ª ´ëÀÔ
+        //y z ì´ˆê¸°ê°’ ëŒ€ì…
         for (int i = 0; i < childJoints.Length; i++)
         {
             childJoints[i].angularYMotion = originalYMotions[i];
@@ -728,11 +746,11 @@ public class PlayerController : MonoBehaviourPun
                     {
                         if ((_actor.debuffState & DebuffState.Drunk) == DebuffState.Drunk)
                         {
-                            //ÃëÇÔ ¾Ö´Ï¸ŞÀÌ¼Ç
+                            //ì·¨í•¨ ì• ë‹ˆë©”ì´ì…˜
                             StartCoroutine(DrunkActionReady());
                         }
                     }
-                    //ÁßÀÏ¶§ È®ÀÎ ex ÀÌÆåÆ® ÃâÇöÇÏ´Â ÄÚµå¸¦ ³Ö¾îÁÖ¸é ±â¸ğ¾ÆÁö´Â °Í Ã· µÉµí
+                    //ì¤‘ì¼ë•Œ í™•ì¸ ex ì´í™íŠ¸ ì¶œí˜„í•˜ëŠ” ì½”ë“œë¥¼ ë„£ì–´ì£¼ë©´ ê¸°ëª¨ì•„ì§€ëŠ” ê²ƒ ì²¨ ë ë“¯
 
                 }
                 break;
@@ -850,7 +868,7 @@ public class PlayerController : MonoBehaviourPun
     //        AniForce(frameDataLists[Define.AniFrameData.RSkillAniData.ToString()], i);
     //    }
     //    yield return new WaitForSeconds(_delay);
-    //    //¹°Ã¼ÀÇ ¸ğ¼ÇÀ» °íÁ¤
+    //    //ë¬¼ì²´ì˜ ëª¨ì…˜ì„ ê³ ì •
     //    Rigidbody _RPartRigidbody;
     //    for (int i = 0; i < frameDataLists[Define.AniFrameData.RSkillAniData.ToString()].Length; i++)
     //    {
@@ -858,7 +876,7 @@ public class PlayerController : MonoBehaviourPun
     //        {
     //            _RPartRigidbody = frameDataLists[Define.AniFrameData.RSkillAniData.ToString()][i].ActionRigidbodies[j];
     //            _RPartRigidbody.constraints = RigidbodyConstraints.FreezeAll;
-    //            //Å°¸¦ Âª°Ô ´©¸£¸é ¶ô °É¸®´Â°É ¹æÁö ÇÏ±â À§ÇÑ 
+    //            //í‚¤ë¥¼ ì§§ê²Œ ëˆ„ë¥´ë©´ ë½ ê±¸ë¦¬ëŠ”ê±¸ ë°©ì§€ í•˜ê¸° ìœ„í•œ 
     //            if (endChargeTime - startChargeTime > 0.0001f)
     //            {
     //                _RPartRigidbody.constraints = RigidbodyConstraints.None;
@@ -882,7 +900,7 @@ public class PlayerController : MonoBehaviourPun
         //    for (int j = 0; j < frameDataLists[Define.AniFrameData.RSkillAniData.ToString()][i].StandardRigidbodies.Length; j++)
         //    {
         //        _RPartRigidbody = frameDataLists[Define.AniFrameData.RSkillAniData.ToString()][i].ActionRigidbodies[j];
-        //        //Debug.Log("FreezeÇ®±â : "+ _RPartRigidbody);
+        //        //Debug.Log("Freezeí’€ê¸° : "+ _RPartRigidbody);
         //        _RPartRigidbody.constraints = RigidbodyConstraints.None;
         //        _RPartRigidbody.velocity = Vector3.zero;
         //        _RPartRigidbody.angularVelocity = Vector3.zero;
@@ -1123,7 +1141,7 @@ public class PlayerController : MonoBehaviourPun
         }
     }
 
-    public void AniAngleForce(AniAngleData[] _aniAngleData, int _elementCount, Vector3 _vector = default)//default´Â vector3.zero
+    public void AniAngleForce(AniAngleData[] _aniAngleData, int _elementCount, Vector3 _vector = default)//defaultëŠ” vector3.zero
     {
         for (int i = 0; i < _aniAngleData[_elementCount].ActionRigidbodies.Length; i++)
         {
@@ -1172,7 +1190,7 @@ public class PlayerController : MonoBehaviourPun
         //            Transform transform2 = _bodyHandler.RightFoot.transform;
         //            _bodyHandler.RightFoot.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
         //            _bodyHandler.RightThigh.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
-        //            _bodyHandler.RightLeg.PartInteractable.damageModifier = InteractableObject.Damage.DropKick; //µ¥¹ÌÁö
+        //            _bodyHandler.RightLeg.PartInteractable.damageModifier = InteractableObject.Damage.DropKick; //ë°ë¯¸ì§€
         //            Vector3 dir = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
         //            AniForce(frameDataLists[Define.AniFrameData.DropAniData.ToString()], i, dir);
         //            photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LegLowerR, true);
@@ -1182,7 +1200,7 @@ public class PlayerController : MonoBehaviourPun
         //            Transform transform2 = _bodyHandler.LeftFoot.transform;
         //            _bodyHandler.LeftFoot.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
         //            _bodyHandler.LeftThigh.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
-        //            _bodyHandler.LeftLeg.PartInteractable.damageModifier = InteractableObject.Damage.DropKick; //µ¥¹ÌÁö
+        //            _bodyHandler.LeftLeg.PartInteractable.damageModifier = InteractableObject.Damage.DropKick; //ë°ë¯¸ì§€
         //            Vector3 dir = Vector3.Normalize(partTransform.position + -partTransform.up + partTransform.forward / 2f - transform2.position);
         //            AniForce(frameDataLists[Define.AniFrameData.DropAniData.ToString()], i, dir);
         //            photonView.RPC("UpdateDamageModifier", RpcTarget.MasterClient, (int)Define.BodyPart.LegLowerL, true);
@@ -1230,7 +1248,7 @@ public class PlayerController : MonoBehaviourPun
     //    _isCoroutineRunning = false;
     //}
 
-    //°ªÀÌ µé¾î ¿À´Â°Ô 0.01 0.1 0.1 0.3
+    //ê°’ì´ ë“¤ì–´ ì˜¤ëŠ”ê²Œ 0.01 0.1 0.1 0.3
     //public IEnumerator Punch(Side side, float duration, float readyTime, float punchTime, float resetTime)
     //{
     //    float checkTime = Time.time;
@@ -1256,7 +1274,7 @@ public class PlayerController : MonoBehaviourPun
     //    }
     //}
 
-    //¾ÆÀÌÅÛ ¶§¹®¿¡ Ãß°¡
+    //ì•„ì´í…œ ë•Œë¬¸ì— ì¶”ê°€
     //public IEnumerator Punch(Side side, float duration, float readyTime, float punchTime, float resetTime, float itemPower)
     //{
     //    float checkTime = Time.time;
@@ -1354,7 +1372,7 @@ public class PlayerController : MonoBehaviourPun
     //    }
     //}
 
-    // ¾ÆÀÌÅÛ ¶§¹®¿¡ Ãß°¡
+    // ì•„ì´í…œ ë•Œë¬¸ì— ì¶”ê°€
     //public void ArmActionPunching(Side side, float itemPower)
     //{
     //    Transform partTransform = _bodyHandler.Chest.transform;
@@ -1424,7 +1442,7 @@ public class PlayerController : MonoBehaviourPun
         AlignToVector(_bodyHandler.Waist.PartRigidbody, _bodyHandler.Waist.transform.forward, Vector3.up, 0.1f, 4f * 1);
         AlignToVector(_bodyHandler.Hip.PartRigidbody, _bodyHandler.Hip.transform.forward, Vector3.up, 0.1f, 3f * 1);
 
-        //ºùÆÇÀÌ ¾Æ´Ò¶§ Á¶°ÇÃß°¡ÇØ¾ßÇÔ
+        //ë¹™íŒì´ ì•„ë‹ë•Œ ì¡°ê±´ì¶”ê°€í•´ì•¼í•¨
         if (_hips.velocity.magnitude > 1f)
             _hips.velocity = _hips.velocity.normalized * _hips.velocity.magnitude* 0.6f;
     }
@@ -1450,7 +1468,7 @@ public class PlayerController : MonoBehaviourPun
         //}
         
 
-        ////¹æÇâ¼­Ä¡,»óÅÂ¿¡¼­ ÇÏ´Â°Ô ¾Æ´Ï¶ó _moveDir¸¸ actorµî¿¡¼­ ¾Ë¾Æ¼­ ¾÷µ¥ÀÌÆ® ÇÏ¸é¼­ °¡Áö°í ÀÖ¾î¾ßÇÔ
+        ////ë°©í–¥ì„œì¹˜,ìƒíƒœì—ì„œ í•˜ëŠ”ê²Œ ì•„ë‹ˆë¼ _moveDirë§Œ actorë“±ì—ì„œ ì•Œì•„ì„œ ì—…ë°ì´íŠ¸ í•˜ë©´ì„œ ê°€ì§€ê³  ìˆì–´ì•¼í•¨
         //Vector3 lookForward = new Vector3(_cameraArm.forward.x, 0f, _cameraArm.forward.z).normalized;
         //Vector3 lookRight = new Vector3(_cameraArm.right.x, 0f, _cameraArm.right.z).normalized;
         //_moveDir = lookForward * MoveInput.z + lookRight * MoveInput.x;
@@ -1465,13 +1483,13 @@ public class PlayerController : MonoBehaviourPun
         //AlignToVector(_bodyHandler.Hip.PartRigidbody, -_bodyHandler.Hip.transform.up, _moveDir, 0.1f, 8f * _applyedForce);
         //AlignToVector(_bodyHandler.Hip.PartRigidbody, _bodyHandler.Hip.transform.forward, Vector3.up, 0.1f, 8f * _applyedForce);
 
-        ////Fall»óÅÂ·Î »©¾ß ÇÒ¼öµµ
+        ////Fallìƒíƒœë¡œ ë¹¼ì•¼ í• ìˆ˜ë„
         //_hips.AddForce(_moveDir.normalized * RunSpeed * _runSpeedOffset * Time.deltaTime * 0.5f);
 
         //if (_hips.velocity.magnitude > MaxSpeed)
         //    _hips.velocity = _hips.velocity.normalized * MaxSpeed;
 
-        ////»óÅÂ³ª°¡±â
+        ////ìƒíƒœë‚˜ê°€ê¸°
         //if (isGrounded)
         //{
         //    _actor.actorState = Actor.ActorState.Stand;
@@ -1868,7 +1886,7 @@ public class PlayerController : MonoBehaviourPun
     public void ItemTwoHandReady(Define.Side side)
     {
         //upperArm 2 chest1 up right 0.01 20 foreArm chest up back 
-        //TestRready ¿À¸¥ÂÊ ¿ŞÂÊ ±¸º°ÇØ¼­ ÁÂ¿ì·Î ÈÖµÎ·ê¼ö ÀÖÀ½
+        //TestRready ì˜¤ë¥¸ìª½ ì™¼ìª½ êµ¬ë³„í•´ì„œ ì¢Œìš°ë¡œ íœ˜ë‘ë£°ìˆ˜ ìˆìŒ
         AniAngleData[] itemTwoHands = (side == Define.Side.Right) ? angleDataLists[Define.AniAngleData.ItemTwoHandAngleData.ToString()] : angleDataLists[Define.AniAngleData.ItemTwoHandLeftAngleData.ToString()];
         for (int i = 0; i < itemTwoHands.Length; i++)
         {

@@ -1,14 +1,14 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static AniAngleData;
 using static AniFrameData;
 
-//¾Ö´Ï¸ŞÀÌ¼Ç µ¥ÀÌÅÍ¸¦ ÀÎÇ²À¸·Î ³ÖÀ¸¸é ½ÇÁ¦ µ¿ÀÛÀ¸·Î ¹Ù²ãÁÖ´Â Å¬·¡½º
+// ì• ë‹ˆë©”ì´ì…˜ ë°ì´í„°ë¥¼ ì¸í’‹ìœ¼ë¡œ ë„£ìœ¼ë©´ ì‹¤ì œ ë™ì‘ìœ¼ë¡œ ë°”ê¿”ì£¼ëŠ” í´ë˜ìŠ¤
 
 public class AnimationPlayer
 {
-    //¾Ö´Ï¸ŞÀÌ¼Ç µ¥ÀÌÅÍÀÇ ¹æÇâÀ» ½ÅÃ¼ºÎÀ§ÀÇ ·ÎÄÃ¹æÇâ¿¡ ¸Â°Ô º¯È¯ÇØÁÖ´Â ÇÔ¼ö 2°³
+    // ì• ë‹ˆë©”ì´ì…˜ ë°ì´í„°ì˜ ë°©í–¥ì„ ì‹ ì²´ë¶€ìœ„ì˜ ë¡œì»¬ë°©í–¥ì— ë§ê²Œ ë³€í™˜í•´ì£¼ëŠ” í•¨ìˆ˜ 2ê°œ
     public Vector3 GetForceDirection(AniFrameData data, int index)
     {
         ForceDirection _rollState = data.ForceDirections[index];
@@ -80,7 +80,7 @@ public class AnimationPlayer
         return _direction;
     }
 
-    //µé¾î¿Â ¾Ö´Ï¸ŞÀÌ¼Ç µ¥ÀÌÅÍ¿¡ µû¶ó ½ÅÃ¼ºÎÀ§¸¦ ¿òÁ÷ÀÌ´Â ÇÔ¼ö 3°³
+    //ë“¤ì–´ì˜¨ ì• ë‹ˆë©”ì´ì…˜ ë°ì´í„°ì— ë”°ë¼ ì‹ ì²´ë¶€ìœ„ë¥¼ ì›€ì§ì´ëŠ” í•¨ìˆ˜ 3ê°œ
     public void PlayAnimForce(AniFrameData[] aniForceData, int _elementCount, Vector3 _dir = default, float _punchpower = 1f)
     {
         for (int i = 0; i < aniForceData[_elementCount].StandardRigidbodies.Length; i++)
@@ -98,7 +98,7 @@ public class AnimationPlayer
         }
     }
 
-    public void PlayAnimAngle(AniAngleData[] _aniAngleData, int _elementCount, Vector3 _vector = default)//default´Â vector3.zero
+    public void PlayAnimAngle(AniAngleData[] _aniAngleData, int _elementCount, Vector3 _vector = default)//defaultëŠ” vector3.zero
     {
         for (int i = 0; i < _aniAngleData[_elementCount].ActionRigidbodies.Length; i++)
         {

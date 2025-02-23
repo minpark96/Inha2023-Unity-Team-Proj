@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using Unity.VisualScripting;
@@ -21,15 +21,15 @@ public class PoolManager
         public void Init(GameObject original, int count = 6)
         {
             Original = original;
-            //»ı¼ºÇÏ´Â ¿ÀºêÁ§Æ®¸¦ ³ª´©±â À§ÇÑ Root¸¦ ¶Ç Ãß°¡ ÇØÁÜ
-            //Stun ÀÌÆåÆ® 
+            //ìƒì„±í•˜ëŠ” ì˜¤ë¸Œì íŠ¸ë¥¼ ë‚˜ëˆ„ê¸° ìœ„í•œ Rootë¥¼ ë˜ ì¶”ê°€ í•´ì¤Œ
+            //Stun ì´í™íŠ¸ 
 
             Root = new GameObject().transform;
             Root.name = $"{original.name}_Root";
             for (int i = 0; i < count; i++)
                 Push(Create());
             
-            //´Ù¸¥ ¿ÀºêÁ§Æ® ¿©·¯°³ »ı¼º
+            //ë‹¤ë¥¸ ì˜¤ë¸Œì íŠ¸ ì—¬ëŸ¬ê°œ ìƒì„±
 
         }
 
@@ -40,7 +40,7 @@ public class PoolManager
             return go.GetOrAddComponent<Poolable>();
         }
 
-        //ÀÌ¹Ì ¸¸µé¾îÁ® ÀÖ´Â ¾ÖµéÀ» PushÇÔ
+        //ì´ë¯¸ ë§Œë“¤ì–´ì ¸ ìˆëŠ” ì• ë“¤ì„ Pushí•¨
         public void Push(Poolable poolable)
         {
             if (poolable == null)
@@ -119,7 +119,7 @@ public class PoolManager
         return _pool[original.name].Pop(parent);
     }
 
-    //¿øº»À» Ã£¾Æ´Ş¶ó PoolManager°¡ µé°í ÀÖÀ¸¸é ¹İÈ¯À» ÇØ´Ş¶ó
+    //ì›ë³¸ì„ ì°¾ì•„ë‹¬ë¼ PoolManagerê°€ ë“¤ê³  ìˆìœ¼ë©´ ë°˜í™˜ì„ í•´ë‹¬ë¼
     public GameObject GetOriginal(string name)
     {
         if (_pool.ContainsKey(name) == false)

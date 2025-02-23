@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using System.Diagnostics;
 using BehaviorTree;
 
@@ -14,7 +14,7 @@ public class GuardBT : Tree
     {
         Node root = new Selector(new List<Node>
         {
-            //¾îÅÃÇÏ´Â °£´ÜÇÑ ³ëµå
+            //ì–´íƒí•˜ëŠ” ê°„ë‹¨í•œ ë…¸ë“œ
             new Sequence(new List<Node>
             {
                 new CheckEnemyInFOVRange(transform),

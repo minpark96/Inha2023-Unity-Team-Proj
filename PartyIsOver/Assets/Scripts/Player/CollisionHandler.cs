@@ -1,4 +1,4 @@
-using Photon.Pun;
+ï»¿using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -7,7 +7,7 @@ using UnityEngine;
 using static Actor;
 using static InteractableObject;
 
-//Ãæµ¹À» ÆÇÁ¤ÇÏ°í, µ¥¹ÌÁö À¯Çüº° ³Ë¹é·®°ú ÇÇÇØ·®À» °è»êÇÏ´Â Å¬·¡½º
+// ì¶©ëŒì„ íŒì •í•˜ê³ , ë°ë¯¸ì§€ ìœ í˜•ë³„ ë„‰ë°±ëŸ‰ê³¼ í”¼í•´ëŸ‰ì„ ê³„ì‚°í•˜ëŠ” í´ë˜ìŠ¤
 
 public class CollisionHandler : MonoBehaviourPun
 {
@@ -91,6 +91,8 @@ public class CollisionHandler : MonoBehaviourPun
 
     }
 
+    // ìºë¦­í„° ìì‹ ì˜ ëª¸ì— ìì‹ ì„ ì œì™¸í•œ ë‹¤ë¥¸ InteractableObjectê°€ ì¶©ëŒí•˜ë©´ ì‹¤í–‰ë˜ëŠ” í•¨ìˆ˜, ì¶©ëŒëŸ‰ì„ ê³„ì‚°í•˜ì—¬ í”¼í•´ë¥¼ ì£¼ê³  ë„‰ë°±ì‹œí‚¨ë‹¤.
+    // ë§ˆìŠ¤í„° í´ë¼ì´ì–¸íŠ¸ì˜ OnCollisionEnter ë‚´ë¶€ì—ì„œ í˜¸ì¶œë¨
     private void DamageCheck(Collision collision)
     {
         InteractableObject collisionInteractable = collision.transform.GetComponent<InteractableObject>();
@@ -111,19 +113,19 @@ public class CollisionHandler : MonoBehaviourPun
         {
             ContactPoint contact = collision.GetContact(i);
 
-            //Ãæµ¹ÇÑ ³à¼®ÀÌ rigidbody°¡ ÀÖÀ¸¸é ±× °´Ã¼ÀÇ mass¸¦ ³Ö°í ¾øÀ¸¸é µğÆúÆ®·Î 40À» ³ÖÀ½
+            // ì¶©ëŒí•œ ë…€ì„ì´ rigidbodyê°€ ìˆìœ¼ë©´ ê·¸ ê°ì²´ì˜ massë¥¼ ë„£ê³  ì—†ìœ¼ë©´ ë””í´íŠ¸ë¡œ 40ì„ ë„£ìŒ
             num = ((!collisionRigidbody) ? 40f : collisionRigidbody.mass);
 
-            //Ãæµ¹ÁöÁ¡ÀÇ ³ë¸Öº¤ÅÍ¶û relativeVelocity(Ãæµ¹½Ã µÎ ¹°Ã¼°£ÀÇ »ó´ëÀûÀÎ ÀÌµ¿¼Óµµ)¸¦ °öÇÏ°í º¯È¯
+            // ì¶©ëŒì§€ì ì˜ ë…¸ë©€ë²¡í„°ë‘ relativeVelocity(ì¶©ëŒì‹œ ë‘ ë¬¼ì²´ê°„ì˜ ìƒëŒ€ì ì¸ ì´ë™ì†ë„)ë¥¼ ê³±í•˜ê³  ë³€í™˜
             damage = Vector3.Dot(contact.normal, relativeVelocity) * Mathf.Clamp(num, 0f, 40f) / 1100f;
 
-            //À½¼ö¸é ¾ç¼ö·Î ¹Ù²Ş
+            // ìŒìˆ˜ë©´ ì–‘ìˆ˜ë¡œ ë°”ê¿ˆ
             if (damage < 0f)
             {
                 damage = 0f - damage;
             }
 
-            // ¹°¸®Àû °ø°İÀ» ¹ŞÀ» ¶§
+            // ë¬¼ë¦¬ì  ê³µê²©ì„ ë°›ì„ ë•Œ
             if (collisionInteractable.damageModifier <= InteractableObject.Damage.MeowNyangPunch)
             {
                 damage = PhysicalDamage(collisionInteractable, damage, contact);
@@ -132,7 +134,7 @@ public class CollisionHandler : MonoBehaviourPun
                 damage = Mathf.RoundToInt(damage);
                 damage -= damage * (actor.StatContext.DamageReduction / 100f);
 
-                // µ¥¹ÌÁö Àû¿ë
+                // ë°ë¯¸ì§€ ì ìš©
                 if (damage > 0f && velocityMagnitude > damageMinimumVelocity)
                 {
                     if (collisionInteractable != null)
@@ -142,7 +144,7 @@ public class CollisionHandler : MonoBehaviourPun
                         if (contact.thisCollider.gameObject.GetComponent<PhotonView>() != null && _itemImfactForce != 0f)
                         {
                             thisViewID = contact.thisCollider.gameObject.GetComponent<PhotonView>().ViewID;
-                            //³Ë¹éÃ³¸®
+                            //ë„‰ë°±ì²˜ë¦¬
                             photonView.RPC("AddForceAttackedTarget", RpcTarget.All, thisViewID, NormalChange(contact.normal), (int)collisionInteractable.damageModifier, _itemImfactForce);
                             _itemImfactForce = 0f;
                         }
@@ -150,7 +152,7 @@ public class CollisionHandler : MonoBehaviourPun
                     }
                 }
             }
-            // ¹öÇÁÇü °ø°İÀ» ¹ŞÀ» ¶§
+            // ë²„í”„í˜• ê³µê²©ì„ ë°›ì„ ë•Œ
             else
             {
                 damage = 0;
@@ -162,7 +164,7 @@ public class CollisionHandler : MonoBehaviourPun
         }
     }
     
-    //ÇÇ°İ ºÎÀ§º° µ¥¹ÌÁö¹èÀ² º¯È¯
+    // í”¼ê²© ë¶€ìœ„ë³„ ë°ë¯¸ì§€ë°°ìœ¨ ë³€í™˜ (ex. ë‚´ ë¨¸ë¦¬ì— ì¶©ëŒì´ ê°€í•´ì§€ë©´ ë°›ëŠ” ë°ë¯¸ì§€ê°€ ì¦ê°€)
     private float ApplyBodyPartDamageModifier(float damage)
     {
         if (transform == actor.BodyHandler.RightArm.transform ||
@@ -198,7 +200,7 @@ public class CollisionHandler : MonoBehaviourPun
         actor.StatusHandler.EffectObjectCreate($"{path}");
     }
 
-    //½ÇÁ¦ ÇÇÇØ µ¥¹ÌÁö¸¦ °è»êÇØ¼­ ¹İÈ¯ÇÏ´Â ÇÔ¼ö
+    //ì‹¤ì œ í”¼í•´ ë°ë¯¸ì§€ë¥¼ ê³„ì‚°í•´ì„œ ë°˜í™˜í•˜ëŠ” í•¨ìˆ˜
     private float PhysicalDamage(InteractableObject collisionInteractable, float damage, ContactPoint contact)
     {
         float itemDamage = 100f;
@@ -253,7 +255,7 @@ public class CollisionHandler : MonoBehaviourPun
         return damage;
     }
 
-    //Ä³¸¯ÅÍ Æ¯¼º¿¡ ¸Â°Ô ³Ë¹éº¤ÅÍ¸¦ º¯È¯
+    //ìºë¦­í„° íŠ¹ì„±ì— ë§ê²Œ ë„‰ë°±ë²¡í„°ë¥¼ ë³€í™˜
     Vector3 NormalChange(Vector3 normal)
     {
         Vector3 newNormal = new Vector3(normal.x, normal.y / 3, normal.z);
@@ -268,39 +270,50 @@ public class CollisionHandler : MonoBehaviourPun
         if (rb != null && collision.rigidbody != null)
             impactForce = collision.relativeVelocity.magnitude * collision.rigidbody.mass;
 
-        // ÀÏÁ¤ Ãæ°İ·® ÀÌ»óÀÏ ¶§¸¸ ¼Óµµ °¨¼Ò Àû¿ë
+        // ì¼ì • ì¶©ê²©ëŸ‰ ì´ìƒì¼ ë•Œë§Œ ì†ë„ ê°ì†Œ ì ìš©
         if (impactForce > ImpactThreshold && rb != null)
         {
             Vector3 newVelocity = Vector3.ClampMagnitude(rb.velocity, 15f);
             rb.velocity = newVelocity;
         }
 
+        // ë§ˆìŠ¤í„° í´ë¼ì´ì–¸íŠ¸ê°€ ì•„ë‹ˆë©´ return (ì¦‰ ì¶©ëŒì€ ë§ˆìŠ¤í„° í´ë¼ì´ì–¸íŠ¸ì—ì„œë§Œ ë°œìƒí•¨)
         if (!PhotonNetwork.LocalPlayer.IsMasterClient && PhotonNetwork.IsConnected == true) return;
-
+        
+        // ì¶©ëŒí•œ ì˜¤ë¸Œì íŠ¸ì— ëŒ€í•´ DamageCheck í•¨ìˆ˜ë¥¼ ì‹¤í–‰
         if (collision.collider.gameObject.layer != LayerMask.NameToLayer("Ground") && !actor.StatusHandler.invulnerable)
             DamageCheck(collision);
     }
+    
     private void OnTriggerStay(Collider other)
     {
+        // ì¶©ëŒí•œ ì˜¤ë¸Œì íŠ¸ê°€ TriggerObjectê³ , í˜„ì¬ ë‚´ í”Œë ˆì´ì–´ê°€ ë¬´ì ìƒíƒœê°€ ì•„ë‹ˆê³ ,Burn ìƒíƒœê°€ ì•„ë‹ˆì–´ì•¼ Trueë¡œ í†µê³¼
+        // Burnë§Œ ì¤‘ë³µ ì²´í¬í•˜ëŠ”ê²Œ ë§ë‚˜? 
         if(other.gameObject.layer == (int)Define.Layer.TriggerObject 
             && !actor.StatusHandler.invulnerable && !((actor.debuffState & DebuffState.Burn) == DebuffState.Burn))
         {
             TriggerCheck(other);
         }
     }
+    
+    // ì´ í•¨ìˆ˜ ì˜ ì‘ë™í•˜ê³  ìˆëŠ”ì§€ ì²´í¬ í•´ë´ì•¼í•¨
     private void TriggerCheck(Collider other)
     {
         InteractableObject collisionInteractable = other.transform.GetComponent<InteractableObject>();
         if (collisionInteractable == null)
             return;
+        
+        // ì´ ì¡°ê±´ì´ ë§ë‚˜?
+        // ì¶©ëŒí•œ ì•„ì´í…œì˜ ì˜¤ë„ˆê°€ ìì‹ ì´ë©´ ë¦¬í„´(ì´ê±´ ì •ìƒ)
+        // ì¶©ëŒí•œ ì˜¤ë¸Œì íŠ¸ì— Item ì»´í¬ë„ŒíŠ¸ê°€ ìˆìœ¼ë©´ ë¦¬í„´?
         if (other.gameObject.GetComponent<Item>() != null && other.gameObject.GetComponent<Item>().Owner == actor)
             return;
 
-
+        // 
         actor.StatusHandler.AddDamage(collisionInteractable.damageModifier, 0f);
     }
 
-    //³Ë¹é°è»êÇÔ¼ö
+    // ë„‰ë°±ëŸ‰ ê³„ì‚° ë° ì²˜ë¦¬ í•¨ìˆ˜(í•´ë‹¹ ì˜¤ë¸Œì íŠ¸ì˜ photonView IDì™€ ì¶©ëŒ ë°©í–¥, ë°ë¯¸ì§€ ê´€ë ¨ ë³€ìˆ˜ë“¤ì„ ë°›ì•„ì„œ ì²˜ë¦¬)
     [PunRPC]
     void AddForceAttackedTarget(int objViewId, Vector3 normal, int damageModifier, float itemDamage)
     {

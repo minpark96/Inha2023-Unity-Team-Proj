@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,7 +10,7 @@ public class CmdLeftBtn : CommandKey
     }
     public override bool Execute(in PlayerActionContext data)
     {
-        //Left¹öÆ°ÀÌ ´­·ÈÀ»¶§ ÇÃ·¹ÀÌ¾î »óÅÂ¿¡ µû¶ó ÇØ´çÇÏ´Â ActionÀ» ½ÇÇà
+        // Leftë²„íŠ¼ì´ ëˆŒë ¸ì„ë•Œ í”Œë ˆì´ì–´ ìƒíƒœì— ë”°ë¼ í•´ë‹¹í•˜ëŠ” Actionì„ ì‹¤í–‰
         switch (actor.GetUpperState())
         {
             case Define.PlayerState.Punch:

@@ -16,7 +16,7 @@ public abstract class BaseScene : MonoBehaviourPunCallbacks
 
     protected virtual void Init()
     {
-        //GameScene     UI      ϴ   ڵ 
+        //GameScene     UI      求   湄 
         //Object obj = GameObject.FindObjectOfType(typeof(EventSystem));
         //if(obj == null)
         //  Managers.Resource.Instantiate("UI/EventSystem").name = "@EventSystem";

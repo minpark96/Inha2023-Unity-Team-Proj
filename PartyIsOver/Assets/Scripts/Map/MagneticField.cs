@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -7,7 +7,7 @@ using Photon.Pun;
 
 public class MagneticField : MonoBehaviour
 {
-    // ÀÚ±âÀå ¼öÄ¡
+    // ìê¸°ì¥ ìˆ˜ì¹˜
     public float[] _phaseStartTime = { 0f, 120f, 60f, 60f };
     private float[] _phaseDuration = { 0f, 15f, 15f, 10f };
     private float[] _scale = { 0f, 103.2f, 43.1f, 20.0f };
@@ -19,11 +19,11 @@ public class MagneticField : MonoBehaviour
     private float _magneticDelay = 0.1f;
     private float _floorDelay = 0.1f;
 
-    // »ç¿îµå
+    // ì‚¬ìš´ë“œ
     private bool _isPlayingStackSound;
 
 
-    // ÀÌÆåÆ®
+    // ì´í™íŠ¸
     private GameObject MagneticFieldEffect;
     private Vector3[] _effect1Position = { new Vector3(-103.46f, -14.85f, -9.04f), new Vector3(-68f, -9.26f, -2.31f), new Vector3(-52.08f, -4.03f, 3.97f)};
     private Vector3[] _effect3Position = { new Vector3(31.1f, -56.3f, -45), new Vector3(34.41f, -34.21f, -18.44f) };
@@ -35,7 +35,7 @@ public class MagneticField : MonoBehaviour
     public GameObject FreezeImage;
 
 
-    // ¼­¹ö¸¦ ÅëÇØ ¹Ş´Â Á¤º¸
+    // ì„œë²„ë¥¼ í†µí•´ ë°›ëŠ” ì •ë³´
     public List<Actor> ActorList;
     public int[] AreaNames = new int[Define.MAX_PLAYERS_PER_ROOM];
     public int[] ActorStack = new int[Define.MAX_PLAYERS_PER_ROOM];
@@ -63,7 +63,7 @@ public class MagneticField : MonoBehaviour
 
         StartCoroutine(FirstPhase(1));
 
-        // ¶ó¿îµå Àç½ÃÀÛ½Ã
+        // ë¼ìš´ë“œ ì¬ì‹œì‘ì‹œ
         GameObject sound = GameObject.Find("@Sound").transform.GetChild((int)Define.Sound.InGameStackSound).gameObject;
         sound.GetComponent<AudioSource>().Stop();
         _isPlayingStackSound = false;
@@ -140,7 +140,7 @@ public class MagneticField : MonoBehaviour
         }
     }
 
-    #region ¿µ¿ª °Ë»ç
+    #region ì˜ì—­ ê²€ì‚¬
 
     private void OnTriggerEnter(Collider other)
     {
@@ -192,7 +192,7 @@ public class MagneticField : MonoBehaviour
     #endregion
 
 
-    #region ÀÚ±âÀå Phase
+    #region ìê¸°ì¥ Phase
     IEnumerator FirstPhase(int index)
     {
         yield return new WaitForSeconds(_phaseStartTime[index]);
@@ -265,7 +265,7 @@ public class MagneticField : MonoBehaviour
     #endregion
 
 
-    #region ¹Ù´Ú, ÀÚ±âÀå ³»/¿ÜºÎ¿¡ µû¸¥ µ¥¹ÌÁö
+    #region ë°”ë‹¥, ìê¸°ì¥ ë‚´/ì™¸ë¶€ì— ë”°ë¥¸ ë°ë¯¸ì§€
 
     public IEnumerator DamagedByFloor(int index)
     {

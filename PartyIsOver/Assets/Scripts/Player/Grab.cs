@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
 using Photon.Realtime;
@@ -8,6 +8,21 @@ using UnityEditor;
 using UnityEngine;
 using static Define;
 
+
+/*
+ *                                          ë¦¬íŒ©í† ë§ ì „ì˜ ë ˆê±°ì‹œ ì½”ë“œ
+ *                                              í˜„ì¬ ì‚¬ìš©í•˜ì§€ ì•ŠìŒ
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ */
 public class Grab : MonoBehaviourPun
 {
     private InteractableObject _leftSearchTarget;
@@ -52,7 +67,7 @@ public class Grab : MonoBehaviourPun
 
     public GameObject CollisionObject;
 
-    // ¾ÆÀÌÅÛ Á¾·ù
+    // ì•„ì´í…œ ì¢…ë¥˜
     private int _itemType;
     public float _turnForce;
 
@@ -264,7 +279,7 @@ public class Grab : MonoBehaviourPun
                     {
                         InteractableObject obj1;
 
-                        //ÀÏ¹İ¿ÀºêÁ§Æ®
+                        //ì¼ë°˜ì˜¤ë¸Œì íŠ¸
                         if(RightGrabObject.layer == (int)Define.Layer.InteractableObject)
                         {
                             obj1 = RightGrabObject.GetComponent<InteractableObject>();
@@ -274,7 +289,7 @@ public class Grab : MonoBehaviourPun
                             obj1.PullingForceTrigger(Vector3.up, 2f);
                             obj1.photonView.RPC("ChangeUseTypeTrigger", RpcTarget.MasterClient, 0.2f, 1f);
                         }
-                        else //ÇÃ·¹ÀÌ¾î ´øÁö±â
+                        else //í”Œë ˆì´ì–´ ë˜ì§€ê¸°
                         {
                             obj1 = RightGrabObject.transform.root.GetComponent<BodyHandler>().Hip.GetComponent<InteractableObject>();
                             GrabResetTrigger();
@@ -319,7 +334,7 @@ public class Grab : MonoBehaviourPun
             _jointRight.targetPosition = EquipItem.GetComponent<Item>().OneHandedPos.position;
         }
 
-        // ±âº» Àâ±â ÀÚ¼¼
+        // ê¸°ë³¸ ì¡ê¸° ìì„¸
         //targetPosition = _grabItem.transform.position;
         //_jointLeft.targetPosition = targetPosition + new Vector3(0, 0, 20);
         //_jointRight.targetPosition = _jointLeft.targetPosition;
@@ -389,7 +404,7 @@ public class Grab : MonoBehaviourPun
 
     private void SearchTarget()
     {
-        ////Å¸°Ù¼­Ä¡ ÅÂ±×¼³Á¤ ÁÖÀÇÇÒ°Í
+        ////íƒ€ê²Ÿì„œì¹˜ íƒœê·¸ì„¤ì • ì£¼ì˜í• ê²ƒ
         //_leftSearchTarget = _targetingHandler.SearchTarget(Define.Side.Left);
         //_rightSearchTarget = _targetingHandler.SearchTarget(Define.Side.Right);
 
@@ -431,16 +446,16 @@ public class Grab : MonoBehaviourPun
         ////Debug.Log(_leftSearchTarget);
         ////Debug.Log(_rightSearchTarget);
 
-        ////¹ß°ßÇÑ ¿ÀºêÁ§Æ®°¡ ¾øÀ¸¸é ¸®ÅÏ
+        ////ë°œê²¬í•œ ì˜¤ë¸Œì íŠ¸ê°€ ì—†ìœ¼ë©´ ë¦¬í„´
         //if (_leftSearchTarget == null && _rightSearchTarget == null)
         //    return;
 
         //_isGrabbingInProgress = true;
 
-        ////Å¸°ÙÀÌ Á¤¸é¿¡ ÀÖ°í ¾ÆÀÌÅÛÀÏ¶§
+        ////íƒ€ê²Ÿì´ ì •ë©´ì— ìˆê³  ì•„ì´í…œì¼ë•Œ
         //if (_leftSearchTarget == _rightSearchTarget && _leftSearchTarget.GetComponent<Item>() != null)
         //{
-        //    //ÀÏÁ¤ °Å¸® ÀÌ³»¿¡ ÀÖÀ»¶§ ¾ç¼ÕÀÌ ºñ¾îÀÖÀ»¶§
+        //    //ì¼ì • ê±°ë¦¬ ì´ë‚´ì— ìˆì„ë•Œ ì–‘ì†ì´ ë¹„ì–´ìˆì„ë•Œ
         //    if (Vector3.Distance(_targetingHandler.FindClosestCollisionPoint(_leftSearchTarget.GetComponent<Collider>()),
         //        _actor.BodyHandler.Chest.transform.position) <= 1f
         //          && !_isRightGrab && !_isLeftGrab)
@@ -450,10 +465,10 @@ public class Grab : MonoBehaviourPun
         //        return;
         //    }
         //}
-        //else//¾ÆÀÌÅÛÀÌ ¾Æ´Ò¶§
+        //else//ì•„ì´í…œì´ ì•„ë‹ë•Œ
         //{
         //    Vector3 dir;
-        //    //Å¸°ÙÀÌ Á¤¸éÀÌ ¾Æ´Ò¶§
+        //    //íƒ€ê²Ÿì´ ì •ë©´ì´ ì•„ë‹ë•Œ
         //    if (_leftSearchTarget != null && !_isLeftGrab)
         //    {
         //        if (_actor.actorState == Actor.ActorState.Jump || _actor.actorState == Actor.ActorState.Fall)
@@ -524,7 +539,7 @@ public class Grab : MonoBehaviourPun
                         ItemRotate(item.transform, false);
                     else
                         return;
-                    //¾ÆÀÌÅÛ¿¡ ¸Â°Ô °üÀıÁ¶Á¤ ÇÔ¼ö Ãß°¡ÇØ¾ßÇÔ
+                    //ì•„ì´í…œì— ë§ê²Œ ê´€ì ˆì¡°ì • í•¨ìˆ˜ ì¶”ê°€í•´ì•¼í•¨
 
                     int rightObjViewID = _rightSearchTarget.transform.GetComponent<PhotonView>().ViewID;
                     photonView.RPC("JointFix", RpcTarget.All, (int)Define.Side.Right, rightObjViewID);
@@ -554,7 +569,7 @@ public class Grab : MonoBehaviourPun
                         ItemRotate(item.transform, false);
                     else
                         return;
-                    //¾ÆÀÌÅÛ¿¡ ¸Â°Ô °üÀıÁ¶Á¤ ÇÔ¼ö Ãß°¡ÇØ¾ßÇÔ
+                    //ì•„ì´í…œì— ë§ê²Œ ê´€ì ˆì¡°ì • í•¨ìˆ˜ ì¶”ê°€í•´ì•¼í•¨
 
                     int rightObjViewID = _rightSearchTarget.transform.GetComponent<PhotonView>().ViewID;
                     photonView.RPC("JointFix", RpcTarget.All, (int)Define.Side.Right, rightObjViewID);
@@ -565,7 +580,7 @@ public class Grab : MonoBehaviourPun
 
     void TwoHandedGrab(Item item)
     {
-        //¾ÆÀÌÅÛ ¹æÇâµû¶ó ¿À¸¥ÂÊ ¼ÕÀâÀÌ¸¦ ¿À¸¥¼ÕÀ¸·Î Àâ±â ÁøÇà
+        //ì•„ì´í…œ ë°©í–¥ë”°ë¼ ì˜¤ë¥¸ìª½ ì†ì¡ì´ë¥¼ ì˜¤ë¥¸ì†ìœ¼ë¡œ ì¡ê¸° ì§„í–‰
         if (ItemDirCheck(item))
         {
             Vector3 dir = item.OneHandedPos.position - _rightHandRigid.transform.position;
@@ -604,11 +619,11 @@ public class Grab : MonoBehaviourPun
 
 
     /// <summary>
-    /// ¼ÕÀÌ ¾ÆÀÌÅÛ¿¡ Á¦´ë·Î Á¢ÃËÇß´ÂÁö Ã¼Å© ÈÄ °üÀı»ı¼º
+    /// ì†ì´ ì•„ì´í…œì— ì œëŒ€ë¡œ ì ‘ì´‰í–ˆëŠ”ì§€ ì²´í¬ í›„ ê´€ì ˆìƒì„±
     /// </summary>
     bool IsHoldingItem(Item item, Define.Side side)
     {
-        //HandChecker ½ºÅ©¸³Æ®¿¡¼­ ¾ç¼Õ ´Ù ¾ÆÀÌÅÛÀÇ ¼ÕÀâÀÌ¿Í Á¢ÃËÁßÀÎÁö ÆÇÁ¤
+        //HandChecker ìŠ¤í¬ë¦½íŠ¸ì—ì„œ ì–‘ì† ë‹¤ ì•„ì´í…œì˜ ì†ì¡ì´ì™€ ì ‘ì´‰ì¤‘ì¸ì§€ íŒì •
         if (HandCollisionCheck(side))
         {
             EquipItem = item.transform.gameObject;
@@ -671,20 +686,20 @@ public class Grab : MonoBehaviourPun
 
     bool ItemDirCheck(Item item)
     {
-        //¿À¸¥¼Õ°ú ¼ÕÀâÀÌ À§Ä¡ Ã¼Å©ÇØ¼­ ¾ÆÀÌÅÛ ¹æÇâ ¸®ÅÏ
-        Vector3 toItem = (item.TwoHandedPos.position - _jointChest.transform.position).normalized; // ÇÃ·¹ÀÌ¾î°¡ ¾ÆÀÌÅÛÀ» ¹Ù¶óº¸´Â º¤ÅÍ
-        Vector3 toOneHandedHandle = (item.OneHandedPos.position - _jointChest.transform.position).normalized; // ¿À¸¥¼ÕÀÌ Àâ¾Æ¾ßÇÒ oneHanded ¼ÕÀâÀÌ º¤ÅÍ
+        //ì˜¤ë¥¸ì†ê³¼ ì†ì¡ì´ ìœ„ì¹˜ ì²´í¬í•´ì„œ ì•„ì´í…œ ë°©í–¥ ë¦¬í„´
+        Vector3 toItem = (item.TwoHandedPos.position - _jointChest.transform.position).normalized; // í”Œë ˆì´ì–´ê°€ ì•„ì´í…œì„ ë°”ë¼ë³´ëŠ” ë²¡í„°
+        Vector3 toOneHandedHandle = (item.OneHandedPos.position - _jointChest.transform.position).normalized; // ì˜¤ë¥¸ì†ì´ ì¡ì•„ì•¼í•  oneHanded ì†ì¡ì´ ë²¡í„°
         Vector3 crossProduct = Vector3.Cross(toItem, toOneHandedHandle);
 
         if (crossProduct.y > 0)
-            return true;// ¿øÇÚµå ¼ÕÀâÀÌ°¡ ¿À¸¥ÂÊ
+            return true;// ì›í•¸ë“œ ì†ì¡ì´ê°€ ì˜¤ë¥¸ìª½
         else
-            return false;// ¿øÇÚµå ¼ÕÀâÀÌ°¡ ¿ŞÂÊ
+            return false;// ì›í•¸ë“œ ì†ì¡ì´ê°€ ì™¼ìª½
     }
 
 
     /// <summary>
-    /// ¼Õ ¹æÇâ¿¡ ¸Â°Ô ¾ÆÀÌÅÛ ·ÎÅ×ÀÌ¼Ç Á¶Á¤
+    /// ì† ë°©í–¥ì— ë§ê²Œ ì•„ì´í…œ ë¡œí…Œì´ì…˜ ì¡°ì •
     /// </summary>
     void ItemRotate(Transform item, bool isHeadLeft)
     {
@@ -697,7 +712,7 @@ public class Grab : MonoBehaviourPun
         switch (item.GetComponent<Item>().ItemData.ItemType)
         {
             case ItemType.TwoHanded:
-                //¾ÆÀÌÅÛÀÇ ÇìµåºÎºĞÀÌ ÇØ´ç ¹æÇâº¤ÅÍ¸¦ ¹Ù¶óº¸°Ô
+                //ì•„ì´í…œì˜ í—¤ë“œë¶€ë¶„ì´ í•´ë‹¹ ë°©í–¥ë²¡í„°ë¥¼ ë°”ë¼ë³´ê²Œ
                 if (isHeadLeft)
                 {
                     targetPosition = -_jointChest.transform.right;
@@ -799,7 +814,7 @@ public class Grab : MonoBehaviourPun
             EquipItem.gameObject.layer = gameObject.layer;
         }
 
-        //objViewID ´Â ±×·¦¿ÀºêÁ§Æ®ÀÇ ID
+        //objViewID ëŠ” ê·¸ë©ì˜¤ë¸Œì íŠ¸ì˜ ID
         PhotonView pv = PhotonNetwork.GetPhotonView(objViewID);
         if (photonView.IsMine && pv != null && EquipItem != null)
         {
@@ -807,7 +822,7 @@ public class Grab : MonoBehaviourPun
             pv.TransferOwnership(playerID);
         }
 
-        //Àâ±â¿¡ ¼º°øÇßÀ»°æ¿ì °üÀı »ı¼º ¹× ÀÏºÎ °íÁ¤
+        //ì¡ê¸°ì— ì„±ê³µí–ˆì„ê²½ìš° ê´€ì ˆ ìƒì„± ë° ì¼ë¶€ ê³ ì •
         if ((Define.Side)side == Define.Side.Left)
         {
             _grabJointLeft = _leftHandRigid.AddComponent<FixedJoint>();
@@ -874,7 +889,7 @@ public class Grab : MonoBehaviourPun
         Destroy(_grabJointRight);
         photonView.RPC("UnlockArmPosition", RpcTarget.All);
 
-        // °üÀı º¹±¸
+        // ê´€ì ˆ ë³µêµ¬
         _jointLeft.angularYMotion = ConfigurableJointMotion.Limited;
         _jointLeftForeArm.angularYMotion = ConfigurableJointMotion.Limited;
         _jointLeftUpperArm.angularYMotion = ConfigurableJointMotion.Limited;
@@ -980,7 +995,7 @@ public class Grab : MonoBehaviourPun
         FirePoint = RangeWeaponSkin.GetChild(0).GetChild(1);
     }
 
-    //¸®Áöµå¹Ùµğ partÀÇ alignmentVector¹æÇâÀ» targetVector¹æÇâÀ¸·Î È¸Àü
+    //ë¦¬ì§€ë“œë°”ë”” partì˜ alignmentVectorë°©í–¥ì„ targetVectorë°©í–¥ìœ¼ë¡œ íšŒì „
     private void AlignToVector(Rigidbody part, Vector3 alignmentVector, Vector3 targetVector, float stability, float speed)
     {
         if (part == null)

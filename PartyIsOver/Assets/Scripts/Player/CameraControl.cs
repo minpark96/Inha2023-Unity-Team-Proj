@@ -1,4 +1,4 @@
-using Photon.Pun;
+ï»¿using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,7 +19,7 @@ public class CameraControl : MonoBehaviourPun
             Camera = Camera.main;
     }
 
-    //Ä«¸Ş¶ó ÄÁÆ®·Ñ
+    //ì¹´ë©”ë¼ ì»¨íŠ¸ë¡¤
     public void LookAround(Vector3 Pos)
     {
         CameraArm.position = Pos;

@@ -1,4 +1,4 @@
-using Photon.Pun;
+ï»¿using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using UnityEngine.UI;
 using static Actor;
 using static InteractableObject;
 
-//ÇÃ·¹ÀÌ¾î¿¡°Ô µé¾î¿À´Â µ¥¹ÌÁö¿Í »óÅÂº¯È­¸¦ Àû¿ëÇÏ´Â Å¬·¡½º
+//í”Œë ˆì´ì–´ì—ê²Œ ë“¤ì–´ì˜¤ëŠ” ë°ë¯¸ì§€ì™€ ìƒíƒœë³€í™”ë¥¼ ì ìš©í•˜ëŠ” í´ë˜ìŠ¤
 
 public class StatusHandler : MonoBehaviourPun
 {
@@ -20,7 +20,7 @@ public class StatusHandler : MonoBehaviourPun
     public bool invulnerable = false;
     public bool _isDead;
  
-    // ÃßÈÄ DebuffTime Actor¿¡¼­¸¸ »ç¿ëÇÒ ¿¹Á¤
+    // ì¶”í›„ DebuffTime Actorì—ì„œë§Œ ì‚¬ìš©í•  ì˜ˆì •
     private float _stunTime;
     private float _burnTime;
     private float _freezeTime;
@@ -87,7 +87,7 @@ public class StatusHandler : MonoBehaviourPun
     private void LateUpdate()
     {
 
-        // ÁöÄ§ µğ¹öÇÁ È°¼ºÈ­/ºñÈ°¼ºÈ­
+        // ì§€ì¹¨ ë””ë²„í”„ í™œì„±í™”/ë¹„í™œì„±í™”
         if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
             if (actor.StatContext.Stamina <= 0)
@@ -105,28 +105,33 @@ public class StatusHandler : MonoBehaviourPun
         }
     }
 
-    // Ãæ°İÀÌ °¡ÇØÁö¸é(trigger)
+    // í”Œë ˆì´ì–´ ìì‹ ì—ê²Œ ë“¤ì–´ì˜¨ ë°ë¯¸ì§€ë¥¼ ì²˜ë¦¬í•˜ëŠ” í•¨ìˆ˜
+    // ë°ë¯¸ì§€ íƒ€ì…, ë°ë¯¸ì§€ ìˆ˜ì¹˜, ë°ë¯¸ì§€ ì›ì¸ì„ ë§¤ê°œë³€ìˆ˜ë¡œ ë°›ìŒ
     public void AddDamage(InteractableObject.Damage type, float damage, GameObject causer=null)
     {
-        // µ¥¹ÌÁö Ã¼Å©
+        // ë°ë¯¸ì§€ ì²´í¬
         damage *= _damageModifer;
 
+        // í”Œë ˆì´ì–´ê°€ ë¬´ì  ìƒíƒœê°€ ì•„ë‹ˆì–´ì•¼ í•˜ê³ , ì‚´ì•„ìˆìœ¼ë©°, ìŠ¤í„´ ìƒíƒœê°€ ì•„ë‹ˆì–´ì•¼ í•¨
         if (!invulnerable && actor.StatContext.IsAlive && !((actor.debuffState & Actor.DebuffState.Stun) == DebuffState.Stun))
         {
             _healthDamage += damage;
         }
 
+        // ë°ë¯¸ì§€ ì²˜ë¦¬
         if (_healthDamage != 0f)
             UpdateHealth();
 
         if (actor.StatContext.IsAlive)
         {
-            // »óÅÂÀÌ»ó Ã¼Å©
+            // ë°ë¯¸ì§€ íƒ€ì…ì— ë”°ë¥¸ ìƒíƒœì´ìƒ ì ìš©
             DebuffCheck(type);
+            // ë°ë¯¸ì§€ íƒ€ì…ì— ë”°ë¥¸ ì´í™íŠ¸ ìƒì„± ë° ì‚¬ìš´ë“œ ì ìš©
             DebuffAction();
             //CheckProjectile(causer);
         }
-
+        
+        // ì´ë¯¸ ë°ë¯¸ì§€ë¥¼ ë°›ì•˜ìœ¼ë‹ˆ 0.5ì´ˆê°„ì€ ì¶”ê°€ë¡œ ë°ë¯¸ì§€ë¥¼ ì•ˆë°›ê²Œ ë¬´ì  ì²˜ë¦¬
         photonView.RPC("InvulnerableState", RpcTarget.All, 0.5f);
         actor.InvokeStatusChangeEvent();
     }
@@ -147,33 +152,34 @@ public class StatusHandler : MonoBehaviourPun
         _audioSource.spatialBlend = 1;
         Managers.Sound.Play(_audioClip, Define.Sound.PlayerEffect, _audioSource);
     }
-
+    
+    // ë°ë¯¸ì§€ íƒ€ì…ì— ë”°ë¥¸ ë””ë²„í”„ë¥¼ ì ìš©í•˜ëŠ” í•¨ìˆ˜
     public void DebuffCheck(InteractableObject.Damage type)
     {
         switch (type)
         {
-            case Damage.Ice: // ºù°á
+            case Damage.Ice: // ë¹™ê²°
                 actor.debuffState |= Actor.DebuffState.Ice;
                 break;
-            case Damage.PowerUp: // ºÒ²ö
+            case Damage.PowerUp: // ë¶ˆëˆ
                 actor.debuffState |= Actor.DebuffState.PowerUp;
                 break;
-            case Damage.Burn: // È­»ó
+            case Damage.Burn: // í™”ìƒ
                 actor.debuffState |= Actor.DebuffState.Burn;
                 break;
-            case Damage.Shock: // °¨Àü
+            case Damage.Shock: // ê°ì „
                     if ((actor.debuffState & DebuffState.Stun) == DebuffState.Stun || (actor.debuffState & DebuffState.Drunk) == DebuffState.Drunk)
                     break;
                 else
                     actor.debuffState |= Actor.DebuffState.Shock;
                 break;
-            case Damage.Stun: // ±âÀı
+            case Damage.Stun: // ê¸°ì ˆ
                 if ((actor.debuffState & DebuffState.Shock) == DebuffState.Shock || (actor.debuffState & DebuffState.Drunk) == DebuffState.Drunk)
                     break;
                 else
                     actor.debuffState |= Actor.DebuffState.Stun;
                 break;
-            case Damage.Drunk: // ÃëÇÔ
+            case Damage.Drunk: // ì·¨í•¨
                 if ((actor.debuffState & DebuffState.Stun) == DebuffState.Stun || (actor.debuffState & DebuffState.Shock) == DebuffState.Shock)
                     break;
                 else
@@ -184,6 +190,7 @@ public class StatusHandler : MonoBehaviourPun
         }
     }
 
+    // í˜„ì¬ ì ìš©ëœ ë””ë²„í”„ ì´í™íŠ¸ì˜ ìƒì„±ê³¼ ì‚¬ìš´ë“œë¥¼ ê´€ë¦¬
     public void DebuffAction()
     {
         foreach (Actor.DebuffState state in System.Enum.GetValues(typeof(Actor.DebuffState)))
@@ -272,7 +279,7 @@ public class StatusHandler : MonoBehaviourPun
     [PunRPC]
     public void MoveEffect()
     {
-        //LateUpdate¿©¼­ ´Ê°Ô °»½ÅÀÌ µÇ¾î¼­ NullReference°¡ ¶°¼­ °°Àº if ¹®À» ³Ö¾îÁÜ
+        //LateUpdateì—¬ì„œ ëŠ¦ê²Œ ê°±ì‹ ì´ ë˜ì–´ì„œ NullReferenceê°€ ë– ì„œ ê°™ì€ if ë¬¸ì„ ë„£ì–´ì¤Œ
         if (EffectObject != null && EffectObject.name == "Stun_loop")
             EffectObject.transform.position = new Vector3(PlayerTransform.position.x, PlayerTransform.position.y + 1, PlayerTransform.position.z);
         else if (EffectObject != null && EffectObject.name == "Fog_frost")
@@ -283,35 +290,35 @@ public class StatusHandler : MonoBehaviourPun
             EffectObject.transform.position = PlayerTransform.position;
     }
 
-
+    // í”Œë ˆì´ì–´ ìì‹ ì—ê²Œ ë“¤ì–´ì˜¨ ë°ë¯¸ì§€ë¥¼ ì ìš©í•˜ëŠ” í•¨ìˆ˜
     public void UpdateHealth()
     {
         if (_isDead)
             return;
 
-        //ÇöÀç Ã¼·Â ¹Ş¾Æ¿À±â
+        //í˜„ì¬ ì²´ë ¥ ë°›ì•„ì˜¤ê¸°
         float tempHealth = actor.StatContext.Health;
 
-        //¹«Àû»óÅÂ°¡ ¾Æ´Ò¶§¸¸ µ¥¹ÌÁö Àû¿ë
+        //ë¬´ì ìƒíƒœê°€ ì•„ë‹ë•Œë§Œ ë°ë¯¸ì§€ ì ìš©
         if (tempHealth > 0f && !invulnerable)
             tempHealth -= _healthDamage;
 
         float realDamage = actor.StatContext.Health - tempHealth;
 
-        //°è»êÇÑ Ã¼·ÂÀÌ 0º¸´Ù ÀÛÀ¸¸é Death·Î
+        //ê³„ì‚°í•œ ì²´ë ¥ì´ 0ë³´ë‹¤ ì‘ìœ¼ë©´ Deathë¡œ
         if (tempHealth <= 0f)
         {
             KillPlayer();
         }
         else
         {
-            //±âÀı»óÅÂ°¡ ¾Æ´Ò¶§ ÀÏÁ¤ ÀÌ»óÀÇ µ¥¹ÌÁö¸¦ ¹ŞÀ¸¸é ±âÀı
+            //ê¸°ì ˆìƒíƒœê°€ ì•„ë‹ë•Œ ì¼ì • ì´ìƒì˜ ë°ë¯¸ì§€ë¥¼ ë°›ìœ¼ë©´ ê¸°ì ˆ
             if (!((actor.debuffState & Actor.DebuffState.Stun) == DebuffState.Stun))
             {
 
                 if (realDamage >= _knockoutThreshold)
                 {
-                    if ((actor.debuffState & DebuffState.Ice) == DebuffState.Ice) //»óÅÂÀÌ»ó ÈÄ¿¡ Ãß°¡
+                    if ((actor.debuffState & DebuffState.Ice) == DebuffState.Ice) //ìƒíƒœì´ìƒ í›„ì— ì¶”ê°€
                         return;
 
                     actor.debuffState |= Actor.DebuffState.Stun;
@@ -322,6 +329,8 @@ public class StatusHandler : MonoBehaviourPun
 
         _healthDamage = 0f;
     }
+    
+    // timeë§Œí¼ ìì‹ ì„ ë¬´ì ì²˜ë¦¬
     [PunRPC]
     IEnumerator InvulnerableState(float time)
     {
@@ -330,6 +339,7 @@ public class StatusHandler : MonoBehaviourPun
         invulnerable = false;
     }
 
+    // hpê°€ 0ì´ ë˜ì—ˆì„ë•Œ ì‹¤í–‰ë˜ëŠ” í•¨ìˆ˜, ìì‹ ì„ ì£½ìŒ ì²˜ë¦¬
     void KillPlayer()
     {
         actor.StatContext.IsAlive = false;
@@ -338,9 +348,10 @@ public class StatusHandler : MonoBehaviourPun
         actor.InvokeDeathEvent();
     }
 
+    // ê¸°ì ˆ ìƒíƒœë¥¼ ì ìš©í•˜ëŠ” í•¨ìˆ˜
     void EnterUnconsciousState()
     {
-        //µ¥¹ÌÁö ÀÌÆåÆ®³ª »ç¿îµå ÃßÈÄ Ãß°¡
+        //ë°ë¯¸ì§€ ì´í™íŠ¸ë‚˜ ì‚¬ìš´ë“œ ì¶”í›„ ì¶”ê°€
 
         //actor.debuffState = Actor.DebuffState.Stun;
         actor.ResetGrab();
@@ -353,6 +364,8 @@ public class StatusHandler : MonoBehaviourPun
         actor.BodyHandler.RightForeArm.PartRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
     }
 
+    // í”Œë ˆì´ì–´ì˜ ë²„í”„,ë””ë²„í”„ ìƒíƒœë¥¼ ë°”ê¿” ì ìš©í•˜ëŠ” í•¨ìˆ˜
+    // RPC_ALLë¡œ ì‹¤í–‰ëœë‹¤.
     [PunRPC]
     void ChangeStateMachines(float durationTime)
     {

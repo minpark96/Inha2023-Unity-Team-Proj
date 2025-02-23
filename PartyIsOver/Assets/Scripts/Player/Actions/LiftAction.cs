@@ -1,8 +1,9 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static Define;
 
+// 물체를 위로 들어올리는 액션
 public class LiftAction : BaseAction
 {
     public LiftAction(ActionController actions, Define.ActionEventName name) : base(actions, name)
@@ -35,9 +36,10 @@ public class LiftAction : BaseAction
         return true;
     }
 
+    // 잡은 물체를 위로 들어올리는 함수
     void LiftObject()
     {
-        if (_type == ObjectType.Player)
+        if (_type == ObjectType.Player) // 잡은 물체가 플레이어일 경우
         {
             _animPlayer.AlignToVector(_bodyHandler.LeftArm.PartRigidbody, _bodyHandler.LeftArm.PartTransform.forward,
                 -_bodyHandler.Waist.PartTransform.forward + _bodyHandler.Chest.PartTransform.right / 2f +
@@ -55,11 +57,11 @@ public class LiftAction : BaseAction
             Vector3 vec = _bodyHandler.Hip.PartRigidbody.velocity;
             _bodyHandler.Hip.PartRigidbody.velocity = new Vector3(vec.x * 1.3f, 0f, vec.z * 1.3f);
         }
-        else if (_type == ObjectType.Object)
+        else if (_type == ObjectType.Object) // 잡은 물체가 상자같은 일반 오브젝트일 경우
         {
             _object.PullingForceTrigger(Vector3.up, 0.5f);
         }
         else
-            Debug.LogError("�߸��� ��� Ÿ��");
+            Debug.LogError("잘못된 들기 타입");
     }
 }

@@ -1,7 +1,8 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// 플레이어 이동
 public class MoveAction : BaseAction
 {
     public MoveAction(ActionController actions, Define.ActionEventName name) : base(actions, name)
@@ -40,11 +41,13 @@ public class MoveAction : BaseAction
         _inputMoveDir.z = data.InputDirZ;
         _isRun = data.IsRunState;
 
+        // 팔다리의 현재 포지션을 지정
         for (int i = 0; i < (int)Define.limbPositions.End; i++) 
         {
             limbPositions[i] = data.LimbPositions[i];
         }
         
+        // 공중에 떠 있을 경우 이동속도와 모션을 다르게
         if (data.IsGrounded)
             MovePlayer();
         else
@@ -53,6 +56,7 @@ public class MoveAction : BaseAction
         return true;
     }
 
+    // 공중에 떠 있을때의 이동함수
     private void InAirMove()
     {
         _bodyHandler.Chest.PartRigidbody.AddForce((_runVectorForce10 + _inputMoveDir), ForceMode.VelocityChange);
@@ -65,13 +69,14 @@ public class MoveAction : BaseAction
         _animPlayer.AlignToVector(_bodyHandler.Hip.PartRigidbody, -_bodyHandler.Hip.transform.up, _inputMoveDir, 0.1f, 8f * _applyedForce);
         _animPlayer.AlignToVector(_bodyHandler.Hip.PartRigidbody, _bodyHandler.Hip.transform.forward, Vector3.up, 0.1f, 8f * _applyedForce);
 
-        //Fall���·� ���� �Ҽ���
+        //Fall상태로 빼야 할수도
         _bodyHandler.Hip.PartRigidbody.AddForce(_inputMoveDir.normalized * _runSpeed * _runSpeedOffset * Time.deltaTime * 0.5f);
 
         if (_bodyHandler.Hip.PartRigidbody.velocity.magnitude > _maxSpeed)
             _bodyHandler.Hip.PartRigidbody.velocity = _bodyHandler.Hip.PartRigidbody.velocity.normalized * _maxSpeed;
     }
 
+    // 현재 사이클에 맞춰 신체 부위들을 움직이는 함수
     private void MovePlayer()
     {
         RunCyclePoseBody();
@@ -81,6 +86,7 @@ public class MoveAction : BaseAction
         RunCyclePoseLeg(Define.Side.Right, limbPositions[(int)Define.limbPositions.rightLegPose]);
     }
 
+    // 다리가 걷게끔 연출하는 애니메이션
     private void RunCyclePoseLeg(Define.Side side, int limbPose)
     {
         Transform hip = _bodyHandler.Hip.transform;
@@ -135,6 +141,7 @@ public class MoveAction : BaseAction
         }
     }
 
+    // 양 팔을 흔들면서 가도록 하는 애니메이션
     private void RunCyclePoseArm(Define.Side side, int limbPose)
     {
         Vector3 vector = Vector3.zero;

@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,7 +9,7 @@ public class TaskAttack : Node
     private Animator _animator;
 
     private Transform _lastTarget;
-    //ÀÌÄ£±¸µµ ¹Ù²ã¾ßÇÔ
+    //ì´ì¹œêµ¬ë„ ë°”ê¿”ì•¼í•¨
     private PlayerController playerController;
     StatusHandler playerstatu;
 
@@ -27,7 +27,7 @@ public class TaskAttack : Node
         Transform target = (Transform)GetData("target");
         if(target != _lastTarget)
         {
-            //¾î¶² ÇÔ¼ö¸¦ ºÒ·¯¿À¸é ¹Ù·Î ±âÀı½ÃÅ°´Â ÇÔ¼ö¸¦ ºÒ·¯¿À´Â ½ºÅ©¸³Æ®·Î ¹Ù²ã¾ßÇÔ
+            //ì–´ë–¤ í•¨ìˆ˜ë¥¼ ë¶ˆëŸ¬ì˜¤ë©´ ë°”ë¡œ ê¸°ì ˆì‹œí‚¤ëŠ” í•¨ìˆ˜ë¥¼ ë¶ˆëŸ¬ì˜¤ëŠ” ìŠ¤í¬ë¦½íŠ¸ë¡œ ë°”ê¿”ì•¼í•¨
             playerController = target.GetComponent<PlayerController>();
             _lastTarget = target;
         }
@@ -37,9 +37,9 @@ public class TaskAttack : Node
         {
             playerstatu = playerController.GetComponent<StatusHandler>();
             //bool playerIsDead = playerstatu.HasFreeze;
-            // hip ÇÏ´Â ½ºÅ©¸³Æ® Ãß°¡
+            // hip í•˜ëŠ” ìŠ¤í¬ë¦½íŠ¸ ì¶”ê°€
 
-            //bool playerIsDead °¡ ÂüÀÌ¸éÀº
+            //bool playerIsDead ê°€ ì°¸ì´ë©´ì€
             if(true)
             {
                 ClearData("target");

@@ -1,4 +1,4 @@
-using Photon.Pun;
+ï»¿using Photon.Pun;
 using Photon.Realtime;
 using System;
 using System.Collections;
@@ -60,7 +60,7 @@ public class GameCenter : BaseScene
 
     public static GameObject LocalGameCenterInstance = null;
 
-    // ½ºÆù Æ÷ÀÎÆ® 6ÀÎ ±âÁØ
+    // ìŠ¤í° í¬ì¸íŠ¸ 6ì¸ ê¸°ì¤€
     public List<Vector3> PlayerSpawnPoints = new List<Vector3>() 
     {
         new Vector3(480.5f, 15f, 401.23f),
@@ -380,13 +380,13 @@ public class GameCenter : BaseScene
 
     #endregion
 
-    #region ¾Æ·¹³ª ÃÊ±âÈ­
+    #region ì•„ë ˆë‚˜ ì´ˆê¸°í™”
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         if (scene.name == _arenaName)
         {
-            Debug.Log("¾Æ·¹³ª ·Îµù¿Ï·á!!!");
+            Debug.Log("ì•„ë ˆë‚˜ ë¡œë”©ì™„ë£Œ!!!");
 
             GameObject mainPanel = GameObject.Find("Main Panel");
             ImageHPBar = mainPanel.transform.GetChild(1).GetChild(1).GetComponent<Image>();
@@ -541,7 +541,7 @@ public class GameCenter : BaseScene
             case 0:
                 {
                     SetItemsActive((int)Define.SpawnableItemType.TwoHanded, ChooseRandomItemRootTypes((int)Define.SpawnableItemType.TwoHanded, 1));
-                    SetItemsActiveForTest(); // Á¤½ÄÆÇ¿¡¼± ÁÖ¼®
+                    SetItemsActiveForTest(); // ì •ì‹íŒì—ì„  ì£¼ì„
                 }
                 break;
             case 1:
@@ -744,7 +744,7 @@ public class GameCenter : BaseScene
     {
         if (actor != null)
         {
-            Debug.Log("±¸µ¶ ºÎºĞ " + actor.photonView.ViewID);
+            Debug.Log("êµ¬ë… ë¶€ë¶„ " + actor.photonView.ViewID);
             actor.OnChangePlayerStatus -= SendInfo;
             actor.OnChangePlayerStatus += SendInfo;
             actor.OnKillPlayer -= AnnounceDeath;
@@ -831,7 +831,7 @@ public class GameCenter : BaseScene
 
     #endregion
 
-    #region ÇÃ·¹ÀÌ¾î µ¿±âÈ­
+    #region í”Œë ˆì´ì–´ ë™ê¸°í™”
 
     void SendInfo(float hp, float stamina,  Actor.DebuffState debuffstate, int viewID)
     {
@@ -916,7 +916,7 @@ public class GameCenter : BaseScene
     #endregion
 
 
-    #region ÀÚ±âÀå ½ºÅÃ Ã¼Å©
+    #region ìê¸°ì¥ ìŠ¤íƒ ì²´í¬
     void CheckPlayerArea(int[] areaName, int actorNum, bool[] isInside)
     {
         if (PhotonNetwork.LocalPlayer.IsMasterClient)
@@ -982,16 +982,16 @@ public class GameCenter : BaseScene
 
     #endregion
 
-    #region ¶ó¿îµå Á¾·á
+    #region ë¼ìš´ë“œ ì¢…ë£Œ
 
     IEnumerator BookRoundEnd()
     {
-        Debug.Log(RoundEndDelay + "ÃÊ µÚ ¶ó¿îµå Á¾·á ¿¹Á¤");
+        Debug.Log(RoundEndDelay + "ì´ˆ ë’¤ ë¼ìš´ë“œ ì¢…ë£Œ ì˜ˆì •");
         photonView.RPC("FindWinner", RpcTarget.All);
         StopCoroutine(StartItemSpawnTimerCoroutine);
         yield return new WaitForSeconds(RoundEndDelay);
 
-        Debug.Log("¶ó¿îµå Á¾·á ¿ÀºêÁ§Æ® »èÁ¦");
+        Debug.Log("ë¼ìš´ë“œ ì¢…ë£Œ ì˜¤ë¸Œì íŠ¸ ì‚­ì œ");
         photonView.RPC("DestroyObjects", RpcTarget.All);
 
     }
@@ -1013,7 +1013,7 @@ public class GameCenter : BaseScene
             Debug.Log(_actorNumbers[i]);
             if (_actorNumbers[i] == ActorNum)
             {
-                Debug.Log("½ÂÀÚ: " + _actorNumbers[i]);
+                Debug.Log("ìŠ¹ì: " + _actorNumbers[i]);
                 _scores[i]++;
                 if (_scores[i] == MAX_POINTS)
                 {
@@ -1036,7 +1036,7 @@ public class GameCenter : BaseScene
     [PunRPC]
     void FixScoreBoard()
     {
-        Debug.Log("½ºÄÚ¾îº¸µå »ó½Ã Ãâ·Â º¯°æ");
+        Debug.Log("ìŠ¤ì½”ì–´ë³´ë“œ ìƒì‹œ ì¶œë ¥ ë³€ê²½");
         _scoreBoardUI.DisplayFixedScoreBoard();
     }
 
@@ -1046,18 +1046,18 @@ public class GameCenter : BaseScene
         if (MyGhost != null)
         {
             MyGhost = null;
-            Debug.Log("ºñ¼® »èÁ¦");
+            Debug.Log("ë¹„ì„ ì‚­ì œ");
             Managers.Resource.Destroy(MyGraveStone);
             MyGraveStone = null;
         }
 
-        Debug.Log("ÇÃ·¹ÀÌ¾î »èÁ¦");
+        Debug.Log("í”Œë ˆì´ì–´ ì‚­ì œ");
         MyActor.OnChangeStaminaBar -= UpdateStaminaBar;
         Managers.Resource.Destroy(MyActor.gameObject);
 
         if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
-            Debug.Log("¸¶½ºÅÍ ±¸µ¶ Ãë¼Ò");
+            Debug.Log("ë§ˆìŠ¤í„° êµ¬ë… ì·¨ì†Œ");
             foreach (Actor actor in Actors)
             {
                 actor.OnChangePlayerStatus -= SendInfo;
@@ -1076,7 +1076,7 @@ public class GameCenter : BaseScene
 
     void ClearList()
     {
-        Debug.Log("¸®½ºÆ® ÃÊ±âÈ­");
+        Debug.Log("ë¦¬ìŠ¤íŠ¸ ì´ˆê¸°í™”");
         ActorViewIDs.Clear();
         Actors.Clear();
         Items.Clear();
@@ -1092,7 +1092,7 @@ public class GameCenter : BaseScene
 
         if (DestroyingCompleteCount == PhotonNetwork.CurrentRoom.PlayerCount)
         {
-            Debug.Log("Round Âğ Á¾·á");
+            Debug.Log("Round ì° ì¢…ë£Œ");
             DestroyingCompleteCount = 0;
             //if (RoundCount == MAX_ROUND)
             if (IsFinished)

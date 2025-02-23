@@ -1,15 +1,15 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 /*
- * ÇÃ·¹ÀÌ¾îÀÇ µ¿ÀÛ(Action)µéÀ» º¸À¯ÇÏ°í ÀÌ¸¦ ¹ÙÀÎµù, ½ÇÇàÇÏ´Â Å¬·¡½º
+ * í”Œë ˆì´ì–´ì˜ ë™ì‘(Action)ë“¤ì„ ë³´ìœ í•˜ê³  ì»¤ë§¨ë“œì™€ ë™ì‘ë“¤ì„ ë°”ì¸ë”©, ì‹¤í–‰í•˜ëŠ” í´ë˜ìŠ¤
  * 
  */
 public class ActionController
 {
-    //»ı¼º½Ã ¾Ö´Ï¸ŞÀÌ¼Ç µ¥ÀÌÅÍµéÀ» °¡Á®¿Í¼­ º¸À¯
+    //ìƒì„±ì‹œ ì• ë‹ˆë©”ì´ì…˜ ë°ì´í„°ë“¤ì„ ê°€ì ¸ì™€ì„œ ë³´ìœ 
     public ActionController(AnimationData data, AnimationPlayer animPlayer, BodyHandler bodyHandler)
     {
         _animData = data;
@@ -17,12 +17,15 @@ public class ActionController
         _bodyHandler = bodyHandler;
         Init();
     }
-
+    
+    // ì• ë‹ˆë©”ì´ì…˜ ë°ì´í„°ë¥¼ ë©”ëª¨ì¥ìœ¼ë¡œ ë¶€í„° ì½ì–´ì™€ì„œ ì €ì¥í•˜ê³  ìˆëŠ” ê°ì²´ ë³€ìˆ˜
     AnimationData _animData;
+    // ì• ë‹ˆë©”ì´ì…˜ì„ ì‹¤ì œ ì‹¤í–‰í•˜ëŠ” ê°ì²´ ë³€ìˆ˜
     AnimationPlayer _animPlayer;
+    // í”Œë ˆì´ì–´ì˜ ëª¸ì²´ë¥¼ ì»¨íŠ¸ë¡¤í•˜ëŠ” ê°ì²´ ë³€ìˆ˜
     BodyHandler _bodyHandler;
 
-    //¾×¼Ç µ¨¸®°ÔÀÌÆ®µéÀ» °ü¸®ÇÒ ¾×¼ÇÇÚµé·¯ ¼±¾ğ
+    // ì•¡ì…˜ ë¸ë¦¬ê²Œì´íŠ¸ë“¤ì„ ê´€ë¦¬í•  ì•¡ì…˜í•¸ë“¤ëŸ¬ ì„ ì–¸
     public delegate bool ActionDelegate(AnimationData animData, AnimationPlayer animPlayer, BodyHandler bodyHandler, in PlayerActionContext dynamicData);
     private List<ActionDelegate> ActionHandlers = new List<ActionDelegate>();
 
@@ -34,7 +37,7 @@ public class ActionController
             ActionHandlers.Add(action);
         }
 
-        //¾×¼Ç»ı¼º°ú µ¿½Ã¿¡ EnumÀ¸·Î Á¢±ÙÇÒ ¼ö ÀÖ°Ô ¹ÙÀÎµù
+        //ì•¡ì…˜ìƒì„±ê³¼ ë™ì‹œì— ì•¡ì…˜ì— Enumìœ¼ë¡œ ì ‘ê·¼í•  ìˆ˜ ìˆê²Œ ë°”ì¸ë”©
         new JumpAction          (this, Define.ActionEventName.Jump);
         new MoveAction          (this, Define.ActionEventName.Move);
         new PunchAction         (this, Define.ActionEventName.Punch);
@@ -51,13 +54,15 @@ public class ActionController
         new ThrowAction         (this, Define.ActionEventName.Throw);
         new LiftAction          (this, Define.ActionEventName.Lift);
     }
-    //ÇÃ·¹ÀÌ¾îÀÇ ÇöÀç»óÅÂ¿Í ½ÇÇàÇÏ·Á´Â ActionÀÇ ÀÌ¸§À» ¹Ş¾Æ¿Í¼­ ½ÇÇà
+    // í”Œë ˆì´ì–´ì˜ í˜„ì¬ìƒíƒœì™€ ì‹¤í–‰í•˜ë ¤ëŠ” Actionì˜ ì´ë¦„ì„ ë°›ì•„ì™€ì„œ ì‹¤í–‰ (ì»¤ë§¨ë“œì˜ Excute í•¨ìˆ˜ì—ì„œ ì‹¤í–‰ë¨)
     public bool InvokeActionEvent(in PlayerActionContext data,Define.ActionEventName name)
     {
         return ActionHandlers[(int)name]?.Invoke(_animData, _animPlayer, _bodyHandler, data) ?? false;
     }
 
-    //ÀÌ¸§¿¡ ÇØ´çÇÏ´Â ¾×¼Ç µ¨¸®°ÔÀÌÆ®¿¡ ÀÌº¥Æ®¸¦ ±¸µ¶
+    // ê° Actionë“¤ì˜ ìƒì„±ìì—ì„œ ì‹¤í–‰ë˜ëŠ” í•¨ìˆ˜
+    // ë¸ë¦¬ê²Œì´íŠ¸ ë°°ì—´ì¸ ActionHandlers[Enum Action ì´ë¦„]ì—ë‹¤ê°€ Actionë“¤ì´ ë³´ìœ ì¤‘ì¸ Action ì‹¤í–‰ ì´ë²¤íŠ¸ë¥¼ êµ¬ë…
+    // ì´ë ‡ê²Œ í•˜ë©´ ìœ„ì˜ í•¨ìˆ˜ì¸ InvokeActionEvent[Enum Action ì´ë¦„] í•¨ìˆ˜ë¥¼ í†µí•´ Action ì‹¤í–‰ì´ ê°€ëŠ¥í•˜ë‹¤.
     public void BindActionEvent(Define.ActionEventName name, ActionDelegate eventHandler)
     {
         ActionHandlers[(int)name] -= eventHandler;

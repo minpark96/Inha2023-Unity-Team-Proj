@@ -1,7 +1,9 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static Define;
+
+// 플레이어가 들고 있던 플레이어, 박스, 아이템 등을 정면으로 던지는 액션
 public class ThrowAction : BaseAction
 {
     public ThrowAction(ActionController actions, Define.ActionEventName name) : base(actions, name)
@@ -34,6 +36,8 @@ public class ThrowAction : BaseAction
         return true;
     }
 
+    // 들고 있던 오브젝트를 정면으로 던진다.
+    // 오브젝트가 플레이어인지, 박스인지, 포션인지에 따라 분기처리
     void ThrowObject()
     {
         if (_type == ObjectType.Player)
@@ -56,9 +60,10 @@ public class ThrowAction : BaseAction
                 CoroutineHelper.StartCoroutine(PotionThrowAnim());
         }
         else
-            Debug.LogError("�߸��� ������ Ÿ��");
+            Debug.LogError("잘못된 던지기 타입");
     }
-
+    
+    // 포션을 던지는 애니메이션 동작
     IEnumerator PotionThrowAnim()
     {
         CoroutineHelper.StartCoroutine(_object.ItemObject.ThrowItem());

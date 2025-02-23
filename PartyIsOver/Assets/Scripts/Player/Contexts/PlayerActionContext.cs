@@ -1,7 +1,8 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// 플레이어 캐릭터 액션에 필요한 정보를 저장하는 클래스
 public class PlayerActionContext
 {
     public int Id { get; set; }
@@ -26,10 +27,13 @@ public class PlayerActionContext
     public Define.Side PunchSide { get; set; }
     public Define.Side ItemHandleSide { get; set; }
 
+    // 주변의 상호작용이 가능한 오브젝트를 서치해서 이 변수에 저장해둔다.
     public InteractableObject LeftSearchTarget { get; set; }
     public InteractableObject RightSearchTarget { get; set; }
+    // 양 손에 들고 있는 오브젝트
     public InteractableObject RightGrabObject { get; set; }
     public InteractableObject LeftGrabObject { get; set; }
+    // 장착한 아이템
     public InteractableObject EquipItem { get; set; }
 
     public FixedJoint RightGrabJoint { get; set; }

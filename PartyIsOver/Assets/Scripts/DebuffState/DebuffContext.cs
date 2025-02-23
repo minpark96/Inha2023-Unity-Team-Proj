@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
 using Unity.VisualScripting;
@@ -51,21 +51,21 @@ public class DebuffContext : MonoBehaviourPun
     {
         foreach(var state in _currentStateList)
         {
-            //°°Àº »óÅÂ°¡ Áßº¹µÇ¸é ÄğÀ» ´Ã¸®´Â °Íº¸´Ù ±×³É ÀÖ´ø °ÍÀ» ³¡³»´Â °Í °°Àº »óÅÂÀÌ¸é return
+            //ê°™ì€ ìƒíƒœê°€ ì¤‘ë³µë˜ë©´ ì¿¨ì„ ëŠ˜ë¦¬ëŠ” ê²ƒë³´ë‹¤ ê·¸ëƒ¥ ìˆë˜ ê²ƒì„ ëë‚´ëŠ” ê²ƒ ê°™ì€ ìƒíƒœì´ë©´ return
             if (state != null)
             {
                 if (state == newState)
                     return;
             }
 
-            //»õ·Î µé¾î¿Â »óÅÂ°¡ Ice ¸éÀº ³ª¸ÓÁö »óÅÂµéÀº ÀÏ´Ü ´Ù Á¾·á
+            //ìƒˆë¡œ ë“¤ì–´ì˜¨ ìƒíƒœê°€ Ice ë©´ì€ ë‚˜ë¨¸ì§€ ìƒíƒœë“¤ì€ ì¼ë‹¨ ë‹¤ ì¢…ë£Œ
             if(newState.ToString().Contains("Ice"))
             {
                 state.ExitState();
                 _currentStateList.Remove(state);
             }
 
-            //°¨Àü »óÅÂÀÎµ¥ ½ºÅÏÀÌ µé¾î¿À¸é return;
+            //ê°ì „ ìƒíƒœì¸ë° ìŠ¤í„´ì´ ë“¤ì–´ì˜¤ë©´ return;
             if(state.ToString().Contains("Shock"))
             {
                 if (newState.ToString().Contains("Stun"))

@@ -1,8 +1,12 @@
-using Photon.Pun;
+﻿using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// 스킬 사용 액션
+// 펀치 액션을 상속받아 사용한다.
+// 핵펀치 스킬은 펀치 함수에 매개변수를 다르게 줘서 구현하고
+// 냥냥펀치는 이 클래스에서 구현
 public class SkillAction : PunchAction
 {
     public SkillAction(ActionController actions, Define.ActionEventName name) : base(actions, name)
@@ -22,13 +26,13 @@ public class SkillAction : PunchAction
         isMeowPunch = data.IsMeowPunch;
         isRSkillCheck = true;
 
-        if (data.IsMeowPunch)
+        if (data.IsMeowPunch) // 냥냥펀치
         {
             isRSkillCheck = true;
             isMeowPunch = true;
             CoroutineHelper.StartCoroutine(MeowNyangPunch());
         }
-        else //����ġ ��ų
+        else // 핵펀치 스킬
         {
             isRSkillCheck = true;
             isMeowPunch = false;
@@ -39,6 +43,7 @@ public class SkillAction : PunchAction
         return true;
     }
 
+    // 냥냥펀치 스킬, 상속한 Punch 함수를 짧게 끊어서 여러번 실행하는 방식으로 구현
     IEnumerator MeowNyangPunch()
     {
         _readySide = Define.Side.Right;

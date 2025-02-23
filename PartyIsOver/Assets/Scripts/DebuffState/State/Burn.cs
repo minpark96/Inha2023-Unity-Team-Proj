@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
@@ -37,7 +37,7 @@ public class Burn : MonoBehaviourPun , IDebuffState
         if (effectObject != null)
             effectObject.transform.position = playerTransform.position;
 
-        if (Time.time - lastBurnTime >= 1.0f) // 1ÃÊ°£ µ¥¹ÌÁö+¾×¼Ç
+        if (Time.time - lastBurnTime >= 1.0f) // 1ì´ˆê°„ ë°ë¯¸ì§€+ì•¡ì…˜
         {
             MyActor.StatContext.Health -= _burnDamage;
             MyActor.BodyHandler.Waist.PartRigidbody.AddForce((MyActor.BodyHandler.Hip.transform.right) * 40f, ForceMode.VelocityChange);
@@ -68,7 +68,7 @@ public class Burn : MonoBehaviourPun , IDebuffState
     }
     void PlayerDebuffSound(string path)
     {
-        //»ç¿îµå ¹®Á¦ ÀÖÀ½
+        //ì‚¬ìš´ë“œ ë¬¸ì œ ìˆìŒ
         _audioClip = Managers.Sound.GetOrAddAudioClip(path);
         _audioSource.clip = _audioClip;
         _audioSource.spatialBlend = 1;

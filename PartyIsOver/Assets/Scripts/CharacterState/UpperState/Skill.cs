@@ -1,8 +1,9 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static Define;
 
+// ìŠ¤í‚¬ ì‚¬ìš© ìƒíƒœ
 public class Skill : BaseState
 {
     protected UpperBodySM _sm;
@@ -13,14 +14,14 @@ public class Skill : BaseState
     }
     public override void Enter()
     {
-        _sm.Context.IsUpperActionProgress = true;
-        //µ¥¹ÌÁö ¼Ó¼ºÀ» ¿©±â¼­ ¹Ù²ã¾ß ÇÏ´ÂÁö °í¹ÎÇØ¾ßÇÔ
-        //»ç¿îµå, ÀÌÆåÆ®¸¦ ¿©±â¼­ °ü¸®ÇØ¾ß ÇÏ´ÂÁö °í¹ÎÇØ¾ßÇÔ
-        //_sm¿¡°Ô °ø°İÅ¸ÀÔÀ» ¾Ë·Á¾ßÇÔ ±×¸®°í DynamicData°¡ ÇØ´ç Å¸ÀÔÀ» ÀúÀå
+        _sm.PlayerContext.IsUpperActionProgress = true;
+        //ë°ë¯¸ì§€ ì†ì„±ì„ ì—¬ê¸°ì„œ ë°”ê¿”ì•¼ í•˜ëŠ”ì§€ ê³ ë¯¼í•´ì•¼í•¨
+        //ì‚¬ìš´ë“œ, ì´í™íŠ¸ë¥¼ ì—¬ê¸°ì„œ ê´€ë¦¬í•´ì•¼ í•˜ëŠ”ì§€ ê³ ë¯¼í•´ì•¼í•¨
+        //_smì—ê²Œ ê³µê²©íƒ€ì…ì„ ì•Œë ¤ì•¼í•¨ ê·¸ë¦¬ê³  DynamicDataê°€ í•´ë‹¹ íƒ€ì…ì„ ì €ì¥
     }
     public override void UpdateLogic()
     {
-        if (!_sm.Context.IsUpperActionProgress)
+        if (!_sm.PlayerContext.IsUpperActionProgress)
         {
             _sm.ChangeState(_sm.StateMap[PlayerState.UpperIdle]);
         }

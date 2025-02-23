@@ -1,8 +1,9 @@
-using Photon.Pun;
+﻿using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// 차지 상태에서 차지가 취소되었을 경우 사용되는 액션
 public class ResetChargeAction : BaseAction
 {
     public ResetChargeAction(ActionController actions, Define.ActionEventName name) : base(actions, name)
@@ -28,6 +29,7 @@ public class ResetChargeAction : BaseAction
         return true;
     }
 
+    // 차지 모션에서 양 팔을 뒤로 젖히며 고정하고 있던 관절을 풀어주는 코루틴
     [PunRPC]
     IEnumerator ResetCharge()
     {
@@ -38,7 +40,7 @@ public class ResetChargeAction : BaseAction
             for (int j = 0; j < _animData.FrameDataLists[Define.AniFrameData.RSkillAniData][i].StandardRigidbodies.Length; j++)
             {
                 _RPartRigidbody = _animData.FrameDataLists[Define.AniFrameData.RSkillAniData][i].ActionRigidbodies[j];
-                //Debug.Log("FreezeǮ�� : "+ _RPartRigidbody);
+                //Debug.Log("Freeze풀기 : "+ _RPartRigidbody);
                 _RPartRigidbody.constraints = RigidbodyConstraints.None;
                 _RPartRigidbody.velocity = Vector3.zero;
                 _RPartRigidbody.angularVelocity = Vector3.zero;
@@ -51,7 +53,7 @@ public class ResetChargeAction : BaseAction
     [PunRPC]
     void RestoreOriginalMotions()
     {
-        //y z �ʱⰪ ����
+        //y z 초기값 대입
         for (int i = 0; i < _childJoints.Length; i++)
         {
             _childJoints[i].angularYMotion = _originalYMotions[i];

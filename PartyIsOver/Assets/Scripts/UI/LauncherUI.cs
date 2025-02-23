@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -78,7 +78,7 @@ public class LauncherUI : MonoBehaviour
             Managers.Sound.Play(uiSound1, Define.Sound.UISound);
 
             _errorPanel.SetActive(true);
-            ErrorText.text = "´Ğ³×ÀÓ ±ÛÀÚ ¼ö°¡ ³Ê¹« Àû°Å³ª ¸¹½À´Ï´Ù.";
+            ErrorText.text = "ë‹‰ë„¤ì„ ê¸€ì ìˆ˜ê°€ ë„ˆë¬´ ì ê±°ë‚˜ ë§ìŠµë‹ˆë‹¤.";
             return;
         }
 
@@ -88,7 +88,7 @@ public class LauncherUI : MonoBehaviour
             Managers.Sound.Play(uiSound1, Define.Sound.UISound);
 
             _errorPanel.SetActive(true);
-            ErrorText.text = "»ç¿ë ºÒ°¡´ÉÇÑ Æ¯¼ö ¹®ÀÚ°¡ Æ÷ÇÔµÇ¾î ÀÖ½À´Ï´Ù.";
+            ErrorText.text = "ì‚¬ìš© ë¶ˆê°€ëŠ¥í•œ íŠ¹ìˆ˜ ë¬¸ìê°€ í¬í•¨ë˜ì–´ ìˆìŠµë‹ˆë‹¤.";
             return;
         }
 
@@ -156,7 +156,7 @@ public class LauncherUI : MonoBehaviour
     }
 
 
-    // ºôµå½Ã »èÁ¦ÇÒ ºÎºĞ
+    // ë¹Œë“œì‹œ ì‚­ì œí•  ë¶€ë¶„
     public void OnClickShortcut()
     {
         PhotonManager.Instance.Connect();

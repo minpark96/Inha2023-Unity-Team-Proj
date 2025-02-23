@@ -1,4 +1,4 @@
-using Photon.Pun;
+﻿using Photon.Pun;
 using UnityEngine;
 using static Define;
 using System;
@@ -60,22 +60,24 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
 
 
+    // 플레이어 상태 변경 이벤트 호출
     public void InvokeStatusChangeEvent()
     {
         if (OnChangePlayerStatus == null)
         {
-            Debug.Log(photonView.ViewID + " OnChangePlayerStatus �̺�Ʈ null");
+            Debug.Log(photonView.ViewID + " OnChangePlayerStatus 이벤트 null");
             return;
         }
 
         OnChangePlayerStatus(StatContext.Health, StatContext.Stamina, debuffState, photonView.ViewID);
     }
 
+    // 플레이어 사망 이벤트 호출
     public void InvokeDeathEvent()
     {
         if (OnKillPlayer == null)
         {
-            Debug.Log(photonView.ViewID + " OnKillPlayer �̺�Ʈ null");
+            Debug.Log(photonView.ViewID + " OnKillPlayer 이벤트 null");
             return;
         }
 
@@ -83,6 +85,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
     }
 
     [PunRPC]
+    // 효과음 재생 RPC
     public void PlayerEffectSound(string path)
     {
         _audioClip = Managers.Sound.GetOrAddAudioClip(path, Define.Sound.PlayerEffect);
@@ -92,6 +95,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
     }
 
+    // 컴포넌트 초기화 및 로컬 플레이어 설정
     private void Awake()
     {
         Transform SoundListenerTransform = transform.Find("GreenHead");
@@ -103,13 +107,13 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
             if (CameraControl == null)
             {
-                Debug.Log("ī�޶� ��Ʈ�� �ʱ�ȭ");
+                Debug.Log("카메라 컨트롤 초기화");
                 CameraControl = GetComponent<CameraControl>();
             }
         }
         else
         {
-            // ���� ����
+            // 사운드 끄기
             Destroy(AudioListener);
             //_audioListener.enabled = false;
         }
@@ -128,6 +132,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
         Init();
     }
 
+    // 액션 컨트롤러 및 상태 머신 초기화
     private void Init()
     {
         _animData = new AnimationData(BodyHandler);
@@ -182,6 +187,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
     }
 
 
+    // 액션 컨텍스트 데이터 업데이트
     void UpdateData() 
     {
         if (LowerSM.GetCurrentState() == null || UpperSM.GetCurrentState() == null) return;
@@ -204,30 +210,32 @@ public class Actor : MonoBehaviourPun, IPunObservable
 
 
 
+    // 물리 업데이트 및 스태미나 관리
     private void FixedUpdate()
     {
         if (!StatContext.IsAlive) return;
-
+        
+        // 현재 게임 클라이언트가 마스터 클라이언트인지 확인
         if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
             if (StatContext.Stamina <= 0)
             {
-                //��Ÿ�� �Ұ���
+                //벽타기 불가능
                 ResetGrab();
             }
 
-            //ȸ���ϴ� ��ġ�� ����
+            //회복하는 수치값 변경
             RecoveryStamina();
 
             StatContext.AccumulatedTime += Time.fixedDeltaTime;
-            //Time.fixedDeltaTime(0.02�� �������� ��� �ݺ�) >= ����ȸ���ð�
-            //0.02�� ��� ���ؼ� >= 0.1,0.2�� ���� Ŀ���� 
+            //Time.fixedDeltaTime(0.02초 기준으로 계속 반복) >= 현제회복시간
+            //0.02초 계속 더해서 >= 0.1,0.2초 보다 커지면 
             if (StatContext.AccumulatedTime >= StatContext.CurrentRecoveryTime)
             {
-                //�ٰų� ��� ���¿�����
+                //뛰거나 잡기 상태에서는
                 if (_actionContext.IsRunState || GetLowerState() == PlayerState.Climb)
                 {
-                    //�ٰų� ��� �����϶� ���� Ư�� ����� ���°� ������ ��� ���̴� ������ �ִµ� ������ �ɾ ����
+                    //뛰거나 잡기 상태일때 만약 특수 디버프 상태가 들어오면 계속 까이는 현상이 있는데 조건을 걸어서 방지
                     if ((debuffState & DebuffState.Ice) == DebuffState.Ice || (debuffState & DebuffState.Shock) == DebuffState.Shock)
                     {
                         StatContext.Stamina = 0;
@@ -245,24 +253,27 @@ public class Actor : MonoBehaviourPun, IPunObservable
                     //photonView.RPC("DecreaseStamina", RpcTarget.All, 1f);
                 }
                 //else if (PlayerController._isRSkillCheck || PlayerController.isHeading || PlayerController._isCoroutineDrop)
-                //��ų ���� ȸ�� �Ұ���
+                //스킬 사용시 회복 불가능
                 //photonView.RPC("RecoverStamina",RpcTarget.All, 0f);
                 //_stamina += 0;
                 else
-                    //���¿� �´� ȸ���ϱ�
+                    //상태에 맞는 회복하기
                     //photonView.RPC("RecoverStamina", RpcTarget.All, currentRecoveryStaminaValue);
                     StatContext.Stamina += StatContext.CurrentRecoveryStaminaValue;
                 StatContext.AccumulatedTime = 0f;
             }
-            //���׹̳ʰ� �ִ�ġ�� �Ѵ°� ����
+            //스테미너가 최대치는 넘는거 방지
             if (StatContext.Stamina > StatContext.MaxStamina)
                 StatContext.Stamina = StatContext.MaxStamina;
-
+            
+            //플레이어 스테이터스 업데이트
             OnChangePlayerStatus(StatContext.Health, StatContext.Stamina, debuffState, photonView.ViewID);
         }
 
+        // 현재 photonView가 붙은 오브젝트의 소유권이 현재 로컬 클라이언트인지 확인
         if (photonView.IsMine)
         {
+            // 행동 가능 상태이면 상태머신의 물리 업데이트와 인풋 핸들러로부터 현재 입력된 커맨드 플래그를 받아와 커맨드 실행
             if (IsActionable())
             {
                 UpdatePhysicsSM();
@@ -270,24 +281,25 @@ public class Actor : MonoBehaviourPun, IPunObservable
                 //photonView.RPC(nameof(ExecuteCommand), RpcTarget.All, (int)_inputHandler.GetActiveCmdFlag());
             }
 
-            //Ŀ�ǵ� �÷��� Ŭ����
+            //커맨드 플래그 클리어
             _inputHandler.ClearCommand();
 
-            OnChangeStaminaBar();  //isMine���� �ϴ°� �³�?
+            OnChangeStaminaBar();  //isMine에서 하는게 맞나?
         }
 
     }
 
-    public void ResetGrab() //�����ؾ���
+    public void ResetGrab() //수정해야함
     {
         _inputHandler.ReserveCommand(COMMAND_KEY.DestroyJoint);
         UpperSM.ChangeState(UpperSM.StateMap[PlayerState.UpperIdle]);
     }
 
 
+    // 스태미나 회복 로직 처리
     void RecoveryStamina()
     {
-        //ȸ�����ִ� ��ġ
+        //회복해주는 수치
         if (!((debuffState & DebuffState.Exhausted) == DebuffState.Exhausted))
         {
             StatContext.CurrentRecoveryTime = StatContext.RecoveryTime;
@@ -333,6 +345,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
         _actionContext.IsFlambe = value;
     }
 
+    // 입력된 커맨드 실행
     void ExecuteCommand(int commandKey)
     {
         _activeCommand = (COMMAND_KEY)commandKey;
@@ -346,15 +359,17 @@ public class Actor : MonoBehaviourPun, IPunObservable
                     //Debug.Log(_commandAry[i].ToString() + " + " + GetUpperState());
                 }
                 else
-                    Debug.Log(gameObject.name + _commandAry[i].ToString() + "Ŀ�ǵ� ���� ����");
+                    Debug.Log(gameObject.name + _commandAry[i].ToString() + "커맨드 실행 실패");
             }
         }
     }
+    // 상태 머신 로직 업데이트
     void UpdateStateMachine()
     {
         LowerSM.UpdateLogic();
         UpperSM.UpdateLogic();
     }
+    // 상태 머신 물리 업데이트
     void UpdatePhysicsSM()
     {
         LowerSM.UpdatePhysics();
@@ -370,6 +385,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
         return LowerSM.GetCurrentState().Name;
     }
 
+    // 행동 가능 상태 여부 확인
     bool IsActionable()
     {
         if ((debuffState & DebuffState.Ice) == DebuffState.Ice ||
@@ -394,7 +410,7 @@ public class Actor : MonoBehaviourPun, IPunObservable
         //}
     }
 
-    private void OnGUI() //�ϼ� �� ����
+    private void OnGUI() //완성 후 삭제
     {
         if (photonView.IsMine)
         {

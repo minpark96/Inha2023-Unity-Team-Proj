@@ -1,8 +1,9 @@
-using Photon.Pun;
+﻿using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// 플레이어의 발이 바닥에 붙어 있는지 체크하는 클래스
 public class GroundChecker : MonoBehaviourPun
 {
     private LowerBodySM bodySM;

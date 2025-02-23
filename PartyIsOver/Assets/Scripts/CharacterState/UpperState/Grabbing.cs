@@ -1,9 +1,10 @@
-using Photon.Pun;
+ï»¿using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static Define;
 
+// í”Œë ˆì´ì–´, ì˜¤ë¸Œì íŠ¸, ë²½ ë“±ì„ ì¡ê¸° ì§„í–‰ì¤‘ì¸ ìƒíƒœ 
 public class Grabbing : BaseState
 {
     private UpperBodySM _sm;
@@ -21,17 +22,19 @@ public class Grabbing : BaseState
 
     public override void Enter()
     {
-        _context = _sm.Context;
+        _context = _sm.PlayerContext;
         _sm.IsGrabbingInProgress = true;
     }
 
     public override void UpdateLogic()
     {
         _grabDelayTimer -= Time.deltaTime;
-
+        
+        // ì»¨í…ìŠ¤íŠ¸ì—ì„œ ì–‘ ì†ì— ì¡ê³  ìˆëŠ” ì˜¤ë¸Œì íŠ¸ë¥¼ ê°€ì ¸ì˜¨ë‹¤.
         if (_context.RightGrabObject != null && _context.LeftGrabObject != null
             && _context.RightGrabObject.ItemObject == null)
         {
+            //ì¡ì€ ì˜¤ë¸Œì íŠ¸ ì¢…ë¥˜ì— ë”°ë¼ ë‹¤ë¥¸ ìƒíƒœë¡œ ë³€í™˜
             if(_context.RightGrabObject.Type == ObjectType.Wall)
                 _sm.ChangeState(_sm.StateMap[PlayerState.Climb]);
             else
@@ -40,7 +43,7 @@ public class Grabbing : BaseState
     }
     public override void GetInput()
     {
-        //¸¶¿ì½º ¶¼¸é Idle·Î
+        //ë§ˆìš°ìŠ¤ ë–¼ë©´ ê´€ì ˆì„ ì œê±°í•¨ê³¼ ë™ì‹œì— ì¡ê¸°ë¥¼ í•´ì œí•˜ê³  Idle ìƒíƒœë¡œ
         if(!InputCommand(COMMAND_KEY.LeftBtn, KeyType.Press))
         {
             InvokeReserveCommand(COMMAND_KEY.DestroyJoint);
@@ -50,8 +53,9 @@ public class Grabbing : BaseState
 
     public override void UpdatePhysics()
     {
+        // ì´ˆë‹¹ 60ë²ˆì”© ì˜¤ë¸Œì íŠ¸ íƒìƒ‰
        InvokeReserveCommand(COMMAND_KEY.TargetSearch);
-        //±×·¡ºùAction °è¼Ó ½ÇÇà
+        // ê·¸ë˜ë¹™Action ê³„ì† ì‹¤í–‰
         if (_grabDelayTimer < 0f)
             GrabbingProgress();
     }
@@ -60,26 +64,27 @@ public class Grabbing : BaseState
     {
         _sm.IsGrabbingInProgress = false;
     }
-
+    
+    // ì¡ê¸° ì§„í–‰
     private void GrabbingProgress()
     {
 
         //Debug.Log(_context.LeftSearchTarget);
         //Debug.Log(_context.RightSearchTarget);
 
-        //¹ß°ßÇÑ ¿ÀºêÁ§Æ®°¡ ¾øÀ¸¸é ¸®ÅÏ
+        //ë°œê²¬í•œ ì˜¤ë¸Œì íŠ¸ê°€ ì—†ìœ¼ë©´ ë¦¬í„´
         if (_context.LeftSearchTarget == null && _context.RightSearchTarget == null)
             return;
         Debug.Log("grabbing");
 
 
-        //Å¸°ÙÀÌ Á¤¸é¿¡ ÀÖ°í ¾ÆÀÌÅÛÀÏ¶§
+        //íƒ€ê²Ÿì´ ì •ë©´ì— ìˆê³  ì•„ì´í…œì¼ë•Œ
         if (_context.LeftSearchTarget == _context.RightSearchTarget && _context.RightSearchTarget.ItemObject !=null)
         {
-            //ÀÏÁ¤ °Å¸® ¾È¿¡¼­ ¾ç¼ÕÀÌ ºñ¾îÀÖÀ»¶§
+            //ì¼ì • ê±°ë¦¬ ì•ˆì—ì„œ ì–‘ì†ì´ ë¹„ì–´ìˆì„ë•Œ
             if (IsTargetInRange() && IsHandsEmpty())
             {
-                //¾ÆÀÌÅÛ Àâ±â »óÅÂ·Î ÁøÀÔ
+                //ì•„ì´í…œ ì¡ê¸° ìƒíƒœë¡œ ì§„ì…
                 _context.IsItemGrabbing = true;
                 if (IsItemGrabbing(_context.RightSearchTarget))
                     _sm.ChangeState(_sm.StateMap[PlayerState.EquipItem]);
@@ -91,7 +96,7 @@ public class Grabbing : BaseState
             else
                 _context.IsItemGrabbing = false;
         }
-        else//Å¸°ÙÀÌ Á¤¸é¿¡ ¾ø°Å³ª ¾ÆÀÌÅÛÀÌ ¾Æ´Ò °æ¿ì
+        else//íƒ€ê²Ÿì´ ì •ë©´ì— ì—†ê±°ë‚˜ ì•„ì´í…œì´ ì•„ë‹ ê²½ìš°
         {
             if (_context.LeftSearchTarget != null && _context.LeftGrabObject ==null)
             {
@@ -106,7 +111,7 @@ public class Grabbing : BaseState
 
             if (_context.RightSearchTarget != null && _context.RightGrabObject == null)
             {
-                //¼Õ »¸±â Action ½ÇÇà ¹× ´ê¾Ò´ÂÁö Ã¼Å©
+                //ì† ë»—ê¸° Action ì‹¤í–‰ ë° ë‹¿ì•˜ëŠ”ì§€ ì²´í¬
                 if (HandCollisionCheck(Side.Right))
                 {
                     InvokeReserveCommand(COMMAND_KEY.FixJoint);
@@ -134,13 +139,13 @@ public class Grabbing : BaseState
         else return false;
     }
 
-    //³ªÁß¿¡ ¼öÁ¤
+    //ë‚˜ì¤‘ì— ìˆ˜ì •
     bool HandCollisionCheck(Define.Side side)
     {
         switch (side)
         {
             case Side.Left:
-                if (_sm.LeftHandCheckter.CollisionObject != null && //¾ÕºÎºĞ nullÃ¼Å© Áö¿öµµ µÉ °Í °°À½
+                if (_sm.LeftHandCheckter.CollisionObject != null && //ì•ë¶€ë¶„ nullì²´í¬ ì§€ì›Œë„ ë  ê²ƒ ê°™ìŒ
                    _sm.LeftHandCheckter.CollisionObject == _context.LeftSearchTarget)
                 {
                     return true;
@@ -160,7 +165,8 @@ public class Grabbing : BaseState
         }
         return false;
     }
-
+    
+    // ì•„ì´í…œ ì¡ê¸°ì¼ ê²½ìš° ì•„ì´í…œ ì¢…ë¥˜ì— ë”°ë¼ ë¶„ê¸°ì²˜ë¦¬
     bool IsItemGrabbing(InteractableObject item)
     {
         switch (item.ItemObject.ItemData.ItemType)
@@ -186,31 +192,31 @@ public class Grabbing : BaseState
         return true;
     }
 
-
+    // ì•„ì´í…œê³¼ ì–‘ì†ì´ ì ‘ì´‰ì¤‘ì¸ì§€ ì²´í¬í•˜ëŠ” í•¨ìˆ˜
     bool IsHoldingItem(InteractableObject item, Define.Side side)
     {
-        //HandChecker ½ºÅ©¸³Æ®¿¡¼­ ¾ç¼Õ ´Ù ¾ÆÀÌÅÛÀÇ ¼ÕÀâÀÌ¿Í Á¢ÃËÁßÀÎÁö ÆÇÁ¤
+        //HandChecker ìŠ¤í¬ë¦½íŠ¸ì—ì„œ ì–‘ì† ë‹¤ ì•„ì´í…œì˜ ì†ì¡ì´ì™€ ì ‘ì´‰ì¤‘ì¸ì§€ íŒì •
         if (HandCollisionCheck(side))
         {
             _grabDelayTimer = 0.5f;
-            _sm.Context.EquipItem = item;
+            _sm.PlayerContext.EquipItem = item;
             return true;
         }
         return false;
     }
 
-
+    // ì•„ì´í…œì„ ì¡ì€ ë°©í–¥ì„ ë¦¬í„´í•˜ëŠ” í•¨ìˆ˜
     Side ItemDirCheck(Item item)
     {
-        //¿À¸¥¼Õ°ú ¼ÕÀâÀÌ À§Ä¡ Ã¼Å©ÇØ¼­ ¾ÆÀÌÅÛ ¹æÇâ ¸®ÅÏ
-        Vector3 toItem = (item.TwoHandedPos.position - _context.Position).normalized; // ÇÃ·¹ÀÌ¾î°¡ ¾ÆÀÌÅÛÀ» ¹Ù¶óº¸´Â º¤ÅÍ
-        Vector3 toOneHandedHandle = (item.OneHandedPos.position - _context.Position).normalized; // ¿À¸¥¼ÕÀÌ Àâ¾Æ¾ßÇÒ oneHanded ¼ÕÀâÀÌ º¤ÅÍ
+        //ì˜¤ë¥¸ì†ê³¼ ì†ì¡ì´ ìœ„ì¹˜ ì²´í¬í•´ì„œ ì•„ì´í…œ ë°©í–¥ ë¦¬í„´
+        Vector3 toItem = (item.TwoHandedPos.position - _context.Position).normalized; // í”Œë ˆì´ì–´ê°€ ì•„ì´í…œì„ ë°”ë¼ë³´ëŠ” ë²¡í„°
+        Vector3 toOneHandedHandle = (item.OneHandedPos.position - _context.Position).normalized; // ì˜¤ë¥¸ì†ì´ ì¡ì•„ì•¼í•  oneHanded ì†ì¡ì´ ë²¡í„°
         Vector3 crossProduct = Vector3.Cross(toItem, toOneHandedHandle);
 
         if (crossProduct.y > 0)
-            return Side.Right;// ¿øÇÚµå ¼ÕÀâÀÌ°¡ ¿À¸¥ÂÊ
+            return Side.Right;// ì›í•¸ë“œ ì†ì¡ì´ê°€ ì˜¤ë¥¸ìª½
         else
-            return Side.Left;// ¿øÇÚµå ¼ÕÀâÀÌ°¡ ¿ŞÂÊ
+            return Side.Left;// ì›í•¸ë“œ ì†ì¡ì´ê°€ ì™¼ìª½
     }
 
 }

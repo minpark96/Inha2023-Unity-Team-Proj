@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
@@ -6,7 +6,7 @@ using static Define;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
-//ÇÃ·¹ÀÌ¾î°¡ ÇÒ ¼ö ÀÖ´Â Ä¿¸Çµå¸¦ Ãß°¡ÇÏ°í Å°º¸µå Å°¿Í ¸ÅÇÎÇÏ´Â Å¬·¡½º
+//í”Œë ˆì´ì–´ê°€ í•  ìˆ˜ ìˆëŠ” ì»¤ë§¨ë“œë¥¼ ì¶”ê°€í•˜ê³  í‚¤ë³´ë“œ í‚¤ì™€ ë§¤í•‘í•˜ëŠ” í´ë˜ìŠ¤
 
 public class PlayerInputHandler : MonoBehaviourPun
 {
@@ -19,8 +19,8 @@ public class PlayerInputHandler : MonoBehaviourPun
     private Vector3 _lookRight;
 
 #if UNITY_EDITOR
-    //ÀÛ¾÷È¯°æÀÌ ¹Ù²ğ¶§¸¶´Ù À¯´ÏÆ¼ÀÇ InputManager Axis¸¦ ¼³Á¤ÇÒ ÇÊ¿ä¾ø°Ô ÄÚµå¿¡¼­ Ã³¸®ÇÏ´Â ÇÔ¼ö
-    //ÀÛ¾÷È¯°æÀÌ ¹Ù²î¾úÀ»¶§ È¤Àº ºôµå Àü¿¡ À¯´ÏÆ¼ ¿¡µğÅÍ »ó´ÜÀÇ Tools - Setup Input Axes Å¬¸¯ 
+    //ì‘ì—…í™˜ê²½ì´ ë°”ë€”ë•Œë§ˆë‹¤ ìœ ë‹ˆí‹°ì˜ InputManager Axisë¥¼ ì„¤ì •í•  í•„ìš”ì—†ê²Œ ì½”ë“œì—ì„œ ì²˜ë¦¬í•˜ëŠ” í•¨ìˆ˜
+    //ì‘ì—…í™˜ê²½ì´ ë°”ë€Œì—ˆì„ë•Œ í˜¹ì€ ë¹Œë“œ ì „ì— ìœ ë‹ˆí‹° ì—ë””í„° ìƒë‹¨ì˜ Tools - Setup Input Axes í´ë¦­ 
     [MenuItem("Tools/Setup Input Axes")]
     public static void SetupInputAxes()
     {
@@ -59,7 +59,7 @@ public class PlayerInputHandler : MonoBehaviourPun
 #endif
 
 
-    //Actor¿¡°Ô Ä¿¸Çµå¸¦ Ãß°¡
+    //Actorì—ê²Œ ì»¤ë§¨ë“œë¥¼ ì¶”ê°€
     public void InitCommand(Actor actor)
     {
         _commands.Add(COMMAND_KEY.Jump,         new CmdJump(actor));
@@ -76,7 +76,7 @@ public class PlayerInputHandler : MonoBehaviourPun
         _commands.Add(COMMAND_KEY.DestroyJoint, new CmdDestroyJoint(actor));
     }
 
-    //ÇÃ·¹ÀÌ¾îÀÇ ÁøÇà¹æÇâÀ» ¸®ÅÏ
+    //í”Œë ˆì´ì–´ì˜ ì§„í–‰ë°©í–¥ì„ ë¦¬í„´
     public Vector3 GetMoveInput(Transform cameraArm)
     {
         _moveInput.x = Input.GetAxis("Horizontal");
@@ -97,7 +97,14 @@ public class PlayerInputHandler : MonoBehaviourPun
         return _moveDir;
     }
 
-    //ÇÃ·¡±×¿¡ Ä¿¸Çµå ¿¹¾à
+    /*
+     * ë¬´ë¸Œ 0
+     * ì í”„ 0
+     * ê³µê²© 1
+     * ~~  0
+     * ~~  0
+     */
+    //í”Œë˜ê·¸ì— ì»¤ë§¨ë“œ ì˜ˆì•½
     public void ReserveCommand(COMMAND_KEY commandKey)
     {
         ReserveCmdMaster((int)commandKey);
@@ -109,19 +116,21 @@ public class PlayerInputHandler : MonoBehaviourPun
     {
         _activeCommandFlag |= (COMMAND_KEY)commandKey;
     }
-
+  
+    
+    
     public CommandKey GetCommand(COMMAND_KEY key)
     {
         return _commands[key];
     }
 
-    //¿¹¾àµÈ Ä¿¸Çµå¸¦ Actor¿¡°Ô º¸³»ÁÖ´Â ¿ªÇÒ
+    //ì˜ˆì•½ëœ ì»¤ë§¨ë“œë¥¼ Actorì—ê²Œ ë³´ë‚´ì£¼ëŠ” ì—­í• 
     public COMMAND_KEY GetActiveCmdFlag()
     {
         return _activeCommandFlag;
     }
 
-    //Update »çÀÌÅ¬µ¿¾È ¿¹¾àµÈ Ä¿¸Çµå°¡ FixedUpdate¿¡¼­ Ã³¸®µÆÀ»°æ¿ì ½ÇÇàµÇ´Â ÇÔ¼ö
+    //Update ì‚¬ì´í´ë™ì•ˆ ì˜ˆì•½ëœ ì»¤ë§¨ë“œê°€ FixedUpdateì—ì„œ ì²˜ë¦¬ëì„ê²½ìš° ì‹¤í–‰ë˜ëŠ” í•¨ìˆ˜
     public void ClearCommand()
     {
         _activeCommandFlag = 0f;

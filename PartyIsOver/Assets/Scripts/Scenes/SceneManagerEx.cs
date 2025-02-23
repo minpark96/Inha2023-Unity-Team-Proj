@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -9,12 +9,12 @@ public class SceneManagerEx
 
     public void LoadScene(Define.SceneType type)
     {
-        //ÇöÁ¦ »ç¿ëÇß´ø ¾ÀÀ» ³¯·ÁÁÖ°í ´ÙÀ½ ¾ÀÀ¸·Î ÀÌµ¿
+        //í˜„ì œ ì‚¬ìš©í–ˆë˜ ì”¬ì„ ë‚ ë ¤ì£¼ê³  ë‹¤ìŒ ì”¬ìœ¼ë¡œ ì´ë™
         Managers.Clear();
         SceneManager.LoadScene(GetSceneName(type));
     }
 
-    //Define¿¡ ÀÖ´Â ¹®ÀÚ¿­À» »Ì¾Æ³»´Â ¹æ¹ıÀÌ´Ù. LoadScene°¡ ¹®ÀÚ¿­À» ¹Ş¾Æ¾ßÇÏ±â ¶§¹®¿¡ ÀÌ·¯ÇÑ ¹æ¹ı »ç¿ë
+    //Defineì— ìˆëŠ” ë¬¸ìì—´ì„ ë½‘ì•„ë‚´ëŠ” ë°©ë²•ì´ë‹¤. LoadSceneê°€ ë¬¸ìì—´ì„ ë°›ì•„ì•¼í•˜ê¸° ë•Œë¬¸ì— ì´ëŸ¬í•œ ë°©ë²• ì‚¬ìš©
     public string GetSceneName(Define.SceneType type)
     {
         string name = System.Enum.GetName(typeof(Define.SceneType),type);

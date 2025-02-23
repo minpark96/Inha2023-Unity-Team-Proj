@@ -1,8 +1,9 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static Define;
 
+// 플레이어의 스탯의 초기값을 스크립터블 오브젝트로 저장하는 클래스
 [CreateAssetMenu(fileName = "PlayerStatData", menuName = "Scriptable Object/Stat Data", order = int.MaxValue)]
 public class PlayerStatData : ScriptableObject
 {

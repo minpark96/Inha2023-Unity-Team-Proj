@@ -1,4 +1,4 @@
-using Photon.Pun;
+ï»¿using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -6,8 +6,8 @@ using UnityEditor;
 using UnityEngine;
 
 /*
- * ½ÅÃ¼ºÎÀ§µéÀ» ¹Ù·Î Á¢±ÙÇÒ ¼ö ÀÖ°Ô ¸â¹ö·Î º¸À¯ÇÏ°í ÀÖ´Â Å¬·¡½º
- * ºÎÀ§µéÀÇ °üÀıÀ» °íÁ¤ÇÏ°Å³ª ÇØÁ¦½ÃÄÑ¼­ ±âÀı,¾ÆÀÌÅÛ ÀåÂø µîÀÇ ¸ğ¼ÇÀ» ±¸ÇöÇÏ´Â ÇÔ¼ö º¸À¯
+ * ì‹ ì²´ë¶€ìœ„ë“¤ì„ ë°”ë¡œ ì ‘ê·¼í•  ìˆ˜ ìˆê²Œ ë©¤ë²„ë¡œ ë³´ìœ í•˜ê³  ìˆëŠ” í´ë˜ìŠ¤
+ * ë¶€ìœ„ë“¤ì˜ ê´€ì ˆì„ ê³ ì •í•˜ê±°ë‚˜ í•´ì œì‹œì¼œì„œ ê¸°ì ˆ,ì•„ì´í…œ ì¥ì°© ë“±ì˜ ëª¨ì…˜ì„ êµ¬í˜„í•˜ëŠ” í•¨ìˆ˜ ë³´ìœ 
  */
 
 public class BodyHandler : MonoBehaviourPun
@@ -95,21 +95,21 @@ public class BodyHandler : MonoBehaviourPun
         RightHand = GetBodyPart(Define.BodyPart.RightHand);
     }
 
-    //½ÃÀÛ½Ã ÃÊ±âÀÇ °üÀı°ªµéÀ» ÀúÀå
+    //ì‹œì‘ì‹œ ì´ˆê¸°ì˜ ê´€ì ˆê°’ë“¤ì„ ì €ì¥
     private void SaveConfigurableJoint()
     {
         ChildJoints = GetComponentsInChildren<ConfigurableJoint>();
         OriginalYMotions = new ConfigurableJointMotion[ChildJoints.Length];
         OriginalZMotions = new ConfigurableJointMotion[ChildJoints.Length];
 
-        // ¿ø·¡ÀÇ angularMotion °ªÀ» ÀúÀå
+        // ì›ë˜ì˜ angularMotion ê°’ì„ ì €ì¥
         for (int i = 0; i < ChildJoints.Length; i++)
         {
             OriginalYMotions[i] = ChildJoints[i].angularYMotion;
             OriginalZMotions[i] = ChildJoints[i].angularZMotion;
         }
 
-        //ÃÊ±â spring°ª ÀúÀå
+        //ì´ˆê¸° springê°’ ì €ì¥
         for (int i = 0; i < BodyParts.Count; i++)
         {
             if (i == (int)Define.BodyPart.Hip)
@@ -119,7 +119,7 @@ public class BodyHandler : MonoBehaviourPun
             _yzPosSpringAry.Add(BodyParts[i].PartJoint.angularYZDrive.positionSpring);
         }
 
-        //ÁÂ¿ì ÆÈ °üÀı ¸®½ºÆ® ÀúÀå
+        //ì¢Œìš° íŒ” ê´€ì ˆ ë¦¬ìŠ¤íŠ¸ ì €ì¥
         _chestArmJoints.Add(Chest.PartJoint);
         _chestArmJoints.Add(LeftArm.PartJoint);
         _chestArmJoints.Add(LeftForeArm.PartJoint);
@@ -134,14 +134,14 @@ public class BodyHandler : MonoBehaviourPun
         return BodyParts[(int)part];
     }
 
-    //°üÀıÀÇ ½ºÇÁ¸µÀ» Á¶ÀıÇÏ´Â ÇÔ¼ö
+    //ê´€ì ˆì˜ ìŠ¤í”„ë§ì„ ì¡°ì ˆí•˜ëŠ” í•¨ìˆ˜
     void SetJointSpring(float percentage)
     {
         JointDrive angularXDrive;
         JointDrive angularYZDrive;
         int j = 0;
 
-        //±âÀı°ú È¸º¹¿¡ ¸ğµÎ °ü¿© ±âÀı½Ã¿£ ÆÛ¼¾Æ¼Áö¸¦ 0À¸·ÎÇØ¼­ »ç¿ë
+        //ê¸°ì ˆê³¼ íšŒë³µì— ëª¨ë‘ ê´€ì—¬ ê¸°ì ˆì‹œì—” í¼ì„¼í‹°ì§€ë¥¼ 0ìœ¼ë¡œí•´ì„œ ì‚¬ìš©
         for (int i = 0; i < BodyParts.Count; i++)
         {
             if (i == (int)Define.BodyPart.Hip)
@@ -158,14 +158,15 @@ public class BodyHandler : MonoBehaviourPun
             j++;
         }
     }
-
+    
+    // ê´€ì ˆ ìŠ¤í”„ë§ì„ 0ìœ¼ë¡œ ë§Œë“¤ì–´ì„œ ê¸°ì ˆìƒíƒœì²˜ëŸ¼ ì—°ì¶œ
     public IEnumerator ResetBodySpring()
     {
         SetJointSpring(0f);
         yield return null;
     }
 
-    //±âÀıÈÄ È¸º¹±â´É
+    //ê¸°ì ˆí›„ íšŒë³µê¸°ëŠ¥, ê´€ì ˆ ìŠ¤í”„ë§ì„ ì²œì²œíˆ ì˜¬ë ¤ì„œ ê¸°ì ˆì—ì„œ íšŒë³µë˜ëŠ” ì—°ì¶œ
     public IEnumerator RestoreBodySpring(float _springLerpTime = 1f)
     {
         float startTime = Time.time;
@@ -180,7 +181,7 @@ public class BodyHandler : MonoBehaviourPun
         }
     }
 
-    //±âÀıµÇ¼­ ½ºÇÁ¸µÀÌ 0ÀÌ µÈ °üÀıÀ» ±×´ë·Î °íÁ¤½ÃÅ°´Â ÇÔ¼ö
+    // ê¸°ì ˆ í–ˆì„ë•Œì˜ ëª¸ì´ë‚˜ ì†ìœ¼ë¡œ ë­”ê°€ë¥¼ ì¡ì•˜ì„ë•Œ íŒ”ì„ ê·¸ëŒ€ë¡œ ê³ ì •ì‹œí‚¤ëŠ” í•¨ìˆ˜
     public void JointLock(Define.Side side)
     {
         int start;
@@ -196,7 +197,7 @@ public class BodyHandler : MonoBehaviourPun
         }
     }
 
-    //¼ÕÀ¸·Î Àâ°íÀÖ¾î¼­ ¿¬°áµÇ¾îÀÖ´ø °üÀıÀ» ÇØÁ¦
+    // ì†ìœ¼ë¡œ ì¡ê³ ìˆì–´ì„œ ì—°ê²°ë˜ì–´ìˆë˜ ê´€ì ˆì„ í•´ì œ
     public void DestroyJoint(FixedJoint right, FixedJoint left)
     {
         Destroy(left);
@@ -209,7 +210,7 @@ public class BodyHandler : MonoBehaviourPun
         }
     }
 
-    //¾ÆÀÌÅÛ ÀåÂø½Ã ÆÈÀÌ Èçµé¸®Áö ¾Ê°Ô ÀåÂø¸ğ¼ÇÀ¸·Î °íÁ¤
+    //ì•„ì´í…œ ì¥ì°©ì‹œ íŒ”ì´ í”ë“¤ë¦¬ì§€ ì•Šê²Œ ì¥ì°©ëª¨ì…˜ìœ¼ë¡œ ê³ ì •
     public IEnumerator LockArmPosition()
     {
         yield return new WaitForSeconds(0.5f);
@@ -225,7 +226,7 @@ public class BodyHandler : MonoBehaviourPun
         }
     }
 
-    //°íÁ¤µÈ ÆÈÀ» ÇØÁ¦½ÃÅ°´Â ±â´É
+    //ê³ ì •ëœ íŒ”ì„ í•´ì œì‹œí‚¤ëŠ” ê¸°ëŠ¥
     public void UnlockArmPosition()
     {
         for (int i = 0; i < 6; i++)
@@ -235,13 +236,16 @@ public class BodyHandler : MonoBehaviourPun
             _fixedArmJoints[i] = null;
         }
     }
-
+    
+    // ê³µê²©í• ë•Œ íŠ¹ì • ë¶€ìœ„ì— ê³µê²© ì†ì„±ì„ ë¶€ì—¬ (ex. í€ì¹˜ ë™ì‘ì¤‘ì—” ì–‘ íŒ”ì— isAttackì„ trueë¡œ)
+    // ì´ ë•Œ ë§ˆìŠ¤í„° í´ë¼ì´ì–¸íŠ¸ì—ì„œë§Œ ë³€ê²½í•˜ê³  ë¡œì»¬ í´ë¼ì´ì–¸íŠ¸ëŠ” ë³€ê²½í•˜ì§€ ì•ŠìŒ
     public void ChangeDamageModifier(Define.BodyPart bodyPart, bool isAttack)
     {
         photonView.RPC(nameof(UpdateDamageModifier), RpcTarget.MasterClient, (int)bodyPart, true);
     }
 
-
+    // ì‹ ì²´ ë¶€ìœ„ì— ê³µê²© ì†ì„±ì´ ë¶€ì—¬ë˜ë©´ ê³µê²©ë ¥ ê³„ì‚°ì„ ìœ„í•´ enum ê°’ì„ Defaultì—ì„œ í•´ë‹¹í•˜ëŠ” ë¶€ìœ„ë¡œ ë³€ê²½
+    // (ex. í€ì¹˜ ë™ì‘ì¤‘ì—” ì–‘ íŒ”ì˜ ì†ì„±ì„ Punchë¡œ ë³€ê²½, ê³µê²©ì´ ëë‚˜ë©´ ë‹¤ì‹œ Defaultë¡œ ë³€ê²½)
     [PunRPC]
     private void UpdateDamageModifier(int bodyPart, bool isAttack)
     {

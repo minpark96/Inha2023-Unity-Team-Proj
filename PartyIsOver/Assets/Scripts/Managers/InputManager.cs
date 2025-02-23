@@ -1,4 +1,4 @@
-using System;
+Ôªøusing System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -47,7 +47,7 @@ public class InputManager
         if (Input.anyKey && KeyAction != null)
             KeyAction.Invoke();
 
-        // ¿Ãµø
+        // Ïù¥Îèô
         if (KeyboardAction != null)
         {
             if (Input.GetKey(KeyCode.W))
@@ -149,7 +149,7 @@ public class InputManager
             }
         }
 
-        // Ω∫≈≥
+        // Ïä§ÌÇ¨
         if (KeyboardAction != null)
         {
             if (Input.GetKey(KeyCode.H))
@@ -292,7 +292,7 @@ public class InputManager
             }
         }
 
-        // ∏∂øÏΩ∫
+        // ÎßàÏö∞Ïä§
         if (MouseAction != null)
         {
             if (Input.GetMouseButton(0))

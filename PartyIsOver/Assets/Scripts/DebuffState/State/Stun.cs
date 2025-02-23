@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
@@ -90,7 +90,7 @@ public class Stun : MonoBehaviourPun , IDebuffState
         JointDrive angularYZDrive;
         int j = 0;
 
-        //±âÀı°ú È¸º¹¿¡ ¸ğµÎ °ü¿© ±âÀı½Ã¿£ ÆÛ¼¾Æ¼Áö¸¦ 0À¸·ÎÇØ¼­ »ç¿ë
+        //ê¸°ì ˆê³¼ íšŒë³µì— ëª¨ë‘ ê´€ì—¬ ê¸°ì ˆì‹œì—” í¼ì„¼í‹°ì§€ë¥¼ 0ìœ¼ë¡œí•´ì„œ ì‚¬ìš©
         for (int i = 0; i < MyActor.BodyHandler.BodyParts.Count; i++)
         {
             if (i == (int)Define.BodyPart.Hip)

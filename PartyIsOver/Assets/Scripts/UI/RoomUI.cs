@@ -1,4 +1,4 @@
-using Photon.Pun;
+ï»¿using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -136,7 +136,7 @@ public class RoomUI : MonoBehaviour
                 Managers.Sound.Play(uiSound, Define.Sound.UISound);
 
                 ReadyButton.GetComponent<Image>().sprite = ReadyOff;
-                ReadyButton.GetComponentInChildren<Text>().text = "ÁØºñ! (F5)";
+                ReadyButton.GetComponentInChildren<Text>().text = "ì¤€ë¹„! (F5)";
 
             }
             else
@@ -145,7 +145,7 @@ public class RoomUI : MonoBehaviour
                 Managers.Sound.Play(uiSound, Define.Sound.UISound);
 
                 ReadyButton.GetComponent<Image>().sprite = ReadyOn;
-                ReadyButton.GetComponentInChildren<Text>().text = "ÁØºñÇØÁ¦! (F5)";
+                ReadyButton.GetComponentInChildren<Text>().text = "ì¤€ë¹„í•´ì œ! (F5)";
             }
         }
     }
@@ -181,12 +181,12 @@ public class RoomUI : MonoBehaviour
         if (SkillChange)
         {
             SkillChangeButton.sprite = Skill1;
-            SkillName.text = "Â÷Â¡ ½ºÅ³\n\n\n\n³É³ÉÆÝÄ¡";
+            SkillName.text = "ì°¨ì§• ìŠ¤í‚¬\n\n\n\nëƒ¥ëƒ¥íŽ€ì¹˜";
         }
         else
         {
             SkillChangeButton.sprite = Skill2;
-            SkillName.text = "Â÷Â¡ ½ºÅ³\n\n\n\nÇÙÆÝÄ¡";
+            SkillName.text = "ì°¨ì§• ìŠ¤í‚¬\n\n\n\ní•µíŽ€ì¹˜";
         }
     }
 

@@ -1,8 +1,10 @@
-using Photon.Pun;
+﻿using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// 펀치를 날리는 액션
+// 오른손과 왼손을 번갈아 가며 날린다.
 public class PunchAction : BaseAction
 {
     protected ActionController actions;
@@ -44,6 +46,8 @@ public class PunchAction : BaseAction
         return true;
     }
 
+    // 해당 방향의 주먹을 정면으로 날리게끔 하는 코루틴
+    // 준비, 펀치, 리셋 3가지 단계의 모션으로 구성되어 있다.
     protected IEnumerator Punch(Define.Side side, float duration, float readyTime, float punchTime, float resetTime)
     {
         float checkTime = Time.time;

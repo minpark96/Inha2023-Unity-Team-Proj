@@ -1,8 +1,9 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static Define;
 
+// ì´ë™ ìƒíƒœ
 public class Moving : BaseState
 {
     private LowerBodySM _sm;
@@ -16,7 +17,7 @@ public class Moving : BaseState
         _sm = (LowerBodySM)stateMachine;
     }
 
-    //°È±â ½ÃÀÛ½Ã ÆÈ´Ù¸® ÃÊ±âÀ§Ä¡ ¼³Á¤
+    //ê±·ê¸° ì‹œì‘ì‹œ íŒ”ë‹¤ë¦¬ ì´ˆê¸°ìœ„ì¹˜ ì„¤ì •
     public override void Enter()
     {
         if (UnityEngine.Random.Range(0, 2) == 1)
@@ -58,15 +59,18 @@ public class Moving : BaseState
 
     public override void GetInput()
     {
+        // ì´ë™ ì…ë ¥ì´ ë“¤ì–´ì˜¤ë©´ ì´ë™ ì•¡ì…˜ì„ ì˜ˆì•½
         if(IsMoveKeyInput())
             InvokeReserveCommand(COMMAND_KEY.Move);
-
+        
+        // ì í”„ ì…ë ¥ì´ ë“¤ì–´ì˜¤ë©´ ì í”„ ì•¡ì…˜ì„ ì˜ˆì•½
         if (InputCommand(COMMAND_KEY.Jump, KeyType.Down))
         {
             InvokeReserveCommand(COMMAND_KEY.Jump);
             _sm.ChangeState(_sm.JumpingState);
         }
-
+        
+        // ë‹¬ë¦¬ê¸° í‚¤ í† ê¸€ ì˜¨ì˜¤í”„
         if (InputCommand(COMMAND_KEY.ToggleRun, KeyType.Down))
         {
             _sm.IsRun = true;
@@ -77,7 +81,7 @@ public class Moving : BaseState
         }
     }
 
-    //°ÉÀ»¶§ »çÀÌÅ¬¸¶´Ù ÆÈ´Ù¸®¸¦ ¾ÕµÚ·Î ¿òÁ÷ÀÌ°Ô À§Ä¡»óÅÂ¸¦ º¯°æ
+    //ê±¸ì„ë•Œ ì‚¬ì´í´ë§ˆë‹¤ íŒ”ë‹¤ë¦¬ë¥¼ ì•ë’¤ë¡œ ì›€ì§ì´ê²Œ ìœ„ì¹˜ìƒíƒœë¥¼ ë³€ê²½
     private void RunCycleUpdate()
     {
         if (_cycleTimer < _cycleSpeed)

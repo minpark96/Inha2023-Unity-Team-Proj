@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
@@ -15,11 +15,11 @@ public class ProjectileStandard : ProjectileBase
     private ProjectileBase projectileBase;
 
 
-    //ÀÌµ¿
+    //ì´ë™
     private Vector3 lastRootPosition;
     private Vector3 velocity;
 
-    //Áß·Â
+    //ì¤‘ë ¥
     public float gravityDownAcceleration = 0f;
 
     //Hit
@@ -68,7 +68,7 @@ public class ProjectileStandard : ProjectileBase
         lastRootPosition = root.position;
         velocity = transform.forward * _speed;
 
-        //¹«½ÃµÇ´Â Ãæµ¹Ã¼ °¡Á®¿À±â
+        //ë¬´ì‹œë˜ëŠ” ì¶©ëŒì²´ ê°€ì ¸ì˜¤ê¸°
         _ignoredColliders = new List<Collider>();
         Collider[] ownerColliders = projectileBase.Owner.GetComponentsInChildren<Collider>();
         _ignoredColliders.AddRange(ownerColliders);
@@ -76,7 +76,7 @@ public class ProjectileStandard : ProjectileBase
 
     private void Update()
     {
-        //Áß·Â
+        //ì¤‘ë ¥
         if (gravityDownAcceleration > 0f)
         {
             velocity += Vector3.down * gravityDownAcceleration * Time.deltaTime;
@@ -123,7 +123,7 @@ public class ProjectileStandard : ProjectileBase
     [PunRPC]
     public virtual void OnHit(Vector3 point, Vector3 normal,Collider collider)
     {
-        //ÀÌÆåÆ®
+        //ì´í™íŠ¸
         if (impactVfxPrefab!=null)
         {
             GameObject impactEff = Instantiate(impactVfxPrefab, point + (normal * impactVfxOffset), Quaternion.LookRotation(normal));

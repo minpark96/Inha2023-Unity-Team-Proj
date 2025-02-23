@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -11,14 +11,14 @@ public class SoundManager
     string _launcher = "[1]Launcher";
 
     AudioSource[] _audioSources = new AudioSource[(int)Define.Sound.Maxcount];
-    //Ä³½Ì ¿ªÇÒ
+    //ìºì‹± ì—­í• 
     Dictionary<string,AudioClip> _audioClip = new Dictionary<string, AudioClip>();
 
 
     public float[] SoundVolume = new float[(int)Define.Sound.Maxcount];
 
 
-    //»ç¿îµå ¿ÀºêÁ§Æ® »ı¼º
+    //ì‚¬ìš´ë“œ ì˜¤ë¸Œì íŠ¸ ìƒì„±
     public void Init()
     {
         GameObject root = GameObject.Find("@Sound");
@@ -33,7 +33,7 @@ public class SoundManager
             Object.DontDestroyOnLoad(root);
 
             string[] soundNames = System.Enum.GetNames(typeof(Define.Sound));
-            //¸Æ½º Ä«¿îÆ®¶ó´Â ¾Ö°¡ ÀÖÀ¸´Ï »©ÁÜ
+            //ë§¥ìŠ¤ ì¹´ìš´íŠ¸ë¼ëŠ” ì• ê°€ ìˆìœ¼ë‹ˆ ë¹¼ì¤Œ
             for (int i = 0; i < soundNames.Length - 1; i++)
             {
                 GameObject go = new GameObject { name = soundNames[i] };
@@ -135,7 +135,7 @@ public class SoundManager
         }
     }
 
-    //¹æ±İ Àü¿¡ »ç¿ëÇÑ ³»¿ëÀÌ Áßº¹µÇ¸é Resource·Î Ã£Áö ¾Ê°í Ä³½ÌÀ» ÇÏ¿© »ç¿ëÇÏ¿© ´õ ºü¸£°Ô »ç¿ëÇÑ´Ù.
+    //ë°©ê¸ˆ ì „ì— ì‚¬ìš©í•œ ë‚´ìš©ì´ ì¤‘ë³µë˜ë©´ Resourceë¡œ ì°¾ì§€ ì•Šê³  ìºì‹±ì„ í•˜ì—¬ ì‚¬ìš©í•˜ì—¬ ë” ë¹ ë¥´ê²Œ ì‚¬ìš©í•œë‹¤.
     public AudioClip GetOrAddAudioClip(string path , Define.Sound type = Define.Sound.PlayerEffect)
     {
         if (path.Contains("Sounds/") == false)
@@ -145,7 +145,7 @@ public class SoundManager
 
         if (type == Define.Sound.Bgm)
         {
-            //.Bgm¸¸ °ü·ÃÇÑ »ç¿îµå Á¦¾î
+            //.Bgmë§Œ ê´€ë ¨í•œ ì‚¬ìš´ë“œ ì œì–´
             audioClip = Managers.Resource.Load<AudioClip>(path);
         }
         else

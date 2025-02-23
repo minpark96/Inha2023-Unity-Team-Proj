@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -180,7 +180,7 @@ public class PhotonManager : BaseScene
 
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
-        string roomName = "¼³»ê ¼ÓÀÇ ¾ÆÁöÆ®";
+        string roomName = "ì„¤ì‚° ì†ì˜ ì•„ì§€íŠ¸";
         PhotonNetwork.CreateRoom(roomName, new RoomOptions { IsVisible = true, IsOpen = true, MaxPlayers = Define.MAX_PLAYERS_PER_ROOM });
     }
 

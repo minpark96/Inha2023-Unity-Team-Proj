@@ -1,4 +1,4 @@
-using Photon.Pun;
+ï»¿using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -51,7 +51,7 @@ public class PowerUp : MonoBehaviourPun, IDebuffState
     }
     void PlayerDebuffSound(string path)
     {
-        //»ç¿îµå ¹®Á¦ ÀÖÀ½
+        //ì‚¬ìš´ë“œ ë¬¸ì œ ìˆìŒ
         _audioClip = Managers.Sound.GetOrAddAudioClip(path);
         _audioSource.clip = _audioClip;
         _audioSource.spatialBlend = 1;

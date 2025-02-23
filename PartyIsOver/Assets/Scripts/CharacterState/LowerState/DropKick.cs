@@ -1,7 +1,8 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// ë“œë¡­í‚¥ ìƒíƒœ
 public class DropKick : BaseState
 {
     private LowerBodySM _sm;
@@ -13,19 +14,20 @@ public class DropKick : BaseState
 
     public override void Enter()
     {
+        // IsLowerActionProgressë¥¼ ì¼œì„œ trueì¸ ë™ì•ˆ ë‹¤ë¥¸ ë™ì‘ìœ¼ë¡œ ë„˜ì–´ê°€ì§€ ì•Šê²Œë” í•œë‹¤.
         _sm.PlayerContext.IsLowerActionProgress = true;
     }
 
     public override void UpdateLogic()
     {
-        //»óÅÂ ³ª°¡±â
+        //ë™ì‘ì´ ì¢…ë£Œë˜ì–´ IsLowerActionProgressê°€ falseê°€ ë˜ë©´ ìƒíƒœ ë‚˜ê°€ê¸°
         if (!_sm.PlayerContext.IsLowerActionProgress)
         {
             _sm.ChangeState(_sm.IdleState);
         }
         else
         {
-            //ÀÌ°Å Áö¿ì¸é ¹ßÂ÷±â ÈÄ ºùÆÇ¿¡¼­ ¹Ì²ô·¯ÁöµíÀÌ ÀÛµ¿, ¸¶Âû½ÃÅ°´Â ActionÇÏ³ª¸¦ ´õ Ãß°¡ÇÏ´Â ½ÄÀ¸·Î ´ëÃ¼ °¡´É
+            //ì´ê±° ì§€ìš°ë©´ ë°œì°¨ê¸° í›„ ë¹™íŒì—ì„œ ë¯¸ë„ëŸ¬ì§€ë“¯ì´ ì‘ë™, ë§ˆì°°ì‹œí‚¤ëŠ” Actioní•˜ë‚˜ë¥¼ ë” ì¶”ê°€í•˜ëŠ” ì‹ìœ¼ë¡œ ëŒ€ì²´ ê°€ëŠ¥
             InvokeReserveCommand(Define.COMMAND_KEY.Move);
         }
     }

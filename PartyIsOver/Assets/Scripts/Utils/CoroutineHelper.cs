@@ -1,7 +1,8 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// MonoBehaviour를 상속받지 않은 클래스에서 코루틴을 사용하기 위한 클래스
 public class CoroutineHelper : MonoBehaviour
 {
     private static MonoBehaviour monoInstance;

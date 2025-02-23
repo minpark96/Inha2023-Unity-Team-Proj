@@ -1,8 +1,9 @@
-using Photon.Pun;
+﻿using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// 박치기 액션
 public class HeadButtAction : BaseAction
 {
     public HeadButtAction(ActionController actions, Define.ActionEventName name) : base(actions, name)
@@ -30,8 +31,10 @@ public class HeadButtAction : BaseAction
         return true;
     }
 
+    // 박치기 애니메이션 동작을 코루틴으로 실행
     IEnumerator HeadButt()
     {
+        // 머리의 데미지 타입을 isAttack으로 활성화
         _bodyHandler.ChangeDamageModifier(Define.BodyPart.Head, true);
         for (int i = 0; i < _animData.FrameDataLists[Define.AniFrameData.HeadingAniData].Length; i++)
         {

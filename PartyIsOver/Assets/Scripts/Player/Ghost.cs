@@ -1,4 +1,4 @@
-using Photon.Pun;
+ï»¿using Photon.Pun;
 using Photon.Pun.UtilityScripts;
 using System.Collections;
 using System.Collections.Generic;
@@ -20,7 +20,7 @@ public class Ghost : MonoBehaviourPunCallbacks
     {
         if (CameraControl == null)
         {
-            Debug.Log("Ä«¸Ş¶ó ÄÁÆ®·Ñ ÃÊ±âÈ­");
+            Debug.Log("ì¹´ë©”ë¼ ì»¨íŠ¸ë¡¤ ì´ˆê¸°í™”");
             CameraControl = GetComponent<CameraControl>();
         }
 
